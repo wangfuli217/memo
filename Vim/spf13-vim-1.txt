@@ -1,0 +1,168 @@
+# vim的默认<leader>映射是"\"，spf13使用","作为<leader>
+# ? 帮助手册
+# ~/.vimrc.bundles.local          追加插件 echo Bundle \'spf13/vim-colors\' >> ~/.vimrc.bundles.local
+# ~/.vimrc.local  ~/.gvimrc.local 额外配置  echo colorscheme ir_black >> ~/.vimrc.local
+
+
+vundle(插件管理){
+>>> 插入到.vimrc 中
+call vundle#begin()
+Plugin 'scrooloose/nerdcommenter'
+call vundle#end()
+
+:PluginInstall # 自动安装该插件及其帮助文档
+:PluginClean   # 先在 .vimrc 中注释或者删除对应插件配置信息，然后在 vim 中执行
+:PluginUpdate  # 批量更新插件
+
+
+创建文件
+gvim  ~/.vimrc.bundles.local
+增添如下信息： 
+Bundle 'scrooloose/nerdcommenter'
+打开gvim执行，完成实际安装
+:Bundleinstall
+如果要删除插件，在~/.vimrc.local添加
+UnBundle   'scrooloose/nerdcommenter'
+打开gvim执行，完成实际卸载
+:Bundleclean
+}
+
+undotree(撤销管理){ ,+u
+:help new-undo-branches
+:help undo-tree
+: UndotreeToggle
+<leader>u ?
+}
+
+nerdtree(文件导览){ <c-e> 或 :NERDTree /home/marty/vim7/src
+适用于Vim的NERDTree Explorer插件: 
+NERDTree是一个文件资源管理器插件，为用户的vim编辑提供项目抽屉功能。
+
+:help NERDTree
+<c-e>
+<leader>e or <leader>nt
+
+:NERDTree /home/marty/vim7/src
+:NERDTree foo (foo 是一个书签名)
+}
+
+ctrlp(快速文件查找){  <c-e> 
+Ctrlp是用100％vim插件替换Command-T插件。
+它支持一种直观和快速的方法来从文件系统加载文件(使用正则表达式和模糊查找)，打开缓冲区以及最近使用的文件。
+<c-p>
+
+快捷键          功能
+Ctrl+p          打开ctrlp并定位在file mode
+?               查看帮助
+F5              刷新当前目录
+Ctrl+f,Ctrl+d   在mode间左右切换
+Ctrl+r          切换正则表达式mode
+Ctrl+j,Ctrl+k   在搜索结果间上下移动
+Ctrl+t          在新tab打开选中结果
+Ctrl+v          在新vsplit打开选中结果
+Ctrl+x          在新split打开选中结果
+Ctrl+z then Ctrl+o  先标记多个文件，然后一起打开
+..              向上跳一层级
+:25             跳转到文件第25行
+:/any\:\ string     跳转到第一个any: string
+:+setfiletype\ myfiletype | 25 	将文件类型设为myfiletype并跳转到第25行
+:diffthis       对前4个用Ctrl+z标记的文件比较不同
+}
+nerdcommenter(快速注释){
+NERDCommenter - Vim中的注释代码
+NERDCommenter是一个插件，允许用户处理代码注释，而不考虑文件类型。
+help :NERDCommenter
+
+快捷键     功能
+,c<Space> 	切换当前行或选中内容是否注释，根据首行判断
+,ci 	切换当前行或选中内容是否注释，每行自己判断
+,cs 	有格式地注释
+,cy 	复制内容，然后注释
+,ca 	在行末添加注释符并进入insert mode
+,cl 	在行首添加注释符并进入insert mode
+,ca 	在两种注释符之间切换，如/**/和//
+}
+
+syntastic(语法检查){
+Vim的综合语法综合检查
+Syntastic是一个语法检查插件，它在保存和打开时通过外部语法检查器执行缓冲区。 
+如果检测到任何语法错误，则向用户发送通知，因此，用户不必编译他们的代码或执行他们的脚本来找到它们。
+}
+
+Numbers(更好的行数){
+Numbers.vim - 为Vim添加行号
+根据用户所处的模式，在相对编号(普通模式)和绝对编号(插入模式)之间进行交换。
+}
+
+NeoComplCache(自动补全){
+NeoComplCache是一个功能强大且精彩的自动完成插件，为片段提供额外的支持。 
+NeoComplCache可以从字典，缓冲区，全部完整和片段模拟自动完成。
+
+Ctrl+u或Ctrl+n或Ctrl+p 	在原始输入与补全方案间切换
+}
+
+Fugitive(git){
+Fugitive为Vim添加Git集成
+Fugitive在vim中为Git目录添加了持久的Git支持。
+:help fugitive
+
+,gs 	查看git状态:Gstatus
+,gd 	:Gdiff
+,gc 	:Gcommit
+,gb 	:Gblame
+,gl 	:Glog
+,gp 	:Git push
+}
+
+PIV为Vim提供了现代化的PHP集成
+可以更好地支持PHP 5.3+，包括最新的语法，函数，更好的折叠支持等等。
+
+Tabularize(tab格式化代码){
+Tabularize将Vim中的所有内容对齐
+Tabularize使用户能够在他们的等号和其他几个字符上对齐语句。
+
+<Leader>a= :Tabularize /=
+<Leader>a: :Tabularize /:
+<Leader>a:: :Tabularize /:\zs
+<Leader>a, :Tabularize /,
+<Leader>a<Bar> :Tabularize /
+}
+
+tagbar(标签导航){ <Leader>tt
+Tagbar在Vim中添加标签生成和导航
+Tagbar需要exuberant-ctags，并会自动为用户的打开文件创建标签。提供了一个面板，可以轻松浏览标签。
+}
+
+EasyMotion(任意跳转){
+EasyMotion在Vim中随处跳转
+EasyMotion提供了一种在Vim中使用运动的交互方式。
+}
+
+surround(管理结对符){
+   Old text                  Command     New text ~
+#  "Hello *world!"           ds"         Hello world!
+#  [123+4*56]/2              cs])        (123+456)/2
+#  "Look ma, I'm *HTML!"     cs"<q>      <q>Look ma, I'm HTML!</q>
+#  if *x>3 {                 ysW(        if ( x>3 ) {
+#  my $str = *whee!;         vllllS'     my $str = 'whee!';
+快捷键     功能
+ds.         删除包围结构。当光标在(Hello *world)中处于*位置时按ds)会得到结果Hello world!      删除配对
+cs.         改变包围结构。当光标在(Hello *world)中处于*位置时按cs)]会得到结果[Hello world!]
+ysiw.       包围当前词。当光标在Hello w*orld中处于*位置时按ysiw)会得到结果Hello (world)!
+yss.        包围当前行。当光标在Hello w*orld中处于*位置时按yss)会得到结果(Hello world!)
+
+# 删除配对 ds + 配对                      ds"
+# 更改配对 cs + 旧配对 + 新配对           cs])
+# 更改配对到标签 cs + 旧配对 + 新标签     cs"<p>
+}
+snipmate(代码模版){ <C-k>
+
+}
+# 更新github上最新spf13-vim配置
+cd $HOME/.spf13-vim/
+git pull
+vim +BundleInstall! +BundleClean +q
+
+# 自定义配置
+通过创建~/.vimrc.local 和~/.gvimrc.local文件来实现。
+显然前者用于设定普通vim，后者用于设定gvim。

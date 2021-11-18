@@ -1,0 +1,1495 @@
+https://github.com/alebcay/awesome-shell/blob/master/README_ZH-CN.md # 去发现
+http://mywiki.wooledge.org/CategoryShell
+http://www.netkiller.cn/shell/bash/variable.html
+
+第0章 笔记
+shell 提供用户使用字符串文本与计算机(底层为字节)交互的方式：字符串输入+字符串输出
+shell是一个能执行各种命令的宏处理器。宏处理器是指扩展文本和符号以创建更大的表达式的能力。
+shell是命令解释器，提供了众多的GNU实用工具的用户界面。
+shell是编程语言，使得实用工具能够被组织起来。可创建包含若干命令的文件，而文件本身又可以作为命令。
+shell的内部命令：实现的外部工具不方便或者不可能完成的。cd break continue exec 不能通过外部命令实现。
+     history getopts kill pwd内部命令，可以在外部命令实现，但作为内部命令更便于使用。
+shell专为交互式设计的功能：作业控制，命令行编辑，命令行历史和别名
+
+术语定义
+空白符      一个空格或者制表符
+内部命令    在shell内部而不是文件系统中由某个可执行文件实现的一些命令
+sh(1 :[参数] 2 . 文件名 [参数] 3  break [n] 4 cd [-L|-P] [目录] 5 continue [n] 6 eval [参数表] 
+   7 exec [-cl] [-a 名称] [命令[参数表]]   8 exit [n]          9 export [-fn] [-p] [名称[=值]]
+   10 getopts 选项字符串 名称[参数表]       11 hash [-r] [-p文件名] [-dtl] [名称] 12 pwd [-LP]
+   13 readonly [-aApf] [名称[=值]]          14 return [n] 15 shift [n] 16 test和[ 17 times
+   18 trap [-lp] [参数] [信号指示...]       19 umask [-p] [-S] [模式]  20 unset [-fv] [名称])
+   
+. 文件名 [参数]
+  1. 如果文件名不包括斜杠，则使用PATH变量去搜索文件。
+  2. 如果Bash不是在POSIX模式下运行，则在$PATH中找不支后就会在当前目录中搜索。
+  3. 如果提供了参数，它们就成为执行文件名时的位置参数；否则，位置参数不会被改变。
+  4. 返回状态是最后一个被执行命令的退出状态；
+  5. 如果没有命令被执行，则返回零。
+  6. 如果文件名没有找到，或者不能读取，返回状态就是非零值。
+break|continue [n]: 返回状态是零，除非n不是大于或等于1。
+cd|pwd: -P physical物理路径 -L symlink 符号链接   如果改变目录成功，返回状态就是零；否则就是非零。
+eval：如果没有参数表，或者参数表为空，则退出状态为零
+exec：-l login; -c clear; -a alter
+exit: EXIT陷阱是在Bash结束前执行的
+hash [-r] [-p文件名] [-dtl] [名称] # -r Redo -p Path -d Destination -t prinT -l List
+hash        # 显示哈希表中命令使用频率
+hash -l     # 显示哈希表
+hash -t git # 显示命令的完整路径
+hash -p /home/www/deployment/run run # 向哈希表中增加内容
+# 命令等同于 PATH=$PATH:$HOME/www/deployment
+hash -r # 删除哈希表内容
+return：如果关联了RETURN陷阱，他就会在函数或脚本退出以后执行
+trap:
+0和EXIT：当shell退出时就会执行参数。
+DEBUG  ：每次执行简单命令、for命令和case命令、select命令、算术for命令的每个算术表达式，以及shell函数的第一个命令之前，都会执行命令参数。
+ERR    ：当一个简单命令因为下列原因返回非零的值时就执行命令参数。== errexit选项也服从同样的条件。
+       如果失败的命令是紧跟在关键词until或while后的命令队列的一部分，
+       或者是在关键词if或elif后的测试命令的一部分，
+       或者是&&或||命令队列中所执行命令的一部分，
+       或者该命令的返回状态经由! 反转，则不会执行ERR陷阱。
+RETURN：当由内部命令. 或source执行的shell函数或脚本执行结束时，都会执行命令参数。
+bash(1 alias [-p] [名称[=值] ... ] 2 bind 3 builtin 4. caller:
+
+)
+caller：返回当前活动的子程序(即shell函数，或通过内部命令.或source执行的shell脚本) 调用。
+  如果没有表达式，caller显示当前子程序调用的行号和源文件名。
+  如果用非负整数作为表达式，caller就会显示行号、子程序名称、以及与当前调用堆栈位置相对应的源文件。这些额外信息可以用来打印堆栈跟踪信息。
+  当前的帧是第0帧。
+  返回值是0，除非shell并没有在执行子程序调用，或者表达式不对应调用堆栈中的有效位置。
+enable 启用和禁用 shell 内嵌命令。
+  enable -s # POSIX内建命令     sh
+  enable -a # Bash所有内建命令  bash
+help 显示内嵌命令的相关信息。
+  -d        输出每个主题的简短描述
+  -m        以伪 man 手册的格式显示使用方法
+  -s        为每一个匹配 PATTERN 模式的主题仅显示一个用法
+  
+控制运算符  实现控制功能的一些符号，包括换行符和下面的任意一个符号：|| && & ; ;; | |& (或)
+字段        经过shell扩展之后的文本单元，文本单元做命令的名字和参数。
+元字符      当没有引用时能够分隔开单词的字符。包括空白和下面的任意一个字符：| & ; ( ) < >
+运算符      包括控制运算符和重定向运算符
+保留字      对shell有特殊意义的一些单词：for while then time
+符号        被shell当成一个单独单位的一串字符。要么是一个单词，要么是一个运算符
+单词        被shell当成一个单位处理的一串字符。它不能包含未被引用的元字符
+退出状态
+1. 返回状态总是介于0和255之间，
+2. 对成功执行的命令，它的退出状态是零；
+3. 非零的退出状态表示失败了
+4. 如果命令接收到一个值为N的关键信号而退出，Bash就会把128+N作为它的退出状态。
+5. 如果命令找到但却不是可执行的，就返回状态126。
+6. 如果命令没有找到，用来执行它的子进程就会返回状态127
+7. 如果使用不正确，所有的内部命令返回状态为2
+信号
+SIGTERM：如果Bash是交互运行的，并且没有任何陷阱，会忽略SIGTERM
+SIGQUIT：会忽略SIGQUIT
+SIGTTIN：会忽略SIGTTIN
+SIGTOUT：会忽略SIGTOUT
+SIGTSTP：会忽略SIGTSTP
+SIGHUP : 默认情况下，shell接收到SIGHUP后会退出，在退出之间，交互式运行的shell回向所有作业，不管是正在运行的还是停止的，重新发送SIGQUIT
+       disown
+       如果使用shopt打开了Bash的huponexit选项，当一个交互运行的登录shell退出时,会向所有作业发送SIGHUP
+SIGINT ：所有内部wait都是可以中断的。退出任何正在进行的循环
+
+
+符号 = 单词 + 运算符 = 单词 + 控制运算符 + 重定向运算符
+字段 <--> 元字段
+
+引用在shell中用以去除某些字符或单词的特殊含义,它可以用来禁止对特殊字符的特殊处理，使得保留字不再被认为是保留字，或者禁止参数扩展。
+Bash中有三种引用机制：转义字符，单引用和双引用。
+# 双引用：$ ` \\ ! 以及 * @
+$'string':ANSI标准C引用。\nnn :由八进制数nnn代表的一个八位字符。
+                         \xHH :由十六进制数代表的一个八位字符。
+                         \cx  :一个控制字符CTRL-X.
+tr $'\n' ' ' file
+Locale专用的翻译：po2lmo
+TEXDOMAINDIR/LCMESSAGES/LCMESSAGES/TEXTDOMAIN.mo
+
+注释:shopt的interactive_comments
+命令 1.简单命令 2.管道 3.队列命令 4.复合命令(4.1循环结构 4.2条件结构 4.3命令组合 4.4 协同进程)
+1. 简单命令:简单命令的返回状态是POSIX 1003.1中的waitpid函数规定的退出状态；如果该命令由一个信号n终止，则其退出状态是128+n.
+2. 管道：管道是由控制字符|或|&分隔开的一系列简单命令。 [time [-p]] [ ! ] command [ [|或|&] command2 ... ]
+      如果使用了|&，则命令一的标准错误输出将会和命令二的标准输出相连，这是2>&1 |的简写形式。
+      保留字time能够在管道执行完毕后输出其执行时间的统计信息。 -p POSIX指定格式，TIMEFORMAT指定输出格式
+      把time作为保留字允许我们统计内部命令，shell函数，以及管道的执行时间。
+      times是内部命令。
+      管道里面的每个命令是在自己子shell里面执行，管道的退出状态是最后一个命令的退出状态。
+          pipefail打开则是：管道的退出状态是最后一个返回非零的那个命令的退出状态。
+3. 队列命令：; & && ||连接而成，最后可以由; & 或换行结束。"与"和"或"队列的返回值是其中最后一个被执行的命令的返回值。
+4. 复合命令: 复合命令是shell的编程结构体。每个结构体都是以保留字或者控制运算符开头，然后以与之对应的保留字或控制运算符结束。
+    ; 可以使用一个或者多个换行代替。
+    4.1 for((表达式一;表达式二;表达式三));do命令块;done 其返回值是命令块中最后一个被执行的命令的返回值。如果表达式的值都是假的，则返回假。
+    4.1 for 变量 [in单词] ; do 命令块 ; done            如果对单词的扩展没有得到任何元素，则不执行任何命令，并返回零。
+    4.1 until测试命令;do命令块;done                     如果命令块没有被执行则返回零。
+    4.1 while测试命令;do命令块;                         如果命令块没有被执行则返回零。
+    4.2 if                                              如果命令块没有被执行则返回零。
+    4.2 case: nocasematch选项则匹配时忽略字母的大小写。
+        case word in [ [(] pattern [ | pattern ] ... ) list ;; ] ... esac
+          | 用来分隔多个模式。) 用来结束模式列表。 
+          ;;   匹配第一个模式以后就不会再匹配其他模式
+          ;&   执行数据块后，如果还有其他的分句，就继续执行该分句
+          ;;&  执行数据块后，如果还有其他的分句，就检查其模式: 如果模式为真就继续执行该分句
+    4.2 select
+    4.2 ((算术表达式)) 如果这个值不是零，则返回状态是零，否则返回1
+    4.2 [[条件表达式]] 对条件表达式求值，并根据其结果返回0或者1。
+       在"[[和]]"中间的单词不会进行单词和文件名扩展，但却进行波浪号扩展、参数和变量扩展、算术扩展、命令替换、进程替换以及引用去除。
+       诸如""等条件运算符不能被引用，否则它们就不是原子算术表达式了。
+       如果使用了"=="和"!="运算符，则运算符的右边会被看作是一个模式。模式的任何部分都可以被引用以强制把其当作字符串来匹配。
+       =~ 右边字符串认为是一个扩展的正则表达式来匹配。 BASHREMATCH
+          nocasematch选项则匹配时忽略字母的大小写。 
+          1. (表达式)
+          2. ! 表达式
+          3. 表达式1 && 表达式2
+          4. 表达式1 || 表达式2
+    4.3 当命令被组织在一起时，可以对整个命令列表进行重定向。
+      (表达式)
+      {表达式;} 命令列表后面的逗号(或者换行符)是必须的。
+      {}是保留字，与命令之间必须用空白符或者其他shell元字符分开；()是运算符，与命令之间不需用空白符分开；
+    4.4 协同进程 coproc [NAME] 命令 [重定向] 。 在子shell中执行，就像 & 一样。NAME -> COPROC
+        NAME[0]: 命令的输出fd
+        NAME[1]：命令的输入fd
+        可以使用内部命令wait来等待协同命令的结束。协同进程的返回状态是其中命令的返回状态。
+函数：[ function ] name () { list; } [重定向]。 
+1.通常情况下，函数体外的大括号与函数体之间必须用空白或者换行符分隔。使用大括号时，其中间的命令列表必须用逗号、& 或者换行符结束。
+2.变量FUNCNAME的第一名元素被设为函数的名称。
+3.除了DEBUG和RETURN这两个陷阱没有被继承外，函数和其他调用者之间在shell执行环境所有其他方面都完全一样。
+4.任何与RETURN陷阱相关联的命令都将在执行被恢复前被执行。
+    unset -f 取消函数定义
+    declare -F 显示所有函数名称
+    declare -f 显示所有函数定义
+参数：没有变量都有值以及零个或多个变量。属性通过declare来设置。
+1.参数通过赋值来设置。
+2.空字符串也是一个有效的值。
+3.参数一旦设置以后，只能通过内部命令unset才能取消设置。
+4.所有的值都会进行大括号扩展、参数和变量扩展、命令替换、算术扩展、以及引用去除
+5.赋值语句还可以作为内部命令alias、declare、typeset、export、readonly和local的参数。
+6.位置参数：是在bash启动时由其参数赋值的，并且可以用内部命令set来重新赋值。
+7.特殊参数："$*"="$1c$2c..." "$@"="$1c""$2c"... 。c是特殊变量IFS的第一个字符。$-和$_扩展为bash选项集
+Shell扩展
+1. 大括号扩展{x..y[..增量]} 如：echo {0..10..2}
+   为了避免与参数扩展冲突，大括号扩展不会识别字符串中的"${"。
+   为了防止被认为是大括号扩展的一部分，{或者","可以用反斜杠转义。为了避免与参数扩展冲突，大括号扩展不会识别字符串中的奜$奦夢。
+   echo $\{{array[1],array[0]}\} # ${array[1]} ${array[0]}
+   eval echo $\{{array[1],array[0]}\} # ${array[1]} ${array[0]} # 101 100
+2. 波浪号扩展
+3. shell参数扩展 字符$引导参数扩展,命令替换和计算扩展。${参数}
+   如果参数的第一个字符是个感叹号，就表示某个级别的间接变量。
+间接扩展：Bash使用后续变量的值作为新变量的名称，然后扩展这个新的变量，并用其值进行替换，而不是后续变量的值。
+间接扩展：eval echo \$$B 。 Bash只识别感叹号形式的间接变量。
+   ${!前缀*}和${!前缀@}  ${!名称[*]}和${!名称[@]} 属于例外情况。感叹号必须紧跟在大括号后面才表示间接变量。
+   ${!前缀*}和${!前缀@}     扩展为名称中含有前缀的变量，以特殊变量IFS的第一个字符分隔。 echo ${!arr*}|${!arr@} # array
+   ${!名称[*]}和${!名称[@]} 如果名称是个数组变量，扩展成名称内数组下标或者键名列表。echo ${!array[*]}|${!array[@]} # 0 1
+   只有在"${!名称[*]}"和"${!名称[@]}"的时候，这两个下表才会有差别；即${!名称[*]}和${!名称[@]}位于引号内。
+   差别：${变量名[*]}扩展为一个单独的单词，单词用IFS变量的第一个字符把数组名的所有元素连接而成。
+         ${变量名[@]}把数组名的每一个元素都扩展为一个单独的单词，
+4.命令替换 $(命令) `命令`。 用命令的输出替代命令本身。
+  进行扩展的时候，Bash先执行命令，并把该命令的标准输出中最后面的换行符删除，用结果取代命令替换。
+  中间的换行符不删除，但是可能在单词拆分时被删除。
+  如果命令替换出现在双引号之间，则其结果不会进行单词拆分和文件名扩展。
+5.算术扩展 $((算术表达式))
+6.进程替换：如果系统支持命名管道夨fifo天 或能够以"/dev/fd"方式来命名打开的文件，则也就支持进程替换。
+  <(命令列表) 在需要得到命令列表的输出时，应该去读取作为参数转递的文件。
+  >(命令列表) 对该文件的写入就为命令列表提供了输入。
+  注意，<或>与左边括号之间不能有任何空格，否则这种结构就会被解释成重定向。
+7.单词拆分：在单词拆分时，shell会扫描参数扩展、命令替换和计算运算的结果，如果它们不在双引号之间进行的。
+  shell会把$IFS中的每个字符都当成分隔符，并按照这些字符把其它扩展的结果拆分成单词。
+  如果$IFS没有设置，或者它的值和默认的<space><tab><newline>完全一样。扩展结果的开头和结尾的<space><tab><newline>会被忽略。
+  如果$IFS为空则不拆分单词
+  1. 明确表示的空参数(""或'')会被保留下来。
+  2. 由没有设置值的参数扩展后得到的未被引用的隐含空参数会被删除
+  3. 如果没有设置值的参数在双引号之间扩展，则结果的空值会被保留
+8.文件名扩展：
+  单词拆分以后，Bash在每个单词中搜索字符*、?、和[，
+  1. 如果找到其中一个，则把这个单词当作一个模式，并把与之匹配的文件名按字母顺序排列来取代它。
+  2. 如果没有找到匹配的文件名，并且禁止了Bash的nullglob选项，则不处理该单词；
+  3. 如果打开了nullglob选项并且没有找到匹配的文件名，这个单词就会被删除。
+  4. 如果打开了failglob选项并且没有找到匹配的文件名，则打印一条错误信息，并且不执行当前命令。
+  5. 如果打开了nocaseglob选项，则匹配时不区分字母字符的大小写。
+  6. 如果一个模式用于生成文件名，则对于文件名开头或紧跟在斜杠后面的"."必须明确匹配，除非打开了Bash的dotglob选项。
+  GLOBIGNORE环境变量：可以用来限制匹配的文件名。
+    1.如果设置了GLOBIGNORE，并且匹配的文件名中又与GLOBIGNORE中的模式匹配的，将会从列表中删除。
+    2.如果设置了GLOBIGNORE，并且它的值不为空，则文件名"."和".."总是被忽略。
+    3.但同时，给GLOBIGNORE设置一个非空的值会让bash的dotglob选项也生效，使得所有以"."开头的文件名也会被匹配。
+     为了像以往一样忽略以"."开头的文件名，可以让".*"成为GLOBIGNORE的模式之一。如果没有设置GLOBIGNORE，则dotglob也会被取消。
+  *  匹配任何字符串，包括空字符串。globstar
+  ?  匹配任意单个字符。
+  [] 匹配方括号中的任一字符。
+     1.如果"["之后的第一个字符是"!"或者"^",这匹配没有出现的任意一字符。
+     2.如果要匹配"-"，可以把它放在方括号中第一个或最后一个位置
+     3.如果要匹配"]"，可以把它放在方括号中的一个位置
+     4.  alnum 匹配所有字母和数字
+         alpha 匹配所有字母
+         ascii 匹配所有(ASCII)字符
+         blank 匹配所有空白符
+         cntrl 匹配所有控制字符(即ASCII中的二十个字符)
+         digit 匹配所有的数字(0-9)
+         graph 匹配所有可显示字符(可打印字符中，空格和退格符不可显示)
+         lower 匹配所有小写字母
+         print 匹配可打印字符(非控制字符都可打印)
+         punct 匹配所有标点符号
+         space 匹配空格
+         upper 匹配所有大写字母
+         word  匹配单词里面的字符(大小写字母)
+         xdigit 匹配所有十六进制数字(0-9和A-F)
+    extglob
+        ?(pattern-list) 匹配0个或者1个pattern-list
+        *(pattern-list) 匹配0个或者多个pattern-list
+        +(pattern-list) 匹配1个或者多个pattern-list
+        @(pattern-list) 匹配1个pattern-list
+        !(pattern-list) 匹配不符合pattern-list模式
+9.引用去除;经过上述扩展以后，对于所有没有被引用的字符'\'、"'"、以及'"'，如果它们不是由上述任何一种扩展产生的，就会被删除。
+重定向:/dev/tcp/主机名/端口号
+       /dev/udp/主机名/端口号
+       要谨慎使用比9大的文件描述符进行重定向，因为它们可能会和Bash内部使用的文件描述符相冲突。
+输入重定向: [n]<单词
+输入重定向会打开单词扩展后所形成的文件名以备读取，并将其作为文件描述符n；如果没有指定n则将其作为标准输入
+输出重定向:  [n]>[|]单词
+输出重定向会打开单词扩展后所形成的文件名以备写入，并将其作为文件描述符n；如果没有指定n则将其作为标准输出
+
+<<[-]单词
+即插即用文本
+单词
+  1. 单词不会进行参数扩展，命令替换，算术扩展，或文件名扩展。
+  2. 如果单词中任一字符被引用，则结束符是单词进行引用去除后的结果，这时不会对即插即用文本进行扩展。
+  3. 如果单词没有被引用，则即插即用文本中的所有行都会进行参数扩展、命令替换、和算术扩展；
+  4. 如果重定向运算符是"<<-"，则输入行和结束符所在行中所有的在行开头的制表符都会被删除。
+文件描述符的拷贝
+  [n]<&单词:用来复制输入描述符；如果单词是一个或多个数字，则文件描述符n就是与这个数字对应的文件描述符拷贝。
+  [n]>&单词:用来复制输出描述符；
+文件描述符的移动
+  [n]<&数字- 把文件描述符数字转移到文件描述符n上；如果没有指定n，则转移到标准输入(文件描述符为0)上。转移到n后，(文件描述符)数字就会被关闭。
+  [n]>&数字- 把文件描述符数字转移到文件描述符n上；如果没有指定n，则转移到标准输出(文件描述符为1)上
+打开文件描述符以备读出和写入
+  [n]<>单词
+  可以打开单词扩展后的文件名以同时准备读取和写入，其文件描述符为n；如果没有指定n，则使用文件描述符0。如果文件不存在，则首先创建它。
+  
+数组：
+1. 数组元素的个数不受限制，也不限制数组的下标或赋值时要连续。
+2. 下表数组使用整数或计算表达式来访问元素，下表从零开始。
+3. 而键值使用任意字符串来访问元素。
+  创建：
+    数组名[下标]=值
+    declare -a 数组名
+    declare -a 数组名[下标]
+    declare -A 数组名
+    数组名=([下标=]值 [下标=]值 ...)
+4. 内部命令declare local readonly都可以指定-a选项来指定下标数组，指定-A选项执行键值数组。
+5. read -a 从标准输入的读取的一组单词赋值给数组。
+
+Control-Z 将使这个进程暂停，将控制权还给 bash
+Control-Y 延时挂起字符将使这个进程在试图从终端读取输入时暂停，将控制权还给 bash.
+
+第1章 重定向
+/dev/fd/fd  如果 fd 是一个合法的整数，文件描述符 fd 将被复制。
+/dev/stdin  文件描述符 0 被复制。
+/dev/stdout 文件描述符 1 被复制。
+/dev/stderr 文件描述符 2 被复制。
+/dev/tcp/host/port  bash 试图建立与相应的socket (套接字) 的 TCP 连接
+/dev/udp/host/port  bash 试图建立与相应的socket (套接字) 的 TCP 连接
+
+重定向输入: [n]<word
+重定向输入使得以 word 扩展结果为名的文件被打开并通过文件描述符 n 读取，如果没有指定 n 那么就作为标准输入(文件描述符为0)读取。
+重定向输出: [n]>word
+重定向输出使得以 word 扩展结果为名的文件被打开并通过文件描述符 n 写入，如果没有指定 n 那么就作为标准输出 (文件描述符为 1)写入。
+noclobber 与 >| # 文件名存在并且是一个普通的文件，重定向将失败。
+添加到重定向后的输出尾部: [n]>>word
+这种方式的输出重定向使得以 word 扩展结果为名的文件被打开并通过文件描述符 n 从尾部添加。
+如果没有指定 n 就使用标准输出(文件描述符 1)。如果文件不存在，它将被创建。
+标准输出和标准错误  重定向输出: 1. &>word 2. >&word 3. >word 2>&1
+
+复制文件描述符: 1. 重定向操作符 [n]<&word 2. [n]>&word
+如果 word 扩展为一个或多个数字，n 代表的文件描述符将成为那个文件描述符的复制。
+如果 word 中的数字并未指定一个被用于读取的文件描述符，将产生一个重定向错误。
+如果 word 扩展为 -, 文件描述符 n 将被关闭。如果没有指定 n，将使用标准输入 (文件描述符 0)。
+
+移动为文件描述符: 1. [n]<&digit- 2. [n]>&digit- 
+将文件描述符 digit 移动为文件描述符 n, 或标准输入 (文件描述符 0)，如果没有指定 n 的话。digit 复制为 n 之后就被关闭了。
+
+打开输入输出：[n]<>word
+使得以 word 扩展结果为名的文件被打开，通过文件描述符 n 进行读写。如果没有指定 n 那么就使用文件描述符0。如果文件不存在，它将被创建。
+ 
+command | tee FILE1 FILE2 接收来自stdin的数据，将副本写入FILE1和FILE2,同时也将副本左后后续命令的stdin
+cmd - 将stdin作为命令参数
+
+[command] < <([command list])       # File Redirection and Process Substitution
+[command] <<< "$([command list])"   # Here-String and Command Substitution
+
+[ $EUID = 0 ] || exit 4                     # 如果EUID不为0，则退出shell
+[ ! -e "$PROC_IPTABLES_NAMES" ] && return 0 # 如果/proc/net/ip_tables不存在，则退出函数
+
+[ "x$IPTABLES_SAVE_COUNTER" = "xyes" ] && OPT="-c" # ${IPTABLES_SAVE_COUNTER:+-c}
+[ -z "${COLUMNS:-}" ] && COLUMNS=80                # if [ -z "${COLUMNS:-}" ]; then COLUMNS=80 fi
+[[ $2 ]] && echo "$2" #  [[]] 的判断 if [[ $2 ]] ; then echo "$2" fi
+
+"<command> && <if_success_run_this_command_too> || true"
+"<command> || <if_not_success_run_this_command_too> || true"
+这里末尾的"|| true"是需要的，它可以保证这个 shell 脚本在不小心使用了"-e"选项而被调用时不会在该行意外地退出。
+
+command ls              # 忽略 alias 直接执行程序或者内建命令 ls
+builtin cd              # 忽略 alias 直接运行内建的 cd 命令
+enable                  # 列出所有 bash 内置命令，或禁止某命令
+help {builtin_command}  # 查看内置命令的帮助(仅限 bash 内置命令)
+eval $script # 对 script 变量中的字符串求值(执行)
+
+ 典型 bashism 语法列表
+-------------------------------|----------------------------------|
+好的：POSIX                    | 应该避免的：bashism              |
+if [ "$foo" = "$bar" ] ; then …|  if [ "$foo" == "$bar" ] ; then …|
+diff -u file.c.orig file.c     |  diff -u file.c{.orig,}          |
+mkdir /foobar /foobaz          |  mkdir /foo{bar,baz}             |
+funcname() { … }               |  function funcname() { … }       |
+八进制格式："\377"             |  十六进制格式："\xff"            |
+-------------------------------|----------------------------------|
+使用 "echo" 命令的时候需要注意以下几个方面，因为根据内置 shell 和外部命令的不同，它的实现也有差别。
+避免使用除"-n"以外的任何命令行选项。
+避免在字符串中使用转义序列，因为根据 shell 不同，计算后的结果也不一样。
+如果你想要在输出字符串中嵌入转义序列，用 "printf" 命令替代 "echo" 命令。
+
+# 用于 shell 脚本的应用程序
+"aptitude search ~E"，列出 必要的 软件包。
+"dpkg -L <package_name> |grep '/man/man.*/'"，列出 <package_name> 软件包所提供的 man 手册。
+
+echo
+-e：打开反斜杠字符的解析，即对\n，\t等字符进行解析，而不视之为两个字符
+-E：关闭反斜杠字符的解析，\n作为两个字符，这是系统缺省模式
+-n：删除最后的换行
+printf
+%b：表示解析字符串的特殊的字符，包括\n等等。
+    例如printf "%s\n" 'hello\nworld'，显示hello\nworld，要将\n作为换行符, 则需要用
+        printf "%b\n" 'hello\nworld'。
+%q：printf "%q\n" "greetings to the world"显示为greetings/ to/ the/ world, 可以作为shell的输入。
+  
+第2章 declare
+type # alias, keyword, function, builtin, or file
+declare(alias declare export local type){
+命令类型
+declare [-aAfFilrtux] [-p] [name[=value] ...]  # l(convert NAMEs to lower) u(convert NAMEs to upper)
+
+type -a declare         -- type -a typeset  # declare是内建命令
+# list
+declare                 -- typeset          # 显示所有变量的值和函数定义
+declare -a              # 查看索引数组
+declare -A              # 查看关联数组
+declare -r              # 查看所有只读变量
+declare -f              -- typeset -f       # 显示所有函数定义
+declare -F              -- typeset -F       # 显示所有函数名称
+declare -p              -- typeset -p       # 显示所有变量的值
+# display
+declare -f func         -- typeset -f func  # 显示指定函数的定义
+declare -p var          -- typeset -p var   # 显示指定变量var的值
+# set
+declare -r name         -- readonly name
+                        -- typeset -r var   # 将变量var声明为只读变量。只读变量不允许修改，也不允许删除。
+declare var=value       -- typeset var=value
+                        -- var=value        # 声明变量并赋值
+declare -i var          -- typeset -i var   # 将变量var定义成整数
+declare -i              # 查看所有整数
+# export
+declare -x name         -- export name
+declare -x name=VALUE   -- export name=VALUE  # 将变量var设置成环境变量，这样在随后的脚本和程序中可以使用。
+declare -x # 查看所有被导出成环境变量的东西
+
+# 在之后就可以直接对表达式求值，结果只能是整数。如果求值失败或者不是整数，就设置为0。
+VAR=6/3; echo $VAR # 6/3
+declare -i VAR; VAR=6/3; echo $VAR # 2 -> 如果变量被声明成整数，可以把表达式直接赋值给它，bash会对它求值。
+declare -i VAR; VAR=error; echo $VAR # 0 -> 如果变量被声明成整数，把一个结果不是整数的表达式赋值给它时，就会变成0.
+VAR=3.14  # 如果变量被声明成整数，把一个小数（浮点数）赋值给它时，也是不行的。因为bash并不内置对浮点数的支持。
+declare +i VAR # 取消变量x的整数类型属性
+declare -p VAR # declare -- VAR="1" ; 从整数类型转换成字符串类型
+declare +[aA] ARRAY_NAME # declare不支持这种方式
+echo $[6/3]    # 2
+echo $((6/3))  # 2
+
+declare -a var          -- typeset -a var   # 将变量var声明为数组变量。
+# 所有变量都不必显式定义就可以用作数组。事实上，在某种意义上，似乎所有变量都是数组，而且赋值给没有下标的变量与赋值给"[0]"相同。
+}
+第3章 export
+export(环境变量){ shell变量=shell私有变量+用户环境变量
+set      显示(设置)shell变量 包括shell私有变量以及用户环境变量
+         设置shell的选项和位置参数；1. 改变shell的特性和位置参数；2. 显示shell的变量名和变量值
+         3. 使用set更改shell特性时，符号"+"和"-"的作用分别是打开和关闭指定的模式。
+         4. set命令不能够定义新的shell变量。如果要定义新的变量，可以使用declare命令以变量名=值的格式进行定义。
+env      显示(设置)用户环境变量；1. 显示系统中已存在的环境变量，以及在定义的环境中执行指令
+         env [OPTION]... [NAME=VALUE]... [COMMAND [ARGS]...]
+export   显示(设置)当前导出成用户变量的shell私有变量            shell私有变量导出的环境变量
+readonly 不能修改；不能删除；
+         可以导出为环境变量，也可以取消导出用户环境变量
+         只读属性支持变量、索引数组和关联数组
+         readonly [-aAf] [name[=value] ...] or readonly -p
+unset    删除已定义的shell变量(包括环境变量)和shell函数
+         unset命令不能够删除具有只读属性的shell变量和环境变量
+         unset [-f] [-v] [name ...]
+declare  显示(设置)变量的特性和值
+local    定义一个本地变量；local [option] 名称[=值] ... option可以是declare支持的选项
+
+shell变量 分 shell私有变量(set)，用户环境变量(env)， shell变量包含用户环境变量，
+export是一种命令工具，通过export把shell私有变量导出作为用户环境变量
+
+export [-fn] [名称[=值] ...] 或 export -p
+export -p          # 打印当前导出的用户环境变量
+export VAR         # 导出用户环境变量VAR
+set -a VAR         # 导出用户环境变量VAR
+export VAR=VALUE   # 设置shell私有变量，并导出用户环境。
+export -n VAR      # 取消导出用户环境变量VAR。
+unset VAR          # 删除shell私有变量VAR(同时删除用户私有环境变量)
+
+env prog= true                      # runs 'true', with prog= in environment
+env ./prog= true                    # runs 'true', with ./prog= in environment
+env -- prog= true                   # runs 'true', with prog= in environment
+env sh -c '\prog= true'             # runs 'prog=' with argument 'true'
+env sh -c 'exec "$@"' sh prog= true # also runs 'prog='
+
+aaa=bbb           # shell变量设定
+set | grep aaa    # aaa=bbb
+env | grep aaa    # 不在env环境变量中
+export | grep aaa # 不在导出环境变量中
+
+export aaa         # 导出aaa shell变量
+set | grep aaa     # aaa=bbb
+env | grep aaa     # aaa=bbb
+export | grep aaa  # declare -x aaa="bbb"
+
+export -n aaa      # 删除导出环境变量
+set | grep aaa     # aaa=bbb
+env | grep aaa     # 不在env环境变量中
+export | grep aaa  # 不在导出环境变量中
+
+unset aaa          # 删除shell变量
+set | grep aaa     # 不在shell变量中
+env | grep aaa     # 不在env环境变量中
+export | grep aaa  # 不在导出环境变量中
+
+readonly aaa=bbb  # 设置只读变量
+export aaa        # 只读变量可以导出
+export -n aaa     # 只读变量可以删除导出
+unset aaa         # cannot unset: readonly variable
+
+readonly bbb=(111 222 333) # 只读数组
+declare -p bbb             # declare -ar bbb='([0]="111" [1]="222" [2]="333")'
+bbb[4]="4444"              # 只读数组不能修改
+bbb+=(4444)                # 只读数组不能修改
+}
+第4章 string
+string(字符串是一等公民){
+字符串是以0结尾的；
+    VAR="a\000bc\000" 
+    echo "${#VAR}"
+    printf "%s\n" ${VAR}
+字符串长度：
+${#VAR}：$VAR的长度
+
+字符串切片：# position,length 不需要'$'取值，既支持变量也支持数值常量。
+    ${VAR:position}：在$VAR中, 从位置$position开始提取子串
+        VAR="language bash"
+        position=1
+        echo ${VAR:position}    # anguage bash
+        echo ${VAR:1}           # anguage bash
+    ${VAR:position:length}：在$VAR中,从位置$position开始提取长度为$length的子串
+        VAR="language bash"
+        position=1
+        length=10
+        echo ${VAR:position:length}  # anguage ba
+        echo ${VAR:1:10}             # anguage ba
+     
+基于模式取子串：# substring需要'$'取值，既支持变量也支持字符串常量。
+    ${VAR#$substring}：从变量$VAR的开头, 删除最短匹配$substring的子串
+    ${VAR##$substring}：从变量$VAR的开头, 删除最长匹配$substring的子串
+        file="/var/log/messages"
+        substring=$'*/' # substring='*/' ; substring="*/" 都可以
+        echo  ${file#$substring}  # var/log/messages
+        echo  ${file#*/}          # var/log/messages
+        echo  ${file##$substring} # messages
+        echo  ${file##*/}         # messages
+        
+    ${VAR%$substring}：从变量$VAR的结尾, 删除最短匹配$substring的子串
+    ${VAR%%$substring}：从变量$VAR的结尾, 删除最长匹配$substring的子串
+        file="var/log/messages"
+        substring=$'/*' # substring='/*' ; substring="/*" 都可以 
+        echo  ${file%$substring}  # var/log
+        echo  ${file%/*}          # var/log
+        echo  ${file%%$substring} # var
+        echo  ${file%%/*}         # var
+    示例：url="http://www.tmall.com:80" 
+        echo ${url##*:}  #  80
+        echo ${url%%:*}  #  http
+    这里的模式是bash支持的模式；即: bash 通配符
+    # 通配符包括* ? [...]。其中，
+    # *匹配任何字符串，包括空字符串 
+    # ?只能匹配单个字符，
+    # [...]能够匹配任意出现在中括号里面的字符或者一类字符集。
+    # [abc] [a-c] [^a-c]or[!a-c]  [[:digit:]]
+
+基于模式查找替换：# substring需要'$'取值，既支持变量也支持字符串常量。
+    ${VAR/$substring/$replacement}：使用$replacement, 来代替第一个匹配的$substring
+    ${VAR//$substring/$replacement}：使用$replacement, 代替所有匹配的$substring
+    VAR="language bash -> bash"
+    substring=bash
+    replacement=shell
+    echo ${VAR/$substring/$replacement}   # language shell -> bash
+    echo ${VAR//$substring/$replacement}  # language shell -> shell
+    echo ${VAR/bash/shell}                # language shell -> bash
+    echo ${VAR//bash/shell}               # language shell -> shell
+    # 模式替换
+    echo ${VAR/b?sh/shell}                # language shell -> bash
+    echo ${VAR//b?sh/shell}               # language shell -> shell
+    echo ${VAR/bash*/shell}               # language shell
+    echo ${VAR//bash*/shell}              # language shell
+    
+    str="1 2 3 4";echo ${str// /}  # 1234
+    str="1 2 3 4";echo ${str// /,} # 1,2,3,4
+    str="1 2 3 4";echo ${str// /+} # 1+2+3+4
+    str="neo netkiller";echo ${str//neo/hello} # hello netkiller
+    
+    # 替换最长匹配$substring的子串为$replacement
+    ${VAR/#$substring/$replacement}：如果$VAR的前缀匹配$substring, 那么就用$replacement来代替匹配到的$substring
+    ${VAR/%$substring/$replacement}：如果$VAR的后缀匹配$substring, 那么就用$replacement来代替匹配到的$substring
+    VAR="language bash -> bash"
+    substring=language
+    replacement=programmer
+    echo ${VAR/#$substring/$replacement} # programmer bash -> bash
+    echo ${VAR/#language/programmer}     # programmer bash -> bash
+    echo ${VAR/#langu*/programmer}       # programmer
+    substring=bash
+    replacement=shell
+    echo ${VAR/%$substring/$replacement} # language bash -> shell
+    echo ${VAR/%bash/shell}              # programmer bash -> bash
+    echo ${VAR/%*bash/shell}             # shell
+    
+基于查找删除：# substring需要'$'取值，既支持变量也支持字符串常量。
+    ${VAR/$substring}：删除第一个匹配的$substring
+    ${VAR//$substring}：删除所有匹配的$substring
+    VAR="language bash -> bash"
+    substring=language
+    echo ${VAR/$substring}              # bash -> bash
+    echo ${VAR/language}                # bash -> bash
+    
+    substring=bash
+    echo ${VAR/$substring}             # language -> bash
+    echo ${VAR/bash}                   # language -> bash
+    echo ${VAR//$substring}            # language ->
+    echo ${VAR//bash}                  # language ->
+    echo ${VAR/bash*}                  # language
+    echo ${VAR//bash*}                 # language
+    
+字符串大小写转换：
+    ${VAR^^}: 把VAR的小写字母转换成大写字母；
+    ${VAR,,}: 把VAR的大写字母转换成小写字母；
+    HI=HellO
+    echo "$HI" # HellO
+    echo ${HI^} # HellO
+    echo ${HI^^} # HELLO
+    echo ${HI,} # hellO
+    echo ${HI,,} # hello
+    echo ${HI~} # hellO
+    echo ${HI~~} #hELLo
+    ^大写，,小写， ~大小写切换
+    重复一次只修改首字母，重复两次则应用于所有字母。
+
+变量赋值：# VALUE需要'$'取值，既支持变量也支持字符串常量。
+    ${VAR:-$VALUE}：如果VAR为空或未设置，返回VALUE；否则，返回VAR值；                    # VAR是否存在都返回 0
+    ${VAR:=$VALUE}：如果VAR为空或未设置，返回VALUE，并将VALUE赋值给VAR；否则，返回VAR值  # VAR是否存在都返回 0
+    
+    ${VAR:+$VALUE}：如果VAR不为空，则返回VALUE; 否则，返回空字串；                  # 当VAR存在的时候 $? == 0; 当VAR不存在 $? == 1
+    ${VAR:?$ERROR_INFO}：如果VAR为空或未设置，那么返回ERROR_INFO；否则，返回VALUE;  # 
+|---------------|------------------------------|--------------------------------------|
+|参数表达式形式 | 如果 var 变量已设置那么值为  | 如果 var 变量没有被设置那么值为      |
+|${var:-string} | "$var"                       | "string"                             |
+|${var:+string} | "string"                     | "null"                               |
+|${var:=string} | "$var"                       | "string" (并运行 "var=string")       |
+|${var:?string} | "$var"                       | 在 stderr 中显示 "string" (出错退出) |
+|---------------|------------------------------|--------------------------------------|
+
+    [[ "${__usage+x}" ]] && unset -v __usage # 变量存在就删除存在变量
+*(patternlist)            # 零次或者多次匹配
++(patternlist)            # 一次或者多次匹配
+?(patternlist)            # 零次或者一次匹配
+@(patternlist)            # 单词匹配
+!(patternlist) # 不匹配
+}
+var=6
+val=3
+echo $[$var/$val]   # echo $[var/val]   都可以
+echo $(($var/$val)) # echo $((var/val)) 都可以
+
+(( [arithmetic expression] ))   # exit status
+$(( [arithmetic expression] ))  # arithmetic value
+第5章 array
+array(){
+1. 数组元素的个数不受限制，也不限制数组的下标或赋值时要连续。 # 元素
+2. 下标数组使用整数或算术表达式来访问元素，下标从零开始。     # 下标
+3. 而关联数组使用任意字符串来访问元素。                       # 
+创建数组：
+  数组名[下标]=值          # array_assign[1]='help'   # declare -a array_assign='([1]="help")'
+  declare -a 数组名        # declare -a array_declare # declare -a array_declare='()'
+  declare -a ARRAY_NAME
+  declare -a 数组名[下标]  # declare -a array_declare_index[10] 下标不标明数组大小 # declare -a array_declare_index='()'
+  ARRAY_NAME=()            # declare -a ARRAY_NAME='()'
+  
+  declare -A 数组名        #
+  declare -A ARRAY_NAME：关联数组(bash version > 4.0)
+  
+  数组名=([下标=]值 [下标=]值 ...) # array_init=(one two three four)  空格是bash默认分隔符； 对下标数组，不必要指定下标
+  下标数组： declare -a array # 下标数组不支持负数作为下标
+  array["-1"]="help" # bad array subscript 下标不支持负数
+  array[-1]="help"   # bad array subscript 下标不支持负数
+  关联数组： declare -A array # 关联数组支持负数作为关联索引值
+  array["-1"]="help" # declare -A array='([-1]="help" )'
+  array[-1]="help"   # declare -A array='([-1]="help" )'
+  
+  ARRAY_NAME=([0]="VALUE" [3]="VALUE") 
+  declare -p ARRAY_NAME # declare -a ARRAY_NAME='([0]="VALUE" [3]="VALUE")' 
+  1. declare -p ARRAY_NAME的输出可以看做此数组的标准定义
+  2. 从declare -a ARRAY_NAME=右侧可以看出：右边是一个符合数组要求格式字符串
+  
+数组元素赋值：
+  1. 一次赋值一个元素：
+      ARRAY_NAME[INDEX]=VALUE
+        weekdays[0]="sun"
+        weekdays[1]="mon"
+        arr[0]=Hello 
+        arr[1]=World
+        names[5]="Big John"
+        names[$n + 1]="Long John"
+     declare -p weekdays; 
+  2. 一次赋值全部元素： # 在括号内，使用空格作为数组元素分隔符，而不是逗号。
+      ARRAY_NAME=("VALUE1" "VALUE2" "VALUE3" ...)
+      myarray=( foo bar quux )   # 3个元素
+      myarray=( "foo bar" quux ) # 2个元素
+      myfiles=( *.txt )    # 模式匹配 epoll1.txt epoll.txt flashing.txt rtud.txt
+      myfiles+=( *.html )  # 数组加运算 epoll1.txt epoll.txt flashing.txt rtud.txt index.html
+  3. 只赋值特定元素：
+      ARRAY_NAME=([0]="VALUE" [3]="VALUE") # declare -a ARRAY_NAME='([0]="VALUE" [3]="VALUE")'
+      ARRAY_NAME[1]=                       # declare -a ARRAY_NAME='([0]="VALUE" [1]="" [3]="VALUE")'
+      ARRAY_NAME[2]=""                     # declare -a ARRAY_NAME='([0]="VALUE" [1]="" [2]="" [3]="VALUE")'
+      echo "${#ARRAY_NAME[@]}"             # 4
+      
+      declare -A homedirs=( ["Peter"]=~pete ["Johan"]=~jo ["Robert"]=~rob )  # 关联数值必须先声明再使用
+      declare -A homedirs='([Robert]="~rob" [Johan]="~jo" [Peter]="~pete" )' # declare 返回内容
+      homedirs['Smith']=~smith
+      declare -A homedirs='([Robert]="~rob" [Johan]="~jo" [Smith]="~smith" [Peter]="~pete" )' # declare 返回内容
+      homedirs['wangfuli']=
+      declare -A homedirs='([Robert]="~rob" [Johan]="~jo" [Smith]="~smith" [Peter]="~pete" [wangfuli]="" )' # declare 返回内容
+      echo "${#homedirs[@]}"             # 5
+      
+      declare -a array=('1:one' '2:two' '3:three');
+  4. read -a ARRAY
+     IFS=, read -ra names <<< "John,Lucas,Smith,Yolanda" # declare -a names='([0]="John" [1]="Lucas" [2]="Smith" [3]="Yolanda")'
+     read -ra myarray
+  5. array=('1:one' '2:two' '3:three') # 从字符串到数组
+      arr=(${array[*]})   # 以空格分割的数组项会被分割成多个数组项 echo "${arr[0]}" # '1:one'
+      arr=(${array[@]})   # 以空格分割的数组项会被分割成多个数组项 echo "${arr[0]}" # '1:one'
+      arr=("${array[*]}") # 所有数组元素成为一个数组项 echo "${arr[0]}" # '1:one 2:two 3:three'
+      arr=("${array[@]}") # 以空格分割的数组项会被分割成多个数组项 echo "${arr[0]}" # '1:one'
+      
+      ARRAY_NAME=([0]="VALUE" [3]="VALUE")
+      ARRAY_ANOTHER=ARRAY_NAME # declare -- ARRAY_ANOTHER="ARRAY_NAME"  即 ARRAY_ANOTHER为字符串
+      text='John Lucas Smith Yolanda' # declare -- text="John Lucas Smith Yolanda"
+      array=($text)       # 按空格分隔 text 成数组，并赋值给变量 # declare -a array='([0]="John" [1]="Lucas" [2]="Smith" [3]="Yolanda")'
+      IFS="/" array=($text) # 按斜杆分隔字符串 text 成数组，并赋值给变量
+      
+      array=({23..32} {49,50} {81..92}) # 扩展优先执行 declare -a array='([0]="23" [1]="24" [2]="25" ...)'
+  6.1 拆分字符串并转换为数组
+      QUEUES="example|sss"
+      STRING_NAME=$(echo $QUEUES | tr '|' ' ')     # 字符串 declare -p STRING_NAME # declare -- STRING_NAME="example sss"
+      ARRAY_NAME=( $(echo $QUEUES | tr '|' ' ') )  # 数组   declare -p ARRAY_NAME  # declare -a ARRAY_NAME='([0]="example" [1]="sss")'
+      echo "${STRING_NAME[0]}"   # example sss
+      echo "${ARRAY_NAME[0]}"    # example
+      for caption in $(echo $QUEUES | tr '|' ' '); do # 这里不能使用 ( $(echo $QUEUES | tr '|' ' ') )
+        echo $caption
+      done
+  6.2 数组转为字符串
+      ids=(1 2 3 4); lst=$( IFS='|'; echo "${ids[*]}" ); echo $lst  # 1|2|3|4
+      array=(1 2 3 4); string="${array[@]}"; echo ${string// /,}    # 1,2,3,4
+引用数组元素：${ARRAY_NAME[INDEX]}
+    注意：省略[INDEX]表示引用下标为0的元素；
+数组长度：${#ARRAY_NAME[*]}, 
+          ${#ARRAY_NAME[@]}
+引用数组中的元素：
+    所有元素：${ARRAY_NAME[@]}  # 打印数组所有值
+              ${ARRAY_NAME[*]}  # 打印数组所有值
+              ${!ARRAY_NAME[@]} # 打印数组索引号。
+              ${!ARRAY_NAME[*]} # 打印数组索引号。
+    ARRAY_NAME=(one two three four)
+    echo "${ARRAY_NAME[@]}"   # one two three four
+    echo "${ARRAY_NAME[*]}"   # one two three four
+    echo "${!ARRAY_NAME[@]}"  # 0 1 2 3
+    echo "${!ARRAY_NAME[*]}"  # 0 1 2 3
+
+    数组切片：${ARRAY_NAME[@]:offset:number}
+        offset: 要跳过的元素个数；
+        number: 要取出的元素个数；取出偏移量之后的所有元素：${ARRAY_NAME:offset}
+    直接通过 ${数组名[@或*]:起始位置:长度} 切片原先数组，返回是字符串，中间用"空格"分开，因此如果加上"()"，将得到切片数组，
+    ARRAY_NAME=(one two three four)
+    postion=1
+    length=2
+    echo "${ARRAY_NAME[@]:1}"               # two three four
+    echo "${ARRAY_NAME[*]:1}"               # two three four
+    echo "${ARRAY_NAME[@]:1:2}"             # two three
+    echo "${ARRAY_NAME[*]:1:2}"             # two thredd
+    echo "${ARRAY_NAME[@]:position}"        # two three four
+    echo "${ARRAY_NAME[*]:position}"        # two three four
+    echo "${ARRAY_NAME[@]:position:length}" # two three
+    echo "${ARRAY_NAME[*]:position:length}" # two three
+    
+    ${数组名[@或*]/查找字符/替换字符} 该操作不会改变原先数组内容
+    ARRAY_NAME=(1 2 3 4 5)
+    echo ${ARRAY_NAME[@]/3/100}             # 1 2 100 4 5
+    ARRAY_NAME=(${ARRAY_NAME[@]/3/100}) 
+    echo ${ARRAY_NAME[@]}                   # 1 2 100 4 5
+向数组中追加元素：
+    ARRAY_NAME=([0]="VALUE" [3]="VALUE")
+    ARRAY_NAME[${#ARRAY_NAME[@]}]='wangfuli'  # declare -a ARRAY_NAME='([0]="wangfuli" [2]="wangfuli" [3]="VALUE")'
+    ARRAY_NAME[${#ARRAY_NAME[@]}]='wangwenli' # declare -a ARRAY_NAME='([0]="VALUE" [2]="wangfuli" [3]="wangwenli")'
+    
+    ARRAY_NAME=([0]="VALUE" [3]="VALUE")
+    ARRAY_NAME+=('wangfuli')  # declare -a ARRAY_NAME='([0]="VALUE" [3]="VALUE" [4]="wangfuli")'
+    ARRAY_NAME+=('wangwenli') # declare -a ARRAY_NAME='([0]="VALUE" [3]="VALUE" [4]="wangfuli" [5]="wangwenli")'
+    
+删除数组中的某元素：
+    unset ARRAY_NAME[INDEX]
+    
+    ARRAY_NAME=([0]="VALUE" [3]="VALUE")
+    unset ARRAY_NAME[0]  # declare -a ARRAY_NAME='([3]="VALUE")'
+    unset ARRAY_NAME[1]  # declare -a ARRAY_NAME='([3]="VALUE")'
+    unset ARRAY_NAME[3]  # declare -a ARRAY_NAME='()'
+删除数组：
+    unset ARRAY_NAME
+
+    ARRAY_NAME=([0]="VALUE" [3]="VALUE")
+    unset ARRAY_NAME  # declare: ARRAY_NAME: not found
+
+练习：
+declare -a names
+names=Jack
+echo ${names[0]} # Jack
+names[1]=Bone
+echo ${names[1]} # Bone
+echo ${names}    # Jack
+echo ${names[*]} # Jack Bone
+echo ${#names}   # 4
+declare -a names='([0]="Jack" [1]="Bone")'
+
+b="abc def ghi"; a=($b)    # 字符串转换为数组
+array=( $(ls) )            # 把目录列表变为数组 更好实现为 array=( * ) 
+
+echo "${names[5]}", echo "${names[n + 1]}"
+echo "${names[@]}"
+cp "${myfiles[@]}" /destinationdir/
+rm "./${myfiles[@]}"
+(IFS=,; echo "${names[*]}")
+# 格式必须是"${myfiles[@]}";   file引用最好是"${file}"  使用"$file" 也好。
+for file in "${myfiles[@]}"; do read -p "Delete $file? " && [[ $REPLY = y ]] && rm "$file"; done
+names=(John Pete Robert); echo "${names[@]/#/Long }"
+names=(John Pete Robert); echo "${names[@]:start:length}"; echo "${names[@]:1:2}"
+printf '%s\n' "${names[@]}"
+for name in "${!homedirs[@]}"; do echo "$name lives in ${homedirs[$name]}"; done
+printf '%s\n' "${#names[@]}"
+
+# array截取和替换
+array=(1 2 3 4 5 6)
+array0=${array[*]:2:2}   # 从数组全部元素中第2个元素向后截取2个元素出来（即3 4）
+array1=${array[*]/5/6}   # 将数组中的5替换称6
+
+# 数组支持模式匹配
+array=(one two three foue five)
+array1=${array[*]#*o}   # 从左非贪婪匹配并删除所有数组变量中匹配内容 ne three ue five
+array2=${array[*]##*o}  # 从左贪婪匹配并删除所有数组变量中匹配的内容 ne three ue five
+array3=${array[*]%o}    # 从右非贪婪匹配并删除所有数组变量中匹配内容 one tw three foue five
+array4=${array[*]%%o}   # 从右贪婪匹配并删除所有数组变量中匹配内容   one tw three foue five
+}
+
+keyword(括号){
+()                            # 命令组合表达式 (表达式)
+=$()                          # 命令替换       $(命令)
+=()                           # 数组赋值       ARRAY=(one two three four)
+>(命令列表) <(命令列表)       # 进程替换       如果系统支持命名管道(fifo)或能够以"/dev/fd"方式来命名打开的文件，则也就支持进程替换。
+$(())                         # 计算扩展       $((表达式))
+for (( exp1; exp2; exp3 ));   # for((表达式1;表达式2;表达式3));do命令块;done
+func()                        # 函数定义       func(){ echo "hello world" }
+}
+keyword(大括号){
+{}           # 命令组合表达式 {表达式}
+a{d,c,b}e    # 大括号扩展 ade ace abe
+{x..y[..增量]} # 大括号扩展 
+}
+第6章 function
+function(){
+function: 函数
+过程式编程：代码重用
+模块化编程
+结构化编程
+
+语法一：
+    function fun_name {
+        函数体
+    }
+语法二：
+    fun_name() {
+        函数体
+    }
+    
+调用：函数只有被调用才会执行；
+    调用：给定函数名
+        函数名出现的地方，会被自动替换为函数代码；
+        
+    函数的生命周期：被调用时创建，返回时终止；
+        return命令返回自定义状态结果；
+            0：成功
+            1-255：失败
+            
+函数返回值：
+    函数的执行结果返回值：
+        1. 使用echo或print命令进行输出；
+        2. 函数体中调用命令的执行结果；
+    函数的退出状态码：
+        1. 默认取决于函数体中执行的最后一条命令的退出状态码；
+        2. 自定义退出状态码：
+            return CODE
+            
+函数接收参数：
+    传递参数给函数：调用函数时，在函数名后面以空白分隔给定参数列表即可；
+        例如：fun_name arg1 arg2 ...
+    在函数体中，可以使用$1, $2, ...引用这些参数；还可以引用$@, $*, $#变量；
+变量作用域：
+    本地变量：当前shell进程，为了执行脚本会启动专用的shell进程；因此，本地变量的作用范围是当前shell脚本程序文件；
+    局部变量：函数的生命周期，函数结束时变量被自动销毁；
+        local VNAME=VALUE
+        可见作用域: 函数体，以及函数体中调用的其它函数；
+函数递归：
+    函数直接或间接调用函数自身；
+}
+myfunc() {
+  # $1 代表第一个参数，$N 代表第 N 个参数
+  # $# 代表参数个数
+  # $0 代表被调用者自身的名字
+  # $@ 代表所有参数，类型是个数组，想传递所有参数给其他命令用 cmd "$@" 
+  # $* 空格链接起来的所有参数，类型是字符串
+  {shell commands ...}
+  myfunc                    # 调用函数 myfunc 
+  myfunc arg1 arg2 arg3     # 带参数的函数调用
+  myfunc "$@"               # 将所有参数传递给函数
+  shift # 参数左移
+  
+  unset -f myfunc           # 删除函数
+  declare -f # 列出函数定义
+}
+# 通过eval 进行值返回值 --- 全局变量
+############################ eval #####################
+a() { 
+var="$1"
+echo "$var"                   # arg      # value_arg
+eval "$var=change"
+return 0
+}
+arg='value_arg'               # declare -- arg="value_arg"
+declare -p arg
+a arg
+echo "arg=$arg"               # declare -- arg="change"
+declare -p arg
+echo "--------------"
+arg='value_arg'
+a "$arg"
+echo "arg=$arg"               # arg=value_arg
+echo "value_arg=$value_arg"   # value_arg=change
+declare -p arg                # declare -- arg="value_arg"
+declare -p value_arg          # declare -- value_arg="change"
+
+# 通过hook 进行值返回值 ---- 环境变量
+############################ export #####################
+a() { 
+local hook="${1}"
+export "PI_STACK_LIST=${PI_STACK_LIST:+$PI_STACK_LIST }$hook"
+export "$hook=help"
+echo "$hook ++++ $PI_STACK_LIST"
+return 0
+}
+arg='value_arg'
+a arg
+echo "$arg" # help
+env | grep arg
+
+第7章 IFS
+IFS(set){
+oIFS=$IFS
+IFS=":"
+set -- $tuple; uname="$1"; gname="$2" #通过空格或其他分隔符生成变量
+IFS="="
+set -- $uname; uname="$1"; uid="$2"
+set -- $gname; gname="$1"; gid="$2"
+IFS="$oIFS"
+}
+set(){
+1. set 设置变量
+set -- $(echo aa bb cc)
+echo "$1 $2 $3" # aa bb cc
+2. unset 变量销毁
+unset logfile
+3. 设置变量默认值
+logfile=${logfile:-/tmp/test.log}
+
+set +H
+echo "Hello World!" # Hello World!
+set -H
+echo "Hello World!" # -bash: !: event not found
+echo Hello World!   #  Hello World!
+echo 'Hello World!' #  Hello World!
+
+}
+第8章 case
+case(){
+case 变量引用 in    case $BOOLEAN in                 case "$1" in
+    pattern)        [yY][eE][sS])                            start)
+        分支                echo 'Thanks' $BOOLEAN               start
+        ;;                  ;;                                   ;;
+    pattern)            [yY]|[nN])                           stop)
+        分支                echo 'Thanks' $BOOLEAN               stop
+        ;;                  ;;                                   ;;
+    ...                                              
+    *)                    *)                                 *)
+        默认分支              exit 1                             echo $"Usage: $0 {start|stop}"
+        exit n                ;;                                 exit 1
+esac                   esac                          esac
+}
+第9章 while
+while(){
+while CONDITION; do
+    循环体
+done
+
+CONDITION：循环控制条件，进入循环之前，先做一次判断；每一次循环之后会再次判断；
+    条件为"true"，则执行一次循环；直到条件测试状态为false终止；
+    因此，CONDITION一般应该有循环控制变量，而此变量的值在循环体中不断被修正；
+
+while循环的特殊用法(遍历文件的每一行)：
+while read line; do
+循环体
+done < /PATH/TO/SOMEFILE
+
+依次读取/PATH/TO/SOMEFILE文件中的每一行，并将行赋值给变量line；
+示例：找出ID号为偶数的所有用户，显示其用户名，ID以及shell；
+#!/bin/bash
+#
+while read line; do
+    id=$(echo $line | awk -F: '{print $3}')
+    if [ $[$id%2] -eq 0 ]; then
+        echo $line | awk -F: '{print $1,$3,$7}'
+    fi
+done < /etc/passwd
+
+echo "abc xyz" | while read line ; do ... done  # 管道 
+# 使得while语句在子shell中执行，这意味着while语句内部设置的变量、数组、函数等在循环外部都不再生效。
+while read line ; do ... done <<< "abc xyz"     # 字符串
+while read line ; do  ... done </path/filename  # 文件
+while read var ; do  ... done < <(cmd_list)     # 进程替换
+exec <filename                                  # 改变标准输入
+while read var ; do ... done                    # 
+}
+第10章 for
+for(){
+for循环语法：
+for VARIABLE in list; do
+循环体
+done
+
+执行机制：
+    依次将列表中的元素赋值给VARIABLE；
+    每次赋值后即执行一次循环体；
+    直到列表中的元素耗尽，循环结束；
+    
+seq - print a sequence of numbers    
+    seq [OPTION]... LAST
+    seq [OPTION]... FIRST LAST
+    seq [OPTION]... FIRST INCREMENT LAST
+
+列表生成方式：
+    1. 直接给出列表：
+        for VARIABLE in item1 item2 item3 ...; do
+            ...
+        done
+        
+    2. 整数列表：
+        {start..end}
+        $(seq FIRST INCREMENT LAST)
+        
+    3. glob：
+        /etc/profile.d/*.sh
+        
+    4. 返回列表的命令：
+        $(COMMAND)
+        for VARIABALE in $(ls /etc); do
+            ...
+        done
+        
+    5. 变量引用
+        $@, $*, ...
+
+for循环的特殊格式：
+for ((控制变量初始化；条件判断表达式；控制变量的修正表达式)); do
+循环体
+done
+
+控制变量初始化：仅在运行到循环代码段时，执行一次；
+控制变量的修正表达式：每轮循环结束会先进行控制变量修正运算，而后再做条件判断；
+
+示例：求1-100之间的正整数之和；
+
+#!/bin/bash
+
+declare -i sum=0
+
+for ((i=1;i<=100;i++)); do
+let sum+=$i
+done
+echo "Sum is: $sum"
+}
+第10章 read
+read(){
+read [option ...] [name ...]
+-p prompt
+-t timeout
+
+bash -n /PATH/TO/SCRIPT_FILE
+脚本语法检查
+bash -x /PATH/TO/SCRIPT_FILE
+脚本调试执行
+
+1. 使用read命令读取字符串到变量中。但是，如果有反斜杠，将起到转义的作用。\\表示一个\号，\<newline>表示续行，\<char>代表<char>本身。
+read VAR              read -p <prompt> VAR
+read -r VAR           read -p <prompt> -r VAR          # 读取一行文本，但是取消反斜杠的转义作用。
+read -s PASSWORD      read -p <prompt> -s PASSWORD     # 读取密码（输入的字符不回显）
+read -n <nchars> VAR  read -p <prompt> -n <nchars> VAR # 读取指定数量字符
+read -t <seconds> VAR read -p <prompt> -t <seconds> VAR  # 在指定时间内读取
+read VAR <file.txt # 对于read命令，可以指定-r参数，避免\转义。
+read -r VAR <file.txt # { read -r LINE1; read -r LINE2; read -r LINE3; } <input.txt
+
+read ipaddr port <<< $(echo www.netkiller.cn 80)
+echo $ipaddr 
+echo $port
+示例：
+#!/bin/bash
+# version: 0.0.1
+# author: changhong
+# description: ...
+
+read -t 5 -p "enter a disk special file: " dev
+[ -z "$dev" ] && echo "please input dev name" && exit 1
+
+if fdisk -l | grep $dev &> /dev/null; then
+    fdisk -l | grep $dev
+    exit 0
+else
+    echo "wrong disk dev."
+    exit 2
+fi
+}
+mapfile(readarray){
+在shell中，内建（builtin）命令readarray和mapfile用法相同，格式如下：
+readarray [-n count] [-O origin] [-s count] [-t] [-u fd] [-C callback] [-c quantum] [array] 
+mapfile   [-n count] [-O origin] [-s count] [-t] [-u fd] [-C callback] [-c quantum] [array]
+readarray命令用于从标准输入或选项“-u”指定的文件描述符fd中读取文本行，然后赋值给索引（下标）数组array，如果不指定数组array，则使用默认的数组名MAPFILE。
+
+下面解释readarray命令中各选项的作用。
+
+"-n count"：复制最多count行，如果count为0，则复制所有的行。
+"-O origin"：从下标位置origin开始对数组赋值，默认为0。
+"-s count"：忽略开始读取的count行。
+"-t"：删除文本行结尾的换行符。
+"-u fd"：从文件描述符fd中读取文本行。
+"-C callback"：每当读取选项"c"指定的quantum行时（默认为5000行），就执行一次回调callback。
+}
+第11章 test
+test(){
+组合测试条件：
+    逻辑运算：
+        第一种方式：
+            COMMAND1 && COMMAND2
+                [ -e file ] && [ -r file ]
+            COMMAND1 || COMMAND2
+            ! COMMAND
+            
+        第二种方式:
+            EXPRESSION1 -a EXPRESSION2
+                [ -e file -a -r file ]
+            EXPRESSION1 -o EXPRESSION2
+            ! EXPRESSION
+            
+            必须使用测试命令进行：
+                test
+                [ EXPRESSION ]
+
+bash自定义退出状态码：
+exit [n]：自定义退出状态码；
+注意：脚本中一旦遇到exit命令，脚本立即终止；终止退出后状态取决于exit后面的数字n.
+
+注意：如果未给脚本指定退出状态码，整个脚本的退出状态码取决于脚本中执行的最后一条命令的状态码；
+}
+第12章 start
+config(){
+按生效范围划分，存在两类：
+    全局配置：
+        /etc/profile
+            /etc/profile.d/*.sh
+        /etc/bashrc
+    个人配置：
+        ~/.bash_profile
+        ~/.bashrc
+        
+按功能划分，存在两类：
+    profile类：为交互式登录的shell提供配置
+        全局：/etc/profile, /etc/profile.d/*.sh
+        个人：~/.bash_profile
+        功用：
+            1. 用于定义环境变量；
+            2. 运行命令或脚本；
+            
+    bashrc类：为非交互式登录的shell提供配置
+        全局：/etc/bashrc
+        个人：~/.bashrc
+        功用：
+            1. 定义命令别名；
+            2. 定义本地变量；
+            
+shell登录：
+    交互式登录：
+        直接通过终端输入账号密码登录；
+        使用"su - username"或"su -l username"切换用户；
+        /etc/profile --> /etc/profile.d/*.sh --> ~/.bash_profile -->~/.bashrc --> /etc/bashrc
+        
+    非交互式登录：
+        su username；
+        图形界面下打开的终端；
+        执行脚本；
+        ~/.bashrc --> /etc/bashrc --> /etc/profile.d/*.sh
+        
+配置文件生效的方式：
+    1. 重新启动shell进程；
+    2. 使用source或.命令读取配置文件；
+}
+第13章 type
+type(){
+变量类型：
+    数据存储格式，空间大小，参与运算种类；
+    
+    字符型：
+    数值型：
+    
+    强类型：定义变量时必须指定类型，参与运算必须符合类型要求；调用未声明变量会产生错误；
+    弱类型：无须指定类型，默认为字符型；参与运算会自动进行隐式类型转换；变量无须事先定义，可直接调用；
+    
+变量种类：
+    本地变量：生效范围为当前shell进程；
+    环境变量：生效范围为当前shell进程及其子shell进程；
+        declare -x variable; export variable
+    局部变量：生效范围为当前shell进程中某代码片段
+    位置变量：$1, $2, ...来表示，用于让脚本调用的参数传递
+    特殊变量：$?, $0(表示命令本身)
+    
+本地变量：
+    变量赋值：name='value'
+        可以使用引用：
+            value：
+                1. 可以是直接字符串：name="username"
+                2. 变量引用：name="$username"
+                3. 命令引用：name=`command`,name=$(command)
+    变量引用：${name}, $name
+        ""：弱引用，其中的变量引用会被替换变量值；
+        ''：强引用，其中的变量引用不会被替换变量值，而保持原字符串；
+    显示已定义的所有变量：
+        set
+    撤销变量：
+        unset name
+        
+环境变量：
+    变量声明，赋值：
+        export name=VALUE
+        declare -x name=VALUE
+    变量引用：${name}, $name
+    显示已定义的环境变量：
+        export
+        env
+        print env
+    撤销变量：
+        unset name
+    bash有许多内建的环境变量：
+        PATH,SHELL,UID,HISTSIZE,HOME,PWD,PS1
+        
+变量命名规则：
+    1. 不能使用程序中的保留字：if, for, while, ...
+    2. 只能使用数字，字母及下划线，且不能以数字开头；
+    3. 见名知义；
+        
+只读变量：
+    readonly name
+    declare -r name 
+    
+位置变量：
+    在脚本代码中调用命令行参数：
+        $1, $2, ...：对应于参数1，参数2
+            shift [n]
+            
+        $0：命名本身；
+        
+        $*：命令行所有参数；
+        $@：命令行所有参数；
+        $#：命令行参数个数；
+
+type命令用来显示指定命令的类型。一个命令的类型可以是如下之一
+    alias 别名
+    keyword 关键字，Shell保留字
+    function 函数，Shell函数
+    builtin 内建命令，Shell内建命令
+    file 文件，磁盘文件，外部命令
+    unfound 没有找到
+    
+type -a type # type is a shell builtin     <== builtin就是指内建命令
+type -a pwd  # pwd is a shell builtin      pwd is /bin/pwd           <== 此乃外部命令
+type -a ls   # ls is aliased to `ls --color=tty'     <== 此乃别名
+type -a for  # for is a shell keyword           <== 此乃Shell关键字
+
+type命令的基本使用方式就是直接跟上命令名字。
+    type -a可以显示所有可能的类型，比如有些命令如pwd是shell内建命令，也可以是外部命令。
+    type -p只返回外部命令的信息，相当于which命令。
+    type -f只返回shell函数的信息。
+    type -t 只返回指定类型的信息。
+}
+第14章 argument
+argument( shell 参数列表){
+变量名  描述
+$0      表示脚本的名字
+$1--$9  表示脚本的第一到九个参数
+${10}   表示脚本的第十个参数
+$#      表示参数的个数
+$*,$@   表示所有的参数，有双引号时除外，"$*"表示赋值到一个变量，"$@"表示赋值到多个。
+"$*"    "$1 $2 $3 $4 … "
+"$@"    "$1" "$2" "$3" "$4" …
+$?      表示Shell命令的返回值
+$$      表示当前Shell的pid
+$-      表示当前Shell的命令行选项
+$!      最后一个放入后台作业的PID值
+
+$_       mkdir -p /foo/bar && mv myfile "$_".
+$!       foo ./bar & pid=$!; sleep 10; kill "$pid"; wait "$pid"
+}
+第15章 NOP
+NOP(){
+true (or :)
+false
+}
+第16章 Loops
+Loops(){
+for [name] in [words] 
+# "for x in foo1 foo2 … ; do command ; done"，该循环会将 "foo1 foo2 …" 赋予变量 "x" 并执行 "command"。
+for (( [arithmetic expression]; [arithmetic expression]; [arithmetic expression] )) # POSIX 不支持
+while [command list]
+# "while condition ; do command ; done"，当 "condition" 为真时，会重复执行 "command"。
+until [command list]
+# "until condition ; do command ; done"，当 "condition" 为假时，会重复执行 "command"。
+select [name] in [words] # POSIX 不支持
+
+"break" 可以用来退出循环。
+"continue" 可以用来重新开始下一次循环。
+
+for file in *.mp3; do openssl md5 "$file"; done > mysongs.md5
+for (( i = 0; i < 50; i++ )); do printf "%02d," "$i"; done
+while read _ line; do echo "$line"; done < file
+until myserver; do echo "My Server crashed with exit code: $?; restarting it in 2 seconds .."; sleep 2; done
+select fruit in Apple Pear Grape Banana Strawberry; do (( credit -= 2, health += 5 )); echo "You purchased some $fruit.  Enjoy!"; done
+}
+第17章 hash
+hash(){
+hash 命令：用来显示和清除哈希表，执行命令的时候，系统将先查询哈希表。
+    当你输入命令，首先在hash表中寻找，如果不存在，才会利用$PATH环境变量指定的路径寻找命令，然后加以执行。
+同时也会将其放入到hash table 中，当下一次执行同样的命令时就不会再通过$PATH寻找。以此提高命令的执行效率。
+
+hash        # 显示哈希表中命令使用频率
+hash -l     # 显示哈希表
+hash -t git # 显示命令的完整路径
+hash -p /home/www/deployment/run run # 向哈希表中增加内容
+# 命令等同于
+PATH=$PATH:$HOME/www/deployment
+hash -r # 删除哈希表内容
+}
+第18章 ulimit
+ulimit(){
+如果系统支持，ulimit命令能够控制shell中的有效资源。选项"-H"、"-S"分别指硬限制、软限制，
+硬限制设置好之后不能由非root用户来增加其值，软限制则可能增加到硬限制的值，
+这两个选项都不指定时会同时设置它们的值。参数limit可以为数字，也可以是三个特殊的字符串，hard、soft和unlimited，不设置limit时显示当前软限制值，此时除非设置了"-H"才显示硬限制值。
+下面是ulimit命令其它选项的含义。
+"-a"：显示当前所有的限制。
+"-b"：套接字socket缓冲的最大长度。
+"-c"：可创建的core文件的最大个数。
+"-d"：一个进程的数据段的最大长度。
+"-e"：调度优先级即nice的最大值。
+"-f"：shell及其子进程写文件时的最大长度。
+"-i"：等待的信号的最大个数。
+"-l"：锁在内存中最大长度。
+"-m"：常驻内存的最大值（许多系统不支持这个限制）。
+"-n"：打开的文件描述符的最大个数（许多系统禁止设置这个限制）。
+"-p"：块block大小为512字节的管道长度。
+"-q"：POSIX消息队列的最大字节数。
+"-r"：实时调度的最大优先级。
+"-s"：堆栈stack的最大长度。
+"-t"：累计CPU时间（秒）的最大值。
+"-u"：单个用户可以拥有的进程的最大个数。
+"-v"：shell可用的虚拟内存的最大值。
+"-x"：文件锁的最大个数。
+"-T"：最大线程数。
+}
+第19章 Bash的启动
+bash [长选项] [-ir] [-abefhkmnptuvxdBCDHP] [-o选项] [-Oshopt 选项] [参数...]
+bash [长选项] [-abefhkmnptuvxdBCDHP]       [-o选项] [-Oshopt 选项] -c string [参数...]
+bash [长选项] -s [-abefhkmnptuvxdBCDHP]    [-o选项] [-Oshopt 选项] [参数...]
+要想正确解析命令行，多字符必须出现在单字符选项的前面。
+--debugger 在shell启动前准备调试器分析。打开扩展的调试模式和shell函数的跟踪。
+--dump-po-strings 在标准输出中打印"$"后面的双引用字符串。除了输出的格式，其它和"-D"选项是等价的。
+--dump-strings 和"-D"选项等价。
+--help 在标准输出中打印使用帮助后成功退出。
+--init-file文件名
+--rcfile文件名 在交互式的shell中执行文件名(而不是~/.bashrc天 中的命令。
+--login 和"-l"选项等价。
+--noediting 当shell交互式运行时，不使用GNU ReadLine库来读取命令行。
+--noprofile 当Bash作为登录shell启动时，不加载系统或个人的初始化文件/etc/profile、~/.bashprofile、~/.bashlogin、~/.profile。
+--norc 在交互式的shell中，不读取初始化文件~/.bashrc。如果用sh来启动shell，这个选项默认就打开了。
+--posix 如果Bash的默认行为与POSIX不同，就遵循POSIX规范。这个选项是用来让Bash成为该规范的一个超集。
+--restricted 打开受限制模式。
+--verbose 和"-v"选项等价，回显读取的输入行。
+--version 在标准输出中显示当前Bash的版本信息后成功退出。
+启动时还可以指定一些单字符选项；这些选项是内部命令set所没有提供的。
+-c字符串 处理完选项以后从字符串中读取命令并执行，然后退出。剩余的参数赋值给从$0开始的位
+置参数。助记词: Command, 命令字符串
+-i 强制shell交互式的运行。助记词: Interactive, 交互
+的
+-l 使当前shell 表现得像登录后直接启动的那样。在交互式的shell 中，这和用exec -l bash命令启
+   动的登录shell 是等价的。如果不是交互式的shell，则执行登录shell 的初始化文件。exec bash -l
+   或exec bash --login将把当前的shell 替换成一个登录shell。关于登录shell 的特殊行为，
+-r 把当前shell变为受限制的shell。助记词: Login, 登录的
+-s 如果给定了这个选项，或者处理选项以后没有剩余的参数，则从标准输入读取命令。这个选项可以
+    用来在启动交互式的shell时指定位置参数。助记词: Startupfile, 初始化文件
+-D 在标准输出中打印所有"$"后面的双引用字符串。如果当前的语言区域不是C或POSIX，则要对这些字符串进行翻译。这个选项隐含了"-n"选项，并
+   且不执行命令。助记词: Debug, 语言翻译调试
+-- 单个--表示选项的结束并停止继续处理选项。它后面的任何参数都被当成文件名或参数。
+第20章 环境变量
+sh(环境变量){
+CDPATH  冒号分隔的一组目录名，用作内部命令cd的搜索路径。
+HOME    当前用户的主目录，也是内部命令cd的默认值。这个变量的值还用在波浪号扩展中。
+IFS     用来分隔字段的一组字符；在扩展时，shell用它来拆分单词。
+MAIL    如果这个变量设为一个文件名，并且没有设置MAILPATH变量，Bash将通知用户在指定文件中有新邮件。
+MAILPATH 冒号分隔的一级文件名，shell会定期在这些文件中检查新邮件。每个文件名都可以名称后面
+         用"?"分隔，然后指定一条消息，当新邮件到达时将把这条消息打印出来。在消息文本中，$ 扩展成当前邮箱文件名
+OPTARG 内部命令getopts处理的最后一个选项。
+OPTIND 内部命令getopts处理的最后一个选项参数。
+PATH 冒号分隔的一组目录，shell用它来搜索命令。长度为零的目录名表示当前目录，它可以作为两个连在一起的冒号出现，也可以作为开始或结束的冒号出现。
+PS1 主提示符，它的默认值是[\u@\h \W]\$。
+PS2 第二提示符。默认值是">"
+}
+bash(环境变量){
+BASH    执行当前Bash所用的完整路径。
+BASHPID 扩展为当前bash进程的进程号。子女shell中，这时Bash不会重新初始化
+BASHALIASES 一个键值数组变量，其中的元素和内部命令alias 所维护的别名列表相对应.
+BASH_ARGC
+BASH_ARGV
+BASH_CMDS
+BASH_COMMAND
+BASH_ENV
+BASH_EXECUTION_STRING
+BASH_LINENO
+BASH_REMATCH
+BASH_SOURCE
+BASH_SUBSHELL
+BASH_VERSINFO
+  BASHVERSINFO[0]
+  BASHVERSINFO[1]
+  BASHVERSINFO[2]
+  BASHVERSINFO[3]
+  BASHVERSINFO[4]
+  BASHVERSINFO[5]
+BASH_VERSION
+LANG         用来指定语言类别，如果这个类别没有特别地用LC 开头的变量指定。
+LC_ALL       这个变量覆盖LANG和所有其它LC 变量指定的语言类别。
+LC_COLLATE   这个变量决定文件名扩展结果的排序顺序，以及文件名扩展和文件名匹配中的范围表达式、等价字符类、语言区域序列
+LC_CTYPE     这个变量决定文件名扩展和模式匹配中对字符的解释和字符类的行为
+LC_MESSAGES  这个变量决定翻译$后面的双引用字符串时所使用的语言区域。
+LC_NUMERIC   这个变量决定格式化数字时所使用的语言区域。
+FUNCNAME
+}
+
+第20章
+link(链接操作符){
+1. 和号操作符 (&):
+'&'的作用是使命令在后台运行。只要在命令后面跟上一个空格和 '&'。你可以一口气在后台运行多个命令。
+ping ­c5 www.tecmint.com &
+apt-get update & mkdit test &
+2. 分号操作符 (;)
+分号操作符使你可以一口气运行几个命令，命令顺序执行。
+apt-get update ; apt-get upgrade ; mkdir test
+3. 与操作符 (&&)
+如果第一个命令执行成功，与操作符 (&&)才会执行第二个命令，也就是说，第一个命令退出状态是0。
+ping -c3 www.tecmint.com && links www.tecmint.com
+4. 或操作符 (||)
+或操作符 (||)很像编程中的else语句
+操作符允许你在第一个命令失败的情况下执行第二个命令，比如，第一个命令的退出状态是1。
+5. 非操作符 (!)
+非操作符 (!)很像except语句。这个命令会执行除了提供的条件外的所有的语句。
+mkdir tecmint 
+cd tecmint 
+touch a.doc b.doc a.pdf b.pdf a.xml b.xml a.html b.html
+rm -r !(*.html)
+6. 与或操作符 (&& – ||)
+ping -c3 www.tecmint.com && echo "Verified" || echo "Host Down"
+7. 管道操作符 (|)
+ls -l | less
+8. 命令合并操作符 {}
+合并两个或多个命令，第二个命令依赖于第一个命令的执行。
+[ -f /home/tecmint/Downloads/xyz.txt ] || touch /home/tecmint/Downloads/xyz.txt; echo "The file does not exist"
+[ -f /home/tecmint/Downloads/xyz1.txt ] || {touch /home/tecmint/Downloads/xyz.txt; echo "The file does not exist"}
+9. 优先操作符 ()
+这个操作符可以让命令以优先顺序执行。
+Command_x1 &&Command_x2 || Command_x3 && Command_x4.
+如果Command_x1执行失败了会怎么样，Command_x2, Command_x3, Command_x4没有一个会执行，对于这种情况，我们使用优先操作符。
+(Command_x1 &&Command_x2) || (Command_x3 && Command_x4)
+在上面的伪代码中，如果Command_x1执行失败，Command_x2不会执行，但是Command_x3会继续执行， Command_x4会依赖于 Command_x3的退出状态。
+10. 连接符 (\)
+被用于连接shell中那些太长而需要分成多行的命令。可以在输入一个“\”之后就回车，然后继续输入命令行，直到输入完成。
+
+}
+
+shell数学运算
+let 变量名前不需要用$,如let result=no1+no2; echo $result
+(()) 如result=$(( no1 + 50 )) 或 result=$ (( $no1 + 50 ))
+[] 如result=$[ no1 + no2]  或  result=$[ $no1 + 5 ]
+expr 如result=反引号expr 3 + 4反引号 或 result=$(expr $no1 + 5)
+bc命令（支持浮点数）echo "scale=2;3/8" | bc 设置小数位数为2; echo "obase=2;$no" | bc将数字转化为2进制; echo "obase=10;ibase=2;$no" | bc 将二进制转化为十进制
+
+
+第21章 Readline
+1. 移动命令 C-a C-e M-f M-b   C-f C-b C-l    
+2. 删除命令 C-k C-u M-d M-Del C-w 
+3. 粘贴命令 C-y M-y
+4. 搜索历史 C-r C-s 
+inputrc -> Readline的配置文件
+
+条目指示符
+!                    开始历史替换，除非后面跟着空格、制表符、行结束符、"="、或")"。
+!n                   选择命令行n。
+!-n                  选择向后第n行命令。
+!!                   选择前一条命令，它和"!-1"是等价的。
+!字符串              选择最近以字符串开头的命令。
+!?字符串[?           ]选择最近包含字符串开头的命令。如果字符串后面紧跟着换行符就可以省略结尾的"?"。
+^字符串一^字符串二^  快速替换。重复最后的命令，并把字符串一替换成字符串二；它和!!:s/字符串一/字符串二是等价的。
+!#                   目前已经输入的整个命令。
+单词指示符
+条目指示符和单词指示符之间用":"分隔；如果单词指示符以"^"、"$"、"*"、"-"、"%"开头，则可以省略分隔符。
+单词从行首开始数起，第一单词序号为0。插入到当前行中时，这些单词用空格分开。
+!!                  指定前一条命令。如果输入这个指示符则整个重复前一条命令。
+!!:$                指定前一条命令的最后一个参数；可以简写为!$。
+!fi:2               指定最近以字母fi开头的命令的第二个参数。
+下面是单词指示符：
+0     即零，第零个单词。对大多数命令而言，它是指命令名。
+n     第n个单词。
+^     第一个参数夨单词天。
+$     最后一个参数。
+%     最近"?字符串?"匹配的单词。
+x-y   单词范围。"0-y"可以简写为"-y"。
+*     除了第零个以外的所有单词，和"1-$"同义。如果条目中只有一个单词，使用"*"也不会出错，而是返回空字符串。
+x*    "x-$"的简写形式。
+x-    和"x*"一样,"x-$"的简写形式,但是忽略掉最后一个单词
