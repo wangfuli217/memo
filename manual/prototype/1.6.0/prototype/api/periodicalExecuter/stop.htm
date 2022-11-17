@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>PeriodicalExecuter.stop - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>stop</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">stop()</code></pre>
+			<p>停止 <code>PeriodicalExecuter</code> 的执行，回调函数不会再次被触发。</p>
+		</div>
+		<div id="abody">
+			<p>
+				<code>PeriodicalExecuter</code> 被创建后，它会构成一个无限循环，按照给定的时间间隔触发回调，直到页面被卸载为止。
+				这个方法让你能够随时中止循环。
+			</p>
+			<p>
+				<code>PeriodicalExecuter</code> 被中止后，虽然在技术上可以通过 <code>registerCallback</code> 方法再次启用，
+				但这会让人感到混淆不清，究竟是应该把 <code>registerCallback</code> 当作一个内部方法（因此不能作为一项功能使用），
+				还是当作外部方法。既然存在疑问，那么当需要启动一个定时器时，还是实例化一个新的 <code>PeriodicalExecuter</code> 吧。
+			</p>
+			<p>				
+				<strong>译注：</strong>其实我倒觉得有一个重新启动的方法，这个主意不错，如果你有和我一样的想法，
+				那么可以按照下面的方法扩展代码：
+			</p>
+			<pre><code class="javascript">PeriodicalExecuter.prototype.resume = function(){
+	if(!this.timer)
+		this.registerCallback();
+}; </code></pre>
+			<p>扩展完成后，可以这样使用：</p>			
+			<pre><code class="javascript">var pe = new PeriodicalExecuter(function(){
+	alert('这是一个测试样例！');
+}, 5);
+
+// 如果要停止
+pe.stop();
+// 停止后再重新启动
+pe.resume();
+</code></pre>
+			<h3>样例</h3>
+			<pre><code class="javascript">var gCallCount = 0; 
+new PeriodicalExecuter(function(pe) { 
+	if (++gCallCount > 3) 
+		pe.stop(); 
+	else 
+		alert(gCallCount); 
+}, 1); 
+// 只会弹出 1, 2, 3，然后停止。 </code></pre>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

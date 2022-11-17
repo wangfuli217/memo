@@ -1,0 +1,1391 @@
+<html><HEAD><TITLE>Programming Ruby: The Pragmatic Programmer's Guide</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=gb2312"><LINK media=screen href="114_files/pr_style[1].css"  type=text/css rel=StyleSheet></head>
+<BODY bgColor=white>
+<TABLE cellSpacing=0 cellPadding=3 width="100%" bgColor=#c09090 border=0>
+<TBODY>
+<TR>
+<TD colSpan=3>
+<TABLE cellPadding=20 width="100%" bgColor=#701a1a>
+<TBODY>
+<TR>
+<TD width="100%">
+<H1 class=header>Programming Ruby</H1>
+<H3 class=subheader>实用程序员指南</H3></TD></TR></TBODY></TABLE></TD></TR>
+<TR>
+<TD align=left width="33%"><A class=subheader href="113.html" >上一章&lt;</A> </TD>
+<TD vAlign=center align=middle width="33%"><A class=subheader href="95.html" >目录 ^</A> <BR></TD>
+<TD align=right width="33%"><A class=subheader href="115.html" >下一章&gt;</A> <BR></TD></TR></TBODY></TABLE><!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<H1>扩展Ruby</H1>
+<HR>
+<BR>在Ruby中扩展Ruby的新功能是很容易的，如果你用c来写底层的代码，那么我们就能更好的扩展Ruby的功能。
+<P>用c来扩展ruby是非常简单的事情。比如，我们我们在为Sunset Diner and Grill建造一个基于internet的自动点唱机，它将从硬盘播放mp3文件或者从cd唱机播放cd音频。我们想从ruby程序中控制硬件系统，硬件提供商为我们提供了一个C语言的头文件，和一个二进制的实现库文件，我们所需要做的是创建一个Ruby对象，映射到相应的C函数调用。</P>
+<P>在进一步使Ruby和C语言一起工作之前，先让我们从c语言角度看看ruby对象是什么样的。<EM>[本章又很多信息都是从随同ruby发布的 <CODE>README.EXT</CODE>摘录的，如果你想扩展ruby的话，可以参考最新版本的<CODE>README.EXT</CODE>]</EM></P>
+<H2><A name=S1>C语言中的Ruby对象</A></H2>
+<P></P>我们要看的第一件事情是在C语言中如何表示和访问Ruby的数据类型。Ruby中所有东西都是对象，所有的变量都指向一个对象。在C语言中，所有Ruby变量的类型都是VALUE，它要们是一个指向Ruby对象的指针，要们指向一个立即值（immediate value），比如<CODE>Fixnum。</CODE> 
+<P>这也是Ruby如何在C中实现面向对象的代码的：一个Ruby对象是在内存中分配的一个结构，这个结构包括一个包括实例变量的表，和关于关于类的信息。这个类本身是另一个对象（分配了内存结构），有一个包括类中方法定义的表。</P>
+<H3><A name=UA><SPAN class=sans>VALUE</SPAN> 是一个指针</A></H3><CODE>VALUE</CODE> 是一个指针指向一个定义好的Ruby对象结构，而不能指向其他类型的结构。每个Ruby内建的类的结构定义在"ruby.h"中，命名都以R开头加类名，比如RString和RArray。
+<P>有几种办法来判断一个VALUE所对应的结构的类型。宏<CODE>TYPE(</CODE> <EM>obj</EM> <CODE>)</CODE>可以返回代表指定对象的C类型的常量的值：<CODE>T_OBJECT</CODE>, <CODE>T_STRING</CODE>或其它。代表内建类的常量在ruby.h中定义。注意这里我们说得类型是实现上的细节，而不是向某一个对象的类。(Note that the <EM>type</EM> we are referring to here is an implementation detail---it is not the same as the class of an object.)</P>
+<P>&nbsp;如果你想确认一个vaulue指针指向一个特定的结构，你可以用宏<CODE>Check_Type</CODE>。如果给定的value不是type型的，将会产生一个<CODE>TypeError</CODE> 的异常。（type是<CODE>T_STRING</CODE>, <CODE>T_FLOAT</CODE>或其它）。</P><PRE>Check_Type(VALUE <EM>value</EM>, int <EM>type</EM>)
+</PRE>
+<P>如果你很关心速度，这里有一些很快的宏来判断立即值<CODE>Fixnum</CODE> 和<CODE>nil：</CODE><BR>FIXNUM_P(<EM>value</EM>) -&gt; non-zero if value is a Fixnum<BR>NIL_P(<EM>value</EM>)&nbsp;&nbsp;&nbsp; -&gt; non-zero if value is nil<BR>RTEST(<EM>value</EM>)&nbsp;&nbsp;&nbsp; -&gt; non-zero if value is neither nil nor false<BR></P>
+<P></P>Again, note that we are talking about ``type'' as the C structure that represents a particular built-in type. The class of an object is a different beast entirely. The class objects for the built-in classes are stored in C global variables named <CODE>rb_c</CODE> <EM>Classname</EM> (for instance, <CODE>rb_cObject</CODE>); modules are named <CODE>rb_m</CODE> <EM>Modulename</EM>. 
+<P></P>It wouldn't be advisable to mess with the data in these structures directly, however---you may look, but don't touch unless you are fond of debuggers. You should normally use only the supplied C functions to manipulate Ruby data (we'll talk more about this in just a moment). 
+<P></P>However, in the interests of efficiency you may need to dig into these structures to obtain data. In order to dereference members of these C structures, you have to cast the generic <CODE>VALUE</CODE> to the proper structure type. <CODE>ruby.h</CODE> contains a number of macros that perform the proper casting for you, allowing you to dereference structure members easily. These macros are named <CODE>R<EM>CLASSNAME</EM> </CODE>, as in <CODE>RSTRING</CODE> or <CODE>RARRAY</CODE>. For example: 
+<P></P><PRE>VALUE str, arr;
+RSTRING(str)-&gt;len -&gt; length of the Ruby string
+RSTRING(str)-&gt;ptr -&gt; pointer to string storage
+RARRAY(arr)-&gt;len  -&gt; length of the Ruby array
+RARRAY(arr)-&gt;capa -&gt; capacity of the Ruby array
+RARRAY(arr)-&gt;ptr  -&gt; pointer to array storage
+</PRE>
+<H3><A name=UB><SPAN class=sans>VALUE</SPAN> 作为立即对象（Immediate Object</A>）</H3>
+<P></P>我们上面说过，立即值不是指针：: <CODE>Fixnum</CODE>, <CODE>Symbol</CODE>, <CODE>true</CODE>, <CODE>false</CODE>, 和 <CODE>nil</CODE> 直接存储在 <CODE>VALUE</CODE>中。
+<P><CODE>Fixnum</CODE> 值在存储器中占用31个bit(<I>其他的cpu结构可能占用63个bit</I>)，然后这个值左移一位，最后一位设置为 "1"，当VAULE指向其他类型的数据时，这个最低位（LSB）总是"0"，其他的立即值得LSB也是0，这样，可以通过这个位的值是0还是1来判断这个值是不是Fixnum。</P>
+<P>其它的立即值<CODE>true</CODE>, <CODE>false</CODE>, <CODE>nil</CODE>在C语言中用常量<CODE>Qtrue</CODE>, <CODE>Qfalse</CODE>, <CODE>Qnil</CODE>来表示，你可以用这些常量来测试一个值是不是true，false，nil等，或者用转换宏来测试。</P>
+<H2><A name=S2>Writing Ruby in C</A></H2>
+<P>用Ruby编程的乐趣之一是你可以在C语言里像Ruby中一样实现，你可以用同样的方法名，同样的逻辑，除了一些语法的区别，比如，这里有一个用Ruby写的简单的test类：</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>class&nbsp;Test
+&nbsp;&nbsp;def&nbsp;initialize
+&nbsp;&nbsp;&nbsp;&nbsp;@arr&nbsp;=&nbsp;Array.new
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;add(anObject)
+&nbsp;&nbsp;&nbsp;&nbsp;@arr.push(anObject)
+&nbsp;&nbsp;end
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>完成上面同样功能的C代码如下： 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>#include&nbsp;"ruby.h"
+
+static&nbsp;VALUE&nbsp;t_init(VALUE&nbsp;self)         
+{         
+&nbsp;&nbsp;VALUE&nbsp;arr;
+
+&nbsp;&nbsp;arr&nbsp;=&nbsp;rb_ary_new();         
+&nbsp;&nbsp;rb_iv_set(self,&nbsp;"@arr",&nbsp;arr);         
+&nbsp;&nbsp;return&nbsp;self;         
+}
+
+
+static&nbsp;VALUE&nbsp;t_add(VALUE&nbsp;self,&nbsp;VALUE&nbsp;anObject)         
+{         
+&nbsp;&nbsp;VALUE&nbsp;arr;
+
+
+&nbsp;&nbsp;arr&nbsp;=&nbsp;rb_iv_get(self,&nbsp;"@arr");         
+&nbsp;&nbsp;rb_ary_push(arr,&nbsp;anObject);         
+&nbsp;&nbsp;return&nbsp;arr;         
+}
+
+
+VALUE&nbsp;cTest;
+
+
+void&nbsp;Init_Test()&nbsp;{         
+&nbsp;&nbsp;cTest&nbsp;=&nbsp;rb_define_class("Test",&nbsp;rb_cObject);         
+&nbsp;&nbsp;rb_define_method(cTest,&nbsp;"initialize",&nbsp;t_init,&nbsp;0);         
+&nbsp;&nbsp;rb_define_method(cTest,&nbsp;"add",&nbsp;t_add,&nbsp;1);         
+}
+</PRE></TD></TR></TBODY></TABLE>
+<P>让我们详细的看看这里面的细节，这段程序包括了本章的很多重要的内容。首先，我们需要把ruby.h文件引入，才能使用其中的一些预定义的东西。</P>
+<P>然后来看看最后一个函数：<CODE>Init_Test。</CODE>每个类或模块都要定义一个C的全局函数 Init_<I><B>name</B></I>局函，这个函数将会在ruby解释器第一次载入扩展<I><B>name</B></I>的时候执行，它用来初始化这个扩展（extension ），使它融入Ruby的环境中。这个例子里，我们定义了一个类Test，它是Object的子类。（Object在ruby.h中用<CODE>rb_cObject</CODE>表示）</P>
+<P>然后我们建立了两个函数add和initialize，这两个都是类Test的实例方法。函数<CODE>rb_define_method</CODE> 绑定了Ruby中的方法和对应的C语言的实现。所以，在Ruby中调用这个类的add方法，将会调用C函数t_add。</P>
+<P>类似的，当在Ruby中调用Test的new方法时，将会调用initialize方法，也就是C程序里面的t_init方法（没有Ruby参数）。</P>
+<P>&nbsp;现在回来看看方法<CODE>initialize</CODE>的定义，我们说过它不需要参数，但是那里却真的有一个参数。除了ruby方法中的参数，每个方法都会被传递一个最初的VALUE参数，这个VALUE指的是方法的接收者（receiver ），类似Ruby中的self。</P>
+<P>在<CODE>initialize</CODE> 方法中我们做的是创建一个Ruby中的数组，并用实例变量<CODE>@arr</CODE>指向这个数组。<I> Just as you would expect if you were writing Ruby source, referencing an instance variable that doesn't exist creates it.</I></P>
+<P>最后，t_add方法从当前对象取得实例变量<CODE>@arr</CODE>，并用 <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_array.html#Array.push" ><CODE>Array#push</CODE> </A>把传递过来的参数放到里面。当用这种方法访问实例变量的时候，前缀@是必不可少的，否则在Ruby中将不能访问这个变量。</P>
+<P></P>Despite the extra, clunky syntax that C imposes, you're still writing in Ruby---you can manipulate objects using all of the method calls you've come to know and love, with the added advantage of being able to craft tight, fast code when needed. 
+<P></P><B>警告</B><B>:</B> 从Ruby中能访问的C语言中的所有方法都必须返回一个VALUE值，即使Qnil也行。否则会出现core dump。 
+<P>要想在Ruby中使用上面的C代码，只需要动态的把它require进来就行。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>require&nbsp;"code/ext/Test"
+t&nbsp;=&nbsp;Test.new
+t.add("Bill&nbsp;Chase")
+</PRE></TD></TR></TBODY></TABLE>
+<TABLE width=500 bgColor=#ffe0e0 border=2>
+<TBODY>
+<TR>
+<TD><B>C/Ruby 类型转换函数和宏</B> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<TBODY>
+<TR bgColor=#ff9999>
+<TD vAlign=top colSpan=3><B>从</B><B>C 类型转换到 Ruby：</B> </TD></TR>
+<TR>
+<TD vAlign=top></TD>
+<TD vAlign=top>INT2NUM(<EM>int</EM>)</TD>
+<TD vAlign=top>-&gt; <EM>Fixnum</EM> or <EM>Bignum</EM> </TD></TR>
+<TR>
+<TD vAlign=top></TD>
+<TD vAlign=top>INT2FIX(<EM>int</EM>)</TD>
+<TD vAlign=top>-&gt; <EM>Fixnum</EM> (faster)</TD></TR>
+<TR>
+<TD vAlign=top></TD>
+<TD vAlign=top>INT2NUM(<EM>long</EM> or <EM>int</EM>)</TD>
+<TD vAlign=top>-&gt; <EM>Fixnum</EM> or <EM>Bignum</EM> </TD></TR>
+<TR>
+<TD vAlign=top></TD>
+<TD vAlign=top>INT2FIX(<EM>long</EM> or <EM>int</EM>)</TD>
+<TD vAlign=top>-&gt; <EM>Fixnum</EM> (faster)</TD></TR>
+<TR>
+<TD vAlign=top></TD>
+<TD vAlign=top>CHR2FIX(<EM>char</EM>)</TD>
+<TD vAlign=top>-&gt; <EM>Fixnum</EM> </TD></TR>
+<TR>
+<TD vAlign=top></TD>
+<TD vAlign=top>rb_str_new2(<EM>char *</EM>)</TD>
+<TD vAlign=top>-&gt; <EM>String</EM> </TD></TR>
+<TR>
+<TD vAlign=top></TD>
+<TD vAlign=top>rb_float_new(<EM>double</EM>)</TD>
+<TD vAlign=top>-&gt; <EM>Float</EM> </TD></TR>
+<TR>
+<TD bgColor=#ff9999 colSpan=9 height=3><IMG height=1 src="120_files/dot[1].gif"  width=1></TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><B>从Ruby对象转换到C的数据类型：</B> </TD></TR>
+<TR bgColor=#ff9999>
+<TD vAlign=top>int</TD>
+<TD vAlign=top>NUM2INT(<EM>Numeric</EM>)</TD>
+<TD vAlign=top>(Includes type check)</TD></TR>
+<TR bgColor=#ff9999>
+<TD vAlign=top>int</TD>
+<TD vAlign=top>FIX2INT(<EM>Fixnum</EM>)</TD>
+<TD vAlign=top>(Faster)</TD></TR>
+<TR bgColor=#ff9999>
+<TD vAlign=top>unsigned int</TD>
+<TD vAlign=top>NUM2UINT(<EM>Numeric</EM>)</TD>
+<TD vAlign=top>(Includes type check)</TD></TR>
+<TR bgColor=#ff9999>
+<TD vAlign=top>unsigned int</TD>
+<TD vAlign=top>FIX2UINT(<EM>Fixnum</EM>)</TD>
+<TD vAlign=top>(Includes type check)</TD></TR>
+<TR bgColor=#ff9999>
+<TD vAlign=top>long</TD>
+<TD vAlign=top>NUM2LONG(<EM>Numeric</EM>)</TD>
+<TD vAlign=top>(Includes type check)</TD></TR>
+<TR bgColor=#ff9999>
+<TD vAlign=top>long</TD>
+<TD vAlign=top>FIX2LONG(<EM>Fixnum</EM>)</TD>
+<TD vAlign=top>(Faster)</TD></TR>
+<TR bgColor=#ff9999>
+<TD vAlign=top>unsigned long</TD>
+<TD vAlign=top>NUM2ULONG(<EM>Numeric</EM>)</TD>
+<TD vAlign=top>(Includes type check)</TD></TR>
+<TR bgColor=#ff9999>
+<TD vAlign=top>char</TD>
+<TD vAlign=top>NUM2CHR(<EM>Numeric</EM> or <EM>String</EM>)</TD>
+<TD vAlign=top>(Includes type check)</TD></TR>
+<TR bgColor=#ff9999>
+<TD vAlign=top>char *</TD>
+<TD vAlign=top>STR2CSTR(<EM>String</EM>)</TD>
+<TD vAlign=top></TD></TR>
+<TR bgColor=#ff9999>
+<TD vAlign=top>char *</TD>
+<TD vAlign=top>rb_str2cstr(<EM>String</EM>, int *length)</TD>
+<TD vAlign=top>Returns length as well</TD></TR>
+<TR bgColor=#ff9999>
+<TD vAlign=top>double</TD>
+<TD vAlign=top>NUM2DBL(<EM>Numeric</EM>)</TD>
+<TD vAlign=top></TD></TR>
+<TR>
+<TD bgColor=#ff9999 colSpan=9 height=2><IMG height=1 src="120_files/dot[1].gif"  width=1></TD></TR></TBODY></TABLE>
+<P></P></TD></TR></TBODY></TABLE>
+<P></P>
+<H3><A name=UC>在C语言中运行Ruby表达式</A></H3>
+<P>如果你在C语言中编程，而且需要用到一些Ruby的表达式，但是不想写一段代码来实现，你可以用C版本的eval。假如你有一个数组，需要把里面的flag标志都清除：</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>rb_eval_string("anObject.each{|x|&nbsp;x.clearFlag&nbsp;}");
+</PRE></TD></TR></TBODY></TABLE>
+<P>如果你只是想调用一个特别的方法，可以这样：</P>If you just want to call a particular method (which is cheaper than <CODE>eval</CODE>-ing an entire string) you can use 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>rb_funcall(receiver,&nbsp;method_id,&nbsp;argc,&nbsp;...)
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>
+<H2><A name=S3>在Ruby 和 C之间共享数据</A></H2>
+<P>我们已经涉及到了很多基础的东西，现在来看看我们自动点唱机的例子，我们要用Ruby包装C代码，还要在两种语言之间共享数据。</P>
+<H3><A name=UD>直接共享变量</A></H3>
+<P>尽管你可以在C中和Ruby中各维护一个变量，并保持它们之间的同步，但是这样做是不可取得，违反了DRY（<EM>Don't Repeat Yourself</EM>）原则。更好的方法是直接在Ruby和C之间共享一个变量，你可以通过在C语言里面创建一个Ruby对象，然后把它绑定到一个Ruby中地全局变量来共享一个全局变量，在这种情况下，"$"是可选的，但是为了阅读方便最好还是在前面加上"$"。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>VALUE&nbsp;hardware_list;
+hardware_list&nbsp;=&nbsp;rb_ary_new();
+rb_define_variable("$hardware",&nbsp;&amp;hardware_list);
+...
+rb_ary_push(hardware_list,&nbsp;rb_str_new2("DVD"));
+rb_ary_push(hardware_list,&nbsp;rb_str_new2("CDPlayer1"));
+rb_ary_push(hardware_list,&nbsp;rb_str_new2("CDPlayer2"));
+</PRE></TD></TR></TBODY></TABLE>
+<P>然后，在Ruby中就可以$hardware来访问C语言中的变量hardware_list。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>$hardware</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>["DVD",&nbsp;"CDPlayer1",&nbsp;"CDPlayer2"]</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>You can also create <EM>hooked</EM> variables that will call a specified function when the variable is accessed, and <EM>virtual</EM> variables that only call the hooks---no actual variable is involved. See the API section that begins on page 189 for details. 
+<P></P>If you create a Ruby object from C and store it in a C global variable <EM>without</EM> exporting it to Ruby, you must at least tell the garbage collector about it, lest ye be reaped inadvertently: 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>VALUE&nbsp;obj;
+obj&nbsp;=&nbsp;rb_ary_new();
+rb_global_variable(obj);
+</PRE></TD></TR></TBODY></TABLE>
+<H3>包装C结构（<A name=UE>Wrapping C Structures）</A></H3>Now on to the <EM>really</EM> fun stuff. We've got the vendor's library that controls the audio CD jukebox units, and we're ready to wire it into Ruby. The vendor's header file looks like this: 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>typedef&nbsp;struct&nbsp;_cdjb&nbsp;{
+&nbsp;&nbsp;int&nbsp;statusf;
+&nbsp;&nbsp;int&nbsp;request;
+&nbsp;&nbsp;void&nbsp;*data;
+&nbsp;&nbsp;char&nbsp;pending;
+&nbsp;&nbsp;int&nbsp;unit_id;
+&nbsp;&nbsp;void&nbsp;*stats;
+}&nbsp;CDJukebox;
+
+//&nbsp;Allocate&nbsp;a&nbsp;new&nbsp;CDPlayer&nbsp;structure&nbsp;and&nbsp;bring&nbsp;it&nbsp;online            
+CDJukebox&nbsp;*CDPlayerNew(int&nbsp;unit_id);
+
+//&nbsp;Deallocate&nbsp;when&nbsp;done&nbsp;(and&nbsp;take&nbsp;offline)            
+void&nbsp;CDPlayerDispose(CDJukebox&nbsp;*rec);
+
+//&nbsp;Seek&nbsp;to&nbsp;a&nbsp;disc,&nbsp;track&nbsp;and&nbsp;notify&nbsp;progress            
+void&nbsp;CDPlayerSeek(CDJukebox&nbsp;*rec,            
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;disc,            
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;track,            
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;void&nbsp;(*done)(CDJukebox&nbsp;*rec,&nbsp;int&nbsp;percent));            
+//&nbsp;...&nbsp;others...            
+//&nbsp;Report&nbsp;a&nbsp;statistic            
+double&nbsp;CDPlayerAvgSeekTime(CDJukebox&nbsp;*rec);
+   </PRE></TD></TR></TBODY></TABLE>
+<P></P>This vendor has its act together; while the vendor might not admit it, the code is written with an object-oriented flavor. We don't know what all those fields mean within the <CODE>CDJukeBox</CODE> structure, but that's okay---we can treat it as an opaque pile of bits. The vendor's code knows what to do with it, we just have to carry it around. 
+<P></P>Anytime you have a C-only structure that you would like to handle as a Ruby object, you should wrap it in a special, internal Ruby class called <CODE>DATA</CODE> (type <CODE>T_DATA</CODE>). There are two macros to do this wrapping, and one to retrieve your structure back out again. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<TBODY>
+<TR>
+<TH align=middle colSpan=2>C Datatype Wrapping</TH></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>Data_Wrap_Struct</B>(VALUE&nbsp;class, void&nbsp;(*mark)(), void&nbsp;(*free)(), void&nbsp;*ptr") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Wraps the given C datatype <EM>ptr</EM>, registers the two garbage collection routines (see below), and returns a VALUE pointer to a genuine Ruby object. The C type of the resulting object is <CODE>T_DATA</CODE> and its Ruby class is <EM>class</EM>. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>Data_Make_Struct</B>(VALUE&nbsp;class, <EM>c-type</EM>, void&nbsp;(*mark)(), void&nbsp;(*free)(), <EM>c-type *</EM>") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Allocates a structure of the indicated type first, then proceeds as <CODE>Data_Wrap_Struct</CODE>. <EM>c-type</EM> is the name of the C datatype that you're wrapping, not a variable of that type. </TD></TR>
+<TR>
+<TD><TT>&nbsp;</TT> </TD>
+<TD><TT><B>Data_Get_Struct</B>(VALUE&nbsp;obj,<EM>c-type</EM>,<EM>c-type *</EM>") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Returns the original pointer. This macro is a type-safe wrapper around the macro <CODE>DATA_PTR(obj)</CODE>, which evaluates the pointer. </TD></TR>
+<P></P></TBODY></TABLE>
+<P></P>The object created by <CODE>Data_Wrap_Struct</CODE> is a normal Ruby object, except that it has an additional C datatype that can't be accessed from Ruby. As you can see in Figure 17.1 on page 177, this C datatype is separate from any instance variables that the object contains. But since it's a separate thing, how do you get rid of it when the garbage collector claims this object? What if you have to release some resource (close some file, clean up some lock or IPC mechanism, and so on)? 
+<TABLE width=500 bgColor=#ffe0e0 border=2>
+<TBODY>
+<TR>
+<TD>Figure not available...</TD></TR></TBODY></TABLE>
+<P></P>In order to participate in Ruby's mark-and-sweep garbage collection process, you need to define a routine to free your structure, and possibly a routine to mark any references from your structure to other structures. Both routines take a <CODE>void</CODE> pointer, a reference to your structure. The <EM>mark</EM> routine will be called by the garbage collector during its ``mark'' phase. If your structure references other Ruby objects, then your mark function needs to identify these objects using <CODE>rb_gc_mark(<EM>value</EM>)</CODE>. If the structure doesn't reference other Ruby objects, you can simply pass <CODE>0</CODE> as a function pointer. 
+<P></P>When the object needs to be disposed of, the garbage collector will call the <EM>free</EM> routine to free it. If you have allocated any memory yourself (for instance, by using <CODE>Data_Make_Struct</CODE>), you'll need to pass a free function---even if it's just the standard C library's <CODE>free</CODE> routine. For complex structures that you have allocated, your free function may need to traverse the structure to free all the allocated memory. 
+<P></P>First a simple example, without any special handling. Given the structure definition 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>typedef&nbsp;struct&nbsp;mp3info&nbsp;{
+&nbsp;&nbsp;char&nbsp;*title;
+&nbsp;&nbsp;char&nbsp;*artist;
+&nbsp;&nbsp;int&nbsp;&nbsp;genre;
+}&nbsp;MP3Info;
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>we can create a structure, populate it, and wrap it as an object.<EM>[We cheat a bit in this example. Our <CODE>MP3Info</CODE> structure has a couple of <CODE>char</CODE> pointers in it. In our code we initialize them from two static strings. This means that we don't have to free these strings when the <CODE>MP3Info</CODE> structure is freed. If we'd allocated these strings dynamically, we'd have to write a free method to dispose of them.]</EM> 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>MP3Info&nbsp;*p;
+VALUE&nbsp;info;
+
+p&nbsp;=&nbsp;ALLOC(MP3Info);             
+p-&gt;artist&nbsp;=&nbsp;"Maynard&nbsp;Ferguson";             
+p-&gt;title&nbsp;=&nbsp;"Chameleon";             
+...             
+info&nbsp;=&nbsp;Data_Wrap_Struct(cTest,&nbsp;0,&nbsp;free,&nbsp;p);
+ </PRE></TD></TR></TBODY></TABLE>
+<P></P><CODE>info</CODE> is a <CODE>VALUE</CODE> type, a genuine Ruby object of class <CODE>Test</CODE> (represented in C by the built-in type <CODE>T_DATA</CODE>). You can push it onto an array, hold a reference to it in an object, and so on. At some later point in the code, we may want to access this structure again, given the <CODE>VALUE</CODE>: 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>VALUE doit(VALUE info) {
+  MP3Info *p;
+  Data_Get_Struct(info, MP3Info, p);
+  ...
+  p-&gt;artist    -&gt; "Maynard Ferguson"
+  p-&gt;title     -&gt; "Chameleon"
+  ...
+}
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>In order to follow convention, however, you may need a few more things: support for an <CODE>initialize</CODE> method, and a ``C-constructor.'' If you were writing Ruby source, you'd allocate and initialize an object by calling <CODE>new</CODE>. In C extensions, the corresponding call is <CODE>Data_Make_Struct</CODE>. However, although this allocates memory for the object, it does <EM>not</EM> automatically call an <CODE>initialize</CODE> method; you need to do that yourself: 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>info&nbsp;=&nbsp;Data_Make_Struct(cTest,&nbsp;MP3Info,&nbsp;0,&nbsp;free,&nbsp;one);
+rb_obj_call_init(info,&nbsp;argc,&nbsp;argv);
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>This has the benefit of allowing subclasses in Ruby to override or augment the basic <CODE>initialize</CODE> in your class. Within <CODE>initialize</CODE>, it is allowable (but not necessarily advisable) to alter the existing data pointer, which may be accessed directly with <CODE>DATA_PTR(obj)</CODE>. 
+<P></P>And finally, you may want to define a ``C-constructor''---that is, a globally available C function that will create the object in one convenient call. You can use this function within your own code or allow other extension libraries to use it. All of the built-in classes support this idea with functions such as <CODE>rb_str_new</CODE>, <CODE>rb_ary_new</CODE>, and so on. We can make our own: 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>VALUE&nbsp;mp3_info_new()&nbsp;{
+&nbsp;&nbsp;VALUE&nbsp;info;
+&nbsp;&nbsp;MP3Info&nbsp;*one;
+&nbsp;&nbsp;info&nbsp;=&nbsp;Data_Make_Struct(cTest,&nbsp;MP3Info,&nbsp;0,&nbsp;free,&nbsp;one);
+&nbsp;&nbsp;...
+&nbsp;&nbsp;rb_obj_call_init(info,&nbsp;0,&nbsp;0);
+&nbsp;&nbsp;return&nbsp;info;
+}
+</PRE></TD></TR></TBODY></TABLE>
+<H3><A name=UF>An Example</A></H3>
+<P></P>Okay, now we're ready for a full-size example. Given our vendor's header file above, we write the following code. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>#include&nbsp;"ruby.h"
+#include&nbsp;"cdjukebox.h"</PRE><PRE>VALUE&nbsp;cCDPlayer;</PRE><PRE>static&nbsp;void&nbsp;cd_free(void&nbsp;*p)&nbsp;{ 
+&nbsp;&nbsp;CDPlayerDispose(p); 
+}</PRE><PRE>static&nbsp;void&nbsp;progress(CDJukebox&nbsp;*rec,&nbsp;int&nbsp;percent) 
+{ 
+&nbsp;&nbsp;if&nbsp;(rb_block_given_p())&nbsp;{ 
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(percent&nbsp;&gt;&nbsp;100)&nbsp;percent&nbsp;=&nbsp;100; 
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(percent&nbsp;&lt;&nbsp;0)&nbsp;percent&nbsp;=&nbsp;0; 
+&nbsp;&nbsp;&nbsp;&nbsp;rb_yield(INT2FIX(percent)); 
+&nbsp;&nbsp;} 
+}</PRE><PRE>static&nbsp;VALUE 
+cd_seek(VALUE&nbsp;self,&nbsp;VALUE&nbsp;disc,&nbsp;VALUE&nbsp;track) 
+{ 
+&nbsp;&nbsp;CDJukebox&nbsp;*ptr; 
+&nbsp;&nbsp;Data_Get_Struct(self,&nbsp;CDJukebox,&nbsp;ptr);
+&nbsp;&nbsp;CDPlayerSeek(ptr, 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NUM2INT(disc), 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NUM2INT(track), 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;progress); 
+&nbsp;&nbsp;return&nbsp;Qnil; 
+}</PRE><PRE>static&nbsp;VALUE 
+cd_seekTime(VALUE&nbsp;self) 
+{ 
+&nbsp;&nbsp;double&nbsp;tm; 
+&nbsp;&nbsp;CDJukebox&nbsp;*ptr; 
+&nbsp;&nbsp;Data_Get_Struct(self,&nbsp;CDJukebox,&nbsp;ptr); 
+&nbsp;&nbsp;tm&nbsp;=&nbsp;CDPlayerAvgSeekTime(ptr); 
+&nbsp;&nbsp;return&nbsp;rb_float_new(tm); 
+}</PRE><PRE>static&nbsp;VALUE 
+cd_unit(VALUE&nbsp;self) 
+{ 
+&nbsp;&nbsp;return&nbsp;rb_iv_get(self,&nbsp;"@unit"); 
+}
+
+static&nbsp;VALUE 
+cd_init(VALUE&nbsp;self,&nbsp;VALUE&nbsp;unit) 
+{ 
+&nbsp;&nbsp;rb_iv_set(self,&nbsp;"@unit",&nbsp;unit); 
+&nbsp;&nbsp;return&nbsp;self; 
+}</PRE><PRE>VALUE&nbsp;cd_new(VALUE&nbsp;class,&nbsp;VALUE&nbsp;unit) 
+{ 
+&nbsp;&nbsp;VALUE&nbsp;argv[1]; 
+&nbsp;&nbsp;CDJukebox&nbsp;*ptr&nbsp;=&nbsp;CDPlayerNew(NUM2INT(unit)); 
+&nbsp;&nbsp;VALUE&nbsp;tdata&nbsp;=&nbsp;Data_Wrap_Struct(class,&nbsp;0,&nbsp;cd_free,&nbsp;ptr); 
+&nbsp;&nbsp;argv[0]&nbsp;=&nbsp;unit; 
+&nbsp;&nbsp;rb_obj_call_init(tdata,&nbsp;1,&nbsp;argv); 
+&nbsp;&nbsp;return&nbsp;tdata; 
+}</PRE><PRE>void&nbsp;Init_CDJukebox()&nbsp;{ 
+&nbsp;&nbsp;cCDPlayer&nbsp;=&nbsp;rb_define_class("CDPlayer",&nbsp;rb_cObject); 
+&nbsp;&nbsp;rb_define_singleton_method(cCDPlayer,&nbsp;"new",&nbsp;cd_new,&nbsp;1); 
+&nbsp;&nbsp;rb_define_method(cCDPlayer,&nbsp;"initialize",&nbsp;cd_init,&nbsp;1); 
+&nbsp;&nbsp;rb_define_method(cCDPlayer,&nbsp;"seek",&nbsp;cd_seek,&nbsp;2); 
+&nbsp;&nbsp;rb_define_method(cCDPlayer,&nbsp;"seekTime",&nbsp;cd_seekTime,&nbsp;0); 
+&nbsp;&nbsp;rb_define_method(cCDPlayer,&nbsp;"unit",&nbsp;cd_unit,&nbsp;0); 
+}
+      </PRE></TD></TR></TBODY></TABLE>
+<P></P>Now we have the ability to control our jukebox from Ruby in a nice, object-oriented manner: 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>require&nbsp;"code/ext/CDJukebox"
+p&nbsp;=&nbsp;CDPlayer.new(1)
+puts&nbsp;"Unit&nbsp;is&nbsp;#{p.unit}"
+p.seek(3,&nbsp;16)&nbsp;{|x|&nbsp;puts&nbsp;"#{x}%&nbsp;done"&nbsp;}
+puts&nbsp;"Avg.&nbsp;time&nbsp;was&nbsp;#{p.seekTime}&nbsp;seconds"
+</PRE></TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>Unit&nbsp;is&nbsp;1
+26%&nbsp;done
+79%&nbsp;done
+100%&nbsp;done
+Avg.&nbsp;time&nbsp;was&nbsp;1.2&nbsp;seconds
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>This example demonstrates most of what we've talked about so far, with one additional neat feature. The vendor's library provided a callback routine---a function pointer that is called every so often while the hardware is grinding its way to the next disc. We've set that up here to run a code block passed as an argument to <CODE>seek</CODE>. In the <CODE>progress</CODE> function, we check to see if there is an iterator in the current context and, if there is, run it with the current percent done as an argument. 
+<H2><A name=S4>Memory Allocation</A></H2>
+<P></P>You may sometimes need to allocate memory in an extension that won't be used for object storage---perhaps you've got a giant bitmap for a Bloom filter, or an image, or a whole bunch of little structures that Ruby doesn't use directly. 
+<P></P>In order to work correctly with the garbage collector, you should use the following memory allocation routines. These routines do a little bit more work than the standard <CODE>malloc</CODE>. For instance, if <CODE>ALLOC_N</CODE> determines that it cannot allocate the desired amount of memory, it will invoke the garbage collector to try to reclaim some space. It will raise a <CODE>NoMemError</CODE> if it can't or if the requested amount of memory is invalid. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<TBODY>
+<TR>
+<TH align=middle colSpan=2>Memory Allocation</TH></TR>
+<TR>
+<TD><TT><EM>type *</EM>&nbsp;</TT> </TD>
+<TD><TT><B>ALLOC_N</B>(<EM>c-type</EM>, n") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Allocates <EM>n</EM> <EM>c-type</EM> objects, where <EM>c-type</EM> is the literal name of the C type, not a variable of that type.</TD></TR>
+<TR>
+<TD><TT><EM>type *</EM>&nbsp;</TT> </TD>
+<TD><TT><B>ALLOC</B>(<EM>c-type</EM>") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Allocates a <EM>c-type</EM> and casts the result to a pointer of that type.</TD></TR>
+<TR>
+<TD><TT>&nbsp;</TT> </TD>
+<TD><TT><B>REALLOC_N</B>(<EM>var</EM>, <EM>c-type</EM>, n") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Reallocates <EM>n</EM> <EM>c-type</EM>s and assigns the result to <EM>var</EM>, a pointer to a <EM>c-type</EM>.</TD></TR>
+<TR>
+<TD><TT><EM>type *</EM>&nbsp;</TT> </TD>
+<TD><TT><B>ALLOCA_N</B>(<EM>c-type</EM>, n") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Allocates memory for <EM>n</EM> objects of <EM>c-type</EM> on the stack---this memory will be automatically freed when the function that invokes <CODE>ALLOCA_N</CODE> returns.</TD></TR>
+<P></P></TBODY></TABLE>
+<H2><A name=S5>创建扩展程序</A></H2>
+<P>写完了需要的源代码，我们需要编译它，以使Ruby程序可以访问它。我们可以把它编译成共享的对象，在运行时候动态装载；或者把它静态的连接到Ruby解释器本身。基本的过程都已眼：</P>
+<UL>
+<LI>在给定的目录写好源代码。 
+<LI>创建 <CODE>extconf.rb</CODE>文件。 
+<LI>运行<CODE>extconf.rb</CODE>创建 <CODE>Makefile</CODE>，用来编译C文件。 
+<LI>运行<CODE>make</CODE>。 
+<LI>运行 <CODE>make install</CODE>。 </LI></UL>
+<P></P>
+<H3><A name=UG>用 extconf.rb创建Makefile&nbsp;</A></H3>
+<P>上面看到的创建一个Ruby扩展程序的过程中，主要的步骤是作为程序员写的extconf.rb。在这个程序里，需要判断当前系统需要支持哪些特性，以及这些特性的位置。运行extconf.rb程序将产生一个Makefile文件，这是一个根据用户的需求和系统属性定制文件。当你运行make程序时，我们创建的扩展程序将会被编译（也可能被安装到某个地方）。</P>
+<P>最简单的extconf.rb有可能只有两行长，并且，对很多Ruby扩展程序来说，这两行足够了：</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>require&nbsp;'mkmf'
+create_makefile("Test")
+</PRE></TD></TR></TBODY></TABLE>
+<P>第一行引入了模块"mkmf"，这个模块有我们要用到的各种命令。第二行为扩展程序"Test"创建了一个Makefile文件。（注意"Test"是扩展程序的名字，而Makefile一直都是这个名字）。Test将会在这个目录被编译。</P>
+<P></P>Let's say that we run this <CODE>extconf.rb</CODE> program in a directory containing a single source file, <CODE>main.c</CODE>. The result is a <CODE>Makefile</CODE> that will build our extension. On our system, this contains the following commands. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>gcc&nbsp;-fPIC&nbsp;-I/usr/local/lib/ruby/1.6/i686-linux&nbsp;-g&nbsp;-O2&nbsp;&nbsp;\
+&nbsp;&nbsp;-c&nbsp;main.c&nbsp;-o&nbsp;main.o
+gcc&nbsp;-shared&nbsp;-o&nbsp;Test.so&nbsp;main.o&nbsp;-lc
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>The result of this compilation is <CODE>Test.so</CODE>, which may be dynamically linked into Ruby at runtime with ``<CODE>require</CODE>''. See how the <CODE>mkmf</CODE> commands have located platform-specific libraries and used compiler-specific options automatically. Pretty neat, eh? 
+<P></P>Although this basic program works for many simple extensions, you may have to do some more work if your extension needs header files or libraries that aren't included in the default compilation environment, or if you conditionally compile code based on the presence of libraries or functions. 
+<P></P>A common requirement is to specify nonstandard directories where include files and libraries may be found. This is a two-step process. First, your <CODE>extconf.rb</CODE> should contain one or more <CODE>dir_config</CODE> commands. This specifies a tag for a set of directories. Then, when you run the <CODE>extconf.rb</CODE> program, you tell <CODE>mkmf</CODE> where the corresponding physical directories are on the current system. 
+<P></P>If <CODE>extconf.rb</CODE> contains the line <CODE>dir_config(</CODE> <EM>name</EM> <CODE>)</CODE>, then you give the location of the corresponding directories with the command-line options: 
+<P></P>
+<DL>
+<DT><CODE>--with-<EM>name</EM>-include=<EM>directory</EM> </CODE>
+<DD><BR>* Add <EM>directory</EM>/<CODE>include</CODE> to the compile command. 
+<DT><CODE>--with-<EM>name</EM>-lib=<EM>directory</EM> </CODE>
+<DD><BR>* Add <EM>directory</EM>/<CODE>lib</CODE> to the link command. </DD></DL>
+<P></P>If (as is common) your include and library directories are both subdirectories of some other directory, and (as is also common) they're called <CODE>include</CODE> and <CODE>lib</CODE>, you can take a shortcut: 
+<P></P>
+<DL>
+<DT><CODE>--with-<EM>name</EM>-dir=<EM>directory</EM> </CODE>
+<DD><BR>* Add <EM>directory</EM>/<CODE>lib</CODE> and <EM>directory</EM>/<CODE>include</CODE> to the link command and compile command, respectively. </DD></DL>
+<P></P>There's a twist here. As well as specifying all these <CODE>--with</CODE> options when you run <CODE>extconf.rb</CODE>, you can also use the <CODE>--with</CODE> options that were specified when Ruby was built for your machine. This means you can find out the locations of libraries that are used by Ruby itself. 
+<P></P>To make all this concrete, lets say you need to use libraries and include files for the CD jukebox we're developing. Your <CODE>extconf.rb</CODE> program might contain 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>require&nbsp;'mkmf'
+dir_config('cdjukebox')
+#&nbsp;..&nbsp;more&nbsp;stuff
+create_makefile("CDJukeBox")
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>You'd then run <CODE>extconf.rb</CODE> with something like: 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>%&nbsp;ruby&nbsp;extconf.rb&nbsp;--with-cdjukebox-dir=/usr/local/cdjb
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>The generated <CODE>Makefile</CODE> would assume that the libraries were in <CODE>/usr/local/cdjb/lib</CODE> and the include files were in <CODE>/usr/local/cdjb/include</CODE>. 
+<P></P>The <CODE>dir_config</CODE> command adds to the list of places to search for libraries and include files. It does not, however, link the libraries into your application. To do that, you'll need to use one or more <CODE>have_library</CODE> or <CODE>find_library</CODE> commands. 
+<P></P><CODE>have_library</CODE> looks for a given entry point in a named library. If it finds the entry point, it adds the library to the list of libraries to be used when linking your extension. <CODE>find_library</CODE> is similar, but allows you to specify a list of directories to search for the library. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>require&nbsp;'mkmf'
+dir_config('cdjukebox')
+have_library('cdjb',&nbsp;'CDPlayerNew')
+create_makefile("CDJukeBox")
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>On some platforms, a popular library may be in one of several places. The X Window system, for example, is notorious for living in different directories on different systems. The <CODE>find_library</CODE> command will search a list of supplied directories to find the right one (this is different from <CODE>have_library</CODE>, which uses only configuration information for the search). For example, to create a <CODE>Makefile</CODE> that uses X Windows and a jpeg library, <CODE>extconf.rb</CODE> might contain 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>require&nbsp;'mkmf'
+
+
+
+if&nbsp;have_library("jpeg","jpeg_mem_init")&nbsp;and                
+&nbsp;&nbsp;&nbsp;find_library("X11",&nbsp;"XOpenDisplay",&nbsp;"/usr/X11/lib",                
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"/usr/X11R6/lib",&nbsp;"/usr/openwin/lib")                
+then                
+&nbsp;&nbsp;&nbsp;&nbsp;create_makefile("XThing")                
+else                
+&nbsp;&nbsp;&nbsp;&nbsp;puts&nbsp;"No&nbsp;X/JPEG&nbsp;support&nbsp;available"                
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>We've added some additional functionality to this program. All of the <CODE>mkmf</CODE> commands return <CODE>false</CODE> if they fail. This means that we can write an <CODE>extconf.rb</CODE> that generates a <CODE>Makefile</CODE> only if everything it needs is present. The Ruby distribution does this so that it will try to compile only those extensions that are supported on your system. 
+<P></P>You also may want your extension code to be able to configure the features it uses depending on the target environment. For example, our CD jukebox may be able to use a high-performance MP3 decoder if the end user has one installed. We can check by looking for its header file. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>require&nbsp;'mkmf'
+dir_config('cdjukebox')
+have_library('cdjb',&nbsp;'CDPlayerNew')
+have_header('hp_mp3.h')
+create_makefile("CDJukeBox")
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>We can also check to see if the target environment has a particular function in any of the libraries we'll be using. For example, the <CODE>setpriority</CODE> call would be useful but isn't always available. We can check for it with: 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>require&nbsp;'mkmf'
+dir_config('cdjukebox')
+have_func('setpriority')
+create_makefile("CDJukeBox")
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>Both <CODE>have_header</CODE> and <CODE>have_func</CODE> define preprocessor constants if they find their targets. The names are formed by converting the target name to uppercase and prepending ``HAVE_''. Your C code can take advantage of this using constructs such as: 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>#if&nbsp;defined(HAVE_HP_MP3_H)
+#&nbsp;&nbsp;include&nbsp;&lt;hp_mp3.h&gt;
+#endif
+
+
+
+#if&nbsp;defined(HAVE_SETPRIORITY)                 
+&nbsp;&nbsp;err&nbsp;=&nbsp;setpriority(PRIOR_PROCESS,&nbsp;0,&nbsp;-10)                 
+#endif
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>If you have special requirements that can't be met with all these <CODE>mkmf</CODE> commands, your program can directly add to the global variables <CODE>$CFLAGS</CODE> and <CODE>$LFLAGS</CODE>, which are passed to the compiler and linker, respectively. 
+<H3><A name=UH>静态连接 Static Linking</A></H3>
+<P>最后，如果你的系统不支持动态连接，或者你想你的扩展程序静态的连接到Ruby本身，编辑Ruby发行版本中的ext目录下的Setup文件，把你的扩展程序的目录加进去，然后重新编译Ruby。在Setup文件中列出来的扩展程序都会被静态的连接到Ruby可执行程序。如果你不想支持任何动态连接，你可以编辑Setup文件让它只包含一行：</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>option&nbsp;nodynamic
+</PRE></TD></TR></TBODY></TABLE>
+<H2><A name=S6>Embedding a Ruby Interpreter</A></H2>
+<P></P>In addition to extending Ruby by adding C code, you can also turn the problem around and embed Ruby itself within your application. Here's an example. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>#include&nbsp;"ruby.h"
+
+main()&nbsp;{           
+&nbsp;&nbsp;/*&nbsp;...&nbsp;our&nbsp;own&nbsp;application&nbsp;stuff&nbsp;...&nbsp;*/           
+&nbsp;&nbsp;ruby_init();           
+&nbsp;&nbsp;ruby_script("embedded");           
+&nbsp;&nbsp;rb_load_file("start.rb");           
+&nbsp;&nbsp;while&nbsp;(1)&nbsp;{           
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(need_to_do_ruby)&nbsp;{           
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ruby_run();           
+&nbsp;&nbsp;&nbsp;&nbsp;}           
+&nbsp;&nbsp;&nbsp;&nbsp;/*&nbsp;...&nbsp;run&nbsp;our&nbsp;app&nbsp;stuff&nbsp;*/           
+&nbsp;&nbsp;}           
+}
+ </PRE></TD></TR></TBODY></TABLE>
+<P></P>To initialize the Ruby interpreter, you need to call <CODE>ruby_init()</CODE>. But on some platforms, you may need to take special steps before that: 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>#if&nbsp;defined(NT)
+&nbsp;&nbsp;NtInitialize(&amp;argc,&nbsp;&amp;argv);
+#endif
+#if&nbsp;defined(__MACOS__)&nbsp;&amp;&amp;&nbsp;defined(__MWERKS__)
+&nbsp;&nbsp;argc&nbsp;=&nbsp;ccommand(&amp;argv);
+#endif
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>See <CODE>main.c</CODE> in the Ruby distribution for any other special defines or setup needed for your platform. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<TBODY>
+<TR>
+<TH align=middle colSpan=2>Embedded Ruby API</TH></TR>
+<TR>
+<TD><TT>void&nbsp;</TT> </TD>
+<TD><TT><B>ruby_init</B>(") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Sets up and initializes the interpreter. This function should be called before any other Ruby-related functions. </TD></TR>
+<TR>
+<TD><TT>void&nbsp;</TT> </TD>
+<TD><TT><B>ruby_options</B>(int&nbsp;argc, char&nbsp;**argv") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Gives the Ruby interpreter the command-line options. </TD></TR>
+<TR>
+<TD><TT>void&nbsp;</TT> </TD>
+<TD><TT><B>ruby_script</B>(char&nbsp;*name") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Sets the name of the Ruby script (and <CODE>$0</CODE>) to <EM>name</EM>. </TD></TR>
+<TR>
+<TD><TT>void&nbsp;</TT> </TD>
+<TD><TT><B>rb_load_file</B>(char&nbsp;*file") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Loads the given file into the interpreter. </TD></TR>
+<TR>
+<TD><TT>void&nbsp;</TT> </TD>
+<TD><TT><B>ruby_run</B>(") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Runs the interpreter. </TD></TR>
+<P></P></TBODY></TABLE>
+<P></P>You need to take some special care with exception handling; any Ruby calls you make at this top level should be protected to catch exceptions and handle them cleanly. <CODE>rb_protect</CODE>, <CODE>rb_rescue</CODE>, and related functions are documented on page 192. 
+<P></P>For an example of embedding a Ruby interpreter within another program, see also <CODE>eruby</CODE>, which is described beginning on page 147. 
+<H2><A name=S7>Bridging Ruby to Other Languages</A></H2>
+<P></P>So far, we've discussed extending Ruby by adding routines written in C. However, you can write extensions in just about any language, as long as you can bridge the two languages with C. Almost anything is possible, including awkward marriages of Ruby and C++, Ruby and Java, and so on. 
+<P></P>But you may be able to accomplish the same thing without resorting to C code. For example, you could bridge to other languages using middleware such as CORBA or COM. See the section on Windows automation beginning on page 164 for more details. 
+<H2><A name=S8>Ruby C Language API</A></H2>
+<P></P>Last, but by no means least, here are several C-level functions that you may find useful when writing an extension. 
+<P></P>Some functions require an <CODE>ID</CODE>: you can obtain an <CODE>ID</CODE> for a string by using <CODE>rb_intern</CODE> and reconstruct the name from an <CODE>ID</CODE> by using <CODE>rb_id2name</CODE>. 
+<P></P>As most of these C functions have Ruby equivalents that are already described in detail elsewhere in this book, the descriptions here will be brief. 
+<P></P>Also note that the following listing is not complete. There are many more functions available---too many to document them all, as it turns out. If you need a method that you can't find here, check ``<CODE>ruby.h</CODE>'' or ``<CODE>intern.h</CODE>'' for likely candidates. Also, at or near the bottom of each source file is a set of method definitions that describe the binding from Ruby methods to C functions. You may be able to call the C function directly, or search for a wrapper function that calls the function you are looking for. The following list, based on the list in <CODE>README.EXT</CODE>, shows the main source files in the interpreter. 
+<P></P>
+<DL>
+<DT>Ruby Language Core 
+<DD><BR>class.c error.c eval.c gc.c object.c parse.y variable.c 
+<DT>Utility Functions 
+<DD><BR>dln.c regex.c st.c util.c 
+<DT>Ruby Interpreter 
+<DD><BR>dmyext.c inits.c keywords main.c ruby.c version.c 
+<DT>Base Library 
+<DD><BR>array.c bignum.c compar.c dir.c enum.c file.c hash.c io.c marshal.c math.c numeric.c pack.c prec.c process.c random.c range.c re.c signal.c sprintf.c string.c struct.c time.c </DD></DL>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<TBODY>
+<TR>
+<TH align=middle colSpan=2>Defining Objects</TH></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_define_class</B>(char&nbsp;*name, VALUE&nbsp;superclass") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Defines a new class at the top level with the given <EM>name</EM> and <EM>superclass</EM> (for class <CODE>Object</CODE>, use <CODE>rb_cObject</CODE>). </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_define_module</B>(char&nbsp;*name") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Defines a new module at the top level with the given <EM>name</EM>. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_define_class_under</B>(VALUE&nbsp;under, char&nbsp;*name, VALUE&nbsp;superclass") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Defines a nested class under the class or module <EM>under</EM>. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_define_module_under</B>(VALUE&nbsp;under, char&nbsp;*name") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Defines a nested module under the class or module <EM>under</EM>. </TD></TR>
+<TR>
+<TD><TT>void&nbsp;</TT> </TD>
+<TD><TT><B>rb_include_module</B>(VALUE&nbsp;parent, VALUE&nbsp;module") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Includes the given <EM>module</EM> into the class or module <EM>parent</EM>. </TD></TR>
+<TR>
+<TD><TT>void&nbsp;</TT> </TD>
+<TD><TT><B>rb_extend_object</B>(VALUE&nbsp;obj, VALUE&nbsp;module") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Extends <EM>obj</EM> with <EM>module</EM>. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_require</B>(const&nbsp;char&nbsp;*name") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Equivalent to ``<CODE>require</CODE> <EM>name</EM>.'' Returns <CODE>Qtrue</CODE> or <CODE>Qfalse</CODE>. </TD></TR>
+<P></P></TBODY></TABLE>
+<P></P>In some of the function definitions that follow, the parameter <EM>argc</EM> specifies how many arguments a Ruby method takes. It may have the following values. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<TBODY>
+<TR bgColor=#ff9999>
+<TD vAlign=top><B><EM>argc</EM> </B></TD>
+<TD vAlign=top><B>Function prototype</B> </TD></TR>
+<TR>
+<TD vAlign=top>0..17</TD>
+<TD vAlign=top><CODE>VALUE func(VALUE self, VALUE arg...)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top></TD>
+<TD vAlign=top>The C function will be called with this many actual arguments.</TD></TR>
+<TR>
+<TD vAlign=top>-1</TD>
+<TD vAlign=top><CODE>VALUE func(int argc, VALUE *argv, VALUE self)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top></TD>
+<TD vAlign=top>The C function will be given a variable number of arguments passed as a C array.</TD></TR>
+<TR>
+<TD vAlign=top>-2</TD>
+<TD vAlign=top><CODE>VALUE func(VALUE self, VALUE args)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top></TD>
+<TD vAlign=top>The C function will be given a variable number of arguments passed as a Ruby array.</TD></TR>
+<TR>
+<TD bgColor=#ff9999 colSpan=9 height=2><IMG height=1 src="120_files/dot[1].gif"  width=1></TD></TR></TBODY></TABLE>
+<P></P>In a function that has been given a variable number of arguments, you can use the C function <CODE>rb_scan_args</CODE> to sort things out (see below). 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<TBODY>
+<TR>
+<TH align=middle colSpan=2>Defining Methods</TH></TR>
+<TR>
+<TD><TT>void&nbsp;</TT> </TD>
+<TD><TT><B>rb_define_method</B>(VALUE&nbsp;classmod, char&nbsp;*name, VALUE(*func)(), int&nbsp;argc") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Defines an instance method in the class or module <EM>classmod</EM> with the given <EM>name</EM>, implemented by the C function <EM>func</EM> and taking <EM>argc</EM> arguments. </TD></TR>
+<TR>
+<TD><TT>void&nbsp;</TT> </TD>
+<TD><TT><B>rb_define_module_function</B>(VALUE&nbsp;classmod, char&nbsp;*name, VALUE(*func)(), int&nbsp;argc)") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Defines a method in class <EM>classmod</EM> with the given <EM>name</EM>, implemented by the C function <EM>func</EM> and taking <EM>argc</EM> arguments. </TD></TR>
+<TR>
+<TD><TT>void&nbsp;</TT> </TD>
+<TD><TT><B>rb_define_global_function</B>(char&nbsp;*name, VALUE(*func)(), int&nbsp;argc") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Defines a global function (a private method of <CODE>Kernel</CODE>) with the given <EM>name</EM>, implemented by the C function <EM>func</EM> and taking <EM>argc</EM> arguments. </TD></TR>
+<TR>
+<TD><TT>void&nbsp;</TT> </TD>
+<TD><TT><B>rb_define_singleton_method</B>(VALUE&nbsp;classmod, char&nbsp;*name, VALUE(*func)(), int&nbsp;argc") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Defines a singleton method in class <EM>classmod</EM> with the given <EM>name</EM>, implemented by the C function <EM>func</EM> and taking <EM>argc</EM> arguments. </TD></TR>
+<TR>
+<TD><TT>int&nbsp;</TT> </TD>
+<TD><TT><B>rb_scan_args</B>(int&nbsp;argcount, VALUE&nbsp;*argv, char&nbsp;*fmt, ...") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Scans the argument list and assigns to variables similar to <CODE>scanf</CODE>: <EM>fmt</EM> is a string containing zero, one, or two digits followed by some flag characters. The first digit indicates the count of mandatory arguments; the second is the count of optional arguments. A ``*'' means to pack the rest of the arguments into a Ruby array. A ``&amp;'' means that an attached code block will be taken and assigned to the given variable (if no code block was given, <CODE>Qnil</CODE> will be assigned). After the <EM>fmt</EM> string, pointers to <CODE>VALUE</CODE> are given (as with <CODE>scanf</CODE>) to which the arguments are assigned. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>VALUE&nbsp;name,&nbsp;one,&nbsp;two,&nbsp;rest;
+rb_scan_args(argc,&nbsp;argv,&nbsp;"12",&nbsp;&amp;name,&nbsp;&amp;one,&nbsp;&amp;two);
+rb_scan_args(argc,&nbsp;argv,&nbsp;"1*",&nbsp;&amp;name,&nbsp;&amp;rest);
+</PRE></TD></TR></TBODY></TABLE></TD></TR>
+<P></P>
+<TR>
+<TD><TT>void&nbsp;</TT> </TD>
+<TD><TT><B>rb_undef_method</B>(VALUE&nbsp;classmod, const&nbsp;char&nbsp;*name") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Undefines the given method <EM>name</EM> in the given <EM>classmod</EM> class or module. </TD></TR>
+<TR>
+<TD><TT>void&nbsp;</TT> </TD>
+<TD><TT><B>rb_define_alias</B>(VALUE&nbsp;classmod, const&nbsp;char&nbsp;*newname, const&nbsp;char&nbsp;*oldname") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Defines an alias for <EM>oldname</EM> in class or module <EM>classmod</EM>. </TD></TR>
+<P></P></TBODY></TABLE>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<TBODY>
+<TR>
+<TH align=middle colSpan=2>Defining Variables and Constants</TH></TR>
+<TR>
+<TD><TT>void&nbsp;</TT> </TD>
+<TD><TT><B>rb_define_const</B>(VALUE&nbsp;classmod, char&nbsp;*name, VALUE&nbsp;value") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Defines a constant in the class or module <EM>classmod</EM>, with the given <EM>name</EM> and <EM>value</EM>. </TD></TR>
+<TR>
+<TD><TT>void&nbsp;</TT> </TD>
+<TD><TT><B>rb_define_global_const</B>(char&nbsp;*name, VALUE&nbsp;value") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Defines a global constant with the given <EM>name</EM> and <EM>value</EM>. </TD></TR>
+<P></P>
+<TR>
+<TD><TT>void&nbsp;</TT> </TD>
+<TD><TT><B>rb_define_variable</B>(const&nbsp;char&nbsp;*name, VALUE&nbsp;*object") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Exports the address of the given <EM>object</EM> that was created in C to the Ruby namespace as <EM>name</EM>. From Ruby, this will be a global variable, so <EM>name</EM> should start with a leading dollar sign. Be sure to honor Ruby's rules for allowed variable names; illegally named variables will not be accessible from Ruby. </TD></TR>
+<P></P>
+<TR>
+<TD><TT>void&nbsp;</TT> </TD>
+<TD><TT><B>rb_define_class_variable</B>(VALUE&nbsp;class, const&nbsp;char&nbsp;*name, VALUE&nbsp;val") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Defines a class variable <EM>name</EM> (which must be specified with a ``<CODE>@@</CODE>'' prefix) in the given <EM>class</EM>, initialized to <EM>value</EM>. </TD></TR>
+<P></P>
+<TR>
+<TD><TT>void&nbsp;</TT> </TD>
+<TD><TT><B>rb_define_virtual_variable</B>(const&nbsp;char&nbsp;*name, VALUE(*getter)(), void(*setter)()") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Exports a virtual variable to Ruby namespace as the global $<EM>name</EM>. No actual storage exists for the variable; attempts to get and set the value will call the given functions with the prototypes: 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>VALUE&nbsp;getter(ID&nbsp;id,&nbsp;VALUE&nbsp;*data,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;struct&nbsp;global_entry&nbsp;*entry);
+void&nbsp;setter(VALUE&nbsp;value,&nbsp;ID&nbsp;id,&nbsp;VALUE&nbsp;*data,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;struct&nbsp;global_entry&nbsp;*entry);
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>You will likely not need to use the <EM>entry</EM> parameter and can safely omit it from your function declarations. </TD></TR>
+<P></P>
+<TR>
+<TD><TT>void&nbsp;</TT> </TD>
+<TD><TT><B>rb_define_hooked_variable</B>(const&nbsp;char&nbsp;*name, VALUE&nbsp;*variable, VALUE(*getter)(), void(*setter)()") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Defines functions to be called when reading or writing to <EM>variable</EM>. See also <CODE>rb_define_virtual_variable</CODE>. </TD></TR>
+<TR>
+<TD><TT>void&nbsp;</TT> </TD>
+<TD><TT><B>rb_define_readonly_variable</B>(const&nbsp;char&nbsp;*name, VALUE&nbsp;*value") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Same as <CODE>rb_define_variable</CODE>, but read-only from Ruby. </TD></TR>
+<TR>
+<TD><TT>void&nbsp;</TT> </TD>
+<TD><TT><B>rb_define_attr</B>(VALUE&nbsp;variable, const&nbsp;char&nbsp;*name, int&nbsp;read, int&nbsp;write") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Creates accessor methods for the given <EM>variable</EM>, with the given <EM>name</EM>. If <EM>read</EM> is nonzero, create a read method; if <EM>write</EM> is nonzero, create a write method. </TD></TR>
+<TR>
+<TD><TT>void&nbsp;</TT> </TD>
+<TD><TT><B>rb_global_variable</B>(VALUE&nbsp;*obj") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Registers the given address with the garbage collector.</TD></TR>
+<P></P></TBODY></TABLE>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<TBODY>
+<TR>
+<TH align=middle colSpan=2>Calling Methods</TH></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_funcall</B>(VALUE&nbsp;recv, ID&nbsp;id, int&nbsp;argc, ...") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Invokes the method given by <EM>id</EM> in the object <EM>recv</EM> with the given number of arguments <EM>argc</EM> and the arguments themselves (possibly none). </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_funcall2</B>(VALUE&nbsp;recv, ID&nbsp;id, int&nbsp;argc, VALUE&nbsp;*args") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Invokes the method given by <EM>id</EM> in the object <EM>recv</EM> with the given number of arguments <EM>argc</EM> and the arguments themselves given in the C array <EM>args</EM>. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_funcall3</B>(VALUE&nbsp;recv, ID&nbsp;id, int&nbsp;argc, VALUE&nbsp;*args") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Same as <CODE>rb_funcall2</CODE>, but will not call private methods. </TD></TR>
+<P></P>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_apply</B>(VALUE&nbsp;recv, ID&nbsp;name, int&nbsp;argc, VALUE&nbsp;args") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Invokes the method given by <EM>id</EM> in the object <EM>recv</EM> with the given number of arguments <EM>argc</EM> and the arguments themselves given in the Ruby <CODE>Array</CODE> <EM>args</EM>. </TD></TR>
+<TR>
+<TD><TT>ID&nbsp;</TT> </TD>
+<TD><TT><B>rb_intern</B>(char&nbsp;*name") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Returns an <CODE>ID</CODE> for a given <EM>name</EM>. If the name does not exist, a symbol table entry will be created for it. </TD></TR>
+<TR>
+<TD><TT>char *&nbsp;</TT> </TD>
+<TD><TT><B>rb_id2name</B>(ID&nbsp;id") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Returns a name for the given <EM>id</EM>. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_call_super</B>(int&nbsp;argc, VALUE&nbsp;*args") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Calls the current method in the superclass of the current object. </TD></TR>
+<P></P></TBODY></TABLE>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<TBODY>
+<TR>
+<TH align=middle colSpan=2>Exceptions</TH></TR>
+<TR>
+<TD><TT>void&nbsp;</TT> </TD>
+<TD><TT><B>rb_raise</B>(VALUE exception, const&nbsp;char&nbsp;*fmt, ...") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Raises an <EM>exception</EM>. The given string <EM>fmt</EM> and remaining arguments are interpreted as with <CODE>printf</CODE>. </TD></TR>
+<TR>
+<TD><TT>void&nbsp;</TT> </TD>
+<TD><TT><B>rb_fatal</B>(const&nbsp;char&nbsp;*fmt, ...") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Raises a <CODE>Fatal</CODE> exception, terminating the process. No rescue blocks are called, but ensure blocks will be called. The given string <EM>fmt</EM> and remaining arguments are interpreted as with <CODE>printf</CODE>. </TD></TR>
+<TR>
+<TD><TT>void&nbsp;</TT> </TD>
+<TD><TT><B>rb_bug</B>(const&nbsp;char&nbsp;*fmt, ...") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Terminates the process immediately---no handlers of any sort will be called. The given string <EM>fmt</EM> and remaining arguments are interpreted as with <CODE>printf</CODE>. You should call this function only if a fatal bug has been exposed. You don't write fatal bugs, do you? </TD></TR>
+<TR>
+<TD><TT>void&nbsp;</TT> </TD>
+<TD><TT><B>rb_sys_fail</B>(const&nbsp;char&nbsp;*msg") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Raises a platform-specific exception corresponding to the last known system error, with the given <EM>msg</EM>. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_rescue</B>(VALUE&nbsp;(*body)(), VALUE&nbsp;args, VALUE(*rescue)(), VALUE&nbsp;rargs") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Executes <EM>body</EM> with the given <EM>args</EM>. If a <CODE>StandardError</CODE> exception is raised, then execute <EM>rescue</EM> with the given <EM>rargs</EM>. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_ensure</B>(VALUE(*body)(), VALUE&nbsp;args, VALUE(*ensure)(), VALUE&nbsp;eargs") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Executes <EM>body</EM> with the given <EM>args</EM>. Whether or not an exception is raised, execute <EM>ensure</EM> with the given <EM>rargs</EM> after <EM>body</EM> has completed. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_protect</B>(VALUE&nbsp;(*body)(), VALUE&nbsp;args, int&nbsp;*result") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Executes <EM>body</EM> with the given <EM>args</EM> and returns nonzero in <EM>result</EM> if any exception was raised. </TD></TR>
+<TR>
+<TD><TT>void&nbsp;</TT> </TD>
+<TD><TT><B>rb_notimplement</B>(") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Raises a <CODE>NotImpError</CODE> exception to indicate that the enclosed function is not implemented yet, or not available on this platform. </TD></TR>
+<TR>
+<TD><TT>void&nbsp;</TT> </TD>
+<TD><TT><B>rb_exit</B>(int&nbsp;status") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Exits Ruby with the given <EM>status</EM>. Raises a <CODE>SystemExit</CODE> exception and calls registered exit functions and finalizers. </TD></TR>
+<TR>
+<TD><TT>void&nbsp;</TT> </TD>
+<TD><TT><B>rb_warn</B>(const&nbsp;char&nbsp;*fmt, ...") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Unconditionally issues a warning message to standard error. The given string <EM>fmt</EM> and remaining arguments are interpreted as with <CODE>printf</CODE>. </TD></TR>
+<TR>
+<TD><TT>void&nbsp;</TT> </TD>
+<TD><TT><B>rb_warning</B>(const&nbsp;char&nbsp;*fmt, ...") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Conditionally issues a warning message to standard error if Ruby was invoked with the <CODE>-w</CODE> flag. The given string <EM>fmt</EM> and remaining arguments are interpreted as with <CODE>printf</CODE>. </TD></TR>
+<P></P></TBODY></TABLE>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<TBODY>
+<TR>
+<TH align=middle colSpan=2>Iterators</TH></TR>
+<TR>
+<TD><TT>void&nbsp;</TT> </TD>
+<TD><TT><B>rb_iter_break</B>(") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Breaks out of the enclosing iterator block. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_each</B>(VALUE&nbsp;obj") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Invokes the <CODE>each</CODE> method of the given <EM>obj</EM>. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_yield</B>(VALUE&nbsp;arg") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Transfers execution to the iterator block in the current context, passing <EM>arg</EM> as an argument. Multiple values may be passed in an array. </TD></TR>
+<TR>
+<TD><TT>int&nbsp;</TT> </TD>
+<TD><TT><B>rb_block_given_p</B>(") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Returns true if <CODE>yield</CODE> would execute a block in the current context---that is, if a code block was passed to the current method and is available to be called. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_iterate</B>(VALUE&nbsp;(*method)(), VALUE&nbsp;args, VALUE&nbsp;(*block)(), VALUE&nbsp;arg2") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Invokes <EM>method</EM> with argument <EM>args</EM> and block <EM>block</EM>. A <CODE>yield</CODE> from that method will invoke <EM>block</EM> with the argument given to <CODE>yield</CODE>, and a second argument <EM>arg2</EM>. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_catch</B>(const&nbsp;char&nbsp;*tag, VALUE&nbsp;(*proc)(), VALUE&nbsp;value") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Equivalent to Ruby <CODE>catch</CODE>. </TD></TR>
+<TR>
+<TD><TT>void&nbsp;</TT> </TD>
+<TD><TT><B>rb_throw</B>(const&nbsp;char&nbsp;*tag , VALUE&nbsp;value") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Equivalent to Ruby <CODE>throw</CODE>. </TD></TR>
+<P></P></TBODY></TABLE>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<TBODY>
+<TR>
+<TH align=middle colSpan=2>Accessing Variables</TH></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_iv_get</B>(VALUE&nbsp;obj, char&nbsp;*name") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Returns the instance variable <EM>name</EM> (which must be specified with a ``<CODE>@</CODE>'' prefix) from the given <EM>obj</EM>. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_ivar_get</B>(VALUE&nbsp;obj, ID&nbsp;name") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Returns the instance variable <EM>name</EM> from the given <EM>obj</EM>. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_iv_set</B>(VALUE&nbsp;obj, char&nbsp;*name, VALUE&nbsp;value") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Sets the value of the instance variable <EM>name</EM> (which must be specified with a ``<CODE>@</CODE>'' prefix) in the given <EM>obj</EM> to <EM>value</EM>. Returns <EM>value</EM>. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_ivar_set</B>(VALUE&nbsp;obj, ID&nbsp;name, VALUE&nbsp;value") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Sets the value of the instance variable <EM>name</EM> in the given <EM>obj</EM> to <EM>value</EM>. Returns <EM>value</EM>. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_gv_set</B>(const&nbsp;char&nbsp;*name, VALUE&nbsp;value") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Sets the global variable <EM>name</EM> (the ``<CODE>$</CODE>'' prefix is optional) to <EM>value</EM>. Returns <EM>value</EM>. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_gv_get</B>(const&nbsp;char&nbsp;*name") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Returns the global variable <EM>name</EM> (the ``<CODE>$</CODE>'' prefix is optional). </TD></TR>
+<TR>
+<TD><TT>void&nbsp;</TT> </TD>
+<TD><TT><B>rb_cvar_set</B>(VALUE&nbsp;class, ID&nbsp;name, VALUE&nbsp;val") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Sets the class variable <EM>name</EM> in the given <EM>class</EM> to <EM>value</EM>. </TD></TR>
+<P></P>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_cvar_get</B>(VALUE&nbsp;class, ID&nbsp;name") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Returns the class variable <EM>name</EM> from the given <EM>class</EM>. </TD></TR>
+<P></P>
+<TR>
+<TD><TT>int&nbsp;</TT> </TD>
+<TD><TT><B>rb_cvar_defined</B>(VALUE&nbsp;class, ID&nbsp;name") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Returns <CODE>Qtrue</CODE> if the given class variable <EM>name</EM> has been defined for <EM>class</EM>; otherwise, returns <CODE>Qfalse</CODE>. </TD></TR>
+<P></P>
+<TR>
+<TD><TT>void&nbsp;</TT> </TD>
+<TD><TT><B>rb_cv_set</B>(VALUE&nbsp;class, const&nbsp;char&nbsp;*name, VALUE&nbsp;val") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Sets the class variable <EM>name</EM> (which must be specified with a ``<CODE>@@</CODE>'' prefix) in the given <EM>class</EM> to <EM>value</EM>. </TD></TR>
+<P></P>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_cv_get</B>(VALUE&nbsp;class, const&nbsp;char&nbsp;*name") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Returns the class variable <EM>name</EM> (which must be specified with a ``<CODE>@@</CODE>'' prefix) from the given <EM>class</EM>. </TD></TR>
+<P></P></TBODY></TABLE>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<TBODY>
+<TR>
+<TH align=middle colSpan=2>Object Status</TH></TR>
+<TR>
+<TD><TT>&nbsp;</TT> </TD>
+<TD><TT><B>OBJ_TAINT</B>(VALUE&nbsp;obj") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Marks the given <EM>obj</EM> as tainted. </TD></TR>
+<TR>
+<TD><TT>int&nbsp;</TT> </TD>
+<TD><TT><B>OBJ_TAINTED</B>(VALUE&nbsp;obj") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Returns nonzero if the given <EM>obj</EM> is tainted. </TD></TR>
+<TR>
+<TD><TT>&nbsp;</TT> </TD>
+<TD><TT><B>OBJ_FREEZE</B>(VALUE&nbsp;obj") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Marks the given <EM>obj</EM> as frozen. </TD></TR>
+<TR>
+<TD><TT>int&nbsp;</TT> </TD>
+<TD><TT><B>OBJ_FROZEN</B>(VALUE&nbsp;obj") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Returns nonzero if the given <EM>obj</EM> is frozen. </TD></TR>
+<TR>
+<TD><TT>&nbsp;</TT> </TD>
+<TD><TT><B>Check_SafeStr</B>(VALUE&nbsp;str") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Raises <CODE>SecurityError</CODE> if current safe level &gt; 0 and <EM>str</EM> is tainted, or a <CODE>TypeError</CODE> if <EM>str</EM> is not a <CODE>T_STRING</CODE>. </TD></TR>
+<TR>
+<TD><TT>int&nbsp;</TT> </TD>
+<TD><TT><B>rb_safe_level</B>(") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Returns the current safe level. </TD></TR>
+<TR>
+<TD><TT>void&nbsp;</TT> </TD>
+<TD><TT><B>rb_secure</B>(int&nbsp;level") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Raises <CODE>SecurityError</CODE> if <EM>level</EM> &lt;= current safe level. </TD></TR>
+<TR>
+<TD><TT>void&nbsp;</TT> </TD>
+<TD><TT><B>rb_set_safe_level</B>(int&nbsp;newlevel") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Sets the current safe level to <EM>newlevel</EM>. </TD></TR>
+<P></P></TBODY></TABLE>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<TBODY>
+<TR>
+<TH align=middle colSpan=2>Commonly Used Methods</TH></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_ary_new</B>(") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Returns a new <CODE>Array</CODE> with default size. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_ary_new2</B>(long&nbsp;length") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Returns a new <CODE>Array</CODE> of the given <EM>length</EM>. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_ary_new3</B>(long&nbsp;length, ...") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Returns a new <CODE>Array</CODE> of the given <EM>length</EM> and populated with the remaining arguments. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_ary_new4</B>(long&nbsp;length, VALUE&nbsp;*values") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Returns a new <CODE>Array</CODE> of the given <EM>length</EM> and populated with the C array <EM>values</EM>. </TD></TR>
+<TR>
+<TD><TT>void&nbsp;</TT> </TD>
+<TD><TT><B>rb_ary_store</B>(VALUE&nbsp;self, long&nbsp;index, VALUE&nbsp;value") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Stores <EM>value</EM> at <EM>index</EM> in array <EM>self</EM>. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_ary_push</B>(VALUE&nbsp;self, VALUE&nbsp;value") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Pushes <EM>value</EM> onto the end of array <EM>self</EM>. Returns <EM>value</EM>. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_ary_pop</B>(VALUE&nbsp;self") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Removes and returns the last element from the array <EM>self</EM>. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_ary_shift</B>(VALUE&nbsp;self") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Removes and returns the first element from the array <EM>self</EM>. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_ary_unshift</B>(VALUE&nbsp;self, VALUE&nbsp;value") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Pushes <EM>value</EM> onto the front of array <EM>self</EM>. Returns <EM>value</EM>. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_ary_entry</B>(VALUE&nbsp;self, long&nbsp;index") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Returns array <EM>self</EM>'s element at <EM>index</EM>. </TD></TR>
+<TR>
+<TD><TT>int&nbsp;</TT> </TD>
+<TD><TT><B>rb_respond_to</B>(VALUE&nbsp;self, ID&nbsp;method") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Returns nonzero if <EM>self</EM> responds to <EM>method</EM>. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_thread_create</B>(VALUE&nbsp;(*func)(), void&nbsp;*data") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Runs <EM>func</EM> in a new thread, passing <EM>data</EM> as an argument. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_hash_new</B>(") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Returns a new, empty <CODE>Hash</CODE>. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_hash_aref</B>(VALUE&nbsp;self, VALUE&nbsp;key") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Returns the element corresponding to <EM>key</EM> in <EM>self</EM>. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_hash_aset</B>(VALUE&nbsp;self, VALUE&nbsp;key, VALUE&nbsp;value") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Sets the value for <EM>key</EM> to <EM>value</EM> in <EM>self</EM>. Returns <EM>value</EM>. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_obj_is_instance_of</B>(VALUE&nbsp;obj, VALUE&nbsp;klass") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Returns <CODE>Qtrue</CODE> if <EM>obj</EM> is an instance of <EM>klass</EM>. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_obj_is_kind_of</B>(VALUE&nbsp;obj, VALUE&nbsp;klass") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Returns <CODE>Qtrue</CODE> if <EM>klass</EM> is the class of <EM>obj</EM> or <EM>class</EM> is one of the superclasses of the class of <EM>obj</EM>. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_str_new</B>(const&nbsp;char&nbsp;*src, long&nbsp;length") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Returns a new <CODE>String</CODE> initialized with <EM>length</EM> characters from <EM>src</EM>. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_str_new2</B>(const&nbsp;char&nbsp;*src") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Returns a new <CODE>String</CODE> initialized with the null-terminated C string <EM>src</EM>. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_str_dup</B>(VALUE&nbsp;str") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Returns a new <CODE>String</CODE> object duplicated from <EM>str</EM>. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_str_cat</B>(VALUE&nbsp;self, const&nbsp;char&nbsp;*src, long&nbsp;length") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Concatenates <EM>length</EM> characters from <EM>src</EM> onto the <CODE>String</CODE> <EM>self</EM>. Returns <EM>self</EM>. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_str_concat</B>(VALUE&nbsp;self, VALUE&nbsp;other") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Concatenates <EM>other</EM> onto the <CODE>String</CODE> <EM>self</EM>. Returns <EM>self</EM>. </TD></TR>
+<TR>
+<TD><TT>VALUE&nbsp;</TT> </TD>
+<TD><TT><B>rb_str_split</B>(VALUE&nbsp;self, const&nbsp;char&nbsp;*delim") </TT></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>Returns an array of <CODE>String</CODE> objects created by splitting <EM>self</EM> on <EM>delim</EM>. </TD></TR>
+<P></P></TBODY></TABLE>
+<P></P>
+<P></P>
+<HR>
+
+<TABLE cellSpacing=0 cellPadding=10 bgColor=#a03030 border=0>
+<TBODY>
+<TR>
+<TD align=left width="33%"><A class=subheader href="113.html" >上一章 &lt;</A> </TD>
+<TD vAlign=center align=middle width="33%"><A class=subheader href="95.html" >目录 ^</A> <BR></TD>
+<TD align=right width="33%"><A class=subheader href="115.html" >下一章 &gt;</A> <BR></TD></TR></TBODY></TABLE>
+<P></P><FONT size=-1>Extracted from the book "Programming Ruby - The Pragmatic Programmer's Guide"</FONT> <BR><FONT size=-3>Copyright &copy; 2001 by Addison Wesley Longman, Inc. This material may be distributed only subject to the terms and conditions set forth in the Open Publication License, v1.0 or later (the latest version is presently available at <A href="http://www.opencontent.org/openpub/" >http://www.opencontent.org/openpub/</A>)). 
+<P></P>Distribution of substantively modified versions of this document is prohibited without the explicit permission of the copyright holder. 
+<P></P>Distribution of the work or derivative of the work in any standard (paper) book form is prohibited unless prior permission is obtained from the copyright holder. <BR></FONT></BODY>

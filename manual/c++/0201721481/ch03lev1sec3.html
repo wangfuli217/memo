@@ -1,0 +1,499 @@
+<html>
+<META http-equiv="Content-Type" content="text/html; charset=utf-8">
+<head>
+<title>Section 3.3.&nbsp; Library vector Type</title>
+<link rel="STYLESHEET" type="text/css" href="images/style.css" >
+<link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+<body>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr><td><div STYLE="MARGIN-LEFT: 0.15in;"><a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle"  alt="Team LiB"></a></div></td>
+<td align="right"><div STYLE="MARGIN-LEFT: 0.15in;">
+<a href="ch03lev1sec2.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a>
+<a href="ch03lev1sec4.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+</div></td></tr></table>
+<br><table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td valign="top"><a name="ch03lev1sec3"></a>
+<H3 class="docSection1Title">3.3. Library <tt>vector</tt> Type</H3>
+<H3 class="docSection1Title">3.3. 标准库 <tt>vector</tt> 类型</H3>
+<p class="docText">A <tt>vector</tt> is a collection of objects of a single type, each of which has an associated integer index. As with <tt>string</tt>s, the library takes care of managing the memory associated with storing the elements. We speak of a <tt>vector</tt> as a <B><a name="ch03term5"></a><a class="docLink" href="ch03lev1sec7.html#gloss03_05" >container</a></b> because it contains other objects. All of the objects in a container must have the same type. We'll have much more to say about containers in <a class="docLink" href="ch09.html#ch09" >Chapter 9</a>.</P>
+<p class="docText"><tt>vector</tt> 是同一种类型的对象的集合，每个对象都有一个对应的整数索引值。和 <tt>string</tt> 对象一样，标准库将负责管理与存储元素相关的内存。我们把 <tt>vector</tt> 称为<b><a name="ch03term5"></a><a class="docLink" href="ch03lev1sec7.html#gloss03_05" >容器</a></b>，是因为它可以包含其他对象。一个容器中的所有对象都必须是同一种类型的。我们将在<a class="docLink" href="ch09.html#ch09" >第九章</a>更详细地介绍容器。</p>
+
+<p class="docText">To use a <tt>vector</tt>, we must include the appropriate header. In our examples, we also assume an appropriate <tt>using</tt> declaration is made:</p>
+<p class="docText">使用 <tt>vector</tt> 之前，必须包含相应的头文件。本书给出的例子，都是假设已作了相应的 <tt>using</tt> 声明：</p>
+<pre>
+     #include &lt;vector&gt;
+     using std::vector;
+</pre><br>
+<p class="docText">A <tt>vector</tt> is a <b><a name="ch03term4"></a><a class="docLink" href="ch03lev1sec7.html#gloss03_04" >class template</a></b>. Templates let us write a single class or function definition that can be used on a variety of types. Thus, we can define a <tt>vector</tt> <a name="idd1e18623"></a><a name="idd1e18629"></a>that holds <tt>string</tt>s, or a <tt>vector</tt> to hold <tt>int</tt>s, or one to hold objects of our own class types, such as <tt>Sales_items</tt>. We'll see how to define our own class templates in <a class="docLink" href="ch16.html#ch16" >Chapter 16</a>. Fortunately, we need to know very little about how templates are defined in order to use them.</p>
+<p class="docText"><tt>vector</tt> 是一个<b><a name="ch03term4"></a><a class="docLink" href="ch03lev1sec7.html#gloss03_04" >类模板</a>（class template）</b>。使用模板可以编写一个类定义或函数定义，而用于多个不同的数据类型。因此，我们可以定义保存 <tt>string</tt> 对象的 <tt>vector</tt>，或保存 <tt>int</tt> 值的 <tt>vector</tt>，又或是保存自定义的类类型对象（如 <tt>Sales_items</tt> 对象）的 <tt>vector</tt>。将在<a class="docLink" href="ch16.html#ch16" >第十六章</a>介绍如何定义程序员自己的类模板。幸运的是，使用类模板时只需要简单了解类模板是如何定义的就可以了。</p>
+
+<p class="docText">To declare objects of a type generated from a class template, we must supply additional information. The nature of this information depends on the template. In the case of <tt>vector</tt>, we must say what type of objects the <tt>vector</tt> will contain. We specify the type by putting it between a pair of angle brackets following the template's name:</p>
+<p class="docText">声明从类模板产生的某种类型的对象，需要提供附加信息，信息的种类取决于模板。以 <tt>vector</tt> 为例，必须说明 <tt>vector</tt> 保存何种对象的类型，通过将类型放在类型放在类模板名称后面的尖括号中来指定类型：</p>
+<pre>
+     vector&lt;int&gt; ivec;               // <span class="docEmphasis">ivec</span> <span class="docEmphItalicAlt">holds objects of type</span> <span class="docEmphasis">int</span>
+     vector&lt;Sales_item&gt; Sales_vec;   // <span class="docEmphItalicAlt">holds</span> <span class="docEmphasis">Sales_item</span><span class="docEmphItalicAlt">s</span>
+</pre><br>
+<p class="docText">As in any variable definition, we specify a type and a list of one or more variables. In the first of these definitions, the type is <tt>vector&lt;int&gt;</tt>, which is a <tt>vector</tt> that holds objects of type <tt>int</tt>. The name of the variable is <tt>ivec</tt>. In the second, we define <tt>Sales_vec</tt> to hold <tt>Sales_item</tt> objects.</p>
+<p class="docText">和其他变量定义一样，定义 <tt>vector</tt> 对象要指定类型和一个变量的列表。上面的第一个定义，类型是 <tt>vector&lt;int&gt;</tt>，该类型即是含有若干 <tt>int</tt> 类型对象的 <tt>vector</tt>，变量名为 <tt>ivec</tt>。第二个定义的变量名是 <tt>Sales_vec</tt>，它所保存的元素是 <tt>Sales_item</tt> 类型的对象。</p>
+
+<a name="ch03note10"></a>
+<div class="docNote"><p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" align="LEFT" width="50" height="54" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+			<td valign="top">
+				<p class="docText"> <tt>vector</tt> is not a type; it is a template that we can use to define any number of types. Each of <tt>vector</tt> type specifies an element type. Hence, <tt>vector&lt;int&gt;</tt> and <tt>vector&lt;string&gt;</tt> are types.</p>
+				<p class="docText"><tt>vector</tt> 不是一种数据类型，而只是一个类模板，可用来定义任意多种数据类型。<tt>vector</tt> 类型的每一种都指定了其保存元素的类型。因此，<tt>vector&lt;int&gt;</tt> 和 <tt>vector&lt;string&gt;</tt> 都是数据类型。</p></td></tr>
+	</table><br>
+</p></div><br>
+
+<a name="ch03lev2sec6"></a>
+<H4 class="docSection2Title">3.3.1. Defining and Initializing <tt>vector</tt>s</H4>
+<H4 class="docSection2Title">3.3.1. <tt>vector</tt> 对象的定义和初始化</H4>
+
+<p class="docText">The <tt>vector</tt> class defines several constructors (<a class="docLink" href="ch02lev1sec3.html#ch02lev2sec12" >Section 2.3.3</a>, p. <a class="docLink" href="ch02lev1sec3.html#ch02lev2sec12" >49</a>), which we use to define and initialize <tt>vector</tt> objects. The constructors are listed in <a class="docLink" href="ch03lev1sec3.html#ch03table04">Table 3.4</a>.</p>
+<p class="docText"><tt>vector</tt> 类定义了好几种构造函数（<a class="docLink" href="ch02lev1sec3.html#ch02lev2sec12" >2.3.3 节</a>），用来定义和初始化 <tt>vector</tt> 对象。<a class="docLink" href="ch03lev1sec3.html#ch03table04">表 3.4</a> 列出了这些构造函数。</p>
+
+<a name="ch03table04"></a>
+<p><table cellspacing="0" class="allBorders" border="1" RULES="none" cellpadding="5">
+	<caption><h5 class="docTableTitle">Table 3.4. Ways to Initialize a <tt>vector</tt></h5></caption>
+	<colgroup><col width="225"><col width="275"></colgroup><thead></thead>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>vector&lt;T&gt; v1;</tt></p></td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>vector</tt> that holds objects of type <tt>T</tt>;</p>
+		</td>
+	</tr>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">&nbsp;</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Default constructor <tt>v1</tt> is empty</p>
+		</td>
+	</tr>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">&nbsp;</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>vector</tt> 保存类型为 <tt>T</tt> 对象。</p>
+		</td>
+	</tr>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">&nbsp;</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">默认构造函数 <tt>v1</tt> 为空。</p></td>
+	</tr>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>vector&lt;T&gt; v2(v1);</tt></p></td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>v2</tt> is a copy of <tt>v1</tt></p>
+			<p class="docText"><tt>v2</tt> 是 <tt>v1</tt> 的一个副本。</p></td>
+	</tr>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>vector&lt;T&gt; v3(n, i);</tt></p></td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>v3</tt> has <tt>n</tt> elements with value <tt>i</tt></p>
+			<p class="docText"><tt>v3</tt> 包含 <tt>n</tt> 个值为 <tt>i</tt> 的元素。</p></td>
+	</tr>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>vector&lt;T&gt; v4(n)</tt>;</p>
+		</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>v4</tt> has <tt>n</tt> copies of a value-initialized object</p>
+			<p class="docText"><tt>v4</tt> 含有值初始化的元素的 <tt>n</tt> 个副本。</p></td>
+	</tr>
+</table></p><br>
+
+<a name="ch03lev3sec13"></a>
+<H5 class="docSection3Title">Creating a Specified Number of Elements</H5>
+<H5 class="docSection3Title">创建确定个数的元素</H5>
+
+<p class="docText">When we create a <tt>vector</tt> that is not empty, we must supply value(s) to use to initialize the elements. When we copy one <tt>vector</tt> to another, each element in the new <tt>vector</tt> is initialized as a copy of the corresponding element in the original <tt>vector</tt>. The two <tt>vectors</tt> must hold the same element type:</P>
+<p class="docText">若要创建非空的 <tt>vector</tt> 对象，必须给出初始化元素的值。当把一个 <tt>vector</tt> 对象复制到另一个 <tt>vector</tt> 对象时，新复制的 <tt>vector</tt> 中每一个元素都初始化为原 <tt>vectors</tt> 中相应元素的副本。但这两个 <tt>vector</tt> 对象必须保存同一种元素类型：</p>
+
+<pre>
+     vector&lt;int&gt; ivec1;           // <span class="docEmphasis">ivec1</span> <span class="docEmphItalicAlt">holds objects of type</span> <span class="docEmphasis">int</span>
+     vector&lt;int&gt; ivec2(ivec1);    // <span class="docEmphItalicAlt">ok: copy elements of</span> <span class="docEmphasis">ivec1</span> <span class="docEmphasis">into</span> <span class="docEmphasis">ivec2</span>
+     vector&lt;string&gt; svec(ivec1);  // <span class="docEmphItalicAlt">error:</span> <span class="docEmphItalicAlt">svec</span> <span class="docEmphItalicAlt">holds</span> <span class="docEmphasis">string</span><span class="docEmphItalicAlt">s, not</span> <span class="docEmphasis">int</span><span class="docEmphItalicAlt">s</span>
+</pre><br>
+
+<a name="idd1e18925"></a><a name="idd1e18930"></a><a name="idd1e18933"></a>
+<p class="docText">We can initialize a <tt>vector</tt> from a count and an element value. The constructor uses the count to determine how many elements the <tt>vector</tt> should have and uses the value to specify the value each of those elements will have:</p>
+<p class="docText">可以用元素个数和元素值对 <tt>vector</tt> 对象进行初始化。构造函数用元素个数来决定 <tt>vector</tt> 对象保存元素的个数，元素值指定每个元素的初始值：</p>
+
+<pre>
+     vector&lt;int&gt; ivec4(10, -1);       // <span class="docEmphItalicAlt">10 elements, each initialized to -1</span>
+     vector&lt;string&gt; svec(10, "hi!");  // <span class="docEmphItalicAlt">10 strings, each initialized to "hi!"</span>
+</pre><br>
+
+<a name="ch03sb07"></a><p><table cellspacing="0" width="90%" border="1" cellpadding="5"><TR><td>
+<H2 class="docSidebarTitle">Key Concept: <tt>vector</tt>S Grow Dynamically</H2>
+<H2 class="docSidebarTitle">关键概念：<tt>vector</tt> 对象动态增长</H2>
+
+<p class="docText"><span class="docEmphStrong">A central property of <tt>vector</tt></span><span class="docEmphStrong">s (and the other library containers) is that they are required to be implemented so that it is efficient to add elements to them at run time. Because <tt>vector</tt></span><span class="docEmphStrong">s grow efficiently, it is usually best to let the <tt>vector</tt> grow by adding elements to it dynamically as the element values are known.</span></p>
+<p class="docText"><span class="docEmphStrong"><tt>vector</tt> 对象（以及其他标准库容器对象）的重要属性就在于可以在运行时高效地添加元素。因为</span><span class="docEmphStrong"> <tt>vector</tt> 增长的效率高，在元素值已知的情况下，最好是动态地添加元素。</span></p>
+
+<p class="docText"><span class="docEmphStrong">As we'll see in <a class="docLink" href="ch04.html#ch04" >Chapter 4</a>, this behavior is distinctly different from that of built-in arrays in C and for that matter in most other languages. In particular, readers accustomed to using C or Java might expect that because <tt>vector</tt> elements are stored contiguously, it would be best to preallocate the <tt>vector</tt> at its expected size. In fact, the contrary is the case, for reasons we'll explore in <a class="docLink" href="ch09.html#ch09" >Chapter 9</a>.</span></p>
+<p class="docText"><span class="docEmphStrong">正如<a class="docLink" href="ch04.html#ch04" >第四章</a>将介绍的，这种增长方式不同于 C 语言中的内置数据类型，也不同于大多数其他编程语言的数据类型。具体而言，如果读者习惯了 C 或 Java 的风格，由于 <tt>vector</tt> 元素连续存储，可能希望最好是预先分配合适的空间。但事实上，为了达到连续性，C++ 的做法恰好相反，具体原因将在<a class="docLink" href="ch09.html#ch09" >第九章</a>探讨。</span></p>
+
+<table width="90%" border="0" cellspacing="0" cellpadding="1">
+	<tr>
+		<td width="60" valign="top">
+			<img border="0" alt="" width="57" height="96" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" >
+		</td>
+		<td valign="top">
+			<p class="docText"><span class="docEmphStrong">Although we can preallocate a given number of elements in a <tt>vector</tt>, it is usually more efficient to define an empty <tt>vector</tt> and add elements to it (as we'll learn how to do shortly).</span></p>
+			<p class="docText"><span class="docEmphStrong">虽然可以对给定元素个数的 <tt>vector</tt> 对象预先分配内存，但更有效的方法是先初始化一个空 <tt>vector</tt> 对象，然后再动态地增加元素（我们随后将学习如何进行这样的操作）。</span></p></td></tr></table><br>
+</td></tr></table></p><br>
+
+<a name="ch03lev3sec14"></a>
+<H5 class="docSection3Title">Value Initialization</H5>
+<H5 class="docSection3Title">值初始化</H5>
+
+<p class="docText">When we do not specify an element initializer, then the library creates a <b><a name="ch03term21"></a><a class="docLink" href="ch03lev1sec7.html#gloss03_21" >value initialized</a></b> element initializer for us. This library-generated value is used to initialize each element in the container. The value of the element initializer depends on the type of the elements stored in the <tt>vector</tt>.</p>
+<p class="docText">如果没有指定元素的初始化式，那么标准库将自行提供一个元素初始值进行<b><a name="ch03term21"></a><a class="docLink" href="ch03lev1sec7.html#gloss03_21" >值初始化（value initializationd）</a></b>。这个由库生成的初始值将用来初始化容器中的每个元素，具体值为何，取决于存储在 <tt>vector</tt> 中元素的数据类型。</p>
+
+<p class="docText">If the <tt>vector</tt> holds elements of a built-in type, such as <tt>int</tt>, then the library creates an element initializer with a value of 0:</P>
+<p class="docText">如果 <tt>vector</tt> 保存内置类型（如 <tt>int</tt> 类型）的元素，那么标准库将用 0 值创建元素初始化式：</p>
+
+<pre>
+     vector&lt;string&gt; fvec(10); // <span class="docEmphItalicAlt">10 elements, each initialized to 0</span>
+</pre><BR>
+<p class="docText">If the <tt>vector</tt> holds elements of a class type, such as <tt>string</tt>, that defines its own constructors, then the library uses the value type's default constructor to create the element initializer:</p>
+<p class="docText">如果 <tt>vector</tt> 保存的是含有构造函数的类类型（如 <tt>string</tt>）的元素，标准库将用该类型的默认构造函数创建元素初始化式：</p>
+
+<pre>
+     vector&lt;string&gt; svec(10); // <span class="docEmphItalicAlt">10 elements, each an empty string</span>
+</pre><br>
+<a name="ch03note11"></a>
+<div class="docNote"><p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" align="LEFT" width="50" height="54" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+			<td valign="top">
+				<p class="docText"> As we'll see in <a class="docLink" href="ch12.html#ch12" >Chapter 12</a>, some classes that define their own constructors do not define a default constructor. We cannot initialize a <tt>vector</tt> of such a type by specifying only a size; we must also specify an initial element value.</p>
+				<p class="docText"><a class="docLink" href="ch12.html#ch12" >第十二章</a>将介绍一些有自定义构造函数但没有默认构造函数的类，在初始化这种类型的 <tt>vector</tt> 对象时，程序员就不能仅提供元素个数，还需要提供元素初始值。</p>
+	</td>
+</tr></table><br>
+</p></div><br>
+<p class="docText">There is a third possibility: The element type might be of a class type that does not define any constructors. In this case, the library still creates a value-initialized object. It does so by value-initializing each member of that object.</p>
+<p class="docText">还有第三种可能性：元素类型可能是没有定义任何构造函数的类类型。这种情况下，标准库仍产生一个带初始值的对象，这个对象的每个成员进行了值初始化。</p>
+
+<a name="ch03sb08"></a><P><table cellspacing="0" width="90%" border="1" cellpadding="5"><tr><td>
+<h2 class="docSidebarTitle">Exercises Section 3.3.1</h2>
+<blockquote>
+	<p>
+	<table border="0" cellspacing="16" cellpadding="0">
+		<tr valign="top">
+			<td align="right" class="docText" width="50"><a name="ch03qa5q1"></a>
+				<b>Exercise 3.11:</b></td>
+			<td>
+				<a name="idd1e19099"></a><a name="idd1e19106"></a><a name="idd1e19113"></a><a name="idd1e19120"></a><a name="idd1e19127"></a><a name="idd1e19134"></a>
+				<p class="docText">Which, if any, of the following vector definitions are in error?</p>
+				<p class="docText">下面哪些 <tt>vector</tt> 定义不正确？</p>
+<pre>
+     (a) vector&lt; vector&lt;int&gt; &gt; ivec;
+     (b) vector&lt;string&gt; svec = ivec;
+     (c) vector&lt;string&gt; svec(10, "null");
+</pre><br>
+				</td>
+					</tr>
+					<tr valign="top">
+						<td align="right" class="docText" width="50"><a name="ch03qa5q2"></a>
+							<b>Exercise 3.12:</b></td>
+						<td>
+							<p class="docText">How many elements are there in each of the following <tt>vector</tt>s? What are the values of the elements?</p>
+							<p class="docText">下列每个 <tt>vector</tt> 对象中元素个数是多少？各元素的值是什么？</p>
+<pre>
+     (a) vector&lt;int&gt; ivec1;
+     (b) vector&lt;int&gt; ivec2(10);
+     (c) vector&lt;int&gt; ivec3(10, 42);
+     (d) vector&lt;string&gt; svec1;
+     (e) vector&lt;string&gt; svec2(10);
+     (f) vector&lt;string&gt; svec3(10, "hello");
+</pre><br>
+							</td></tr>
+						</table></p>
+</blockquote>
+</td></tr></table></p><br>
+
+
+<a name="ch03lev2sec7"></a>
+<h4 class="docSection2Title">3.3.2. Operations on <tt>vector</tt>s</h4>
+<h4 class="docSection2Title">3.3.2. <tt>vector</tt> 对象的操作</h4>
+
+<p class="docText">The <tt>vector</tt> library provides various operations, many of which are similar to operations on <tt>string</tt>s. <a class="docLink" href="ch03lev1sec3.html#ch03table05">Table 3.5</a> lists the most important <tt>vector</tt> operations.</p>
+<p class="docText"><tt>vector</tt> 标准库提供了许多类似于 <tt>string</tt> 对象的操作，<a class="docLink" href="ch03lev1sec3.html#ch03table05">表 3.5</a> 列出了几种最重要的 <tt>vector</tt> 操作。</p>
+
+<a name="ch03table05"></a>
+<p><table cellspacing="0" class="allBorders" border="1" RULES="none" cellpadding="5">
+	<caption><H5 class="docTableTitle">Table 3.5. <tt>vector</tt> Operations</h5></caption>
+	<colgroup><col width="175"><col width="350"></colgroup><thead></thead>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>v.empty()</tt></p>
+		</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Returns <tt>true</tt> if <tt>v</tt> is empty; otherwise returns <tt>false</tt></p>
+			<p class="docText">如果 <tt>v</tt> 为空，则返回 <tt>true</tt>，否则返回 <tt>false</tt>。</p>
+		</td>
+</tr>
+<tr>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText"><tt>v.size()</tt></p></td>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText">Returns number of elements in <tt>v</tt></p>
+		<p class="docText">返回 <tt>v</tt> 中元素的个数。</p>
+	</td>
+</tr>
+<tr>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText"><tt>v.push_back(t)</tt></p>
+		</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Adds element with value <tt>t</tt> to end of <tt>v</tt></p>
+			<p class="docText">在 <tt>v</tt> 的末尾增加一个值为 <tt>t</tt> 的元素。</p>
+		</td>
+</tr>
+<tr>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText"><tt>v[n]</tt></p>
+	</td>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText">Returns element at position <tt>n</tt> in <tt>v</tt></p>
+		<p class="docText">返回 <tt>v</tt> 中位置为 <tt>n</tt> 的元素。</p>
+	</td>
+</tr>
+<tr>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText"><tt>v1 = v2</tt></p></td>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText">Replaces elements in <tt>v1</tt> by a copy of elements in <tt>v2</tt></p>
+		<p class="docText">把 <tt>v1</tt> 的元素替换为 <tt>v2</tt> 中元素的副本。</p>
+	</td>
+</tr>
+<tr>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText"><tt>v1 == v2</tt></p>
+	</td>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText">Returns <tt>true</tt> if <tt>v1</tt> and <tt>v2</tt> are equal</p>
+		<p class="docText">如果 <tt>v1</tt> 与 <tt>v2</tt> 相等，则返回 <tt>true</tt>。</p>
+	</td>
+</tr>
+<tr>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText"><tt>!=, &lt;, &lt;=</tt>, <br><tt>&gt;, and &gt;=</tt></p>
+	</td>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText">Have their normal meanings</p>
+		<p class="docText">保持这些操作符惯有的含义。</p>
+	</td>
+</tr></table></p><br>
+
+<a name="ch03lev3sec15"></a>
+<H5 class="docSection3Title">The <tt>size</tt> of a <tt>vector</tt></H5>
+<H5 class="docSection3Title"><tt>vector</tt> 对象的 <tt>size</tt></H5>
+<p class="docText">The <tt>empty</tt> and <tt>size</tt> operations are similar to the corresponding <tt>string</tt> operations (<a class="docLink" href="ch03lev1sec2.html#ch03lev2sec4" >Section 3.2.3</a>, p. <a class="docLink" href="ch03lev1sec2.html#ch03lev2sec4" >83</a>). The <tt>size</tt> member returns a value of the <tt>size_type</tt> defined by the corresponding <tt>vector</tt> type.</p>
+<p class="docText"><tt>empty</tt> 和 <tt>size</tt> 操作类似于 <tt>string</tt> 的相关操作（<a class="docLink" href="ch03lev1sec2.html#ch03lev2sec4" >3.2.3 节</a>）。成员函数 <tt>size</tt> 返回相应 <tt>vector</tt> 类定义的 <tt>size_type</tt> 的值。</p>
+
+<a name="ch03note12"></a>
+<div class="docNote"><p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" align="LEFT" width="50" height="54" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" >
+	</td>
+	<td valign="top">
+		<p class="docText"> To use <tt>size_type</tt>, we must name the type in which it is defined. A <tt>vector</tt> type <span class="docEmphasis">always</span> includes the element type of the <tt>vector</tt>:</p>
+		<p class="docText">使用 <tt>size_type</tt> 类型时，必须指出该类型是在哪里定义的。<tt>vector</tt> 类型总是包括<span class="docEmphasis">总是</span>包括 <tt>vector</tt> 的元素类型：</p>
+</td>
+</tr></table><br>
+<pre>
+     vector&lt;int&gt;::size_type        // <span class="docEmphItalicAlt">ok</span>
+     vector::size_type            // <span class="docEmphItalicAlt">error</span>
+</pre><br>
+</p></div><br>
+
+<a name="ch03lev3sec16"></a>
+<h5 class="docSection3Title">Adding Elements to a <tt>vector</tt></H5>
+<h5 class="docSection3Title">向 <tt>vector</tt> 添加元素</H5>
+
+<a name="idd1e19419"></a><a name="idd1e19427"></a><a name="idd1e19441"></a><a name="idd1e19446"></a><a name="idd1e19454"></a><a name="idd1e19463"></a><a name="idd1e19470"></a>The <b><a name="ch03term15"></a>
+<p class="docText"><a class="docLink" href="ch03lev1sec7.html#gloss03_15" ><span class="docEmphStrong"><tt>push_back</tt></span></a></b> operation takes an element value and adds that value as a new element at the back of a <tt>vector</tt>. In effect it &quot;pushes&quot; an element onto the &quot;back&quot; of the <tt>vector</tt>:</P>
+<p class="docText"><b><a class="docLink" href="ch03lev1sec7.html#gloss03_15" ><span class="docEmphStrong"><tt>push_back</tt></span></a></b> 操作接受一个元素值，并将它作为一个新的元素添加到 <tt>vector</tt> 对象的后面，也就是“插入（push）”到 <tt>vector</tt> 对象的“后面（back）”：</P>
+
+<pre>
+     // <span class="docEmphItalicAlt">read words from the standard input and store them as elements in a</span> <span class="docEmphasis">vector</span>
+     string word;
+     vector&lt;string&gt; text;    // <span class="docEmphItalicAlt">empty</span> <span class="docEmphasis">vector</span>
+     while (cin &gt;&gt; word) {
+         text.push_back(word);     // <span class="docEmphItalicAlt">append</span> <span class="docEmphasis">word</span> <span class="docEmphItalicAlt">to</span> <span class="docEmphasis">text</span>
+     }
+</pre><br>
+<p class="docText">This loop reads a sequence of <tt>string</tt>s from the standard input, appending them one at a time onto the back of the <tt>vector</tt>. We start by defining <tt>text</tt> as an initially empty <tt>vector</tt>. Each trip through the loop adds a new element to the <tt>vector</tt> and gives that element the value of whatever word was read from the input. When the loop completes, <tt>text</tt> will have as many elements as were read.</p>
+<p class="docText">该循环从标准输入读取一系列 <tt>string</tt> 对象，逐一追加到 <tt>vector</tt> 对象的后面。首先定义一个空的 <tt>vector</tt> 对象 <tt>text</tt>。每循环一次就添加一个新元素到 <tt>vector</tt> 对象，并将从输入读取的 <tt>word</tt> 值赋予该元素。当循环结束时，<tt>text</tt> 就包含了所有读入的元素。</p>
+
+<a name="ch03lev3sec17"></a>
+<h5 class="docSection3Title">Subscripting a <tt>vector</tt></h5>
+<h5 class="docSection3Title"><tt>vector</tt> 的下标操作</h5>
+
+<p class="docText">Objects in the <tt>vector</tt> are not named. Instead, they can be accessed by their position in the <tt>vector</tt>. We can fetch an element using the subscript operator. Subscripting a <tt>vector</tt> is similar to subscripting a <tt>string</tt> (<a class="docLink" href="ch03lev1sec2.html#ch03lev2sec4" >Section 3.2.3</a>, p. <a class="docLink" href="ch03lev1sec2.html#ch03lev2sec4" >87</a>).</p>
+<p class="docText"><tt>vector</tt> 中的对象是没有命名的，可以按 <tt>vector</tt> 中对象的位置来访问它们。通常使用下标操作符来获取元素。<tt>vector</tt> 的下标操作类似于 <tt>string</tt> 类型的下标操作（<a class="docLink" href="ch03lev1sec2.html#ch03lev2sec4" >3.2.3 节</a>）。.</p>
+
+<p class="docText">The <tt>vector</tt> subscript operator takes a value and returns the element at that position in the <tt>vector</tt>. Elements in a <tt>vector</tt> are numbered beginning with 0. The following example uses a <tt>for</tt> loop to reset each element in the <tt>vector</tt> to 0:</p>
+<p class="docText"><tt>vector</tt> 的下标操作符接受一个值，并返回 <tt>vector</tt> 中该对应位置的元素。<tt>vector</tt> 元素的位置从 0 开始。下例使用 <tt>for</tt> 循环把 <tt>vector</tt> 中的每个元素值都重置为 0：</p>
+
+<pre>
+     // <span class="docEmphItalicAlt">reset the elements in the</span> <span class="docEmphasis">vector</span> <span class="docEmphItalicAlt">to zero</span>
+     for (vector&lt;int&gt;::size_type ix = 0; ix != ivec.size(); ++ix)
+         ivec[ix] = 0;
+</pre><br>
+<p class="docText">Like the <tt>string</tt> subscript operator, the <tt>vector</tt> subscript yields an lvalue so that we may write to it, which we do in the body of the loop. Also, as we do for <tt>string</tt>s, we use the <tt>size_type</tt> of the <tt>vector</tt> as the type for the subscript.</p>
+<p class="docText">和 <tt>string</tt> 类型的下标操作符一样，<tt>vector</tt> 下标操作的结果为左值，因此可以像循环体中所做的那样实现写入。另外，和 <tt>string</tt> 对象的下标操作类似，这里用 <tt>size_type</tt> 类型作为 <tt>vector</tt> 下标的类型。</p>
+
+<a name="ch03note13"></a>
+<div class="docNote"><p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" align="LEFT" width="50" height="54" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" >
+			</td>
+			<td valign="top">
+				<p class="docText"> Even if <tt>ivec</tt> is empty, this <tt>for</tt> loop executes correctly. If <tt>ivec</tt> is empty, the call to <tt>size</tt> returns 0 and the test in the <tt>for</tt> compares <tt>ix</tt> to 0. Because <tt>ix</tt> is itself 0 on the first trip, the test would fail and the loop body would not be executed even once.</p>
+				<p class="docText">在上例中，即使 <tt>ivec</tt> 为空，<tt>for</tt> 循环也会正确执行。<tt>ivec</tt> 为空则调用 <tt>size</tt> 返回 0，并且 <tt>for</tt> 中的测试比较 <tt>ix</tt> 和 0。第一次循环时，由于 <tt>ix</tt> 本身就是 0 就是 0，则条件测试失败， <tt>for</tt> 循环体一次也不执行。</p>
+	</td>
+</tr></table><brR>
+</p></div><br>
+
+<a name="ch03lev3sec18"></a>
+<H5 class="docSection3Title">Subscripting Does Not Add Elements</H5>
+<H5 class="docSection3Title">下标操作不添加元素</H5>
+<p class="docText">Programmers new to C++ sometimes think that subscripting a <tt>vector</tt> adds elements; it does not:</p>
+<p class="docText">初学 C++ 的程序员可能会认为 <tt>vector</tt> 的下标操作可以添加元素，其实不然：</p>
+
+<pre>
+     vector&lt;int&gt; ivec;   // <span class="docEmphItalicAlt">empty</span> <span class="docEmphasis">vector</span>
+     for (vector&lt;int&gt;::size_type ix = 0; ix != 10; ++ix)
+         ivec[ix] = ix; // <span class="docEmphItalicAlt">disaster:</span> <span class="docEmphasis">ivec</span> <span class="docEmphItalicAlt">has no elements</span>
+</pre><br>
+
+<a name="ch03sb09"></a>
+<p><table cellspacing="0" width="90%" border="1" cellpadding="5"><tr><td>
+<H2 class="docSidebarTitle">Key Concept: Safe, Generic Programming</h2>
+<H2 class="docSidebarTitle">关键概念：安全的泛型编程</h2>
+
+<p class="docText"><a name="idd1e19690"></a><a name="idd1e19693"></a><a name="idd1e19696"></a><a name="idd1e19699"></a><span class="docEmphStrong">Programmers coming to C++ from C or Java might be surprised that our loop used <tt>!=</tt> rather than <tt>&lt;</tt> to test the index against the <tt>size</tt> of the <tt>vector</tt>. C programmers are probably also suprised that we call the <tt>size</tt> member in the <tt>for</tt> rather than calling it once before the loop and remembering its value.</span></P>
+<p class="docText"><span class="docEmphStrong">习惯于 C 或 Java 编程的 C++ 程序员可能会觉得难以理解，<tt>for</tt> 循环的判断条件用 <tt>!=</tt> 而不是用 <tt>&lt;</tt> 来测试 <tt>vector</tt> 下标值是否越界。C 程序员难以理解的还有，上例中没有在 <tt>for</tt> 循环之前就调用 <tt>size</tt> 成员函数并保存其返回的值，而是在 <tt>for</tt> 语句头中调用 <tt>size</tt> 成员函数。</span></P>
+
+<p class="docText"><span class="docEmphStrong">C++ programmers tend to write loops using <tt>!=</tt> in preference to <tt>&lt;</tt> as a matter of habit. In this case, there is no particular reason to choose one operator or the other. We'll understand the rationale for this habit once we cover generic programming in <a class="docLink" href="part02.html#part02" >Part II</a>.</span></P>
+<p class="docText"><span class="docEmphStrong">C++ 程序员习惯于优先选用 <span class="docEmphStrong"><tt>!=</tt></span> 而不是 <tt>&lt;</tt> 来编写循环判断条件。在上例中，选用或不用某种操作符并没有特别的取舍理由。学习完本书<a class="docLink" href="part02.html#part02" >第二部分</a>的泛型编程后，你将会明白这种习惯的合理性。</span></P>
+
+<p class="docText"><span class="docEmphStrong">Calling <tt>size</tt> rather than remembering its value is similarly unnecessary in this case but again reflects a good habit. In C++, data structures such as <tt>vector</tt> can grow dynamically. Our loop only reads elements; it does not add them. However, a loop could easily add new elements. If the loop did add elements, then testing a saved value of <tt>size</tt> would failour loop would not account for the newly added elements. Because a loop might add elements, we tend to write our loops to test the current <tt>size</tt> on each pass rather than store a copy of what the <tt>size</tt> was when we entered the loop.</span></p>
+<p class="docText"><span class="docEmphStrong">调用 <tt>size</tt> 成员函数而不保存它返回的值，在这个例子中同样不是必需的，但这反映了一种良好的编程习惯。在 <tt>C++</tt> 中，有些数据结构（如 <tt>vector</tt>）可以动态增长。上例中循环仅需要读取元素，而不需要增加新的元素。但是，循环可以容易地增加新元素，如果确实增加了新元素的话，那么测试已保存的 <tt>size</tt> 值作为循环的结束条件就会有问题，因为没有将新加入的元素计算在内。所以我们倾向于在每次循环中测试 <tt>size</tt> 的当前值，而不是在进入循环前，存储 <tt>size</tt> 值的副本。</span></p>
+
+<p class="docText"><span class="docEmphStrong">As we'll see in <a class="docLink" href="ch07.html#ch07" >Chapter 7</a>, in C++ functions can be declared to be <tt>inline</tt></span><span class="docEmphStrong">. When it can do so, the compiler will expand the code for an <tt>inline</tt> function directly rather than actually making a function call. Tiny library functions such as <tt>size</tt> are almost surely defined to be <tt>inline</tt></span><span class="docEmphStrong">, so we expect that there is little run-time cost in making this call on each trip through the loop.</span></p>
+<p class="docText"><span class="docEmphStrong">我们将在<a class="docLink" href="ch07.html#ch07" >第七章</a>学习到，C++ 中有些函数可以声明为内联（<tt>inline</tt>）函数。编译器遇到内联函数时就会直接扩展相应代码，而不是进行实际的函数调用。像 <tt>size</tt> 这样的小库函数几乎都定义为内联函数，所以每次循环过程中调用它的运行时代价是比较小的。</span></p>
+</td></tr></table></p><br>
+
+<p class="docText">This code intended to insert new 10 elements into <tt>ivec</tt>, giving the elements the values from 0 through 9. However, <tt>ivec</tt> is an empty <tt>vector</tt> and subscripts can only be used to fetch existing elements.</p>
+<p class="docText">上述程序试图在 <tt>ivec</tt> 中插入 10 个新元素，元素值依次为 0 到 9 的整数。但是，这里 <tt>ivec</tt> 是空的 <tt>vector</tt> 对象，而且下标只能用于获取已存在的元素。</p>
+
+<p class="docText">The right way to write this loop would be</p>
+<p class="docText">这个循环的正确写法应该是：</p>
+<pre>
+     for (vector&lt;int&gt;::size_type ix = 0; ix != 10; ++ix)
+         ivec.push_back(ix);  // <span class="docEmphItalicAlt">ok: adds new element with value</span> <span class="docEmphasis">ix</span>
+</pre><br>
+<a name="ch03note14"></a>
+<div class="docNote"><p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" align="LEFT" width="57" height="96" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" >
+	</td>
+	<td valign="top">
+		<p class="docText"> An element must exist in order to subscript it; elements are <span class="docEmphasis">not</span> added when we assign through a subscript.</p>
+		<p class="docText">必须是已存在的元素才能用下标操作符进行索引。通过下标操作进行赋值时，不会添加任何元素。</p>
+</td>
+</tr></table><br>
+</p></div><br>
+
+
+<a name="ch03sb10"></a>
+<p><table cellspacing="0" width="90%" border="1" cellpadding="5"><tr><td>
+<H2 class="docSidebarTitle">Caution: Only Subscript Elements that Are Known to Exist!</H2>
+<H2 class="docSidebarTitle">警告：仅能对确知已存在的元素进行下标操作</H2>
+
+<p class="docText"><a name="idd1e19899"></a><span class="docEmphStrong">It is crucially important to understand that we may use the subscript operator, (the <tt>[]</tt> operator), to fetch only elements that actually exist. For example,</span></p>
+<p class="docText"><span class="docEmphStrong">对于下标操作符（<tt>[]</tt> 操作符）的使用有一点非常重要，就是仅能提取确实已存在的元素，例如：</span></p>
+<pre>
+     vector&lt;int&gt; ivec;      // <span class="docEmphItalicAlt">empty vector</span>
+     cout &lt;&lt; ivec[0];       // <span class="docEmphItalicAlt">Error: ivec has no elements!</span>
+
+     vector&lt;int&gt; ivec2(10); // <span class="docEmphItalicAlt">vector with 10 elements</span>
+     cout &lt;&lt; ivec[10];      // <span class="docEmphItalicAlt">Error: ivec has elements 0...9</span>
+</pre><br>
+<p class="docText"><span class="docEmphStrong">Attempting to fetch an element that doesn't exist is a run-time error. As with most such errors, there is no assurance that the implementation will detect it. The result of executing the program is uncertain. The effect of fetching a nonexisting element is undefinedwhat happens will vary by implementation, but the program will almost surely fail in some interesting way at run time.</span></p>
+<p class="docText"><span class="docEmphStrong">试图获取不存在的元素必须产生运行时错误。和大多数同类错误一样，不能确保执行过程可以捕捉到这类错误，运行程序的结果是不确定的。由于取不存在的元素的结果标准没有定义，因而不同的编译器实现会导致不同的结果，但程序运行时几乎肯定会以某种有趣的方式失败。</span></p>
+
+<p class="docText"><span class="docEmphStrong">This caution applies any time we use a subscript, such as when subscripting a <tt>string</tt> and, as we'll see shortly, when subscripting a built-in array.</span></p>
+<p class="docText"><span class="docEmphStrong">本警告适用于任何使用下标操作的时候，如 <tt>string</tt> 类型的下标操作，以及将要简要介绍的内置数组的下标操作。</span></p>
+
+<p class="docText"><span class="docEmphStrong">Attempting to subscript elements that do not exist is, unfortunately, an extremely common and pernicious programming error. So-called &quot;buffer overflow&quot; errors are the result of subscripting elements that don't exist. Such bugs are the most common cause of security problems in PC and other applications.</span></p>
+<p class="docText"><span class="docEmphStrong">不幸的是，试图对不存在的元素进行下标操作是程序设计过程中经常会犯的严重错误。所谓的“缓冲区溢出”错误就是对不存在的元素进行下标操作的结果。这样的缺陷往往导致 PC 机和其他应用中最常见的安全问题。</span></p>
+</td></tr></table></p><br>
+<a name="ch03sb11"></a>
+<p><table cellspacing="0" width="90%" border="1" cellpadding="5">
+	<tr>
+		<td><H2 class="docSidebarTitle">Exercises Section 3.3.2</H2>
+			<blockquote>
+				<p>
+				<table border="0" cellspacing="16" cellpadding="0">
+					<tr valign="top">
+						<td align="right" class="docText" width="50"><a name="ch03qa6q1"></a><b>Exercise 3.13:</b></td>
+						<td>
+							<p class="docText">Read a set of integers into a <tt>vector</tt>. Calculate and print the sum of each pair of adjacent elements in the <tt>vector</tt>. If there is an odd number, tell the user and print the value of the last element without summing it. Now change your program so that it prints the sum of the first and last elements, followed by the sum of the second and second-to-last and so on.</p>
+							<p class="docText">读一组整数到 <tt>vector</tt> 对象，计算并输出每对相邻元素的和。如果读入元素个数为奇数，则提示用户最后一个元素没有求和，并输出其值。然后修改程序：头尾元素两两配对（第一个和最后一个，第二个和倒数第二个，以此类推），计算每对元素的和，并输出。</p>
+					</td>
+						</tr>
+						<tr valign="top">
+							<td align="right" class="docText" width="50"><a name="ch03qa6q2"></a><b>Exercise 3.14:</b></td>
+							<td>
+								<p class="docText">Read some text into a <tt>vector</tt>, storing each word in the input as an element in the <tt>vector</tt>. transform each word into uppercase letters. Print the transformed elements from the <tt>vector</tt>, printing eight words to a line.</p>
+								<p class="docText">读入一段文本到 <tt>vector</tt> 对象，每个单词存储为 <tt>vector</tt> 中的一个元素。把 <tt>vector</tt> 对象中每个单词转化为大写字母。输出 <tt>vector</tt> 对象中转化后的元素，每八个单词为一行输出。</p>
+								</td>
+									</tr>
+									<tr valign="top">
+										<td align="right" class="docText" width="50"><a name="ch03qa6q3"></a><b>Exercise 3.15:</b></td>
+										<td><p class="docText">Is the following program legal? If not, how might you fix it?</p>
+										<p class="docText"> 下面程序合法吗？如果不合法，如何更正？</p>
+<pre>
+     vector&lt;int&gt; ivec;
+     ivec[0] = 42;
+</pre><br>
+										</td></tr>
+										<tr valign="top">
+											<td align="right" class="docText" width="50"><a name="ch03qa6q4"></a>
+												<b>Exercise 3.16:</b>
+												</td>
+												<td>
+													<p class="docText">List three ways to define a <tt>vector</tt> and give it 10 elements, each with the value 42. Indicate whether there is a preferred way to do so and why.</p>
+													<p class="docText">列出三种定义 <tt>vector</tt> 对象的方法，给定 10 个元素，每个元素值为 42。指出是否还有更好的实现方法，并说明为什么。</p>
+										</td>
+								</tr></table></p>
+</blockquote>
+</td></tr></table></p><br>
+
+<a href="21001535.html" ><img src="images/pixel.gif"  alt="" width="1" height="1" border="0"></a><ul></ul></td></tr></table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr><td><div STYLE="MARGIN-LEFT: 0.15in;"><a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle"  alt="Team LiB"></a></div></td>
+<td align="right"><div STYLE="MARGIN-LEFT: 0.15in;">
+<a href="ch03lev1sec2.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a>
+<a href="ch03lev1sec4.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+</div></td></tr></table>
+</body></html>

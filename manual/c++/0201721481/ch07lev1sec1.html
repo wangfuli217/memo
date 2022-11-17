@@ -1,0 +1,312 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 7.1.  Defining a Function</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch07.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch07lev1sec2.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch07lev1sec1"></a>
+
+        <h3 class="docSection1Title">7.1. Defining a Function</h3>
+        <h3 class="docSection1Title">7.1. 函数的定义</h3>
+
+	<a name="ch07term21"></a><a name="ch07term12"></a><a name="ch07term23"></a>
+        <p class="docText">A function is uniquely represented by a name and a set of operand types. Its operands, referred to as <b><a class="docLink" href="ch07lev1sec11.html#gloss07_21" ><span class="docEmphasis">parameters</span></a></b>, are specified in a comma-separated list enclosed in parentheses. The actions that the function performs are specified in a block, referred to as the <b><a class="docLink" href="ch07lev1sec11.html#gloss07_12" ><span class="docEmphasis">function body</span></a></b>. Every function has an associated <b><a class="docLink" href="ch07lev1sec11.html#gloss07_23" ><span class="docEmphasis">return type</span></a></b>.</p>
+        <p class="docText">函数由函数名以及一组操作数类型唯一地表示。函数的操作数，也即<b><a class="docLink" href="ch07lev1sec11.html#gloss07_21" ><span class="docEmphasis">形参</span></a></b>，在一对圆括号中声明，形参与形参之间以逗号分隔。函数执行的运算在一个称为<b><a class="docLink" href="ch07lev1sec11.html#gloss07_12" ><span class="docEmphasis">函数体</span></a></b>的块语句中定义。每一个函数都有一个相关联的<b><a class="docLink" href="ch07lev1sec11.html#gloss07_23" ><span class="docEmphasis">返回类型</span></a></b>。</p>
+
+        <p class="docText">As an example, we could write the following function to find the greatest common divisor of two <tt>int</tt>s:</p>
+        <p class="docText">考虑下面的例子，这个函数用来求出两个 <tt>int</tt> 型数的最大公约数：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">return the greatest common divisor</span>
+     int gcd(int v1, int v2)
+     {
+         while (v2) {
+             int temp = v2;
+             v2 = v1 % v2;
+             v1 = temp;
+         }
+         return v1;
+     }
+</pre><br>
+
+        <p class="docText">Here we define a function named <tt>gcd</tt> that returns an <tt>int</tt> and has two <tt>int</tt> parameters. To call <tt>gcd</tt>, we must supply two <tt>int</tt> values and we get an <tt>int</tt> in return.</p>
+        <p class="docText">这里，定义了一个名为 <tt>gcd</tt> 的函数，该函数返回一个 <tt>int</tt> 型值，并带有两个 <tt>int</tt> 型形参。调用 <tt>gcd</tt> 函数时，必须提供两个 <tt>int</tt> 型值传递给函数，然后将得到一个 <tt>int</tt> 型的返回值。</p>
+
+	<a name="ch07lev2sec1"></a>
+        <h4 class="docSection2Title">Calling a Function</h4>
+        <h4 class="docSection2Title">函数的调用</h4>
+
+<a name="ch07term5"></a><a name="ch07term2"></a>
+        <p class="docText">To invoke a function we use the <b><a class="docLink" href="ch07lev1sec11.html#gloss07_05" >call operator</a></b>, which is a pair of parentheses. As with any operator, the call operator takes operands and yields a result. The operands to the call operator are the name of the function and a (possibly empty) comma-separated list of <b><a class="docLink" href="ch07lev1sec11.html#gloss07_02" ><span class="docEmphasis">arguments</span></a></b>. The result type of a call is the return type of the called function, and the result itself is the value returned by the function:</p>
+        <p class="docText">C++ 语言使用<b><a class="docLink" href="ch07lev1sec11.html#gloss07_05" >调用操作符</a></b>（即一对圆括号）实现函数的调用。正如其他操作符一样，调用操作符需要操作数并产生一个结果。调用操作符的操作数是函数名和一组（有可能是空的）由逗号分隔的<b><a class="docLink" href="ch07lev1sec11.html#gloss07_02" ><span class="docEmphasis">实参</span></a></b>。函数调用的结果类型就是函数返回值的类型，该运算的结果本身就是函数的返回值：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">get values from standard input</span>
+     cout &lt;&lt; "Enter two values: \n";
+     int i, j;
+     cin &gt;&gt; i &gt;&gt; j;
+     // <span class="docEmphItalicAlt">call</span> <span class="docEmphasis">gcd</span> <span class="docEmphItalicAlt">on arguments</span> <span class="docEmphasis">i</span> <span class="docEmphItalicAlt">and</span> <span class="docEmphasis">j</span>
+     // <span class="docEmphItalicAlt">and print their greatest common divisor</span>
+     cout &lt;&lt; "gcd: " &lt;&lt; gcd(i, j) &lt;&lt; endl;
+</pre><br>
+
+        <p class="docText">If we gave this program 15 and 123 as input, the output would be 3.</p>
+        <p class="docText">如果给定 15 和 123 作为程序的输入，程序将输出 3。</p>
+
+	<a name="idd1e47996"></a><a name="idd1e47999"></a><a name="idd1e48004"></a><a name="idd1e48007"></a><a name="idd1e48010"></a><a name="idd1e48013"></a><a name="idd1e48016"></a><a name="idd1e48019"></a><a name="idd1e48024"></a><a name="idd1e48029"></a>
+        <p class="docText">Calling a function does two things: It initializes the function parameters from the corresponding arguments and transfers control to the function being invoked. Execution of the <span class="docEmphasis">calling</span> function is suspended and execution of the <span class="docEmphasis">called</span> function begins. Execution of a function begins with the (implicit) definition and initialization of its parameters. That is, when we invoke <tt>gcd</tt>, the first thing that happens is that variables of type <tt>int</tt> named <tt>v1</tt> and <tt>v2</tt> are created. These variables are initialized with the values passed in the call to <tt>gcd</tt>. In this case, <tt>v1</tt> is initialized by the value of <tt>i</tt> and <tt>v2</tt> by the value of <tt>j</tt>.</p>
+        <p class="docText">函数调用做了两件事情：用对应的实参初始化函数的形参，并将控制权转移给被调用函数。<span class="docEmphasis">主调函数</span>的执行被挂起，<span class="docEmphasis">被调函数</span>开始执行。函数的运行以形参的（隐式）定义和初始化开始。也就是说，当我们调用 <tt>gcd</tt> 时，第一件事就是创建名为 <tt>v1</tt> 和 <tt>v2</tt> 的 <tt>int</tt> 型变量，并将这两个变量初始化为调用 <tt>gcd</tt> 时传递的实参值。在上例中，<tt>v1</tt> 的初值为 <tt>i</tt>，而 <tt>v2</tt> 则初始化为 <tt>j</tt> 的值。</p>
+
+	<a name="ch07lev2sec2"></a>
+        <h4 class="docSection2Title">Function Body Is a Scope</h4>
+        <h4 class="docSection2Title">函数体是一个作用域</h4>
+
+	<a name="ch07term17"></a>
+        <p class="docText">The body of a function is a statement block, which defines the function's operation. As usual, the block is enclosed by a pair of curly braces and hence forms a new scope. As with any block, the body of a function can define variables. Names defined inside a function body are accessible only within the function itself. Such variables are referred to as <b><a class="docLink" href="ch07lev1sec11.html#gloss07_17" >local variables</a></b>. They are "local" to that function; their names are visible only in the scope of the function. They exist only while the function is executing. <a class="docLink" href="ch07lev1sec5.html#ch07lev1sec5" >Section 7.5</a> (p. <a class="docLink" href="ch07lev1sec5.html#ch07lev1sec5" >254</a>) covers local variables in more detail.</p>
+        <p class="docText">函数体是一个语句块，定义了函数的具体操作。通常，这个块语句包含在一对花括号中，形成了一个新的作用域。和其他的块语句一样，在函数体中可以定义变量。在函数体内定义的变量只在该函数中才可以访问。这种变量称为<b><a class="docLink" href="ch07lev1sec11.html#gloss07_17" >局部变量</a></b>，它们相对于定义它们的函数而言是“局部”的，其名字只能在该函数的作用域中可见。这种变量只在函数运行时存在。<a class="docLink" href="ch07lev1sec5.html#ch07lev1sec5" >第 7.5 节</a>将详细讨论局部变量。</p>
+
+        <p class="docText">Execution completes when a <tt>return</tt> statement is encountered. When the called function finishes, it yields as its result the value specified in the <tt>return</tt> statement. After the return is executed, the suspended, calling function resumes execution at the point of the call. It uses the return value as the result of evaluating the call operator and continues processing whatever remains of the statement in which the call was performed.</p>
+	<p class="docText">当执行到 <tt>return</tt> 语句时，函数调用结束。被调用的函数完成时，将产生一个在 <tt>return</tt> 语句中指定的结果值。执行 <tt>return</tt> 语句后，被挂起的主调函数在调用处恢复执行，并将函数的返回值用作求解调用操作符的结果，继续处理在执行调用的语句中所剩余的工作。</p>
+
+	<a name="ch07lev2sec3"></a>
+        <h4 class="docSection2Title">Parameters and Arguments</h4>
+        <h4 class="docSection2Title">形参和实参</h4>
+
+        <p class="docText">Like local variables, the parameters of a function provide named, local storage for use by the function. The difference is that parameters are defined inside the function's parameter list and are initialized by arguments passed to the function when the function is called.</p>
+        <p class="docText">类似于局部变量，函数的形参为函数提供了已命名的局部存储空间。它们之间的差别在于形参是在函数的形参表中定义的，并由调用函数时传递函数的实参初始化。</p>
+
+        <p class="docText">An argument is an expression. It might be a variable, a literal constant or an expression involving one or more operators. We must pass exactly the same number of arguments as the function has parameters. The type of each argument must match the corresponding parameter in the same way that the type of an initializer must match the type of the object it initializes: The argument must have the same type or have a type that can be implicitly converted (<a class="docLink" href="ch05lev1sec12.html#ch05lev1sec12" >Section 5.12</a>, p. <a class="docLink" href="ch05lev1sec12.html#ch05lev1sec12" >178</a>) to the parameter type. We'll cover how arguments match a parameter in detail in <a class="docLink" href="ch07lev1sec8.html#ch07lev2sec28" >Section 7.8.2</a> (p. <a class="docLink" href="ch07lev1sec8.html#ch07lev2sec28" >269</a>).</p>
+        <p class="docText">An argument is an expression. It might be a variable, a literal constant or an expression involving one or more operators. We must pass exactly the same number of arguments as the function has parameters. The type of each argument must match the corresponding parameter in the same way that the type of an initializer must match the type of the object it initializes: The argument must have the same type or have a type that can be implicitly converted (<a class="docLink" href="ch05lev1sec12.html#ch05lev1sec12" >Section 5.12</a>, p. <a class="docLink" href="ch05lev1sec12.html#ch05lev1sec12" >178</a>) to the parameter type. We'll cover how arguments match a parameter in detail in <a class="docLink" href="ch07lev1sec8.html#ch07lev2sec28" >Section 7.8.2</a> (p. <a class="docLink" href="ch07lev1sec8.html#ch07lev2sec28" >269</a>).</p>
+        <p class="docText">实参则是一个表达式。它可以是变量或字面值常量，甚至是包含一个或几个操作符的表达式。在调用函数时，所传递的实参个数必须与函数的形参个数完全相同。与初始化式的类型必须与初始化对象的类型匹配一样，实参的类型也必须与其对应形参的类型完全匹配：实参必须具有与形参类型相同、或者能隐式转换（<a class="docLink" href="ch05lev1sec12.html#ch05lev1sec12" >第 5.12 节</a>）为形参类型的数据类型。本章<a class="docLink" href="ch07lev1sec8.html#ch07lev2sec28" >第 7.8.2 节</a>将详细讨论实参与形参的匹配。</p>
+
+	<a name="ch07lev2sec4"></a>
+        <h4 class="docSection2Title">7.1.1. Function Return Type</h4>
+        <h4 class="docSection2Title">7.1.1. 函数返回类型</h4>
+
+        <p class="docText">The return type of a function can be a built-in type, such as <tt>int</tt> or <tt>double</tt>, a class type, or a compound type, such as <tt>int&amp;</tt> or <tt>string*</tt>. A return type also can be <tt>void</tt>, which means that the function does not return a value. The following are example definitions of possible function return types:</p>
+        <p class="docText">函数的返回类型可以是内置类型（如 <tt>int</tt> 或者 <tt>double</tt>）、类类型或复合类型（如 <tt>int&amp;</tt> 或 <tt>string*</tt>），还可以是 <tt>void</tt> 类型，表示该函数不返回任何值。下面的例子列出了一些可能的函数返回类型：</p>
+        <pre>
+     bool is_present(int *, int);       // <span class="docEmphItalicAlt">returns</span> <span class="docEmphasis">bool</span>
+     int count(const string &amp;, char);   // <span class="docEmphItalicAlt">returns</span> <span class="docEmphasis">int</span>
+     Date &amp;calendar(const char*);       // <span class="docEmphItalicAlt">returns reference to</span> <span class="docEmphasis">Date</span>
+     void process();                    // <span class="docEmphasis">process</span> <span class="docEmphItalicAlt">does not return a value</span>
+</pre><br>
+
+	<a name="idd1e48172"></a><a name="idd1e48177"></a><a name="idd1e48182"></a><a name="idd1e48187"></a><a name="idd1e48192"></a><a name="idd1e48195"></a><a name="idd1e48200"></a><a name="idd1e48205"></a>
+        <p class="docText">A function may not return another function or a built-in array type. Instead, the function may return a pointer to the function or to a pointer to an element in the array:</p>
+        <p class="docText">函数不能返回另一个函数或者内置数组类型，但可以返回指向函数的指针，或指向数组元素的指针的指针：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">ok: pointer to first element of the array</span>
+     int *foo_bar() { /* ... */ }
+</pre><br>
+
+        <p class="docText">This function returns a pointer to <tt>int</tt> and that pointer could point to an element in an array.</p>
+        <p class="docText">这个函数返回一个 <tt>int</tt> 型指针，该指针可以指向数组中的一个元素。</p>
+
+        <p class="docText">We'll learn about function pointers in <a class="docLink" href="ch07lev1sec9.html#ch07lev1sec9" >Section 7.9</a> (p. <a class="docLink" href="ch07lev1sec9.html#ch07lev1sec9" >276</a>).</p>
+        <p class="docText"><a class="docLink" href="ch07lev1sec9.html#ch07lev1sec9" >第 7.9 节</a>将介绍有关函数指针的内容。</p>
+
+	<a name="ch07lev3sec1"></a>
+        <h5 class="docSection3Title">Functions Must Specify a Return Type</h5>
+        <h5 class="docSection3Title">函数必须指定返回类型</h5>
+
+        <p class="docText">It is illegal to define or declare a function without an explicit return type:</p>
+        <p class="docText">在定义或声明函数时，没有显式指定返回类型是不合法的：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">error: missing return type</span>
+     test(double v1, double v2) { /* ... */ }
+</pre><br>
+
+        <p class="docText">Eariler versions of C++ would accept this program and implicitly define the return type of <tt>test</tt> as an <tt>int</tt>. Under Standard C++, this program is an error.</p>
+        <p class="docText">早期的 C++ 版本可以接受这样的程序，将 <tt>test</tt> 函数的返回类型隐式地定义为 <tt>int</tt> 型。但在标准 C++ 中，上述程序则是错误的。</p>
+
+	<a name="ch07note01"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">In pre-Standard C++, a function without an explicit return type was assumed to return an <tt>int</tt>. C++ programs compiled under earlier, non-standard compilers may still contain functions that implicitly return <tt>int</tt>.</p>
+                <p class="docText">在 C++ 标准化之前，如果缺少显式返回类型，函数的返回值将被假定为 <tt>int</tt> 型。早期未标准化的 C++ 编译器所编译的程序可能依然含有隐式返回 <tt>int</tt> 型的函数。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <a name="ch07lev2sec5"></a>
+        <h4 class="docSection2Title">7.1.2. Function Parameter List</h4>
+        <h4 class="docSection2Title">7.1.2. 函数形参表</h4>
+
+        <p class="docText">The parameter list of a function can be empty but cannot be omitted. A function with no parameters can be written either with an empty parameter list or a parameter list containing the single keyword <tt>void</tt>. For example, the following declarations of <tt>process</tt> are equivalent:</p>
+        <p class="docText">函数形参表可以为空，但不能省略。没有任何形参的函数可以用空形参表或含有单个关键字 <tt>void</tt> 的形参表来表示。例如，下面关于 <tt>process</tt> 的声明是等价的：</p>
+        <pre>
+     void process() { /* ... */ }      // <span class="docEmphItalicAlt">implicit void parameter list</span>
+
+     void process(void){ /* ... */ }  // <span class="docEmphItalicAlt">equivalent declaration</span>
+</pre><br>
+
+        <p class="docText">A parameter list consists of a comma-separated list of parameter types and (optional) parameter names. Even when the types of two parameters are the same, the type must be repeated:</p>
+        <p class="docText">形参表由一系列用逗号分隔的参数类型和（可选的）参数名组成。如果两个参数具有相同的类型，则其类型必须重复声明：</p>
+        <pre>
+     int manip(int v1, v2) { /* ... */ }      // <span class="docEmphItalicAlt">error</span>
+     int manip(int v1, int v2) { /* ... */ }  // <span class="docEmphItalicAlt">ok</span>
+</pre><br>
+
+        <p class="docText">No two parameters can have the same name. Similarly, a variable local to a function may not use the same name as the name of any of the function's parameters.</p>
+        <p class="docText">参数表中不能出现同名的参数。类似地，局部于函数的变量也不能使用与函数的任意参数相同的名字。</p>
+
+        <p class="docText">Names are optional, but in a function definition, normally all parameters are named. A parameter must be named to be used.</p>
+        <p class="docText">参数名是可选的，但在函数定义中，通常所有参数都要命名。参数必须在命名后才能使用。</p>
+
+	<a name="ch07lev3sec2"></a>
+        <h5 class="docSection3Title">Parameter Type-Checking</h5>
+        <h5 class="docSection3Title">参数类型检查</h5>
+
+	<a name="ch07note02"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+		<a name="idd1e48335"></a><a name="idd1e48340"></a><a name="idd1e48345"></a><a name="idd1e48350"></a><a name="idd1e48355"></a><a name="idd1e48360"></a><a name="idd1e48365"></a><a name="idd1e48370"></a><a name="idd1e48375"></a><a name="idd1e48380"></a>
+                <p class="docText">C++ is a statically typed language (<a class="docLink" href="ch02lev1sec3.html#ch02lev1sec3" >Section 2.3</a>, p. <a class="docLink" href="ch02lev1sec3.html#ch02lev1sec3" >44</a>). The arguments of every call are checked during compilation.</p>
+                <p class="docText">C++ 是一种静态强类型语句（<a class="docLink" href="ch02lev1sec3.html#ch02lev1sec3" >第 2.3 节</a>），对于每一次的函数调用，编译时都会检查其实参。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">When we call a function, the type of each argument must be either the same type as the corresponding parameter or a type that can be converted (<a class="docLink" href="ch05lev1sec12.html#ch05lev1sec12" >Section 5.12</a>, p. <a class="docLink" href="ch05lev1sec12.html#ch05lev1sec12" >178</a>) to that type. The function's parameter list provides the compiler with the type information needed to check the arguments. For example, the function <tt>gcd</tt>, which we defined on page <a class="docLink" href="ch07lev1sec1.html#ch07lev1sec1">226</a>, takes two parameters of type <tt>int</tt>:</p>
+        <p class="docText">调用函数时，对于每一个实参，其类型都必须与对应的形参类型相同，或具有可被转换（<a class="docLink" href="ch05lev1sec12.html#ch05lev1sec12" >第 5.12 节</a>）为该形参类型的类型。函数的形参表为编译器提供了检查实参需要的类型信息。例如，<a class="docLink" href="ch07lev1sec1.html#ch07lev1sec1">第 7.1 节</a>定义的 <tt>gcd</tt> 函数有两个 <tt>int</tt> 型的形参：</p>
+        <pre>
+     gcd("hello", "world"); // <span class="docEmphItalicAlt">error: wrong argument types</span>
+     gcd(24312);            // <span class="docEmphItalicAlt">error: too few arguments</span>
+     gcd(42, 10, 0);        // <span class="docEmphItalicAlt">error: too many arguments</span>
+</pre><br>
+
+        <p class="docText">Each of these calls is a compile-time error. In the first call, the arguments are of type <tt>const char*</tt>. There is no conversion from <tt>const char*</tt> to <tt>int</tt>, so the call is illegal. In the second and third calls, <tt>gcd</tt> is passed the wrong number of arguments. The function must be called with two arguments; it is an error to call it with any other number.</p>
+        <p class="docText">以上所有的调用都会导致编译时的错误。在第一个调用中，实参的类型都是 <tt>const char*</tt>，这种类型无法转换为 <tt>int</tt> 型，因此该调用不合法。而第二和第三个调用传递的实参数量有误。在调用该函数时必须提供两个实参，实参数太多或太少都是不合法的。</p>
+
+        <p class="docText">But what happens if the call supplies two arguments of type <tt>double</tt>? Is this call legal?</p>
+        <p class="docText">如果两个实参都是 <tt>double</tt> 类型，又会怎样呢？调用是否合法？</p>
+        <pre>
+     gcd(3.14, 6.29);      // <span class="docEmphItalicAlt">ok: arguments are converted to</span> <span class="docEmphasis">int</span>
+</pre><br>
+
+        <p class="docText">In C++, the answer is yes; the call is legal. In <a class="docLink" href="ch05lev1sec12.html#ch05lev2sec25" >Section 5.12.1</a> (p. <a class="docLink" href="ch05lev1sec12.html#ch05lev2sec25" >179</a>) we saw that a value of type <tt>double</tt> can be converted to a value of type <tt>int</tt>. This call involves such a conversionwe want to use <tt>double</tt> values to initialize <tt>int</tt> objects. Therefore, flagging the call as an error would be too severe. Rather, the arguments are implicitly converted to <tt>int</tt> (tHRough truncation). Because this conversion might lose precision, most compilers will issue a warning. In this case, the call becomes</p>
+	<p class="docText">在 C++中，答案是肯定的：该调用合法！正如<a class="docLink" href="ch05lev1sec12.html#ch05lev2sec25" >第 5.12.1 节</a>所示，<tt>double</tt>　型的值可以转换为 <tt>int</tt> 型的值。本例中的函数调用正涉及了这种转换——用 <tt>double</tt> 型的值来初始化 <tt>int</tt> 型对象。因此，把该调用标记为不合法未免过于严格。更确切地说，（通过截断）<tt>double</tt> 型实参被隐式地转换为 <tt>int</tt> 型。由于这样的转换可能会导致精度损失，大多数编译器都会给出警告。对于本例，该调用实际上变为：</p>
+        <pre>
+     gcd(3, 6);
+</pre><br>
+
+        <p class="docText">and returns a value of 3.</p>
+        <p class="docText">返回值是 3。</p>
+
+        <p class="docText">A call that passes too many arguments, omits an argument, or passes an argument of the wrong type almost certainly would result in serious run-time errors. Catching these so-called interface errors at compile time greatly reduces the compile-debug-test cycle for large programs.</p>
+        <p class="docText">调用函数时传递过多的实参、忽略某个实参或者传递错误类型的实参，几乎肯定会导致严重的运行时错误！对于大程序，在编译时检查出这些所谓的接口错误（interface error），将会大大地缩短“编译－调试－测试”的周期。</p>
+      </td>
+    </tr>
+  </table>
+
+        <a name="ch07sb01"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 7.1.2</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch07qa1q1"></a><b>Exercise 7.1:</b></td>
+
+                    <td>
+			<a name="idd1e48544"></a><a name="idd1e48549"></a><a name="idd1e48554"></a><a name="idd1e48559"></a>
+                      <p class="docText">What is the difference between a parameter and an argument?</p>
+                      <p class="docText">形参和实参有什么区别？</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch07qa1q2"></a><b>Exercise 7.2:</b></td>
+
+                    <td>
+                      <p class="docText">Indicate which of the following functions are in error and why. Suggest how you might correct the problems.</p>
+                      <p class="docText">下列哪些函数是错误的？为什么？请给出修改意见。</p>
+                      <pre>
+     (a) int f() {
+             string s;
+             // ...
+             return s;
+         }
+     (b) f2(int i) { /* ... */ }
+     (c) int calc(int v1, int v1) /* ... */ }
+     (d) double square(double x) return x * x;
+</pre><br>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch07qa1q3"></a><b>Exercise 7.3:</b></td>
+
+                    <td>
+                      <p class="docText">Write a program to take two <tt>int</tt> parameters and generate the result of raising the first parameter to the power of the second. Write a program to call your function passing it two <tt>int</tt>s. Verify the result.</p>
+                      <p class="docText">编写一个带有两个 <tt>int</tt> 型形参的函数，产生第一个参数的第二个参数次幂的值。编写程序传递两个 <tt>int</tt> 数值调用该函数，请检验其结果。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch07qa1q4"></a><b>Exercise 7.4:</b></td>
+
+                    <td>
+                      <p class="docText">Write a program to return the absolute value of its parameter.</p>
+                      <p class="docText">编写一个函数，返回其形参的绝对值。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch07.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch07lev1sec2.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

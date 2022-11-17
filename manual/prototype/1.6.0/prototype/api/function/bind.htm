@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Function.bind - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+	<script type='text/javascript' src="../../prototype-1.6.0.3.js" ></script>
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>bind</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">bind(thisObj[, arg...]) -> Function</code></pre>
+			<p>
+				用另一个函数来封装原始的函数对象，将函数运行时的作用域限定为 <code>thisObj</code> 所指定的对象。<br />
+				<strong>译注：</strong>该方法返回一个新的函数对象，返回的函数是原函数将其 <code>this</code> 关键字指向 <code>thisObj</code>
+				后的版本，并且，如果指定了可选的 <code>arg</code> 参数，还会将原函数中的部分或全部参数固定为 <code>args</code>
+				指定的值。该方法不会修改原函数对象。
+			</p>
+		</div>
+		<div id="abody">
+			<p>
+				关于绑定，在 <a href="../function.htm" >Function 概述</a>中已经作了论述。它对于新手来说，可能是一个难以捉摸的东西，
+				但事实上它是一个非常简单的概念。当然，这需要对 JavaScript 语言有一定的基础。
+			</p>
+			<p>
+				在 JavaScript 中，函数通常运行在一个特定的上下文中（通常称为“作用域[scope]”）。<strong>在函数内部，
+				<code>this</code> 关键字是指向那个作用域的引用。</strong>实际上，每个函数都是对象的属性——全局函数是
+				<code>window</code> 对象的属性——运行时函数的作用域即为函数被调用时函数所属的对象，
+				更严格的说法是保存了对函数的引用的对象：
+			</p>
+			<pre><code class="javascript">window.name = "the window object";
+function scopeTest() { 
+	return this.name 
+} 
+// 在全局作用域内调用这个函数： 
+scopeTest() 
+// -> "the window object" 
+var foo = { 
+	name: "the foo object!", 
+	otherScopeTest: function() { 
+		return this.name 
+	} 
+} 
+foo.otherScopeTest() 
+// -> "the foo object!" </code></pre>
+			<p>
+				因为动态语言的特性，我们不能确保函数总是被同一种类型的对象调用，如 <code>otherScoptTest()</code> 也可以被
+				<code>foo</code> 之外的对象调用。这时，函数的 <code>this</code> 引用也会指向其它的对象，例如 <code>window</code>
+				对象：
+			</p>
+			<pre><code class="javascript">// ... 继续上面的样例 
+// 注意，我们不是调用这个函数，而是简单引用它
+window.test = foo.otherScopeTest
+// 现在实际调用这个函数
+test() 
+// -> "the window object" </code></pre>
+			<p>最后那个调用证明了同样的函数具有不同的行为，它依赖于运行时的作用域。</p>
+			<p>
+				当你在代码中将函数的引用赋给另外一个对象时，通常会希望函数运行在一个固定的作用域中。在 Prototype 中，
+				只要在函数上调用 <code>bind</code> 方法，将 <code>this</code> 关键字绑定到你所指定的对象，
+				就可以确保函数运行在期望的作用域中。如果需要的话，你也可以保存返回的函数，以重复使用它。
+			</p>
+			<h3>样例</h3>
+			<p>下面的代码是关于上述概念的一个简单证明：</p>
+			<pre><code class="javascript">var obj = { 
+	name: 'A nice demo', 
+	fx: function() {
+		alert(this.name);
+	} 
+}; 
+
+window.name = 'I am such a beautiful window!'; 
+function runFx(f) { 
+	f(); 
+} 
+var fx2 = obj.fx.bind(obj); 
+runFx(obj.fx); 
+runFx(fx2); </code></pre>
+			<form style="margin: 1em 0;"><input type="button" id="btnBindDemo" value="Try it out!" /></form>
+			<script type="text/javascript">
+				var obj = {
+				  name: 'A nice demo',
+				  fx: function() {
+					alert(this.name);
+				  }
+				};
+
+				function runFx(f) {
+				  f();
+				}
+
+				var fx2 = obj.fx.bind(obj);
+
+				Event.observe('btnBindDemo', 'click', function() {
+				  var oldName = window.name;
+				  window.name = 'I am such a beautiful window!';
+				  runFx(obj.fx);
+				  runFx(fx2);
+				  window.name = oldName;
+				});
+			</script>
+
+			<p>目前，仅有少数人知道：<code>bind</code> 也可以用来为最终的参数列表预设参数值：</p>
+			<pre><code class="javascript">var obj = { 
+	name: 'A nice demo', 
+	fx: function() { 
+		alert(this.name + '\n' + $A(arguments).join(', ')); 
+	} 
+}; 
+
+var fx2 = obj.fx.bind(obj, 1, 2, 3); 
+fx2(4, 5); 
+// 显示相应的 name 值，及 "1, 2, 3, 4, 5" </code></pre>
+			<form style="margin: 1em 0;">
+			<input type="button" id="btnBindArgsDemo" value="Try it out!" />
+			</form>
+			<script type="text/javascript">
+var obj2 = {
+  name: 'A nice demo',
+  fx: function() {
+    alert(this.name + '\n' + $A(arguments).join(', '));
+  }
+};
+
+var fx3 = obj2.fx.bind(obj2, 1, 2, 3);
+Event.observe('btnBindArgsDemo', 'click', function() {
+  var oldName = window.name;
+  window.name = 'I am such a beautiful window!';
+  fx3(4, 5);
+  window.name = oldName;
+});
+			</script>
+			<h3>还不够清楚吗？</h3>
+			<p>
+				OK，看下这篇文章：<a href="http://www.encytemedia.com/blog/articles/2007/7/18/javascript-scope-and-binding" >理解
+				JavaScript 中的作用域和绑定</a>。
+			</p>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

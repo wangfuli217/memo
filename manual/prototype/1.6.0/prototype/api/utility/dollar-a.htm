@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>工具函数 $A - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />	
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>$A</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">$A(iterable) -> actualArray</code></pre>
+			<p>
+				接受一个类似于数组的集合（可以使用数字进行索引）作为参数，返回相应的 <code>Array</code>
+				对象。该函数是 <a href="../array/from.htm" >Array.from</a> 方法的简称，
+				但在将集合转换为 <code>Array</code> 时，应优先使用它。
+			</p>
+		</div>
+		<div id="abody">
+			<p>
+				<code>$A</code> 主要是用来将可当作数组使用的任意集合（如 <code>NodeList</code>、许多 DOM 方法返回的
+				<code>HTMLCollection</code> 或函数对象的 <code>arguments</code> 属性）转换为一个真正的
+				<code>Array</code> 对象。				
+			</p>
+			<p>
+				使用 <code>Array</code> 对象的理由很简单：Prototype 扩展了 <a href="../array.htm" >Array</a>，
+				使其增加了大量额外的方法，并且还混入（mix in）了 <a href="../enumerable.htm" >Enumerable</a>
+				模块，随之又引入了很多强大的方法。因此，在 Prototype 中，<code>Array</code>
+				相对于其它集合类型，更像是一张王牌。
+			</p>
+			<p>
+				集合到 <code>Array</code> 的转换规则非常简单：<code>null</code>、<code>undefined</code>
+				和 <code>false</code> 转换为一个空的 <code>Array</code>；任何具有显式的 <code>toArray</code>
+				方法的对象（就像许多 Prototype 对象一样），直接调用 <code>toArray</code> 方法进行转换；否则，
+				我们假定参数“类似于一个数组”（即具有 <code>length</code> 属性和 <code>[]</code>
+				操作符），然后按常规去遍历它的各个组成部分。
+			</p>
+			<h3>样例</h3>
+			<p>				
+				大家所熟悉的 DOM 方法 <a href="http://www.w3.org/TR/DOM-Level-2-Core/core.html#ID-A6C9094" >document.getElementsByTagName()</a>
+				其实并没有返回一个 <code>Array</code>，而是返回一个实现了基本数组“接口”的 <code>NodeList</code> 对象。IE 不允许我们在
+				<code>NodeList.prototype</code> 上扩展 <code>Enumerable</code> 的方法。所以只能先返回 <code>NodeList</code>
+				对象，再转换为 <code>Array</code>：				
+			</p>
+			<pre><code class="javascript">var paras = $A(document.getElementsByTagName('p')); 
+paras.each(Element.hide);
+$(paras.last()).show(); </code></pre>
+			<p>
+				注意上面使用的 <code>each</code> 和 <code>Element.hide</code> 方法，因为数组可以包含任何对象（而不仅只是
+				DOM 元素），所以 <code>$A</code> 并没有对返回的值进行 DOM 扩展。为使用 <code>hide</code> 实例方法，
+				我们首先要确保对所有的目标元素都进行了 DOM 扩展：
+			</p>
+			<pre><code class="javascript">$A(document.getElementsByTagName('p')).map(Element.extend).invoke('hide');
+			</code></pre>
+			<p>
+				你想用一种简单的方法显示出你函数里的参数吗？<code>Array</code> 有一个很好用的方法 <code>join</code>。
+				但是存在于所有函数对象中的 <code>arguments</code> 对象与 <code>Array</code> 并没有继承关系。那么，
+				该如何做呢？你会选择复杂的方法还是简单的方法：				
+			</p>
+			<pre><code class="javascript">// 复杂的方法...
+function showArgs() { alert(Array.prototype.join.call(arguments, ', ')); } 
+// 简单的方法... 
+function showArgs() { alert($A(arguments).join(', '));} </code></pre>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

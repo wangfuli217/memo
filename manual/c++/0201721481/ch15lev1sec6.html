@@ -1,0 +1,131 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 15.6.  Pure Virtual Functions</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch15lev1sec5.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch15lev1sec7.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch15lev1sec6"></a>
+
+        <h3 class="docSection1Title">15.6. Pure Virtual Functions</h3>
+        <h3 class="docSection1Title">15.6. 纯虚函数</h3>
+
+        <p class="docText">The <tt>Disc_item</tt> class that we wrote on page <a class="docLink" href="ch15lev1sec4.html#ch15lev3sec25" >583</a> presents an interesting problem: That class inherits the <tt>net_price</tt> function from <tt>Item_base</tt> but does not redefine it. We didn't redefine <tt>net_price</tt> because there is no meaning to ascribe to that function for the <tt>Disc_item</tt> class. A <tt>Disc_item</tt> doesn't correspond to any discount strategy in our application. This class exists solely for other classes to inherit from it.</p>
+	<p class="docText">在<a class="docLink" href="ch15lev1sec4.html#ch15lev3sec25" >第 15.4.2 节</a>所编写的 <tt>Disc_item</tt> 类提出了一个有趣的问题：该类从 <tt>Item_base</tt> 继承了 <tt>net_price</tt> 函数但没有重定义该函数。因为对 <tt>Disc_item</tt> 类而言没有可以给予该函数的意义，所以没有重定义该函数。在我们的应用程序中，<tt>Disc_item</tt> 不对应任何折扣策略，这个类的存在只是为了让其他类继承。</p>
+
+        <p class="docText">We don't intend for users to define <tt>Disc_item</tt> objects. Instead, <tt>Disc_item</tt> objects should exist only as part of an object of a type derived from <tt>Disc_item</tt>. However, as defined, there is nothing that prevents users from defining a plain <tt>Disc_item</tt> object. That leaves open the question of what would happen if a user did create a <tt>Disc_item</tt> and invoked <tt>net_price</tt> function on it. We now know from the scope discussion in the previous section that the effect would be to call the <tt>net_price</tt> function inherited from <tt>Item_base</tt>, which generates the undiscounted price.</p>
+	<p class="docText">我们不想让用户定义 <tt>Disc_item</tt> 对象，相反，<tt>Disc_item</tt> 对象只应该作为 <tt>Disc_item</tt> 派生类型的对象的一部分而存在。但是，正如已定义的，没有办法防止用户定义一个普通的 <tt>Disc_item</tt> 对象。这带来一个问题：如果用户创建一个 <tt>Disc_item</tt> 对象并调用该对象的 <tt>net_price</tt> 函数，会发生什么呢？从前面章节的讨论中了解到，结果将是调用从 <tt>Item_base</tt> 继承而来的 <tt>net_price</tt> 函数，该函数产生的是不打折的价格。</p>
+
+
+	<a name="ch15term18"></a>
+        <p class="docText">It's hard to say what behavior users might expect from calling <tt>net_price</tt> on a <tt>Disc_item</tt>. The real problem is that we'd rather they couldn't create such objects at all. We can enforce this design intent and correctly indicate that there is no meaning for the <tt>Disc_item</tt> version of <tt>net_price</tt> by making <tt>net_price</tt> a <b><a class="docLink" href="ch15lev1sec11.html#gloss15_18" >pure virtual function</a></b>. A pure virtual function is specified by writing <tt>= 0</tt> after the function parameter list:</p>
+	<p class="docText">很难说用户可能期望调用 <tt>Disc_item</tt> 的 <tt>net_price</tt> 会有什么样的行为。真正的问题在于，我们宁愿用户根本不能创建这样的对象。可以使 <tt>net_price</tt> 成为<b><a class="docLink" href="ch15lev1sec11.html#gloss15_18" >纯虚函数</a></b>，强制实现这一设计意图并正确指出 <tt>Disc_item</tt> 的 <tt>net_price</tt> 版本没有意义的。在函数形参表后面写上 <tt>= 0</tt> 以指定纯虚函数：</p>
+        <pre>
+     class Disc_item : public Item_base {
+     public:
+         double net_price(std::size_t) const = 0;
+     };
+</pre><br>
+
+        <p class="docText">Defining a virtual as pure indicates that the function provides an interface for sub-sequent types to override but that the version in this class will never be called. As importantly, users will not be able to create objects of type <tt>Disc_item</tt>.</p>
+	<p class="docText">将函数定义为纯虚能够说明，该函数为后代类型提供了可以覆盖的接口，但是这个类中的版本决不会调用。重要的是，用户将不能创建 <tt>Disc_item</tt> 类型的对象。</p>
+
+        <p class="docText">An attempt to create an object of an abstract base class is a compile-time error:</p>
+        <p class="docText">试图创建抽象基类的对象将发生编译时错误：</p>
+        <pre>
+     // <span class="docEmphasis">Disc_item</span> <span class="docEmphItalicAlt">declares pure virtual functions</span>
+     Disc_item discounted; // <span class="docEmphItalicAlt">error: can't define a</span> <span class="docEmphasis">Disc_item</span> <span class="docEmphItalicAlt">object</span>
+     Bulk_item bulk;       // <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">Disc_item</span> <span class="docEmphItalicAlt">subobject within</span> <span class="docEmphasis">Bulk_item</span>
+</pre><br>
+        <a name="ch15note27"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+<a name="idd1e118677"></a><a name="idd1e118682"></a>
+<a name="ch15term1"></a>
+                <p class="docText"> A class containing (or inheriting) one or more pure virtual functions is an <b><a class="docLink" href="ch15lev1sec11.html#gloss15_01" >abstract base class</a></b>. We may not create objects of an abstract type except as parts of objects of classes derived from the abstract base.</p>
+		<p class="docText">含有（或继承）一个或多个纯虚函数的类是<b><a class="docLink" href="ch15lev1sec11.html#gloss15_01" >抽象基类</a></b>。除了作为抽象基类的派生类的对象的组成部分，不能创建抽象类型的对象。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch15sb18"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 15.6</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch15qa11q1"></a><b>Exercise 15.26:</b></td>
+
+                    <td>
+                      <p class="docText">Make your version of the <tt>Disc_item</tt> class an abstract class.</p>
+		      <p class="docText">使你的 <tt>Disc_item</tt> 类版本成为抽象类。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch15qa11q2"></a><b>Exercise 15.27:</b></td>
+
+                    <td>
+                      <p class="docText">Try to define an object of type <tt>Disc_item</tt> and see what errors you get from the compiler.</p>
+		      <p class="docText">试试定义 <tt>Disc_item</tt> 类型的一个对象，看看会从编译器得到什么错误。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a href="21001535.html" ><img src="images/pixel.gif"  alt="" width="1" height="1" border="0"></a>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch15lev1sec5.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch15lev1sec7.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

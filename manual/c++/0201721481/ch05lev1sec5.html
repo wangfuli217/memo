@@ -1,0 +1,201 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 5.5.  Increment and Decrement Operators</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch05lev1sec4.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch05lev1sec6.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch05lev1sec5"></a>
+
+        <h3 class="docSection1Title">5.5. Increment and Decrement Operators</h3>
+        <h3 class="docSection1Title">5.5. 自增和自减操作符</h3>
+
+	<a name="ch05term30"></a><a name="ch05term31"></a>
+        <p class="docText">The increment (<b><a class="docLink" href="ch05lev1sec14.html#gloss05_30" ><span class="docEmphStrong"><tt>++</tt></span></a></b>) and decrement (<b><a class="docLink" href="ch05lev1sec14.html#gloss05_31" ><span class="docEmphStrong"><tt>--</tt></span></a></b>) operators provide a convenient notational shorthand for adding or subtracting 1 from an object. There are two forms of these operators: prefix and postfix. So far, we have used only the prefix increment, which increments its operand and yields the <span class="docEmphasis">changed</span> value as its result. The prefix decrement operates similarly, except that it decrements its operand. The postfix versions of these operators increment (or decrement) the operand but yield a copy of the original, <span class="docEmphasis">unchanged</span> value as its result:</p>
+        <p class="docText">自增（<b><a class="docLink" href="ch05lev1sec14.html#gloss05_30" ><span class="docEmphStrong"><tt>++</tt></span></a></b>）和自减（<b><a class="docLink" href="ch05lev1sec14.html#gloss05_31" ><span class="docEmphStrong"><tt>--</tt></span></a></b>）操作符为对象加1或减1操作提供了方便简短的实现方式。它们有前置和后置两种使用形式。到目前为止，我们已经使用过前自增操作，该操作使其操作数加1，操作结果是<span class="docEmphasis">修改后</span>的值。同理，前自减操作使其操作数减 1。这两种操作符的后置形式同样对其操作数加 1（或减 1），但操作后产生操作数原来的、<span class="docEmphasis">未修改</span>的值作为表达式的结果：</p>
+        <pre>
+     int i = 0, j;
+     j = ++i; // <span class="docEmphasis">j = 1, i = 1:</span> <span class="docEmphItalicAlt">prefix yields incremented value</span>
+     j = i++; // <span class="docEmphasis">j = 1, i = 2:</span> <span class="docEmphItalicAlt">postfix yields unincremented value</span>
+</pre>
+
+        <p class="docText">Because the prefix version returns the incremented value, it returns the object itself as an lvalue. The postfix versions return an rvalue.</p>
+        <p class="docText">因为前置操作返回加1后的值，所以返回对象本身，这是左值。而后置操作返回的则是右值。</p>
+
+	<a name="ch05sb07"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Advice: Use Postfix Operators Only When Necessary</h2>
+              <h2 class="docSidebarTitle">建议：只有在必要时才使用后置操作符</h2>
+
+		<a name="idd1e34374"></a><a name="idd1e34381"></a><a name="idd1e34388"></a><a name="idd1e34396"></a><a name="idd1e34404"></a><a name="idd1e34414"></a><a name="idd1e34422"></a><a name="idd1e34430"></a><a name="idd1e34438"></a><a name="idd1e34443"></a><a name="idd1e34449"></a>
+		<p class="docText"><span class="docEmphStrong">Readers from a C background might be surprised that we use the prefix increment in the programs we've written. The reason is simple: The prefix version does less work. It increments the value and returns the incremented version. The postfix operator must store the original value so that it can return the unincremented value as its result. For <tt>int</tt>s and pointers, the compiler can optimize away this extra work. For more complex iterator types, this extra work potentially could be more costly. By habitually favoring the use of the prefix versions, we do not have to worry if the performance difference matters.</span></p>
+		<p class="docText"><span class="docEmphStrong">有使用 C 语言背景的读者可能会觉得奇怪，为什么要在程序中使用前自增操作。道理很简单：因为前置操作需要做的工作更少，只需加 1 后返回加 1 后的结果即可。而后置操作符则必须先保存操作数原来的值，以便返回未加 1 之前的值作为操作的结果。对于 <tt>int</tt> 型对象和指针，编译器可优化掉这项额外工作。但是对于更多的复杂迭代器类型，这种额外工作可能会花费更大的代价。因此，养成使用前置操作这个好习惯，就不必操心性能差异的问题。</span></p>
+            </td>
+          </tr>
+        </table><br>
+
+        <a name="ch05lev2sec10"></a>
+        <h4 class="docSection2Title">Postfix Operators Return the Unincremented Value</h4>
+        <h4 class="docSection2Title">后置操作符返回未加1的值</h4>
+
+        <p class="docText">The postfix version of <tt>++</tt> and <tt>--</tt> is used most often when we want to use the current value of a variable and increment it in a single compound expression:</p>
+	<p class="docText">当我们希望在单个复合表达式中使用变量的当前值，然后再加1时，通常会使用后置的 <tt>++</tt> 和 <tt>--</tt> 操作：</p>
+        <pre>
+     vector&lt;int&gt; ivec;           // <span class="docEmphItalicAlt">empty</span> <span class="docEmphasis">vector</span>
+     int cnt = 10;
+     // <span class="docEmphItalicAlt">add elements 10...1 to ivec</span>
+     while (cnt &gt; 0)
+         ivec.push_back(cnt--);  // <span class="docEmphasis">int</span> <span class="docEmphItalicAlt">postfix decrement</span>
+</pre>
+
+        <p class="docText">This program uses the postfix version of <tt>--</tt> to decrement <tt>cnt</tt>. We want to assign the value of <tt>cnt</tt> to the next element in the <tt>vector</tt> and then decrement <tt>cnt</tt> before the next iteration. Had the loop used the prefix version, then the decremented value of <tt>cnt</tt> would be used when creating the elements in <tt>ivec</tt> and the effect would be to add elements from <tt>9</tt> down to <tt>0</tt>.</p>
+	<p class="docText">这段程序使用了后置的 <tt>--</tt> 操作实现 <tt>cnt</tt> 减 1。我们希望把 <tt>cnt</tt> 的值赋给 <tt>vector</tt> 对象的下一个元素，然后在下次迭代前 <tt>cnt</tt> 的值减 1。如果在循环中使用前置操作，则是用 <tt>cnt</tt> 减 1 后的值创建 <tt>ivec</tt> 的新元素，结果是将 <tt>9</tt> 至 <tt>0</tt> 十个元素依次添加到 <tt>ivec</tt> 中。</p>
+
+	<a name="ch05lev2sec11"></a>
+        <h4 class="docSection2Title">Combining Dereference and Increment in a Single Expression</h4>
+        <h4 class="docSection2Title">在单个表达式中组合使用解引用和自增操作</h4>
+
+        <p class="docText">The following program, which prints the contents of <tt>ivec</tt>, represents a very common C++ programming pattern:</p>
+	<p class="docText">下面的程序使用了一种非常通用的 C++ 编程模式输出 <tt>ivec</tt> 的内容：</p>
+        <pre>
+     vector&lt;int&gt;::iterator iter = ivec.begin();
+     // <span class="docEmphItalicAlt">prints 10 9 8 ... 1</span>
+     while (iter != ivec.end())
+         cout &lt;&lt; *iter++ &lt;&lt; endl; // <span class="docEmphItalicAlt">iterator postfix increment</span>
+</pre>
+        <a name="ch05note08"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">The expression <tt>*iter++</tt> is usually very confusing to programmers new to both C++ and C.</p>
+		<p class="docText">如果程序员对 C++ 和 C 语言都不太熟悉，则常常会弄不清楚表达式 <tt>*iter++</tt> 的含义。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <p class="docText">The precedence of postfix increment is higher than that of the dereference operator, so <tt>*iter++</tt> is equivalent to <tt>*(iter++)</tt>. The subexpression <tt>iter++</tt> increments <tt>iter</tt> and yields a copy of the previous value of <tt>iter</tt> as its result. Accordingly, the operand of <tt>*</tt> is a copy of the unincremented value of <tt>iter</tt>.</p>
+	<p class="docText">由于后自增操作的优先级高于解引用操作，因此 <tt>*iter++</tt> 等效于 <tt>*(iter++)</tt>。子表达式 <tt>iter++</tt> 使 <tt>iter</tt> 加 1，然后返回 <tt>iter</tt> 原值的副本作为该表达式的结果。因此，解引用操作 <tt>*</tt> 的操作数是 <tt>iter</tt> 未加 1 前的副本。</p>
+
+        <p class="docText">This usage relies on the fact that postfix increment returns a copy of its original, unincremented operand. If it returned the incremented value, we'd dereference the incremented value, with disastrous results: The first element of <tt>ivec</tt> would not get written. Worse, we'd attempt to dereference one too many elements!</p>
+	<p class="docText">这种用法的根据在于后自增操作返回其操作数原值（没有加 1）的副本。如果返回的是加 1 后的值，则解引用该值将导致错误的结果：<tt>ivec</tt> 的第一个元素没有输出，并企图对一个多余的元素进行解引用。</p>
+
+	<a name="ch05sb08"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Advice: Brevity Can Be a Virtue</h2>
+              <h2 class="docSidebarTitle">建议：简洁即是美  </h2>
+
+		<a name="idd1e34602"></a><a name="idd1e34607"></a><a name="idd1e34613"></a><a name="idd1e34621"></a><a name="idd1e34629"></a><a name="idd1e34637"></a>
+              <p class="docText"><span class="docEmphStrong">Programmers new to C++ who have not previously programmed in a C-based language often have trouble with the terseness of some expressions. In particular, expressions such as <tt>*iter++</tt> can be bewilderingat first. Experienced C++ programmers value being concise. They are much more likely to write</span></p>
+	      <p class="docText"><span class="docEmphStrong">没有 C 语言基础的 C++ 新手，时常会因精简的表达式而苦恼，特别是像 <tt>*iter++</tt> 这类令人困惑的表达式。有经验的 C++程序员非常重视简练，他们更喜欢这么写：</span></p>
+              <pre>
+     cout &lt;&lt; *iter++ &lt;&lt; endl;
+</pre>
+
+              <p class="docText"><span class="docEmphStrong">than the more verbose equivalent</span></p>
+              <p class="docText"><span class="docEmphStrong">而不采用下面这种冗长的等效代码：</span></p>
+              <pre>
+     cout &lt;&lt; *iter &lt;&lt; endl;
+     ++iter;
+</pre>
+
+              <p class="docText"><span class="docEmphStrong">For programmers new to C++, the second form is clearer because the action of incrementing the iterator and fetching the value to print are kept separate. However, the first version is much more natural to most C++ programmers.</span></p>
+              <p class="docText"><span class="docEmphStrong">对于初学 C++ 的程序员来说，第二种形式更清晰，因为给迭代器加 1 和获取输出值这两个操作是分开来实现的。但是更多的 C++ 程序员更习惯使用第一种形式。</span></p>
+
+              <p class="docText"><span class="docEmphStrong">It is worthwhile to study examples of such code until their meanings are immediately clear. Most C++ programs use succinct expressions rather than more verbose equivalents. Therefore, C++ programmers must be comfortable with such usages. Moreover, once these expressions are familiar, you will find them less error-prone.</span></p>
+              <p class="docText"><span class="docEmphStrong">要不断地研究类似的代码，最后达到一目了然的地步。大部分的 C++ 程序员更喜欢使用简洁的表达式而非冗长的等效表达式。因此，C++ 程序员必须熟悉这种用法。而且，一旦熟悉了这类表达式，我们会发现使用起来更不容易出错。</span></p>
+            </td>
+          </tr>
+        </table>
+        <a name="ch05sb09"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 5.5</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch05qa6q1"></a><b>Exercise 5.15:</b></td>
+
+                    <td>
+                      <p class="docText">Explain the difference between prefix and postfix increment.</p>
+                      <p class="docText">解释前自增操作和后自增操作的差别。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch05qa6q2"></a><b>Exercise 5.16:</b></td>
+
+                    <td>
+                      <p class="docText">Why do you think C++ wasn't named ++C?</p>
+                      <p class="docText">你认为为什么C++不叫做++C？</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch05qa6q3"></a><b>Exercise 5.17:</b></td>
+
+                    <td>
+                      <p class="docText">What would happen if the <tt>while</tt> loop that prints the contents of a <tt>vector</tt> used the prefix increment operator?</p>
+                      <p class="docText">如果输出vector内容的while循环使用前自增操作符，那会怎么样？</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch05lev1sec4.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch05lev1sec6.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

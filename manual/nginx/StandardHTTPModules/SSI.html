@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml">
+<HEAD><TITLE>SSI模块（SSI）</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=GB2312">
+<STYLE type=text/css>PRE {
+	BACKGROUND-COLOR: #cccccc
+}
+.STYLE1 {
+	COLOR: #ff0000
+}
+</STYLE>
+
+<META content="MSHTML 6.00.6000.16809" name=GENERATOR></HEAD>
+<BODY>
+<H2>SSI模块（SSI）</H2><BR>
+
+<H3>·摘要</H3>
+<H4>这个模块为处理服务器端包含（SSI）的输入提供一个过滤器，目前所支持的SSI命令并不完善。<BR>
+如下例：<PRE>location / {
+  ssi  on;
+}</PRE></H4>
+<H3>·指令</H3>
+<H3>ssi </H3>
+<H4>语法：ssi [ on | off ] <BR>
+默认值：ssi off <BR>
+使用字段：http, server, location, location中的if字段 <BR>
+启用SSI处理。<BR>
+注意如果启用SSI，那么Last-Modified头和Content-Length头不会传递。</H4>
+<H3>ssi_silent_errors </H3>
+<H4>语法：ssi_silent_errors [on|off] <BR>
+默认值：ssi_silent_errors off <BR>
+使用字段：http, server, location <BR>
+如果在处理SSI的过程中出现“[an error occurred while processing the directive]”错误，禁止将其输出。</H4>
+<H3>ssi_types </H3>
+<H4>语法：ssi_types mime-type [mime-type ...] <BR>
+默认值：ssi_types text/html <BR>
+使用字段：http, server, location <BR>
+默认只解析text/html类型，这个参数可以指定其他的MIME类型。</H4>
+<H3>ssi_value_length </H3>
+<H4>语法：ssi_value_length length <BR>
+默认值：ssi_value_length 256 <BR>
+使用字段：http, server, location <BR>
+定义允许SSI使用的参数值的长度。</H4>
+<H3>SSI 命令</H3>
+<H4>命令格式如下：<BR>
+<PRE>  &lt;!--#  command parameter1=value parameter2=value... --&gt;</PRE>
+支持的SSI命令如下：<BR></H4>
+<H3>block</H3>
+<H4>命令描述一个可以在include命令中使用的块，在块中可以存在SSI命令。<BR>
+·name - 块的名称，如：<BR>
+<PRE>  &lt;!--# block name="one" --&gt;
+  the silencer
+  &lt;!--# endblock ----&gt;
+</PRE></H4>
+<H3>config</H3>
+<H4>为SSI指定一些配置参数。<BR>
+·errmsg - 在SSI处理过程中得到的错误字段，默认字符串为：[an error occurred while processing the directive]。<BR>
+·timefmt - 时间字符串的格式，strftime(3)函数使用，默认为：
+<PRE>  "%A, %d-%b-%Y %H:%M:%S %Z"</PRE>
+在时间中包含秒可以使用“%s”<BR></H4>
+<H3>echo</H3>
+<H4>打印一个变量。<BR>
+·var - 变量的名称。<BR>
+·default - 如果变量为空，则显示这个字符串，默认为“none”。如：
+<PRE>  &lt;!--# echo var="name" default="no" --&gt;</PRE>
+与下列等效：
+<PRE>  &lt;!--# if expr="$name" --&gt;&lt;!--# echo var="name" --&gt;&lt;!--# else --&gt;no&lt;!--# endif --&gt;</PRE></H4>
+<H3>if/elif/else/endif</H3>
+<H4>根据条件包含其他字段或者指令，用法：
+<PRE>  &lt;!--# if expr="..." --&gt;
+  ...
+  &lt;!--# elif expr="..." --&gt;
+  ...
+  &lt;!--# else --&gt;
+  ...
+  &lt;!--# endif --&gt;
+</PRE>
+上述例子中只有一个嵌套为真。<BR>
+·expr - 判定一个表达式，可以是变量：
+<PRE>  &lt;!--# if expr="$name" --&gt;</PRE>
+比较字符串：<BR>
+<PRE>  &lt;!--# if expr="$name = text" --&gt;
+  &lt;!--# if expr="$name != text" --&gt;
+</PRE>
+或者匹配正则：<BR>
+<PRE>  &lt;!--# if expr="$name = /text/" --&gt;
+  &lt;!--# if expr="$name != /text/" --&gt;
+</PRE>
+如果使用变量，则用他们的值代替。<BR></H4>
+<H3>include</H3>
+<H4>包含一个其他来源的记录。<BR>
+·file - 包含一个文件，如：<BR>
+<PRE>  &lt;!--# include file="footer.html" --&gt;</PRE>
+·virtual - 包含一个请求，如：<BR>
+<PRE>  &lt;!--# include virtual="/remote/body.php?argument=value" --&gt;</PRE>
+"file"和"virtual"主要是一些历史性的差别，"file"等同于暗示"wait"选项的"virtual"，在某点上反映与apache等值，但是现在他们基本都处理同样的操作，都可以处理一个URI或者一个静态文件。<BR>
+多个请求将并行发出，如果需要按顺序发出，请使用“wait”选项<BR>
+·stub - 如果请求为空或返回一个错误后使用的默认块。
+<PRE>  &lt;!--# block name="one" --&gt; &lt;!--# endblock --&gt;
+  &lt;!--# include virtual="/remote/body.php?argument=value" stub="one" --&gt;
+</PRE>
+·wait - 当设置为yes时，在当前的请求未完成之前剩余的SSI不会进行判定，例如：
+<PRE>  &lt;!--# include virtual="/remote/body.php?argument=value" wait="yes" --&gt;</PRE></H4>
+<H3>set</H3>
+<H4>设置一个变量。<BR>
+·var - 变量。<BR>
+·value - 包含变量名变量的值，它们将被判定。</H4>
+<H3>·变量</H3>
+<H3>$date_local </H3>
+<H4>本地时区的当前时间，选项 "timefmt"可以指定格式。</H4>
+<H3>$date_gmt </H3>
+<H4>当前的格林尼治时间，选项 "timefmt"可以指定格式。</H4>
+<H3>·参考文档</H3>
+<H4><A href="http://sysoev.ru/nginx/docs/http/ngx_http_ssi_module.html" >Original Documentation</A><BR>
+<A href="http://wiki.nginx.org/NginxHttpSsiModule/" >Nginx Http SSI Module</A></H4>
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://179401.cn/analytics/" : "http://179401.cn/analytics/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://shouce.jb51.net/179401.cn/analytics/piwik.php-idsite=1"  style="border:0" alt=""/></p></noscript>
+<!-- End Piwik Tag -->
+</BODY>
+</HTML>
+<H3><A href="UserID.html" >前进->User ID模块（User ID）</A></H3>

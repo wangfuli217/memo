@@ -1,0 +1,403 @@
+<html>
+<META http-equiv="Content-Type" content="text/html; charset=utf-8">
+<head>
+<title>Section 9.1.&nbsp; Defining a Sequential Container</title>
+<link rel="STYLESHEET" type="text/css" href="images/style.css" >
+<link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+<body>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr><td><div STYLE="MARGIN-LEFT: 0.15in;"><a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle"  alt="Team LiB"></a></div></td>
+<td align="right"><div STYLE="MARGIN-LEFT: 0.15in;">
+<a href="ch09.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a>
+<a href="ch09lev1sec2.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+</div></td></tr></table>
+<br><table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td valign="top"><a name="ch09lev1sec1"></a>
+<h3 class="docSection1Title">9.1. Defining a Sequential Container</h3>
+<h3 class="docSection1Title">9.1. 顺序容器的定义</h3>
+<a name="idd1e62945"></a><a name="idd1e62950"></a><a name="idd1e62956"></a><a name="idd1e62962"></a><a name="idd1e62968"></a><a name="idd1e62974"></a><a name="idd1e62980"></a><a name="idd1e62985"></a>
+<p class="docText">We already know a fair bit about how to use the sequential containers based on what we covered in <a class="docLink" href="ch03lev1sec3.html#ch03lev1sec3" >Section 3.3</a> (p. <a class="docLink" href="ch03lev1sec3.html#ch03lev1sec3" >90</a>). To define a container object, we must include its associated header file, which is one of</P>
+<p class="docText">在<a class="docLink" href="ch03lev1sec3.html#ch03lev1sec3" >第 3.3 节</a>中，我们已经了解了一些使用顺序容器类型的知识。为了定义一个容器类型的对象，必须先包含相关的头文件，即下列头文件之一：</p>
+<pre>
+     #include &lt;vector&gt;
+     #include &lt;list&gt;
+     #include &lt;deque&gt;
+</pre><BR>
+<p class="docText">Each of the containers is a class template (<a class="docLink" href="ch03lev1sec3.html#ch03lev1sec3" >Section 3.3</a>, p. <a class="docLink" href="ch03lev1sec3.html#ch03lev1sec3" >90</a>). To define a particular kind of container, we name the container followed by angle brackets that enclose the type of the elements the container will hold:</p>
+<p class="docText">所有的容器都是类模板（<a class="docLink" href="ch03lev1sec3.html#ch03lev1sec3" >第 3.3 节</a>）。要定义某种特殊的容器，必须在容器名后加一对尖括号，尖括号里面提供容器中存放的元素的类型：</p>
+<pre>
+     vector&lt;string&gt;    svec;       // <span class="docEmphItalicAlt">empty</span> <span class="docEmphasis">vector</span> <span class="docEmphItalicAlt">that can hold</span> <span class="docEmphasis">strings</span>
+     list&lt;int&gt;         ilist;      // <span class="docEmphItalicAlt">empty</span> <span class="docEmphasis">list</span> <span class="docEmphItalicAlt">that can hold</span> <span class="docEmphasis">ints</span>
+     deque&lt;Sales_item&gt; items;      // <span class="docEmphItalicAlt">empty</span> <span class="docEmphasis">deque</span> <span class="docEmphItalicAlt">that holds</span> <span class="docEmphasis">Sales_items</span>
+</pre><BR>
+<p class="docText">Each container defines a default constructor that creates an empty container of the speicfied type. Recall that a default constructor takes no arguments.</p>
+<p class="docText">所有容器类型都定义了默认构造函数，用于创建指定类型的空容器对象。默认构造函数不带参数。</p>
+
+<a name="ch09note01"></a>
+<div class="docNote">
+	<p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" align="LEFT" width="50" height="54" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" >
+			</td>
+			<td valign="top">
+				<p class="docText"> For reasons that shall become clear shortly, the most commonly used container constructor is the default constructor. In most programs, using the default constructor gives the best run-time performance and makes using the container easier.</p>
+				<p class="docText">为了使程序更清晰、简短，容器类型最常用的构造函数是默认构造函数。在大多数的程序中，使用默认构造函数能达到最佳运行时性能，并且使容器更容易使用。</p>
+			</td>
+		</tr>
+	</table><BR>
+	</p>
+</div><BR>
+
+<a name="ch09lev2sec1"></a>
+<H4 class="docSection2Title">9.1.1. Initializing Container Elements</h4>
+<H4 class="docSection2Title">9.1.1. 容器元素的初始化</h4>
+<p class="docText">In addition to defining a default constructor, each container type also supports constructors that allow us to specify initial element values.</p>
+<p class="docText">除了默认构造函数，容器类型还提供其他的构造函数，使程序员可以指定元素初值，见<a class="docLink" href="ch09lev1sec1.html#ch09table02" >表 9.2</a>。</p>
+
+<a name="ch09table02"></a>
+<p>
+<table cellspacing="0" class="allBorders" border="1" RULES="none" cellpadding="5">
+	<caption><H5 class="docTableTitle">Table 9.2. Container Constructors</H5></caption>
+	<caption><H5 class="docTableTitle">表 9.2. 容器构造函数</H5></caption>
+	<colgroup><col width="125"><col width="400"></colgroup><thead></thead>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>C&lt;T&gt; c;</tt></p>
+		</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Create an empty container named <tt>c</tt>. <tt>C</tt> is a container name, such as <tt>vector</tt>, and <tt>T</tt> is the element type, such as <tt>int</tt> or <tt>string</tt>. Valid for all containers.</p>
+			<p class="docText">创建一个名为 <tt>c</tt> 的空容器。<tt>C</tt> 是容器类型名，如 <tt>vector</tt>，<tt>T</tt> 是元素类型，如 <tt>int</tt> 或 <tt>string</tt> 适用于所有容器。</p>
+		</td>
+	</tr>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>C c(c2);</tt></P>
+		</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Create <tt>c</tt> as a copy of container <tt>c2</tt>; <tt>c</tt> and <tt>c2</tt> must be the same container type and hold values of the same type. Valid for all containers.</p>
+			<p class="docText">创建容器 <tt>c2</tt> 的副本 <tt>c</tt>；<tt>c</tt> 和 <tt>c2</tt> 必须具有相同的容器类型，并存放相同类型的元素。适用于所有容器。</p>
+		</td>
+	</tr>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>C c(b, e);</tt></p>
+		</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Create <tt>c</tt> with a copy of the elements from the range denoted by iterators <tt>b</tt> and <tt>e</tt>. Valid for all containers.</p>
+			<p class="docText">创建 <tt>c</tt>，其元素是迭代器 <tt>b</tt> 和 <tt>e</tt> 标示的范围内元素的副本。适用于所有容器。</p>
+		</td>
+	</tr>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>C c(n, t);</tt></P>
+		</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Create <tt>c</tt> with <tt>n</tt> elements, each with value <tt>t</tt>, which must be a value of the element type of <tt>C</tt> or a type convertible to that type.</P>
+			<p class="docText">用 <tt>n</tt> 个值为 <tt>t</tt> 的元素创建容器 <tt>c</tt>，其中值 <tt>t</tt> 必须是容器类型 <tt>C</tt> 的元素类型的值，或者是可转换为该类型的值。</p>
+			<p class="docText"><span class="docEmphStrong">Sequential containers only.</span></p>
+			<p class="docText"><span class="docEmphStrong">只适用于顺序容器</span></p>
+		</td>
+	</tr>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>C c(n);</tt></p>
+		</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Create <tt>c</tt> with <tt>n</tt> value-initialized (<a class="docLink" href="ch03lev1sec3.html#ch03lev2sec6" >Section 3.3.1</a>, p. <a class="docLink" href="ch03lev1sec3.html#ch03lev2sec6" >92</a>) elements.</p>
+			<p class="docText">创建有 <tt>n</tt> 个值初始化（<a class="docLink" href="ch03lev1sec3.html#ch03lev2sec6" >第 3.3.1 节</a>）（value-initialized）元素的容器 <tt>c</tt>。</p>
+			<p class="docText"><span class="docEmphStrong">Sequential containers only.</span></p>
+			<p class="docText"><span class="docEmphStrong">只适用于顺序容器</span></p>
+		</td>
+	</tr>
+</table>
+</p><br>
+
+<a name="ch09lev3sec1"></a>
+<h5 class="docSection3Title">Intializing a Container as a Copy of Another Container</h5>
+<h5 class="docSection3Title">将一个容器初始化为另一个容器的副本</h5>
+<a name="idd1e63232"></a>
+<p class="docText">When we initialize a sequential container using any constructor other than the default constructor, we must indicate how many elements the container will have. We must also supply initial values for those elements. One way to specify both the size and element values is to initialize a new container as a copy of an existing container of the same type:</p>
+<p class="docText">当不使用默认构造函数，而是用其他构造函数初始化顺序容器时，必须指出该容器有多少个元素，并提供这些元素的初值。同时指定元素个数和初值的一个方法是将新创建的容器初始化为一个同类型的已存在容器的副本：</p>
+<pre>
+     vector&lt;int&gt; ivec;
+     vector&lt;int&gt; ivec2(ivec);   // <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">ivec</span> <span class="docEmphItalicAlt">is</span> <span class="docEmphasis">vector&lt;int&gt;</span>
+     list&lt;int&gt;   ilist(ivec);   // <span class="docEmphItalicAlt">error</span>: <span class="docEmphasis">ivec</span> <span class="docEmphItalicAlt">is not</span> <span class="docEmphasis">list&lt;int&gt;</span>
+     vector&lt;double&gt; dvec(ivec); // <span class="docEmphItalicAlt">error</span>: <span class="docEmphasis">ivec</span> <span class="docEmphItalicAlt">holds</span> <span class="docEmphasis">int</span> <span class="docEmphItalicAlt">not</span> <span class="docEmphasis">double</span>
+</pre><BR>
+<a name="ch09note02"></a>
+<div class="docNote">
+	<p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" align="LEFT" width="50" height="54" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+			<td valign="top">
+				<p class="docText"> When we copy one container into another, the types must match exactly: The container type and element type must be the same.</p>
+				<p class="docText">将一个容器复制给另一个容器时，类型必须匹配：容器类型和元素类型都必须相同。</p>
+			</td>
+		</tr>
+	</table>
+	<br>
+	</p>
+</div><BR>
+
+<a name="ch09lev3sec2"></a>
+<h5 class="docSection3Title">Initializing as a Copy of a Range of Elements</H5>
+<h5 class="docSection3Title">初始化为一段元素的副本</H5>
+<p class="docText">Although we cannot copy the elements from one kind of container to another directly, we can do so indirectly by passing a pair of iterators (<a class="docLink" href="ch03lev1sec4.html#ch03lev1sec4" >Section 3.4</a>, p. <a class="docLink" href="ch03lev1sec4.html#ch03lev1sec4" >95</a>). When we use iterators, there is no requirement that the container types be identical. The element types in the containers can differ as long as they are compatible. It must be possible to convert the element we copy into the type held by the container we are constructing.</p>
+<p class="docText">尽管不能直接将一种容器内的元素复制给另一种容器，但系统允许通过传递一对迭代器（<a class="docLink" href="ch03lev1sec4.html#ch03lev1sec4" >第 3.4 节</a>）间接实现该实现该功能。使用迭代器时，不要求容器类型相同。容器内的元素类型也可以不相同，只要它们相互兼容，能够将要复制的元素转换为所构建的新容器的元素类型，即可实现复制。</p>
+
+<p class="docText">The iterators denote a range of elements that we want to copy. These elements are used to initialize the elements of the new container. The iterators mark the first and one past the last element to be copied. We can use this form of initialization to copy a container that we could not copy directly. More importantly, we can use it to copy only a subsequence of the other container:</p>
+<p class="docText">迭代器标记了要复制的元素范围，这些元素用于初始化新容器的元素。迭代器标记出要复制的第一个元素和最后一个元素。采用这种初始化形式可复制不能直接复制的容器。更重要的是，可以实现复制其他容器的一个子序列：</p>
+<pre>
+     // <span class="docEmphItalicAlt">initialize</span> <span class="docEmphasis">slist</span> <span class="docEmphItalicAlt">with copy of each element of</span> <span class="docEmphasis">svec</span>
+     list&lt;string&gt; slist(svec.begin(), svec.end());
+
+     // <span class="docEmphItalicAlt">find midpoint in the</span> <span class="docEmphasis">vector</span>
+     vector&lt;string&gt;::iterator mid = svec.begin() + svec.size()/2;
+
+     // <span class="docEmphItalicAlt">initialize</span> <span class="docEmphasis">front</span> <span class="docEmphItalicAlt">with first half of</span> <span class="docEmphasis">svec</span>: <span class="docEmphItalicAlt">The elements up to but not including</span> <span class="docEmphasis">*mid</span>
+     deque&lt;string&gt; front(svec.begin(), mid);
+     // <span class="docEmphItalicAlt">initialize</span> <span class="docEmphasis">back</span> <span class="docEmphItalicAlt">with second half of</span> <span class="docEmphasis">svec</span>: <span class="docEmphItalicAlt">The elements</span> <span class="docEmphasis">*mid</span> <span class="docEmphItalicAlt">through end of</span> <span class="docEmphasis">svec</span>
+     deque&lt;string&gt; back(mid, svec.end());
+</pre><br>
+<p class="docText">Recall that pointers are iterators, so it should not be surprising that we can initialize a container from a pair of pointers into a built-in array:</p>
+<p class="docText">回顾一下指针，我们知道指针就是迭代器，因此允许通过使用内置数组中的一对指针初始化容器也就不奇怪了：</p>
+<pre>
+     char *words[] = {"stately", "plump", "buck", "mulligan"};
+
+     // <span class="docEmphItalicAlt">calculate how many elements in</span> <span class="docEmphasis">words</span>
+     size_t words_size = sizeof(words)/sizeof(char *);
+
+     // <span class="docEmphItalicAlt">use entire array to initialize</span> <span class="docEmphasis">words2</span>
+     list&lt;string&gt; words2(words, words + words_size);
+</pre><br>
+<a name="idd1e63403"></a><a name="idd1e63408"></a><a name="idd1e63413"></a><a name="idd1e63418"></a><a name="idd1e63424"></a><a name="idd1e63430"></a><a name="idd1e63436"></a><a name="idd1e63442"></a><a name="idd1e63448"></a><a name="idd1e63453"></a><a name="idd1e63459"></a><a name="idd1e63466"></a><a name="idd1e63473"></a><a name="idd1e63478"></a><a name="idd1e63485"></a>
+<p class="docText">Here we use <tt>sizeof</tt> (<a class="docLink" href="ch05lev1sec8.html#ch05lev1sec8" >Section 5.8</a>, p. <a class="docLink" href="ch05lev1sec8.html#ch05lev1sec8" >167</a>) to calculate the size of the array. We add that size to a pointer to the first element to get a pointer to a location one past the end of the array. The initializers for <tt>words2</tt> are a pointer to the first element in <tt>words</tt> and a second pointer one past the last element in that array. The second pointer serves as a stopping condition; the location it addresses is not included in the elements to be copied.</p>
+<p class="docText">这里，使用 <tt>sizeof</tt>（<a class="docLink" href="ch05lev1sec8.html#ch05lev1sec8" >5.8 节</a>）计算数组的长度。将数组长度加到指向第一个元素的指针上就可以得到指向超出数组末端的下一位置的指针。通过指向第一个元素的指针 <tt>words</tt> 和指向数组中最后一个元素的下一位置的指针，实现了 <tt>words2</tt> 的初始化。其中第二个指针提供停止复制的条件，其所指向的位置上存放的元素并没有复制。</p>
+
+<a name="ch09lev3sec3"></a>
+<h5 class="docSection3Title">Allocating and Initializing a Specified Number of Elements</h5>
+<h5 class="docSection3Title">分配和初始化指定数目的元素</h5>
+<p class="docText">When creating a sequential container, we may specify an explicit size and an (optional) initializer to use for the elements. The size can be either a constant or non-constant expression. The element initializer must be a valid value that can be used to initialize an object of the element type:</p>
+<p class="docText">创建顺序容器时，可显式指定容器大小和一个（可选的）元素初始化式。容器大小可以是常量或非常量表达式，元素初始化则必须是可用于初始化其元素类型的对象的值：</p>
+<pre>
+     const list&lt;int&gt;::size_type list_size = 64;
+     list&lt;string&gt; slist(list_size, "eh?"); // <span class="docEmphItalicAlt">64</span> <span class="docEmphasis">string</span><span class="docEmphItalicAlt">s, each is</span> <span class="docEmphasis">eh?</span>
+</pre><br>
+<p class="docText">This code initializes <tt>slist</tt> to have 64 elements, each with the value <tt>eh?</tt>.</p>
+<p class="docText">这段代码表示 <tt>slist</tt> 含有 64 个元素，每个元素都被初始化为“<tt>eh?</tt>”字符串。</p>
+
+<p class="docText">As an alternative to specifying the number of elements and an element initializer, we can also specify only the size:</p>
+<p class="docText">创建容器时，除了指定元素个数，还可选择是否提供元素初始化式。我们也可以只指定容器大小：</p>
+<pre>
+list&lt;int&gt; ilist(list_size); // <span class="docEmphItalicAlt">64 elements, each initialized to 0</span>
+// <span class="docEmphItalicAlt">svec has as many elements as the return value from get_word_count</span>
+extern unsigned get_word_count(const string &amp;file_name);
+vector&lt;string&gt; svec(get_word_count("Chimera"));
+</pre><br>
+<p class="docText">When we do not supply an element initializer, the library generates a value-initialized (<a class="docLink" href="ch03lev1sec3.html#ch03lev2sec6" >Section 3.3.1</a>, p. <a class="docLink" href="ch03lev1sec3.html#ch03lev2sec6" >92</a>) one for us. To use this form of initialization, the element type must either be a built-in or compound type or be a class type that has a default constructor. If the element type does not have a default constructor, then an explicit element initializer must be specified.</p>
+<p class="docText">不提供元素初始化式时，标准库将为该容器实现值初始化（<a class="docLink" href="ch03lev1sec3.html#ch03lev2sec6" >3.3.1&nbps;节</a>）。采用这种类型的初始化，元素类型必须是内置或复合类型，或者是提供了默认构造函数的类类型。如果元素类型没有默认构造函数，则必须显式指定其元素初始化式。</p>
+
+<a name="ch09note03"></a>
+<div class="docNote"><P>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" align="LEFT" width="50" height="54" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+			<td valign="top">
+				<p class="docText"> The constructors that take a size are valid <span class="docEmphasis">only</span> for sequential containers; they are not supported for the associative containers,</p>
+				<p class="docText">接受容器大小做形参的构造函数只适用于顺序容器，而关联容器不支持这种初始化。</p>
+			</td>
+		</tr>
+	</table><br>
+</p></div><br>
+
+<a name="ch09sb01"></a>
+<p>
+<table cellspacing="0" width="90%" border="1" cellpadding="5">
+	<tr>
+		<td>
+			<h2 class="docSidebarTitle">Exercises Section 9.1.1</h2>
+			<blockquote>
+				<p>
+				<table border="0" cellspacing="16" cellpadding="0">
+					<tr valign="top">
+						<TD align="right" class="docText" width="50"><a name="ch09qa1q1"></a><b>Exercise 9.1:</b></TD>
+						<td>
+							<p class="docText">Explain the following initializations. Indicate if any are in error, and if so, why.</p>
+							<p class="docText">解释下列初始化，指出哪些是错误的，为什么？</p>
+<pre>
+     int ia[7] = { 0, 1, 1, 2, 3, 5, 8 };
+     string sa[6] = {
+         "Fort Sumter", "Manassas", "Perryville",
+         "Vicksburg", "Meridian", "Chancellorsville" };
+     (a) vector&lt;string&gt; svec(sa, sa+6);
+     (b) list&lt;int&gt; ilist( ia+4, ia+6);
+     (c) vector&lt;int&gt; ivec(ia, ia+8);
+     (d) list&lt;string&gt; slist(sa+6, sa);
+</pre><br>
+						</td>
+					</tr>
+					<tr valign="top">
+						<td align="right" class="docText" width="50"><a name="ch09qa1q2"></a>
+							<b>Exercise 9.2:</b>
+						</td>
+						<td>
+							<p class="docText">Show an example of each of the four ways to create and initialize a <tt>vector</tt>. Explain what values each <tt>vector</tt> contains.</p>
+							<p class="docText">创建和初始化一个 <tt>vector</tt> 对象有 4 种方式，为每种方式提供一个例子，并解释每个例子生成的 <tt>vector</tt> 对象包含什么值。</p>
+						</td>
+					</tr>
+					<tr valign="top">
+						<td align="right" class="docText" width="50"><a name="ch09qa1q3"></a>
+							<b>Exercise 9.3:</b>
+						</td>
+						<td>
+							<p class="docText">Explain the differences between the constructor that takes a container to copy and the constructor that takes two iterators.</p>
+							<p class="docText">解释复制容器对象的构造函数和使用两个迭代器的构造函数之间的差别。</p>
+						</td>
+					</tr>
+				</table>
+				</p>
+		</blockquote>
+		</td>
+	</tr>
+</table>
+</p>
+<br>
+
+
+<a name="ch09lev2sec2"></a>
+<h4 class="docSection2Title">9.1.2. Constraints on Types that a Container Can Hold</H4>
+<h4 class="docSection2Title">9.1.2. 容器内元素的类型约束</H4>
+<p class="docText">While most types can be used as the element type of a container, there are two constraints that element types must meet:</p>
+<p class="docText">C++ 语言中，大多数类型都可用作容器的元素类型。容器元素类型必须满足以下两个约束：</p>
+
+<ul>
+	<li>
+	<p class="docList">The element type must support assignment.</p>
+	<p class="docList">元素类型必须支持赋值运算。</p>
+	</li>
+	<li>
+	<p class="docList">We must be able to copy objects of the element type.</p>
+	<p class="docList">元素类型的对象必须可以复制。</p>
+	</li>
+</ul>
+<p class="docText">There are additional constraints on the types used as the key in an associative container, which we'll cover in <a class="docLink" href="ch10.html#ch10" >Chapter 10</a>.</p>
+<p class="docText">此外，关联容器的键类型还需满足其他的约束，我们将在<a class="docLink" href="ch10.html#ch10" >第十章</a>介绍相关内容。</p>
+
+<p class="docText">Most types meet these minimal element type requirements. All of the built-in or compound types, with the exception of references, can be used as the element <a name="idd1e63613"></a><a name="idd1e63619"></a>type. References do not support assignment in its ordinary meaning, so we cannot have containers of references.</p>
+<p class="docText">大多数类型满足上述最低限度的元素类型要求。除了引用类型外，所有内置或复合类型都可用做元素类型。引用不支持一般意义的赋值运算，因此没有元素是引用类型的容器。</p>
+
+
+<p class="docText">With the exception of the IO library types (and the <tt>auto_ptr</tt> type, which we cover in <a class="docLink" href="ch17lev1sec1.html#ch17lev2sec9" >Section 17.1.9</a> (p. <a class="docLink" href="ch17lev1sec1.html#ch17lev2sec9" >702</a>)), all the library types are valid container element types. In particular, containers themselves satisfy these requirements. We can define containers with elements that are themselves containers. Our <tt>Sales_item</tt> type also satisifes these requirements.</P>
+<p class="docText">除输入输出（IO）标准库类型（以及<a class="docLink" href="ch17lev1sec1.html#ch17lev2sec9" >第 17.1.9 节</a>介绍的 <tt>auto_ptr</tt> 类型）之外，所有其他标准库类型都是有效的容器元素类型。特别地，容器本身也满足上述要求，因此，可以定义元素本身就是容器类型的容器。<tt>Sales_item</tt> 类型也满足上述要求。</p>
+
+<p class="docText">The IO library types do not support copy or assignment. Therefore, we cannot have a container that holds objects of the IO types.</p>
+<p class="docText">IO 库类型不支持复制或赋值。因此，不能创建存放 IO 类型对象的容器。</p>
+
+<a name="ch09lev3sec4"></a>
+<H5 class="docSection3Title">Container Operations May Impose Additional Requirements</H5>
+<H5 class="docSection3Title">容器操作的特殊要求</H5>
+<p class="docText">The requirement to support copy and assignment is the minimal requirement on element types. In addition, some container operations impose additional requirements on the element type. If the element type doesn't support the additional requirement, then we cannot perform that operation: We can define a container of that type but may not use that particular operation.</p>
+<p class="docText">支持复制和赋值功能是容器元素类型的最低要求。此外，一些容器操作对元素类型还有特殊要求。如果元素类型不支持这些特殊要求，则相关的容器操作就不能执行：我们可以定义该类型的容器，但不能使用某些特定的操作。</p>
+
+<p class="docText">One example of an operation that imposes a type constraint is the constructors that take a single initializer that specifies the size of the container. If our container holds objects of a class type, then we can use this constructor only if the element type has a default constructor. Most types do have a default constructor, although there are some classes that do not. As an example, assume that <tt>Foo</tt> is a class that does <span class="docEmphasis">not</span> define a default constructor but that does have a constructor that takes an <tt>int</tt> argument. Now, consider the following declarations:</p>
+<p class="docText">其中一种需外加类型要求的容器操作是指定容器大小并提供单个初始化式的构造函数。如果容器存储类类型的对象，那么只有当其元素类型提供默认构造函数时，容器才能使用这种构造函数。尽管有一些类没有提供默认构造函数，但大多数类类型都会有。例如，假设类 <tt>Foo</tt> 没有默认构造函数，但提供了需要一个 <tt>int</tt> 型形参的构造函数。现在，考虑下面的声明：</p>
+<pre>
+     vector&lt;Foo&gt; empty;     // <span class="docEmphItalicAlt">ok: no need for element default constructor</span>
+     vector&lt;Foo&gt; bad(10);   // <span class="docEmphItalicAlt">error: no default constructor for Foo</span>
+     vector&lt;Foo&gt; ok(10, 1); // <span class="docEmphItalicAlt">ok: each element initialized to 1</span>
+</pre><br>
+<a name="idd1e63736"></a><a name="idd1e63741"></a><a name="idd1e63747"></a><a name="idd1e63750"></a><a name="idd1e63755"></a><a name="idd1e63761"></a><a name="idd1e63767"></a><a name="idd1e63773"></a>
+<p class="docText">We can define an empty container to hold <tt>Foo</tt> objects, but we can define one of a given size only if we also specify an initializer for each element.</P>
+<p class="docText">我们定义一个存放 <tt>Foo</tt> 类型对象的空容器，但是，只有在同时指定每个元素的初始化式时，才能使用给定容器大小的构造函数来创建同类型的容器对象。</p>
+
+<p class="docText">As we describe the container operations, we'll note the constraints, if any, that each container operation places on the element type.</P>
+<p class="docText">在描述容器操作时，我们应该留意（如果有的话）每个操作对元素类型的约束。</p>
+
+<a name="ch09lev3sec5"></a>
+<h5 class="docSection3Title">Containers of Containers</h5>
+<h5 class="docSection3Title">容器的容器</h5>
+<p class="docText">Because the containers meet the constraints on element types, we can define a container whose element type is itself a container type. For example, we might define <tt>lines</tt> as a <tt>vector</tt> whose elements are a <tt>vector</tt> of <tt>string</tt>s:</p>
+<p class="docText">因为容器受容器元素类型的约束，所以可定义元素是容器类型的容器。例如，可以定义 <tt>vector</tt> 类型的容器 <tt>lines</tt>，其元素为 <tt>string</tt> 类型的 <tt>vector</tt> 对象：</p>
+<pre>
+     // <span class="docEmphItalicAlt">note spacing: use "&gt;&gt;" not "&gt;&gt;" when specifying a container element type</span>
+     vector&lt; vector&lt;string&gt; &gt; lines; // <span class="docEmphasis">vector</span> <span class="docEmphItalicAlt">of</span> <span class="docEmphasis">vector</span><span class="docEmphItalicAlt">s</span>
+</pre><br>
+<p class="docText">Note the spacing used when specifying a container element type as a container:</P>
+<p class="docText">注意，在指定容器元素为容器类型时，必须如下使用空格：</P>
+<pre>
+     vector&lt; vector&lt;string&gt; &gt; lines; // <span class="docEmphItalicAlt">ok: space required between close</span> &gt;
+     vector&lt; vector&lt;string&gt;&gt; lines; // <span class="docEmphItalicAlt">error: &gt;&gt; treated as shift operator</span>
+</pre><br>
+<a name="ch09note04"></a>
+<div class="docNote">
+	<p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" align="LEFT" width="50" height="54" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+			<td valign="top">
+				<p class="docText"> We must separate the two closing <tt>&gt;</tt> symbols with a space to indicate that these two characters represent two symbols. Without the space, <tt>&gt;&gt;</tt> is treated as a single symbol, the right shift operator, and results in a compile-time error.</p></td>
+				<p class="docText">必须用空格隔开两个相邻的 <tt>&gt;</tt> 符号，以示这是两个分开的符号，否则，系统会认为 <tt>&gt;&gt;</tt> 是单个符号，为右移操作符，并导致编译时错误。</p></td>
+		</tr>
+	</table><br>
+</p></div><br>
+
+<a name="ch09sb02"></a>
+<p>
+<table cellspacing="0" width="90%" border="1" cellpadding="5">
+	<tr>
+		<td>
+			<h2 class="docSidebarTitle">Exercises Section 9.1.2</h2>
+			<blockquote>
+				<p>
+				<table border="0" cellspacing="16" cellpadding="0">
+					<tr valign="top">
+						<td align="right" class="docText" width="50"><a name="ch09qa2q1"></a>
+							<b>Exercise 9.4:</b>
+						</td>
+						<td>
+							<p class="docText">Define a <tt>list</tt> that holds elements that are <tt>deque</tt>s that hold <tt>ints</tt>.</p>
+							<p class="docText">定义一个 <tt>list</tt> 对象来存储 <tt>deque</tt> 对象里的元素，该 <tt>deque</tt> 对象存放 <tt>int</tt> 型元素。</p>
+						</td>
+					</tr>
+					<tr valign="top">
+						<td align="right" class="docText" width="50"><a name="ch09qa2q2"></a>
+							<b>Exercise 9.5:</b></td>
+						<td>
+							<p class="docText">Why can we not have containers that hold <tt>iostream</tt> objects?</p>
+							<p class="docText">为什么我们不可以使用容器来存储 <tt>iostream</tt> 对象？</p>
+						</td>
+					</tr>
+					<tr valign="top">
+						<td align="right" class="docText" width="50"><a name="ch09qa2q3"></a>
+							<B>Exercise 9.6:</b>
+						</td>
+						<td>
+							<p class="docText">Given a class type named <tt>Foo</tt> that does not define a default constructor but does define a constructor that takes <tt>int</tt> values, define a <tt>list</tt> of <tt>Foo</tt> that holds 10 elements.</p>
+							<p class="docText">假设有一个名为 <tt>Foo</tt> 的类，这个类没有定义默认构造函数，但提供了需要一个 <tt>int</tt> 型参数的构造函数，定义一个存放 <tt>Foo</tt> 的 <tt>list</tt> 对象，该对象有 10 个元素。</p>
+						</td>
+					</tr>
+				</table>
+				</p>
+			</blockquote>
+		</td>
+	</tr>
+</table>
+</p>
+<br>
+
+
+
+<a href="21001535.html" ><img src="images/pixel.gif"  alt="" width="1" height="1" border="0"></a><UL></ul></td></TR></table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr><td><div STYLE="MARGIN-LEFT: 0.15in;"><a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle"  alt="Team LiB"></a></div></td>
+<td align="right"><div STYLE="MARGIN-LEFT: 0.15in;">
+<a href="ch09.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a>
+<a href="ch09lev1sec2.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+</div></td></tr></table>
+</body></html>

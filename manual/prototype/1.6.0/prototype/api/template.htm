@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Template - Prototype JavaScript 框架</title>
+	<link href="../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>Template</h2>
+		<div id="method-list">
+			<ul><li><a href="template.htm#method-evaluate">evaluate</a></li></ul>
+		</div>
+		<div id="abody">
+			<p>
+				在开发中随时会遇到这样一种问题：有一组相似的对象，需要将这些对象统一采用一种格式输出。
+				可能你会使用一个循环，将对象的属性值与字符串字面值连接。这是一个典型的解决办法，
+				并没有什么错，只是比较麻烦，并且在看到相关的代码时不能够马上就明白输出的形式。
+				<code>Template</code> 类提供了一种清晰明了的办法来解决格式化输出的问题。
+			</p>
+			<h3>走近模板</h3>
+			<p>
+				<code>Template</code> 类使用一种基本的类似于 Ruby 的格式化语法。可以通过嵌入了形如
+				<strong>#{fieldName}</strong> 这种样式的替换标记的字符串创建一个模板，应用该模板时
+				（<code>evaluate</code>），<strong>#{fieldName}</strong> 将会被对象中相应属性的值替换。
+				一个简单的样例如下：				
+			</p>
+			<pre><code class="javascript">// 模板（格式化表达式）
+var myTemplate = new Template('The TV show #{title} was created by #{author}.'); 
+// 将被格式化的数据 
+var show = {title: 'The Simpsons', author: 'Matt Groening', network: 'FOX' }; 
+// 现在格式化数据 
+myTemplate.evaluate(show); 
+// -> The TV show The Simpsons was created by Matt Groening. </code></pre>
+			<h3>模板可以被重复使用</h3>
+			<p>
+				在上面的样例中，模板对象并没有固定绑定到数据。仅只是在模板执行期间，数据才会绑定到模板，
+				这并不会对模板造成任何影响。下面的例子显示同一个模板可以应用到不同的对象：
+			</p>
+			<pre><code class="javascript">//创建一些新的类型相同的对象 
+var conversion1 = {from: 'meters', to: 'feet', factor: 3.28}; 
+var conversion2 = {from: 'kilojoules', to: 'BTUs', factor: 0.9478};
+var conversion3 = {from: 'megabytes', to: 'gigabytes', factor: 1024}; 
+
+//模板
+var templ = new Template('Multiply by #{factor} to convert from #{from} to #{to}.'); 
+
+//依次格式化对象 
+[conversion1, conversion2, conversion3].each( function(conv){
+	templ.evaluate(conv); 
+}); 
+// -> Multiply by 3.28 to convert from meters to feet. 
+// -> Multiply by 0.9478 to convert from kilojoules to BTUs. 
+// -> Multiply by 1024 to convert from megabytes to gigabytes. </code></pre>
+			<h3>转义序列</h3>
+			<p>
+				总有一天你会发现你需要在模板中使用与替换标记样式相同的字符串，但是你不希望它被替换。在这种情形下，
+				需要一个转义字符——反斜线（<code>\</code>）：
+			</p>
+			<pre><code class="javascript">// 注意：你会看到两个反斜线，因为在 JavaScript 中，反斜线也是一个转义字符
+var t = new Template('in #{lang} we also use the \\#{variable} syntax for templates.'); 
+var data = {lang:'Ruby', variable: '(not used)'}; 
+t.evaluate(data); 
+// -> in Ruby we also use the #{variable} syntax for templates.
+
+// 译注：注意，只有在与替换样式标记具有相同格式时才需要转义
+// 而不是对 "#" 字符进行转义，例如，下面的 "#anchor" 前就不需要转义字符：
+var temp = new Template('http://#{site}/#{page}?#{queryString}#anchor');
+temp.evaluate({site: 'www.xxx.com', page: 'test.htm', queryString: 'sn=110'});
+// -> 'http://www.xxx.com/test.htm?sn=110#anchor'
+</code></pre>
+			<h3>自定义语法</h3>
+			<p>
+				大多数情形下，模板字符串的默认语法已足够使用。但在某些特殊环境中，默认的类似于 Ruby
+				的语法并不适用，这时，需要自定义替换标记语法。<code>Template</code> 的构造器具有可选的第二个参数，
+				它是一个用于在模板字符串中匹配自定义标记的正则表达式对象。下面让我们将普遍使用的
+				<strong>&lt;%= %&gt;</strong> 结构与 <code>Template</code> 结合使用：
+			</p>
+			<pre><code class="javascript">var syntax = /(^|.|\r|\n)(\&lt;%=\s*(\w+)\s*%\&gt;)/;
+//匹配类似于 '&lt;%= field %&gt;' 这种形式的标记
+var t = new Template('&lt;div&gt;Name: &lt;b&gt;&lt;%= name %&gt;&lt;/b&gt;, Age: &lt;b&gt;&lt;%=age%&gt;&lt;/b&gt;&lt;/div&gt;', syntax); 
+t.evaluate( {name: 'John Smith', age: 26} ); 
+// -> &lt;div&gt;Name: &lt;b&gt;John Smith&lt;/b&gt;, Age: &lt;b&gt;26&lt;/b&gt;&lt;/div&gt; </code></pre>
+			<p>
+				对于任意的自定义语法，有一项重要的约束：在正则表达式中必须为相应的语法标记定义至少三个分组。
+				第一个分组用于捕获标记之前的字符，以检测标记前面是否有下划线字符（不能够使用其它的字符）。
+				第二个分组用于捕获完整的标记，在调用 <code>evaluate</code> 时，它将会被整体替换。最后，
+				第三个分组用于捕获标记中字段的名称。
+			</p>
+		</div>
+		<div id="method-excerpts">
+			<h3>方法</h3>
+			<div id="method-evaluate" class="mexcerpt">
+				<h4><a href="template/evaluate.htm" >evaluate</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">evaluate(object) -> String</code></pre>
+					<p>
+						将模板应用于参数 <code>object</code> 指定的数据，使用 <code>object</code>
+						的属性值替换掉模板中相应的标记，返回替换后的字符串。
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

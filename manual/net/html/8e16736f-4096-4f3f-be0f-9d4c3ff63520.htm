@@ -1,0 +1,224 @@
+﻿<html xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+    <META NAME="save" CONTENT="history" />
+    <title>如何：串联多个字符串（C# 编程指南）</title>
+    <link rel="stylesheet" type="text/css" href="../styles/presentation.css" />
+    <link rel="stylesheet" type="text/css" href="ms-help://Hx/HxRuntime/HxLink.css" />
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/EventUtilities.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/SplitScreen.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/Dropdown.js"> </script>
+    <script type="text/javascript" src="../scripts/script_manifold.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/script_feedBack.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CheckboxMenu.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CommonUtilities.js"> </script>
+    <xml>
+      <MSHelp:TOCTitle Title="如何：串联多个字符串" />
+      <MSHelp:Keyword Index="A" Term="8e16736f-4096-4f3f-be0f-9d4c3ff63520" />
+      <MSHelp:Keyword Index="K" Term="串联字符串 [C#], 串联" />
+      <MSHelp:Keyword Index="K" Term="联接字符串 [C#]" />
+      <MSHelp:Keyword Index="K" Term="字符串 [C#], 串联" />
+      <MSHelp:Attr Name="RevisionNumber" Value="15" />
+      <MSHelp:Attr Name="AssetID" Value="8e16736f-4096-4f3f-be0f-9d4c3ff63520" />
+      <MSHelp:Attr Name="Abstract" Value="&#xD;&#xA;                    串联是将一个字符串追加到另一个字符串末尾的过程。使用 + 运算符串联字符串文本或字符串常量时，编译器会创建一个字符串。串联不在运行时发生。但字符串变量只能在运行时串联，对此，您应该了解各种方法的性能含义。&#xD;&#xA;                " />
+      <MSHelp:Attr Name="codelang" Value="CSharp" />
+      <MSHelp:Attr Name="CommunityContent" Value="1" />
+      <MSHelp:Attr Name="DevLang" Value="CSharp" />
+      <MSHelp:Attr Name="DevLangVers" Value="CSharp" />
+      <MSHelp:Attr Name="DocSet" Value="C#" />
+      <MSHelp:Attr Name="DocSet" Value="C# Lang" />
+      <MSHelp:Attr Name="DocSet" Value="ExpressLibVS" />
+      <MSHelp:Attr Name="ProgModel" Value="managed" />
+      <MSHelp:Attr Name="ShippedIn" Value="vs.90" />
+      <MSHelp:Attr Name="Technology" Value="ManagedCode" />
+      <MSHelp:Attr Name="TopicVersion" Value="09.00.08178.10000" />
+      <MSHelp:Attr Name="Catalog Container" Value="System_Default_Catalog" />
+      <MSHelp:Attr Name="Content Set Container" Value="System_Default_Content_Set" />
+      <MSHelp:Attr Name="TopicType" Value="kbHowTo" />
+      <MSHelp:Attr Name="Locale" Value="zh-chs" />
+    </xml>
+  </head>
+  <body>
+    <input type="hidden" id="userDataCache" class="userDataStyle" />
+    <input type="hidden" id="hiddenScrollOffset" />
+    <img id="collapseImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" title="“折叠”图像" />
+    <img id="expandImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" title="“展开”图像" />
+    <img id="collapseAllImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" />
+    <img id="expandAllImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" />
+    <img id="dropDownImage" style="display:none; height:0; width:0;" src="../icons/dropdown.gif" />
+    <img id="dropDownHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/dropdownHover.gif" />
+    <img id="copyImage" style="display:none; height:0; width:0;" src="../icons/copycode.gif" title="“复制”图像" />
+    <img id="copyHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/copycodeHighlight.gif" title="“复制悬停”图像" />
+    <div id="header">
+      <table id="topTable" cellspacing="0" cellpadding="0">
+        <tr>
+          <td>
+            <span onclick="ExpandCollapseAll(toggleAllImage)" style="cursor:default;" onkeypress="ExpandCollapseAll_CheckKey(toggleAllImage, event)" tabindex="0">
+              <img ID="toggleAllImage" class="toggleAll" src="../icons/collapse_all.gif" /> <label id="collapseAllLabel" for="toggleAllImage" style="display: none;">全部折叠</label><label id="expandAllLabel" for="toggleAllImage" style="display: none;">全部展开</label> </span>
+            <span>    </span>
+            <span id="devlangsDropdown" class="filter" tabindex="0">
+              <img id="devlangsDropdownImage" src="../icons/dropdown.gif" /> <label id="devlangsMenuAllLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：全部 </nobr></label><label id="devlangsMenuMultipleLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：多个 </nobr></label><label id="devlangsMenuVisualBasicLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual Basic </nobr></label><label id="devlangsMenuCSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：C# </nobr></label><label id="devlangsMenuManagedCPlusPlusLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual C++ </nobr></label><label id="devlangsMenuJSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：J# </nobr></label><label id="devlangsMenuJScriptLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：JScript </nobr></label></span>
+          </td>
+        </tr>
+      </table>
+      <div id="devlangsMenu">
+        <input id="VisualBasicCheckbox" type="checkbox" data="VisualBasic,vb,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="VisualBasicCheckbox">Visual Basic</label>
+        <br />
+        <input id="CSharpCheckbox" type="checkbox" data="CSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="CSharpCheckbox">C#</label>
+        <br />
+        <input id="ManagedCPlusPlusCheckbox" type="checkbox" data="ManagedCPlusPlus,cpp,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="ManagedCPlusPlusCheckbox">Visual C++</label>
+        <br />
+        <input id="JSharpCheckbox" type="checkbox" data="JSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JSharpCheckbox">J#</label>
+        <br />
+        <input id="JScriptCheckbox" type="checkbox" data="JScript,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JScriptCheckbox">JScript</label>
+        <br />
+      </div>
+      <table id="bottomTable" cellpadding="0" cellspacing="0">
+        <tr id="headerTableRow1">
+          <td align="left">
+            <span id="runningHeaderText">C# 编程指南</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow2">
+          <td align="left">
+            <span id="nsrTitle">如何：串联多个字符串（C# 编程指南）</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow3">
+          <td align="left">
+            <a href="8e16736f-4096-4f3f-be0f-9d4c3ff63520.htm#exampleToggle" onclick="OpenSection(exampleToggle)">示例</a>  <a href="8e16736f-4096-4f3f-be0f-9d4c3ff63520.htm#seeAlsoToggle" onclick="OpenSection(seeAlsoToggle)">另请参见</a>  
+<script type="text/javascript">
+var fbBody = '%b8%d0%d0%bb%c4%fa%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%bf%aa%b7%a2%b0%e6%b1%e0%d0%b4%cd%c5%b6%d3%bd%ab%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%d3%c3%d3%da%b8%c4%bd%f8%ce%c4%b5%b5%a1%a3%ce%d2%c3%c7%d4%da%c9%f3%d4%c4%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%ca%b1%a3%ac%bf%c9%c4%dc%bb%e1%b8%f8%c4%fa%b7%a2%cb%cd%b5%e7%d7%d3%d3%ca%bc%fe%a3%ac%d2%d4%c7%eb%c4%fa%cc%e1%b9%a9%bd%f8%d2%bb%b2%bd%b5%c4%bd%e2%ca%cd%cb%b5%c3%f7%bb%f2%d5%df%be%cd%bd%e2%be%f6%b7%bd%b0%b8%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%ce%d2%c3%c7%b2%bb%bb%e1%bd%ab%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%d3%c3%d3%da%c8%ce%ba%ce%c6%e4%cb%fb%d3%c3%cd%be%a3%ac%b2%a2%c7%d2%d4%da%c9%f3%d4%c4%cd%ea%d6%ae%ba%f3%a3%ac%ce%d2%c3%c7%b2%bb%bb%e1%d4%d9%b1%a3%c1%f4%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%a1%a3%0d%0a%d3%d0%b9%d8%20Microsoft%20%d2%fe%cb%bd%d5%fe%b2%df%b5%c4%bd%f8%d2%bb%b2%bd%d0%c5%cf%a2%a3%ac%c7%eb%b2%ce%bc%fb%20http%3a%2f%2fprivacy.microsoft.com%2fzh-cn%2fdefault.aspx%a1%a3';
+var fbSubject = 'Customer%20Feedback';
+</script>
+  <span id="headfeedbackarea" class="feedbackhead"><a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);"> 发送反馈意见</a></span>
+</td>
+        </tr>
+      </table>
+      <table id="gradientTable">
+        <tr>
+          <td class="nsrBottom" background="../icons/gradient.gif" />
+        </tr>
+      </table>
+    </div>
+    <div id="mainSection">
+      <div id="mainBody">
+        <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
+        <font color="DarkGray"></font>
+        <p /> <p><font color="DarkGray">更新：
+                    
+    2008 年 7 月
+  
+                </font></p><div class="introduction"><p>
+                    串联是将一个字符串追加到另一个字符串末尾的过程。使用 <span sdata="langKeyword" value="+"><span class="keyword">+</span></span> 运算符串联字符串文本或字符串常量时，编译器会创建一个字符串。串联不在运行时发生。但字符串变量只能在运行时串联，对此，您应该了解各种方法的性能含义。
+                </p></div><h1 class="heading"><span onclick="ExpandCollapse(exampleToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(exampleToggle, event)" tabindex="0"><img id="exampleToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />示例</span></h1><div id="exampleSection" class="section" name="collapseableSection" style=""><p>
+                    下面的示例演示如何将一个长字符串拆分为几个较短的字符串，从而提高源代码的可读性。这些较短的字符串将在编译时串联成一个字符串。无论涉及到多少个字符串，都不会有运行时性能开销。
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Main()
+{
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Concatenation of literals is performed at compile time, not run time.</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> text = @<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Historically, the world of data and the world of objects "</span> +
+    <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"have not been well integrated. Programmers work in C# or Visual Basic "</span> +
+    <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"and also in SQL or XQuery. On the one side are concepts such as classes, "</span> +
+    <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"objects, fields, inheritance, and .NET Framework APIs. On the other side "</span> +
+    <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"are tables, columns, rows, nodes, and separate languages for dealing with "</span> +
+    <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"them. Data types often require translation between the two worlds; there are "</span> +
+    <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"different standard functions. Because the object world has no notion of query, a "</span> +
+    <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"query can only be represented as a string without compile-time type checking or "</span> +
+    <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"IntelliSense support in the IDE. Transferring data from SQL tables or XML trees to "</span> +
+    <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"objects in memory is often tedious and error-prone."</span>;
+
+    Console.WriteLine(text);
+}
+
+</pre></td></tr></table></span></div></div><p>
+                    若要串联字符串变量，可以使用 <span sdata="langKeyword" value="+"><span class="keyword">+</span></span> 或 <span sdata="langKeyword" value="+="><span class="keyword">+=</span></span> 运算符，也可以使用 <span sdata="cer" target="Overload:System.String.Concat"><mshelp:link keywords="Overload:System.String.Concat" tabindex="0">String<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span></span>Concat</mshelp:link></span>、<span sdata="cer" target="Overload:System.String.Format"><mshelp:link keywords="Overload:System.String.Format" tabindex="0">String<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span></span>Format</mshelp:link></span> 或 <span sdata="cer" target="Overload:System.Text.StringBuilder.Append"><mshelp:link keywords="Overload:System.Text.StringBuilder.Append" tabindex="0">StringBuilder<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span></span>Append</mshelp:link></span> 方法。<span sdata="langKeyword" value="+"><span class="keyword">+</span></span> 运算符容易使用，且有利于提高代码的直观性，但它是连续工作的，即每次使用该运算符都会创建一个新字符串。因此，将多个运算符链接在一起某种程度上是比较低效的。例如，考虑下面的代码：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Main(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span>[] args)
+{
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// To run this program, provide a command line string.</span>
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// In Visual Studio, see Project &gt; Properties &gt; Debug.</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> userName = args[0];
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> date = DateTime.Today.ToShortDateString();
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Use the + and += operators for one-time concatenations.</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> str = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Hello "</span> + userName + <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">". Today is "</span> + date + <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"."</span>;
+    System.Console.WriteLine(str);
+
+    str += <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">" How are you today?"</span>;
+    System.Console.WriteLine(str);
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Keep the console window open in debug mode.</span>
+    Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Press any key to exit."</span>);
+    Console.ReadKey();
+}
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Example output: </span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//  Hello Alexander. Today is 1/22/2008.</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//  Hello Alexander. Today is 1/22/2008. How are you today?</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//  Press any key to exit.</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//</span>
+
+</pre></td></tr></table></span></div></div><div class="alert"><table width="100%" cellspacing="0" cellpadding="0"><tr><th align="left"><img class="note" title="说明" src="../icons/alert_note.gif" /><b>说明：</b></th></tr><tr><td><p>在字符串串联操作中，C# 编译器对 null 字符串和空字符串进行相同的处理，但它不转换原始 null 字符串的值。</p></td></tr></table></div><p>
+                    如果您串联的字符串数量不那么巨大（例如，在循环中），那么这些代码的性能成本可能不会很高。上述情况同样适用于 <span sdata="cer" target="Overload:System.String.Concat"><mshelp:link keywords="Overload:System.String.Concat" tabindex="0">String<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span></span>Concat</mshelp:link></span> 和 <span sdata="cer" target="Overload:System.String.Format"><mshelp:link keywords="Overload:System.String.Format" tabindex="0">String<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span></span>Format</mshelp:link></span> 方法。
+                </p><p>
+                    但如果性能的优劣很重要，则应该总是使用 <span sdata="cer" target="T:System.Text.StringBuilder"><mshelp:link keywords="T:System.Text.StringBuilder" tabindex="0">StringBuilder</mshelp:link></span> 类来串联字符串。下面的代码使用 <span sdata="cer" target="T:System.Text.StringBuilder"><mshelp:link keywords="T:System.Text.StringBuilder" tabindex="0">StringBuilder</mshelp:link></span> 类的 <span sdata="cer" target="Overload:System.Text.StringBuilder.Append"><mshelp:link keywords="Overload:System.Text.StringBuilder.Append" tabindex="0">Append</mshelp:link></span> 方法来串联字符串，因此不会有 <span sdata="langKeyword" value="+"><span class="keyword">+</span></span> 运算符的链接作用产生。
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> StringBuilderTest
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Main()
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> text = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">null</span>;
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Use StringBuilder for concatenation in tight loops.</span>
+        System.Text.StringBuilder sb = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> System.Text.StringBuilder();
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">for</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> i = 0; i &lt; 100; i++)
+        {
+            sb.AppendLine(i.ToString());
+        }
+        System.Console.WriteLine(sb.ToString());
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Keep the console window open in debug mode.</span>
+        System.Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Press any key to exit."</span>);
+        System.Console.ReadKey();
+    }
+}
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Output:</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// 0</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// 1</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// 2</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// 3</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// 4</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// ...</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//</span>
+
+</pre></td></tr></table></span></div></div></div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />请参见</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><h4 class="subHeading">概念</h4><div class="seeAlsoStyle"><span sdata="link"><a href="ac0f23a2-6bf3-4077-be99-538ae5fd3bc5.htm">C# 编程指南</a></span></div><h4 class="subHeading">参考</h4><div class="seeAlsoStyle"><span sdata="link"><a href="1a32b1c9-0d99-468a-9734-e3a47f2e897a.htm">字符串（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="cer" target="T:System.String"><mshelp:link keywords="T:System.String" tabindex="0">String</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="cer" target="T:System.Text.StringBuilder"><mshelp:link keywords="T:System.Text.StringBuilder" tabindex="0">StringBuilder</mshelp:link></span></div></div><h1 class="heading"><span onclick="ExpandCollapse(changeHistoryToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(changeHistoryToggle, event)" tabindex="0"><img id="changeHistoryToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />修订记录</span></h1><div id="changeHistorySection" class="section" name="collapseableSection" style=""><div class="caption"></div><div class="tableSection"><table width="50%" cellspacing="2" cellpadding="5" frame="lhs"><tr><th><p>
+                    日期
+                </p></th><th><p>
+                    历史记录
+                </p></th><th><p>
+                    原因
+                </p></th></tr><tr><td><p>
+                    
+    <p>2008 年 7 月</p>
+  
+                </p></td><td><p>
+                    新增主题。
+                </p></td><td><p>
+                    
+    <p>信息补充。</p>
+  
+                </p></td></tr></table></div><p>
+                    
+                </p></div></div>
+      <div id="footer">
+        <div class="footerLine">
+          <img width="100%" height="3px" src="../icons/footer.gif" title="“页脚”图像" />
+        </div>
+<span id="feedbackarea">将有关本主题的<a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);">反馈意见</a>发送给 Microsoft。</span>
+</div>
+    </div>
+  </body>
+</html>

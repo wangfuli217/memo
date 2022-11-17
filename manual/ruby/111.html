@@ -1,0 +1,432 @@
+<html><HEAD><TITLE>Programming Ruby: The Pragmatic Programmer's Guide</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=gb2312"><LINK media=screen href="111_files/pr_style[1].css"  type=text/css rel=StyleSheet></head>
+<BODY bgColor=white>
+<TABLE cellSpacing=0 cellPadding=3 width="100%" bgColor=#c09090 border=0>
+<TBODY>
+<TR>
+<TD colSpan=3>
+<TABLE cellPadding=20 width="99%" bgColor=#701a1a>
+<TBODY>
+<TR>
+<TD>
+<H1 class=header>Programming Ruby</H1>
+<H3 class=subheader>The Pragmatic Programmer's Guide</H3></TD></TR></TBODY></TABLE></TD></TR>
+<TR>
+<TD align=left width="33%"><A class=subheader href="110.html" >上一章</A> <A class=subheader href="110.html" >&lt;</A> </TD>
+<TD vAlign=center align=middle width="33%"><A class=subheader href="95.html" >目录</A> <A class=subheader href="95.html" >^</A> <BR></TD>
+<TD align=right width="33%"><A class=subheader href="112.html" >下一章</A><A class=subheader href="112.html" >&gt;</A> <BR></TD></TR></TBODY></TABLE><!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<H1>Ruby a和 Web</H1>
+<HR>
+<BR>Ruby对互联网来说并不陌生，不只是因为你可以用它来写SMTP服务器，FTP服务器，或者web服务器，你还可以用它来完成通常的任务，比如CGI编程或者作为PHP的一个替代品。 
+<P></P>
+<H2><A name=S1>编写 CGI 脚本</A></H2>
+<P>你可以用Ruby轻松的编写CGI脚本，为了让Ruby脚本产生HTML输出，你只需要这样做：</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>#!/usr/bin/env&nbsp;ruby
+print&nbsp;"HTTP/1.0&nbsp;200&nbsp;OK\r\n"
+print&nbsp;"Content-type:&nbsp;text/html\r\n\r\n"
+print&nbsp;"&lt;html&gt;&lt;body&gt;Hello&nbsp;World!&lt;/body&gt;&lt;/html&gt;\r\n"
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>
+<P>你可以用Ruby的正则表达式来解析输入字符串，查询环境变量，检查标记，填充模板，转义（escape ）特殊字符，格式化HTML，然后输出。</P>或者，你可以用类CGI。 
+<P>　</P>
+<H3><A name=UA>使用cgi.rb</A></H3>
+<P>类CGI主要来帮助你更方便的编写CGI脚本，使用它，你可以操纵表单（form），cookies和环境变量，维护有状态的session等等。关于它的文档在第497页，但是我们在这里要先看一下它大体的功能。</P>
+<P>&nbsp;</P>
+<H3>引用（<A name=UB>Quoting</A>）</H3>
+<P>当处理URL和HTML的时候，我们必须注意对一些特殊字符的引用。比如，一个斜线 (``/'') 在URL里有特殊意义，如果它不是URL的路径名称的一部分，那么它必须被转义（escaped）。也就是说，它在URL中将被转换为 ``<CODE>%2F</CODE>''，而且反过来你要想使用它，必须把它再转换为斜线。空格和and符号（"&amp;"）也是特殊字符。为了处理这样的情况，CGI提供了方法 <CODE>CGI.escape</CODE>和<CODE>CGI.unescape</CODE>。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>require&nbsp;'cgi'
+puts&nbsp;CGI.escape(&nbsp;"Nicholas&nbsp;Payton/Trumpet&nbsp;&amp;&nbsp;Flugel&nbsp;Horn"&nbsp;)
+</PRE></TD></TR></TBODY></TABLE><EM>结果</EM><EM>:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>Nicholas+Payton%2FTrumpet+%26+Flugel+Horn
+</PRE></TD></TR></TBODY></TABLE>
+<P>类似的，你也许需要对HTML中的特殊字符进行转义（escape ）：</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>require&nbsp;'cgi'
+puts&nbsp;CGI.escapeHTML(&nbsp;'&lt;a&nbsp;href="/mp3"&gt;Click&nbsp;Here&lt;/a&gt;'&nbsp;)
+</PRE></TD></TR></TBODY></TABLE><EM>结果</EM><EM>:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>&amp;lt;a&nbsp;href=&amp;quot;/mp3&amp;quot;&amp;gt;Click&nbsp;Here&amp;lt;/a&amp;gt;
+</PRE></TD></TR></TBODY></TABLE>
+<P>而且，你也可以只对HTML的一部分标记进行转义，而不是全部：</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>require&nbsp;'cgi'
+puts&nbsp;CGI.escapeElement('&lt;hr&gt;&lt;a&nbsp;href="/mp3"&gt;Click&nbsp;Here&lt;/a&gt;&lt;br&gt;','A')
+</PRE></TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>&lt;hr&gt;&amp;lt;a&nbsp;href=&amp;quot;/mp3&amp;quot;&amp;gt;Click&nbsp;Here&amp;lt;/a&amp;gt;&lt;br&gt;
+</PRE></TD></TR></TBODY></TABLE>
+<P>这里又有A标记被转义了，其它标记都没有变化。</P>
+<P>每个这样的转义方法都有一个un-开头的版本，来恢复这个转义之前的字符串。</P>
+<H3><A name=UC>表单</A>（Forms）</H3>
+<P>使用CGI类你有两种方法访问HTML传过来的参数。比如我们有一个URL<CODE>/cgi-bin/lookup?player=Miles%20Davis&amp;year=1958</CODE>，你可以用CGI#[ ]方法直接访问player和year变量：</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>require&nbsp;'cgi'</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>cgi&nbsp;=&nbsp;CGI.new</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>cgi['player']</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>["Miles&nbsp;Davis"]</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>cgi['year']</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>["1958"]</CODE> </TD></TR></TBODY></TABLE>
+<P>或者，你可以把所有参数放入一个Hash中，再从这个哈希查询参数。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>require&nbsp;'cgi'</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>cgi&nbsp;=&nbsp;CGI.new</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>h&nbsp;=&nbsp;cgi.params</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>h['player']</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>["Miles&nbsp;Davis"]</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<H3><A name=UD>创建窗体（Forms）和 HTML</A></H3>
+<P>CGI类包含了很多产生HTML的方法，每个HTML标记都有一个方法。为了使用这些方法，你首先要创建一个CGI对象，这可以通过<CODE>CGI.new</CODE>方法。这个方法可以接收一个参数表示HTML的级别。比如，我们这里用了html3。</P>
+<P>为了使得这些标记嵌套方便，这些方法都接受一个block作为来处理内容，这个block返回一个字符串，这也是这个tag的内容。比如下面的例子，我们加入了一些换行是为了能适应屏幕，能使得它被很好的显示而已。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>require&nbsp;"cgi"
+cgi&nbsp;=&nbsp;CGI.new("html3")&nbsp;&nbsp;#&nbsp;add&nbsp;HTML&nbsp;generation&nbsp;methods
+cgi.out{
+&nbsp;&nbsp;cgi.html{
+&nbsp;&nbsp;&nbsp;&nbsp;cgi.head{&nbsp;"\n"+cgi.title{"This&nbsp;Is&nbsp;a&nbsp;Test"}&nbsp;}&nbsp;+
+&nbsp;&nbsp;&nbsp;&nbsp;cgi.body{&nbsp;"\n"+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cgi.form{"\n"+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cgi.hr&nbsp;+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cgi.h1&nbsp;{&nbsp;"A&nbsp;Form:&nbsp;"&nbsp;}&nbsp;+&nbsp;"\n"+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cgi.textarea("get_text")&nbsp;+"\n"+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cgi.br&nbsp;+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cgi.submit
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}
+}
+</PRE></TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>Content-Type:&nbsp;text/html
+Content-Length:&nbsp;302
+ 
+&lt;!DOCTYPE&nbsp;HTML&nbsp;PUBLIC&nbsp;"-//W3C//DTD&nbsp;HTML&nbsp;3.2&nbsp;Final//EN"&gt;&lt;HTML&gt;&lt;HEAD&gt;      
+&lt;TITLE&gt;This&nbsp;Is&nbsp;a&nbsp;Test&lt;/TITLE&gt;&lt;/HEAD&gt;&lt;BODY&gt;      
+&lt;FORM&nbsp;METHOD="post"&nbsp;ENCTYPE="application/x-www-form-urlencoded"&gt;      
+&lt;HR&gt;&lt;H1&gt;A&nbsp;Form:&nbsp;&lt;/H1&gt;      
+&lt;TEXTAREA&nbsp;NAME="get_text"&nbsp;ROWS="10"&nbsp;COLS="70"&gt;&lt;/TEXTAREA&gt;      
+&lt;BR&gt;&lt;INPUT&nbsp;TYPE="submit"&gt;&lt;/FORM&gt;&lt;/BODY&gt;&lt;/HTML&gt;
+ </PRE></TD></TR></TBODY></TABLE>
+<P>这段代码将产生一个HTML文档，主题（title）为“This&nbsp;Is&nbsp;a&nbsp;Test”，然后一个水平线，然后是一个header，一个测试的输入框，一个提交按钮。当接收到这个提交的页面，你会得到一个变量名为get_text，其值为你输入的文本。</P>
+<H3><A name=UE>Cookies</A></H3>
+<P>你可以通过使用cookies在客户机上存放各种有用的信息，你可以创建一个有名字的cookie，并且设定一个指定的值。为了将这个cookie发送到浏览器，你需要在CGI#out中设置cookie 头（header）。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>require&nbsp;"cgi"
+cookie&nbsp;=&nbsp;CGI::Cookie.new("rubyweb",&nbsp;"CustID=123",&nbsp;"Part=ABC");
+cgi&nbsp;=&nbsp;CGI.new("html3")
+cgi.out(&nbsp;"cookie"&nbsp;=&gt;&nbsp;[cookie]&nbsp;){
+&nbsp;&nbsp;cgi.html{
+&nbsp;&nbsp;&nbsp;&nbsp;"\nHTML&nbsp;content&nbsp;here"
+&nbsp;&nbsp;}
+}
+</PRE></TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>Content-Type:&nbsp;text/html
+Content-Length:&nbsp;86
+Set-Cookie:&nbsp;rubyweb=CustID%3D123&amp;Part%3DABC;&nbsp;path=
+
+ 
+&lt;!DOCTYPE&nbsp;HTML&nbsp;PUBLIC&nbsp;"-//W3C//DTD&nbsp;HTML&nbsp;3.2&nbsp;Final//EN"&gt;&lt;HTML&gt;       
+HTML&nbsp;content&nbsp;here&lt;/HTML&gt;
+   </PRE></TD></TR></TBODY></TABLE>
+<P>当用户下次访问这个页面时，你可以取得cookie <CODE>CustID</CODE> 和<CODE>Part</CODE>，然后将它们显示在HTML输出中。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>require&nbsp;"cgi"
+cgi&nbsp;=&nbsp;CGI.new("html3")
+cgi.out{
+&nbsp;&nbsp;cgi.html{
+&nbsp;&nbsp;&nbsp;&nbsp;cgi.pre{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cookie&nbsp;=&nbsp;cgi.cookies["rubyweb"]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"\nCookies&nbsp;are\n"&nbsp;+&nbsp;cookie.value.join("\n")
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}
+}
+</PRE></TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>Content-Type:&nbsp;text/html
+Content-Length:&nbsp;111
+
+
+&lt;!DOCTYPE&nbsp;HTML&nbsp;PUBLIC&nbsp;"-//W3C//DTD&nbsp;HTML&nbsp;3.2&nbsp;Final//EN"&gt;&lt;HTML&gt;&lt;PRE&gt;       
+Cookies&nbsp;are       
+CustID=123       
+Part=ABC&lt;/PRE&gt;&lt;/HTML&gt;
+  </PRE></TD></TR></TBODY></TABLE>
+<H3><A name=UF>Sessions</A></H3>
+<P>cookies需要我们进行一些人为处理后才变得有用，我们真正需要的是一个session：web客户端的持久性的状态。session在Ruby中用 <CODE>CGI::Session</CODE>处理，它也使用了cookie，但是提供了一个高层次的接口。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>
+ 
+require&nbsp;"cgi"        
+require&nbsp;"cgi/session"
+ 
+cgi&nbsp;=&nbsp;CGI.new("html3")        
+sess&nbsp;=&nbsp;CGI::Session.new(&nbsp;cgi,&nbsp;"session_key"&nbsp;=&gt;&nbsp;"rubyweb",        
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"session_id"&nbsp;&nbsp;=&gt;&nbsp;"9650",        
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"new_session"&nbsp;=&gt;&nbsp;true,        
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"prefix"&nbsp;=&gt;&nbsp;"web-session.")        
+sess["CustID"]&nbsp;=&nbsp;123        
+sess["Part"]&nbsp;=&nbsp;"ABC"
+ 
+cgi.out{        
+&nbsp;&nbsp;cgi.html{        
+&nbsp;&nbsp;&nbsp;&nbsp;"\nHTML&nbsp;content&nbsp;here"        
+&nbsp;&nbsp;}        
+}
+    </PRE></TD></TR></TBODY></TABLE>
+<P>这将给用户rubyweb发送一个cookie，它的值为9650。它也会在服务器的上建立一个文件<CODE>$TMP/web-session.9650</CODE>，以“键－值”（key－value）的方式保存着CustID和Part的值。</P>
+<P>当这个用户又访问这个网站时，你需要一个参数指明session id。在这个例子里应该是<CODE>rubyweb=9650</CODE>，然后，你就可以取得所有和这个sesion相关的数据了。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>require&nbsp;"cgi"
+require&nbsp;"cgi/session"
+
+cgi&nbsp;=&nbsp;CGI.new("html3")         
+sess&nbsp;=&nbsp;CGI::Session.new(&nbsp;cgi,&nbsp;"session_key"&nbsp;=&gt;&nbsp;"rubyweb",         
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"prefix"&nbsp;=&gt;&nbsp;"web-session.")         
+cgi.out{         
+&nbsp;&nbsp;cgi.html{         
+&nbsp;&nbsp;&nbsp;&nbsp;"\nCustomer&nbsp;#{sess['CustID']}&nbsp;orders&nbsp;an&nbsp;#{sess['Part']}"         
+&nbsp;&nbsp;}         
+}
+ </PRE></TD></TR></TBODY></TABLE>
+<H2><A name=S2>将Ruby嵌入HTML</A></H2>
+<P>到目前为止我们已经看过了用Ruby创建HTML文件和显示它，下面我们来看看如何将Ruby嵌入HTML文档中。</P>
+<P>有好几个包支持我们将Ruby嵌入其它文档中，特别是HTML页面，一般来说，这叫做eRuby，它的实现也有好几种，比如eruby和erb。下面的部分将介绍eruby。</P>
+<P>将Ruby脚本嵌入HTML非常有用，我们不仅能像ASP,JSP,PHP一样使用它，而且还能发挥Ruby的力量。</P>
+<H3><A name=UG>使用eruby</A></H3>
+<P></P><CODE>eruby</CODE> 简单来说就像一个过滤器，对于输入的文件中的普通HTML内容，它将不会做什么处理，而对下面的格式的代码进行特殊处理： 
+<P>　</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<TBODY>
+<TR bgColor=#ff9999>
+<TD vAlign=top><B>表达式</B> </TD>
+<TD vAlign=top><B>意义</B> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>&lt;%</CODE> <EM>ruby code</EM> <CODE>%&gt;</CODE> </TD>
+<TD vAlign=top>将定界符内的Ruby代码转换为它的结果输出</TD></TR>
+<TR>
+<TD vAlign=top><CODE>&lt;%=</CODE> <EM>ruby expression</EM> <CODE>%&gt;</CODE> </TD>
+<TD vAlign=top>输出这个表达式的值到HTML中</TD></TR>
+<TR>
+<TD vAlign=top><CODE>&lt;%#</CODE> <EM>ruby code</EM> <CODE>%&gt;</CODE> </TD>
+<TD vAlign=top>代码注释，这些内容将被忽略。对测试来说可能有用。</TD></TR>
+<TR>
+<TD bgColor=#ff9999 colSpan=9 height=2><IMG height=1 src="120_files/dot[1].gif"  width=1></TD></TR></TBODY></TABLE>
+<P>调用eruby的方法如下：</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD><PRE>eruby <I>[</I>
+            <I>options</I>
+            <I>]</I> <I>[</I>
+            <I>document</I>
+            <I>]</I>
+</PRE></TD></TR></TBODY></TABLE>
+<P>如果document忽略，则eruby将从标准输入读取。eruby的命令行参数如下：<BR></P>
+<TABLE width=500 bgColor=#ffe0e0 border=2>
+<TBODY>
+<TR>
+<TD>　 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<TBODY>
+<TR bgColor=#ff9999>
+<TD vAlign=top><B>Option</B> </TD>
+<TD vAlign=top><B>Description</B> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>-d</CODE>, <CODE>--debug</CODE> </TD>
+<TD vAlign=top>设置$DEBUG 为 <CODE>true</CODE>.</TD></TR>
+<TR>
+<TD vAlign=top><CODE>-K</CODE> <EM>kcode</EM> </TD>
+<TD vAlign=top>指定不同的编码系统（coding system 参见137页)</TD></TR>
+<TR>
+<TD vAlign=top><CODE>-M</CODE> <EM>mode</EM> </TD>
+<TD vAlign=top>指定运行模式，为下面之一： 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>f</CODE> </TD>
+<TD vAlign=top>过滤模式</TD></TR>
+<TR>
+<TD vAlign=top><CODE>c</CODE> </TD>
+<TD vAlign=top>CGI 模式(将错误打印为HTML, 设置$SAFE=1)</TD></TR>
+<TR>
+<TD vAlign=top><CODE>n</CODE> </TD>
+<TD vAlign=top>NPH-CGI 模式(打印额外的头部为HTTP，设置$SAFE=1)</TD></TR>
+<TR>
+<TD vAlign=top></TD></TR></TBODY></TABLE></TD></TR>
+<TR>
+<TD vAlign=top><CODE>-n</CODE>, <CODE>--noheader</CODE> </TD>
+<TD vAlign=top>禁止CGI头部（ header）输出</TD></TR>
+<TR>
+<TD vAlign=top><CODE>-v</CODE>, <CODE>--verbose</CODE> </TD>
+<TD vAlign=top>允许详细（verbose ）模式</TD></TR>
+<TR>
+<TD vAlign=top><CODE>--version</CODE> </TD>
+<TD vAlign=top>打印出版本信息并退出程序</TD></TR>
+<TR>
+<TD bgColor=#ff9999 colSpan=9 height=2><IMG height=1 src="120_files/dot[1].gif"  width=1></TD></TR></TBODY></TABLE>
+<P></P></TD></TR></TBODY></TABLE>
+<P>让我们来看一些简单的例子，假如我们给eruby运行时候的输入为下面的内容：</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>This&nbsp;text&nbsp;is&nbsp;&lt;%&nbsp;a&nbsp;=&nbsp;100;&nbsp;puts&nbsp;"#{a}%&nbsp;Live!"&nbsp;%&gt;
+</PRE></TD></TR></TBODY></TABLE>
+<P></P><CODE>eruby</CODE> 将把&lt;%和%&gt;之间的Ruby代码换成它执行后的值然后显示出来。<BR>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>This&nbsp;text&nbsp;is&nbsp;100%&nbsp;Live!
+</PRE></TD></TR></TBODY></TABLE>
+<P>使用 &lt;%= 的形式，直接将后面的表达式的值输出，比如，我们的输入如下：</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>&lt;%a&nbsp;=&nbsp;100%&gt;This&nbsp;text&nbsp;is&nbsp;almost&nbsp;&lt;%=a%&gt;&nbsp;degrees!&nbsp;Cool!
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>将=a替换为a的实际值，如下：<BR>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>This&nbsp;text&nbsp;is&nbsp;almost&nbsp;100&nbsp;degrees!&nbsp;Cool!
+</PRE></TD></TR></TBODY></TABLE>
+<P>当然，你也可以将Ruby嵌入更复杂的文档，比如HTML。</P>
+<P>　</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>&lt;!DOCTYPE&nbsp;HTML&nbsp;PUBLIC&nbsp;"-//W3C//DTD&nbsp;HTML&nbsp;4.01//EN"&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;eruby&nbsp;example&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Enumeration&lt;/h1&gt;
+&lt;ul&gt;
+&lt;%(1..10).each&nbsp;do|i|%&gt;
+&nbsp;&nbsp;&lt;li&gt;number&nbsp;&lt;%=i%&gt;&lt;/li&gt;
+&lt;%end%&gt;
+&lt;/ul&gt;
+&lt;h1&gt;Environment&nbsp;variables&lt;/h1&gt;
+&lt;table&gt;
+&lt;%ENV.keys.sort.each&nbsp;do&nbsp;|key|%&gt;
+&nbsp;&nbsp;&lt;tr&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;th&gt;&lt;%=key%&gt;&lt;/th&gt;&lt;td&gt;&lt;%=ENV[key]%&gt;&lt;/td&gt;
+&nbsp;&nbsp;&lt;/tr&gt;
+&lt;%end%&gt;
+&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</PRE></TD></TR></TBODY></TABLE>
+<H3><A name=UH>在 Apache中安装eruby</A></H3>
+<P>你可以安装一个使用eRuby的Apache服务器来自动解析嵌入Ruby的文档，就像PHP那样。你可以将嵌入Ruby的文档命名为以`<CODE>.rhtml</CODE>'' 为后缀，然后设置web服务器来调用eruby来解析这些文件输出想要的HTML。</P>
+<P>为了在Apache中使用eruby，需要以下几步。</P>
+<P>　</P>
+<UL>
+<LI>将可执行的 <CODE>eruby</CODE> 程序拷贝到 <CODE>cgi-bin</CODE> 目录 
+<P></P>
+<LI>在 <CODE>httpd.conf</CODE> 文件中增加如下两行： 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>AddType&nbsp;application/x-httpd-eruby&nbsp;.rhtml
+Action&nbsp;application/x-httpd-eruby&nbsp;/cgi-bin/eruby
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>
+<LI>如果需要，你可以在你的 <CODE>DirectoryIndex</CODE> 指令中加入 <CODE>index.rhtml</CODE>，这样，如果你的目录下面如果没有index.html文件，则就会使用index.rhtml文件作为index页。比如下面的例子 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>DirectoryIndex&nbsp;index.html&nbsp;index.shtml&nbsp;index.rhtml
+</PRE></TD></TR></TBODY></TABLE>
+<P>当然，你也可以用一个作用于一个全站点范围的Ruby脚本</P>Of course, you could also simply use a site-wide Ruby script as well. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>DirectoryIndex&nbsp;index.html&nbsp;index.shtml&nbsp;/cgi-bin/index.rb
+</PRE></TD></TR></TBODY></TABLE>
+<P></P></LI></UL>
+<P>就是如此，你可以在HTML文档中加入嵌入的Ruby脚本来动态地创建表单和内容。但也请你阅读一下从497页开始的CGI库。</P>
+<H2><A name=S3>提高性能</A></H2>
+<P>你可以使用Ruby为web编写CGI程序，但是，如同其它CGI程序一样，默认得设置下，对每个cgi页面的请求都将产生一个新的Ruby进程，这将占用服务器很多的资源，而且容易引起性能的下降。Apache web服务器通过使用可装载的模块来解决这个问题。</P>一般来说，这些模块都会动态的被载入，而且会成为Web服务器进程的一部分，也就是说不需要每次有CGI请求进来都产生一个Ruby解释器程序，Web服务器就充当了解释器的角色。 
+<P>所以我们会用到mod_ruby，它会将Ruby解释器连接（links）到Web服务器，关于它的具体信息可以看它的发布程序附带的README文件。</P>
+<P>一旦你安装配置好之后，你就可以像原来一样运行Ruby脚本，不同的是现在地速度应该是快很多了。</P>
+<P></P>
+<HR>
+
+<TABLE cellSpacing=0 cellPadding=10 bgColor=#a03030 border=0>
+<TBODY>
+<TR>
+<TD align=left width="33%"><A class=subheader href="110.html" >上一章&lt;</A> </TD>
+<TD vAlign=center align=middle width="33%"><A class=subheader href="95.html" >目录^</A> <BR></TD>
+<TD align=right width="33%"><A class=subheader href="112.html" >下一章&gt;</A> <BR></TD></TR></TBODY></TABLE>
+<P></P><FONT size=-1>Extracted from the book "Programming Ruby - The Pragmatic Programmer's Guide"</FONT> <BR><FONT size=-3>Copyright &copy; 2001 by Addison Wesley Longman, Inc. This material may be distributed only subject to the terms and conditions set forth in the Open Publication License, v1.0 or later (the latest version is presently available at <A href="http://www.opencontent.org/openpub/" >http://www.opencontent.org/openpub/</A>)). 
+<P></P>Distribution of substantively modified versions of this document is prohibited without the explicit permission of the copyright holder. 
+<P></P>Distribution of the work or derivative of the work in any standard (paper) book form is prohibited unless prior permission is obtained from the copyright holder. <BR></FONT></BODY>

@@ -1,0 +1,297 @@
+﻿<html xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+    <META NAME="save" CONTENT="history" />
+    <title>如何：执行自定义联接操作（C# 编程指南）</title>
+    <link rel="stylesheet" type="text/css" href="../styles/presentation.css" />
+    <link rel="stylesheet" type="text/css" href="ms-help://Hx/HxRuntime/HxLink.css" />
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/EventUtilities.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/SplitScreen.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/Dropdown.js"> </script>
+    <script type="text/javascript" src="../scripts/script_manifold.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/script_feedBack.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CheckboxMenu.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CommonUtilities.js"> </script>
+    <xml>
+      <MSHelp:TOCTitle Title="如何：执行自定义联接操作" />
+      <MSHelp:Keyword Index="A" Term="a05e2ab1-410d-4a1d-8ada-af93539682c9" />
+      <MSHelp:Keyword Index="K" Term="自定义联接 [C#]" />
+      <MSHelp:Keyword Index="K" Term="联接 [C#], 自定义" />
+      <MSHelp:Keyword Index="K" Term="查询 [C# 中的 LINQ], 联接" />
+      <MSHelp:Keyword Index="K" Term="查询表达式 [C# 中的 LINQ], 联接" />
+      <MSHelp:Keyword Index="B" Term="LINQJoinOps" />
+      <MSHelp:Attr Name="RevisionNumber" Value="7" />
+      <MSHelp:Attr Name="AssetID" Value="a05e2ab1-410d-4a1d-8ada-af93539682c9" />
+      <MSHelp:Attr Name="Abstract" Value="此示例演示如何执行无法使用 join 子句执行的联接操作。在查询表达式中，join 子句仅适用于同等联接（这是迄今为止最常见的联接操作类型），并针对同等联接进行了优化。执行同等联接时，一般总是可以通过使用 join 子句获得最佳性能。" />
+      <MSHelp:Attr Name="codelang" Value="CSharp" />
+      <MSHelp:Attr Name="CommunityContent" Value="1" />
+      <MSHelp:Attr Name="DevLang" Value="CSharp" />
+      <MSHelp:Attr Name="DevLangVers" Value="CSharp" />
+      <MSHelp:Attr Name="DocSet" Value="C#" />
+      <MSHelp:Attr Name="DocSet" Value="C# Lang" />
+      <MSHelp:Attr Name="DocSet" Value="ExpressLibVS" />
+      <MSHelp:Attr Name="ProgModel" Value="managed" />
+      <MSHelp:Attr Name="ShippedIn" Value="vs.90" />
+      <MSHelp:Attr Name="Technology" Value="ManagedCode" />
+      <MSHelp:Attr Name="TopicVersion" Value="09.00.08178.10000" />
+      <MSHelp:Attr Name="Catalog Container" Value="System_Default_Catalog" />
+      <MSHelp:Attr Name="Content Set Container" Value="System_Default_Content_Set" />
+      <MSHelp:Attr Name="TopicType" Value="kbHowTo" />
+      <MSHelp:Attr Name="Locale" Value="zh-chs" />
+    </xml>
+  </head>
+  <body>
+    <input type="hidden" id="userDataCache" class="userDataStyle" />
+    <input type="hidden" id="hiddenScrollOffset" />
+    <img id="collapseImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" title="“折叠”图像" />
+    <img id="expandImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" title="“展开”图像" />
+    <img id="collapseAllImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" />
+    <img id="expandAllImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" />
+    <img id="dropDownImage" style="display:none; height:0; width:0;" src="../icons/dropdown.gif" />
+    <img id="dropDownHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/dropdownHover.gif" />
+    <img id="copyImage" style="display:none; height:0; width:0;" src="../icons/copycode.gif" title="“复制”图像" />
+    <img id="copyHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/copycodeHighlight.gif" title="“复制悬停”图像" />
+    <div id="header">
+      <table id="topTable" cellspacing="0" cellpadding="0">
+        <tr>
+          <td>
+            <span onclick="ExpandCollapseAll(toggleAllImage)" style="cursor:default;" onkeypress="ExpandCollapseAll_CheckKey(toggleAllImage, event)" tabindex="0">
+              <img ID="toggleAllImage" class="toggleAll" src="../icons/collapse_all.gif" /> <label id="collapseAllLabel" for="toggleAllImage" style="display: none;">全部折叠</label><label id="expandAllLabel" for="toggleAllImage" style="display: none;">全部展开</label> </span>
+            <span>    </span>
+            <span id="devlangsDropdown" class="filter" tabindex="0">
+              <img id="devlangsDropdownImage" src="../icons/dropdown.gif" /> <label id="devlangsMenuAllLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：全部 </nobr></label><label id="devlangsMenuMultipleLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：多个 </nobr></label><label id="devlangsMenuVisualBasicLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual Basic </nobr></label><label id="devlangsMenuCSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：C# </nobr></label><label id="devlangsMenuManagedCPlusPlusLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual C++ </nobr></label><label id="devlangsMenuJSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：J# </nobr></label><label id="devlangsMenuJScriptLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：JScript </nobr></label></span>
+          </td>
+        </tr>
+      </table>
+      <div id="devlangsMenu">
+        <input id="VisualBasicCheckbox" type="checkbox" data="VisualBasic,vb,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="VisualBasicCheckbox">Visual Basic</label>
+        <br />
+        <input id="CSharpCheckbox" type="checkbox" data="CSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="CSharpCheckbox">C#</label>
+        <br />
+        <input id="ManagedCPlusPlusCheckbox" type="checkbox" data="ManagedCPlusPlus,cpp,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="ManagedCPlusPlusCheckbox">Visual C++</label>
+        <br />
+        <input id="JSharpCheckbox" type="checkbox" data="JSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JSharpCheckbox">J#</label>
+        <br />
+        <input id="JScriptCheckbox" type="checkbox" data="JScript,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JScriptCheckbox">JScript</label>
+        <br />
+      </div>
+      <table id="bottomTable" cellpadding="0" cellspacing="0">
+        <tr id="headerTableRow1">
+          <td align="left">
+            <span id="runningHeaderText">C# 编程指南</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow2">
+          <td align="left">
+            <span id="nsrTitle">如何：执行自定义联接操作（C# 编程指南）</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow3">
+          <td align="left">
+            <a href="a05e2ab1-410d-4a1d-8ada-af93539682c9.htm#exampleToggle" onclick="OpenSection(exampleToggle)">示例</a>  <a href="a05e2ab1-410d-4a1d-8ada-af93539682c9.htm#seeAlsoToggle" onclick="OpenSection(seeAlsoToggle)">另请参见</a>  
+<script type="text/javascript">
+var fbBody = '%b8%d0%d0%bb%c4%fa%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%bf%aa%b7%a2%b0%e6%b1%e0%d0%b4%cd%c5%b6%d3%bd%ab%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%d3%c3%d3%da%b8%c4%bd%f8%ce%c4%b5%b5%a1%a3%ce%d2%c3%c7%d4%da%c9%f3%d4%c4%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%ca%b1%a3%ac%bf%c9%c4%dc%bb%e1%b8%f8%c4%fa%b7%a2%cb%cd%b5%e7%d7%d3%d3%ca%bc%fe%a3%ac%d2%d4%c7%eb%c4%fa%cc%e1%b9%a9%bd%f8%d2%bb%b2%bd%b5%c4%bd%e2%ca%cd%cb%b5%c3%f7%bb%f2%d5%df%be%cd%bd%e2%be%f6%b7%bd%b0%b8%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%ce%d2%c3%c7%b2%bb%bb%e1%bd%ab%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%d3%c3%d3%da%c8%ce%ba%ce%c6%e4%cb%fb%d3%c3%cd%be%a3%ac%b2%a2%c7%d2%d4%da%c9%f3%d4%c4%cd%ea%d6%ae%ba%f3%a3%ac%ce%d2%c3%c7%b2%bb%bb%e1%d4%d9%b1%a3%c1%f4%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%a1%a3%0d%0a%d3%d0%b9%d8%20Microsoft%20%d2%fe%cb%bd%d5%fe%b2%df%b5%c4%bd%f8%d2%bb%b2%bd%d0%c5%cf%a2%a3%ac%c7%eb%b2%ce%bc%fb%20http%3a%2f%2fprivacy.microsoft.com%2fzh-cn%2fdefault.aspx%a1%a3';
+var fbSubject = 'Customer%20Feedback';
+</script>
+  <span id="headfeedbackarea" class="feedbackhead"><a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);"> 发送反馈意见</a></span>
+</td>
+        </tr>
+      </table>
+      <table id="gradientTable">
+        <tr>
+          <td class="nsrBottom" background="../icons/gradient.gif" />
+        </tr>
+      </table>
+    </div>
+    <div id="mainSection">
+      <div id="mainBody">
+        <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
+        <font color="DarkGray"></font>
+        <p /> <p><font color="DarkGray">更新：2007 年 11 月</font></p><div class="introduction"><p>此示例演示如何执行无法使用 <span sdata="langKeyword" value="join"><span class="keyword">join</span></span> 子句执行的联接操作。在查询表达式中，<span sdata="langKeyword" value="join"><span class="keyword">join</span></span> 子句仅适用于同等联接（这是迄今为止最常见的联接操作类型），并针对同等联接进行了优化。执行同等联接时，一般总是可以通过使用 <span sdata="langKeyword" value="join"><span class="keyword">join</span></span> 子句获得最佳性能。</p><p>但在下面一些情况下无法使用 <span sdata="langKeyword" value="join"><span class="keyword">join</span></span> 子句：</p><ul><li><p>联接是在不等式（非同等联接）上断言的。</p></li><li><p>联接是在多个等式或不等式上断言的。</p></li><li><p>必须在联接操作之前为右侧（内部）序列引入一个临时范围变量。</p></li></ul><p>若要执行非同等联接，可以使用多个 <span sdata="langKeyword" value="from"><span class="keyword">from</span></span> 子句单独引入每个数据源。然后，在 <span sdata="langKeyword" value="where"><span class="keyword">where</span></span> 子句中将谓词表达式应用于每个源的范围变量。该表达式还可以采用方法调用的形式。</p><div class="alert"><table width="100%" cellspacing="0" cellpadding="0"><tr><th align="left"><img class="note" title="说明" src="../icons/alert_note.gif" /><b>说明：</b></th></tr><tr><td><p>不要将这种自定义联接操作与使用多个 <span sdata="langKeyword" value="from"><span class="keyword">from</span></span> 子句访问内部集合相混淆。有关更多信息，请参见 <span sdata="link"><a href="76e9df84-092c-41a6-9537-c3f1cbd7f0fb.htm">join 子句（C# 参考）</a></span>。</p></td></tr></table></div></div><h1 class="heading"><span onclick="ExpandCollapse(exampleToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(exampleToggle, event)" tabindex="0"><img id="exampleToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />示例</span></h1><div id="exampleSection" class="section" name="collapseableSection" style=""><p>下面示例中的第一个方法演示了一个简单的交叉联接。必须慎用交叉联接，因为它们可能产生非常大的结果集。但在某些方案中，可以使用它们创建源序列以供运行附加查询。</p><p>第二个方法产生其类别 ID 列在左侧类别列表中的所有产品的序列。请注意，这种方法使用 <span sdata="langKeyword" value="let"><span class="keyword">let</span></span> 子句和 <b>Contains</b> 方法创建了一个临时数组。也可以在查询前创建该数组并去掉第一个 <span sdata="langKeyword" value="from"><span class="keyword">from</span></span> 子句。</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> CustomJoins
+    {
+
+        #region Data
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Product
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> Name { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>; <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span>; }
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> CategoryID { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>; <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span>; }
+        }
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Category
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> Name { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>; <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span>; }
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> ID { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>; <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span>; }
+        }
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Specify the first data source.</span>
+        List&lt;Category&gt; categories = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> List&lt;Category&gt;()
+        { 
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Category(){Name=<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Beverages"</span>, ID=001},
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Category(){ Name=<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Condiments"</span>, ID=002},
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Category(){ Name=<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Vegetables"</span>, ID=003},         
+        };
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Specify the second data source.</span>
+        List&lt;Product&gt; products = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> List&lt;Product&gt;()
+       {
+          <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Product{Name=<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Tea"</span>,  CategoryID=001},
+          <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Product{Name=<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Mustard"</span>, CategoryID=002},
+          <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Product{Name=<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Pickles"</span>, CategoryID=002},
+          <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Product{Name=<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Carrots"</span>, CategoryID=003},
+          <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Product{Name=<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Bok Choy"</span>, CategoryID=003},
+          <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Product{Name=<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Peaches"</span>, CategoryID=005},
+          <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Product{Name=<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Melons"</span>, CategoryID=005},
+          <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Product{Name=<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Ice Cream"</span>, CategoryID=007},
+          <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Product{Name=<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Mackerel"</span>, CategoryID=012},
+        };
+        #endregion
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Main()
+        {
+            CustomJoins app = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> CustomJoins();
+            app.CrossJoin();
+            app.NonEquijoin();
+
+            Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Press any key to exit."</span>);
+            Console.ReadKey();
+        }
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> CrossJoin()
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> crossJoinQuery = 
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">from</span> c <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> categories
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">from</span> p <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> products
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">select</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> { c.ID, p.Name };
+
+            Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Cross Join Query:"</span>);
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> v <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> crossJoinQuery)
+            {
+                Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"{0,-5}{1}"</span>, v.ID, v.Name);
+            }            
+        }
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> NonEquijoin()
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> nonEquijoinQuery = 
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">from</span> p <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> products
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">let</span> catIds = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">from</span> c <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> categories
+                             <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">select</span> c.ID
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">where</span> catIds.Contains(p.CategoryID) == <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">true</span>
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">select</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> { Product = p.Name, CategoryID = p.CategoryID };
+
+            Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Non-equijoin query:"</span>);
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> v <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> nonEquijoinQuery)
+            {
+                Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"{0,-5}{1}"</span>,  v.CategoryID, v.Product);
+            }
+        }
+    }
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">/* Output:
+Cross Join Query:
+1    Tea
+1    Mustard
+1    Pickles
+1    Carrots
+1    Bok Choy
+1    Peaches
+1    Melons
+1    Ice Cream
+1    Mackerel
+2    Tea
+2    Mustard
+2    Pickles
+2    Carrots
+2    Bok Choy
+2    Peaches
+2    Melons
+2    Ice Cream
+2    Mackerel
+3    Tea
+3    Mustard
+3    Pickles
+3    Carrots
+3    Bok Choy
+3    Peaches
+3    Melons
+3    Ice Cream
+3    Mackerel
+Non-equijoin query:
+1    Tea
+2    Mustard
+2    Pickles
+3    Carrots
+3    Bok Choy
+Press any key to exit.
+     */</span>
+
+</pre></td></tr></table></span></div></div><p>在下面的示例中，查询必须基于匹配键联接两个序列，而对于内部（右侧）序列而言，无法在 join 子句本身之前获取这些键。如果此联接操作是使用 <span sdata="langKeyword" value="join"><span class="keyword">join</span></span> 子句执行的，则必须为每个元素调用 Split 方法。使用多个 <span sdata="langKeyword" value="from"><span class="keyword">from</span></span> 子句可使查询避免反复进行方法调用的系统开销。但由于联接进行了优化，因此在此特定情况下，它仍然可能比使用多个 from 子句快。结果会有所不同，主要取决于方法调用的系统开销有多大。</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> MergeTwoCSVFiles : StudentClass
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Main()
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span>[] names = System.IO.File.ReadAllLines(@<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"../../../names.csv"</span>);
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span>[] scores = System.IO.File.ReadAllLines(@<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"../../../scores.csv"</span>);
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Merge the data sources using a named type</span>
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// var could be used instead of an explicit type</span>
+        IEnumerable&lt;Student&gt; queryNamesScores =
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">from</span> name <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> names
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">let</span> x = name.Split(',')
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">from</span> score <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> scores
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">let</span> s = score.Split(',')
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">where</span> x[2] == s[0]
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">select</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Student()
+            {
+                FirstName = x[0],
+                LastName = x[1],
+                ID = Convert.ToInt32(x[2]),
+                ExamScores = (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">from</span> scoreAsText <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> s.Skip(1)
+                              <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">select</span> Convert.ToInt32(scoreAsText)).
+                              ToList()
+            };
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Optional. Store the newly created student objects in memory</span>
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// for faster access in future queries</span>
+        List&lt;Student&gt; students = queryNamesScores.ToList();
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> student <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> students)
+        {
+            Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"The average score of {0} {1} is {2}."</span>,
+                student.FirstName, student.LastName, student.ExamScores.Average());
+        }
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//Keep console window open in debug mode</span>
+        Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Press any key to exit."</span>);
+        Console.ReadKey();
+    }
+}
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">/* Output: 
+    The average score of Adams Terry is 85.25.
+    The average score of Fakhouri Fadi is 92.25.
+    The average score of Feng Hanying is 88.
+    The average score of Garcia Cesar is 88.25.
+    The average score of Garcia Debra is 67.
+    The average score of Garcia Hugo is 85.75.
+    The average score of Mortensen Sven is 84.5.
+    The average score of O'Donnell Claire is 72.25.
+    The average score of Omelchenko Svetlana is 82.5.
+    The average score of Tucker Lance is 81.75.
+    The average score of Tucker Michael is 92.
+    The average score of Zabokritski Eugene is 83.
+ */</span>
+
+</pre></td></tr></table></span></div></div><p>此示例也包含在<span sdata="link"><mshelp:link keywords="a9972a9c-e7c1-41d4-8b33-911cbe3c82ad" tabindex="0">如何：从多个源填充对象集合 (LINQ)</mshelp:link></span> 一文中。若要编译和运行此示例，请按照该文章中的说明操作。</p></div><h1 class="heading"><span onclick="ExpandCollapse(buildInstructionsToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(buildInstructionsToggle, event)" tabindex="0"><img id="buildInstructionsToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />编译代码</span></h1><div id="buildInstructionsSection" class="section" name="collapseableSection" style=""><ul><li><p>创建面向 .NET Framework 3.5 版的 Visual Studio 项目。默认情况下，该项目具有一个对 System.Core.dll 的引用以及一条针对 System.Linq 命名空间的 <span sdata="langKeyword" value="using"><span class="keyword">using</span></span> 指令。</p></li><li><p>将代码复制到项目中。</p></li><li><p>按 F5 编译并运行程序。</p></li><li><p>按任意键退出控制台窗口。</p></li></ul></div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />请参见</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><h4 class="subHeading">任务</h4><div class="seeAlsoStyle"><span sdata="link"><a href="83f36f16-2ba3-453f-8b9f-7d02b415610e.htm">如何：对 Join 子句的结果进行排序（C# 编程指南）</a></span></div><h4 class="subHeading">概念</h4><div class="seeAlsoStyle"><span sdata="link"><a href="40638f19-fb46-4d26-a2d9-a383b48f5ed4.htm">LINQ 查询表达式（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><mshelp:link keywords="442d176d-028c-4beb-8d22-407d4ef89107" tabindex="0">联接运算</mshelp:link></span></div><h4 class="subHeading">参考</h4><div class="seeAlsoStyle"><span sdata="link"><a href="76e9df84-092c-41a6-9537-c3f1cbd7f0fb.htm">join 子句（C# 参考）</a></span></div></div></div>
+      <div id="footer">
+        <div class="footerLine">
+          <img width="100%" height="3px" src="../icons/footer.gif" title="“页脚”图像" />
+        </div>
+<span id="feedbackarea">将有关本主题的<a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);">反馈意见</a>发送给 Microsoft。</span>
+</div>
+    </div>
+  </body>
+</html>

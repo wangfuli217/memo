@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml">
+<HEAD><TITLE>Memcached模块（Memcached）</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=GB2312">
+<STYLE type=text/css>PRE {
+	BACKGROUND-COLOR: #cccccc
+}
+.STYLE1 {
+	COLOR: #ff0000
+}
+</STYLE>
+
+<META content="MSHTML 6.00.6000.16809" name=GENERATOR></HEAD>
+<BODY>
+<H2>Memcached模块（Memcached）</H2><BR>
+
+<H3>·摘要</H3>
+<H4>使用这个模块简单的处理缓存，这个模块将不断的进行完善。<BR>
+示例配置：<BR>
+<PRE>server {
+  location / {
+    set $memcached_key $uri;
+    memcached_pass     name:11211;
+    default_type       text/html;
+    error_page         404 = /fallback;
+  }
+ 
+  location = /fallback {
+    proxy_pass backend;
+  }
+}</PRE>
+在nginx0.7.x中：
+<PRE>server {
+  location / {
+    set $memcached_key $uri;
+    memcached_pass     name:11211;
+    default_type       text/html;
+    error_page         404 @fallback;
+  }
+ 
+  location @fallback {
+    proxy_pass backend;
+  }
+}</PRE></H4>
+<H3>·指令</H3>
+<H3>memcached_pass </H3>
+<H4>语法：memcached_pass [ name:port ] <BR>
+默认值：none <BR>
+使用字段：http, server, location <BR>
+后端需要在memcached中设置一些数据，memcached key为“"/uri?args”。<BR>
+在0.5.9版本之后memcached key存储在变量$memcached_key中。<BR></H4>
+<H3>memcached_connect_timeout </H3>
+<H4>语法：memcached_connect_timeout [ time ] <BR>
+默认值：60000 <BR>
+使用字段：http, server, location <BR>
+连接memcached的超时时间，单位为毫秒。</H4>
+<H3>memcached_read_timeout </H3>
+<H4>语法：memcached_read_timeout [ time ] <BR>
+默认值：60000 <BR>
+使用字段：http, server, location <BR>
+读取memcached数据的超时时间，单位为毫秒。</H4>
+<H3>memcached_send_timeout </H3>
+<H4>语法：memcached_send_timeout [ time ] <BR>
+默认值：60000 <BR>
+使用字段：http, server, location <BR>
+发送memcached数据的超时时间，单位为毫秒。</H4>
+<H3>memcached_buffer_size </H3>
+<H4>语法：memcached_buffer_size [ size ] <BR>
+默认值：see getpagesize(2) <BR>
+使用字段：http, server, location <BR>
+发送/收到的缓冲区大小，单位是字节。</H4>
+<H3>memcached_next_upstream </H3>
+<H4>语法：memcached_next_upstream [ error | timeout | invalid_response | not_found | off ] <BR>
+默认值：error timeout <BR>
+使用字段：http, server, location <BR>
+指定在哪种错误状态下请求将转发到另外的负载均衡服务器，仅当memcached_pass有两个或两个以上值的时候使用。</H4>
+<H3>·变量</H3>
+<H3>$memcached_key </H3>
+<H4>memcached key的值。 </H4>
+<H3>·参考文档</H3>
+<H4><A href="http://lserinol.blogspot.com/2009/03/speeding-up-your-nginx-server-with.html" >使用memcache加速nginx</A><BR>
+<A href="http://wiki.nginx.org/NginxHttpMemcachedModule/" >Nginx Http Memcached Module</A>
+<A href="../3rdPartyModules/HttpMemcModule.html" >第三方模块memc</A></H4>
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://179401.cn/analytics/" : "http://179401.cn/analytics/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://shouce.jb51.net/179401.cn/analytics/piwik.php-idsite=1"  style="border:0" alt=""/></p></noscript>
+<!-- End Piwik Tag -->
+</BODY>
+</HTML>
+<H3><A href="HTTPProxy.html" >前进->HTTP代理模块（HTTP Proxy）</A></H3>

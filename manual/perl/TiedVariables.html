@@ -1,0 +1,862 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>捆绑(tie)变量 &lt; Perl &lt; PostgreSQL 中文网 中国</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="http://www.pgsqldb.org/twiki/bin/view/Perl/WebRss?skin=rss&amp;contenttype=text/xml" />
+
+<style type="text/css" media="all">
+	/* Default TWiki layout */
+	@import url("http://shouce.jb51.net/perl/layout.css"/*tpa=http://www.jb51.net/manual/perl/layout.css*/);
+	/* Default TWiki style */
+	@import url("http://shouce.jb51.net/perl/style.css"/*tpa=http://www.jb51.net/manual/perl/style.css*/);
+	/* Custom overriding layout per web or per topic */
+	
+	/* Custom overriding style per web or per topic */
+	
+	.twikiToc li {
+		list-style-image:url("http://shouce.jb51.net/perl/i_arrow_down.gif"/*tpa=http://www.jb51.net/manual/perl/i_arrow_down.gif*/);
+	}	        
+	.twikiWebIndicator {
+		background-color:#0066FF;
+	}
+</style>
+<style type="text/css" media="all"></style>
+<script type="text/javascript">
+<!-- HIDE
+	function initPage() { }
+-->
+</script>
+</head>
+<body class="twikiViewPage" onload="initPage()"><a name="PageTop"></a>
+</div>
+
+<p />
+</div>
+</form></div></div></div>
+<a name="Content"> </a>
+<div class="twikiTopic" style="padding:0 1.5em"><br>
+<h1><a name="tie"> </a><a name="_tie_"> </a> 第十四章  捆绑(tie)变量 </h1>
+<div class="twikiToc">
+<ul>
+<li> <a href="TiedVariables.html#tie">第十四章  捆绑(tie)变量</a>
+<ul>
+<li> <a href="TiedVariables.html#14_1">14.1 捆绑标量</a>
+<ul>
+<li> <a href="TiedVariables.html#14_1_1">14.1.1 标量捆绑方法</a>
+</li>
+<li> <a href="TiedVariables.html#14_1_2">14.1.2 魔术计数变量</a>
+</li>
+<li> <a href="TiedVariables.html#14_1_3">14.1.3 神奇地消除 $_</a>
+</li>
+</ul>
+</li>
+<li> <a href="TiedVariables.html#14_2">14.2 捆绑数组</a>
+<ul>
+<li> <a href="TiedVariables.html#14_2_1">14.2.1数组捆绑方法</a>
+</li>
+<li> <a href="TiedVariables.html#14_2_2">14.2.2 大家方便</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<p />
+有些人类的工作需要伪装起来。有时候伪装的目的是欺骗，但更多的时候，伪装的目的是
+为了在更深层次做一些真实的通讯。比如，许多面试官希望你能穿西服打领带以表示你对
+工作是认真的，即使你们俩都知道你可能在工作的时候永远不会打领带。你思考这件事的
+时候可能会觉得很奇怪：在你脖子上系一块布会神奇地帮你找到工作。在 Perl 文化里，
+tie 操作符起到类似的作用的角色：它让你创建一个看起来象普通变量的变量，但是在
+变量的伪装后面，它实际上是一个羽翼丰满的 Perl 对象，而且此对象有着自己有趣的
+个性。它只是一个让人有点奇怪的小魔术，就好象从一个帽子里弹出一个邦尼兔那样。
+（译注：英文 tie 做动词有"捆绑"之意，而做名词有"领带"之意．）
+用另外一个方法来看，在变量名前面的趣味字符 $，@，%，或者 * 告诉 Perl 和它的程序
+许多事情——他们每个都暗示了一个特殊范畴的原形特性。你可以利用 tie 用各种方法
+封装那些特性，方法是用一个实现一套新性质的类与该变量关联起来。比如，你可以创建
+一个普通的 Perl 散列，然后把它 tie （绑）到到一个类上，这个类把这个散列放到一个
+数据库里，所以当你从散列读取数据的时候，Perl 魔术般地从一个外部数据库文件抓取
+数据，而当你设置散列中的数值的时候，Perl 又神奇地把数据存储到外部数据库文件里。
+这里的"魔术"，"神奇"指的是“透明地处理一些非常复杂的任务”。你应该听过那些老话：
+再先进的技术也和 Perl 脚本没什么区别。（严肃地说，那些在 Perl 内部工作的人们把
+魔术（magic）一词当作一个技术术语，特指任何附加在变量上的额外的语义，比如 %ENV
+或者 %SIG。捆绑变量只是其中一种扩展。）
+<p />
+Perl 已经有内建的 dbmopen 和 dbmclose 函数，它们可以完成把散列变量和数据库系在
+一起的魔术，不过那些函数的实现是早在 Perl 没有 tie 的时候。现在 tie 提供了更
+通用的机制。实际上， Perl 本身就是以 tie 的机制来实现 dbmopen 和 dbmclose 的。
+<p />
+你可以把一个标量，数组，散列或者文件句柄（通过它的类型团）系到任意一个类上，这个
+类提供合适的命名方法以截获和模拟对这些对象的正常访问。那些方法的第一个是在进行
+tie 动作本身时调用的：使用一个变量总是调用一个构造器，如果这个构造器成功运行，
+则返回一个对象，而 Perl 把这个对象藏在一个你看不见的地方——在“普通”变量的深层
+内部。你总是可以稍后用 tied 函数在该普通变量上检索该对象：
+<p />
+<pre>
+   tie VARIABLE, CLASSNAME, LIST;   # 把VARIABLE 绑定到 CLASSNAME
+   $object = tied VARIABLE;
+</pre>
+<p />
+<p />
+上面两行等效于：
+<p />
+<pre>
+   $object = tie VARIABLE, CLASSNAME, LIST;
+</pre>
+<p />
+<p />
+一旦该变量被捆绑，你就可以按照平时那样对待该普通变量，不过每次访问都自动调用下层
+对象的方法；所有该类的复杂性都隐藏在那些方法调用的背后。如果稍后你想打破变量和
+类之间的关联，你可以 untie （松绑）那个变量：
+<p />
+<pre>
+   untie VARIABLE;
+</pre>
+<p />
+<p />
+你几乎完全可以把 tie 看作一种有趣的 bless 类型，只不过它是给一个光秃秃的变量赐福
+，而不是给一个对象引用赐福。它同样还可以接收额外的参数，就象构造器那样——这个
+恐怕也不新鲜了，因为它实际上就是在内部调用一个构造器，该构造器的名字取决于你尝试
+的变量类型：是 TIESCALAR，TIEARRAY，TIEHASH，或者TIEHANDLE。（注：因为这些构造器
+是独立的名字，你甚至可以提供一个独立的类来实现它们。那样，你就可以把标量，数组，
+散列，和文件句柄统统绑定到同一个类上，不过通常不是这么干的，因为它会令其他的魔术
+方法比较难写。）调用这些构造器的时候，它们用所声明的 CLASSNAME 为它们的调用者
+作为类方法调用，另外把你放在 LIST 里的任何东西作为附加的参数。（VARIABLE 并不
+传递给构造器。）
+<p />
+这四种构造器每种都返回一个普通风格的对象。它们并不在乎它们是否从 tie 里调用的，
+类里的其他方法也不在意，因为如果你喜欢的话你总是可以直接调用它们。从某种意义
+来说，所有魔术都是在 tie 里，而不是在实现 tie 的类里。该类只是一个有着有趣的
+方法名的普通类。（实际上，有些捆绑的模块提供了额外的一些方法，这些方法是不能通过
+捆绑的变量看到的；你必须明确调用这些方法，就象你对待其他对象方法一样。这样的额外
+方法可以提供类似文件锁，事务保护，或者任何其他实例方法可以做的东西。）
+<p />
+因此这些构造器就象其他构造器那样 bless（赐福）并且返回一个对象引用。该引用不需要
+指向和被捆绑的变量相同类型的变量；它只是必须被赐福，所以该绑定的变量可以很容易
+在你的类中找到支持。比如，我们的长例子 TIEARRAY 就会用一个基于散列的对象，这样
+它就可以比较容易地保存它在模拟的数组的附加信息。
+<p />
+tie 函数不会为你 use 或者 require 一个模块——如果必要的话，在调用 tie前你必须
+自己明确地做那件事。（另外，为了保持向下兼容，dbmopen 函数会尝试 use 一个或者
+某个 DBM 实现。但你可以用一个明确的 use 修改它的选择优先级——只要你 use 的模块
+是在 dbmopen 的模块列表中的一个。参阅 <span class="twikiNewLink" style='background : #FFFFCE;'><font color="#0000FF">AnyDBM</font><a href="http://www.jb51.net/twiki/bin/edit/Perl/AnyDBM?topicparent=Perl.TiedVariables" ><sup>?</sup></a></span>_File 模块的在线文档获取更完善的解释。）
+<p />
+一个捆绑了的变量调用的方法有一个类似 FETCH 和 STORE 这样的预定义好了的名字，因为
+它们是在 Perl 内部隐含调用的（也就是说，由特定事件触发）。这些名字都在 ALLCAPS，
+内部隐含调用的（也就是说，有特定事件触发）。这些名字都是全部大写，这是我们遵循的
+一个称呼这些隐含调用过程的习惯。（其他遵循这种传统的习惯有 BEGIN，CHECK，INIT，
+END，DESTROY， 和 AUTOLOAD，更不用说 UNIVERSAL-&gt;VERSION。实际上，几乎所有 Perl 
+Perl 预定义的变量和文件句柄都是大写的：STDIN，SUUPER，CORE，CORE::GLOBAL，DATA，
+@EXPORT，@INC，@ISA，@ARGV 和 %ENV。当然，内建操作符和用法是另外一个极端，它们
+没有用大写的。）
+<p />
+我们首先要介绍的内容很简单：如何捆绑一个标量变量。
+<p />
+<h2><a name="14_1"> </a><a name="14_1_"> </a> 14.1 捆绑标量 </h2>
+<p />
+要实现一个捆绑的标量，一个类必须定义下面的方法：TIESCALAR，FETCH，和 STORE（以及
+可能还有 DESTROY）。当你 tie 一个标量变量的时候，Perl 调用 TIESCALAR。如果你读取
+这个捆绑的变量，它调用 FETCH，并且当你给一个变量赋值的时候，它调用 STORE。如果你
+保存了最初的 tie （或者你稍后用 tied 检索它们），你就可以自己访问下层的对象——
+这样并不触发它的 FETCH  或者 STORE 方法。作为一个对象，这一点毫不神奇，而是相当
+客观的。
+<p />
+如果存在一个 DESTROY 方法，那么当指向被捆绑对象的最后一个引用消失时，Perl 就会
+调用这个 DESTROY 方法，就好象对其他对象那样。当你的程序结束或者你调用 untie 的
+时候就会发生这些事情，这样就删除了捆绑使用的引用。不过，untie 并不删除任何你
+放在其他地方的引用；DESTROY 也会推迟到那些引用都删除以后。
+<p />
+在标准的 Tie::Scalar 模块里有 Tie::Scalar 和 Tie::StdScalar 包，如果你不想自己
+定义所有这些方法，那么它们定义了一些简单的基类。Tie::Scalar 提供了只能做很有限
+的工作的基本方法，而 Tie::StdScalar 提供了一些方法令一个捆绑了的标量表现得象
+一个普通的 Perl 标量。（好象没什么用，不过有时候你只是想简单地给普通标量语义上加
+一些封装，比如，计算某个变量设置的次数。）
+<p />
+在我们给你显示我们精心设计的例子和对所有机制进行完整地描述之前，我们先给你来点
+开胃的东西——并且给你显示一下这些东西是多简单。下面是一个完整的程序：
+<p />
+<div class="fragment"><pre>
+<font color="green">#! /usr/bin/perl</font>
+<font color="brown">package</font> Centsible;
+<font color="brown">sub</font> TIESCALAR { <font color="maroon">bless</font> \<font color="brown">my</font> $self, <font color="maroon">shift</font> }
+<font color="brown">sub</font> STORE { ${ $_[0] } = $_[1] }      <font color="green"># 做缺省的事情</font>
+<font color="brown">sub</font>  FETCH { <font color="maroon">sprintf</font> "%0.2f", ${ <font color="brown">my</font> $self = <font color="maroon">shift</font> } }    <font color="green"># 圆整值</font>
+
+<font color="brown">package</font> main;
+<font color="maroon">tie</font> $bucks, "Centsible";
+$bucks = 45.00;
+$bucks *= 1.0715;   <font color="green"># 税</font>
+$bucks *= 1.0715;   <font color="green"># 和双倍的税！</font>
+<font color="maroon">print</font> "That will be $bucks, please.\n";</pre></pre></div>
+<p />
+运行的时候，这个程序生成：
+<p />
+<pre>
+   That will be 51.67, please.
+</pre>
+<p />
+<p />
+把 tie 调用注释掉以后，你可以看到区别：
+<p />
+<pre>
+   That will be 51.66505125, please.
+</pre>
+<p />
+<p />
+当然，这样要比你平时做圆整所做的工作要多。
+<p />
+<p />
+<h3><a name="14_1_1"> </a><a name="14_1_1_"> </a> 14.1.1 标量捆绑方法 </h3>
+<p />
+既然你已经看到我们将要讲的东西，那就让我们开发一个更灵活的标量捆绑类吧。我们不会
+使用任何封装好了的包做基类（特别是因为标量实在是简单），相反我们会轮流照看一下
+这四种方法，构造一个名字为 <span class="twikiNewLink" style='background : #FFFFCE;'><font color="#0000FF">ScalarFile</font><a href="http://www.jb51.net/twiki/bin/edit/Perl/ScalarFile?topicparent=Perl.TiedVariables" ><sup>?</sup></a></span> 的例子类。捆绑到这个类上的标量包含普通
+字串，并且每个这样的变量都隐含地和一个文件关联，此文件就是字串存贮的地方。（你
+可以通过给变量命名的方法来记忆你引用的是哪个文件。）变量用下面的方法绑到类上：
+<p />
+<pre>
+   use ScalarFile;      # 装载 ScalarFile.pm
+   tie $camel, "ScalarFiel", "/tmp/camel.lot";
+</pre>
+<p />
+<p />
+变量一旦捆绑，它以前的内容就被取代，并且变量和其对象内部的联系覆盖了此变量平常的
+语义。当你请求 $camel 的值时，它现在读取 /tmp/camel.lot 的内容，而当你给 $camel 
+赋值的时候，它把新的内容写到 /tmp/camel.lot 里，删除任何原来的东西。
+<p />
+捆绑是对变量进行的，而不是数值，因此一个变量的捆绑属性不会随着赋值一起传递。
+比如，假设你拷贝一个已经捆绑了的变量：
+<p />
+<pre>
+   $dromedary = $camel;
+</pre>
+<p />
+<p />
+Perl 不是象平常那样从 $camel 标量里读取变量，而是在相关的下层对象上调用 FETCH 
+方法。就好象你写的是这样的东西：
+<p />
+<pre>
+   $dromedary = (tied $camel)->FETCH();
+</pre>
+<p />
+或者如果你还记得 tie 返回的对象，你可以直接使用那个引用，就象在下面的例子代码
+里一样：
+<p />
+<pre>
+   $clot = tie $camel, "ScalarFile", "/tmp/camle.lot";
+   $dromedary = $camle;      # 通过隐含的接口
+   $dromedary = $clot->FETCH();   # 一样的东西，不过是明确的方法而已
+</pre>
+<p />
+<p />
+如果除了 TIESCALAR，FETCH，STORE，和 DESTROY 以外，该类还提供其他方法，你也可以
+使用 $clot 手工调用它们。不过，大家应该做好自己的事情而不要去管下层对象，这也是
+为什么你看到来自 tie 的返回值常被忽略。如果稍后你又需要该对象（比如，如果该类
+碰巧记载了任何你需要的额外方法的文档），那么你仍然可以通过 tie 获取该对象。忽略
+所返回的对象同样也消除了某些类型的错误，这一点我们稍后介绍。
+<p />
+下面是我们的类所需要的东西，我们将把它们放到 <span class="twikiNewLink" style='background : #FFFFCE;'><font color="#0000FF">ScalarFile</font><a href="http://www.jb51.net/twiki/bin/edit/Perl/ScalarFile?topicparent=Perl.TiedVariables" ><sup>?</sup></a></span>.pm：
+<p />
+<div class="fragment"><pre>
+<font color="brown">package</font> ScalarFile;   
+<font color="brown">use</font> Carp;      <font color="green"># 很好地传播错误消息。</font>
+<font color="brown">use</font> strict;      <font color="green"># 给我们自己制定一些纪律。</font>
+<font color="brown">use</font> warnings;      <font color="green"># 打开词法范围警告。</font>
+<font color="brown">use</font> warnings::register;   <font color="green"># 允许拥护说"use warnings 'ScalarFile'"。</font>
+<font color="brown">my</font> $count = 0;      <font color="green"># 捆绑了的 <span class="twikiNewLink" style='background : #FFFFCE;'><font color="#0000FF">ScalarFile</font><a href="http://www.jb51.net/twiki/bin/edit/Perl/ScalarFile?topicparent=Perl.TiedVariables" ><sup>?</sup></a></span> 的内部计数。</font></font></pre></pre></div>
+<p />
+这个标准的 Carp 模块输出 carp，croak，和 confess 子过程，我们将在本节稍后的代码
+中使用它们。和往常一样，参阅第32章，标准模块，或者在线文档获取 Carp 的更多介绍。
+<p />
+下面的方法是该类定义的。
+<p />
+CLASSNAME-&gt;TIESCALAR(LIST)
+<p />
+   每当你 tie 一个标量变量，都会触发该类的 TIESCALAR 方法。可选的 LIST 包含
+   任意正确初始化该对象所需要的参数。（在我们的例子里，只有一个参数：
+   该文件的名字。）这个方法应该返回一个对象，不过这个对象不必是一个标量的
+   引用。不过在我们的例子里是标量的引用。
+<p />
+<div class="fragment"><pre>
+<font color="brown">sub</font> TIESCALAR {      <font color="green"># 在 ScalarFile.pm</font>
+        <font color="brown">my</font> $class = <font color="maroon">shift</font>;
+        <font color="brown">my</font> $filename = <font color="maroon">shift</font>;
+        $count++;   <font color="green"># 一个文件范围的词法，是类的私有部分</font>
+        <font color="brown">return</font> <font color="maroon">bless</font> \$filename, $class;
+}</pre></pre></div>
+<p />
+   因为匿名数组和散列构造器（[]和{}）没有标量等价物，我们只是赐福一个词法
+   范围的引用物，这样，只要这个名字超出范围，它就变成一个匿名。这样做运转得
+   很好（你可以对数组和散列干一样的事情）——只要这个变量真的是词法范围。
+   如果你在一个全局量上使用这个技巧，你可能会以为你成功处理了这个全局量，
+   但直到你创建另外一个 camel.lot 的时候才能意识到这是错的。不要试图写下面
+   这样的东西：
+<p />
+<pre>
+      sub TIESCALAR {bless \$_[1], $_[0] }   # 错，可以引用全局量。
+</pre>
+<p />
+<p />
+   一个写得更强壮一些的构造器可能会检查该文件名是否可联合。我们首先检查，
+   看看这个文件是否可读，因为我们不想毁坏现有的数值。（换句话说，我们不应该
+   假设用户准备先写。他们可能很珍惜此程序以前运行留下来的旧的 Camel Lot 
+   文件。）如果我们不能打开或者创建所声明的文件名，我们将通过返回一个 undef
+   礼貌地指明该错误，并且还可以通过 carp 打印一个警告。（我们还可以只用
+   croak —— 这是口味的问题，取决于你喜欢鱼还是牛蛙。）我们将使用
+   warnings 用法来判断这个用户是否对我们的警告感兴趣：
+<p />
+<div class="fragment"><pre>
+<font color="brown">sub</font> TIESCALAR {   <font color="green"># 在 ScalarFile.pm</font>
+        <font color="brown">my</font> $class = <font color="maroon">shift</font>;   
+        <font color="brown">my</font> $filename = <font color="maroon">shift</font>;
+        <font color="brown">my</font> $fh;   
+        <font color="brown">if</font> (<font color="maroon">open</font> $fh, "&lt;", $filename <font color="navy">or</font> 
+        <font color="maroon">open</font> $fh, "&gt;", $filename)
+        {
+                <font color="maroon">close</font> $fh;
+                $count++;
+                <font color="brown">return</font> <font color="maroon">bless</font> \$filename, $class;
+        }
+        carp "Can't <font color="maroon">tie</font> $filename: $!" <font color="brown">if</font> warnings::enabled();
+        <font color="brown">return</font>;
+}</pre></pre></div>
+<p />
+   有了这样的构造器，我们现在就可以把标量 $string 和文件 camel.lot 关联在
+   一起了：
+<p />
+<pre>
+      tie ($string, "ScalarFile", "camel.lot") or die;
+</pre>
+<p />
+<p />
+   （我们仍然做了一些不应该做的假设。在一个正式版本里，我们可能打开该文件
+   句柄一次并且在捆绑的过程中记住该文件句柄和文件名，保证此句柄在所有时间
+   里都是用 flock 排他锁住的。否则我们就会面对冲突条件——参阅第二十三章，
+   安全，里的“处理计时缝隙”。）
+<p />
+<ul>
+<li> SELF-&gt;FETCH
+</li>
+</ul>
+<p />
+   当你访问这个捆绑变量的时候就会调用这个方法（也就是说，读取其值）．
+   除了与变量捆绑的对象以外，它没有其他的参数．在我们的例子里，那个对象
+   包含文件名．
+<p />
+<div class="fragment"><pre>
+<font color="brown">sub</font>    FETCH {
+        <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+        confess "I am <font color="navy">not</font> a class method" <font color="brown">unless</font> <font color="maroon">ref</font> $self;
+        <font color="brown">return</font> <font color="brown">unless</font> <font color="maroon">open</font> <font color="brown">my</font> $fh, $$self;
+        <font color="maroon">read</font>($fh, <font color="brown">my</font> $value, <font color="brown">-s</font> $fh);   <font color="green"># NB: 不要在管道上使用 -s</font>
+        <font color="brown">return</font> $value;
+}</pre></pre></div>
+<p />
+   这回我们决定：如果 FETCH 拿到了不是引用的东西，那么就摧毁（抛出一个
+   例外）．（它要么是被当做类方法调用，要么是什么东西不小心把它当成
+   一个子过程调用了．）我们没有其它返回错误的方法，所以这么做可能是
+   对的．实际上，只要我们试图析引用 $self，Perl 都会立刻抛出一个例外；
+   我们只是做得礼貌一些并且用 confess 把完整的堆栈追踪输出到用户的屏幕
+   上．（如果这个动作可以认为是礼貌的话．）
+<p />
+   如果我们说下面这些话就会看到 camel.lot 的内容：
+<p />
+<pre>
+      tie($string, "ScalarFile", "camel.lot");
+      print $string;
+</pre>
+<p />
+<ul>
+<li> SELF-&gt;STORE(VALUE)
+</li>
+</ul>
+<p />
+   当设置（赋值）捆绑的变量的时候会运行这个方法．第一个参数 SELF 与往常
+   一样是与变量关联的对象；VALUE 是给变量赋的值．（我们这里的"赋值"的
+   含义比较宽松--任何修改变量的动作都可以叫做 STORE．）
+<p />
+<div class="fragment"><pre>
+<font color="brown">sub</font> STORE {
+        <font color="brown">my</font>($self, $value) = @_;
+        <font color="maroon">ref</font> $self      <font color="navy">or</font> confess "<font color="navy">not</font> a class method";
+        <font color="maroon">open</font> <font color="brown">my</font> $fh, "&gt;", $$self <font color="navy">or</font> croak "can't clobber $$self:$!";
+        <font color="maroon">syswrite</font>($fh, $value) == <font color="maroon">length</font> $value
+        <font color="navy">or</font> croak "can't <font color="maroon">write</font> to $$self: $!";
+        <font color="maroon">close</font> $fh      <font color="navy">or</font> croak "can't <font color="maroon">close</font> $$self:$!";
+        <font color="brown">return</font> $value;
+}</pre></pre></div>
+<p />
+   在给它"赋值"以后，我们返回新值--因为这也是赋值做的事情．如果赋值失败，
+   我们把错误 croak 出来．可能的原因是我们没有写该关联文件的权限，或者
+   磁盘满，或者磁盘控制器坏了．有时候是你控制这些局势，有时候是局势控制你．
+<p />
+   现在如果我们说下面的话，我们就可以写入 camel.lot 了．
+<p />
+<pre>
+      tie($string, "ScalarFile", "camel.lot");
+      $string = "Here is the first line of camel.lot\n";
+      $string .= "And here is another line, automatically appended.\n";
+</pre>
+<p />
+<p />
+<ul>
+<li> SELF-&gt;DESTORY
+</li>
+</ul>
+<p />
+   当与捆绑变量相关联的对象即将收集为垃圾时会触发这个方法，尤其是在做一些
+   特殊处理以清理自身的情况下。和其他类一样，这样的方法很少是必须的，因为
+   Perl 自动为你清除垂死的对象的内存。在这里，我们会定义一个 DESTROY 方法
+   用来递减我们的捆绑文件的计数：
+<p />
+<div class="fragment"><pre>
+<font color="brown">sub</font> <font color="navy">DESTROY</font> {
+        <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+        confess "wrong type" <font color="brown">unless</font> <font color="maroon">ref</font> $self;
+        $count--;
+}</pre></pre></div>
+<p />
+   我们还可以提供一个额外的类方法用于检索当前的计数。实际上，把它称做类方法
+   还是对象方法并不要紧，但是你在 DESTROY 之后就不再拥有一个对象了，对吧？
+<div class="fragment"><pre>
+<font color="brown">sub</font> count {
+        <font color="green"># my $invocant = shift;</font>
+        $count;
+}</pre></pre></div>
+<p />
+   你可以在任何时候把下面这个称做一个类方法：
+<p />
+<pre>
+      if (ScalarFile->count) {
+         warn "Still some tied ScalarFiles sitting around somewhere...\n";
+      }
+</pre>
+<p />
+<p />
+   这就是所要的东西。实际上，比所要的东西还要多，因为我们在这里为完整性，
+   坚固性和普遍美学做了几件相当漂亮的事情。当然，更简单的 TIESCALAR 类
+   也是可能的。
+<p />
+<h3><a name="14_1_2"> </a><a name="14_1_2_"> </a> 14.1.2 魔术计数变量 </h3>
+<p />
+这里是一个简单的 Tie::Counter 类，灵感来自 CPAN 中同名的模块。捆绑到这个类上的
+变量每次自增 1。比如：
+<p />
+<div class="fragment"><pre>
+<font color="maroon">tie</font> <font color="brown">my</font> $counter, "Tie::Counter", 100;
+@array = <font color="navy">qw</font> /Red Green Blue/;
+<font color="brown">for</font> <font color="brown">my</font> $color (@array) {      <font color="green"># 打印：</font>
+        <font color="maroon">print</font> " $counter $color\n";   <font color="green"># 100 Red</font>
+}               <font color="green"># 101 Green</font>
+<font color="green"># 102 Blue</font></font></pre></pre></div>
+<p />
+构造器把一个可选的额外参数当作计数器的初始值，缺省时为零。给这个计数器赋值将设置
+一个新值。下面是类：
+<p />
+<div class="fragment"><pre>
+<font color="brown">package</font> Tie::Counter;
+<font color="brown">sub</font> FETCH   { ++ ${ $_[0] }}
+<font color="brown">sub</font> STORE   { ${ $_[0] } = $_[1] }
+<font color="brown">sub</font> TIESCALAR {
+        <font color="brown">my</font> ($class, $value) = @_;
+        $value = 0 <font color="brown">unless</font> <font color="maroon">defined</font> $value;
+        <font color="maroon">bless</font> \$value =&gt; $class;
+}
+1;   <font color="green"># 如果在模块里需要这个</font></font></pre></pre></div>
+<p />
+多小！看到了吗？要写这么一个类并不需要多少代码。
+<p />
+<h3><a name="14_1_3"> </a><a name="14_1_3_"> </a> 14.1.3 神奇地消除 $_ </h3>
+<p />
+这个让人好奇的外部的捆绑类用于防止非局部的 $_ 的使用。它不是用 use 把方法拉进来
+，而是调用该类的 import 方法，装载这个模块应该用 no，以便调用很少用的 unimport 
+方法。用户说：
+<p />
+<pre>
+   no Underscore;
+</pre>
+<p />
+<p />
+然后所有把 $_ 当作一个非局部的全局变量使用就都会产生一个例外。
+<p />
+下面是一个用这个模块的小测试程序：
+<p />
+<div class="fragment"><pre>
+<font color="green">#!/usr/bin/perl</font>
+<font color="brown">no</font> Underscore;
+@tests = (
+"Assignment"  =&gt; <font color="brown">sub</font> { $_ = "Bad" },
+"Reading"     =&gt; <font color="brown">sub</font> { <font color="maroon">print</font> },
+"Matching"    =&gt; <font color="brown">sub</font> { $<font color="navy">x</font> = /badness/ },
+"Chop"        =&gt; <font color="brown">sub</font> { <font color="maroon">chop</font> },
+"Filetest"    =&gt; <font color="brown">sub</font> { <font color="brown">-x</font> },
+"Nesting"     =&gt; <font color="brown">sub</font> { <font color="brown">for</font> (1..3) { <font color="maroon">print</font> } },
+);
+
+<font color="brown">while</font> ( ($name, $code) = <font color="maroon">splice</font>(@tests, 0, 2) ) {
+        <font color="maroon">print</font> "Testing $name: ";
+        <font color="maroon">eval</font> { &amp;$code };
+        <font color="maroon">print</font> $@ ? "detected" : " missed!";
+        <font color="maroon">print</font> "\n";
+}</pre></pre></div>
+<p />
+这个程序打印出下面的东西：
+<p />
+<pre>
+Testing Assignment: detected
+Testing Reading: detected
+Testing Matching: detected
+Testing Chop: detected
+Testing Filetest: detected
+Testing Nesting: 123 missed!
+</pre>
+<p />
+“丢失”了最后一个是因为它由 for 循环正确地局部化了，并且因此可以安全地访问。
+<p />
+下面是让人感兴趣的外部 Underscore 模块本身。（我们说过它是让人感兴趣的外部吗？）
+它能运转是因为捆绑的神奇变量被一个 local 有效地隐藏起来了。该模块在它自己的
+初始化代码里做了一个 tie ，所以 require 也能运转。
+<p />
+<div class="fragment"><pre>
+<font color="brown">package</font> Underscore;
+<font color="brown">use</font> Carp;
+<font color="brown">sub</font> TIESCALAR { <font color="maroon">bless</font> \<font color="brown">my</font> $dummy =&gt; <font color="maroon">shift</font> }
+<font color="brown">sub</font> FETCH { croak 'Read access to $_ forbidden'  }
+<font color="brown">sub</font> STORE { croak 'Write access to $_ forbidden' }
+<font color="brown">sub</font> unimport { <font color="maroon">tie</font>($_, __PACKAGE__) }
+<font color="brown">sub</font> import   { <font color="maroon">untie</font> $_ }
+<font color="maroon">tie</font>($_, __PACKAGE__) <font color="brown">unless</font> <font color="maroon">tied</font> $_;
+1;</pre></pre></div>
+<p />
+在你的程序里对这个类混合调用 use 和 no 几乎没有任何用处，因为它们都在编译时发生
+，而不是运行时。你可以直接调用 Underscore-&gt;import 和 Underscore-&gt;unimport，就象
+use 和 no 那样。通常，如果你想反悔并且让自己可以使用 $_，你就要对它使用 local，
+这也是所有要点所在。
+<p />
+<p />
+<h2><a name="14_2"> </a><a name="14_2_"> </a> 14.2 捆绑数组 </h2>
+<p />
+一个实现捆绑数组的类至少要定义方法 TIEARRAY，FETCH，和 STORE。此外还有许多可选
+方法：普遍存在的 DESTROY 方法，还有用于提供 $#array 和 scalar(@array) 访问的
+ STORESIZE 和 FETCHSIZE 方法。另外，当 Perl 需要清空该数组时会触发 CLEAR ，而当
+Perl 在一个真正的数组上需要预先扩充（空间）分配的时候需要 EXTEND。
+<p />
+如果你想让相应的函数在捆绑的数组上也能够运行，你还可以定义 POP，PUSH，SHIFT，
+UNSHIFT，SPLICE，DELETE，和 EXISTS 方法。Tie::Array 类可以作为一个基类，用于利用
+ FETCH 和 STORE 实现前五个函数 。（Tie::Array 的 DELETE 和 EXISTS 的缺省实现只是
+简单地调用 croak。）只要你定义了 FETCH 和 STORE，那么你的对象包含什么样的数据
+结构就无所谓了。
+<p />
+另外， Tie::StdArray 类（在标准的 Tie::Array 模块中定义）提供了一个基类，这个
+基类的缺省方法假设此对象包含一个正常的数组。下面是一个利用这个类的简单的数组
+捆绑类。因为它使用了 Tie::StdArray 做它的基类，所以它只需要定义那些应该以非标准
+方法对待的方法。
+<p />
+<div class="fragment"><pre>
+<font color="green">#! /usr/bin/perl</font>
+<font color="brown">package</font> ClockArray;
+<font color="brown">use</font> Tie::Array;
+our @ISA = 'Tie::StdArray';
+<font color="brown">sub</font> FETCH {
+        <font color="brown">my</font> ($self, $place) = @_;
+        $self-&gt;[$place % 12 ];
+}
+
+<font color="brown">sub</font> STORE {
+        <font color="brown">my</font>($self, $place, $value ) = @_;
+        $self-&gt;[$place % 12 ] = $value;
+}
+
+<font color="brown">package</font> main;
+<font color="maroon">tie</font> <font color="brown">my</font> @array, 'ClockArray';
+@array = ( "a" ... "z" );
+<font color="maroon">print</font> "@array\n";</pre></pre></div>
+<p />
+运行的时候，这个程序打印出 "y z o p q r s t u v w x"。这个类提供一个只有一打位置
+的数组，类似一个时钟的小时数，编号为 0 到 11。如果你请求第十五个元素，你实际上
+获得第三个。把它想象成一个旅游助手，用于帮助那些还没有学会如何读24小时时钟的人。
+<p />
+<h3><a name="14_2_1"> </a><a name="14_2_1_"> </a> 14.2.1数组捆绑方法 </h3>
+<p />
+前面的是简单的方法。现在让我们看看真正的细节。为了做演示，我们将实现一个数组，
+这个数组的范围在创建的时候是固定的。如果你试图访问任何超出该界限的东西，则抛出
+一个例外。比如：
+<p />
+<div class="fragment"><pre>
+<font color="brown">use</font> BoundedArray;
+<font color="maroon">tie</font> @array, "BoundedArray", 2;
+
+$array[0] = "fine";
+$array[1] = "good";
+$array[2] = "great";
+$array[3] = "whoa";   <font color="green"># 禁止，显示一个错误信息。</font></font></pre></pre></div>
+<p />
+这个类的预定义的代码如下：
+<p />
+<pre>
+   package BoundedArray;
+   use Carp;
+   use strict;
+</pre>
+<p />
+<p />
+为了避免稍后定义 SPLICE，我们将从 Tie::Array 类中继承：
+<p />
+<pre>
+   use Tie::Array;
+   our @ISA = ("Tie::Array");
+</pre>
+<p />
+<p />
+<strong><em>CLASSNAME-&gt;TIEARRAY(LIST)</em></strong>
+<p />
+   是该类的构造器，TIEARRAY 应该返回一个赐福了的引用，通过该引用模拟这个
+   捆绑了的数组。
+<p />
+   在下一个例子里，为了告诉你并非一定要返回一个数组的引用，我们选择了一个
+   散列引用来代表我们的对象。散列很适合做通用记录类型：散列的“BOUND”键字
+   将存储最大允许的范围，而其“DATA”值将保存实际的数据。如果有个类以外的
+   解引用返回的对象（就是一个数组引用，不用怀疑），则抛出一个例外。
+<p />
+<div class="fragment"><pre>
+<font color="brown">sub</font> TIEARRAY {
+        <font color="brown">my</font> $class = <font color="maroon">shift</font>;
+        <font color="brown">my</font> $bound = <font color="maroon">shift</font>;
+        confess "usage: <font color="maroon">tie</font>( \@ary, 'BoundedArray', max_subscript)"
+        <font color="brown">if</font> @_ || $bound =~ /\D/;
+        <font color="brown">return</font> <font color="maroon">bless</font> { BOUND =&gt; $bouind, DATA =&gt; [] }, $class;
+}</pre></pre></div>
+<p />
+   现在我们可以说：
+<p />
+<pre>
+      tie( @array, "BoundedArray", 3);   # 允许的最大索引是 3
+</pre>
+<p />
+<p />
+   以确保该数组永远不会有多于四个元素。当对数组的一个独立的元素进行访问或者
+   存储的时候，将调用 FETCH 和 STORE，就好象是处理标量一样，不过有一个
+   额外的索引参数。
+<p />
+<strong><em>SELF-&gt;FETCH(INDEX)</em></strong>
+<p />
+   当访问捆绑的数组里的一个独立的元素的时候调用这个方法。它接受对象后面的
+   一个参数：我们试图抓取的数值的索引。
+<p />
+<div class="fragment"><pre>
+<font color="brown">sub</font> FETCH {
+        <font color="brown">my</font> ($self, $<font color="maroon">index</font> ) = @_;
+        <font color="brown">if</font> ($<font color="maroon">index</font> &gt; $self-&gt;{BOUND} ) {
+                confess "Array OOB: $<font color="maroon">index</font> &gt; $self-&gt;{BOUND}";
+        }
+        <font color="brown">return</font> $self-&gt;{DATA}[$<font color="maroon">index</font>];
+}</pre></pre></div>
+<p />
+<strong><em>SELF-&gt;STORE(INDEX, VALUE)</em></strong>
+<p />
+   当设置捆绑了的数组里的一个元素的时候调用这个方法。它接受对象后面的两个
+   参数：我们试图存储的东西的索引和我们准备放在那里的数值。比如：
+<p />
+<div class="fragment"><pre>
+<font color="brown">sub</font> STORE {
+        <font color="brown">my</font>($self, $<font color="maroon">index</font>, $value) = @_;
+        <font color="brown">if</font> ($<font color="maroon">index</font> &gt; $self-&gt;{BOUND} ) {
+                confess "Array OOB: $<font color="maroon">index</font> &gt; $self-&gt;{BOUND}";
+        }
+        <font color="brown">return</font> $self-&gt;{DATA}[$<font color="maroon">index</font>] = $value;
+}</pre></pre></div>
+<p />
+<strong><em>SELF-&gt;DESTROY</em></strong>
+<p />
+   当需要删除捆绑变量和回收它的内存的时候调用这个方法。对于一门有垃圾回收
+   功能的语言来说，这个东西几乎用不上，所以本例中我们忽略它。
+<p />
+<strong><em>SELF-&gt;FETCHSIZE</em></strong>
+<p />
+   FETCHSIZE 方法应该返回与 SELF 关联的捆绑数组的条目的总数。它等效于
+   scalar(@array)，通常等于 $#array + 1。
+<p />
+<div class="fragment"><pre>
+<font color="brown">sub</font> FETCHSIZE {
+        <font color="brown">my</font> $self  = <font color="maroon">shift</font>;
+        <font color="brown">return</font> <font color="maroon">scalar</font> @{$self-&gt;{DATA}};
+}</pre></pre></div>
+<p />
+<strong><em>SELF-&gt;STORESIZE(COUNT)</em></strong>
+<p />
+   这个方法把与 SELF 关联的捆绑数组的条目总数设置为 COUNT。如果此数组收缩，
+   那么你应该删除超出 COUNT 范围的记录。如果数组增长，你应该确保新的空位置
+   是未定义的。对于我们的 <span class="twikiNewLink" style='background : #FFFFCE;'><font color="#0000FF">BoundedArray</font><a href="http://www.jb51.net/twiki/bin/edit/Perl/BoundedArray?topicparent=Perl.TiedVariables" ><sup>?</sup></a></span> 类，我们还要确保该数组不会增长得超出
+   初始化时设置的限制。
+<p />
+<div class="fragment"><pre>
+<font color="brown">sub</font> STORESIZE {
+        
+        <font color="brown">my</font> ($self, $count ) = @_;
+        <font color="brown">if</font> ($count &gt; $self-&gt;{BOUND} ) {
+                confess "Array OOB: $count &gt; $self-&gt;{BOUND}";
+        }
+        $#{$self-&gt;{DATA}} = $count;
+}</pre></pre></div>
+<p />
+<strong><em>SELF-&gt;EXTEND(COUNT)</em></strong>
+<p />
+   Perl 使用 EXTEND 方法来表示一个数组将要扩展成保存 COUNT 条记录。这样你就
+   可以一次分配足够大的内存，而不是以后的多次调用。因为我们的 <span class="twikiNewLink" style='background : #FFFFCE;'><font color="#0000FF">BoundedArrays</font><a href="http://www.jb51.net/twiki/bin/edit/Perl/BoundedArrays?topicparent=Perl.TiedVariables" ><sup>?</sup></a></span>
+   已经固定了上限，所以我们不用定义这个方法。
+<p />
+<strong><em>SELF-&gt;EXISTS(INDEX)</em></strong>
+<p />
+   这个方法验证在 INDEX 位置的元素存在于捆绑数组中。对于我们的
+    <span class="twikiNewLink" style='background : #FFFFCE;'><font color="#0000FF">BoundedArray</font><a href="http://www.jb51.net/twiki/bin/edit/Perl/BoundedArray?topicparent=Perl.TiedVariables" ><sup>?</sup></a></span>， 我们只需要在核实了查找企图没有超过我们的固定上限，然后就
+   可以使用 Perl内建的 exists 来核实。
+<p />
+<div class="fragment"><pre>
+<font color="brown">sub</font> EXISTS {
+        <font color="brown">my</font> ($self, $<font color="maroon">index</font>) = @_;
+        <font color="brown">if</font> ( $<font color="maroon">index</font> &gt; $self-&gt;{BOUND}) {
+                confess "array OOB: $<font color="maroon">index</font> &gt; $self-&gt;{BOUND}";
+        }
+        <font color="maroon">exists</font> $self-&gt;{DATA}[$<font color="maroon">index</font>];
+}</pre></pre></div>
+<p />
+<strong><em>SELF-&gt;DELETE(INDEX)</em></strong>
+<p />
+   DELETE 方法从捆绑数组 SELF 中删除在 INDEX 位置的元素。对于我们的
+   <span class="twikiNewLink" style='background : #FFFFCE;'><font color="#0000FF">BoundedArray</font><a href="http://www.jb51.net/twiki/bin/edit/Perl/BoundedArray?topicparent=Perl.TiedVariables" ><sup>?</sup></a></span> 类，这个方法看起来几乎和 EXISTS 完全一样，不过这可不是
+   标准。
+<p />
+<div class="fragment"><pre>
+<font color="brown">sub</font> DELETE {
+        <font color="brown">my</font> ($self, $<font color="maroon">index</font>) = @_;
+        <font color="maroon">print</font> STDERR "deleting!\n";
+        <font color="brown">if</font> ($<font color="maroon">index</font> &gt; $self-&gt;{BOUND} ) {
+                
+                confess "Array OOB: $<font color="maroon">index</font> &gt; $self-&gt;{BOUND}";
+        }
+        <font color="maroon">delete</font> $self-&gt;{DATA}[$<font color="maroon">index</font>];
+}</pre></pre></div>
+<p />
+<strong><em>SELF-&gt;CLEAR</em></strong>
+<p />
+   当这个数组需要清空的时候调用这个方法。当该数组设置为一列新值（或者一列
+   空值）的时候发生这个动作，不过不会在提供给 undef 函数的时候发生这个
+   动作。因为一个清空了的 boundedArray 总是满足上限，所以我们在这里不需要
+   检查任何东西：
+<p />
+<div class="fragment"><pre>
+<font color="brown">sub</font> CLEAR {
+        <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+        
+        $self-&gt;{DATA} = [];
+}</pre></pre></div>
+<p />
+   如果你把数组设置为一个列表，这个动作会触发 CLEAR，但是看不到列表数值。
+   因此如果你象下面这样违反上界：
+<p />
+<div class="fragment"><pre>
+<font color="maroon">tie</font>(@array, "BoundedArray", 2);
+@array = (1,2,3,4);</pre></pre></div>
+<p />
+   CLEAR 方法仍将返回成功。而只有在随后的 STORE 中才会产生例外。这样的赋值
+   触发一个 CLEAR 和四个 STORES。
+<p />
+<strong><em>SELF-&gt;PUSH(LIST)</em></strong>
+<p />
+   这个方法把 LIST 的元素附加到数组上。下面是它在我们 <span class="twikiNewLink" style='background : #FFFFCE;'><font color="#0000FF">BoundedArray</font><a href="http://www.jb51.net/twiki/bin/edit/Perl/BoundedArray?topicparent=Perl.TiedVariables" ><sup>?</sup></a></span> 类里的
+   运行方法：
+<p />
+<div class="fragment"><pre>
+<font color="brown">sub</font> PUSH {
+        <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+        <font color="brown">if</font> (@_ + $#{$self-&gt;{DATA}} &gt; $self-&gt;{BOUND} ) {
+                confess "Attempt to <font color="maroon">push</font> too many elements";
+        }
+        <font color="maroon">push</font> @{$self-&gt;{DATA}}, @_;
+}</pre></pre></div>
+<p />
+<strong><em>SELF-&gt;UNSHIFT(LIST)</em></strong>
+<p />
+   这个方法预先把 LIST 的元素放到数组中。对于我们的 <span class="twikiNewLink" style='background : #FFFFCE;'><font color="#0000FF">BoundedArray</font><a href="http://www.jb51.net/twiki/bin/edit/Perl/BoundedArray?topicparent=Perl.TiedVariables" ><sup>?</sup></a></span> 类而言，
+   这个子过程类似 PUSH。
+<p />
+<strong><em>SELF-&gt;POP</em></strong>
+<p />
+   POP 方法从数组中删除最后一个元素并返回之。对于 boundedArray，它只有
+   一行：
+      sub POP { my $self  = shift; pop @{$self-&gt;{DATA}}}
+<p />
+<strong><em>SELF-&gt;SHIFT</em></strong>
+<p />
+   SHIFT 方法删除数组的第一个元素并返回之。对于 boundedArray，它类似 POP。
+<p />
+<strong><em>SELF-&gt;SPLICE(OFFSET, LENGTH, LIST)</em></strong>
+<p />
+   这个方法让你接合 SELF 数组。为了模拟 Perl 内建的 splice，OFFSET 应该是
+   可选项并且缺省为零，而负值是从数组后面向前数。LENGTH 也应该是可选项，
+   缺省为数组剩下的长度。LIST 可以为空。如果正确模拟内建函数，那么它应该
+   返回原数组从 OFFSET 开始的 LENGTH 长个元素（要被 LIST 代替的元素列表）。
+<p />
+   因为接合是有些复杂的操作，我们就不定义它了；我们只需要使用来自
+   Tie::Array 模块的 SPLICE 子过程，这个子过程是继承 Tie::Array 时免费
+   时免费拿到的。这样我们用其他 <span class="twikiNewLink" style='background : #FFFFCE;'><font color="#0000FF">BoundedArray</font><a href="http://www.jb51.net/twiki/bin/edit/Perl/BoundedArray?topicparent=Perl.TiedVariables" ><sup>?</sup></a></span> 方法定义了SPLICE，因此范围检查
+   仍然进行。
+<p />
+上面就是 <span class="twikiNewLink" style='background : #FFFFCE;'><font color="#0000FF">BoundedArray</font><a href="http://www.jb51.net/twiki/bin/edit/Perl/BoundedArray?topicparent=Perl.TiedVariables" ><sup>?</sup></a></span> 类的全部。它只是对数组的语义做了一点点封装。不过我们可以
+干得更好，而且用的空间更少。
+<p />
+<p />
+<h3><a name="14_2_2"> </a><a name="14_2_2_"> </a> 14.2.2 大家方便 </h3>
+<p />
+变量的一个好特性是它可以代换。函数的一样不太好的特点是它不能代换。你可以使用
+捆绑的数组把一个函数做成可以代换。假设你想代换一个字串里的任意整数。你可以就说：
+<p />
+<div class="fragment"><pre>
+<font color="green">#! /usr/bin/perl</font>
+<font color="brown">package</font> RandInterp;
+<font color="brown">sub</font> TIEARRAY { <font color="maroon">bless</font>   \<font color="brown">my</font> $self};
+<font color="brown">sub</font> FETCH { <font color="maroon">int</font> <font color="maroon">rand</font> $_[1] };
+
+<font color="brown">package</font> main;
+<font color="maroon">tie</font> @<font color="maroon">rand</font>, "RandInterp";
+
+<font color="brown">for</font>  (1,10,100,1000) {
+        <font color="maroon">print</font> "A random integer less then $_ would be $<font color="maroon">rand</font>[$_]\n";
+}
+$<font color="maroon">rand</font>[32] = 5;   <font color="green"># 这么干会重新格式化我们的系统表了么？</font></font></pre></pre></div>
+<p />
+当运行的时候，它打印出下面的内容：
+<p />
+<pre>
+A random integer less than 1 would be 0
+A random integer less than 10 would be 3
+A random integer less than 100 would be 46
+A random integer less than 1000 would be 755
+Can't locate object method "STORE" via package "RandInterp" at foo line 10.
+</pre>
+<p />
+如你所见，我们甚至还没能实现 STORE，不过这不算什么。我们只是和往常一样把它去掉
+了。
+<p />
+<p />
+<p />
+<hr />
+<!--
+<ul>
+<li> Set MYTITLE = 捆绑(tie)变量
+</li>
+</ul>
+-->
+<br class="twikiClear" />
+<a name="TopicEnd"></a>
+<span class="twikiRight twikiPageNav twikiGrayText"><a href="TiedVariables.html#PageTop">to&nbsp;top</a></span><br class="twikiClear" />
+<!---->
+<!---->
+<a name="Actions"> </a><span class="twikiHidden"><br /></span>
+
+
+<a name="PageBottom"></a> </div></div></div>
+</body></html>

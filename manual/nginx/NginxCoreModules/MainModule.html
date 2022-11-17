@@ -1,0 +1,278 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml">
+<HEAD><TITLE>主模块（Main Module）</TITLE>
+    <META http-equiv=Content-Type content="text/html; charset=GB2312">
+    <STYLE type=text/css>PRE {
+        BACKGROUND-COLOR: #cccccc
+    }
+
+    .STYLE1 {
+        COLOR: #ff0000
+    }
+    </STYLE>
+
+    <META content="MSHTML 6.00.6000.16809" name=GENERATOR>
+</HEAD>
+<BODY>
+<H2>主模块（Main Module）</H2><BR>
+
+<H3>·摘要</H3>
+<H4>包含一些Nginx的基本控制功能</H4>
+
+<H3>·指令</H3>
+
+<H3>daemon</H3>
+<H4>语法：daemon on | off<BR>
+    默认值：on<BR>
+<PRE>daemon off;
+</PRE>
+    生产环境中不要使用"daemon"和"master_process"指令，这些指令仅用于开发调试。虽然可以使用daemon off在生产环境中，但对性能提升没有任何帮助，但是在生产环境中永远不要使用master_process
+    off。
+</H4>
+<H3>env</H3>
+<H4>语法：env VAR|VAR=VALUE<BR>
+    默认值：TZ<BR>
+    使用字段：main<BR>
+    这个命令允许其限定一些环境变量的值，在以下的情况下会创建或修改变量的值：<BR>
+</H4>
+<H5>
+    ·<A href="http://wiki.nginx.org/NginxCommandLine/#utnbotf">在不停机情况</A>下升级、增加或删除一些模块时继承的变量<BR>
+    ·使用<A href="http://wiki.nginx.org/NginxEmbeddedPerlModule/">嵌入式perl模块</A><BR>
+    ·使用工作中的进程，必须记住，某些类似系统库的行为管理仅在变量初始化时频繁地使用库文件，即仍然可以用之前给定的命令设置，上面提到的零停机更新文件是一个例外（此句不知怎么翻，原文：for use by working
+    processes. However it is necessary to keep in mind, that management of behaviour of system libraries in a similar
+    way probably not always as frequently libraries use variables only during initialization, that is still before they
+    can be set by means of the given instruction. Exception to it is the above described updating an executed file with
+    zero downtime. ）</H5>
+<H4>如果没有明确的定义TZ的值,默认情况下它总是继承的，并且<A href="http://wiki.nginx.org/NginxEmbeddedPerlModule/">内置的Perl模块</A>总是可以使用TZ的值。<BR>
+    例：<BR>
+<PRE>
+env  MALLOC_OPTIONS;
+env  PERL5LIB=/data/site/modules;
+env  OPENSSL_ALLOW_PROXY_CERTS=1;</PRE>
+</H4>
+<H3>debug_points</H3>
+<H4>语法：debug_points [stop | abort] <BR>
+    默认值：none（无）<BR>
+    <PRE>debug_points stop;</PRE>
+    在Nginx内部有很多断言，如果debug_points的值设为stop时，那么触发断言时将停止Nginx并附加调试器。如果debug_point的值设为abort,那么触发断言时将创建内核文件。
+</H4>
+<H3> error_log</H3>
+<H4>语法：error_log file [ debug | info | notice | warn | error | crit ] <BR>
+    默认值：${prefix}/logs/error.log<BR>
+    指定Nginx服务（与FastCGI）错误日志文件位置。<BR>
+    每个字段的错误日志等级默认值：<BR></H4>
+<H5>1、main字段 - error<BR>
+    2、HTTP字段 - crit<BR>
+    3、server字段 - crit<BR></H5>
+<H4>Nginx支持为每个虚拟主机设置不同的错误日志文件，这一点要好于lighttpd，详细为每个虚拟主机配置不同错误日志的例子请参考：<A
+        href="http://wiki.nginx.org/SeparateErrorLoggingPerVirtualHost/">SeparateErrorLoggingPerVirtualHost</A>和<A
+        href="http://thread.gmane.org/gmane.comp.web.nginx.english/9097/focus=9099/">mailing list thread on separating
+    error logging per virtual host</A><BR>
+    如果你在编译安装Nginx时加入了--with-debug参数，你可以使用以下配置：<BR>
+    <PRE>error_log LOGFILE [debug_core | debug_alloc | debug_mutex | debug_event | debug_http | debug_imap];</PRE>
+    注意error_log off并不能关闭日志记录功能，而会将日志文件写入一个文件名为off的文件中，如果你想关闭错误日志记录功能，应使用以下配置：<BR>
+    <PRE>error_log /dev/null crit;</PRE>
+    同样注意0.7.53版本，nginx在使用配置文件指定的错误日志路径前将使用编译时指定的默认日志位置，如果运行nginx的用户对该位置没有写入权限，nginx将输出如下错误：<BR>
+    <PRE>[alert]: could not open error log file: open() "/var/log/nginx/error.log" failed (13: Permission denied)</PRE>
+</H4>
+<H3>log_not_found</H3>
+<H4>语法：log_not_found on | off <BR>
+    默认值：on <BR>
+    使用字段：location <BR>
+    这个参数指定了是否记录客户端的请求出现404错误的日志，通常用于不存在的robots.txt和favicon.ico文件，例如：<BR>
+<PRE>location = /robots.txt {
+  log_not_found  off;
+}
+</PRE>
+</H4>
+<H3>include</H3>
+<H4>语法：include file | * <BR>
+    默认值：none <BR>
+    你可以包含一些其他的配置文件来完成你想要的功能。<BR>
+    0.4.4版本以后，include指令已经能够支持文件通配符：<BR>
+    <PRE>include vhosts/*.conf;</PRE>
+    注意：直到0.6.7版本，这个参数包含的文件相对路径随你在编译时指定的--prefix=PATH目录而决定，默认是/usr/local/nginx，如果你不想指定这个目录下的文件，请写绝对路径。<BR>
+    0.6.7版本以后指定的文件相对路径根据nginx.conf所在的目录而决定，而不是prefix目录的路径。<BR></H4>
+<H3>lock_file</H3>
+<H4>语法：lock_file file <BR>
+    默认值：编译时指定 <BR>
+    <PRE>lock_file  /var/log/lock_file;</PRE>
+    Nginx使用连接互斥锁进行顺序的accept()系统调用，如果Nginx在i386,amd64,sparc64,与ppc64环境下使用gcc,Intel C++,或SunPro
+    C++进行编译，Nginx将采用异步互斥进行访问控制，在其他情况下锁文件会被使用。<BR></H4>
+<H3>master_process</H3>
+<H4>语法：master_process on | off <BR>
+    默认值：on <BR>
+    <PRE>master_process  off;</PRE>
+    生产环境中不要使用"daemon"和"master_process"指令，这些选项仅用于开发调试。<BR></H4>
+<H3>pid</H3>
+<H4>语法：pid file <BR>
+    默认值：编译时指定 <BR>
+    <PRE>pid /var/log/nginx.pid;</PRE>
+    指定pid文件，可以使用kill命令来发送相关信号，例如你如果想重新读取配置文件，则可以使用：kill -HUP `cat /var/log/nginx.pid`<BR></H4>
+<H3>ssl_engine</H3>
+<H4>语法：ssl_engine engine <BR>
+    默认值：依赖于系统环境 <BR>
+    这里可以指定你想使用的OpenSSL引擎，你可以使用这个命令找出哪个是可用的：openssl engine -t<BR>
+<PRE>$ openssl engine -t
+(cryptodev) BSD cryptodev engine
+  [ 可用 ] 
+(dynamic) Dynamic engine loading support
+  [ 不可用 ] </PRE>
+</H4>
+<H3>timer_resolution</H3>
+<H4>语法：timer_resolution t <BR>
+    默认值：none <BR>
+    <PRE>timer_resolution  100ms;</PRE>
+    这个参数允许缩短gettimeofday()系统调用的时间，默认情况下gettimeofday()在下列都调用完成后才会被调用：kevent(), epoll, /dev/poll, select(), poll()。<BR>
+    如果你需要一个比较准确的时间来记录$upstream_response_time或者$msec变量，你可能会用到timer_resolution<BR></H4>
+<H3> try_files </H3>
+<H4>语法：try_files path1 [ path2] uri <BR>
+    默认值：none <BR>
+    可用版本：0.7.27 <BR>
+    按照顺序检查存在的文件，并且返回找到的第一个文件，斜线指目录：$uri / 。如果在没有找到文件的情况下，会启用一个参数为last的内部重定向，这个last参数“必须”被设置用来返回URL，否则会产生一个内部错误。<BR>
+    在代理Mongrel中使用：<BR>
+<PRE>location / {
+  try_files /system/maintenance.html
+  $uri $uri/index.html $uri.html @mongrel;
+}
+ 
+location @mongrel {
+  proxy_pass http://mongrel;
+}</PRE>
+    在Drupal / FastCGI中：
+<PRE>location / {
+  try_files $uri $uri/ @drupal;
+}
+ 
+location ~ \.php$ {
+  try_files $uri @drupal;
+  fastcgi_pass 127.0.0.1:8888;
+  fastcgi_param  SCRIPT_FILENAME  /path/to$fastcgi_script_name;
+  # other fastcgi_param
+}
+ 
+location @drupal {
+  fastcgi_pass 127.0.0.1:8888;
+  fastcgi_param  SCRIPT_FILENAME  /path/to/index.php;
+  fastcgi_param  QUERY_STRING     q=$request_uri;
+  # other fastcgi_param
+}</PRE>
+    在这个例子中，这个try_files指令：<BR>
+<PRE>location / {
+  try_files $uri $uri/ @drupal;
+}</PRE>
+    等同于下列配置：<BR>
+<PRE>location / {
+  error_page     404 = @drupal;
+  log_not_found  off;
+}</PRE>
+    这段：<BR>
+<PRE>location ~ \.php$ {
+  try_files $uri @drupal;
+ 
+  fastcgi_pass 127.0.0.1:8888;
+  fastcgi_param  SCRIPT_FILENAME  /path/to$fastcgi_script_name;
+  # other fastcgi_param
+}</PRE>
+    指try_files在将请求提交到FastCGI服务之前检查存在的php文件。<BR>
+    一个在Wordpress和Joomla中的例子：<BR>
+<PRE>location / {
+  try_files $uri $uri/ @wordpress;
+}
+ 
+location ~ \.php$ {
+  try_files $uri @wordpress;
+ 
+  fastcgi_pass 127.0.0.1:8888;
+  fastcgi_param SCRIPT_FILENAME /path/to$fastcgi_script_name;
+  # other fastcgi_param
+}
+ 
+location @wordpress {
+    fastcgi_pass 127.0.0.1:8888;
+    fastcgi_param SCRIPT_FILENAME /path/to/index.php;
+    # other fastcgi_param
+}</PRE>
+</H4>
+<H3>user</H3>
+<H4>语法：user user [group] <BR>
+    默认值：nobody nobody <BR>
+    如果主进程以root运行，Nginx将会调用setuid()/setgid()来设置用户/组，如果没有指定组，那么将使用与用户名相同的组，默认情况下会使用nobody用户与nobody组（或者nogroup），或者在编译时指定的--user=USER和--group=GROUP的值。<BR>
+    <PRE>user www users;</PRE>
+</H4>
+<H3>worker_cpu_affinity</H3>
+<H4>语法：worker_cpu_affinity cpumask [cpumask...] <BR>
+    默认值：none <BR>
+    仅支持linux系统。<BR>
+    这个参数允许将工作进程指定到cpu，它调用sched_setaffinity()函数<BR>
+<PRE>worker_processes     4;
+worker_cpu_affinity 0001 0010 0100 1000;</PRE>
+    指定每个进程到一个CPU：<BR>
+<PRE>worker_processes     2;
+worker_cpu_affinity 0101 1010;</PRE>
+    指定第一个进程到CPU0/CPU2，指定第二个进程到CPU1/CPU3，对于HTT处理器来说是一个不错的选择。<BR></H4>
+<H3>worker_priority</H3>
+<H4>语法：worker_priority [-] number <BR>
+    默认值：on <BR>
+    这个选项可以用来设置所有工作进程的优先级（即linux系统中的nice），它调用setpriority()。</H4>
+
+<H3>worker_processes</H3>
+<H4>语法：worker_processes number <BR>
+    默认值：1 <BR>
+    <PRE>worker_processes 5;</PRE>
+    由于以下几点原因，Nginx可能需要运行不止一个进程<BR></H4>
+<H5>·使用了SMP（对称多处理技术）。<BR>
+    ·当服务器在磁盘I/O出现瓶颈时为了减少响应时间。<BR>
+    ·当使用select()/poll()限制了每个进程的最大连接数时。<BR></H5>
+<H4>在事件模块这一章中我们将使用worker_processes和worker_connections来计算理论最大连接数（max_clients）：<BR>
+    max_clients = worker_processes * worker_connections <BR></H4>
+
+<H3>worker_rlimit_core</H3>
+<H4>语法：worker_rlimit_core size <BR>
+    默认值： <BR>
+    允许的每个进程核心文件最大值。<BR></H4>
+
+<H3>worker_rlimit_nofile</H3>
+<H4>语法：worker_rlimit_nofile limit <BR>
+    默认值： <BR>
+    进程能够打开的最多文件描述符数<BR></H4>
+
+<H3> worker_rlimit_sigpending </H3>
+<H4>语法：worker_rlimit_sigpending limit <BR>
+    默认值： <BR>
+    linux内核2.6.8以后，限制调用的进程中真实用户队列可能使用的信号数量。<BR></H4>
+
+<H3> working_directory </H3>
+<H4>语法：working_directory path <BR>
+    默认值：--prefix <BR>
+    程序的工作目录，一般只用来指定核心文件位置，Nginx仅使用绝对路径，所有在配置文件中的相对路径会转移到--prefix==PATH<BR></H4>
+
+<H3>·变量</H3>
+
+<H3>$pid</H3>
+<H4>进程ID号</H4>
+
+<H3>$realpath_root</H3>
+<H4>未标记</H4>
+
+<H3>·参考文档</H3>
+<!-- Piwik -->
+<script type="text/javascript">
+    var pkBaseURL = (("https:" == document.location.protocol) ? "https://179401.cn/analytics/" : "http://179401.cn/analytics/");
+    document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+        piwikTracker.trackPageView();
+        piwikTracker.enableLinkTracking();
+    } catch (err) {
+    }
+</script>
+<noscript><p><img src="http://shouce.jb51.net/179401.cn/analytics/piwik.php-idsite=1" style="border:0" alt=""/></p>
+</noscript>
+<!-- End Piwik Tag -->
+</BODY>
+</HTML>
+<H3><A href="EventsModule.html">前进->事件模块（Events Module）</A></H3>

@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+    <!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+    <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+         <title>Upgrading MemSQL</title> 
+        <link rel="shortcut icon" href="../../../static_star_theme/img/favicon.ico"/>
+        <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,700italic' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../static_star_theme/css/theme.css" type="text/css" /> 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+    </head>
+
+    <body class="wy-body-for-nav" role="document">
+
+    <div class="wy-grid-for-nav">
+
+        <div class="wy-full-navbar" data-swiftype-index="false">
+            <a href="http://www.memsql.com" class="logo">
+                <img src="../../../static_star_theme/img/memsql_logo_horizontal_white.svg" />
+            </a>
+            <div class="global nav">
+                <div class="pull-left left-links">
+                </div>
+                <div class="pull-right right-links">
+                    <a href="http://www.memsql.com/community/" style="word-spacing: 2px;">Community Edition</a>
+                    <a href="http://blog.memsql.com">Blog</a>
+                    <a href="http://www.memsql.com/memsql-partners">Partners</a>
+                    <a href="http://www.memsql.com/resources">Resources</a>
+                    <a href="../../../index.html">Documentation</a>
+                    <a href="http://www.memsql.com/contact">Contact</a>
+                </div>
+            </div>
+            <div class="nav-links">
+                <a href="http://www.memsql.com/product">Product</a>
+                <a href="http://www.memsql.com/solutions">Solutions</a>
+                <a href="http://www.memsql.com/case-studies">Case Studies</a>
+                <a href="http://www.memsql.com/company">Company</a>
+                <a class="download" href="http://www.memsql.com/download/">Download Now</a>
+            </div>
+        </div>
+
+        <nav data-toggle="wy-nav-shift" class="wy-nav-side" data-swiftype-index="false">
+            <div class="wy-side-nav-search">
+                <div role="search">
+  <form id="search-form" class="wy-form" method="get">
+    <input type="text" id="st-search-input" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+            </div>
+
+            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                
+                 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">MemSQL Docs Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro/index.html">How MemSQL Works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../setup/quick_start/index.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../setup/get_started/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../concepts/index.html">User Manual</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Operations Manual</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="index.html">Upgrading MemSQL</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="index.html#upgrading-a-cluster">Upgrading a Cluster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#upgrading-a-node">Upgrading a Node</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#upgrading-a-license">Upgrading a License</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_concepts/index.html">Administrator Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cluster/index.html">Administering a Cluster</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../security/index.html">Securing MemSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ssl/index.html">SSL Network Encryption</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../high_availability/index.html">Managing High Availability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../durability_recovery/index.html">Using Durability and Recovery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../replication/index.html">Using Replication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../backup_restore/index.html">Backing Up and Restoring Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../data_export/index.html">Exporting Data From MemSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tracelog/index.html">Trace Log</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../from_mysql/index.html">Transitioning from MySQL to MemSQL</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../ref/commands_by_type/index.html">SQL Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../config/index.html">Configuration Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ops/index.html">MemSQL Ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../loader/index.html">MemSQL Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../archive/index.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../editions/index.html">MemSQL Editions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq/index.html">Frequently Asked Questions</a></li>
+</ul>
+ 
+            </div>
+            &nbsp;
+        </nav>
+
+        <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+            <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+                <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+                <a href="../../../index.html" class="logo">
+                    <img src="../../../static_star_theme/img/memsql_logo_horizontal_white.svg" />
+                    <span class="subtitle">Documentation</span>
+                </a>
+            </nav>
+
+            <div class="wy-nav-content">
+                <div class="rst-content">
+                    <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../index.html">MemSQL Documentation</a> &raquo;</li>
+      
+          <li><a href="../index.html">Operations Manual</a> &raquo;</li>
+      
+    <li>Upgrading MemSQL</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+                    <div role="main" class="document">
+                        
+  <div class="section" id="upgrading-memsql">
+<span id="upgrade"></span><h1>Upgrading MemSQL<a class="headerlink" href="index.html#upgrading-memsql" title="Permalink to this headline">¶</a></h1>
+<p>This topic describes how to upgrade MemSQL from an earlier version. The upgrade process depends on the version from which you are upgrading. Note that there are specific instructions for <a class="reference internal" href="index.html#upgrade-cluster"><em>Upgrading a Cluster</em></a>. If you are
+upgrading an instance of MemSQL Single Box, you can skip directly to <a class="reference internal" href="index.html#upgrade-node"><em>Upgrading a Node</em></a>.  If you are upgrading a license, you can skip directly to <a class="reference internal" href="index.html#upgrade-license"><em>Upgrading a License</em></a>.</p>
+<div class="section" id="upgrading-a-cluster">
+<span id="upgrade-cluster"></span><h2>Upgrading a Cluster<a class="headerlink" href="index.html#upgrading-a-cluster" title="Permalink to this headline">¶</a></h2>
+<p>For a MemSQL cluster, the upgrade process involves individually upgrading each node in the cluster <cite>in a very specific sequence</cite>. There are two approaches:</p>
+<ul class="simple">
+<li>If the cluster is running at Redundancy Level 2, you have the option to perform an <a class="reference internal" href="index.html#incremental-upgrade"><em>incremental cluster upgrade</em></a>, in which you upgrade individual nodes while the cluster remains running.</li>
+<li>Otherwise, you must <a class="reference internal" href="index.html#shutdown-upgrade"><em>shut down the entire cluster</em></a>, upgrade each node, and then start up the new version of MemSQL on each node in the cluster.</li>
+</ul>
+<p>In addition, starting from version 4.0...</p>
+<div class="section" id="deploying-memsql-ops">
+<span id="ops-setup"></span><h3>Deploying MemSQL Ops<a class="headerlink" href="index.html#deploying-memsql-ops" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">These instructions assume that the master aggregator will be MemSQL Ops primary agent.</p>
+</div>
+<ol class="arabic simple">
+<li>On the master aggregator, uninstall the old MemSQL Ops and collectd:</li>
+</ol>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>sudo service memsql-ops stop
+<span class="nv">$ </span>sudo service collectd stop
+<span class="nv">$ </span>sudo mv /var/lib/memsql-ops /var/lib/memsql-ops.bak
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li>Deploy MemSQL Ops to the master aggregator as the primary agent.</li>
+</ol>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ VERSION</span><span class="o">=</span><span class="s2">&quot;0.0.25&quot;</span>
+<span class="nv">$ </span>wget http://download.memsql.com/memsql-ops-<span class="nv">$VERSION</span>/memsql-ops-<span class="nv">$VERSION</span>.tar.gz
+<span class="nv">$ </span>tar xzf memsql-ops-<span class="nv">$VERSION</span>.tar.gz
+<span class="nv">$ </span>sudo memsql-ops-<span class="nv">$VERSION</span>/install.sh --no-cluster
+</pre></div>
+</div>
+<p>Note: during the installation the current user will be added to the memsql group. <cite>Launch a new shell after the installation completes</cite>.</p>
+<ol class="arabic simple" start="3">
+<li>Use the primary agent to deploy agents to rest of cluster, either via web UI or, in a new shell, via the command line interface:</li>
+</ol>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>cp ~/.ssh/id_rsa /var/lib/memsql-ops
+<span class="nv">$ </span>chmod a+r /var/lib/memsql-ops/id_rsa
+<span class="nv">$ </span>memsql-ops agent-deploy -h &lt;HOST_IP&gt; -u &lt;USER&gt; -i /var/lib/memsql-ops/id_rsa
+</pre></div>
+</div>
+<p>Note: memsql user needs read access to the SSH credentials file. This file will be copied into <tt class="docutils literal"><span class="pre">/var/lib/memsql-ops/data/keys</span></tt>.</p>
+<ol class="arabic simple" start="4">
+<li>Add your license key</li>
+</ol>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>memsql-ops license-add --license-key &lt;license key&gt;
+</pre></div>
+</div>
+</div>
+<div class="section" id="total-cluster-shutdown-and-restart">
+<span id="shutdown-upgrade"></span><h3>Total Cluster Shutdown and Restart<a class="headerlink" href="index.html#total-cluster-shutdown-and-restart" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">These instructions assume you have installed MemSQL using a Linux package manager. If you installed MemSQL from a binary, follow these steps but use the command syntax for a direct binary installation which can be found at <a class="reference internal" href="../../setup/setup_onprem/index.html"><em>Installing MemSQL on a Node</em></a>.</p>
+</div>
+<p>Make sure that <a class="reference internal" href="index.html#ops-setup"><em>MemSQL Ops is deployed on all nodes in the cluster</em></a>.</p>
+<ol class="arabic simple">
+<li>Shut down the master aggregator.</li>
+</ol>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>sudo service memsql stop
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li>Shut down all child aggregator nodes.</li>
+<li>Shut down all leaf nodes.</li>
+<li>Upgrade all the nodes in the cluster according to the instructions in <a class="reference internal" href="index.html#upgrade-node"><em>Upgrading a Node</em></a>, in the followin order: leaves, then master aggregator, then child aggregator nodes.</li>
+<li>Verify that all leaves are <tt class="docutils literal"><span class="pre">online</span></tt> with <a class="reference internal" href="../../ref/SHOW_LEAVES/index.html"><em>SHOW LEAVES</em></a>. If a leaf is <tt class="docutils literal"><span class="pre">detached</span></tt> then you can reattach it with <a class="reference internal" href="../../ref/ATTACH_LEAF/index.html"><em>ATTACH LEAF</em></a>. If it is <tt class="docutils literal"><span class="pre">offline</span></tt>, then it is not reachable from the aggregator. See <a class="reference internal" href="../high_availability/index.html"><em>Managing High Availability</em></a> for further details on leaf states.</li>
+</ol>
+</div>
+<div class="section" id="incremental-cluster-upgrade-redundancy-2-clusters-only">
+<span id="incremental-upgrade"></span><h3>Incremental Cluster Upgrade (Redundancy 2 Clusters Only)<a class="headerlink" href="index.html#incremental-cluster-upgrade-redundancy-2-clusters-only" title="Permalink to this headline">¶</a></h3>
+<p>For a cluster operating in Redundancy Level 2, you can upgrade individual nodes in the cluster while other nodes in the cluster are running. This setting is configured by doing either of the following:</p>
+<ul class="simple">
+<li>Set the <tt class="docutils literal"><span class="pre">redundancy_level</span></tt> system variable (<tt class="docutils literal"><span class="pre">redundancy_level</span> <span class="pre">=</span> <span class="pre">2</span></tt>) (see <a class="reference internal" href="../cluster/index.html"><em>Redundancy Level</em></a> for details).</li>
+<li>In the <tt class="docutils literal"><span class="pre">memsql.cnf</span></tt> file of your master aggregator node, specify <tt class="docutils literal"><span class="pre">redundancy_level</span> <span class="pre">=</span> <span class="pre">2</span></tt> (see <a class="reference internal" href="../memsql.cnf/index.html"><em>memsql.cnf Settings</em></a> for details).</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Follow the upgrade sequence <cite>exactly</cite> as described in this section: leaf nodes first, then master aggregator, and finally all child aggregator nodes.</p>
+</div>
+<div class="section" id="step-1-prepare-for-upgrade">
+<h4>Step 1: Prepare for Upgrade<a class="headerlink" href="index.html#step-1-prepare-for-upgrade" title="Permalink to this headline">¶</a></h4>
+<p>Make sure that <a class="reference internal" href="index.html#ops-setup"><em>MemSQL Ops is deployed on all nodes in the cluster</em></a>.</p>
+<p>On the master aggregator:</p>
+<ol class="arabic simple">
+<li>Disable auto-attach</li>
+</ol>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="kt">SET</span> <span class="n">GLOBAL</span> <span class="n">auto_attach</span> <span class="o">=</span> <span class="n">OFF</span><span class="p">;</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li>Disable leaf and aggregator failure detection</li>
+</ol>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="kt">SET</span> <span class="n">GLOBAL</span> <span class="n">aggregator_failure_detection</span> <span class="o">=</span> <span class="n">OFF</span><span class="p">;</span>
+<span class="n">memsql</span><span class="o">&gt;</span> <span class="kt">SET</span> <span class="n">GLOBAL</span> <span class="n">leaf_failure_detection</span> <span class="o">=</span> <span class="n">OFF</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="step-2-upgrade-leaf-nodes">
+<h4>Step 2: Upgrade Leaf Nodes<a class="headerlink" href="index.html#step-2-upgrade-leaf-nodes" title="Permalink to this headline">¶</a></h4>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For each pair, you can upgrade only <cite>one</cite> node in the pair at a time.</p>
+</div>
+<p>Begin by upgrading leaf nodes in the cluster.
+Determine in which order you want to upgrade the leaves - to avoid downtime, for each pair of leaves in the cluster you must update one host at a time (you can, however, upgrade all leaves in an availability group in parallel - refer to the example below).</p>
+<p>For each availability group (1, 2), and for each leaf in the availability group:</p>
+<ol class="arabic simple">
+<li>Run <a class="reference internal" href="../../ref/DETACH_LEAF/index.html"><em>DETACH LEAF</em></a> to detach the leaf from the cluster.</li>
+</ol>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="n">DETACH</span> <span class="n">LEAF</span> <span class="s1">&#39;host&#39;</span><span class="p">:</span><span class="n">port</span><span class="p">;</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li>Upgrade MemSQL and migrate the data according to the instructions in <a class="reference internal" href="index.html#upgrade-node"><em>Upgrading a Node</em></a>.</li>
+<li>Run <a class="reference internal" href="../../ref/ATTACH_LEAF/index.html"><em>ATTACH LEAF</em></a> to attach the leaf back to the cluster.</li>
+</ol>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="n">ATTACH</span> <span class="n">LEAF</span> <span class="s1">&#39;host&#39;</span><span class="p">[:</span><span class="n">port</span><span class="p">];</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">It may take some time before the leaf recovered all partitions after upgrade and the leaf won&#8217;t be attached until fully recovered. To avoid downtime, all leaves in an availability group must be attached before proceeding with the upgrade of the next availability group.</p>
+</div>
+<p>The instructions in this section use a scenario shown in the following illustration.</p>
+<img alt="../../_images/cluster_pairs.png" src="../../_images/cluster_pairs.png" />
+<p>In this scenario, there are two availability groups:</p>
+<ul class="simple">
+<li>leaves L1 - L4 are in Availability Group 1</li>
+<li>leaves L5 - L8 are in Availability Group 2</li>
+</ul>
+<p>There are four pairs of leaf nodes:</p>
+<ul class="simple">
+<li>L1 and L5</li>
+<li>L2 and L6</li>
+<li>L3 and L7</li>
+<li>L4 and L8</li>
+</ul>
+<p>To upgrade these leaf nodes:</p>
+<ol class="arabic simple">
+<li>Detach leaf nodes L1, L2, L3, and L4.</li>
+<li>Upgrade and start leaf nodes L1, L2, L3, and L4 according to the instructions in <a class="reference internal" href="index.html#upgrade-node"><em>Upgrading a Node</em></a>.</li>
+<li>Attach leaf nodes L1, L2, L3, and L4.</li>
+<li>Detach leaf nodes L5, L6, L7, and L8.</li>
+<li>Upgrade and start leaf nodes L5, L6, L7, and L8. according to the instructions in <a class="reference internal" href="index.html#upgrade-node"><em>Upgrading a Node</em></a>.</li>
+<li>Attach leaf nodes L5, L6, L7, and L8 to the cluster.</li>
+</ol>
+</div>
+<div class="section" id="step-3-upgrade-the-master-aggregator-node">
+<h4>Step 3: Upgrade the Master Aggregator Node<a class="headerlink" href="index.html#step-3-upgrade-the-master-aggregator-node" title="Permalink to this headline">¶</a></h4>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">When upgrading the master aggregator, do not run DDL operations and DML operations against reference tables as well as database-level and cluster-level operations. Furthermore, child aggregators will not see any of these operations take affect until after they are upgraded. In short, avoid altering tables while upgrading your aggregators.</p>
+</div>
+<ol class="arabic">
+<li><p class="first">On all child aggregators, pause replicating all databases by running:</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="n">PAUSE</span> <span class="n">REPLICATING</span> <span class="o">&lt;</span><span class="n">db</span><span class="o">&gt;</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>for each database <tt class="docutils literal"><span class="pre">&lt;db&gt;</span></tt> (except <tt class="docutils literal"><span class="pre">memsql</span></tt> and <tt class="docutils literal"><span class="pre">information_schema</span></tt>), for each child aggregator.</p>
+<p>You can run the following script from the MemSQL Ops primary agent:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="c">#!/bin/bash</span>
+<span class="k">for </span>HOST in <span class="sb">`</span>memsql-ops agent-list --memsql-role aggregator -q<span class="sb">`</span>
+<span class="k">do</span>
+<span class="k">  </span><span class="nb">echo</span> <span class="s2">&quot;Connecting to host $HOST&quot;</span>
+  memsql-ops agent-ssh --agent-ids <span class="nv">$HOST</span> --no-prompt <span class="s1">&#39;</span>
+<span class="s1">    for DB in `mysql -u root -h 127.0.0.1 --batch --skip-pager --skip-column-names --execute=&quot;SHOW DATABASES&quot; | grep -vE &quot;^(memsql|information_schema)$&quot;`</span>
+<span class="s1">    do</span>
+<span class="s1">      echo &quot; + Pausing replication for DB $DB&quot;</span>
+<span class="s1">      mysql -u root -h 127.0.0.1 --batch --execute &quot;PAUSE REPLICATING \&quot;$DB\&quot;&quot;</span>
+<span class="s1">    done</span>
+<span class="s1">  &#39;</span>
+<span class="k">done</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Upgrade the master aggregator node according to the instructions in <a class="reference internal" href="index.html#upgrade-node"><em>Upgrading a Node</em></a>.</p>
+</li>
+</ol>
+</div>
+<div class="section" id="step-4-upgrade-child-aggregator-nodes">
+<h4>Step 4: Upgrade Child Aggregator Nodes<a class="headerlink" href="index.html#step-4-upgrade-child-aggregator-nodes" title="Permalink to this headline">¶</a></h4>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">When upgrading a child aggregator, do not run queries against that host. Furthermore, child aggregators will not see any of these operations take affect until after they are upgraded. Basically, don&#8217;t try to alter table while upgrading your aggregators</p>
+</div>
+</div>
+<div class="section" id="step-5-re-enable-auto-cluster-operations">
+<h4>Step 5: Re-enable Auto Cluster Operations<a class="headerlink" href="index.html#step-5-re-enable-auto-cluster-operations" title="Permalink to this headline">¶</a></h4>
+<p>On the master aggregator:</p>
+<ol class="arabic simple">
+<li>Enable auto-attach</li>
+</ol>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="kt">SET</span> <span class="n">GLOBAL</span> <span class="n">auto_attach</span> <span class="o">=</span> <span class="k">ON</span><span class="p">;</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li>Enable leaf and aggregator failure detection</li>
+</ol>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="kt">SET</span> <span class="n">GLOBAL</span> <span class="n">aggregator_failure_detection</span> <span class="o">=</span> <span class="k">ON</span><span class="p">;</span>
+<span class="n">memsql</span><span class="o">&gt;</span> <span class="kt">SET</span> <span class="n">GLOBAL</span> <span class="n">leaf_failure_detection</span> <span class="o">=</span> <span class="k">ON</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="upgrading-a-node">
+<span id="upgrade-node"></span><h2>Upgrading a Node<a class="headerlink" href="index.html#upgrading-a-node" title="Permalink to this headline">¶</a></h2>
+<p>To upgrade a node:</p>
+<ol class="arabic">
+<li><p class="first">Stop (and backup) the MemSQL instance that will be upgraded</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>sudo service memsql stop
+</pre></div>
+</div>
+</li>
+<li><p class="first">Deploy the new version of MemSQL via MemSQL Ops</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>memsql-ops memsql-deploy --role &lt;leaf|master|aggregator&gt;
+</pre></div>
+</div>
+<p>After this is finished a new MemSQL instance will be installed into the MemSQL Ops <tt class="docutils literal"><span class="pre">installs</span></tt> folder, default <tt class="docutils literal"><span class="pre">/var/lib/memsql-ops/data/installs</span></tt></p>
+</li>
+<li><p class="first">Stop the new MemSQL instance</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>memsql-ops memsql-stop <span class="o">[</span>&lt;memsql_id&gt;<span class="o">]</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Move data from the old MemSQL instance into the new MemSQL instance, preserving the newly assigned id</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span><span class="nb">cd</span> <span class="k">$(</span>memsql-ops memsql-path<span class="k">)</span>
+<span class="nv">$ </span>sudo mv ./data/memsql_id ./memsql_id
+<span class="nv">$ </span>sudo mv ./data ./data.bak
+<span class="nv">$ </span>sudo mv /var/lib/memsql/data ./
+<span class="nv">$ </span>sudo mv ./memsql_id data/memsql_id
+</pre></div>
+</div>
+<p>and if everything goes well</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>sudo rm -rf ./data.bak
+</pre></div>
+</div>
+</li>
+<li><p class="first">Copy the old config file</p>
+<div class="highlight-bash"><div class="highlight"><pre>sudo cp /var/lib/memsql/memsql.cnf ./
+</pre></div>
+</div>
+</li>
+<li><p class="first">Start the new MemSQL instance</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>memsql-ops memsql-start <span class="o">[</span>&lt;memsql_id&gt;<span class="o">]</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Verify that the node is running, then delete the old MemSQL binaries</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ps aux | grep memsql
+<span class="nv">$ </span>sudo rm -rf /var/lib/memsql
+</pre></div>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="upgrading-a-license">
+<span id="upgrade-license"></span><h2>Upgrading a License<a class="headerlink" href="index.html#upgrading-a-license" title="Permalink to this headline">¶</a></h2>
+<p>If you need a new license, contact <a class="reference external" href="mailto:sales&#37;&#52;&#48;memsql&#46;com">sales<span>&#64;</span>memsql<span>&#46;</span>com</a>.  If you would like to continue using the same MemSQL build with a new license, follow the steps in <a class="reference internal" href="index.html#replace-license"><em>Replacing License Only</em></a>.  If you would like to replace both your build and license, follow the steps in <a class="reference internal" href="index.html#replace-build-and-license"><em>Replacing Build and License</em></a>.</p>
+<div class="section" id="replacing-license-only">
+<span id="replace-license"></span><h3>Replacing License Only<a class="headerlink" href="index.html#replacing-license-only" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>On each node in your cluster, replace the existing license in /var/lib/memsql/lib with your new license.</li>
+<li>On each node in your cluster, run:</li>
+</ol>
+<div class="highlight"><pre><span class="nv">$ </span>sudo service memsql update-license &lt;path to new license&gt;
+</pre></div>
+</div>
+<div class="section" id="replacing-build-and-license">
+<span id="replace-build-and-license"></span><h3>Replacing Build and License<a class="headerlink" href="index.html#replacing-build-and-license" title="Permalink to this headline">¶</a></h3>
+<p>Replace the existing build and license with the instructions from <a class="reference internal" href="index.html#upgrade"><em>Upgrading MemSQL</em></a>.</p>
+</div>
+</div>
+</div>
+
+
+                    </div>
+                    <footer data-swiftype-index="false">
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../admin_concepts/index.html" class="btn btn-neutral float-right" title="Administrator Key Concepts">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../index.html" class="btn btn-neutral" title="Operations Manual"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&copy; Copyright 2015, MemSQL</p>
+  </div>
+</footer>
+                </div>
+            </div>
+
+        </section>
+    </div>
+
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/underscore-min.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery.ba-hashchange.min.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery.swiftype.search.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery.swiftype.autocomplete.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/theme.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/search.js"></script> 
+
+        <!-- Google Analytics -->
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-21693588-3', 'auto');
+            ga('send', 'pageview');
+        </script>
+        <!-- End Google Analytics -->
+
+        <script type="text/javascript">
+            $.ajax({
+                url: document.location.protocol + '//munchkin.marketo.net/munchkin.js',
+                dataType: 'script',
+                cache: true,
+                success: function() {
+                    Munchkin.init('759-YLI-316');
+                }
+            });
+        </script>
+    </body>
+</html>

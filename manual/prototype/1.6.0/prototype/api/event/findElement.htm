@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Event.findElement - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>findElement</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">Event.findElement(event, tagName) -> Element</code></pre>
+			<p>从触发事件的 DOM 元素开始（包含该元素），由里而外搜索第一个具有指定标签名称的 DOM 元素。</p>
+		</div>
+		<div id="abody">
+			<p>
+				有时你并不关心触发事件的元素，而是想知道距离事件发生点最近的（可能是触发事件的元素，也可能是该元素的容器节点，
+				或容器节点的容器，依此类推）具有指定标签的元素（例如 <code>&lt;p&gt;</code>）。而这就是 <code>findElement</code>
+				所能够做到的。
+			</p>
+			<p>标签名称（<code>tagName</code>）的比较不区分大小写。</p>
+			<p><strong>如果没有找到匹配的元素，则返回文档本身（<code>HTMLDocument</code> 节点）。</strong></p>
+			<h3>样例</h3>
+			<p>这里有一个简单的例子，当点击页面时，如果点击的元素或元素的容器是一个段落，则隐藏该段落。</p>
+			<pre><code class="javascript">Event.observe(document.body, 'click', function(event) { 
+	var elt = Event.findElement(event, 'P'); 
+	if (elt != document) 
+		$(elt).hide(); 
+});</code></pre>
+			<p>
+				对于更复杂的搜索，仍然需要获得触发事件的元素，然后在该元素上调用 <a href="../element/up.htm" >up</a>
+				方法，这可以让你能够通过 CSS 语法来描述元素的匹配规则，同时支持更进一步的搜索而不仅只是获取第一个匹配的元素
+				（另外，<code>up</code> 方法返回的元素可以保证已进行了 DOM 扩展）：
+			</p>
+			<pre><code class="javascript">Event.observe(document.body, 'click', function(event) { 
+	// 从触发事件的元素开始，由里而外查找第一个具有 CSS 类名 'container' 的元素
+	var elt = $(Event.element(event)).up('.container'); 
+	// 或者：第二个 DIV 元素
+	// elt = $(Event.element(event)).up('div', 1); 	
+	// 或者：第二个具有 CSS 类名 'holder' 的 DIV 元素
+	// elt = $(Event.element(event)).up('div.holder', 1); 
+	elt.hide();
+}); </code></pre>
+			<h3>参见</h3>
+			<p>如果你希望获取触发事件的元素，只需调用 <a href="element.htm" >element</a> 方法即可。</p>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

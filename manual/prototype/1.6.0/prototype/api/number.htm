@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Number - Prototype JavaScript 框架</title>
+	<link href="../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>Number</h2>
+		<div id="method-list">
+			<ul>
+				<li><a href="number.htm#method-abs">abs</a></li>
+				<li><a href="number.htm#method-ceil">ceil</a></li>
+				<li><a href="number.htm#method-floor">floor</a></li>
+				<li><a href="number.htm#method-round">round</a></li>
+				<li><a href="number.htm#method-succ">succ</a></li>
+				<li><a href="number.htm#method-times">times</a></li>
+				<li><a href="number.htm#method-tocolorpart">toColorPart</a></li>
+				<li><a href="number.htm#method-tojson">toJSON</a></li>
+				<li><a href="number.htm#method-topaddedstring">toPaddedString</a></li>
+			</ul>
+		</div>
+		<div id="abody">
+			<p>为提供下述功能，Prototype 扩展了原生的 JavaScript <code>Number</code> 对象：</p>
+			<ul>
+				<li>通过 <a href="number/succ.htm" >Number#succ</a> 实现与 <a href="objectRange.htm" >ObjectRange</a> 对象的兼容。</li>
+				<li>通过 <a href="number/times.htm" >Number#times</a> 实现类似于 Ruby 的数字循环方式。</li>
+				<li>
+					提供了一组简单的工具函数，如 <a href="number/toColorPart.htm" >Number#toColorPart</a> 和
+					<a href="number/toPaddedString.htm" >Number#toPaddedString</a>。
+				</li>
+			</ul>
+			<h3>万事皆有可能</h3>
+			<pre><code class="javascript">$R(1, 10).each(function(index) { 
+	// 这里能够获取从 1 到 10 的索引，包括 10 
+}); 
+
+(5).times(function(index) { 
+	// 这里能够获取从 0 到 5 的索引，不包括 5
+	// 将 5 放在圆括号中，是因为 JavaScript 语法的关系。如果我们仅使用其字面值，括号将是多余的。
+	// 译注：如果要把一个数字字面值当作一个 Number 对象来用，必须加圆括号
+	// 如 5.toString() 是错误的，必须是 (5).toString()
+}); 
+
+(128).toColorPart() 
+// -> '80'
+(10).toColorPart() 
+// -> '0a' 
+'#' + [128, 10, 16].invoke('toColorPart').join('')
+// -> '#800a10' </code></pre>
+		</div>
+		<div id="method-excerpts">
+			<h3>方法</h3>
+			<div id="method-abs" class="mexcerpt">
+				<h4><a href="number/abs.htm" >abs</a><div class="box">1.6.0</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">abs() -> Number</code></pre>
+					<p>返回当前 <code>Number</code> 对象的绝对值。</p>
+				</div>
+			</div>
+			<div id="method-ceil" class="mexcerpt">
+				<h4><a href="number/ceil.htm" >ceil</a><div class="box">1.6.0</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">ceil() -> Number</code></pre>
+					<p>返回大于等于当前 <code>Number</code> 对象的最小整数值。</p>
+				</div>
+			</div>
+			<div id="method-floor" class="mexcerpt">
+				<h4><a href="number/floor.htm" >floor</a><div class="box">1.6.0</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">floor() -> Number</code></pre>
+					<p>返回小于等于当前 <code>Number</code> 对象的最大整数值。</p>
+				</div>
+			</div>
+			<div id="method-round" class="mexcerpt">
+				<h4><a href="number/round.htm" >round</a><div class="box">1.6.0</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">round() -> Number</code></pre>
+					<p>返回当前 <code>Number</code> 对象四舍五入后的整数值。</p>
+				</div>
+			</div>
+			<div id="method-succ" class="mexcerpt">
+				<h4><a href="number/succ.htm" >succ</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">succ() -> Number</code></pre>
+					<p>
+						返回当前 <code>Number</code> 对象的下一个值，即当前值加一。这个方法主要用于实现与
+						<a href="objectRange.htm" >ObjectRange</a> 对象的兼容。
+					</p>
+				</div>
+			</div>
+			<div id="method-times" class="mexcerpt">
+				<h4><a href="number/times.htm" >times</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">times(iterator) -> Number</code></pre>
+					<p>采用 Ruby 的风格来封装一个标准的 [0...n] 循环</p>
+				</div>
+			</div>
+			<div id="method-tocolorpart" class="mexcerpt">
+				<h4><a href="number/toColorPart.htm" >toColorPart</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">toColorPart() -> String</code></pre>
+					<p>
+						将 <code>Number</code> 对象转换为具有两位数字的十六进制形式（因此，该方法假定 <code>Number</code>
+						在 [0...255] 的范围内）。这个方法对于构建 CSS 颜色值非常有用。
+					</p>
+				</div>
+			</div>
+			<div id="method-tojson" class="mexcerpt">
+				<h4><a href="number/tojson.htm" >toJSON</a><div class="box">1.5.1</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">toJSON() -> String</code></pre>
+					<p>返回一个 JSON 字符串。</p>
+				</div>
+			</div>
+			<div id="method-topaddedstring" class="mexcerpt">
+				<h4><a href="number/toPaddedString.htm" >toPaddedString</a><div class="box">1.5.1</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">toPaddedString(length[, radix]) -> String</code></pre>
+					<p>
+						将当前 <code>Number</code> 对象转换为字符串，如果转换后的字符串长度小于 <code>length</code>
+						指定的值，则用 <code>0</code> 在左边补足其余的位数。可选的参数 <code>radix</code>
+						用于指定转换时所使用的进制。<br />
+						<strong>译注：</strong><code>radix</code> 可指定任意进制，如 3 进制、7 进制等。默认为 10 进制。
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

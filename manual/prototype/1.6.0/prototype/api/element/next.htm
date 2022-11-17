@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Element.next - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>next</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">next(element[, cssRule][, index = 0]) -> HTMLElement | undefined</code></pre>
+			<p>
+				返回匹配 <code>cssRule</code> 指定规则的 <code>element</code> 的下一个兄弟节点（如果指定 <code>index</code>
+				参数，则返回第 <em>index</em> 个）。如果未指定 <code>cssRule</code> 参数，则默认匹配所有后继兄弟节点。
+				如果没有符合条件的节点，返回 <code>undefined</code>。
+			</p>
+		</div>
+		<div id="abody">
+			<p>
+				<code>Element.next</code> 方法是 Prototype 最基本的 DOM 遍历工具之一（其余的还有 <a href="up.htm" >Element.up</a>、
+				<a href="down.htm" >Element.down</a> 和 <a href="previous.htm" >Element.previous</a>，这些方法体现了
+				Prototype 良好的编程风格）。它允许基于索引和/或 CSS 规则对元素的<strong>后继兄弟</strong>节点进行精确选择。
+				（注意：如果两个元素有相同的父节点，则认为它们是兄弟节点，因此在样例中，<code>head</code> 和 <code>body</code>
+				是兄弟节点，因为它们的父节点都是 <code>html</code>。）
+			</p>
+			<p>因为它忽略了文本节点（仅返回元素），所以你不必担心空白节点。</p>
+			<p>还有一个额外的惊喜，所有返回的元素都已经过 <a href="extend.htm" >扩展</a>，支持链式的调用方式：</p>
+			<pre><code class="javascript">$(element).down(1).next('li', 2).hide(); </code></pre>
+			<p>遍历 DOM 从不曾像现在这么方便。</p>
+			<h3>参数</h3>
+			<p>
+				如果不传递任何参数，将返回 <code>element</code> 的第一个后继兄弟节点（这类似于调用 <code>nextSibling</code>，只不过
+				<code>Element.next</code> 返回一个已 <a href="extend.htm" >扩展</a> 的元素。
+			</p>
+			<p>
+				如果 <code>index</code> 参数被传递，将返回 <code>element</code> 的具有相应索引的后继兄弟节点。（这等同于从方法
+				<a href="nextSiblings.htm" >Element.nextSiblings</a> 返回的元素数组中选择相应的成员。）注意，第一个后继兄弟节点的索引为 0。
+			</p>
+			<p>
+				如果定义了 <code>cssRule</code> 参数，<code>Element.next</code> 将返回匹配的第一个后继兄弟节点。
+			</p>
+			<p>
+				如果 <code>cssRule</code> 和 <code>index</code> 都被定义，<code>Element.next</code> 将会获取所有匹配指定 CSS 规则的后继兄弟节点集合，
+				然后返回指定索引处的节点。
+			</p>
+			<p><strong>在上述的所有情形中，如果没有找到相应的后继兄弟节点，将返回 <code>undefined</code>。</strong></p>
+			<h3>样例</h3>
+			<pre><code class="html">&lt;ul id="fruits"&gt;
+	&lt;li id="apples"&gt;
+		&lt;h3 id="title"&gt;Apples&lt;/h3&gt;
+		&lt;ul id="list-of-apples"&gt;
+			&lt;li id="golden-delicious"&gt;Golden Delicious&lt;/li&gt;
+			&lt;li id="mutsu"&gt;Mutsu&lt;/li&gt;
+			&lt;li id="mcintosh" class="yummy"&gt;McIntosh&lt;/li&gt;
+			&lt;li id="ida-red" class="yummy"&gt;Ida Red&lt;/li&gt;
+		&lt;/ul&gt;
+		&lt;p id="saying"&gt;An	apple a day keeps the doctor away.&lt;/p&gt;
+	&lt;/li&gt;
+&lt;/ul&gt; </code></pre>
+			<pre><code class="javascript">$('list-of-apples').next();
+// 等同于：
+$('list-of-apples').next(0);
+// -> p#sayings 
+$('title').next(1); 
+// -> ul#list-of-apples 
+$('title').next('p');
+// -> p#sayings 
+$('golden-delicious').next('.yummy'); 
+// -> li#mcintosh 
+$('golden-delicious').next('.yummy', 1); 
+// -> li#ida-red 
+$('ida-red').next(); 
+// -> undefined </code></pre>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

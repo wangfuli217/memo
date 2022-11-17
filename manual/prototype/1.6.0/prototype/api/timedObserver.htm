@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>TimedObserver - Prototype JavaScript 框架</title>
+	<link href="../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>TimedObserver</h2>
+		<div id="method-list">
+			<ul>
+				<li><a href="timedObserver.htm#method-form.element.observer">Form.Element.Observer</a></li>
+				<li><a href="timedObserver.htm#method-form.observer">Form.Observer</a></li>
+			</ul>
+		</div>
+		<div id="abody">
+			<p>
+				<code>TimedObserver</code> 是一个抽象的观察器类，其具体类的实例用于对一些值进行定期检测，
+				若值发生变化，则触发一个回调。检测频率以秒为单位。
+			</p>
+			<p>
+				<code>TimedObserver</code> 对象使用 <code>getValue()</code> 实例方法对值进行检测。
+				在抽象类中并没有实现这个方法，你必须使用具体类如 <code>Form.Observer</code> 或
+				<code>Form.Element.Observer</code> 才能进行相应的检测。前者序列化一个表单，当结果发生变化时，
+				触发回调。而后者则是检测到指定的表单控件的值发生变化，就触发回调。
+			</p>
+			<p><code>TimedObserver</code> 的使用非常简单：实例化具体类并传递相应的参数，例如：</p>
+			<pre><code class="javascript">new Form.Element.Observer( 'myelement', 0.2, // 200 毫秒
+	function(el, value){ 
+		alert('The form control has changed value to: ' + value) 
+	}
+) </code></pre>
+			<p>
+				现在我们已实例化一个 <code>TimedObserver</code> 对象，它将每隔 0.2 秒检测一次表单控件的值，
+				如果值发生变化，则弹出提示框。虽然在上面的例子中，弹出用户自己输入的值没有什么实际用途，
+				但事实上我们可以做一些类似于更新 UI 的某个部分或是通知服务器用户已在填写表单数据（通过
+				Ajax）等一些应用。
+			</p>
+			<p>
+				调用回调函数时会传递两个参数：观察器实例被创建时指定的元素以及回调被触发后元素当前的值
+				（变化后的值）。
+			</p>
+		</div>
+		<div id="method-excerpts">
+			<h3>方法</h3>
+			<div id="method-form.element.observer" class="mexcerpt">
+				<h4><a href="timedObserver/form-element-observer.htm" >Form.Element.Observer</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">new Form.Element.Observer(element, frequency, callback)</code></pre>
+					<p>一个针对指定表单控件的定时观察器。</p>
+				</div>
+			</div>
+			<div id="method-form.observer" class="mexcerpt">
+				<h4><a href="timedObserver/form-observer.htm" >Form.Observer</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">new Form.Observer(element, frequency, callback)</code></pre>
+					<p>
+						一个定时观察器，当表单中任意一个控件的值发生变化时，将触发回调。<br />
+						<strong>译注：</strong>注意，若要使用表单观察器，则表单中<strong>需要检测的控件必须添加
+						<code>name</code> 属性</strong>。
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

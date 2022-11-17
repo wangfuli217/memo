@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml">
+<HEAD><TITLE>WebDAV模块（WebDAV）</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=GB2312">
+<STYLE type=text/css>PRE {
+	BACKGROUND-COLOR: #cccccc
+}
+.STYLE1 {
+	COLOR: #ff0000
+}
+</STYLE>
+
+<META content="MSHTML 6.00.6000.16809" name=GENERATOR></HEAD>
+<BODY>
+<H2>WebDAV模块（WebDAV）</H2><BR>
+
+<H3>·摘要</H3>
+<H4>这个模块增加一些HTTP和webdav扩展动作（PUT, DELETE, MKCOL, COPY和MOVE）。<BR>
+要使用这个模块必须在编译时指定下列编译参数：<BR>
+<PRE>./configure --with-http_dav_module</PRE>
+示例配置：<BR>
+<PRE>location / {
+  root     /data/www;
+  client_body_temp_path  /data/client_temp;
+ 
+  dav_methods  PUT DELETE MKCOL COPY MOVE;
+ 
+  create_full_put_path   on;
+  dav_access             group:rw  all:r;
+ 
+  limit_except  GET {
+    allow  192.168.1.0/32;
+    deny   all;
+  }
+}
+</PRE></H4>
+<H3>·指令</H3>
+<H3> dav_access </H3>
+<H4>语法：dav_access user:permissions [users:permissions] ... <BR>
+默认值：dav_access user:rw <BR>
+使用字段：http, server, location <BR>
+为文件和目录指定权限，例如：<BR>
+<PRE>dav_access user:rw group:rw all:r;</PRE>
+在指定了正确的group和all后，可以不指定user：
+<PRE>dav_access group:rw all:r;</PRE></H4>
+<H3> dav_methods </H3>
+<H4>语法：dav_methods [off|put|delete|mkcol|copy|move] ... <BR>
+默认值：dav_methods off <BR>
+使用字段：http, server, location <BR>
+启用的扩展动作，参数“off”将禁止这些扩展动作。<BR>
+PUT动作的目标文件必须在存储临时文件的目录中存在（location字段的client_body_temp_path指令指定）。<BR>
+当PUT创建一个文件后，将用Date头为其指定修改时间。</H4>
+<H3> create_full_put_path </H3>
+<H4>语法：create_full_put_path on|off <BR>
+默认值：create_full_put_path off <BR>
+使用字段：http, server, location <BR>
+默认情况下，PUT动作只能在存在的目录中创建文件，这个指令可以允许其创建必须的目录。</H4>
+<H3>·参考文档</H3>
+<H4><A href="http://sysoev.ru/nginx/docs/http/ngx_http_dav_module.html" >Original Documentation</A><BR>
+<A href="http://wiki.nginx.org/NginxHttpDavModule/" >Nginx Http Dav Module</A><BR></H4>
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://179401.cn/analytics/" : "http://179401.cn/analytics/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://shouce.jb51.net/179401.cn/analytics/piwik.php-idsite=1"  style="border:0" alt=""/></p></noscript>
+<!-- End Piwik Tag -->
+</BODY>
+</HTML>
+<H3><A href="GooglePerftools.html" >前进->Google Perftools模块（Google Perftools）</A></H3>

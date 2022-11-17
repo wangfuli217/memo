@@ -1,0 +1,214 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Hash - Prototype JavaScript 框架</title>
+	<link href="../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>Hash</h2>
+		<div id="method-list">
+			<ul>
+				<li><a href="hash.htm#method-clone">clone</a></li>
+				<li><a href="hash.htm#method-each">each</a></li>
+				<li><a href="hash.htm#method-get">get</a></li>
+				<li><a href="hash.htm#method-inspect">inspect</a></li>
+				<li><a href="hash.htm#method-keys">keys</a></li>
+				<li><a href="hash.htm#method-merge">merge</a></li>
+				<li><a href="hash.htm#method-remove">remove</a></li>
+				<li><a href="hash.htm#method-set">set</a></li>
+				<li><a href="hash.htm#method-tojson">toJSON</a></li>
+				<li><a href="hash.htm#method-toobject">toObject</a></li>
+				<li><a href="hash.htm#method-toquerystring">toQueryString</a></li>
+				<li><a href="hash.htm#method-unset">unset</a></li>
+				<li><a href="hash.htm#method-update">update</a></li>
+				<li><a href="hash.htm#method-values">values</a></li>
+			</ul>
+		</div>
+		<div id="abody">
+			<p>
+				Hash 可以看作是一个 <em>关联数组</em>，它对每一个值都绑定了一个唯一的键（值并不必须是唯一的），
+				然而，它不能保证迭代时元素的顺序始终一致。因为 JavaScript 程序语言的特性，每个对象实际上都是一个
+				hash，但是，本篇所述的 <code>Hash</code> 增加了许多方法，让你能够轻松地枚举键和值、迭代“键/值”对、
+				合并两个 hash、将 hash 编码成为一个查询字符串等等。
+			</p>
+			<h3>创建一个 hash</h3>
+			<p>
+				构造一个 <code>Hash</code> 实例有两种方法：第一种是使用 <code>new</code> 关键字实例化一个 JavaScript
+				对象（<code>new Hash(obj)</code>）。第二种是使用 <a href="utility/dollar-h.htm" >$H</a> 函数。传递一个
+				JavaScript 对象或是一个 Hash 给 <code>$H</code>，<code>$H</code> 函数会克隆它们，并不会对原始对象造成任何影响。
+			</p>
+			<p>对于上述两种构造方法，你也可以不传递任何参数而调用它们。它们将返回一个空的 hash。</p>
+			<h3>在 Prototype 1.6 中的后向兼容性变更</h3>
+			<p class="notice">
+				<strong>后向兼容性变更</strong> - 虽然新版本的 Hash 与之前的版本具有相同的目标，但是新版本的 Hash
+				不再兼容先前版本的 Hash 类型。
+			</p>
+			<p>
+				现在，不能再通过 <code>Hash</code> 实例的属性来访问“键/值”对，它们是私有的，这是为了防止在 <code>Hash</code>
+				实例上定义的属性和混入的方法引起键的冲突。这意味着你必须使用 <a href="hash/get.htm" >Hash#get(key)</a>、
+				<a href="hash/set.htm" >Hash#set(key, value)</a> 和 <a href="hash/unset.htm" >Hash#unset(key)</a>
+				实例方法来访问、设置或删除“键/值”对。例如：
+			</p>
+			<pre><code class="javascript">var myhash = new Hash(); 
+// 老的 API --> 新的 API 
+myhash.name = "Bob";	-->	myhash.set('name', 'Bob'); 
+myhash.name;		-->	myhash.get('name'); 
+delete myhash.name;	-->	myhash.unset('name');</code></pre>
+			<p>你也应该了解关于 Hash API 的其它变更：</p>
+			<ul>
+				<li>
+					<code>$H(object)</code> 快捷方法现在完全等同于 <code>new Hash(object)</code>。无论参数是一个对象还是另一个
+					<code>Hash</code>，它们都返回一个新的对象。					
+				</li>
+				<li><code>Hash#merge</code> 返回一个新的 <code>Hash</code>，而不再是对调用该方法的实例对象进行修改。</li>
+				<li><code>Hash#update</code> 是 <code>Hash#merge</code> 的一个破坏性版本，它会修改调用该方法的实例对象。</li>
+				<li><code>Hash#clone</code> 返回一个新的当前 Hash 对象的克隆实例。</li>
+				<li>
+					<code>Hash#toObject</code> 返回一个当前 Hash 内部对象的复本。<br />
+					<strong>译注：</strong>Prototype 使用了一个单独的内部对象来存储“键/值”对。
+				</li>
+				<li>
+					<code>Hash.toQueryString</code> 现在是 <code>Object.toQueryString</code> 的一个别名。（<code>Hash.toQueryString</code>
+					已不推荐使用，在将来的 Prototype 版本中，这个方法将会被移除。）
+				</li>
+				<li><code>Hash#remove</code> 已经被 <code>Hash#unset</code> 取代。</li>
+				<li><code>Hash.toJSON</code> 已经被 <code>Object.toJSON</code> 或 <code>Hash#toJSON</code> 实例方法取代。</li>
+			</ul>
+			<h3>注意，对于 Prototype 的早期版本（&lt; 1.6）</h3>
+			<p>传递一个 hash 到 <code>$H</code> 并不会克隆它。</p>
+			<p>
+				因为混入了 <a href="enumerable.htm" >Enumerable</a>，同时，它还有自己的方法，所以 <code>Hash</code>
+				不是所有的名称都可以用作“键”的。如果新增的键的名称与 <code>Hash</code> 的任何一个方法同名，则那个方法不能再被调用。
+				即使因为你不需要调用那个方法而侥幸获得成功，但仍然会有问题：
+			</p>
+			<pre><code class="javascript">var h = new Hash({ ... }); 
+h['each'] = 'my own stuff';
+h.map(); 
+// -> 错误，因为 'each' 不再是一个函数</code></pre>
+			<p>
+				在 <a href="enumerable.htm" >Enumerable</a> 中，最重要的方法是 <a href="enumerable/each.htm" >each</a>，
+				因为几乎每一个其它的方法都需要它——覆盖它将导致我们的 hash 实例成为一个废物。你也不能抱着侥幸心理使用
+				<code>_each</code>，因为它也是 <code>Enumerable</code> 内部的一个重要方法。
+			</p>
+		</div>
+		<div id="method-excerpts">
+			<h3>方法</h3>
+			<div id="method-clone" class="mexcerpt">
+				<h4><a href="hash/clone.htm" >clone</a><div class="box">1.6</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">clone() -> newHash</code></pre>
+					<p>返回一个 hash 的克隆。</p>
+				</div>
+			</div>
+			<div id="method-each" class="mexcerpt">
+				<h4><a href="hash/each.htm" >each</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">each(iterator) -> Hash</code></pre>
+					<p>迭代处理 hash 中的“键/值”对。</p>
+				</div>
+			</div>
+			<div id="method-get" class="mexcerpt">
+				<h4><a href="hash/get.htm" >get</a><div class="box">1.6</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">get(key) -> value</code></pre>
+					<p>返回 hash 指定键对应的值。</p>
+				</div>
+			</div>
+			<div id="method-inspect" class="mexcerpt">
+				<h4><a href="hash/inspect.htm" >inspect</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">inspect() -> String</code></pre>
+					<p>返回 hash 针对调试的字符串表现形式。</p>
+				</div>
+			</div>
+			<div id="method-keys" class="mexcerpt">
+				<h4><a href="hash/keys.htm" >keys</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">keys() -> [String...]</code></pre>
+					<p>返回一个数组，该数组包括 hash 中所有的键的名称。</p>
+				</div>
+			</div>
+			<div id="method-merge" class="mexcerpt">
+				<h4><a href="hash/merge.htm" >merge</a><div class="box">1.6 改进</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">merge(object) -> newHash</code></pre>
+					<p>
+						将 <code>object</code> 和当前的 hash 实例合并，返回合并后的结果。<em>在 v1.6.0 之前：</em>
+						这是一个破坏性的方法（对象的值将会被增加到当前 hash 中）。<em>从 v1.6.0 开始：</em>
+						这不再是一个破坏性的方法（在合并之前，hash 已被克隆）。
+					</p>
+				</div>
+			</div>
+			<div id="method-remove" class="mexcerpt">
+				<h4><a href="hash/remove.htm" >remove</a><div class="box">不推荐</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">remove(key) -> value
+remove(key1, key2...) -> Array</code></pre>
+					<p>从 hash 中移除指定的键，并返回被移除的键对应的值。<em>从 v1.6.0 开始，该方法不可用</em>。</p>
+				</div>
+			</div>
+			<div id="method-set" class="mexcerpt">
+				<h4><a href="hash/set.htm" >set</a><div class="box">1.6</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">set(key, value) -> value</code></pre>
+					<p>
+						将 hash 中 <code>key</code> 指定的键的值设置为 <code>value</code>，返回所设置的值（<code>value</code>）。
+						<strong>译注：</strong>如果不存在指定的键，则新增。
+					</p>
+				</div>
+			</div>
+			<div id="method-tojson" class="mexcerpt">
+				<h4><a href="hash/tojson.htm" >toJSON</a><div class="box">1.5.1</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">toJSON() -> String</code></pre>
+					<p>返回一个 JSON 字符串。</p>
+				</div>
+			</div>
+			<div id="method-toobject" class="mexcerpt">
+				<h4><a href="hash/toobject.htm" >toObject</a><div class="box">1.6</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">toObject() -> Object</code></pre>
+					<p>
+						克隆 hash 內部的 <code>Object</code> 并返回。<strong>译注：</strong><code>Hash</code>
+						在内部使用一个单独的 <code>Object</code> 保存“键/值”对。
+					</p>
+				</div>
+			</div>
+			<div id="method-toquerystring" class="mexcerpt">
+				<h4><a href="hash/toQueryString.htm" >toQueryString</a><div class="box">1.6 改进</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">toQueryString() -> String</code></pre>
+					<p>将一个 hash 转换为 URL 编码字符串形式。</p>
+				</div>
+			</div>
+			<div id="method-unset" class="mexcerpt">
+				<h4><a href="hash/unset.htm" >unset</a><div class="box">1.6</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">unset(key) -> value</code></pre>
+					<p>删除 hash 中的键，并返回键对应的值。</p>
+				</div>
+			</div>
+			<div id="method-update" class="mexcerpt">
+				<h4><a href="hash/update.htm" >update</a><div class="box">1.6</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">update(object) -> Hash</code></pre>
+					<p>
+						使用参数 <code>object</code> 包含的“键/值”对更新当前 hash。原始的 hash 对象将会被修改。
+					</p>
+				</div>
+			</div>
+			<div id="method-values" class="mexcerpt">
+				<h4><a href="hash/values.htm" >values</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">values() -> Array</code></pre>
+					<p>返回一个数组，该数组是 hash 中所有的值的集合。</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

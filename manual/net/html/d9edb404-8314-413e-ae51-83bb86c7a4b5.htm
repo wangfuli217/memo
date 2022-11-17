@@ -1,0 +1,375 @@
+﻿<html xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+    <META NAME="save" CONTENT="history" />
+    <title>如何：执行内部联接（C# 编程指南）</title>
+    <link rel="stylesheet" type="text/css" href="../styles/presentation.css" />
+    <link rel="stylesheet" type="text/css" href="ms-help://Hx/HxRuntime/HxLink.css" />
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/EventUtilities.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/SplitScreen.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/Dropdown.js"> </script>
+    <script type="text/javascript" src="../scripts/script_manifold.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/script_feedBack.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CheckboxMenu.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CommonUtilities.js"> </script>
+    <xml>
+      <MSHelp:TOCTitle Title="如何：执行内部联接" />
+      <MSHelp:Keyword Index="A" Term="d9edb404-8314-413e-ae51-83bb86c7a4b5" />
+      <MSHelp:Keyword Index="K" Term="内部联接 [C# 中的 LINQ]" />
+      <MSHelp:Keyword Index="K" Term="联接 [C#], 内部" />
+      <MSHelp:Keyword Index="K" Term="查询 [C# 中的 LINQ], 联接" />
+      <MSHelp:Keyword Index="K" Term="查询表达式 [C# 中的 LINQ], 联接" />
+      <MSHelp:Keyword Index="B" Term="LINQJoinOps" />
+      <MSHelp:Keyword Index="B" Term="M:System.Linq.Enumerable.GroupJoin``4(System.Collections.Generic.IEnumerable{``0}, System.Collections.Generic.IEnumerable{``1}, System.Func{``0, ``2}, System.Func{``1, ``2}, System.Func{``0, System.Collections.Generic.IEnumerable{``1}, ``3})" />
+      <MSHelp:Keyword Index="B" Term="M:System.Linq.Enumerable.GroupJoin``4(System.Collections.Generic.IEnumerable{``0}, System.Collections.Generic.IEnumerable{``1}, System.Func{``0, ``2}, System.Func{``1, ``2}, System.Func{``0, System.Collections.Generic.IEnumerable{``1}, ``3}, System.Collections.Gen" />
+      <MSHelp:Keyword Index="B" Term="M:System.Linq.Enumerable.Join``4(System.Collections.Generic.IEnumerable{``0}, System.Collections.Generic.IEnumerable{``1}, System.Func{``0, ``2}, System.Func{``1, ``2}, System.Func{``0, ``1, ``3})" />
+      <MSHelp:Keyword Index="B" Term="M:System.Linq.Enumerable.Join``4(System.Collections.Generic.IEnumerable{``0}, System.Collections.Generic.IEnumerable{``1}, System.Func{``0, ``2}, System.Func{``1, ``2}, System.Func{``0, ``1, ``3}, System.Collections.Generic.IEqualityComparer{``2})" />
+      <MSHelp:Attr Name="RevisionNumber" Value="20" />
+      <MSHelp:Attr Name="AssetID" Value="d9edb404-8314-413e-ae51-83bb86c7a4b5" />
+      <MSHelp:Attr Name="Abstract" Value="按照关系数据库的说法，“内部联接”产生一个结果集，对于该结果集内第一个集合中的每个元素，只要在第二个集合中存在一个匹配元素，该元素就会出现一次。如果第一个集合中的某个元素没有匹配元素，则它不会出现在结果集内。Overload:System.Linq.Enumerable.Join 方法（在 C# 中由 join 子句调用，在 Visual Basic 中由 Join 子句调用）实现内部联接。" />
+      <MSHelp:Attr Name="codelang" Value="CSharp" />
+      <MSHelp:Attr Name="CommunityContent" Value="1" />
+      <MSHelp:Attr Name="DevLang" Value="CSharp" />
+      <MSHelp:Attr Name="DevLangVers" Value="CSharp" />
+      <MSHelp:Attr Name="DocSet" Value="C#" />
+      <MSHelp:Attr Name="DocSet" Value="C# Lang" />
+      <MSHelp:Attr Name="DocSet" Value="ExpressLibVS" />
+      <MSHelp:Attr Name="ProgModel" Value="managed" />
+      <MSHelp:Attr Name="ShippedIn" Value="vs.90" />
+      <MSHelp:Attr Name="Technology" Value="ManagedCode" />
+      <MSHelp:Attr Name="TopicVersion" Value="09.00.08178.10000" />
+      <MSHelp:Attr Name="Catalog Container" Value="System_Default_Catalog" />
+      <MSHelp:Attr Name="Content Set Container" Value="System_Default_Content_Set" />
+      <MSHelp:Attr Name="TopicType" Value="kbHowTo" />
+      <MSHelp:Attr Name="Locale" Value="zh-chs" />
+    </xml>
+  </head>
+  <body>
+    <input type="hidden" id="userDataCache" class="userDataStyle" />
+    <input type="hidden" id="hiddenScrollOffset" />
+    <img id="collapseImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" title="“折叠”图像" />
+    <img id="expandImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" title="“展开”图像" />
+    <img id="collapseAllImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" />
+    <img id="expandAllImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" />
+    <img id="dropDownImage" style="display:none; height:0; width:0;" src="../icons/dropdown.gif" />
+    <img id="dropDownHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/dropdownHover.gif" />
+    <img id="copyImage" style="display:none; height:0; width:0;" src="../icons/copycode.gif" title="“复制”图像" />
+    <img id="copyHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/copycodeHighlight.gif" title="“复制悬停”图像" />
+    <div id="header">
+      <table id="topTable" cellspacing="0" cellpadding="0">
+        <tr>
+          <td>
+            <span onclick="ExpandCollapseAll(toggleAllImage)" style="cursor:default;" onkeypress="ExpandCollapseAll_CheckKey(toggleAllImage, event)" tabindex="0">
+              <img ID="toggleAllImage" class="toggleAll" src="../icons/collapse_all.gif" /> <label id="collapseAllLabel" for="toggleAllImage" style="display: none;">全部折叠</label><label id="expandAllLabel" for="toggleAllImage" style="display: none;">全部展开</label> </span>
+            <span>    </span>
+            <span id="devlangsDropdown" class="filter" tabindex="0">
+              <img id="devlangsDropdownImage" src="../icons/dropdown.gif" /> <label id="devlangsMenuAllLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：全部 </nobr></label><label id="devlangsMenuMultipleLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：多个 </nobr></label><label id="devlangsMenuVisualBasicLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual Basic </nobr></label><label id="devlangsMenuCSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：C# </nobr></label><label id="devlangsMenuManagedCPlusPlusLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual C++ </nobr></label><label id="devlangsMenuJSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：J# </nobr></label><label id="devlangsMenuJScriptLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：JScript </nobr></label></span>
+          </td>
+        </tr>
+      </table>
+      <div id="devlangsMenu">
+        <input id="VisualBasicCheckbox" type="checkbox" data="VisualBasic,vb,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="VisualBasicCheckbox">Visual Basic</label>
+        <br />
+        <input id="CSharpCheckbox" type="checkbox" data="CSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="CSharpCheckbox">C#</label>
+        <br />
+        <input id="ManagedCPlusPlusCheckbox" type="checkbox" data="ManagedCPlusPlus,cpp,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="ManagedCPlusPlusCheckbox">Visual C++</label>
+        <br />
+        <input id="JSharpCheckbox" type="checkbox" data="JSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JSharpCheckbox">J#</label>
+        <br />
+        <input id="JScriptCheckbox" type="checkbox" data="JScript,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JScriptCheckbox">JScript</label>
+        <br />
+      </div>
+      <table id="bottomTable" cellpadding="0" cellspacing="0">
+        <tr id="headerTableRow1">
+          <td align="left">
+            <span id="runningHeaderText">C# 编程指南</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow2">
+          <td align="left">
+            <span id="nsrTitle">如何：执行内部联接（C# 编程指南）</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow3">
+          <td align="left">
+            <a href="d9edb404-8314-413e-ae51-83bb86c7a4b5.htm#exampleToggle" onclick="OpenSection(exampleToggle)">示例</a>  <a href="d9edb404-8314-413e-ae51-83bb86c7a4b5.htm#seeAlsoToggle" onclick="OpenSection(seeAlsoToggle)">另请参见</a>  
+<script type="text/javascript">
+var fbBody = '%b8%d0%d0%bb%c4%fa%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%bf%aa%b7%a2%b0%e6%b1%e0%d0%b4%cd%c5%b6%d3%bd%ab%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%d3%c3%d3%da%b8%c4%bd%f8%ce%c4%b5%b5%a1%a3%ce%d2%c3%c7%d4%da%c9%f3%d4%c4%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%ca%b1%a3%ac%bf%c9%c4%dc%bb%e1%b8%f8%c4%fa%b7%a2%cb%cd%b5%e7%d7%d3%d3%ca%bc%fe%a3%ac%d2%d4%c7%eb%c4%fa%cc%e1%b9%a9%bd%f8%d2%bb%b2%bd%b5%c4%bd%e2%ca%cd%cb%b5%c3%f7%bb%f2%d5%df%be%cd%bd%e2%be%f6%b7%bd%b0%b8%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%ce%d2%c3%c7%b2%bb%bb%e1%bd%ab%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%d3%c3%d3%da%c8%ce%ba%ce%c6%e4%cb%fb%d3%c3%cd%be%a3%ac%b2%a2%c7%d2%d4%da%c9%f3%d4%c4%cd%ea%d6%ae%ba%f3%a3%ac%ce%d2%c3%c7%b2%bb%bb%e1%d4%d9%b1%a3%c1%f4%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%a1%a3%0d%0a%d3%d0%b9%d8%20Microsoft%20%d2%fe%cb%bd%d5%fe%b2%df%b5%c4%bd%f8%d2%bb%b2%bd%d0%c5%cf%a2%a3%ac%c7%eb%b2%ce%bc%fb%20http%3a%2f%2fprivacy.microsoft.com%2fzh-cn%2fdefault.aspx%a1%a3';
+var fbSubject = 'Customer%20Feedback';
+</script>
+  <span id="headfeedbackarea" class="feedbackhead"><a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);"> 发送反馈意见</a></span>
+</td>
+        </tr>
+      </table>
+      <table id="gradientTable">
+        <tr>
+          <td class="nsrBottom" background="../icons/gradient.gif" />
+        </tr>
+      </table>
+    </div>
+    <div id="mainSection">
+      <div id="mainBody">
+        <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
+        <font color="DarkGray"></font>
+        <p /> <p><font color="DarkGray">更新：2007 年 11 月</font></p><div class="introduction"><p>按照关系数据库的说法，“内部联接”产生一个结果集，对于该结果集内第一个集合中的每个元素，只要在第二个集合中存在一个匹配元素，该元素就会出现一次。如果第一个集合中的某个元素没有匹配元素，则它不会出现在结果集内。<span sdata="cer" target="Overload:System.Linq.Enumerable.Join"><mshelp:link keywords="Overload:System.Linq.Enumerable.Join" tabindex="0">Join</mshelp:link></span> 方法（在 C# 中由 <span sdata="langKeyword" value="join"><span class="keyword">join</span></span> 子句调用，在 Visual Basic 中由 <span sdata="langKeyword" value="Join"><span class="keyword">Join</span></span> 子句调用）实现内部联接。</p><p>本主题演示如何执行内部联接的四种变体：</p><ul><li><p>简单的内部联接，它基于一个简单的键将来自两个数据源的元素相互关联。</p></li><li><p>内部联接，它基于一个复合键将来自两个数据源的元素相互关联。使用复合键（即由多个值组成的键）可以基于多个属性将元素相互关联。</p></li><li><p>多联接，在其中连续的联接操作被相互拼接在一起。</p></li><li><p>通过使用分组联接实现的内部联接。</p></li></ul></div><h1 class="heading"><span onclick="ExpandCollapse(exampleToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(exampleToggle, event)" tabindex="0"><img id="exampleToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />示例</span></h1><div id="exampleSection" class="section" name="collapseableSection" style=""><h3 class="subHeading">简单键联接示例</h3><div class="subsection"><p>下面的示例创建了两个集合，其中分别包含以下两个用户定义类型的对象：<span class="code">Person</span> 和 <span class="code">Pet</span>。查询使用 <span sdata="langKeyword" value="join"><span class="keyword">join</span></span> 子句 (C#) 或 <span sdata="langKeyword" value="Join"><span class="keyword">Join</span></span> 子句 (Visual Basic) 将 <span class="code">Person</span> 对象与其 <span class="code">Owner</span> 为该 <span class="code">Person</span> 的 <span class="code">Pet</span> 对象进行匹配。C# 中的 <span sdata="langKeyword" value="select"><span class="keyword">select</span></span> 子句或 Visual Basic 中的 <span sdata="langKeyword" value="Select"><span class="keyword">Select</span></span> 子句可定义生成的对象的外观。在此示例中，生成的对象是由主人的名字和宠物的名字组成的匿名类型。</p></div><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Person
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> FirstName { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>; <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span>; }
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> LastName { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>; <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span>; }
+}
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Pet
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> Name { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>; <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span>; }
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> Person Owner { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>; <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span>; }
+}
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">/// &lt;summary&gt;</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">/// Simple inner join.</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">/// &lt;/summary&gt;</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> InnerJoinExample()
+{
+    Person magnus = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Person { FirstName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Magnus"</span>, LastName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Hedlund"</span> };
+    Person terry = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Person { FirstName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Terry"</span>, LastName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Adams"</span> };
+    Person charlotte = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Person { FirstName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Charlotte"</span>, LastName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Weiss"</span> };
+    Person arlene = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Person { FirstName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Arlene"</span>, LastName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Huff"</span> };
+    Person rui = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Person { FirstName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Rui"</span>, LastName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Raposo"</span> };
+
+    Pet barley = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Pet { Name = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Barley"</span>, Owner = terry };
+    Pet boots = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Pet { Name = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Boots"</span>, Owner = terry };
+    Pet whiskers = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Pet { Name = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Whiskers"</span>, Owner = charlotte };
+    Pet bluemoon = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Pet { Name = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Blue Moon"</span>, Owner = rui };
+    Pet daisy = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Pet { Name = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Daisy"</span>, Owner = magnus };
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Create two lists.</span>
+    List&lt;Person&gt; people = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> List&lt;Person&gt; { magnus, terry, charlotte, arlene, rui };
+    List&lt;Pet&gt; pets = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> List&lt;Pet&gt; { barley, boots, whiskers, bluemoon, daisy };
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Create a collection of person-pet pairs. Each element in the collection</span>
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// is an anonymous type containing both the person's name and their pet's name.</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> query = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">from</span> person <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> people
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">join</span> pet <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> pets <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">on</span> person <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">equals</span> pet.Owner
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">select</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> { OwnerName = person.FirstName, PetName = pet.Name };
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> ownerAndPet <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> query)
+    {
+        Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"\"</span>{0}\<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">" is owned by {1}"</span>, ownerAndPet.PetName, ownerAndPet.OwnerName);
+    }
+}
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// This code produces the following output:</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// </span><span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Daisy"</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">is</span> owned <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">by</span> Magnus
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// </span><span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Barley"</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">is</span> owned <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">by</span> Terry
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// </span><span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Boots"</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">is</span> owned <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">by</span> Terry
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// </span><span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Whiskers"</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">is</span> owned <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">by</span> Charlotte
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// </span><span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Blue Moon"</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">is</span> owned <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">by</span> Rui
+
+
+</pre></td></tr></table></span></div></div><p>请注意，其 <span class="code">LastName</span> 为“Huff”的 <span class="code">Person</span> 对象未出现在结果集内，因为不存在 <span class="code">Pet.Owner</span> 等于该 <span class="code">Person</span> 的 <span class="code">Pet</span> 对象。</p><h3 class="subHeading">复合键联接示例</h3><div class="subsection"><p>与仅仅基于一个属性将元素相互关联不同，使用复合键可基于多个属性来比较元素。为此，需要为每个集合指定键选择器函数，以便返回一个由要比较的属性组成的匿名类型。如果给属性加上了标签，则这些属性必须在每个键的匿名类型中都有相同的标签，而且还必须以相同顺序出现。</p><p>下面的示例使用一个 <span class="code">Employee</span> 对象列表和一个 <span class="code">Student</span> 对象列表来确定哪些雇员同时还是学生。这两个类型都具有 <span sdata="cer" target="T:System.String"><mshelp:link keywords="T:System.String" tabindex="0">String</mshelp:link></span> 类型的 <span class="code">FirstName</span> 和 <span class="code">LastName</span> 属性。能够从每个列表的元素创建联接键的函数可返回一个由每个元素的 <span class="code">FirstName</span> 和 <span class="code">LastName</span> 属性组成的匿名类型。联接操作比较这些复合键是否相等，并且从每个列表中返回名字和姓氏都匹配的对象对。</p></div><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Employee
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> FirstName { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>; <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span>; }
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> LastName { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>; <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span>; }
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> EmployeeID { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>; <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span>; }
+}
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Student
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> FirstName { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>; <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span>; }
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> LastName { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>; <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span>; }
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> StudentID { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>; <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span>; }
+}
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">/// &lt;summary&gt;</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">/// Performs a join operation using a composite key.</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">/// &lt;/summary&gt;</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> CompositeKeyJoinExample()
+{
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Create a list of employees.</span>
+    List&lt;Employee&gt; employees = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> List&lt;Employee&gt; {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Employee { FirstName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Terry"</span>, LastName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Adams"</span>, EmployeeID = 522459 },
+         <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Employee { FirstName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Charlotte"</span>, LastName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Weiss"</span>, EmployeeID = 204467 },
+         <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Employee { FirstName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Magnus"</span>, LastName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Hedland"</span>, EmployeeID = 866200 },
+         <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Employee { FirstName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Vernette"</span>, LastName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Price"</span>, EmployeeID = 437139 } };
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Create a list of students.</span>
+    List&lt;Student&gt; students = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> List&lt;Student&gt; {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Student { FirstName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Vernette"</span>, LastName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Price"</span>, StudentID = 9562 },
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Student { FirstName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Terry"</span>, LastName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Earls"</span>, StudentID = 9870 },
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Student { FirstName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Terry"</span>, LastName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Adams"</span>, StudentID = 9913 } };
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Join the two data sources based on a composite key consisting of first and last name,</span>
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// to determine which employees are also students.</span>
+    IEnumerable&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span>&gt; query = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">from</span> employee <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> employees
+                                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">join</span> student <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> students
+                                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">on</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> { employee.FirstName, employee.LastName }
+                                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">equals</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> { student.FirstName, student.LastName }
+                                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">select</span> employee.FirstName + <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">" "</span> + employee.LastName;
+
+    Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"The following people are both employees and students:"</span>);
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> name <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> query)
+        Console.WriteLine(name);
+}
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// This code produces the following output:</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// The following people are both employees and students:</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Terry Adams</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Vernette Price</span>
+
+
+</pre></td></tr></table></span></div></div><h3 class="subHeading">多联接示例</h3><div class="subsection"><p>可以将任意数量的联接操作拼接在一起以执行多联接。每个 <span sdata="langKeyword" value="join"><span class="keyword">join</span></span> 子句 (C#) 或 <span sdata="langKeyword" value="Join"><span class="keyword">Join</span></span> 子句 (Visual Basic) 都可以将指定的数据源与前一个联接的结果相互关联。</p><p>下面的示例创建了三个集合：一个 <span class="code">Person</span> 对象列表、一个 <span class="code">Cat</span> 对象列表以及一个 <span class="code">Dog</span> 对象列表。</p><p>第一个 <span sdata="langKeyword" value="join"><span class="keyword">join</span></span> 子句 (C#) 或 <span sdata="langKeyword" value="Join"><span class="keyword">Join</span></span> 子句 (Visual Basic) 基于与 <span class="code">Cat.Owner</span> 匹配的<span class="code">Person</span> 对象将主人与猫进行匹配，并返回包含 <span class="code">Person</span> 对象和 <span class="code">Cat.Name</span> 的匿名类型的序列。</p><p>第二个 <span sdata="langKeyword" value="join"><span class="keyword">join</span></span> 子句 (C#) 或 <span sdata="langKeyword" value="Join"><span class="keyword">Join</span></span> 子句 (Visual Basic) 基于一个复合键将第一个联接返回的匿名类型与所提供的犬列表中的 <span class="code">Dog</span> 对象相互关联，而该复合键由 <span class="code">Person</span> 类型的 <span class="code">Owner</span> 属性和动物名字的首字母组成。该子句返回一个匿名类型序列，这些类型包含每个匹配对中的 <span class="code">Cat.Name</span> 和 <span class="code">Dog.Name</span> 属性。由于这是一个内部联接，因此仅返回第一个数据源中那些在第二个数据源中具有匹配对象的对象。</p></div><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Person
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> FirstName { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>; <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span>; }
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> LastName { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>; <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span>; }
+}
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Pet
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> Name { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>; <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span>; }
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> Person Owner { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>; <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span>; }
+}
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Cat : Pet
+{ }
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Dog : Pet
+{ }
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> MultipleJoinExample()
+{
+    Person magnus = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Person { FirstName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Magnus"</span>, LastName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Hedlund"</span> };
+    Person terry = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Person { FirstName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Terry"</span>, LastName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Adams"</span> };
+    Person charlotte = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Person { FirstName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Charlotte"</span>, LastName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Weiss"</span> };
+    Person arlene = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Person { FirstName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Arlene"</span>, LastName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Huff"</span> };
+    Person rui = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Person { FirstName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Rui"</span>, LastName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Raposo"</span> };
+    Person phyllis = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Person { FirstName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Phyllis"</span>, LastName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Harris"</span> };
+
+    Cat barley = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Cat { Name = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Barley"</span>, Owner = terry };
+    Cat boots = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Cat { Name = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Boots"</span>, Owner = terry };
+    Cat whiskers = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Cat { Name = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Whiskers"</span>, Owner = charlotte };
+    Cat bluemoon = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Cat { Name = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Blue Moon"</span>, Owner = rui };
+    Cat daisy = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Cat { Name = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Daisy"</span>, Owner = magnus };
+
+    Dog fourwheeldrive = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Dog { Name = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Four Wheel Drive"</span>, Owner = phyllis };
+    Dog duke = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Dog { Name = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Duke"</span>, Owner = magnus };
+    Dog denim = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Dog { Name = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Denim"</span>, Owner = terry };
+    Dog wiley = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Dog { Name = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Wiley"</span>, Owner = charlotte };
+    Dog snoopy = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Dog { Name = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Snoopy"</span>, Owner = rui };
+    Dog snickers = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Dog { Name = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Snickers"</span>, Owner = arlene };
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Create three lists.</span>
+    List&lt;Person&gt; people =
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> List&lt;Person&gt; { magnus, terry, charlotte, arlene, rui, phyllis };
+    List&lt;Cat&gt; cats =
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> List&lt;Cat&gt; { barley, boots, whiskers, bluemoon, daisy };
+    List&lt;Dog&gt; dogs =
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> List&lt;Dog&gt; { fourwheeldrive, duke, denim, wiley, snoopy, snickers };
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// The first join matches Person and Cat.Owner from the list of people and</span>
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// cats, based on a common Person. The second join matches dogs whose names start</span>
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// with the same letter as the cats that have the same owner.</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> query = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">from</span> person <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> people
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">join</span> cat <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> cats <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">on</span> person <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">equals</span> cat.Owner
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">join</span> dog <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> dogs <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">on</span> 
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> { Owner = person, Letter = cat.Name.Substring(0, 1) }
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">equals</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> { dog.Owner, Letter = dog.Name.Substring(0, 1) }
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">select</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> { CatName = cat.Name, DogName = dog.Name };
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> obj <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> query)
+    {
+        Console.WriteLine(
+            <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"The cat \"</span>{0}\<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">" shares a house, and the first letter of their name, with \"</span>{1}\<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"."</span>, 
+            obj.CatName, obj.DogName);
+    }
+}
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// This code produces the following output:</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// The cat </span><span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Daisy"</span> shares a house, and the first letter of their name, with <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Duke"</span>.
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// The cat </span><span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Whiskers"</span> shares a house, and the first letter of their name, with <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Wiley"</span>.
+
+
+</pre></td></tr></table></span></div></div><h3 class="subHeading">使用分组联接实现内部联接的示例</h3><div class="subsection"><p>下面的示例演示如何使用分组联接来实现内部联接。</p><p>在 <span class="code">query1</span> 中，<span class="code">Person</span> 对象列表基于与 <span class="code">Pet.Owner</span> 属性匹配的 <span class="code">Person</span> 分组联接到 <span class="code">Pet</span> 对象列表。分组联接创建了一个中间组集合，该集合中的每个组都由一个 <span class="code">Person</span> 对象和匹配的 <span class="code">Pet</span> 对象序列组成。</p><p>通过向查询中添加另一个 <span sdata="langKeyword" value="from"><span class="keyword">from</span></span> 子句（在 Visual Basic 中为 <span sdata="langKeyword" value="From"><span class="keyword">From</span></span> 子句），此序列的序列被组合（或展平）为一个较长的序列。最终序列的元素类型由 <span sdata="langKeyword" value="select"><span class="keyword">select</span></span> 子句（在 Visual Basic 中为 <span sdata="langKeyword" value="Select"><span class="keyword">Select</span></span> 子句）指定。在此示例中，该类型是由每个匹配对的 <span class="code">Person.FirstName</span> 和 <span class="code">Pet.Name</span> 属性组成的匿名类型。</p><p><span class="code">query1</span> 的结果等效于使用不带 <span sdata="langKeyword" value="into"><span class="keyword">into</span></span> 子句的 <span sdata="langKeyword" value="join"><span class="keyword">join</span></span> 子句 (C#) 或使用 <span sdata="langKeyword" value="Join"><span class="keyword">Join</span></span> 子句 (Visual Basic) 执行内部联接所获得的结果集。<span class="code">query2</span> 变量演示了这一等效查询。</p></div><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Person
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> FirstName { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>; <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span>; }
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> LastName { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>; <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span>; }
+}
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Pet
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> Name { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>; <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span>; }
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> Person Owner { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>; <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span>; }
+}
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">/// &lt;summary&gt;</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">/// Performs an inner join by using GroupJoin().</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">/// &lt;/summary&gt;</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> InnerGroupJoinExample()
+{
+    Person magnus = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Person { FirstName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Magnus"</span>, LastName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Hedlund"</span> };
+    Person terry = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Person { FirstName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Terry"</span>, LastName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Adams"</span> };
+    Person charlotte = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Person { FirstName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Charlotte"</span>, LastName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Weiss"</span> };
+    Person arlene = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Person { FirstName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Arlene"</span>, LastName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Huff"</span> };
+
+    Pet barley = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Pet { Name = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Barley"</span>, Owner = terry };
+    Pet boots = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Pet { Name = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Boots"</span>, Owner = terry };
+    Pet whiskers = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Pet { Name = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Whiskers"</span>, Owner = charlotte };
+    Pet bluemoon = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Pet { Name = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Blue Moon"</span>, Owner = terry };
+    Pet daisy = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Pet { Name = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Daisy"</span>, Owner = magnus };
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Create two lists.</span>
+    List&lt;Person&gt; people = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> List&lt;Person&gt; { magnus, terry, charlotte, arlene };
+    List&lt;Pet&gt; pets = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> List&lt;Pet&gt; { barley, boots, whiskers, bluemoon, daisy };
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> query1 = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">from</span> person <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> people
+                 <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">join</span> pet <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> pets <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">on</span> person <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">equals</span> pet.Owner <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">into</span> gj
+                 <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">from</span> subpet <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> gj
+                 <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">select</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> { OwnerName = person.FirstName, PetName = subpet.Name };
+
+    Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Inner join using GroupJoin():"</span>);
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> v <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> query1)
+    {
+        Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"{0} - {1}"</span>, v.OwnerName, v.PetName);
+    }
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> query2 = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">from</span> person <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> people
+                 <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">join</span> pet <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> pets <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">on</span> person <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">equals</span> pet.Owner
+                 <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">select</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> { OwnerName = person.FirstName, PetName = pet.Name };
+
+    Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"\nThe equivalent operation using Join():"</span>);
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> v <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> query2)
+        Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"{0} - {1}"</span>, v.OwnerName, v.PetName);
+}
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// This code produces the following output:</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Inner join using GroupJoin():</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Magnus - Daisy</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Terry - Barley</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Terry - Boots</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Terry - Blue Moon</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Charlotte - Whiskers</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// The equivalent operation using Join():</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Magnus - Daisy</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Terry - Barley</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Terry - Boots</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Terry - Blue Moon</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Charlotte - Whiskers</span>
+
+
+</pre></td></tr></table></span></div></div></div><h1 class="heading"><span onclick="ExpandCollapse(buildInstructionsToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(buildInstructionsToggle, event)" tabindex="0"><img id="buildInstructionsToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />编译代码</span></h1><div id="buildInstructionsSection" class="section" name="collapseableSection" style=""><ul><li><p>在 Visual Studio 中创建一个新的控制台应用程序项目。</p></li><li><p>添加对 System.Core.dll 的引用（如果尚未引用它的话）。</p></li><li><p>包含 <span sdata="cer" target="N:System.Linq"><mshelp:link keywords="N:System.Linq" tabindex="0">System.Linq</mshelp:link></span> 命名空间。</p></li><li><p>从示例中复制代码，并将其粘贴到 program.cs 文件中的 <span class="code">Main</span> 方法之下。向 <span class="code">Main</span> 方法添加一行代码，以调用粘入的方法。</p></li><li><p>运行该程序。</p></li></ul></div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />请参见</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><h4 class="subHeading">任务</h4><div class="seeAlsoStyle"><span sdata="link"><a href="31b654c0-77ac-43fa-be11-aa38e14cae2d.htm">如何：执行分组联接（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="18e32be8-93db-4d30-8dea-ec6596e18f43.htm">如何：执行左外部联接（C# 编程指南）</a></span></div><h4 class="subHeading">概念</h4><div class="seeAlsoStyle"><span sdata="link"><mshelp:link keywords="442d176d-028c-4beb-8d22-407d4ef89107" tabindex="0">联接运算</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="link"><mshelp:link keywords="7b87532c-4b3e-4398-8503-6ea9d67574a4" tabindex="0">匿名类型</mshelp:link></span></div><h4 class="subHeading">参考</h4><div class="seeAlsoStyle"><span sdata="cer" target="Overload:System.Linq.Enumerable.Join"><mshelp:link keywords="Overload:System.Linq.Enumerable.Join" tabindex="0">Join</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="cer" target="Overload:System.Linq.Enumerable.GroupJoin"><mshelp:link keywords="Overload:System.Linq.Enumerable.GroupJoin" tabindex="0">GroupJoin</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="59c9d7a4-3b0e-475e-b620-0ab86c088e9b.htm">匿名类型（C# 编程指南）</a></span></div></div></div>
+      <div id="footer">
+        <div class="footerLine">
+          <img width="100%" height="3px" src="../icons/footer.gif" title="“页脚”图像" />
+        </div>
+<span id="feedbackarea">将有关本主题的<a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);">反馈意见</a>发送给 Microsoft。</span>
+</div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,782 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>简单的旧文档 &lt; Perl &lt; PostgreSQL 中文网 中国</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="http://www.pgsqldb.org/twiki/bin/view/Perl/WebRss?skin=rss&amp;contenttype=text/xml" />
+
+<style type="text/css" media="all">
+	/* Default TWiki layout */
+	@import url("http://shouce.jb51.net/perl/layout.css"/*tpa=http://www.jb51.net/manual/perl/layout.css*/);
+	/* Default TWiki style */
+	@import url("http://shouce.jb51.net/perl/style.css"/*tpa=http://www.jb51.net/manual/perl/style.css*/);
+	/* Custom overriding layout per web or per topic */
+	
+	/* Custom overriding style per web or per topic */
+	
+	.twikiToc li {
+		list-style-image:url("http://shouce.jb51.net/perl/i_arrow_down.gif"/*tpa=http://www.jb51.net/manual/perl/i_arrow_down.gif*/);
+	}	        
+	.twikiWebIndicator {
+		background-color:#0066FF;
+	}
+</style>
+<style type="text/css" media="all"></style>
+<script type="text/javascript">
+<!-- HIDE
+	function initPage() { }
+-->
+</script>
+</head>
+<body class="twikiViewPage" onload="initPage()"><a name="PageTop"></a>
+</div>
+
+<p />
+</div>
+</form></div></div></div>
+<a name="Content"> </a>
+<div class="twikiTopic" style="padding:0 1.5em"><br>
+<h1><a name=""> </a><a name="_"> </a> 第二十六章，简单旧文档 </h1>
+<div class="twikiToc">
+<ul>
+<li> <a href="PerlCulture_PlainOldDoc.html#">第二十六章，简单旧文档</a>
+<ul>
+<li> <a href="PerlCulture_PlainOldDoc.html#26_1_pod_in_a_NutShell">26.1  pod in a NutShell</a>
+<ul>
+<li> <a href="PerlCulture_PlainOldDoc.html#26_1_1">26.1.1. 字面段落</a>
+</li>
+<li> <a href="PerlCulture_PlainOldDoc.html#26_1_2_pod">26.1.2.  pod 指示符</a>
+</li>
+<li> <a href="PerlCulture_PlainOldDoc.html#26_1_3_Pod">26.1.3 Pod 序列</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li> <a href="PerlCulture_PlainOldDoc.html#usr_bin_perl_l00n">! /usr/bin/perl -l00n</a>
+</li>
+<li> <a href="PerlCulture_PlainOldDoc.html#olpod_outline_pod">olpod - outline pod</a>
+</li>
+<li> <a href="PerlCulture_PlainOldDoc.html#usr_bin_perl_00">! /usr/bin/perl -00 </a>
+</li>
+<li> <a href="PerlCulture_PlainOldDoc.html#catpod_cat_out_just_the_pods">catpod - cat out just the pods</a>
+</li>
+<li> <a href="PerlCulture_PlainOldDoc.html#usr_bin_perl_n00">! /usr/bin/perl -n00</a>
+</li>
+<li> <a href="PerlCulture_PlainOldDoc.html#podlit_print_the_indented_litera">podlit - print the indented literal blocks from pod input</a>
+</li>
+<li> <a href="PerlCulture_PlainOldDoc.html#usr_bin_perl">! /usr/bin/perl</a>
+</li>
+<li> <a href="PerlCulture_PlainOldDoc.html#catpod2_class_and_program">catpod2, class and program</a>
+</li>
+</ul>
+</div>
+<p />
+设计 Perl 的一个原则是简单的事情应该简单，而难的事情应该有可能简单。文档应该简单。
+<p />
+Perl 支持一种叫 pod 的简单文本标记格式，它可以独立存在或者自由地与你的源代码混合
+在一起形成嵌入的文档。Pod 可以转换成许多其他格式，用于查阅或者打印，或者你也可以
+直接阅读它，因为它很简单。
+<p />
+Pod 不象 XML，LatEx，troff(1) 那样富于表现力，甚至连 HTML 都不如。这么做是
+故意的：我们为了简单和方便牺牲了表现力。有些文本标记语言让作者写的标记比文本还多，
+这样就把写作变得比原来还要复杂，而阅读则几乎是不可能的。一个好的格式应该象好的电影
+乐曲那样，隐藏在后台而不会让观众的注意力分散。
+<p />
+让程序员写文档几乎和让他们打领带一样困难。Pod 的设计让写文档非常容易，甚至一个程序
+员都可以写——并且愿意写。我们可没有说 pod 胜任写一本书——尽管它足够写我们这本。
+<p />
+<h2><a name="26_1_pod_in_a_NutShell"> </a> 26.1  pod in a <span class="twikiNewLink" style='background : #FFFFCE;'><font color="#0000FF">NutShell</font><a href="http://www.jb51.net/twiki/bin/edit/Perl/NutShell?topicparent=Perl.PerlCulture_PlainOldDoc" ><sup>?</sup></a></span> </h2>
+<p />
+大多数文档格式要求整个文档都是用该格式写的。Pod 更宽容：你可以在任何文件里嵌入 pod，
+然后依靠 pod 翻译器抽取 pod。有些文件包含 100% 纯 pod。但是其他文件，尤其是 Perl 
+程序和模块，可能只包含若干团 pod，散布在作者认为合适的地方。当 Perl 分析该文件准备
+执行的时候，它只是简单地忽略 pod 文本。
+<p />
+如果某一句话是用一个等于号和一个标识符开的头（象下面这样），而不是普通的一句程序，
+那么 Perl 的词法分析器就会知道忽略这一句话：
+<p />
+<pre>
+   =head1 Here There Be Pods!
+</pre>
+<p />
+从这段文本开始，一直到一个以 =cut 开头的行为止，中间的所有文本（包括两端的行）都会
+被忽略。这样你就可以自由地把你的程序和文档混合在一起，比如：
+<p />
+<pre>
+    =item snazzle
+
+    The snazzle() function will behave in the most spectacular
+    form that you can possibly imagine, not even excepting
+    cybernetic pyrotechnics.
+
+    =cut
+
+    sub snazzle {
+        my $arg = shift;
+        ....
+    }
+
+    =item razzle
+
+    The razzle() function enables autodidactic epistemology generation.
+
+    =cut
+
+    sub razzle {
+        print "Epistemology generation unimplemented on this platform.\n";
+    }
+</pre>
+<p />
+如果需要更多的例子，请参阅标准的或者 CPAN Perl 模块。除了极个别的以外，它们很可能都
+随身带着 pod，
+<p />
+因为 Perl 词法器可以识别 pod 并且会把它抛弃，所以你还可以使用合适的 pod 指示符快速
+地注释掉大块的程序代码。使用 =for pod 块注释掉一个段落，或者一个 =begin/=end 对
+注释一个段落。我们稍后将介绍这些 pod 指示符。不过，请记住，在两种情况下，你仍然都是
+在 pod 模式下的，因此你需要 =cut 回到编译器。
+<p />
+<pre>
+print "got 1\n";
+
+=for commentary
+This paragraph alone is ignored by anyone except the
+mythical "commentary" translator.  When it's over, you're
+still in pod mode, not program mode.
+print "got 2\n";
+
+
+=cut
+
+# ok, real program again
+print "got 3\n";
+
+=begin comment 
+
+print "got 4\n";
+
+all of this stuff
+here will be ignored
+by everyone
+
+print "got 5\n";
+
+=end comment 
+
+=cut
+
+print "got 6\n";
+</pre>
+<p />
+这段代码将单引出得到 1，3，和 6。请注意这些 pod 指示符并不是哪里都能去。你必须把
+它们放到分析器预计会看到一行新语句的地方，而不是在一个表达式的中间或者其他任意的
+地方。
+<p />
+从 Perl 的观点来看，所有 pod 标记都被抛弃，但是从 pod 翻译器的观点来看，抛弃的是
+代码。pod 翻译器把余下的文本当作一系列用空白行分隔的段落。所有现代的 pod 翻译器都
+用同样的方法分析 pod：使用标准的 Pod::Parser 模块。它们的区别只是输出，因为每种
+翻译器都专门生成一种输出格式。
+<p />
+目前有三种段落：字面段落，命令段落，和散文段落。
+<p />
+<h3><a name="26_1_1"> </a><a name="26_1_1_"> </a> 26.1.1. 字面段落 </h3>
+<p />
+字面段落用于那些你想表现为文本的文字，比如一小段代码。字面段落必须是缩进的，也就是
+说，它必须用空格或者水平制表符字符开头。翻译器会准确地重现它的格式——通常是用一种
+固定宽度的字体，并且假定水平制表符为八个空格宽。字面段落里面没有什么特殊的格式化
+逃逸，所以，你不能使用斜体或者宽体的字体。&lt; 字符的意思就是文本 &lt;，不是别的什么
+东西。
+<p />
+<h3><a name="26_1_2_pod"> </a><a name="26_1_2_pod_"> </a> 26.1.2.  pod 指示符 </h3>
+<p />
+所有 pod 指示符都是以 = 开头后面跟着一个标识符。它后面可以跟指示符愿意的任意数量的
+任意文本。唯一的语法要求就是这些文本必须都在同一个段落里。目前翻译器可以识别的
+指示符是（有时候我们把它们称做 pod 命令）：
+<p />
+<ul>
+<li> <strong>=head1</strong>
+</li>
+<li> <strong>=head2</strong>
+</li>
+<li> <strong>...</strong>
+<ul>
+<li> =head1，=head2，...指示符生成指定的标题。余下的文本会被当作标题描述看待。  这些指示符类似 man(7) 里的 .SH 和 .SS 段子段标题，或者 HTML 里的 <H1>...</H1> 和 <H2>...<H2> 标记。实际上，这些标记就是翻译器转换出来的指示符。
+</li>
+</ul>
+</li>
+</ul>
+<p />
+<ul>
+<li> <strong>=cut</strong>
+<ul>
+<li> =cut 指示符标识一片 pod 的结尾。（在文档的后面可能还有更多 pod，但是如果有的话，那么它们会由另外的 pod 指示符引入。）
+</li>
+</ul>
+</li>
+</ul>
+<p />
+<ul>
+<li> <strong>=pod</strong>
+<ul>
+<li> =pod 指示符什么也不干，只是告诉编译器停止分析代码，直到下一个 =cut。如果你混合了大量的代码和 pod，那么用它向文档中增加一段会比较方便。
+</li>
+</ul>
+</li>
+</ul>
+<p />
+<ul>
+<li> <strong>=over NUMBER</strong>
+</li>
+<li> <strong>=item SYMBOL</strong>
+</li>
+<li> <strong>=back</strong>
+<ul>
+<li> =over 打开一个段落，这个段落是专门为使用 =item 指示符生成的列表使用的。在你的列表的最后，你要用 =back 结束它。如果提供了 NUMBER，那么就是暗示格式化输出器缩进多少空格。有些格式化输出器特性不够丰富，不能支持这个参数，而其他的
+   特性又丰富了，目前看来，如果我们使用比例字体的话，那么我们很难仅仅依靠空格来对齐各行。（不过，四个空格通常也足够存放数字和圆点了。）这个列表的实际类型是用独立的项的 SYMBOL 来标识的。下面就是一个圆点列表：
+</li>
+</ul>
+</li>
+</ul>
+<p />
+<pre>
+      =over 4
+      
+      =item *
+   
+      Mithril armor
+
+      =item *
+
+      Elven cloak
+
+      =back
+
+   和一个编号了的列表：
+
+      =over 4
+      
+      =item 1.
+
+      First, speck "friend".
+
+      =item 2.
+
+      Second, enter Moria.
+
+      =back
+
+   和一个命名的列表：
+
+      =over 4
+
+    =item armor()
+
+    Description of the armor() function
+
+    =item chant()
+
+    Description of the chant() function
+
+    =back
+</pre>
+<p />
+   你可以把相同的或不同的列表嵌套在一起，但是要遵守一些基本的规则：不要在 
+   =over/=back 块之外使用 =item；在 =over/=back 块里至少要使用一个 =item；
+   并且可能最重要的是，在一个列表里，保持项（item）类型的一致性。要么就是给每个
+   项都用 =item *，生成一个圆点列表，要么用 =item 1.，=item 2.，等等生成一个
+   序号列表，或者使用 =item foo， =item bar，等等生成一个命名列表。如果你以
+   句点或者序号开头，那么要一直保持，因为格式化输出器是可以使用第一个   =item 
+   类型来判断如何格式化该列表的。
+<p />
+   和 pod 其他方面一样，结果的质量取决于翻译器。有些翻译器注意跟在 =item 
+   后面的特殊的数字（或者字母，或者罗马数字），而其他的却不注意。比如，目前的
+   pod2html 翻译器就相当懒惰：它把序号指示符完全剥离，根本不从这些指示符中推断
+   你使用的是什么序号，然后把整个列表都包装在 <OL> 和 <OL> 标记中，这样，
+   浏览器就会把它们当作一个排了序的列表显示在 HTML 里。这可不是一个分析出来的
+   特性；我们将来可能要把这个修补一下。
+<p />
+<ul>
+<li> <strong>=for TRANSLATOR</strong>
+</li>
+<li> <strong>=begin TRANSLATOR</strong>
+</li>
+<li> <strong>=end TRANSLATOR</strong>
+<ul>
+<li> =for，=begin，和 =end 可以让你包含特殊的段落，这些段落只能由特殊的格式化输出器处理，而在其他格式化输出器里则可以毫发未损的通过。那些在 TRANSLATOR 里的识别这些标识符或者它们的别名的格式化输出器才会注意它们；任何其他的格式化输出器都完全不理会这些标识符。=for 标识符说明只有本段落余下的部分才是专门由特定的翻译器翻译的。
+</li>
+<li> =for html
+</li>
+</ul>
+</li>
+</ul>
+<pre>
+      <p> This is <flash>raw</flash><small>HTML</small>paragraph</p>
+</pre>
+   成对的 =begin 和 =end 标识符的功能类似 =for，不过它们不只是接受一个段落，
+   而是把在 =begin 和 =end 之间的所有文本交给特定的翻译器处理。一些例子：
+<p />
+<pre>
+=begin html
+
+<br>Figure 1.<IMG SRC="figure1.png" ><br>
+
+=end html
+
+=begin text
+
+  ---------------
+  |  foo        |
+  |        bar  |
+  ---------------
+
+^^^^ Figure 1. ^^^^
+
+=end text
+</pre>
+<p />
+   格式化输出器通常可以接受的 TRANSLATOR 的值有 roff，man，troff，nroff，tbl，eqn，latex，tex，html，   和 text。有些格式化输出器会把这些词中的一些看作同义词。没有哪个格式化输出器接受 comment——它只是一个客户化的词，表示一些任何人都可以忽略的东西。任何不能识别的词都会起这个作用。在我们写本书的时候，我们常用 =for later 指示符给我们自己留一些注意信息。
+<p />
+   请注意 =begin 和 =end 可以嵌套，但是只有在下面的情况下才有效：那就是最外层的一对把它们中间的所有   东西都变成了非 pod，就算这里面碰巧有 =word 指示符也如此。也就是说，一旦格式化输出器看到了 =begin foo，那么它要么忽略要么处理直到对应 =end foo 标记中间的所有内容。
+<p />
+<p />
+<h3><a name="26_1_3_Pod"> </a><a name="26_1_3_Pod_"> </a> 26.1.3 Pod 序列 </h3>
+<p />
+第三种类型的段落是简单的“流”文本。也就是说，它的段落既不是用空白也不是用等于号
+开始的，它被当作一个简单的段落：正规的文本，修饰尽可能少。新行被认为和空格等价。
+通常是靠格式化输出器美化它们的输出的，因为程序员有更重要的事情要做。我们假设格式化
+输出器会使用某些常用的启发法——参阅本章稍后的“Pod 翻译器和模块”。
+<p />
+不过，你可以明确地做一些事情。要么是在普通段落里，要么是在标题/项目指示符里（但是
+不能在字面段落里），你可以用特殊的序列调整格式。这些序列总是以一个大写字母开头，
+后面跟着一个左尖括号，并且延伸到对应的（不一定是下一个）右尖括号。序列中可以包含
+其他序列。
+<p />
+下面是 pod 定义的序列：
+<p />
+<ul>
+<li> *|<text>*<br>   用斜体字输出文本，用于强调，书的标题，船的名字，以及手册页引用，比如"perlpod(1)”。
+</li>
+</ul>
+<p />
+<ul>
+<li> *B<text>*<br>  用宽体输出文本，几乎总是用于命令行开关，以及有时候用于程序名字。
+</li>
+</ul>
+<p />
+<ul>
+<li> *C<text>*<br>  字面代码，可能是在一种类似 Courier 这样的固定宽度的字体里。在那些翻译器可以推断出代码的简单项目上可以不用，但是你还是应该用它。
+</li>
+</ul>
+<p />
+<ul>
+<li> *S<text>*<br> 带有不可分隔的空格的文本。通常包围其他序列。
+</li>
+</ul>
+<p />
+<ul>
+<li> <strong>L<name></strong> <br> 一个名字的交叉引用（链接）：
+<ul>
+<li> <strong>L<name></strong>     手册页
+</li>
+<li> <strong>L<name/ident></strong>   手册页里的项目
+</li>
+<li> <strong>L<name/"sec"></strong>   在其他手册页里的节（段）
+</li>
+<li> <strong>L<"sec"></strong>      着本手册页里的节（段），引号是可选的。
+</li>
+<li> <strong>L</"sec"></strong>     同上。
+</li>
+</ul>
+</li>
+</ul>
+<p />
+   下面五个序列和上面这些是一样的，但是输出只有 text 格式，而链接信息作为 HTML隐藏：
+<p />
+   <strong>L<text|naem></strong>
+   <strong>L<text|name/ident></strong>
+   <strong>L<text|name/"sec"></strong>
+   L<text|"sec">
+   L<text|/"sec">
+      这里的 text 不能包含字符 / 和 |，并且包含 &lt; 或 &gt; 的时候，它们必须
+      成对。
+<p />
+F<pathname>
+   用于文件名。这个指示符的表现形式通常和 I 一样。
+<p />
+X<entry>
+   某种形式的索引记录。和通常一样，翻译器决定做些什么事。pod 规范没有描述这些。
+<p />
+E<escape>
+   一个命名字符，类似于 HTML 的逃逸：
+<p />
+   E<lt>
+      一个文本 &lt;（可选，除非是在其他序列内部并且前导一个大写字母）
+<p />
+   E<gt>
+      一个文本 &gt;（可选，除非是在其他序列内部）
+<p />
+   E<sol>
+      一个文本 / （只是在 L&lt;&gt; 里才需要）
+<p />
+   E<verbar>
+      一个文本 | （只是在 L&lt;&gt; 里才需要）
+<p />
+   E<NNN>
+      数值为 NNN 的字符，可能是在 ISO-88590-1，但也可能是 Unicode。大概
+      没什么关系 ...
+<p />
+   E<entity>
+      一些非数字的 HTML 记录，比如 E<Agrave>。
+<p />
+Z&lt;&gt;
+   一个零宽字符。把它放在容易发生混淆的序列前面是非常好的。比如，如果你有一行在
+   正规的散文里面，而且它必须以等于号开头，那么你就可以这么写：
+<p />
+      Z&lt;&gt;=can you see
+<p />
+   或者放在某些带有“From”的文字前面，这样邮件程序就不会在前面放一个 &gt;：
+<p />
+      Z&lt;&gt;From here on out...
+<p />
+大多数时候，你只需要一套尖括号分隔这些 pod 序列之一。不过，有时候你可能需要在序列
+内部使用 &lt; 或者 &gt;。（这种情况最常发生在你是用 C&lt;&gt; 序列为一个代码片段提供一个固定
+宽度的字体的时候。）和 Perl 里的所有事物一样，实现这个目的有多种方法。一个简单的
+方法就是把闭合括号用 E 序列来表示：
+<p />
+   C<$a E&lt;lt>=E<gt> $b&gt;
+<p />
+这就生成“$a <=> $b”。
+<p />
+一个更易读，并且可能更“简单”的方法就是使用不需要逃逸尖括号的可选的分隔符集。你
+可以使用双尖括号（C&lt;&lt; stuff &gt;&gt;），条件是在开尖括号后面有空白，而在闭合尖括号前面
+也有空白。比如，下面的方法是可以的：
+<p />
+   C&lt;&lt; $a <=> $b &gt;&gt;
+<p />
+只要开关尖括号两边的数目一样，并且在左边最后一个 &lt; 的后面和右边第一个 &gt; 的前面有
+空格，那么你用多少个尖括号都可以。所以下面的也对：
+<p />
+   C&lt;&lt;&lt; $a <=> $b &gt;&gt;&gt;
+   C&lt;&lt;&lt;&lt; $a <=> $b &gt;&gt;&gt;&gt;
+<p />
+所有这些都会把 $a <=> $b 用一种固定宽度的字体显示出来。
+<p />
+两边多余的空格都会消失，所以你如果你需要更多空白，你必须在外边预留。同时，两个内部的
+额外空格也不会重叠，所以就算引起的第一个东西是 &gt;&gt;，它也不会当作闭合分隔符输出：
+<p />
+   The C&lt;&lt; &gt;&gt; &gt;&gt; right shift operator.
+<p />
+这行生成“The &gt;&gt; right shift operator.”
+<p />
+请注意 pod 序列可以嵌套。这就意味着你可以写
+“The I<SantaMarE&lt;iacuate>a&gt; left port already”
+生成“The santa Maria left prot already”（注），或者
+“B<touch> S<B&lt;-t> I<time&gt;&gt; I&lt;file>”生成“touch -t time file”，并且相信它们也
+可以正确工作。
+<p />
+<p />
+*pod 翻译器和模块
+<p />
+与 Perl 捆绑在一起的有好几种 pod 翻译器，它们可以把 pod 文档（或者在其他文档内部
+嵌入的 pod）转换成各种格式。所有这些翻译器都应该可以处理 8 位编码的。
+<p />
+pod2text
+   把 pod 转换成文本。通常，这些文本会是 7 位的 ASCII，但是如果是 8 位输入，
+   或者你用了象 LE<uacute>thien 表示 Luthien 或者 EE<auml>rendil 表示 
+   Earendil 这样的特定的 ISO-8859-1（或者 Unicode），那么输出可以是 8 位的。
+<p />
+   如果你有一个里面有 pod 的文件，那么查看格式化好了的 pod 的最简单的方法
+   （不过可能不是最漂亮的）是：
+<p />
+      %pod2text File.pm | more
+<p />
+   并且，还是那句话，pod 应该是不用格式化就可以为人类阅读的。
+<p />
+pod2man
+   把 pod 转换成 Unix 手册页格式，这些格式适合通过 nroff(1) 查看或者用 
+   troff(1) 创建打印拷贝。比如：
+<p />
+      %pod2man File.pm | nroff -man | more
+<p />
+   或者
+<p />
+      %pod2man File.pm | troff -man -Tps -t &gt;tmppage.ps
+      %ghostview tmppage.ps
+<p />
+   以及打印出来：
+<p />
+      %lpr -Ppostscript tmppage.ps
+<p />
+pod2html
+   把 pod 转换成 HTML，这样就可以用你喜欢的浏览器来查阅：
+<p />
+      %pod2html File.pm &gt; tmppage.html
+      %lynx tmppage.html
+      %netscape -remote "openURL(<a href="file:`pwd`/tmppage.html)"" target="_top">file:`pwd`/tmppage.html)"</a>
+<p />
+   最后一个例子是 netscape 的技巧，如果你已经有一个 netscape 在运行，这个方法
+   可以告诉那个 netscape 给你打开这个页面。否则，只需要象调用 lynx 那样调用
+   就行了。
+<p />
+pod2latex
+   把 pod 转换成 LATEX。
+<p />
+在 CPAN 上还有可以转换成其他格式的翻译器。
+<p />
+翻译器是根据不同的输出格式展示不同的缺省特性的。比如，如果你的 pod 里有一个这样的
+散文段落：
+<p />
+   This is a $variable right here
+<p />
+那么 pod2html 会把它变成：
+<p />
+   This is a <STRONG>$variable</STRONG> right here
+<p />
+而 pod2text 则会不加修饰地保留这一段，因为美圆符号对于方便它阅读而言已经足够了。
+<p />
+你应该尽可能把你的 pod 做得接近纯文本，使用最少的明确的标记。至于你的文本的内容如何
+表现则属于独立的翻译器的决定范畴。这就意味着让翻译器判断如何创建成对的引号，如何
+填充和调整文本，如何为全部大写的单词寻找更小的字体等等。因为它们是用来处理 Perl 
+文档的，所以大多数翻译器（注：如果你想设计一种通用用途的 pod 翻译器，而不是专门用于
+Perl 代码的，那么你的标准应该有所变化。）还应该能够识别象下面这些不修饰的项目，并且
+用合适的方法处理它们：
+<p />
+*   FILEHANDLE 
+<p />
+*   $scalar
+<p />
+*   @array
+<p />
+*   function()
+<p />
+*   manpage(3r)
+<p />
+*   <a href="mailto:somebody@someplace.com">somebody@someplace.com</a>
+<p />
+*   <a href="http://foo.com/"  target="_top">http://foo.com/</a>
+<p />
+Perl  还带有几个标准的模块用于分析和转换 pod，包括 Pod::Checker（和 podchecker 
+工具关联）用于检查 pod 文档的语法，Pod::Find 用于在目录树中寻找 pod 文档，还有 
+Pod::Parser 用于创建你自己的 pod 工具。
+<p />
+请注意 pod 翻译器应该只注意那些用 pod 指示符开头的段落（这样可以让分析器简单些），
+而编译器实际上还知道在段落的中间查找 pod 逃逸。这就意味着下面的秘密资料将同时被编译
+器和翻译器忽略：
+<p />
+   $a=3;
+   =secret stuff
+   warn "Neither POD no CODE!?"
+   =cut back
+   print "got $a\n";
+<p />
+你可能不应该永远依赖这样的 pod 构造注释 warn。因为并非所有 pod 翻译器在这种情况下
+都表现正常，而且编译器也可能在以后的某一天变得挑剔。
+<p />
+<p />
+*书写你自己的 pod 工具
+<p />
+Pod 的设计原则的首要一条，也是最重要的一条就是书写简单。这就带来一个额外的好处，pod
+的简单同样也令书写处理 pod 的简单工具很容易。如果你想寻找 pod 的指示符，那么只需要
+把你的输入记录分隔符设置为段落模式（可能是带着 -00 开关），然后注意那些看起来象 pod
+的段落就可以了。
+<p />
+比如，下面是一段简单的 olpod 程序，用于生成 pod 概要：
+<p />
+<h1><a name="usr_bin_perl_l00n"> </a><a name="_usr_bin_perl_l00n"> </a> ! /usr/bin/perl -l00n </h1>
+<h1><a name="olpod_outline_pod"> </a> olpod - outline pod </h1>
+   next unless /^=head/;
+   s/^=head(\d)\s+/ ' ' x ($1 * 4 - 4)/e;
+   print $_, "\n";
+<p />
+如果你用这段程序处理本章的某个段落，那么输出会象下面这样：
+<p />
+   Plain Old Documentation
+   ...（略）
+<p />
+pod 概要生成器实际上并没有注意某行是否在一个合法的 pod 块内。因为 pod 和非 pod 
+可以在同一文件里相互混合，所以用通用用途的工具搜索和分析整个文件并不总是有意义。
+不过这么做并没有问题，因为为 pod 写工具是非常容易的。下面就是一个能够注意 pod 和
+非 pod 的区别的工具，它只生成 pod 输出：
+<p />
+<h1><a name="usr_bin_perl_00"> </a><a name="_usr_bin_perl_00"> </a> ! /usr/bin/perl -00  </h1>
+<h1><a name="catpod_cat_out_just_the_pods"> </a> catpod - cat out just the pods </h1>
+   while (&lt;&gt;) {
+      if (! $inpod)   { $inpod = /^=/;   }
+      if ($inpod)    { $inpod = !/^=cut/; print; }
+   } continue {
+      if (eof)      { close ARGV; $inpod = ' '; }
+   }
+<p />
+你可以把这段程序用于其他 Perl 程序或者模块，然后把输出通过管道传递给其他工具。
+比如，如果你有 wc(1) 程序（注：如果你没有，那么从 CPAN  scripts 目录获取 Perl 
+万能工具箱里的 wc）进行行，单词，和字符计数，那么你可以用 catpod 的输出作为它的
+输入，计算 pod 的那一部分数据：
+<p />
+   %catpod <span class="twikiNewLink" style='background : #FFFFCE;'><font color="#0000FF">MyModule</font><a href="http://www.jb51.net/twiki/bin/edit/Perl/MyModule?topicparent=Perl.PerlCulture_PlainOldDoc" ><sup>?</sup></a></span>.pm | wc
+<p />
+pod 里有许多可以让你用简单直白的 Perl 程序写一些基本工具的地方。既然你有了 catpod 
+作为一个组件，那么下面是另外一个工具，它可以显示缩进的代码：
+<p />
+<h1><a name="usr_bin_perl_n00"> </a><a name="_usr_bin_perl_n00"> </a> ! /usr/bin/perl -n00 </h1>
+<h1><a name="podlit_print_the_indented_litera"> </a> podlit - print the indented literal blocks from pod input </h1>
+   print if /^\s/;
+<p />
+你能用它干什么？对了，你可能想用它做 perl -wc 来检查在文档里的代码，这是其一。或者
+你想让 grep(1)（注：如果你没有 grep，看看前面一条注解。），它只查阅例子里的代码：
+<p />
+   %catpod <span class="twikiNewLink" style='background : #FFFFCE;'><font color="#0000FF">MyModule</font><a href="http://www.jb51.net/twiki/bin/edit/Perl/MyModule?topicparent=Perl.PerlCulture_PlainOldDoc" ><sup>?</sup></a></span>.pm | podlit | grep funcname
+<p />
+这种工具兼过滤器的可互换部件（并且是可以独立测试的）的策略是设计可重用软件组件的一个非常
+简单但又非常有效的方法。它是懒惰的一种表现：把最少的解决放在一起然后完成工作——
+至少对某些类型的工作如此。
+<p />
+不过，对于其他任务来说，这么做甚至是事倍功半的做法。有时候从头开始写一个工具的工作量
+比较大，但时候却是少一些。对于那些我们前面给你演示的工具，Perl 自己的文本处理能力令
+那些工具便于利用蛮力。但并不是所有事情都这么运转。在处理 pod 的过程中你会发现尽管它
+的指示符便于分析，它的序列可能就会带来一些麻烦了。尽管有些亚正确的翻译器无法处理
+这些东西，序列还是可以在其他的序列里嵌套并且有变长的分隔符的。
+<p />
+不要急于编写自己的分析代码，懒人会先寻找其他解决方法。标准的 Pod::Parser 模块可以
+干这个活。它特别适用于复杂的任务，比如那些真正需要分析段落的内部细节的任务，转换成
+一种侯选的输出格式等等。把这个模块用于复杂场合更方便，因为你最终要写的代码会少很多。
+另外一个好处就是让人头疼的分析已经为你实现了。这个原则和在管道行上使用 catpod 是
+一样的。
+<p />
+Pod::Parser 模块采用了一种有趣的方法来实现它的任务。它是一个面向对象的模块，它的
+风格和你在本书中看到的大多数模块都不一样。它的主要目标并不象是提供一些用于直接
+操作的对象，而是提供一些可以构造其他类的基类。
+<p />
+你创建自己的类并且从 Pod::Parser 继承基类。然后你声明子过程，这些子过程作为你的
+父类的分析器调用的回调方法使用。这个方法和我们前面给出的过程编程方法区别很大。从
+某种角度来说，它更象声明性语言的编程风格，因为为了完成工作，你只需要注册函数并且让
+其他当事人为你调用它。程序烦人的逻辑是在别的地方处理的。你只需要提供一些即插即用的
+模块就可以了。
+<p />
+下面是对我们早先给出的 catpod 程序的重写，但这次我们使用了 Pod::Parser 模块创建
+我们自己的子类：
+<p />
+<h1><a name="usr_bin_perl"> </a><a name="_usr_bin_perl"> </a> ! /usr/bin/perl </h1>
+<h1><a name="catpod2_class_and_program"> </a> catpod2, class and program </h1>
+<p />
+   package catpod_parser;
+   use Pod::Parser;
+   @ISA = qw(Pod::Parser);
+   ...（略）
+<ol>
+<li> ;
+   <strong><em>END</em></strong>
+</li>
+</ol>
+<p />
+   =head1 NAME
+   docs describing the new catpod program here
+<p />
+如你所见，它长了好多并且也复杂了许多。但这段程序也更有扩展性，因为你所要做的只是在
+你想让你的子类与它的父类动作不一样的时候把你的方法插入就行了。
+<p />
+在程序的最后，它使用了 caller，检查该文件是被当作一个模块还是一个程序使用。如果它
+被当作程序使用，那么就不会有 caller。所以它调用自己的分析器（使用它继承的 new 
+方法）然后在命令行参数上运行这个分析器。如果没有提供文件名，那么它假设标准输入是
+输入，和前面那个版本的处理是一样的。
+<p />
+在模块代码后面是一个 <strong><em>END</em></strong> 标记，一个没有空白的空行，然后是程序/模块自己的 pod 
+文档。这是一个程序、模块和文档在一起的文件的例子。而且它还可能是其他的什么东西。
+<p />
+<p />
+*pod 的缺陷
+<p />
+pod 相当直白，但是仍然可能弄糟一些东西：
+<p />
+*   我们很容易忘记后面的尖括号。
+<p />
+*   我们很容易忘记最后的 =back 指示符
+<p />
+*   我们很容易不小心在一个很长的 =for comment 指示符中间放一个空白行。请考虑
+   使用 =begin/=end 代替。
+<p />
+*   如果你把 =begin/=end 对中的某一个标记敲错了，那么它就会把你的文件的余下部分
+   都吃掉（当作 pod）。考虑使用 =for 代替。
+<p />
+*   pod 翻译器要求段落之间使用完全空白的行来分隔；也就是说，用两个或者更多连续的
+   换行（\n）字符分隔。如果你有一行里面有空格或者制表符，那么它就不是空白行。
+   这个东西可能导致两个或者更多段落当作一个看待。
+<p />
+*   “链接”的含义不是 pod 定义的，并且对链接的处理是翻译器决定的。（如果你开始
+   建立这样的概念：大多数决定是推迟给翻译器做的，而不是 pod，那你就对了。）翻译
+   器经常在 L<&gt; 链接周围加一些词，比如，“L&lt;foo(1)>”就成了
+   “the foo(1) manpage”。所以如果你希望翻译出来的文档读起来有意义的话，那你
+   不应该写象“the L<foo> manpage”这样的东西：它会变成 
+   “the the foo(1) manpage manpage”。
+<p />
+   如果你需要对使用链接的文本进行完全的控制，那么使用 L<show this text|foo>。
+<p />
+标准的 perlchecker 程序检查 pod 的语法，生成错误和警告。比如，它检查未知的 pod 
+序列并且寻找包含空白的看起来想象空白行的行。不过我们仍然建议你把你的文档交给两个
+或者更多的不同的 pod 翻译器然后看看结果是否正确。你会发现有些问题属于特殊翻译器
+自身的特质，这样的问题你可能会也可能不会修复。
+<p />
+最后，和往常一样，这里的所有东西都容易被自由的黑客的各种怪念头所改变。
+<p />
+*给你的 Perl 程序写文档
+<p />
+我们希望你给你的程序写文档，不管你是不是一个自由的黑客也好。如果你这么干，那么你
+可能会希望在你的 pod 里包含下面的段落：
+<p />
+=head1 NAME 
+   你的程序或者模块的名字。
+<p />
+=head1 SYNOPSIS
+   对你的程序或者模块做的工作的单行描述（主旨）。
+<p />
+=head1 DESCRIPTION
+   你的文档的大量的内容。（在这个环境里，大量的意思就是好。）
+<p />
+=head1 AUTHOR
+   你是谁。（或者一个别名，如果你对你的程序觉得惭愧。）
+<p />
+=head1 BUGS
+   你做错了什么（以及为什么它不是你的错）。
+<p />
+=head1 SEE ALSO
+   人们可以在哪里找到相关的信息（这样它们就可以帮你解决臭虫。）
+<p />
+=head1 COPYRIGHT
+   版权声明。如果你象声称一个明确的版权，那么你可以说一些下面这样的东西：
+<p />
+      Copyright 2013, Randy Waterhouse. All Rights Reserved.
+<p />
+   许多模块还有这些东西：
+<p />
+      This program is free software. You may copy or
+      redistribute it under the same terms as Perl itself.
+<p />
+一个注意事项：如果你准备把 pod 放在你的程序的结尾，并且你使用了 <strong><em>END</em></strong> 或者 
+<strong><em>DATA</em></strong> 记号，那么请确保在第一个 pod 指示符前面放一个空白行：
+<p />
+   <strong><em>END</em></strong>
+<p />
+   =head1 NAME
+<p />
+   Modern - I am the very model of a modern major module
+<p />
+没有 =head1 前面的空行，pod 翻译器会忽略你的（扩展的，准确的，与文化相关的）文档的
+开头。
+<p />
+<!--
+<ul>
+<li> Set MYTITLE = 简单的旧文档
+</li>
+</ul>
+-->
+<br class="twikiClear" />
+<a name="TopicEnd"></a>
+<span class="twikiRight twikiPageNav twikiGrayText"><a href="PerlCulture_PlainOldDoc.html#PageTop">to&nbsp;top</a></span><br class="twikiClear" />
+<!---->
+<!---->
+<a name="Actions"> </a><span class="twikiHidden"><br /></span>
+
+
+<a name="PageBottom"></a> </div></div></div>
+</body></html>

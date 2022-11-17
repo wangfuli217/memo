@@ -1,0 +1,544 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 10.6.  Using Containers: Text-Query Program</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch10lev1sec5.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch10lev1sec7.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch10lev1sec6"></a>
+
+        <h3 class="docSection1Title">10.6. Using Containers: Text-Query Program</h3>
+        <h3 class="docSection1Title">10.6. 容器的综合应用：文本查询程序</h3>
+
+        <p class="docText">To conclude this chapter, we'll implement a simple text-query program.</p>
+        <p class="docText">我们将实现一个简单的文本查询程序来结束本章。</p>
+
+	<p class="docText">Our program will read a file specified by the user and then allow the user to search the file for words that might occur in it. The result of a query will be the number of times the word occurs and a list of lines on which it appears. If a word occurs more than once on the same line, our program should be smart enough to display that line only once. Lines should be displayed in ascending orderthat is, line 7 should be displayed before line 9, and so on.</p>
+        <p class="docText">我们的程序将读取用户指定的任意文本文件，然后允许用户从该文件中查找单词。查询的结果是该单词出现的次数，并列出每次出现所在的行。如果某单词在同一行中多次出现，程序将只显示该行一次。行号按升序显示，即第 7 行应该在第 9 行之前输出，依此类推。</p>
+	
+
+        <p class="docText">For example, we might read the file that contains the input for this chapter and look for the word "element." The first few lines of the output would be:</p>
+        <p class="docText">例如，以本章的内容作为文件输入，然后查找单词“element”。输出的前几行应为：</p>
+        <pre>
+     element occurs 125 times
+        (line 62) element with a given key.
+        (line 64) second element with the same key.
+        (line 153) element |==| operator.
+        (line 250) the element type.
+        (line 398) corresponding element.
+</pre><br>
+
+	<p class="docText">followed by the remaining 120 or so lines in which the word "element" occurs.</p>
+	<p class="docText">后面省略了大约 120 行。</p>
+	
+	<a name="ch10lev2sec18"></a>
+        <h4 class="docSection2Title">10.6.1. Design of the Query Program</h4>
+        <h4 class="docSection2Title">10.6.1. 查询程序的设计</h4>
+
+        <p class="docText">A good way to start the design of a program is to list the program's operations. Knowing what operations we need to provide can then help us see what data structures we'll need and how we might implement those actions. Starting from requirements, the tasks our program needs to support include:</p>
+        <p class="docText">设计程序的一个良好习惯是首先将程序所涉及的操作列出来。明确需要提供的操作有助于建立需要的数据结构和实现这些行为。从需求出发，我们的程序需要支持如下任务：</p>
+
+        <div style="font-weight:bold">
+          <ol class="docList" type="1">
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">It must allow the user to indicate the name of a file to process. The program will store the contents of the file so that we can display the original line in which each word appears.</p>
+                <p class="docList">它必须允许用户指明要处理的文件名字。程序将存储该文件的内容，以便输出每个单词所在的原始行。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">The program must break each line into words and remember all the lines in which each word appears. When it prints the line numbers, they should be presented in ascending order and contain no duplicates.</p>
+                <p class="docList">它必须将每一行分解为各个单词，并记录每个单词所在的所有行。在输出行号时，应保证以升序输出，并且不重复。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList"><a name="idd1e82360"></a><a name="idd1e82365"></a><a name="idd1e82370"></a><a name="idd1e82378"></a><a name="idd1e82383"></a><a name="idd1e82388"></a><a name="idd1e82394"></a>The result of querying for a particular word should be the line numbers on which that word appeared.</p>
+                <p class="docList">对特定单词的查询将返回出现该单词的所有行的行号。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">To print the text in which the word appeared, it must be possible to fetch the line from the input file corresponding to a given line number.</p>
+                <p class="docList">输出某单词所在的行文本时，程序必须能根据给定的行号从输入文件中获取相应的行。</p>
+              </div>
+            </li>
+          </ol>
+  </div>
+  
+  <a name="ch10lev3sec17"></a>
+        <h5 class="docSection3Title">Data Structure</h5>
+        <h5 class="docSection3Title">数据结构</h5>
+
+        <p class="docText">We'll implement our program as a simple class that we'll name <tt>TextQuery</tt>. Our requirements can be met quite neatly by using various containers:</p>
+	<p class="docText">我们将用一个简单的类 <tt>TextQuery</tt> 实现这个程序。再加几种容器的配合使用，就可相当巧妙地满足上述要求。</p>
+
+        <div style="font-weight:bold">
+          <ol class="docList" type="1">
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">We'll use a <tt>vector&lt;string&gt;</tt> to store a copy of the entire input file. Each line in the input file will be an element in this <tt>vector</tt>. That way, when we want to print a line, we can fetch it by using the line number as an index.</p>
+		<p class="docList">使用一个 <tt>vector&lt;string&gt;</tt> 类型的对象存储整个输入文件的副本。输入文件的每一行是该 <tt>vector</tt> 对象的一个元素。因而，在希望输出某一行时，只需以行号为下标获取该行所在的元素即可。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">We'll store each word's line numbers in a <tt>set</tt>. Using a <tt>set</tt> will guarantee that there is only one entry per line and that the line numbers will be automatically stored in ascending order.</p>
+		<p class="docList">将每个单词所在的行号存储在一个 <tt>set</tt> 容器对象中。使用 <tt>set</tt> 就可确保每行只有一个条目，而且行号将自动按升序排列。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">We'll use a <tt>map</tt> to associate each word with the <tt>set</tt> of line numbers on which the word appears.</p>
+		<p class="docList">使用一个 <tt>map</tt> 容器将每个单词与一个 <tt>set</tt> 容器对象关联起来，该 <tt>set</tt> 容器对象记录此单词所在的行号。</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+
+        <p class="docText">Our class will have two data members: a <tt>vector</tt> to hold the input file and a <tt>map</tt> to associate each input word with the <tt>set</tt> of line numbers on which it appears.</p>
+	<p class="docText">综上所述，我们定义的 <tt>TextQuery</tt> 类将有两个数据成员：储存输入文件的 <tt>vector</tt> 对象，以及一个 <tt>map</tt> 容器对象，该对象关联每个输入的单词以及记录该单词所在行号的 <tt>set</tt> 容器对象。</p>
+	
+	<a name="ch10lev3sec18"></a>
+        <h5 class="docSection3Title">Operations</h5>
+        <h5 class="docSection3Title">操作</h5>
+
+        <p class="docText">The requirements also lead fairly directly to an interface for our class. However, we have one important design decision to make first: The function that does the query will need to return a <tt>set</tt> of line numbers. What type should it use to do so?</p>
+	<p class="docText">对于类还要求有良好的接口。然而，一个重要的设计策略首先要确定：查询函数需返回存储一组行号的 <tt>set</tt> 对象。这个返回类型应该如何设计呢？</p>
+
+        <p class="docText">We can see that doing the query will be simple: We'll index into the <tt>map</tt> to obtain the associated <tt>set</tt>. The only question is how to return the <tt>set</tt> that we find. The safest design is to return a copy of that <tt>set</tt>. However, doing so means that each element in the <tt>set</tt> must be copied. Copying the <tt>set</tt> could be expensive if we process a very large file. Other possible return values are a <tt>pair</tt> of iterators into the <tt>set</tt>, or a <tt>const</tt> reference to the <tt>set</tt>. For simplicity, we'll return a copy, noting that this decision is one that we might have to revisit if the copy is too expensive in practice.</p>
+	<p class="docText">事实上，查询的过程相当简单：使用下标访问 <tt>map</tt> 对象获取关联的 <tt>set</tt> 对象即可。唯一的问题是如何返回所找到的 <tt>set</tt> 对象。安全的设计方案是返回该 <tt>set</tt> 对象的副本。但如此一来，就意味着要复制 <tt>set</tt> 中的每个元素。如果处理的是一个相当庞大的文件，则复制 <tt>set</tt> 对象的代价会非常昂贵。其他可行的方法包括：返回一个 <tt>pair</tt> 对象，存储一对指向 <tt>set</tt> 中元素的迭代器；或者返回 <tt>set</tt> 对象的 <tt>const</tt> 引用。为简单起见，我们在这里采用返回副本的方法，但注意：如果在实际应用中复制代价太大，需要新考虑其实现方法。</p>
+
+        <p class="docText">The first, third, and fourth tasks are actions programmers using our class will perform. The second task is internal to the class. Mapping these tasks to member functions, we'll have three <tt>public</tt> functions in the class interface:</p>
+	<p class="docText">第一、第三和第四个任务是使用这个类的程序员将执行的动作。第二个任务则是类的内部任务。将这四任务映射为类的成员函数，则类的接口需提供下列三个 <tt>public</tt> 函数：</p>
+
+        <ul>
+          <li>
+            <p class="docList"><tt>read_file</tt> takes an <tt>ifstream&amp;</tt>, which it reads a line at a time, storing the lines in the <tt>vector</tt>. Once it has read all the input, <tt>read_file</tt> will create the <tt>map</tt> that associates each word to the line numbers on which it appears.</p>
+	    <p class="docList"><tt>read_file</tt> 成员函数，其形参为一个 <tt>ifstream&amp;</tt> 类型对象。该函数每次从文件中读入一行，并将它保存在 <tt>vector</tt> 容器中。输入完毕后，<tt>read_file</tt> 将创建关联每个单词及其所在行号的 <tt>map</tt> 容器。</p>
+          </li>
+
+          <li>
+            <p class="docList"><tt>run_query</tt> takes a <tt>string</tt> and returns the <tt>set</tt> of line numbers on which that <tt>string</tt> appears.</p>
+	    <p class="docList"><tt>run_query</tt> 成员函数，其形参为一个 <tt>string</tt> 类型对象，返回一个 <tt>set</tt> 对象，该 <tt>set</tt> 对象包含出现该 <tt>string</tt> 对象的所有行的行号。</p>
+          </li>
+
+          <li>
+            <p class="docList"><tt>text_line</tt> takes a line number and returns the corresponding text for that line from the input file.</p>
+	    <p class="docList"><tt>text_line</tt> 成员函数，其形参为一个行号，返回输入文本中该行号对应的文本行。</p>
+          </li>
+        </ul>
+
+        <p class="docText"><a name="idd1e82565"></a><a name="idd1e82573"></a>Neither <tt>run_query</tt> nor <tt>text_line</tt> changes the object on which it runs, so we'll define these operations as <tt>const</tt> member functions (<a class="docLink" href="ch07lev1sec7.html#ch07lev2sec22" >Section 7.7.1</a>, p. <a class="docLink" href="ch07lev1sec7.html#ch07lev2sec22" >260</a>).</p>
+	<p class="docText">无论 <tt>run_query</tt> 还是 <tt>text_line</tt> 都不会修改调用此函数的对象，因此，可将这两个操作定义为 <tt>const</tt> 成员函数（<a class="docLink" href="ch07lev1sec7.html#ch07lev2sec22" >第 7.7.1 节</a>）。</p>
+
+        <p class="docText">To do the work of <tt>read_file</tt>, we'll also define two <tt>private</tt> functions to read the input file and build the <tt>map:</tt></p>
+	<p class="docText">为实现 <tt>read_file</tt> 功能，还需定义两个 <tt>private</tt> 函数来读取输入文本和创建 <tt>map</tt> 容器：</p>
+
+        <ul>
+          <li>
+            <p class="docList"><tt>store_file</tt> will read the file and store the data in our <tt>vector</tt>.</p>
+	    <p class="docList"><tt>store_file</tt> 函数读入文件，并将文件内容存储在 <tt>vector</tt> 容器对象中。</p>
+          </li>
+
+          <li>
+            <p class="docList"><tt>build_map</tt> will break each line into words and build the <tt>map</tt>, remembering the line number on which each word appeared.</p>
+	    <p class="docList"><tt>build_map</tt> 函数将每一行分解为各个单词，创建 <tt>map</tt> 容器对象，同时记录每个单词出现行号。</p>
+          </li>
+  </ul>
+  
+	<a name="ch10lev2sec19"></a>
+	<h4 class="docSection2Title">10.6.2. <tt>TextQuery</tt> Class</h4>
+	<h4 class="docSection2Title">10.6.2. <tt>TextQuery</tt> 类</h4>
+
+        <p class="docText">Having worked through our design, we can now write our <tt>TextQuery</tt> class:</p>
+	<p class="docText">经过前面的设计后，现在可以编写 <tt>TextQuery</tt> 类了：</p>
+        <pre>
+     class TextQuery {
+     public:
+         // <span class="docEmphItalicAlt">typedef to make declarations easier</span>
+         typedef std::vector&lt;std::string&gt;::size_type line_no;
+         /* <span class="docEmphItalicAlt">interface:</span>
+          * <span class="docEmphItalicAlt">read_file builds internal data structures for the given file</span>
+          * <span class="docEmphItalicAlt">run_query finds the given word and returns set of lines on which it appears</span>
+          * <span class="docEmphItalicAlt">text_line returns a requested line from the input file</span>
+          */
+         void read_file(std::ifstream &amp;is)
+                    { store_file(is); build_map(); }
+         std::set&lt;line_no&gt; run_query(const std::string&amp;) const;
+         std::string text_line(line_no) const;
+     private:
+         // <span class="docEmphItalicAlt">utility functions used by</span> read_file
+         void store_file(std::ifstream&amp;); // <span class="docEmphItalicAlt">store input file</span>
+         void build_map(); // <span class="docEmphItalicAlt">associated each word with a set of line numbers</span>
+         // <span class="docEmphItalicAlt">remember the whole input file</span>
+         std::vector&lt;std::string&gt; lines_of_text;
+         // <span class="docEmphItalicAlt">map word to set of the lines on which it occurs</span>
+         std::map&lt; std::string, std::set&lt;line_no&gt; &gt; word_map;
+     };
+</pre><br>
+
+        <p class="docText">The class directly reflects our design decisions. The only part we hadn't described is the typedef that defines an alias for <tt>size_type</tt> of <tt>vector</tt>.</p>
+	<p class="docText">这个类直接反映了我们的设计策略。唯一提及的是使用 <tt>typedef</tt> 为 <tt>vector</tt> 的 <tt>size_type</tt> 定义了一个别名。</p>
+	
+	<a name="ch10note11"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">For the reasons described on page <a class="docLink" href="ch03lev1sec1.html#ch03lev3sec1" >80</a>, this class definition uses fully qualified <tt>std::</tt> names for all references to library entities.</p>
+		<p class="docText">基于<a class="docLink" href="ch03lev1sec1.html#ch03lev3sec1" >第 3.1 节</a>所提及的原因，这个类的定义在引用标准库内容时都必须完整地使用 <tt>std::</tt> 限定符。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+	<p class="docText">The <tt>read_file</tt> function is defined inside the class. It calls <tt>store_file</tt> to read and store the input file and <tt>build_map</tt> to build the <tt>map</tt> from words to line numbers. We'll define the other functions in <a class="docLink" href="ch10lev1sec6.html#ch10lev2sec21">Section 10.6.4</a> (p. <a class="docLink" href="ch10lev1sec6.html#ch10lev2sec21">385</a>). First, we'll write a program that uses this class to solve our text-query problem.</p>
+	<p class="docText"><tt>read_file</tt> 函数在类的内部定义。该函数首先调用 <tt>store_file</tt> 读取并保存输入文件，然后调用 <tt>build_map</tt> 创建关联单词与行号的 map 容器。该类的其他函数将在<a class="docLink" href="ch10lev1sec6.html#ch10lev2sec21">第 10.6.4 节</a>定义。首先，我们编写一个程序，使用这个类来解决文本查询问题。</p>
+	
+	<a name="ch10sb12"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 10.6.2</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch10qa12q1"></a><b>Exercise 10.30:</b></td>
+
+                    <td>
+                      <p class="docText"><a name="idd1e82743"></a><a name="idd1e82748"></a><a name="idd1e82754"></a>The member functions of <tt>TextQuery</tt> use only capabilities that we have already covered. Without looking ahead, write your own versions of the member functions. Hint: The only tricky part is what to return from <tt>run_query</tt> if the line number set is empty. The solution is to construct and return a new (temporary) <tt>set</tt>.</p>
+		      <p class="docText"><tt>TextQuery</tt> 类的成员函数仅使用了前面介绍过的内容。先别查看后面章节，请自己编写这些成员函数。提示：唯一棘手的是 <tt>run_query</tt> 函数在行号集合 <tt>set</tt> 为空时应返回什么值？解决方法是构造并返回一个新的（临时）<tt>set</tt> 对象。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a name="ch10lev2sec20"></a>
+
+        <h4 class="docSection2Title">10.6.3. Using the <tt>TextQuery</tt> Class</h4>
+	<h4 class="docSection2Title">10.6.3. <tt>TextQuery</tt> 类的使用</h4>
+
+        <p class="docText">The following <tt>main</tt> program uses a <tt>TextQuery</tt> object to perform a simple query session with the user. Most of the work in this program involves managing the interaction with the user: prompting for the next search word and calling the <tt>print_results</tt> functionwhich we shall write nextto print the results.</p>
+	<p class="docText">下面的主程序 <tt>main</tt> 使用 <tt>TextQuery</tt> 对象实现简单的用户查询会话。这段程序的主要工作是实现与用户的互动：提示输入下一个要查询的单词，然后调用 <tt>print_results</tt> 函数（将在下面定义）输出结果。</p>
+        <pre>
+     // <span class="docEmphItalicAlt">program takes single argument specifying the file to query</span>
+     int main(int argc, char **argv)
+     {
+         // <span class="docEmphItalicAlt">open the file from which user will query words</span>
+         ifstream infile;
+         if (argc &lt; 2 || !open_file(infile, argv[1])) {
+             cerr &lt;&lt; "No input file!" &lt;&lt; endl;
+             return EXIT_FAILURE;
+         }
+         TextQuery tq;
+         tq.read_file(infile); // <span class="docEmphItalicAlt">builds query map</span>
+         // <span class="docEmphItalicAlt">iterate with the user: prompt for a word to find and print results</span>
+         // <span class="docEmphItalicAlt">loop indefinitely; the loop exit is inside the</span> while
+         while (true) {
+             cout &lt;&lt; "enter word to look for, or q to quit: ";
+             string s;
+             cin &gt;&gt; s;
+             // <span class="docEmphItalicAlt">stop if hit eof on input or a</span> 'q'<span class="docEmphasis">is entered</span>
+             if (!cin || s == "q") break;
+             // <span class="docEmphItalicAlt">get the</span> <span class="docEmphasis">set</span> <span class="docEmphItalicAlt">of line numbers on which this word appears</span>
+             set&lt;TextQuery::line_no&gt; locs = tq.run_query(s);
+             // <span class="docEmphItalicAlt">print count and all occurrences, if any</span>
+             print_results(locs, s, tq);
+          }
+         return 0;
+     }
+</pre><br>
+        <a name="ch10lev3sec19"></a>
+
+        <h5 class="docSection3Title">Preliminaries</h5>
+        <h5 class="docSection3Title">引子</h5>
+
+        <p class="docText">This program checks that <tt>argv[1]</tt> is valid and then uses the <tt>open_file</tt> function (<a class="docLink" href="ch08lev1sec4.html#ch08lev2sec12" >Section 8.4.3</a>, p. <a class="docLink" href="ch08lev1sec4.html#ch08lev2sec12" >299</a>) to open the file we're given as an argument to <tt>main</tt>. We test the stream to determine whether the input file is okay. If not, we generate an appropriate message and exit, returning <tt>EXIT_FAILURE</tt> (<a class="docLink" href="ch07lev1sec3.html#ch07lev2sec14" >Section 7.3.2</a>, p. <a class="docLink" href="ch07lev1sec3.html#ch07lev2sec14" >247</a>) to indicate that an error occurred.</p>
+	<p class="docText">程序首先检查 <tt>argv[1]</tt> 是否合法，然后调用 <tt>open_file</tt> 函数（<a class="docLink" href="ch08lev1sec4.html#ch08lev2sec12" >第 8.4.3 节</a>）打开以 <tt>main</tt> 函数实参形式给出的文件。检查流以判断输入文件是否正确。如果不正确，就给出适当的提示信息结束程序的运行，返回 <tt>EXIT_FAILURE</tt>（<a class="docLink" href="ch07lev1sec3.html#ch07lev2sec14" >第 7.3.2 节</a>）说明发生了错误。</p>
+
+        <p class="docText">Once we have opened the file, it is a simple matter to build up the <tt>map</tt> that will support queries. We define a local variable named <tt>tq</tt> to hold the file and associated data structures:</p>
+	<p class="docText">一旦文件成功打开，建立支持查询的 <tt>map</tt> 容器就相当简单。定义一个局部变量 <tt>tq</tt> 来保存该输入文件和所关联的数据结构：</p>
+        <pre>
+     TextQuery tq;
+     tq.read_file(infile);   <span class="docEmphItalicAlt">builds query map</span>
+</pre><br>
+
+        <p class="docText">We call the <tt>read_file</tt> operation on <tt>tq</tt>, passing it the file opened by <tt>open_file</tt>.</p>
+	<p class="docText"><tt>tq</tt> 调用 <tt>read_file</tt> 操作，并将由 <tt>open_file</tt> 打开的文件传递给此函数。</p>
+
+	<p class="docText">After <tt>read_file</tt> completes, <tt>tq</tt> holds our two data structures: the <tt>vector</tt> that corresponds to the input file and the <tt>map</tt> from word to set of line numbers. That <tt>map</tt> contains an entry for each unique word in the input file. The <tt>map</tt> associates with each word the <tt>set</tt> of line numbers on which that word appeared.</p>
+	<p class="docText"><tt>read_file</tt> 完成后，<tt>tq</tt> 存储了两个数据结构：保存输入文件的 <tt>vector</tt> 对象，以及关联单词和行号的 <tt>map</tt> 容器对象。<tt>map</tt> 容器为输入文件中的每个单词建立唯一的元素，由每个单词关联的 <tt>set</tt> 容器记录了该单词出现的行号。</p>
+	
+	<a name="ch10lev3sec20"></a>
+        <h5 class="docSection3Title">Doing the Search</h5>
+        <h5 class="docSection3Title">实现查询</h5>
+
+        <p class="docText">We want the program to let the user look for more than one word in each session, so we wrap the prompt in a <tt>while</tt> loop:</p>
+	<p class="docText">为了使用户在每次会话时都能查询多个单词，我们将提示语句也置于 <tt>while</tt> 循环中：</p>
+        <pre>
+      // <span class="docEmphItalicAlt">iterate with the user: prompt for a word to find and print results</span>
+      // <span class="docEmphItalicAlt">loop indefinitely; the loop exit is inside the</span> <span class="docEmphasis">while</span>
+       while (true) {
+          cout &lt;&lt; "enter word to look for, or q to quit: ";
+          string s;
+          cin &gt;&gt; s;
+          // <span class="docEmphItalicAlt">stop if hit eof on input or a</span> <span class="docEmphasis">'q'</span> <span class="docEmphItalicAlt">is entered</span>
+          if (!cin || s == "q") break;
+          // <span class="docEmphItalicAlt">get the</span> <span class="docEmphasis">set</span> <span class="docEmphItalicAlt">of line numbers on which this word appears</span>
+          set&lt;TextQuery::line_no&gt; locs = tq.run_query(s);
+          // <span class="docEmphItalicAlt">print count and all occurrences, if any</span>
+          print_results(locs, s, tq);
+      }
+</pre><br>
+
+        <p class="docText">The test in the <tt>while</tt> is the boolean literal <tt>true</tt>, which means that the test always succeeds. We exit the loop through the <tt>break</tt> after the test on <tt>cin</tt> and the value read into <tt>sought</tt>. The loop exits when <tt>cin</tt> hits an error or end-of-file or when the user enters a <tt>'q'</tt> to quit.</p>
+	<p class="docText"><tt>while</tt> 循环条件为布尔字面值 <tt>true</tt>，这就意味着循环条件总是成立。在检查 <tt>cin</tt> 和读入 <tt>s</tt> 值后，由紧跟的 <tt>break</tt> 语句跳出循环。具体说来，当 <tt>cin</tt> 遇到错误或文件结束，或者用户输入 <tt>q</tt> 时，循环结束。</p>
+
+	<p class="docText">Once we have a word to look for, we ask <tt>tq</tt> for the <tt>set</tt> of line numbers on which that word appears. We pass that <tt>set</tt> along with the word we are looking for and the <tt>TextQuery</tt> object to the <tt>print_results</tt> function. That function will write the output of our program.</p>
+	<p class="docText">每次要查找一个单词时，访问 <tt>tq</tt> 获取记录该单词出现的行号的 <tt>set</tt> 对象。将 <tt>set</tt> 对象、要查找的单词和 <tt>TextQuery</tt> 对象作为参数传递给 <tt>print_results</tt> 函数，该函数输出查询结果。</p>
+	
+	<a name="ch10lev3sec21"></a>
+        <h5 class="docSection3Title">Printing the Results</h5>
+        <h5 class="docSection3Title">输出结果</h5>
+
+        <p class="docText">What remains is to define the <tt>print_results</tt> function:</p>
+	<p class="docText">现在只剩下 <tt>print_results</tt> 函数的定义：</p>
+        <pre>
+      void print_results(const set&lt;TextQuery::line_no&gt;&amp; locs,
+                         const string&amp; sought, const TextQuery &amp;file)
+      {
+          // <span class="docEmphItalicAlt">if the word was found, then print count and all occurrences</span>
+          typedef set&lt;TextQuery::line_no&gt; line_nums;
+          line_nums::size_type size = locs.size();
+          cout &lt;&lt; "\n" &lt;&lt; sought &lt;&lt; " occurs "
+               &lt;&lt; size &lt;&lt; " "
+               &lt;&lt; make_plural(size, "time", "s") &lt;&lt; endl;
+
+          // <span class="docEmphItalicAlt">print each line in which the word appeared</span>
+          line_nums::const_iterator it = locs.begin();
+          for ( ; it != locs.end(); ++it) {
+              cout &lt;&lt; "\t(line "
+                   // <span class="docEmphItalicAlt">don't confound user with text lines starting at 0</span>
+                   &lt;&lt; (*it) + 1 &lt;&lt; ") "
+                   &lt;&lt; file.text_line(*it) &lt;&lt; endl;
+          }
+     }
+</pre><br>
+
+        <p class="docText">The function starts by defining a typedef to simplify the use of the line number <tt>set</tt>. Our output first reports how many matches were found, which we know from the <tt>size</tt> of the <tt>set</tt>. We call <tt>make_plural</tt> (<a class="docLink" href="ch07lev1sec3.html#ch07lev2sec14" >Section 7.3.2</a>, p. <a class="docLink" href="ch07lev1sec3.html#ch07lev2sec14" >248</a>) to print <tt>time</tt> or <tt>times</tt>, depending on whether that size is equal to one.</p>
+	<p class="docText">函数首先使用 <tt>typedef</tt> 简化记录行号的 <tt>set</tt> 容器对象的使用。输出时，首先给出查询到的匹配个数，即 <tt>set</tt> 对象的大小。然后调用 <tt>make_plural</tt>（<a class="docLink" href="ch07lev1sec3.html#ch07lev2sec14" >第 7.3.2 节</a>），根据 <tt>size</tt> 是否为 1 输出“<tt>time</tt>”或“<tt>times</tt>”。</p>
+
+        <p class="docText">The messiest part of the program is the <tt>for</tt> loop that processes <tt>locs</tt> to print the line numbers on which the word was found. The only subtlety here is remembering to change the line numbers into more human-friendly counting. When we stored the text, we stored the first line as line number zero, which is consistent with how C++ containers and arrays are numbered. Most users think of the first line as line number 1, so we systematically add one to our stored line numbers to convert to this more common notation.</p>
+	<p class="docText">这段程序最复杂的部分是处理 <tt>locs</tt> 对象的 <tt>for</tt> 循环，用于输出找到该单词的行号。其唯一的微妙之处是记得将行号修改为更友好的形式输出。为了与 C++ 的容器和数组下标编号匹配，在储存文本时，我们以行号 0 存储第一行。但考虑到很多用户会默认第一行的行号为 1，所以输出行号时，相应地所存储的行号上加 1 使之转换为更通用的形式。</p>
+
+<a name="ch10sb13"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 10.6.3</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch10qa13q1"></a><b>Exercise 10.31:</b></td>
+
+                    <td>
+                      <p class="docText">What is the output of <tt>main</tt> if we look for a word that is not found?</p>
+		      <p class="docText">如果没有找到要查询的单词，<tt>main</tt> 函数输出什么？</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a name="ch10lev2sec21"></a>
+
+        <h4 class="docSection2Title">10.6.4. Writing the Member Functions</h4>
+        <h4 class="docSection2Title">10.6.4. 编写成员函数</h4>
+
+	<p class="docText">What remains is to write the definitions of the member functions that were not defined inside the class.</p>
+	<p class="docText">现在给没有在类内定义的成员函数编写定义。</p>
+	
+	<a name="ch10lev3sec22"></a>
+        <h5 class="docSection3Title">Storing the Input File</h5>
+        <h5 class="docSection3Title">存储输入文件</h5>
+
+        <p class="docText">Our first task is to read the file that our user wishes to query. Using <tt>string</tt> and <tt>vector</tt> operations, this task is handled easily:</p>
+	<p class="docText">第一个任务是读入需要查询的文件。使用 <tt>string</tt> 和 <tt>vector</tt> 容器提供的操作，可以很简便地实现这个任务：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">read input file: store each line as element in</span> <span class="docEmphasis">lines_of_text</span>
+     void TextQuery::store_file(ifstream &amp;is)
+     {
+         string textline;
+         while (getline(is, textline))
+            lines_of_text.push_back(textline);
+     }
+</pre><br>
+
+	<p class="docText"><a name="idd1e83142"></a><a name="idd1e83148"></a><a name="idd1e83154"></a>Because we want to store the file a line at a time, we use <tt>getline</tt> to read our input. We push each line we read onto the <tt>lines_of_text vector</tt>.</p>
+	<p class="docText">由于我们希望每次存储文件的一行内容，因此使用 <tt>getline</tt> 读取输入，每读入一行就将它添加到名为 <tt>lines_of_text</tt> 的 <tt>vector</tt> 对象中。</p>
+	
+	<a name="ch10lev3sec23"></a>
+        <h5 class="docSection3Title">Building the Word <tt>map</tt></h5>
+	<h5 class="docSection3Title">建立单词 <tt>map</tt> 容器</h5>
+
+        <p class="docText">Each element in the <tt>vector</tt> holds a line of text. To build the <tt>map</tt> from words to line numbers, we need to break each line into its individual words. We again use an <tt>istringstream</tt> in ways outlined in the program on page <a class="docLink" href="ch08lev1sec5.html#ch08lev2sec13" >300</a>:</p>
+	<p class="docText"><tt>vector</tt> 容器中的每个元素就是一行文本。要建立一个从单词关联到行号的 <tt>map</tt> 容器，必须将每行分解为各个单词。再次使用<a class="docLink" href="ch08lev1sec5.html#ch08lev2sec13" >第 8.5 节</a>描述的 <tt>istringstream</tt>：</p>
+        <pre>
+      // <span class="docEmphItalicAlt">finds whitespace-separated words in the input</span> <span class="docEmphasis">vector</span>
+      // <span class="docEmphItalicAlt">and puts the word in</span> <span class="docEmphasis">word_map along</span> <span class="docEmphItalicAlt">with the line number</span>
+      void TextQuery::build_map()
+      {
+          // <span class="docEmphItalicAlt">process each line from the input</span> <span class="docEmphasis">vector</span>
+          for (line_no line_num = 0;
+                       line_num != lines_of_text.size();
+                       ++line_num)
+          {
+              //<span class="docEmphItalicAlt">we'll use</span> <span class="docEmphasis">line</span> <span class="docEmphItalicAlt">to read the text a word at a time</span>
+              istringstream line(lines_of_text[line_num]);
+              string word;
+              while (line &gt;&gt; word)
+                  // <span class="docEmphItalicAlt">add this line number to the</span> <span class="docEmphasis">set;</span>
+                  // <span class="docEmphItalicAlt">subscript will add</span> <span class="docEmphasis">word</span> <span class="docEmphItalicAlt">to the</span> <span class="docEmphasis">map</span> <span class="docEmphItalicAlt">if it's not already there</span>
+                  word_map[word].insert(line_num);
+          }
+     }
+</pre><br>
+
+        <p class="docText">The <tt>for</tt> loop marches through <tt>lines_of_text</tt> a line at a time. We start by binding an <tt>istringstream</tt> object named <tt>line</tt> to the current line and use the <tt>istringstream</tt> input operator to read each word on the line. Remember that that operator, like the other <tt>istream</tt> operators, ignores whitespace. Thus, the <tt>while</tt> reads each whitespace-separated word from <tt>line</tt> into <tt>word</tt>.</p>
+	<p class="docText"><tt>for</tt> 循环以每次一行的迭代过程遍历 <tt>lines_of_text</tt>。首先将 <tt>istringstream</tt> 对象 <tt>line</tt> 与当前行绑定起来，然后使用 <tt>istringstream</tt> 的输入操作符读入该行中的每个单词。回顾此类输入操作符，与其他 <tt>istream</tt> 操作符一样，将忽略空白符号。因此，<tt>while</tt> 循环将 <tt>line</tt> 中以空白符分隔的单词读取出来。</p>
+
+	<p class="docText">The last part of this function is similar to our word-count programs. We use <tt>word</tt> to subscript the <tt>map</tt>. If <tt>word</tt> was not already present, then the subscript operator adds <tt>word</tt> to the <tt>word_map</tt>, giving it an inital value that is the empty <tt>set</tt>. Regardless of whether <tt>word</tt> was added, the return value from the subscript is a <tt>set</tt>. We then call <tt>insert</tt> to add the current line number. If the word occurs more than once in the same line, then the call to <tt>insert</tt> does nothing.</p>
+	<p class="docText">这个函数的结尾部分类似前面的单词统计程序。将 <tt>word</tt> 用做 <tt>map</tt> 容器的下标。如果 <tt>word</tt> 在 <tt>word_map</tt> 容器对象中不存在，那么下标操作符将该 <tt>word</tt> 添加到此容器中，将将其关联的值初始化为空的 <tt>set</tt>。不管是否添加了 <tt>word</tt>，下标运算都返回一个 <tt>set</tt> 对象，然后调用 <tt>insert</tt> 函数在该 <tt>set</tt> 对象中添加当前行号。如果某个单词在同一行中重复出现，那么 <tt>insert</tt> 函数的调用将不做任何操作。</p>
+	
+	<a name="ch10lev3sec24"></a>
+        <h5 class="docSection3Title">Supporting Queries</h5>
+        <h5 class="docSection3Title">支持查询</h5>
+
+        <p class="docText">The <tt>run_query</tt> function handles the actual queries:</p>
+	<p class="docText"><tt>run_query</tt> 函数实现真正的查询功能：</p>
+        <pre>
+     set&lt;TextQuery::line_no&gt;
+     TextQuery::run_query(const string &amp;query_word) const
+     {
+         //<span class="docEmphItalicAlt">Note: must use</span> <span class="docEmphasis">find</span> <span class="docEmphItalicAlt">and not subscript the</span> <span class="docEmphasis">map</span> <span class="docEmphItalicAlt">directly</span>
+         //<span class="docEmphItalicAlt">to avoid adding words to</span> <span class="docEmphasis">word_map!</span>
+         map&lt;string, set&lt;line_no&gt; &gt;::const_iterator
+                               loc = word_map.find(query_word);
+     if (loc == word_map.end())
+         return set&lt;line_no&gt;(); // <span class="docEmphItalicAlt">not found, return empty</span> <span class="docEmphasis">set</span>
+     else
+         // <span class="docEmphasis">fetch and return</span> set <span class="docEmphasis">of line numbers for this word</span>
+         return loc-&gt;second;
+     }
+</pre><br>
+
+	<p class="docText">The <tt>run_query</tt> function takes a reference to a <tt>const string</tt> and uses that value to index the <tt>word_map</tt>. Assuming the <tt>string</tt> is found, it returns the <tt>set</tt> of line numbers associated with the <tt>string</tt>. Otherwise, it returns an empty <tt>set</tt>.</p>
+	<p class="docText"><tt>run_query</tt> 函数带有指向 <tt>const</tt> <tt>string</tt> 类型对象的引用参数，并以这个参数作为下标来访问 <tt>word_map</tt> 对象。假设成功找到这个 <tt>string</tt>，那么该函数返回关联此 <tt>string</tt> 的 <tt>set</tt> 对象，否则返回一个空的 <tt>set</tt> 对象。</p>
+	
+	<a name="ch10lev3sec25"></a>
+        <h5 class="docSection3Title">Using the Return from <tt>run_query</tt></h5>
+	<h5 class="docSection3Title"><tt>run_query</tt> 返回值的使用</h5>
+
+        <p class="docText">Once we've run the <tt>run_query</tt> function, we get back a set of line numbers on which the word we sought appears. In addition to printing how many times each word appears, we also want to print the line on which the word appeared. The <tt>text_line</tt> function lets us do so:</p>
+	<p class="docText">运行 <tt>run_query</tt> 函数后，将获得一组所查找的单词出现的行号。除了输出该单词的出现次数之外，还需要输出出现该单词的每一行。这就是 <tt>text_line</tt> 函数实现的功能：</p>
+        <pre>
+   string TextQuery::text_line(line_no line) const
+   {
+       if (line &lt; lines_of_text.size())
+           return lines_of_text[line];
+       throw std::out_of_range("line number out of range");
+   }
+</pre><br>
+
+	<p class="docText">This function takes a line number and returns the input text line corresponding to that line number. Because the code using our <tt>TextQuery</tt> class cannot do so <tt>lines_of_text</tt> is <tt>private</tt>we first check that the line we are asked for is in range. If it is, we return the corresponding line. If it is not, we <tt>tHRow</tt> an <tt>out_of_range</tt> exception.</p>
+	<p class="docText">该函数带有一个行号参数，返回该行号所对应的输入文本行。由于上述代码使用了 <tt>TextQuery</tt> 类，因此不能直接输出（因为 <tt>lines_of_text</tt> 是私有的），应该首先检查我们要查询的行是否们于合法范围内。如果是，则返回相应的行，否则，抛出 <tt>out_of_range</tt> 异常。</p>
+	
+	<a name="ch10sb14"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 10.6.4</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch10qa14q1"></a><b>Exercise 10.32:</b></td>
+
+                    <td>
+                      <p class="docText">Reimplement the text-query program to use a <tt>vector</tt> instead of a <tt>set</tt> to hold the line numbers. Note that because lines appear in ascending order, we can append a new line number to the <tt>vector</tt> only if the last element of the <tt>vector</tt> isn't that line number. What are the performance and design characteristics of the two solutions? Which do you feel is the preferred design solution? Why?</p>
+		      <p class="docText">重新实现文本查询程序，使用 <tt>vector</tt> 容器代替 <tt>set</tt> 对象来存储行号。注意，由于行以升序出现，因此只有在当前行号不是 <tt>vector</tt> 容器对象中的最后一个元素时，才能将新行号添加到 <tt>vector</tt> 中。这两种实现方法的性能特点和设计特点分别是什么？你觉得哪一种解决方法更好？为什么？</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch10qa14q2"></a><b>Exercise 10.33:</b></td>
+
+                    <td>
+                      <p class="docText">Why doesn't the <tt>TextQuery::text_line</tt> function check whether its argument is negative?</p>
+		      <p class="docText"><tt>TextQuery::text_line</tt> 函数为什么不检查它的参数是否为负数？</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a href="21001535.html" ><img src="images/pixel.gif"  alt="" width="1" height="1" border="0"></a>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch10lev1sec5.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch10lev1sec7.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

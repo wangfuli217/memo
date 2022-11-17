@@ -1,0 +1,420 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml">
+<HEAD><TITLE>HTTP代理模块（HTTP Proxy）</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=GB2312">
+<STYLE type=text/css>PRE {
+	BACKGROUND-COLOR: #cccccc
+}
+.STYLE1 {
+	COLOR: #ff0000
+}
+</STYLE>
+
+<META content="MSHTML 6.00.6000.16809" name=GENERATOR></HEAD>
+<BODY>
+<H2>HTTP代理模块（HTTP Proxy）</H2><BR>
+
+<H3>·摘要</H3>
+<H4>这个模块可以转发请求到其他的服务器。<BR>
+HTTP/1.0无法使用keepalive（后端服务器将为每个请求创建并且删除连接）。nginx为浏览器发送HTTP/1.1并为后端服务器发送HTTP/1.0，这样浏览器就可以为浏览器处理keepalive。<BR>
+如下例：<BR>
+<PRE>location / {
+  proxy_pass        http://localhost:8000;
+  proxy_set_header  X-Real-IP  $remote_addr;
+}</PRE>
+注意当使用http proxy模块（甚至FastCGI），所有的连接请求在发送到后端服务器之前nginx将缓存它们，因此，在测量从后端传送的数据时，它的进度显示可能不正确。<BR></H4>
+<H3>·指令</H3>
+<H3>proxy_buffer_size </H3>
+<H4>语法：proxy_buffer_size the_size <BR>
+默认值：proxy_buffer_size 4k/8k <BR>
+使用字段：http, server, location <BR>
+设置从被代理服务器读取的第一部分应答的缓冲区大小。<BR>
+通常情况下这部分应答中包含一个小的应答头。<BR>
+默认情况下这个值的大小为指令proxy_buffers中指定的一个缓冲区的大小，不过可以将其设置为更小。</H4>
+<H3>proxy_buffering </H3>
+<H4>语法：proxy_buffering on|off <BR>
+默认值：proxy_buffering on <BR>
+使用字段：http, server, location <BR>
+为后端的服务器启用应答缓冲。<BR>
+如果启用缓冲，nginx假设被代理服务器能够非常快的传递应答，并将其放入缓冲区，可以使用 proxy_buffer_size和proxy_buffers设置相关参数。<BR>
+如果响应无法全部放入内存，则将其写入硬盘。<BR>
+如果禁用缓冲，从后端传来的应答将立即被传送到客户端。<BR>
+nginx忽略被代理服务器的应答数目和所有应答的大小，接受proxy_buffer_size所指定的值。<BR>
+对于基于长轮询的Comet应用需要关闭这个指令，否则异步的应答将被缓冲并且Comet无法正常工作。</H4>
+<H3> proxy_buffers </H3>
+<H4>语法：proxy_buffers the_number is_size; <BR>
+默认值：proxy_buffers 8 4k/8k; <BR>
+使用字段：http, server, location <BR>
+设置用于读取应答（来自被代理服务器）的缓冲区数目和大小，默认情况也为分页大小，根据操作系统的不同可能是4k或者8k。</H4>
+<H3> proxy_busy_buffers_size </H3>
+<H4>语法：proxy_busy_buffers_size size; <BR>
+默认值：proxy_busy_buffers_size ["#proxy buffer size"] * 2; <BR>
+使用字段：http, server, location, if <BR>
+未知。</H4>
+<H3> proxy_cache </H3>
+<H4>语法：proxy_cache zone_name; <BR>
+默认值：None <BR>
+使用字段：http, server, location <BR>
+设置一个缓存区域的名称，一个相同的区域可以在不同的地方使用。<BR>
+在0.7.48后，缓存遵循后端的"Expires", "Cache-Control: no-cache", "Cache-Control: max-age=XXX"头部字段，0.7.66版本以后，"Cache-Control:"private"和"no-store"头同样被遵循。nginx在缓存过程中不会处理"Vary"头，为了确保一些私有数据不被所有的用户看到，后端必须设置 "no-cache"或者"max-age=0"头，或者proxy_cache_key包含用户指定的数据如$cookie_xxx，使用cookie的值作为proxy_cache_key的一部分可以防止缓存私有数据，所以可以在不同的location中分别指定proxy_cache_key的值以便分开私有数据和公有数据。<BR>
+缓存指令依赖代理缓冲区(buffers)，如果proxy_buffers设置为off，缓存不会生效。</H4>
+<H3>proxy_cache_key </H3>
+<H4>语法：proxy_cache_key line; <BR>
+默认值：$scheme$proxy_host$request_uri; <BR>
+使用字段：http, server, location <BR>
+指令指定了包含在缓存中的缓存关键字。<BR>
+<PRE>proxy_cache_key "$host$request_uri$cookie_user";</PRE>
+注意默认情况下服务器的主机名并没有包含到缓存关键字中，如果你为你的站点在不同的location中使用二级域，你可能需要在缓存关键字中包换主机名：<BR>
+<PRE>proxy_cache_key "$scheme$host$request_uri";</PRE></H4>
+<H3> proxy_cache_path </H3>
+<H4>语法：proxy_cache_path path [levels=number] keys_zone=zone_name:zone_size [inactive=time] [max_size=size]; <BR>
+默认值：None <BR>
+使用字段：http <BR>
+指令指定缓存的路径和一些其他参数，缓存的数据存储在文件中，并且使用代理url的哈希值作为关键字与文件名。levels参数指定缓存的子目录数，例如：
+<PRE>proxy_cache_path  /data/nginx/cache  levels=1:2   keys_zone=one:10m;</PRE>
+文件名类似于：<BR>
+<PRE>/data/nginx/cache/c/29/b7f54b2df7773722d382f4809d65029c </PRE><BR>
+可以使用任意的1位或2位数字作为目录结构，如 X, X:X,或X:X:X e.g.: "2", "2:2", "1:1:2"，但是最多只能是三级目录。<BR> 
+所有活动的key和元数据存储在共享的内存池中，这个区域用keys_zone参数指定。<BR>
+注意每一个定义的内存池必须是不重复的路径，例如：<BR>
+<PRE>proxy_cache_path  /data/nginx/cache/one    levels=1      keys_zone=one:10m;
+proxy_cache_path  /data/nginx/cache/two    levels=2:2    keys_zone=two:100m;
+proxy_cache_path  /data/nginx/cache/three  levels=1:1:2  keys_zone=three:1000m;</PRE>
+如果在inactive参数指定的时间内缓存的数据没有被请求则被删除，默认inactive为10分钟。<BR>
+一个名为cache manager的进程控制磁盘的缓存大小，它被用来删除不活动的缓存和控制缓存大小，这些都在max_size参数中定义，当目前缓存的值超出max_size指定的值之后，超过其大小后最少使用数据（LRU替换算法）将被删除。<BR>
+内存池的大小按照缓存页面数的比例进行设置，一个页面（文件）的元数据大小按照操作系统来定，FreeBSD/i386下为64字节，FreeBSD/amd64下为128字节。<BR>
+proxy_cache_path和proxy_temp_path应该使用在相同的文件系统上。</H4>
+<H3> proxy_cache_methods </H3>
+<H4>语法：proxy_cache_methods [GET HEAD POST]; <BR>
+默认值：proxy_cache_methods GET HEAD; <BR>
+使用字段：http, server, location <BR>
+GET/HEAD用来装饰语句，即你无法禁用GET/HEAD即使你只使用下列语句设置：
+<PRE>proxy_cache_methods POST;</PRE></H4>
+<H3>proxy_cache_min_uses </H3>
+<H4>语法：proxy_cache_min_uses the_number; <BR>
+默认值：proxy_cache_min_uses 1; <BR>
+使用字段：http, server, location <BR>
+多少次的查询后应答将被缓存，默认1。</H4>
+<H3>proxy_cache_valid </H3>
+<H4>语法：proxy_cache_valid reply_code [reply_code ...] time; <BR>
+默认值：None <BR>
+使用字段：http, server, location <BR>
+为不同的应答设置不同的缓存时间，例如：
+<PRE>  proxy_cache_valid  200 302  10m;
+  proxy_cache_valid  404      1m;</PRE>
+为应答代码为200和302的设置缓存时间为10分钟，404代码缓存1分钟。<BR>
+如果只定义时间：<PRE> proxy_cache_valid 5m;</PRE>
+那么只对代码为200, 301和302的应答进行缓存。<BR>
+同样可以使用any参数任何应答。
+<PRE>  proxy_cache_valid  200 302 10m;
+  proxy_cache_valid  301 1h;
+  proxy_cache_valid  any 1m;</PRE></H4>
+<H3>proxy_cache_use_stale </H3>
+<H4>语法：proxy_cache_use_stale [error|timeout|updating|invalid_header|http_500|http_502|http_503|http_504|http_404|off] [...]; <BR>
+默认值：proxy_cache_use_stale off; <BR>
+使用字段：http, server, location <BR>
+这个指令告诉nginx何时从代理缓存中提供一个过期的响应，参数类似于proxy_next_upstream指令。<BR>
+为了防止缓存失效（在多个线程同时更新本地缓存时），你可以指定'updating'参数，它将保证只有一个线程去更新缓存，并且在这个线程更新缓存的过程中其他的线程只会响应当前缓存中的过期版本。</H4>
+<H3>proxy_connect_timeout </H3>
+<H4>语法：proxy_connect_timeout timeout_in_seconds <BR>
+<H4>默认值：proxy_connect_timeout 60 <BR>
+使用字段：http, server, location <BR>
+指定一个连接到代理服务器的超时时间，需要注意的是这个时间最好不要超过75秒。<BR>这个时间并不是指服务器传回页面的时间（这个时间由proxy_read_timeout声明）。如果你的前端代理服务器是正常运行的，但是遇到一些状况（例如没有足够的线程去处理请求，请求将被放在一个连接池中延迟处理），那么这个声明无助于服务器去建立连接。</H4>
+<H3>proxy_headers_hash_bucket_size </H3>
+<H4>语法：proxy_headers_hash_bucket_size size; <BR>
+默认值：proxy_headers_hash_bucket_size 64; <BR>
+使用字段：http, server, location, if <BR>
+设置哈希表中存储的每个数据大小（参考解释）。</H4>
+<H3>proxy_headers_hash_max_size </H3>
+<H4>语法：proxy_headers_hash_max_size size; <BR>
+默认值：proxy_headers_hash_max_size 512; <BR>
+使用字段：http, server, location, if <BR>
+设置哈希表的最大值（参考解释）。</H4>
+<H3>proxy_hide_header </H3>
+<H4>语法：proxy_hide_header the_header <BR>
+使用字段：http, server, location <BR>
+nginx不对从被代理服务器传来的"Date", "Server", "X-Pad"和"X-Accel-..."应答进行转发，这个参数允许隐藏一些其他的头部字段，但是如果上述提到的头部字段必须被转发，可以使用proxy_pass_header指令，例如：需要隐藏MS-OfficeWebserver和AspNet-Version可以使用如下配置：
+<PRE>location / {
+  proxy_hide_header X-AspNet-Version;
+  proxy_hide_header MicrosoftOfficeWebServer;
+}</PRE>
+当使用<A href="http://wiki.nginx.org/NginxXSendfile/" >X-Accel-Redirect</A>时这个指令非常有用。例如，你可能要在后端应用服务器对一个需要下载的文件设置一个返回头，其中X-Accel-Redirect字段即为这个文件，同时要有恰当的Content-Type，但是，重定向的URL将指向包含这个文件的文件服务器，而这个服务器传递了它自己的Content-Type，可能这并不是正确的，这样就忽略了后端应用服务器传递的Content-Type。为了避免这种情况你可以使用这个指令：
+<PRE>location / {
+  proxy_pass http://backend_servers;
+}
+ 
+location /files/ {
+  proxy_pass http://fileserver;
+  proxy_hide_header Content-Type;
+</PRE></H4>
+<H3>proxy_ignore_client_abort </H3>
+<H4>语法：proxy_ignore_client_abort [ on|off ] <BR>
+默认值：proxy_ignore_client_abort off <BR>
+使用字段：http, server, location <BR>
+防止在客户端自己终端请求的情况下中断代理请求。</H4>
+<H3>proxy_ignore_headers </H3>
+<H4>语法：proxy_ignore_headers name [name ...] <BR>
+默认值：none <BR>
+使用字段：http, server, location <BR>
+这个指令(0.7.54+) 禁止处理来自代理服务器的应答。<BR>
+可以指定的字段为"X-Accel-Redirect", "X-Accel-Expires", "Expires"或"Cache-Control"。 </H4>
+<H3>proxy_intercept_errors </H3>
+<H4>语法：proxy_intercept_errors [ on|off ] <BR>
+默认值：proxy_intercept_errors off <BR>
+使用字段：http, server, location <BR>
+使nginx阻止HTTP应答代码为400或者更高的应答。<BR>
+默认情况下被代理服务器的所有应答都将被传递。 <BR>
+如果将其设置为on则nginx会将阻止的这部分代码在一个error_page指令处理，如果在这个error_page中没有匹配的处理方法，则被代理服务器传递的错误应答会按原样传递。</H4>
+<H3>proxy_max_temp_file_size </H3>
+<H4>语法：proxy_max_temp_file_size size; <BR>
+默认值：proxy_max_temp_file_size 1G; <BR>
+使用字段：http, server, location, if <BR>
+当代理缓冲区过大时使用一个临时文件的最大值，如果文件大于这个值，将同步传递请求而不写入磁盘进行缓存。<BR>
+如果这个值设置为零，则禁止使用临时文件。</H4>
+<H3>proxy_method </H3>
+<H4>语法：proxy_method [method] <BR>
+默认值：None <BR>
+使用字段：http, server, location <BR>
+为后端服务器忽略HTTP请求处理方式，假如你将这个指令指定为POST，那么所有转发到后端的请求都将使用POST请求方式。<BR>
+示例配置：<PRE>  proxy_method POST;</PRE></H4>
+<H3>proxy_next_upstream </H3>
+<H4>语法： proxy_next_upstream [error|timeout|invalid_header|http_500|http_502|http_503|http_504|http_404|off] <BR>
+默认值：proxy_next_upstream error timeout <BR>
+使用字段：http, server, location <BR>
+确定在何种情况下请求将转发到下一个服务器：<BR>
+<H5>·error - 在连接到一个服务器，发送一个请求，或者读取应答时发生错误。<BR>
+·timeout - 在连接到服务器，转发请求或者读取应答时发生超时。<BR>
+·invalid_header - 服务器返回空的或者错误的应答。<BR>
+·http_500 - 服务器返回500代码。<BR>
+·http_502 - 服务器返回502代码。<BR>
+·http_503 - 服务器返回503代码。<BR>
+·http_504 - 服务器返回504代码。<BR>
+·http_404 - 服务器返回404代码。<BR>
+·off - 禁止转发请求到下一台服务器。<BR></H5>
+转发请求只发生在没有数据传递到客户端的过程中。</H4>
+<H3>proxy_no_cache </H3>
+<H4>语法：proxy_no_cache variable1 variable2 ...; <BR>
+默认值：None <BR>
+使用字段：http, server, location <BR>
+确定在何种情况下缓存的应答将不会使用，示例：<BR>
+<PRE>proxy_no_cache $cookie_nocache  $arg_nocache$arg_comment;
+proxy_no_cache $http_pragma     $http_authorization;</PRE>
+如果为空字符串或者等于0，表达式的值等于false，例如，在上述例子中，如果在请求中设置了cookie "nocache"，请求将总是穿过缓存而被传送到后端。<BR>
+注意：来自后端的应答依然有可能符合缓存条件，有一种方法可以快速的更新缓存中的内容，那就是发送一个拥有你自己定义的请求头部字段的请求。例如：My-Secret-Header，那么在proxy_no_cache指令中可以这样定义：<BR>
+<PRE>proxy_no_cache $http_my_secret_header;</PRE></H4>
+<H3>proxy_pass </H3>
+<H4>语法：proxy_pass URL <BR>
+默认值：no <BR>
+使用字段：location, location中的if字段 <BR>
+这个指令设置被代理服务器的地址和被映射的URI，地址可以使用主机名或IP加端口号的形式，例如：<BR>
+<PRE>proxy_pass http://unix:/path/to/backend.socket:/uri/;</PRE>
+路径在unix关键字的后面指定，位于两个冒号之间。<BR>
+当传递请求时，Nginx将location对应的URI部分替换成proxy_pass指令中所指定的部分，但是有两个例外会使其无法确定如何去替换：<BR>
+·location通过正则表达式指定；<BR>
+·在使用代理的location中利用rewrite指令改变URI，使用这个配置可以更加精确的处理请求（break）：<BR>
+<PRE>location  /name/ {
+  rewrite      /name/([^/] +)  /users?name=$1  break;
+  proxy_pass   http://127.0.0.1;
+}</PRE>
+这些情况下URI并没有被映射传递。<BR>
+此外，需要标明一些标记以便URI将以和客户端相同的发送形式转发，而不是处理过的形式，在其处理期间：<BR>
+<H5>·两个以上的斜杠将被替换为一个： "//" -- "/"; <BR>
+·删除引用的当前目录："/./" -- "/"; <BR>
+·删除引用的先前目录："/dir /../" -- "/"。</H5>
+如果在服务器上必须以未经任何处理的形式发送URI，那么在proxy_pass指令中必须使用未指定URI的部分：
+<PRE>location  /some/path/ {
+  proxy_pass   http://127.0.0.1;
+}</PRE>
+在指令中使用变量是一种比较特殊的情况：被请求的URL不会使用并且你必须完全手工标记URL。<BR>
+这意味着下列的配置并不能让你方便的进入某个你想要的虚拟主机目录，代理总是将它转发到相同的URL（在一个server字段的配置）：<BR>
+<PRE>location / {
+  proxy_pass   http://127.0.0.1:8080/VirtualHostBase/https/$server_name:443/some/path/VirtualHostRoot;
+}</PRE>
+解决方法是使用rewrite和proxy_pass的组合：<BR>
+<PRE>location / {
+  rewrite ^(.*)$ /VirtualHostBase/https/$server_name:443/some/path/VirtualHostRoot$1 break;
+  proxy_pass   http://127.0.0.1:8080;
+}</PRE>
+这种情况下请求的URL将被重写， proxy_pass中的拖尾斜杠并没有实际意义。</H4>
+<H3>proxy_pass_header </H3>
+<H4>语法：proxy_pass_header the_name <BR>
+使用字段：http, server, location <BR>
+这个指令允许为应答转发一些隐藏的头部字段。<BR>
+如：<BR>
+<PRE>location / {
+  proxy_pass_header X-Accel-Redirect;
+}</PRE></H4>
+<H3>proxy_pass_request_body </H3>
+<H4>语法：proxy_pass_request_body [ on | off ] ; <BR>
+默认值：proxy_pass_request_body on; <BR>
+使用字段：http, server, location <BR>
+可用版本：0.1.29<BR></H4>
+<H3>proxy_pass_request_headers </H3>
+<H4>语法：proxy_pass_request_headers [ on | off ] ; <BR>
+默认值：proxy_pass_request_headers on; <BR>
+使用字段：http, server, location <BR>
+可用版本：0.1.29<BR></H4>
+<H3>proxy_redirect </H3>
+<H4>语法：proxy_redirect [ default|off|redirect replacement ] <BR>
+默认值：proxy_redirect default <BR>
+使用字段：http, server, location <BR>
+如果需要修改从被代理服务器传来的应答头中的"Location"和"Refresh"字段，可以用这个指令设置。<BR>
+假设被代理服务器返回Location字段为： http://localhost:8000/two/some/uri/<BR>
+这个指令：
+<PRE>proxy_redirect http://localhost:8000/two/ http://frontend/one/;</PRE>
+将Location字段重写为http://frontend/one/some/uri/。<BR>
+在代替的字段中可以不写服务器名：<BR>
+<PRE>proxy_redirect http://localhost:8000/two/ /;</PRE>
+这样就使用服务器的基本名称和端口，即使它来自非80端口。<BR>
+如果使用“default”参数，将根据location和proxy_pass参数的设置来决定。<BR>
+例如下列两个配置等效：<BR>
+<PRE>location /one/ {
+  proxy_pass       http://upstream:port/two/;
+  proxy_redirect   default;
+}
+ 
+location /one/ {
+  proxy_pass       http://upstream:port/two/;
+  proxy_redirect   http://upstream:port/two/   /one/;
+}</PRE>
+在指令中可以使用一些变量：<BR>
+<PRE>proxy_redirect   http://localhost:8000/    http://$host:$server_port/;</PRE>
+这个指令有时可以重复：<BR>
+<PRE>  proxy_redirect   default;
+  proxy_redirect   http://localhost:8000/    /;
+  proxy_redirect   http://www.example.com/   /;</PRE>
+参数off将在这个字段中禁止所有的proxy_redirect指令：<BR>
+<PRE>  proxy_redirect   off;
+  proxy_redirect   default;
+  proxy_redirect   http://localhost:8000/    /;
+  proxy_redirect   http://www.example.com/   /;</PRE>
+利用这个指令可以为被代理服务器发出的相对重定向增加主机名：
+<PRE>proxy_redirect   /   /;</PRE></H4>
+<H3>proxy_read_timeout </H3>
+<H4>语法：proxy_read_timeout time <BR>
+默认值：proxy_read_timeout 60 <BR>
+使用字段：http, server, location <BR>
+决定读取后端服务器应答的超时时间，它决定nginx将等待多久时间来取得一个请求的应答。超时时间是指完成了两次握手后并且状态为established的超时时间。<BR>
+相对于proxy_connect_timeout，这个时间可以扑捉到一台将你的连接放入连接池延迟处理并且没有数据传送的服务器，注意不要将此值设置太低，某些情况下代理服务器将花很长的时间来获得页面应答（例如如当接收一个需要很多计算的报表时），当然你可以在不同的location里面设置不同的值。<BR></H4>
+<H3>proxy_redirect_errors </H3>
+<H4>不推荐使用，请使用 proxy_intercept_errors。</H4>
+<H3>proxy_send_lowat </H3>
+<H4>语法：proxy_send_lowat [ on | off ] <BR>
+默认值：proxy_send_lowat off; <BR>
+使用字段：http, server, location, if <BR>
+设置SO_SNDLOWAT，这个指令仅用于FreeBSD。</H4>
+<H3>proxy_send_timeout </H3>
+<H4>语法：proxy_send_timeout seconds <BR>
+默认值：proxy_send_timeout 60 <BR>
+使用字段：http, server, location <BR>
+设置代理服务器转发请求的超时时间，同样指完成两次握手后的时间，如果超过这个时间代理服务器没有数据转发到被代理服务器，nginx将关闭连接。</H4>
+<H3>proxy_set_body </H3>
+<H4>语法：proxy_set_body [ on | off ] <BR>
+默认值：proxy_set_body off; <BR>
+使用字段：http, server, location, if <BR>
+可用版本：0.3.10。</H4>
+<H3>proxy_set_header</H3>
+<H4>语法：proxy_set_header header value <BR>
+默认值： Host and Connection<BR>
+使用字段：http, server, location <BR>
+这个指令允许将发送到被代理服务器的请求头重新定义或者增加一些字段。<BR>
+这个值可以是一个文本，变量或者它们的组合。<BR>
+proxy_set_header在指定的字段中没有定义时会从它的上级字段继承。<BR>
+默认只有两个字段可以重新定义：<BR>
+<PRE>proxy_set_header Host $proxy_host;
+proxy_set_header Connection Close;</PRE>
+未修改的请求头“Host”可以用如下方式传送：<BR>
+<PRE>proxy_set_header Host $http_host;</PRE>
+但是如果这个字段在客户端的请求头中不存在，那么不发送数据到被代理服务器。<BR>
+这种情况下最好使用$Host变量，它的值等于请求头中的"Host"字段或服务器名：<BR>
+<PRE>proxy_set_header Host $host;</PRE>
+此外，可以将被代理的端口与服务器名称一起传递：<BR>
+<PRE>proxy_set_header Host $host:$proxy_port;</PRE>
+如果设置为空字符串，则不会传递头部到后端，例如下列设置将禁止后端使用gzip压缩：
+<PRE>proxy_set_header  Accept-Encoding  "";</PRE></H4>
+<H3>proxy_store </H3>
+<H4>语法：proxy_store [on | off | path] <BR>
+默认值：proxy_store off <BR>
+使用字段：http, server, location <BR>
+这个指令设置哪些传来的文件将被存储，参数"on"保持文件与alias或root指令指定的目录一致，参数"off"将关闭存储，路径名中可以使用变量：<BR>
+<PRE>proxy_store   /data/www$original_uri;</PRE>
+应答头中的"Last-Modified"字段设置了文件最后修改时间，为了文件的安全，可以使用proxy_temp_path指定一个临时文件目录。<BR>
+这个指令为那些不是经常使用的文件做一份本地拷贝。从而减少被代理服务器负载。<BR>
+<PRE>location /images/ {
+  root                 /data/www;
+  error_page           404 = /fetch$uri;
+}
+ 
+location /fetch {
+  internal;
+  proxy_pass           http://backend;
+  proxy_store          on;
+  proxy_store_access   user:rw  group:rw  all:r;
+  proxy_temp_path      /data/temp;
+  alias                /data/www;
+}</PRE>
+或者通过这种方式：<BR>
+<PRE>location /images/ {
+  root                 /data/www;
+  error_page           404 = @fetch;
+}
+ 
+location @fetch {
+  internal;
+ 
+  proxy_pass           http://backend;
+  proxy_store          on;
+  proxy_store_access   user:rw  group:rw  all:r;
+  proxy_temp_path      /data/temp;
+ 
+  root                 /data/www;
+}</PRE>
+注意proxy_store不是一个缓存，它更像是一个镜像。</H4>
+<H3>proxy_store_access </H3>
+<H4>语法：proxy_store_access users:permissions [users:permission ...] <BR>
+默认值：proxy_store_access user:rw <BR>
+使用字段：http, server, location <BR>
+指定创建文件和目录的相关权限，如：<BR>
+<PRE>proxy_store_access  user:rw  group:rw  all:r;</PRE>
+如果正确指定了组和所有的权限，则没有必要去指定用户的权限：<BR>
+<PRE>proxy_store_access  group:rw  all:r;</PRE></H4>
+<H3>proxy_temp_file_write_size </H3>
+<H4>语法：proxy_temp_file_write_size size; <BR>
+默认值：proxy_temp_file_write_size ["#proxy buffer size"] * 2; <BR>
+使用字段：http, server, location, if <BR>
+设置在写入proxy_temp_path时数据的大小，在预防一个工作进程在传递文件时阻塞太长。</H4>
+<H3>proxy_temp_path</H3>
+<H4>语法：proxy_temp_path dir-path [ level1 [ level2 [ level3 ]  ; <BR>
+默认值：在configure时由--http-proxy-temp-path指定 <BR>
+使用字段：http, server, location <BR>
+类似于<A href="HTTPCore.html" >http核心模块</A>中的client_body_temp_path指令，指定一个地址来缓冲比较大的被代理请求。</H4>
+<H3>proxy_upstream_fail_timeout</H3>
+<H4>0.5.0版本后不推荐使用，请使用<A href="HTTPUpstream.html" >http负载均衡模块</A>中server指令的fail_timeout参数。</H4>
+<H3>proxy_upstream_fail_timeout</H3>
+<H4>0.5.0版本后不推荐使用，请使用<A href="HTTPUpstream.html" >http负载均衡模块</A>中server指令的max_fails参数。</H4>
+<H3>·变量</H3>
+<H4>该模块中包含一些内置变量，可以用于proxy_set_header指令中以创建头部。</H4>
+<H3>$proxy_host </H3>
+<H4>被代理服务器的主机名与端口号。</H4>
+<H3>$proxy_host </H3>
+<H4>被代理服务器的端口号。</H4>
+<H3>$proxy_add_x_forwarded_for </H3>
+<H4>包含客户端请求头中的"X-Forwarded-For"，与$remote_addr用逗号分开，如果没有"X-Forwarded-For"请求头，则$proxy_add_x_forwarded_for等于$remote_addr。</H4>
+<H3>·参考文档</H3>
+<H4><A href="http://sysoev.ru/nginx/docs/http/ngx_http_proxy_module.html" >Original Documentation</A><BR>
+<A href="http://wiki.nginx.org/NginxHttpProxyModule/" >Nginx Http Proxy Module</A></H4>
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://179401.cn/analytics/" : "http://179401.cn/analytics/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://shouce.jb51.net/179401.cn/analytics/piwik.php-idsite=1"  style="border:0" alt=""/></p></noscript>
+<!-- End Piwik Tag -->
+</BODY>
+</HTML>
+<H3><A href="HTTPProxy.html" >前进->URL重写模块（Rewrite）</A></H3>

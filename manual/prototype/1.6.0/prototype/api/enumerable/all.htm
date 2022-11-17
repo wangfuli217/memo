@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Enumerable.all - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>all</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">all([iterator = Prototype.K[, context]]) -> Boolean</code></pre>
+			<p>
+				若 <code>Enumerable</code> 中的元素全部等价于 <code>true</code>，则返回 <code>true</code>，否则返回 
+				<code>false</code>。参数 <code>iterator</code> 是一个函数对象，该参数可选，若指定该参数，
+				则根据参数所定义的规则判断元素等价的 bool 值。
+			</p>
+		</div>
+		<div id="abody">
+			<p><strong>译注：</strong>Prototype.K 是 Prototype 预设的一个函数对象，该函数接受一个参数，并直接返回该参数值。</p>
+			<p>
+				显然，在发现某一元素等价的 bool 值为 <code>false</code> 后，程序会自动终止循环。如果未指定 <code>iterator</code>
+				参数，则直接判定元素等价的 bool 值，否则，将元素传递给 <code>iterator</code> 指定的函数，并根据返回的值判断等价的 bool 值。
+			</p>
+			<p>
+				可选的 <code>context</code> 参数是 <code>iterator</code> 要绑定的对象，若设定该参数，<code>iterator</code>
+				中的 <code>this</code> 关键字将指向 <code>context</code> 对象。
+			</p>
+			<h3>样例</h3>
+			<pre><code class="javascript">[].all() 
+// -> true (空数组，没有任何一个元素等价于 <code>false</code>) 
+$R(1, 5).all() 
+// -> true (在 [1..5] 间的所有值都等价于 <code>true</code>)
+[0, 1, 2].all() 
+// -> false (循环仅执行一次：0 等价于 <code>false</code>) 
+[9, 10, 15].all(function(n) { return n >= 10; }) 
+// -> false (对于 9，iterator 返回 <code>false</code>) 
+$H({ name: 'John', age: 29, oops: false }).all(function(pair) { return pair.value; }) 
+// -> false (名值对 oops/false 的值为 false) </code></pre>
+			<h3>参见</h3>
+			<p>
+				如果想要判断 <code>Enumerable</code> 中至少有一个元素符合指定的条件，请使用 <a href="any.htm" >any</a>。
+			</p>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

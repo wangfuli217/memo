@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml">
+<HEAD><TITLE>HTTP Limit Zone模块（HTTP Limit Zone）</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=GB2312">
+<STYLE type=text/css>PRE {
+	BACKGROUND-COLOR: #cccccc
+}
+.STYLE1 {
+	COLOR: #ff0000
+}
+</STYLE>
+
+<META content="MSHTML 6.00.6000.16809" name=GENERATOR></HEAD>
+<BODY>
+<H2>HTTP Limit Zone模块（HTTP Limit Zone）</H2><BR>
+
+<H3>·摘要</H3>
+<H4>这个模块可以为一个地址指定的会话或者某些特殊情况限制同时连接数，<BR>
+如下例：<PRE>
+ http {
+  limit_zone   one  $binary_remote_addr  10m;
+ 
+  server {
+    location /download/ {
+      limit_conn   one  1;
+    }
+  }
+}</PRE></H4>
+<H3>·指令</H3>
+<H3>limit_zone </H3>
+<H4>语法：limit_zone zone_name $variable memory_max_size <BR>
+默认值：no <BR>
+使用字段：http <BR>
+指令描述会话状态存储区域。<BR>
+会话的数目按照指定的变量来决定，它依赖于使用的变量大小和memory_max_size的值。<BR>
+如下例：<BR>
+<PRE>limit_zone one $binary_remote_addr 10m;</PRE>
+客户端的地址将用于会话，注意$binary_remote_addr变量将替换$remote_addr而被使用。<BR>
+$remote_addr 变量的值的长度可以是7到15字节，因此大小指定为32或64字节。 <BR>
+$binary_remote_addr 变量的值的长度总是4字节，大小总是32字节。<BR>
+当会话状态储存区域为1M时理论上可以处理32000个会话，每个会话大小为32字节。<BR></H4>
+<H3>limit_conn </H3>
+<H4>语法：limit_conn zone_name max_clients_per_ip <BR>
+默认值：no <BR>
+使用字段：http, server, location <BR>
+指令指定一个会话的最大同时连接数，超过这个数字的请求将被返回"Service unavailable" (503)代码。<BR>
+如下例：<BR>
+<PRE>limit_zone   one  $binary_remote_addr  10m;
+ 
+server {
+  location /download/ {
+  limit_conn   one  1;
+}</PRE>
+这将指定一个地址只能同时存在一个连接。<BR></H4>
+<H3>·参考文档</H3>
+<H4><A href="http://sysoev.ru/nginx/docs/http/ngx_http_limit_zone_module.html" >Original Documentation</A><BR>
+<A href="http://wiki.nginx.org/NginxHttpLimitZoneModule/" >Nginx Http Limit Zone Module</A></H4>
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://179401.cn/analytics/" : "http://179401.cn/analytics/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://shouce.jb51.net/179401.cn/analytics/piwik.php-idsite=1"  style="border:0" alt=""/></p></noscript>
+<!-- End Piwik Tag -->
+</BODY>
+</HTML>
+<H3><A href="HTTPLimitRequests.html" >前进->HTTP Limit Requests模块（HTTP Limit Requests）</A></H3>

@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Form.Element.present - Prototype JavaScript 框架</title>
+	<link href="../../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+	<script type='text/javascript' src="../../../prototype-1.6.0.3.js" ></script>
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>present</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">present(element) -> boolean</code></pre>
+			<p>如果一个文本输入框包含内容，返回 <code>true</code>，否则返回 <code>false</code>。</p>
+		</div>
+		<div id="abody">
+			<h3>样例</h3>
+			<p>
+				在常规的表单校验中，这个方法非常有用。尝试提交下面的表单，第一次不要填写任何信息，然后键入一些文本，再次提交：
+			</p>
+			<form id="example" class="example" action="present.htm#">
+			<fieldset>
+				<legend>User Details</legend>
+				<p id="msg" class="message">Please fill out the following fields:</p>
+				<div>
+					<label for="username">Username</label>
+					<input id="username" type="text" name="username" />
+				</div>
+				<div>
+					<label for="email">Email Address</label>
+					<input id="email" type="text" name="email" />
+				</div>
+				<div class="buttonrow"><input type="submit" value="submit" /></div>
+			</fieldset>
+			
+			<script type="text/javascript">
+				$('example').onsubmit = function(){
+				  var valid, msg = $('msg')
+
+				  // are both fields present?
+				  valid = $(this.username).present() && $(this.email).present()
+
+				  if (valid) {
+					// in real world we would return true here to allow the form to be submitted
+					// return true
+					msg.update('Passed validation!').style.color = 'green'
+				  } else {
+					msg.update('Please fill out <em>all</em> the fields.').style.color = 'red'
+				  }
+				  return false
+				}
+			</script>
+
+			</form>
+			<p>这是上面的样例所需的完整的 JavaScript 代码：</p>
+			<pre><code class="javascript">$('example').onsubmit = function(){ 
+	var valid, msg = $('msg')
+	
+	// 是否所有的字段都已填写？ 
+	valid = $(this.username).present() && $(this.email).present()
+	
+	if (valid) { 
+		// 在实际应用中，为允许表单提交，我们应返回 true 
+		// return true 
+		msg.update('Passed validation!').style.color = 'green'
+	} 
+	else { 
+		msg.update('Please fill out <em>all</em> the fields.').style.color = 'red'
+	} 
+	return false 
+} </code></pre>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

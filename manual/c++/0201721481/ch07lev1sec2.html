@@ -1,0 +1,1090 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 7.2.  Argument Passing</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch07lev1sec1.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch07lev1sec3.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch07lev1sec2"></a>
+
+        <h3 class="docSection1Title">7.2. Argument Passing</h3>
+        <h3 class="docSection1Title">7.2. 参数传递</h3>
+
+        <p class="docText">Each parameter is created anew on each call to the function. The value used to initialize a parameter is the corresponding argument passed in the call.</p>
+        <p class="docText">每次调用函数时，都会重新创建该函数所有的形参，此时所传递的实参将会初始化对应的形参。</p>
+
+	<a name="ch07note03"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Parameters are initialized the same way that variables are. If the parameter has a nonreference type, then the argument is copied. If the parameter is a reference (<a class="docLink" href="ch02lev1sec5.html#ch02lev1sec5" >Section 2.5</a>, p. <a class="docLink" href="ch02lev1sec5.html#ch02lev1sec5" >58</a>), then the parameter is just another name for the argument.</p>
+                <p class="docText">形参的初始化与变量的初始化一样：如果形参具有非引用类型，则复制实参的值，如果形参为引用类型（<a class="docLink" href="ch02lev1sec5.html#ch02lev1sec5" >第 2.5 节</a>），则它只是实参的别名。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <a name="ch07lev2sec6"></a>
+        <h4 class="docSection2Title">7.2.1. Nonreference Parameters</h4>
+        <h4 class="docSection2Title">7.2.1. 非引用形参</h4>
+
+        <p class="docText">Parameters that are plain, nonreference types are initialized by copying the corresponding argument. When a parameter is initialized with a copy, the function has no access to the actual arguments of the call. It cannot change the arguments. Let's look again at the definition of <tt>gcd</tt>:</p>
+        <p class="docText">普通的非引用类型的参数通过复制对应的实参实现初始化。当用实参副本初始化形参时，函数并没有访问调用所传递的实参本身，因此不会修改实参的值。下面再次观察 <tt>gcd</tt> 这个函数的定义：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">return the greatest common divisor</span>
+     int gcd(int v1, int v2)
+     {
+         while (v2) {
+             int temp = v2;
+             v2 = v1 % v2;
+             v1 = temp;
+         }
+         return v1;
+     }
+</pre><br>
+
+        <p class="docText">Inside the body of the <tt>while</tt>, we change the values of both <tt>v1</tt> and <tt>v2</tt>. However, these changes are made to the local parameters and are not reflected in the arguments used to call <tt>gcd</tt>. Thus, when we call</p>
+        <p class="docText"><tt>while</tt> 循环体虽然修改了 <tt>v1</tt> 与 <tt>v2</tt> 的值，但这些变化仅限于局部参数，而对调用 <tt>gcd</tt> 函数使用的实参没有任何影响。于是，如果有函数调用</p>
+        <pre>
+     gcd(i, j)
+</pre><br>
+
+        <p class="docText">the values <tt>i</tt> and <tt>j</tt> are unaffected by the assignments performed inside <tt>gcd</tt>.</p>
+        <p class="docText">则 <tt>i</tt> 与 <tt>j</tt> 的值不受 <tt>gcd</tt> 内执行的赋值操作的影响。</p>
+
+	<a name="ch07note04"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Nonreference parameters represent local <span class="docEmphasis">copies</span> of the corresponding argument. Changes made to the parameter are made to the local copy. Once the function terminates, these local values are gone.</p>
+                <p class="docText">非引用形参表示对应实参的局部<span class="docEmphasis">副本</span>。对这类形参的修改仅仅改变了局部副本的值。一旦函数执行结束，这些局部变量的值也就没有了。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch07lev3sec3"></a>
+
+        <h5 class="docSection3Title">Pointer Parameters</h5>
+        <h5 class="docSection3Title">指针形参</h5>
+
+	<a name="idd1e48684"></a><a name="idd1e48691"></a><a name="idd1e48698"></a><a name="idd1e48704"></a><a name="idd1e48710"></a><a name="idd1e48719"></a><a name="idd1e48725"></a><a name="idd1e48732"></a><a name="idd1e48740"></a><a name="idd1e48745"></a><a name="idd1e48750"></a><a name="idd1e48757"></a><a name="idd1e48764"></a><a name="idd1e48771"></a>
+        <p class="docText">A parameter can be a pointer (<a class="docLink" href="ch04lev1sec2.html#ch04lev1sec2" >Section 4.2</a>, p. <a class="docLink" href="ch04lev1sec2.html#ch04lev1sec2" >114</a>), in which case the argument pointer is copied. As with any nonreference type parameter, changes made to the parameter are made to the local copy. If the function assigns a new pointer value to the parameter, the calling pointer value is unchanged.</p>
+        <p class="docText">函数的形参可以是指针（<a class="docLink" href="ch04lev1sec2.html#ch04lev1sec2" >第 4.2 节</a>），此时将复制实参指针。与其他非引用类型的形参一样，该类形参的任何改变也仅作用于局部副本。如果函数将新指针赋给形参，主调函数使用的实参指针的值没有改变。</p>
+
+        <p class="docText">Recalling the discussion in <a class="docLink" href="ch04lev1sec2.html#ch04lev2sec5" >Section 4.2.3</a> (p. <a class="docLink" href="ch04lev1sec2.html#ch04lev2sec5" >121</a>), the fact that the pointer is copied affects only assignments to the pointer. If the function takes a pointer to a non<tt>const</tt> type, then the function can assign through the pointer and change the value of the object to which the pointer points:</p>
+        <p class="docText">回顾<a class="docLink" href="ch04lev1sec2.html#ch04lev2sec5" >第 4.2.3 节</a>的讨论，事实上被复制的指针只影响对指针的赋值。如果函数形参是非 <tt>const</tt> 类型的指针，则函数可通过指针实现赋值，修改指针所指向对象的值：</p>
+        <pre>
+     void reset(int *ip)
+     {
+         *ip = 0; // <span class="docEmphItalicAlt">changes the value of the object to which</span> <span class="docEmphasis">ip</span> <span class="docEmphItalicAlt">points</span>
+         ip = 0;   // <span class="docEmphItalicAlt">changes only the local value of</span> <span class="docEmphasis">ip</span><span class="docEmphItalicAlt">; the argument is unchanged</span>
+     }
+</pre><br>
+
+        <p class="docText">After a call to <tt>reset</tt>, the argument is unchanged but the object to which the argument points will be 0:</p>
+        <p class="docText">调用 <tt>reset</tt> 后，实参依然保持原来的值，但它所指向的对象的值将变为 0：</p>
+        <pre>
+     int i = 42;
+     int *p = &amp;i;
+     cout &lt;&lt; "i: " &lt;&lt; *p &lt;&lt; '\n';   // <span class="docEmphItalicAlt">prints</span> <span class="docEmphasis">i: 42</span>
+     reset(p);                      // <span class="docEmphItalicAlt">changes</span> <span class="docEmphasis">*p</span> <span class="docEmphItalicAlt">but not</span> <span class="docEmphasis">p</span>
+     cout &lt;&lt; "i: " &lt;&lt; *p &lt;&lt; endl;   // <span class="docEmphItalicAlt">ok: prints</span> <span class="docEmphasis">i: 0</span>
+</pre><br>
+
+        <p class="docText">If we want to prevent changes to the value to which the pointer points, then the parameter should be defined as a pointer to <tt>const</tt>:</p>
+        <p class="docText">如果保护指针指向的值，则形参需定义为指向 <tt>const</tt> 对象的指针：</p>
+        <pre>
+     void use_ptr(const int *p)
+     {
+          // <span class="docEmphasis">use_ptr</span> <span class="docEmphItalicAlt">may read but not write to</span> <span class="docEmphasis">*p</span>
+     }
+</pre><br>
+
+        <p class="docText">Whether a pointer parameter points to a <tt>const</tt> or non<tt>const</tt> type affects the arguments that we can use to call the function. We can call <tt>use_ptr</tt> on either an <tt>int*</tt> or a <tt>const int*</tt>; we can pass only on an <tt>int*</tt> to <tt>reset</tt>. This distinction follows from the initialization rules for pointers (<a class="docLink" href="ch04lev1sec2.html#ch04lev2sec7" >Section 4.2.5</a>, p. <a class="docLink" href="ch04lev1sec2.html#ch04lev2sec7" >126</a>). We may initialize a pointer to <tt>const</tt> to point to a non<tt>const</tt> object but may not use a pointer to non<tt>const</tt> to point to a <tt>const</tt> object.</p>
+        <p class="docText">指针形参是指向 <tt>const</tt> 类型还是非 <tt>const</tt> 类型，将影响函数调用所使用的实参。我们既可以用 <tt>int*</tt> 也可以用 <tt>const int*</tt> 类型的实参调用 <tt>use_ptr</tt> 函数；但仅能将 <tt>int*</tt> 类型的实参传递给 <tt>reset</tt> 函数。这个差别来源于指针的初始化规则（<a class="docLink" href="ch04lev1sec2.html#ch04lev2sec7" >第 4.2.5 节</a>）。可以将指向 <tt>const</tt> 对象的指针初始化为指向非 <tt>const</tt> 对象，但不可以让指向非 <tt>const</tt> 对象的指针向 <tt>const</tt> 对象。</p>
+
+	<a name="ch07lev3sec4"></a>
+        <h5 class="docSection3Title"><tt>const</tt> Parameters</h5>
+        <h5 class="docSection3Title"><tt>const</tt> 形参</h5>
+
+        <p class="docText">We can call a function that takes a nonreference, non<tt>const</tt> parameter passing either a <tt>const</tt> or non<tt>const</tt> argument. For example, we could pass two <tt>const int</tt>s to our <tt>gcd</tt> function:</p>
+	<p class="docText">在调用函数时，如果该函数使用非引用的非 <tt>const</tt> 形参，则既可给该函数传递 <tt>const</tt> 实参也可传递非 <tt>const</tt> 的实参。例如，可以传递两个 <tt>int</tt> 型 <tt>const</tt> 对象调用 <tt>gcd</tt>：</p>
+        <pre>
+     const int i = 3, j = 6;
+     int k = rgcd(3, 6);   // <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">k</span> <span class="docEmphItalicAlt">initialized to</span> <span class="docEmphasis">3</span>
+</pre><br>
+
+        <p class="docText">This behavior follows from the normal initialization rules for <tt>const</tt> objects (<a class="docLink" href="ch02lev1sec4.html#ch02lev1sec4" >Section 2.4</a>, p. <a class="docLink" href="ch02lev1sec4.html#ch02lev1sec4" >56</a>). Because the initialization copies the value of the initializer, we can initialize a non<tt>const</tt> object from a <tt>const</tt> object, or vice versa.</p>
+        <p class="docText">这种行为源于 <tt>const</tt> 对象的标准初始化规则（<a class="docLink" href="ch02lev1sec4.html#ch02lev1sec4" >第 2.4 节</a>）。因为初始化复制了初始化式的值，所以可用 <tt>const</tt> 对象初始化非 <tt>const</tt> 对象，反之亦然。</p>
+
+	<a name="idd1e48987"></a><a name="idd1e48995"></a><a name="idd1e49003"></a>
+        <p class="docText">If we make the parameter a <tt>const</tt> nonreference type:</p>
+        <p class="docText">如果将形参定义为非引用的 <tt>const</tt> 类型：</p>
+        <pre>
+     void fcn(const int i) { /* <span class="docEmphasis">fcn</span> <span class="docEmphItalicAlt">can read but not write to</span> <span class="docEmphasis">i</span> */ }
+</pre><br>
+
+        <p class="docText">then the function cannot change its local copy of the argument. The argument is still passed as a copy so we can pass <tt>fcn</tt> either a <tt>const</tt> or non<tt>const</tt> object.</p>
+        <p class="docText">则在函数中，不可以改变实参的局部副本。由于实参仍然是以副本的形式传递，因此传递给 <tt>fcn</tt> 的既可以是 <tt>const</tt> 对象也可以是非 <tt>const</tt> 对象。</p>
+
+        <p class="docText">What may be surprising, is that although the parameter is a <tt>const</tt> inside the function, the compiler otherwise treats the definition of <tt>fcn</tt> as if we had defined the parameter as a plain <tt>int</tt>:</p>
+        <p class="docText">令人吃惊的是，尽管函数的形参是 <tt>const</tt>，但是编译器却将 <tt>fcn</tt> 的定义视为其形码被声明为普通的 <tt>int</tt> 型：</p>
+        <pre>
+     void fcn(const int i) { /* <span class="docEmphasis">fcn</span> <span class="docEmphItalicAlt">can read but not write to</span> <span class="docEmphasis">i</span> */ }
+     void fcn(int i) { /* ... */ }            // <span class="docEmphItalicAlt">error: redefines</span> <span class="docEmphasis">fcn(int)</span>
+</pre><br>
+
+        <p class="docText">This usage exists to support compatibility with the C language, which makes no distinction between functions taking <tt>const</tt> or non<tt>const</tt> parameters.</p>
+        <p class="docText">这种用法是为了支持对 C 语言的兼容，因为在 C 语言中，具有 <tt>const</tt> 形参或非 <tt>const</tt> 形参的函数并无区别。</p>
+
+	<a name="ch07lev3sec5"></a>
+        <h5 class="docSection3Title">Limitations of Copying Arguments</h5>
+        <h5 class="docSection3Title">复制实参的局限性</h5>
+
+        <p class="docText">Copying an argument is not suitable for every situation. Cases where copying doesn't work include:</p>
+        <p class="docText">复制实参并不是在所有的情况下都适合，不适宜复制实参的情况包括：</p>
+
+        <ul>
+          <li>
+            <p class="docList">When we want the function to be able to change the value of an argument.</p>
+            <p class="docList">当需要在函数中修改实参的值时。</p>
+          </li>
+
+          <li>
+            <p class="docList">When we want to pass a large object as an argument. The time and space costs to copy the object are often too high for real-world applications.</p>
+            <p class="docList">当需要以大型对象作为实参传递时。对实际的应用而言，复制对象所付出的时间和存储空间代价往往过在。</p>
+          </li>
+
+          <li>
+            <p class="docList">When there is no way to copy the object.</p>
+            <p class="docList">当没有办法实现对象的复制时。</p>
+          </li>
+        </ul>
+
+        <p class="docText">In these cases we can instead define the parameters as references or pointers.</p>
+        <p class="docText">对于上述几种情况，有效的解决办法是将形参定义为引用或指针类型。</p>
+
+	<a name="ch07sb02"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 7.2.1</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch07qa2q1"></a><b>Exercise 7.5:</b></td>
+
+                    <td>
+                      <p class="docText">Write a function that takes an <tt>int</tt> and a pointer to an <tt>int</tt> and returns the larger of the <tt>int</tt> value of the value to which the pointer points. What type should you use for the pointer?</p>
+                      <p class="docText">编写一个函数，该函数具有两个形参，分别为 <tt>int</tt> 型和指向 <tt>int</tt> 型的指针，并返回这两个 <tt>int</tt> 值之中较大的数值。考虑应将其指针形参定义为什么类型？</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch07qa2q2"></a><b>Exercise 7.6:</b></td>
+
+                    <td>
+                      <p class="docText">Write a function to swap the values pointed to by two pointers to <tt>int</tt>. Test the function by calling it and printing the swapped values.</p>
+                      <p class="docText">编写函数交换两个 <tt>int</tt> 型指针所指向的值，调用并检验该函数，输出交换后的值。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a name="ch07lev2sec7"></a>
+
+        <h4 class="docSection2Title">7.2.2. Reference Parameters</h4>
+        <h4 class="docSection2Title">7.2.2. 引用形参</h4>
+
+        <p class="docText">As an example of a situation where copying the argument doesn't work, consider a function to swap the values of its two arguments:</p>
+        <p class="docText">考虑下面不适宜复制实参的例子，该函数希望交换两个实参的值：</p>
+        <pre>
+      // <span class="docEmphItalicAlt">incorrect version of</span> <span class="docEmphasis">swap:</span> <span class="docEmphItalicAlt">The arguments are not changed!</span>
+     void swap(int v1, int v2)
+     {
+         int tmp = v2;
+         v2 = v1;    // <span class="docEmphItalicAlt">assigns new value to local copy of the argument</span>
+         v1 = tmp;
+     }               // <span class="docEmphItalicAlt">local objects</span> <span class="docEmphasis">v1</span> <span class="docEmphItalicAlt">and</span> <span class="docEmphasis">v2</span> <span class="docEmphItalicAlt">no longer exist</span>
+</pre><br>
+
+	<a name="idd1e49200"></a><a name="idd1e49205"></a><a name="idd1e49211"></a><a name="page_233"></a>
+        <p class="docText">In this case, we want to change the arguments themselves. As defined, though, <tt>swap</tt> cannot affect those arguments. When it executes, <tt>swap</tt> exchanges the <span class="docEmphasis">local copies</span> of its arguments. The arguments passed to <tt>swap</tt> are unchanged:</p>
+        <p class="docText">这个例子期望改变实参本身的值。但对于上述的函数定义，<tt>swap</tt> 无法影响实参本身。执行 <tt>swap</tt> 时，只交换了其实参的<span class="docEmphasis">局部副本</span>，而传递 <tt>swap</tt> 的实参并没有修改：</p>
+        <pre>
+     int main()
+     {
+         int i = 10;
+         int j = 20;
+         cout &lt;&lt; "Before swap():\ti: "
+              &lt;&lt; i &lt;&lt; "\tj: " &lt;&lt; j &lt;&lt; endl;
+         swap(i, j);
+         cout &lt;&lt; "After swap():\ti: "
+              &lt;&lt; i &lt;&lt; "\tj: " &lt;&lt; j &lt;&lt; endl;
+         return 0;
+     }
+</pre><br>
+
+        <p class="docText">Compiling and executing this program results in the following output:</p>
+        <p class="docText">编译并执行程序，产生如下输出结果：</p>
+        <pre>
+     <span class="docEmphStrong">Before swap(): i: 10 j: 20</span>
+     <span class="docEmphStrong">After  swap(): i: 10 j: 20</span>
+</pre><br>
+
+        <p class="docText">For <tt>swap</tt> to work as intended and swap the values of its arguments, we need to make the parameters references:</p>
+        <p class="docText">为了使 <tt>swap</tt> 函数以期望的方式工作，交换实参的值，需要将形参定义为引用类型：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">swap</span> <span class="docEmphItalicAlt">acts on references to its arguments</span>
+     void swap(int &amp;v1, int &amp;v2)
+     {
+         int tmp = v2;
+         v2 = v1;
+         v1 = tmp;
+     }
+</pre><br>
+
+        <p class="docText">Like all references, reference parameters refer directly to the objects to which they are bound rather than to copies of those objects. When we define a reference, we must initialize it with the object to which the reference will be bound. Reference parameters work exactly the same way. Each time the function is called, the reference parameter is created and bound to its corresponding argument. Now, when we call <tt>swap</tt></p>
+        <p class="docText">与所有引用一样，引用形参直接关联到其所绑定的圣贤，而并非这些对象的副本。定义引用时，必须用与该引用绑定的对象初始化该引用。引用形参完全以相同的方式工作。每次调用函数，引用形参被创建并与相应实参关联。此时，当调用 <tt>swap</tt></p>
+        <pre>
+     swap(i, j);
+</pre><br>
+
+        <p class="docText">the parameter <tt>v1</tt> is just another name for the object <tt>i</tt> and <tt>v2</tt> is another name for <tt>j</tt>. Any change to <tt>v1</tt> is actually a change to the argument <tt>i</tt>. Similarly, changes to <tt>v2</tt> are actually made to <tt>j</tt>. If we recompile <tt>main</tt> using this revised version of <tt>swap</tt>, we can see that the output is now correct:</p>
+        <p class="docText">形参 <tt>v1</tt> 只是对象 <tt>i</tt> 的另一个名字，而 <tt>v2</tt> 则是对象 <tt>j</tt> 的另一个名字。对 <tt>v1</tt> 的任何修改实际上也是对 <tt>i</tt> 的修改。同样地，<tt>v2</tt> 上的任何修改实际上也是对 <tt>j</tt> 的修改。重新编译使用 <tt>swap</tt> 的这个修订版本的 <tt>main</tt> 函数后，可以看到输出结果是正确的：</p>
+        <pre>
+     <span class="docEmphStrong">Before swap(): i: 10 j: 20</span>
+     <span class="docEmphStrong">After  swap(): i: 20 j: 10</span>
+</pre><br>
+        <a name="ch07note05"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="84" height="51" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/tip.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Programmers who come to C++ from a C background are used to passing pointers to obtain access to the argument. In C++ it is safer and more natural to use reference parameters.</p>
+                <p class="docText">从 C 语言背景转到 C++ 的程序员习惯通过传递指针来实现对实参的访问。在 C++ 中，使用引用形参则更安全和更自然。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <a name="ch07lev3sec6"></a>
+        <h5 class="docSection3Title">Using Reference Parameters to Return Additional Information</h5>
+        <h5 class="docSection3Title">使用引用形参返回额外的信息</h5>
+
+	<a name="idd1e49344"></a><a name="idd1e49349"></a>
+        <p class="docText">We've seen one example, <tt>swap</tt>, in which reference parameters were used to allow the function to change the value of its arguments. Another use of reference parameters is to return an additional result to the calling function.</p>
+        <p class="docText">通过对 <tt>swap</tt> 这个例子的讨论，了解了如何利用引用形参让函数修改实参的值。引用形参的另一种用法是向主调函数返回额外的结果。</p>
+
+        <p class="docText">Functions can return only a single value, but sometimes a function has more than one thing to return. For example, let's define a function named <tt>find_val</tt> that searches for a particular value in the elements of a <tt>vector</tt> of integers. It returns an iterator that refers to the element, if the element was found, or to the <tt>end</tt> value if the element isn't found. We'd also like the function to return an occurrence count if the value occurs more than once. In this case the iterator returned should be to the first element that has the value for which we're looking.</p>
+	<p class="docText">函数只能返回单个值，但有些时候，函数有不止一个的内容需要返回。例如，定义一个 <tt>find_val</tt> 函数。在一个整型 <tt>vector</tt> 对象的元素中搜索某个特定值。如果找到满足要求的元素，则返回指向该元素的迭代器；否则返回一个迭代器，指向该 <tt>vector</tt> 对象的 <tt>end</tt> 操作返回的元素。此外，如果该值出现了不止一次，我们还希望函数可以返回其出现的次数。在这种情况下，返回的迭代器应该指向具有要寻找的值的第一个元素。</p>
+
+        <p class="docText">How can we define a function that returns both an iterator and an occurrence count? We could define a new type that contains an iterator and a count. An easier solution is to pass an additional reference argument that <tt>find_val</tt> can use to return a count of the number of occurrences:</p>
+        <p class="docText">如何定义既返回一个迭代器又返回出现次数的函数？我们可以定义一种包含一个迭代器和一个计数器的新类型。而更简便的解决方案是给 <tt>find_val</tt> 传递一个额外的引用实参，用于返回出现次数的统计结果：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">returns an iterator that refers to the first occurrence of</span> <span class="docEmphasis">value</span>
+     // <span class="docEmphItalicAlt">the reference parameter</span> <span class="docEmphasis">occurs</span> <span class="docEmphItalicAlt">contains a second return value</span>
+     vector&lt;int&gt;::const_iterator find_val(
+         vector&lt;int&gt;::const_iterator beg,             // <span class="docEmphItalicAlt">first element</span>
+         vector&lt;int&gt;::const_iterator end,             // <span class="docEmphItalicAlt">one past last element</span>
+         int value,                                    // <span class="docEmphItalicAlt">the value we want</span>
+         vector&lt;int&gt;::size_type &amp;occurs)              // <span class="docEmphItalicAlt">number of times it occurs</span>
+     {
+         // <span class="docEmphasis">res_iter</span> <span class="docEmphItalicAlt">will hold first occurrence, if any</span>
+         vector&lt;int&gt;::const_iterator res_iter = end;
+         occurs = 0; // <span class="docEmphItalicAlt">set occurrence count parameter</span>
+         for ( ; beg != end; ++beg)
+             if (*beg == value) {
+                 // <span class="docEmphItalicAlt">remember first occurrence of</span> <span class="docEmphasis">value</span>
+                 if (res_iter == end)
+                    res_iter = beg;
+                 ++occurs; // <span class="docEmphItalicAlt">increment occurrence count</span>
+             }
+         return res_iter;  // <span class="docEmphItalicAlt">count returned implicitly in</span> <span class="docEmphasis">occurs</span>
+     }
+</pre><br>
+
+        <p class="docText">When we call <tt>find_val</tt>, we have to pass four arguments: a pair of iterators that denote the range of elements (<a class="docLink" href="ch09lev1sec2.html#ch09lev2sec4" >Section 9.2.1</a>, p. <a class="docLink" href="ch09lev1sec2.html#ch09lev2sec4" >314</a>) in the <tt>vector</tt> in which to look, the value to look for, and a <tt>size_type</tt> (<a class="docLink" href="ch03lev1sec2.html#ch03lev2sec4" >Section 3.2.3</a>, p. <a class="docLink" href="ch03lev1sec2.html#ch03lev2sec4" >84</a>) object to hold the occurrence count. Assuming <tt>ivec</tt> is a <tt>vector&lt;int&gt;, it</tt> is an iterator of the right type, and <tt>ctr</tt> is a <tt>size_type</tt>, we could call <tt>find_val</tt> as follows:</p>
+	<p class="docText">调用 <tt>find_val</tt> 时，需传递四个实参：一对标志 <tt>vector</tt> 对象中要搜索的元素范围（<a class="docLink" href="ch09lev1sec2.html#ch09lev2sec4" >第 9.2.1 节</a>）的迭代器，所查找的值，以及用于存储出现次数的 <tt>size_type</tt> 类型（<a class="docLink" href="ch03lev1sec2.html#ch03lev2sec4" >第 3.2.3 节</a>）对象。假设 <tt>ivec</tt> 是 <tt>vector&lt;int&gt;, it</tt> 类型的对象，<tt>it</tt> 是一个适当类型的迭代器，而 <tt>ctr</tt> 则是 <tt>size_type</tt> 类型的变量，则可如此调用该函数：</p>
+        <pre>
+     it = find_val(ivec.begin(), ivec.end(), 42, ctr);
+</pre><br>
+
+        <p class="docText">After the call, the value of <tt>ctr</tt> will be the number of times 42 occurs, and <tt>it</tt> will refer to the first occurrence if there is one. Otherwise, <tt>it</tt> will be equal to <tt>ivec.end()</tt> and <tt>ctr</tt> will be zero.</p>
+	<p class="docText">调用后，<tt>ctr</tt> 的值将是 42 出现的次数，如果 42 在 <tt>ivec</tt> 中出现了，则 <tt>it</tt> 将指向其第一次出现的位置；否则，<tt>it</tt> 的值为 <tt>ivec.end()</tt>，而 <tt>ctr</tt> 则为 0。</p>
+
+	<a name="ch07lev3sec7"></a>
+        <h5 class="docSection3Title">Using (<tt>const</tt>) References to Avoid Copies</h5>
+        <h5 class="docSection3Title">利用 <tt>const</tt> 引用避免复制</h5>
+
+	<a name="idd1e49511"></a><a name="idd1e49518"></a><a name="idd1e49526"></a><a name="idd1e49533"></a><a name="idd1e49540"></a><a name="idd1e49545"></a><a name="idd1e49555"></a><a name="idd1e49562"></a>
+        <p class="docText">The other circumstance in which reference parameters are useful is when passing a large object to a function. Although copying an argument is okay for objects of built-in data types and for objects of class types that are small in size, it is (often) too inefficient for objects of most class types or large arrays. Moreover, as we'll learn in <a class="docLink" href="ch13.html#ch13" >Chapter 13</a>, some class types cannot be copied. By using a reference parameter, the function can access the object directly without copying it.</p>
+        <p class="docText">在向函数传递大型对象时，需要使用引用形参，这是引用形参适用的另一种情况。虽然复制实参对于内置数据类型的对象或者规模较小的类类型对象来说没有什么问题，但是对于大部分的类类型或者大型数组，它的效率（通常）太低了；此外，我们将在<a class="docLink" href="ch13.html#ch13" >第十三章</a>学习到，某些类类型是无法复制的。使用引用形参，函数可以直接访问实参对象，而无须复制它。</p>
+
+        <p class="docText">As an example, we'll write a function that compares the length of two <tt>string</tt>s. Such a function needs to access the <tt>size</tt> of each <tt>string</tt> but has no need to write to the <tt>string</tt>s. Because <tt>string</tt>s can be long, we'd like to avoid copying them. Using <tt>const</tt> references we can avoid the copy:</p>
+        <p class="docText">编写一个比较两个 <tt>string</tt> 对象长度的函数作为例子。这个函数需要访问每个 <tt>string</tt> 对象的 <tt>size</tt>，但不必修改这些对象。由于 <tt>string</tt> 对象可能相当长，所以我们希望避免复制操作。使用 <tt>const</tt> 引用就可避免复制：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">compare the length of two strings</span>
+     bool isShorter(const string &amp;s1, const string &amp;s2)
+     {
+         return s1.size() &lt; s2.size();
+     }
+</pre><br>
+
+        <p class="docText">Each parameter is a reference to <tt>const string</tt>. Because the parameters are references the arguments are not copied. Because the parameters are <tt>const</tt> references, <tt>isShorter</tt> may not use the references to change the arguments.</p>
+        <p class="docText">其每一个形参都是 <tt>const string</tt> 类型的引用。因为形参是引用，所以不复制实参。又因为形参是 <tt>const</tt> 引用，所以 <tt>isShorter</tt> 函数不能使用该引用来修改实参。</p>
+
+	<a name="ch07note06"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">When the only reason to make a parameter a reference is to avoid copying the argument, the parameter should be <tt>const</tt> reference.</p>
+                <p class="docText">如果使用引用形参的唯一目的是避免复制实参，则应将形参定义为 <tt>const</tt> 引用。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <a name="ch07lev3sec8"></a>
+        <h5 class="docSection3Title">References to <tt>const</tt> Are More Flexible</h5>
+        <h5 class="docSection3Title">更灵活的指向 <tt>const</tt> 的引用</h5>
+
+        <p class="docText">It should be obvious that a function that takes a plain, non<tt>const</tt> reference may not be called on behalf of a <tt>const</tt> object. After all, the function might change the object it is passed and thus violate the <tt>const</tt>ness of the argument.</p>
+        <p class="docText">如果函数具有普通的非 <tt>const</tt> 引用形参，则显然不能通过 <tt>const</tt> 对象进行调用。毕竟，此时函数可以修改传递进来的对象，这样就违背了实参的 <tt>const</tt> 特性。</p>
+
+        <p class="docText">What may be less obvisous is that we also cannot call such a function with an rvalue (<a class="docLink" href="ch02lev1sec3.html#ch02lev2sec10" >Section 2.3.1</a>, p. <a class="docLink" href="ch02lev1sec3.html#ch02lev2sec10" >45</a>) or with an object of a type that requires a conversion:</p>
+        <p class="docText">但比较容易忽略的是，调用这样的函数时，传递一个右值（<a class="docLink" href="ch02lev1sec3.html#ch02lev2sec10" >第 2.3.1 节</a>）或具有需要转换的类型的对象同样是不允许的：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">function takes a non-const reference parameter</span>
+     int incr(int &amp;val)
+     {
+         return ++val;
+     }
+     int main()
+     {
+         short v1 = 0;
+         const int v2 = 42;
+         int v3 = incr(v1);   // <span class="docEmphItalicAlt">error:</span> <span class="docEmphasis">v1</span> <span class="docEmphItalicAlt">is not an</span> <span class="docEmphasis">int</span>
+         v3 = incr(v2);       // <span class="docEmphItalicAlt">error:</span> <span class="docEmphasis">v2</span> <span class="docEmphItalicAlt">is</span> <span class="docEmphasis">const</span>
+         v3 = incr(0);        // <span class="docEmphItalicAlt">error: literals are not lvalues</span>
+         v3 = incr(v1 + v2);  // <span class="docEmphItalicAlt">error: addition doesn't yield an lvalue</span>
+         int v4 = incr(v3);   // <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">v3</span> <span class="docEmphItalicAlt">is a non</span> <span class="docEmphasis">const</span> <span class="docEmphItalicAlt">object type</span> <span class="docEmphasis">int</span>
+     }
+</pre><br>
+
+	<a name="idd1e49717"></a><a name="idd1e49724"></a><a name="idd1e49729"></a>
+        <p class="docText">The problem is that a non<tt>const</tt> reference (<a class="docLink" href="ch02lev1sec5.html#ch02lev1sec5" >Section 2.5</a>, p. <a class="docLink" href="ch02lev1sec5.html#ch02lev1sec5" >59</a>) may be bound only to non<tt>const</tt> object of exactly the same type.</p>
+        <p class="docText">问题的关键是非 <tt>const</tt> 引用形参（<a class="docLink" href="ch02lev1sec5.html#ch02lev1sec5" >第 2.5 节</a>）只能与完全同类型的非 <tt>const</tt> 对象关联。</p>
+
+        <p class="docText">Parameters that do not change the value of the corresponding argument should be <tt>const</tt> references. Defining such parameters as non<tt>const</tt> references needlessly restricts the usefulness of a function. As an example, we might write a program to find a given character in a <tt>string</tt>:</p>
+        <p class="docText">应该将不修改相应实参的形参定义为 <tt>const</tt> 引用。如果将这样的形参定义为非 <tt>const</tt> 引用，则毫无必要地限制了该函数的使用。例如，可编写下面的程序在一个 <tt>string</tt> 对象中查找一个指定的字符：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">returns index of first occurrence of</span> <span class="docEmphItalicAlt">c</span> <span class="docEmphItalicAlt">in</span> <span class="docEmphasis">s</span> <span class="docEmphItalicAlt">or</span> <span class="docEmphasis">s.size()</span> <span class="docEmphItalicAlt">if</span> <span class="docEmphasis">c</span> <span class="docEmphItalicAlt">isn't in</span> <span class="docEmphasis">s</span>
+     // <span class="docEmphItalicAlt">Note:</span> <span class="docEmphasis">s</span> <span class="docEmphItalicAlt">doesn't change, so it should be a reference to</span> <span class="docEmphasis">const</span>
+     string::size_type find_char(string &amp;s, char c)
+     {
+         string::size_type i = 0;
+         while (i != s.size() &amp;&amp; s[i] != c)
+             ++i;                   // <span class="docEmphItalicAlt">not found, look at next character</span>
+         return i;
+     }
+</pre><br>
+
+        <p class="docText">This function takes its <tt>string</tt> argument as a plain (non<tt>const)</tt> reference, even though it doesn't modify that parameter. One problem with this definition is that we cannot call it on a character string literal:</p>
+        <p class="docText">这个函数将其 <tt>string</tt> 类型的实参当作普通（非 <tt>const</tt>）的引用，尽管函数并没有修改这个形参的值。这样的定义带来的问题是不能通过字符串字面值来调用这个函数：</p>
+        <pre>
+     if (find_char("Hello World", 'o')) // ...
+</pre><br>
+
+        <p class="docText">This call fails at compile time, even though we can convert the literal to a <tt>string</tt>.</p>
+        <p class="docText">虽然字符串字面值可以转换为 <tt>string</tt> 对象，但上述调用仍然会导致编译失败。</p>
+
+        <p class="docText">Such problems can be surprisingly pervasive. Even if our program has no <tt>const</tt> objects and we only call <tt>find_char</tt> on behalf of <tt>string</tt> objects (as opposed to on a string literal or an expression that yields a <tt>string</tt>), we can encounter compile-time problems. For example, we might have another function <tt>is_sentence</tt> that wants to use <tt>find_char</tt> to determine whether a <tt>string</tt> represents a sentence:</p>
+        <p class="docText">继续将这个问题延伸下去会发现，即使程序本身没有 <tt>const</tt> 对象，而且只使用 <tt>string</tt> 对象（而并非字符串字面值或产生 <tt>string</tt> 对象的表达式）调用 <tt>find_char</tt> 函数，编译阶段的问题依然会出现。例如，可能有另一个函数 <tt>is_sentence</tt> 调用 <tt>find_char</tt> 来判断一个 <tt>string</tt> 对象是否是句子：</p>
+        <pre>
+     bool is_sentence (const string &amp;s)
+     {
+          // <span class="docEmphItalicAlt">if there's a period and it's the last character in</span> <span class="docEmphasis">s</span>
+          // <span class="docEmphItalicAlt">then</span> <span class="docEmphasis">s</span> <span class="docEmphItalicAlt">is a sentence</span>
+          return (find_char(s, '.') == s.size() - 1);
+     }
+</pre><br>
+
+        <p class="docText">As written, the call to <tt>find_char</tt> from inside <tt>is_sentence</tt> is a compile-time error. The parameter to <tt>is_sentence</tt> is a reference to <tt>const string</tt> and cannot be passed to <tt>find_char</tt>, which expects a reference to a non<tt>const string</tt>.</p>
+        <p class="docText">如上代码，函数 <tt>is_sentence</tt> 中 <tt>find_char</tt> 的调用是一个编译错误。传递进 <tt>is_sentence</tt> 的形参是指向 <tt>const string</tt> 对象的引用，不能将这种类型的参数传递给 <tt>find_char</tt>，因为后者期待得到一个指向非 <tt>const string</tt> 对象的引用。</p>
+
+	<a name="ch07note07"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="116" height="74" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/bestpractices.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Reference parameters that are not changed should be references to <tt>const</tt>. Plain, non<tt>const</tt> reference parameters are less flexible. Such parameters may not be initialized by <tt>const</tt> objects, or by arguments that are literals or expressions that yield rvalues.</p>
+                <p class="docText">应该将不需要修改的引用形参定义为 <tt>const</tt> 引用。普通的非 <tt>const</tt> 引用形参在使用时不太灵活。这样的形参既不能用 <tt>const</tt> 对象初始化，也不能用字面值或产生右值的表达式实参初始化。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <a name="ch07lev3sec9"></a>
+        <h5 class="docSection3Title">Passing a Reference to a Pointer</h5>
+        <h5 class="docSection3Title">传递指向指针的引用</h5>
+
+	<a name="idd1e49928"></a><a name="idd1e49933"></a><a name="idd1e49940"></a><a name="idd1e49947"></a><a name="idd1e49952"></a><a name="idd1e49958"></a>
+        <p class="docText">Suppose we want to write a function that swaps two pointers, similar to the program we wrote earlier that swaps two integers. We know that we use <tt>*</tt> to define a pointer and <tt>&amp;</tt> to define a reference. The question here is how to combine these operators to obtain a reference to a pointer. Here is an example:</p>
+	<p class="docText">假设我们想编写一个与前面交换两个整数的 <tt>swap</tt> 类似的函数，实现两个指针的交换。已知需用 <tt>*</tt> 定义指针，用 <tt>&amp;</tt> 定义引用。现在，问题在于如何将这两个操作符结合起来以获得指向指针的引用。这里给出一个例子：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">swap values of two pointers to</span> <span class="docEmphasis">int</span>
+     void ptrswap(int *&amp;v1, int *&amp;v2)
+     {
+         int *tmp = v2;
+         v2 = v1;
+         v1 = tmp;
+     }
+</pre><br>
+
+        <p class="docText">The parameter</p>
+        <p class="docText">形参</p>
+        <pre>
+     int *&amp;v1
+</pre><br>
+
+        <p class="docText">should be read from right to left: <tt>v1</tt> is a reference to a pointer to an object of type <tt>int</tt>. That is, <tt>v1</tt> is just another name for whatever pointer is passed to <tt>ptrswap</tt>.</p>
+        <p class="docText">的定义应从右至左理解：<tt>v1</tt> 是一个引用，与指向 <tt>int</tt> 型对象的指针相关联。也就是说，<tt>v1</tt> 只是传递进 <tt>ptrswap</tt> 函数的任意指针的别名。</p>
+
+        <p class="docText">We could rewrite the <tt>main</tt> function from page <a class="docLink" href="ch07lev1sec2.html#page_233">233</a> to use <tt>ptrswap</tt> and swap pointers to the values 10 and 20:</p>
+        <p class="docText">重写<a class="docLink" href="ch07lev1sec2.html#page_233">第 7.2.2 节</a>的 <tt>main</tt> 函数，调用 <tt>ptrswap</tt> 交换分别指向值 10 和 20 的指针：</p>
+        <pre>
+     int main()
+     {
+         int i = 10;
+         int j = 20;
+         int *pi = &amp;i;  // <span class="docEmphasis">pi points to i</span>
+         int *pj = &amp;j; // <span class="docEmphasis">pj points to j</span>
+         cout &lt;&lt; "Before ptrswap():\t*pi: "
+              &lt;&lt; *pi &lt;&lt; "\t*pj: " &lt;&lt; *pj &lt;&lt; endl;
+         ptrswap(pi, pj); // <span class="docEmphItalicAlt">now</span> <span class="docEmphasis">pi</span> <span class="docEmphItalicAlt">points to</span> <span class="docEmphasis">j; pj</span> <span class="docEmphItalicAlt">points to</span> <span class="docEmphasis">i</span>
+         cout &lt;&lt; "After ptrswap():\t*pi: "
+              &lt;&lt; *pi &lt;&lt; "\t*pj: " &lt;&lt; *pj &lt;&lt; endl;
+         return 0;
+     }
+</pre><br>
+
+        <p class="docText">When compiled and executed, the program generates the following output:</p>
+        <p class="docText">编译并执行后，该程序产生如下结果：</p>
+        <pre>
+     <span class="docEmphStrong">Before ptrswap(): *pi: 10 *pj: 20</span>
+     <span class="docEmphStrong">After ptrswap():  *pi: 20 *pj: 10</span>
+</pre><br>
+
+        <p class="docText">What happens is that the <span class="docEmphasis">pointer</span> values are swapped. When we call <tt>ptrswap, pi</tt> points to <tt>i</tt> and <tt>pj</tt> points to <tt>j</tt>. Inside <tt>ptrswap</tt> the pointers are swapped so that after <tt>ptrswap, pi</tt> points to the object <tt>pj</tt> had addressed. In other words, <tt>pi</tt> now points to <tt>j</tt>. Similarly, <tt>pj</tt> points to <tt>i</tt>.</p>
+	<p class="docText">即指针的值被交换了。在调用 <tt>ptrswap</tt> 时，<tt>pi</tt> 指向 <tt>i</tt>，而 <tt>pj</tt> 则指向 <tt>j</tt>。在 <tt>ptrswap</tt> 函数中，指针被交换，使得调用 <tt>ptrswap</tt> 结束后，<tt>pi</tt> 指向了原来 <tt>pj</tt> 所指向的对象。换句话说，现在 <tt>pi</tt> 指向 <tt>j</tt>，而 <tt>pj</tt> 则指向了 <tt>i</tt>。</p>
+
+	<a name="ch07sb03"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 7.2.2</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch07qa3q1"></a><b>Exercise 7.7:</b></td>
+
+                    <td>
+                      <p class="docText">Explain the difference in the following two parameter declarations:</p>
+                      <p class="docText">解释下面两个形参声明的不同之处：</p>
+                      <pre>
+     void f(T);
+     void f(T&amp;);
+</pre><br>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch07qa3q2"></a><b>Exercise 7.8:</b></td>
+
+                    <td>
+                      <p class="docText">Give an example of when a parameter should be a reference type. Give an example of when a parameter should not be a reference.</p>
+                      <p class="docText">举一个例子说明什么时候应该将形参定义为引用类型。再举一个例子说明什么时候不应该将形参定义为引用。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch07qa3q3"></a><b>Exercise 7.9:</b></td>
+
+                    <td>
+                      <p class="docText">Change the declaration of <tt>occurs</tt> in the parameter list of <tt>find_val</tt> (defined on page <a class="docLink" href="ch07lev1sec2.html#ch07lev3sec6">234</a>) to be a nonreference argument type and rerun the program. How does the behavior of the program change?</p>
+                      <p class="docText">将<a class="docLink" href="ch07lev1sec2.html#ch07lev3sec6">第 7.2.2 节</a>定义的 <tt>find_val</tt> 函数的形参表中 <tt>occurs</tt> 的声明修改为非引用参数类型，并重新执行这个程序，该函数的行为发生了什么改变？</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch07qa3q4"></a><b>Exercise 7.10:</b></td>
+
+                    <td>
+                      <p class="docText">The following program, although legal, is less useful than it might be. Identify and correct the limitation on this program:</p>
+                      <p class="docText">下面的程序虽然是合法的，但可用性还不够好，指出并改正该程序的局限：</p>
+                      <pre>
+     bool test(string&amp; s) { return s.empty(); }
+</pre><br>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch07qa3q5"></a><b>Exercise 7.11:</b></td>
+
+                    <td>
+                      <p class="docText">When should reference parameters be <tt>const</tt>? What problems might arise if we make a parameter a plain reference when it could be a <tt>const</tt> reference?</p>
+                      <p class="docText">何时应将引用形参定义为 <tt>const</tt> 对象？如果在需要 <tt>const</tt> 引用时，将形参定义为普通引用，则会出现什么问题？</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+
+	<a name="ch07lev2sec8"></a>
+        <h4 class="docSection2Title">7.2.3. <tt>vector</tt> and Other Container Parameters</h4>
+        <h4 class="docSection2Title">7.2.3. <tt>vector</tt> 和其他容器类型的形参</h4>
+
+	<a name="ch07note08"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="116" height="74" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/bestpractices.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Ordinarily, functions should not have <tt>vector</tt> or other library container parameters. Calling a function that has a plain, nonreference <tt>vector</tt> parameter will copy every element of the <tt>vector</tt>.</p>
+                <p class="docText">通常，函数不应该有 <tt>vector</tt> 或其他标准库容器类型的形参。调用含有普通的非引用 <tt>vector</tt> 形参的函数将会复制 <tt>vector</tt> 的每一个元素。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+	<a name="idd1e50137"></a><a name="idd1e50142"></a><a name="idd1e50147"></a><a name="idd1e50152"></a><a name="idd1e50157"></a><a name="idd1e50162"></a><a name="idd1e50167"></a><a name="idd1e50172"></a><a name="idd1e50177"></a>
+        <p class="docText">In order to avoid copying the <tt>vector</tt>, we might think that we'd make the parameter a reference. However, for reasons that will be clearer after reading <a class="docLink" href="ch11.html#ch11" >Chapter 11</a>, in practice, C++ programmers tend to pass containers by passing iterators to the elements we want to process:</p>
+        <p class="docText">从避免复制 <tt>vector</tt> 的角度出发，应考虑将形参声明为引用类型。然而，看过<a class="docLink" href="ch11.html#ch11" >第十一章</a>后我们会知道，事实上，C++ 程序员倾向于通过传递指向容器中需要处理的元素的迭代器来传递容器：</p>
+
+        <pre>
+     // <span class="docEmphItalicAlt">pass iterators to the first and one past the last element to print</span>
+     void print(vector&lt;int&gt;::const_iterator beg,
+                vector&lt;int&gt;::const_iterator end)
+     {
+         while (beg != end) {
+             cout &lt;&lt; *beg++;
+             if (beg != end) cout &lt;&lt; " "; // <span class="docEmphItalicAlt">no space after last element</span>
+         }
+         cout &lt;&lt; endl;
+     }
+</pre><br>
+
+        <p class="docText">This function prints the elements starting with one referred to by <tt>beg</tt> up to but not including the one referred to by <tt>end</tt>. We print a space after each element but the last.</p>
+        <p class="docText">这个函数将输出从 <tt>beg</tt> 指向的元素开始到 <tt>end</tt> 指向的元素（不含）为止的范围内所有的元素。除了最后一个元素外，每个元素后面都输出一个空格。</p>
+
+	<a name="ch07lev2sec9"></a>
+        <h4 class="docSection2Title">7.2.4. Array Parameters</h4>
+        <h4 class="docSection2Title">7.2.4. 数组形参</h4>
+
+        <p class="docText">Arrays have two special properties that affect how we define and use functions that operate on arrays: We cannot copy an array (<a class="docLink" href="ch04lev1sec1.html#ch04lev2sec1" >Section 4.1.1</a>, p. <a class="docLink" href="ch04lev1sec1.html#ch04lev2sec1" >112</a>) and when we use the name of an array it is automatically converted to a pointer to the first element (<a class="docLink" href="ch04lev1sec2.html#ch04lev2sec6" >Section 4.2.4</a>, p. <a class="docLink" href="ch04lev1sec2.html#ch04lev2sec6" >122</a>). Because we cannot copy an array, we cannot write a function that takes an array type parameter. Because arrays are automatically converted to pointers, functions that deal with arrays usually do so indirectly by manipulating pointers to elements in the array.</p>
+        <p class="docText">数组有两个特殊的性质，影响我们定义和使用作用在数组上的函数：一是不能复制数组（<a class="docLink" href="ch04lev1sec1.html#ch04lev2sec1" >第 4.1.1 节</a>）；二是使用数组名字时，数组名会自动转化为指向其第一个元素的指针（<a class="docLink" href="ch04lev1sec2.html#ch04lev2sec6" >第 4.2.4 节</a>）。因为数组不能复制，所以无法编写使用数组类型形参的函数。因为数组会被自动转化为指针，所以处理数组的函数通常通过操纵指向数组指向数组中的元素的指针来处理数组。</p>
+
+	<a name="ch07lev3sec10"></a>
+        <h5 class="docSection3Title">Defining an Array Parameter</h5>
+        <h5 class="docSection3Title">数组形参的定义</h5>
+
+	<a name="idd1e50323"></a><a name="idd1e50330"></a>
+        <p class="docText">Let's assume that we want to write a function that will print the contents of an array of <tt>int</tt>s. We could specify the array parameter in one of three ways:</p>
+        <p class="docText">如果要编写一个函数，输出 <tt>int</tt> 型数组的内容，可用下面三种方式指定数组形参：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">three equivalent definitions of printValues</span>
+     void printValues(int*) { /* ... */ }
+     void printValues(int[]) { /* ... */ }
+     void printValues(int[10]) { /* ... */ }
+</pre><br>
+
+        <p class="docText">Even though we cannot pass an array directly, we can write a function parameter that looks like an array. Despite appearances, a parameter that uses array syntax is treated as if we had written a pointer to the array element type. These three definitions are equivalent; each is interpreted as taking a parameter of type <tt>int*</tt>.</p>
+        <p class="docText">虽然不能直接传递数组，但是函数的形参可以写成数组的形式。虽然形参表示方式不同，但可将使用数组语法定义的形参看作指向数组元素类型的指针。上面的三种定义是等价的，形参类型都是 <tt>int*</tt>。</p>
+
+	<a name="ch07note09"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="116" height="74" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/bestpractices.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">It is usually a good idea to define array parameters as pointers, rather than using the array syntax. Doing so makes it clear that what is being operated on is a pointer to an array element, not the array itself. Because an array dimension is ignored, including a dimension in a parameter definition is particularly misleading.</p>
+                <p class="docText">通常，将数组形参直接定义为指针要比使用数组语法定义更好。这样就明确地表示，函数操纵的是指向数组元素的指针，而不是数组本身。由于忽略了数组长度，形参定义中如果包含了数组长度则特别容易引起误解。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <a name="ch07lev3sec11"></a>
+        <h5 class="docSection3Title">Parameter Dimensions Can Be Misleading</h5>
+        <h5 class="docSection3Title">形参的长度会引起误解</h5>
+
+        <p class="docText">The compiler ignores any dimension we might specify for an array parameter. Relying, incorrectly, on the dimension, we might write <tt>printValues</tt> as</p>
+        <p class="docText">编译器忽略为任何数组形参指定的长度。根据数组长度（权且这样说），可将函数 <tt>printValues</tt> 编写为：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">parameter treated as</span> <span class="docEmphasis">const int*</span><span class="docEmphItalicAlt">, size of array is ignored</span>
+     void printValues(const int ia[10])
+     {
+          // <span class="docEmphItalicAlt">this code assumes array has 10 elements;</span>
+          // <span class="docEmphItalicAlt">disaster if argument has fewer than 10 elements!</span>
+          for (size_t i = 0; i != 10; ++i)
+          {
+              cout &lt;&lt; ia[i] &lt;&lt; endl;
+          }
+     }
+</pre><br>
+
+        <p class="docText">Although this code <span class="docEmphasis">assumes</span> that the array it is passed has at least 10 elements, nothing in the language enforces that assumption. The following calls are all legal:</p>
+        <p class="docText">尽管上述代码<span class="docEmphasis">假定</span>所传递的数组至少含有 10 个元素，但 C++ 语言没有任何机制强制实现这个假设。下面的调用都是合法的：</p>
+        <pre>
+     int main()
+     {
+         int i = 0, j[2] = {0, 1};
+         printValues(&amp;i);      // <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">&amp;i</span> <span class="docEmphItalicAlt">is</span> <span class="docEmphasis">int*</span><span class="docEmphItalicAlt">; probable run-time error</span>
+         printValues(j);      // <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">j</span> <span class="docEmphItalicAlt">is converted to pointer to 0th</span>
+                              // <span class="docEmphItalicAlt">element; argument has type</span> <span class="docEmphasis">int*;</span>
+                              // <span class="docEmphItalicAlt">probable run-time error</span>
+         return 0;
+     }
+</pre><br>
+
+	<a name="idd1e50442"></a><a name="idd1e50449"></a><a name="idd1e50456"></a><a name="idd1e50463"></a><a name="idd1e50470"></a><a name="idd1e50475"></a><a name="idd1e50481"></a><a name="idd1e50486"></a>
+        <p class="docText">Even though the compiler issues no complaints, both calls are in error, and probably will fail at run time. In each case, memory beyond the array will be accessed because <tt>printValues</tt> assumes that the array it is passed has at least 10 elements. Depending on the values that happen to be in that memory, the program will either produce spurious output or crash.</p>
+        <p class="docText">虽然编译没有问题，但是这两个调用都是错误的，可能导致运行失败。在这两个调用中，由于函数 <tt>printValues</tt> 假设传递进来的数组至少含有 10 个元素，因此造成数组内在的越界访问。程序的执行可能产生错误的输出，也可能崩溃，这取决于越界访问的内存中恰好存储的数值是什么。</p>
+
+	<a name="ch07note10"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">When the compiler checks an argument to an array parameter, it checks only that the argument is a pointer and that the types of the pointer and the array elements match. The size of the array is not checked.</p>
+                <p class="docText">当编译器检查数组形参关联的实参时，它只会检查实参是不是指针、指针的类型和数组元素的类型时是否匹配，而不会检查数组的长度。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <a name="ch07lev3sec12"></a>
+        <h5 class="docSection3Title">Array Arguments</h5>
+        <h5 class="docSection3Title">数组实参</h5>
+
+        <p class="docText">As with any other type, we can define an array parameter as a reference or nonreference type. Most commonly, arrays are passed as plain, nonreference types, which are quietly converted to pointers. As usual, a nonreference type parameter is initialized as a copy of its corresponding argument. When we pass an array, the argument is a pointer to the first element in the array. That pointer value is copied; the array elements themselves are not copied. The function operates on a copy of the pointer, so it cannot change the value of the argument pointer. The function can, however, use that pointer to change the element values to which the pointer points. Any changes through the pointer parameter are made to the array elements themselves.</p>
+        <p class="docText">和其他类型一样，数组形参可定义为引用或非引用类型。大部分情况下，数组以普通的非引用类型传递，此时数组会悄悄地转换为指针。一般来说，非引用类型的形参会初始化为其相应实参的副本。而在传递数组时，实参是指向数组第一个元素的指针，形参复制的是这个指针的值，而不是数组元素本身。函数操纵的是指针的副本，因此不会修改实参指针的值。然而，函数可通过该指针改变它所指向的数组元素的值。通过指针形参做的任何改变都在修改数组元素本身。</p>
+
+	<a name="ch07note11"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="116" height="74" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/bestpractices.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Functions that do not change the elements of their array parameter should make the parameter a pointer to <tt>const</tt>:</p>
+                <p class="docText">不需要修改数组形参的元素时，函数应该将形参定义为指向 <tt>const</tt> 对象的指针：</p>
+              </td>
+            </tr>
+          </table><br>
+          <pre>
+     // <span class="docEmphasis">f</span> <span class="docEmphItalicAlt">won't change the elements in the array</span>
+     void f(const int*) { /* ... */ }
+</pre><br>
+        </div><br>
+
+        <a name="ch07lev3sec13"></a>
+        <h5 class="docSection3Title">Passing an Array by Reference</h5>
+        <h5 class="docSection3Title">通过引用传递数组</h5>
+
+        <p class="docText">As with any type, we can define an array parameter as a reference to the array. If the parameter is a reference to the array, then the compiler does not convert an array argument into a pointer. Instead, a reference to the array itself is passed. In this case, the array size is part of the parameter and argument types. The compiler will check that the size of the array argument matches the size of the parameter:</p>
+        <p class="docText">和其他类型一样，数组形参可声明为数组的引用。如果形参是数组的引用，编译器不会将数组实参转化为指针，而是传递数组的引用本身。在这种情况下，数组大小成为形参和实参类型的一部分。编译器检查数组的实参的大小与形参的大小是否匹配：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">ok: parameter is a reference to an array; size of array is fixed</span>
+     void printValues(int (&amp;arr)[10]) { /* ... */ }
+     int main()
+     {
+         int i = 0, j[2] = {0, 1};
+         int k[10] = {0,1,2,3,4,5,6,7,8,9};
+         printValues(&amp;i); // <span class="docEmphItalicAlt">error: argument is not an array of 10</span> <span class="docEmphasis">ints</span>
+         printValues(j);  // <span class="docEmphItalicAlt">error: argument is not an array of 10</span> <span class="docEmphasis">ints</span>
+         printValues(k);  // <span class="docEmphItalicAlt">ok: argument is an array of 10</span> <span class="docEmphasis">ints</span>
+         return 0;
+     }
+</pre><br>
+
+	<a name="idd1e50582"></a><a name="idd1e50587"></a><a name="idd1e50594"></a><a name="idd1e50601"></a><a name="idd1e50606"></a><a name="idd1e50611"></a>
+        <p class="docText">This version of <tt>printValues</tt> may be called only for arrays of exactly 10 <tt>int</tt>s, limiting which arrays can be passed. However, because the parameter is a reference, it is safe to rely on the size in the body of the function:</p>
+        <p class="docText">这个版本的 <tt>printValues</tt> 函数只严格地接受含有 10 个 <tt>int</tt> 型数值的数组，这限制了哪些数组可以传递。然而，由于形参是引用，在函数体中依赖数组的大小是安全的：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">ok: parameter is a reference to an array; size of array is fixed</span>
+     void printValues(int (&amp;arr)[10])
+     {
+         for (size_t i = 0; i != 10; ++i) {
+             cout &lt;&lt; arr[i] &lt;&lt; endl;
+         }
+     }
+</pre><br>
+
+        <a name="ch07note12"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">The parentheses around <tt>&amp;arr</tt> are necessary because of the higher precedence of the subscript operator:</p>
+                <p class="docText"><tt>&amp;arr</tt> 两边的圆括号是必需的，因为下标操作符具有更高的优先级：</p>
+              </td>
+            </tr>
+          </table><br>
+          <pre>
+     f(int &amp;arr[10])     // <span class="docEmphItalicAlt">error:</span> <span class="docEmphasis">arr</span> <span class="docEmphItalicAlt">is an array of references</span>
+     f(int (&amp;arr)[10]) // <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">arr</span> <span class="docEmphItalicAlt">is a reference to an array of 10</span> <span class="docEmphasis">int</span><span class="docEmphItalicAlt">s</span>
+</pre><br>
+        </div><br>
+
+        <p class="docText">We'll see in <a class="docLink" href="ch16lev1sec1.html#ch16lev2sec5" >Section 16.1.5</a> (p. <a class="docLink" href="ch16lev1sec1.html#ch16lev2sec5" >632</a>) how we might write this function in a way that would allow us to pass a reference parameter to an array of any size.</p>
+        <p class="docText">在<a class="docLink" href="ch16lev1sec1.html#ch16lev2sec5" >第 16.1.5 节</a>将会介绍如何重新编写此函数，允许传递指向任意大小的数组的引用形参。</p>
+
+	<a name="ch07lev3sec14"></a>
+        <h5 class="docSection3Title">Passing a Multidimensioned Array</h5>
+        <h5 class="docSection3Title">多维数组的传递</h5>
+
+        <p class="docText">Recall that there are no multidimensioned arrays in C++ (<a class="docLink" href="ch04lev1sec4.html#ch04lev1sec4" >Section 4.4</a>, p. <a class="docLink" href="ch04lev1sec4.html#ch04lev1sec4" >141</a>). Instead, what appears to be a multidimensioned array is an array of arrays.</p>
+        <p class="docText">回顾前面我们说过在 C++ 中没有多维数组（<a class="docLink" href="ch04lev1sec4.html#ch04lev1sec4" >第 4.4 节</a>）。所谓多维数组实际是指数组的数组。</p>
+
+        <p class="docText">As with any array, a multidimensioned array is passed as a pointer to its zeroth element. An element in a multidimenioned array is an array. The size of the second (and any subsequent dimensions) is part of the element type and must be specified:</p>
+        <p class="docText">和其他数组一样，多维数组以指向 0 号元素的指针方式传递。多维数组的元素本身就是数组。除了第一维以外的所有维的长度都是元素类型的一部分，必须明确指定：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">first parameter is an array whose elements are arrays of 10</span> <span class="docEmphasis">int</span><span class="docEmphItalicAlt">s</span>
+     void printValues(int (matrix*)[10], int rowSize);
+</pre><br>
+
+        <p class="docText">declares <tt>matrix</tt> as a pointer to an array of ten <tt>int</tt>s.</p>
+        <p class="docText">上面的语句将 <tt>matrix</tt> 声明为指向含有 10 个 <tt>int</tt> 型元素的数组的指针。</p>
+
+	<a name="ch07note13"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Again, the parentheses around <tt>*matrix</tt> are necessary:</p>
+                <p class="docText">再次强调，<tt>*matrix</tt> 两边的圆括号是必需的：</p>
+              </td>
+            </tr>
+          </table><br>
+          <pre>
+     int *matrix[10];   // <span class="docEmphItalicAlt">array of 10 pointers</span>
+     int (*matrix)[10]; // <span class="docEmphItalicAlt">pointer to an array of 10</span> <span class="docEmphasis">int</span><span class="docEmphItalicAlt">s</span>
+</pre><br>
+        </div><br>
+
+        <p class="docText">We could also declare a multidimensioned array using array syntax. As with a single-dimensioned array, the compiler ignores the first dimension and so it is best not to include it:</p>
+        <p class="docText">我们也可以用数组语法定义多维数组。与一维数组一样，编译器忽略第一维的长度，所以最好不要把它包括在形参表内：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">first parameter is an array whose elements are arrays of 10</span> <span class="docEmphasis">int</span><span class="docEmphItalicAlt">s</span>
+     void printValues(int matrix[][10], int rowSize);
+</pre><br>
+
+        <p class="docText">declares <tt>matrix</tt> to be what looks like a two-dimensioned array. In fact, the parameter is a pointer to an element in an array of arrays. Each element in the array is itself an array of ten <tt>int</tt>s.</p>
+        <p class="docText">这条语句把 <tt>matrix</tt> 声明为二维数组的形式。实际上，形参是一个指针，指向数组的数组中的元素。数组中的每个元素本身就是含有 10 个 <tt>int</tt> 型对象的数组。</p>
+
+<a name="ch07lev2sec10"></a>
+        <h4 class="docSection2Title">7.2.5. Managing Arrays Passed to Functions</h4>
+        <h4 class="docSection2Title">7.2.5. 传递给函数的数组的处理</h4>
+
+	<a name="idd1e50784"></a><a name="idd1e50789"></a><a name="idd1e50794"></a><a name="idd1e50801"></a><a name="idd1e50806"></a><a name="idd1e50811"></a><a name="idd1e50816"></a><a name="idd1e50821"></a><a name="idd1e50826"></a><a name="idd1e50831"></a><a name="idd1e50836"></a>
+        <p class="docText">As we've just seen, type checking for a nonreference array parameter confirms only that the argument is a pointer of the same type as the elements in the array. Type checking does not verify that the argument actually points to an array of a specified size.</p>
+        <p class="docText">就如刚才所见的，非引用数组形参的类型检查只是确保实参是和数组元素具有同样类型的指针，而不会检查实参实际上是否指向指定大小的数组。</p>
+
+	<a name="ch07note14"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">It is up to any program dealing with an array to ensure that the program stays within the bounds of the array.</p>
+                <p class="docText">任何处理数组的程序都要确保程序停留在数组的边界内。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">There are three common programming techniques to ensure that a function stays within the bounds of its array argument(s). The first places a marker in the array itself that can be used to detect the end of the array. C-style character strings are an example of this approach. C-style strings are arrays of characters that encode their termination point with a null character. Programs that deal with C-style strings use this marker to stop processing elements in the array.</p>
+        <p class="docText">有三种常见的编程技巧确保函数的操作不超出数组实参的边界。第一种方法是在数组本身放置一个标记来检测数组的结束。C 风格字符串就是采用这种方法的一个例子，它是一种字符数组，并且以空字符 null 作为结束的标记。处理 C 风格字符串的程序就是使用这个标记停止数组元素的处理。</p>
+
+	<a name="ch07lev3sec15"></a>
+        <h5 class="docSection3Title">Using the Standard Library Conventions</h5>
+        <h5 class="docSection3Title">使用标准库规范</h5>
+
+        <p class="docText">A second approach is to pass pointers to the first and one past the last element in the array. This style of programming is inspired by techniques used in the standard library. We'll learn more about this style of programming in <a class="docLink" href="part02.html#part02" >Part II</a>.</p>
+        <p class="docText">第二种方法是传递指向数组第一个和最后一个元素的下一个位置的指针。这种编程风格由标准库所使用的技术启发而得，在<a class="docLink" href="part02.html#part02" >第二部分</a>将会进一步介绍这种编程风格。</p>
+
+        <p class="docText">Using this approach, we could rewrite <tt>printValues</tt> and call the new version as follows:</p>
+	<p class="docText">使用这种方法重写函数 <tt>printValues</tt> 并调用该函数，如下所示：</p>
+        <pre>
+     void printValues(const int *beg, const int *end)
+     {
+         while (beg != end) {
+             cout &lt;&lt; *beg++ &lt;&lt; endl;
+          }
+     }
+     int main()
+     {
+         int j[2] = {0, 1};
+         // <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">j</span> <span class="docEmphItalicAlt">is converted to pointer to 0th element in</span> <span class="docEmphasis">j</span>
+         //     <span class="docEmphasis">j + 2</span> <span class="docEmphItalicAlt">refers one past the end of</span> <span class="docEmphasis">j</span>
+         printValues(j, j + 2);
+         return 0;
+     }
+</pre><br>
+
+        <p class="docText">The loop inside <tt>printValues</tt> looks like other programs we've written that used <tt>vector</tt> iterators. We march the <tt>beg</tt> pointer one element at a time through the array. We stop the loop when <tt>beg</tt> is equal to the end marker, which was passed as the second parameter to the function.</p>
+        <p class="docText"><tt>printValues</tt> 中的循环很像用 <tt>vector</tt> 迭代器编写的程序。每次循环都使 <tt>beg</tt> 指针指向下一个元素，从而实现数组的遍历。当 <tt>beg</tt> 指针等于结束标记时，循环结束。结束标记就是传递给函数的第二个形参。</p>
+
+        <p class="docText">When we call this version, we pass two pointers: one to the first element we want to print and one just past the last element. The program is safe, as long as we correctly calculate the pointers so that they denote a range of elements.</p>
+        <p class="docText">调用这个版本的函数需要传递两个指针：一个指向要输出的第一个元素，另一个则指向最后一个元素的下一个位置。只要正确计算指针，使它们标记一段有效的元素范围，程序就会安全。</p>
+
+	<a name="ch07lev3sec16"></a>
+        <h5 class="docSection3Title">Explicitly Passing a Size Parameter</h5>
+        <h5 class="docSection3Title">显式传递表示数组大小的形参</h5>
+
+        <p class="docText">A third approach, which is common in C programs and pre-Standard C++ programs, is to define a second parameter that indicates the size of the array.</p>
+        <p class="docText">第三种方法是将第二个形参定义为表示数组的大小，这种用法在 C 程序和标准化之前的 C++ 程序中十分普遍。</p>
+
+	<a name="idd1e50929"></a><a name="idd1e50936"></a><a name="idd1e50942"></a><a name="idd1e50947"></a><a name="idd1e50954"></a><a name="idd1e50959"></a>
+        <p class="docText">Using this approach, we could rewrite <tt>printValues</tt> one more time. The new version and a call to it looks like:</p>
+        <p class="docText">用这种方法再次重写函数 <tt>printValues</tt>，新版本及其调用如下所示：</p>
+        <pre>
+     // <span class="docEmphasis">const int ia[]</span> <span class="docEmphItalicAlt">is equivalent to</span> <span class="docEmphasis">const int* ia</span>
+     // <span class="docEmphasis">size</span> <span class="docEmphItalicAlt">is passed explicitly and used to control access to elements of</span> <span class="docEmphasis">ia</span>
+     void printValues(const int ia[], size_t size)
+     {
+          for (size_t i = 0; i != size; ++i) {
+              cout &lt;&lt; ia[i] &lt;&lt; endl;
+          }
+     }
+     int main()
+     {
+         int j[] = { 0, 1 }; // <span class="docEmphasis">int</span> <span class="docEmphItalicAlt">array of size 2</span>
+         printValues(j, sizeof(j)/sizeof(*j));
+         return 0;
+     }
+</pre><br>
+
+        <p class="docText">This version uses the <tt>size</tt> parameter to determine how many elements there are to print. When we call <tt>printValues</tt>, we must pass an additional parameter. The program executes safely as long as the size passed is no greater than the actual size of the array.</p>
+	<p class="docText">这个版本使用了形参 <tt>size</tt> 来确定要输出的元素的个数。调用 <tt>printValues</tt> 时，要额外传递一个形参。只要传递给函数的 <tt>size</tt> 值不超过数组的实际大小，程序就能安全运行。</p>
+
+	<a name="ch07sb04"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 7.2.5</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch07qa4q1"></a><b>Exercise 7.12:</b></td>
+
+                    <td>
+                      <p class="docText">When would you use a parameter that is a pointer? When would you use a parameter that is a reference? Explain the advantages and disadvantages of each.</p>
+                      <p class="docText">什么时候应使用指针形参？什么时候就使用引用形参？解释两者的优点和缺点。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch07qa4q2"></a><b>Exercise 7.13:</b></td>
+
+                    <td>
+                      <p class="docText">Write a program to calculate the sum of the elements in an array. Write the function three times, each one using a different approach to managing the array bounds.</p>
+                      <p class="docText">编写程序计算数组元素之和。要求编写函数三次，每次以不同的方法处理数组边界。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch07qa4q3"></a><b>Exercise 7.14:</b></td>
+
+                    <td>
+                      <p class="docText">Write a program to sum the elements in a <tt>vector&lt;double&gt;</tt>.</p>
+                      <p class="docText">编写程序求 <tt>vector&lt;double&gt;</tt> 对象中所有元素之和。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+	
+        <a name="ch07lev2sec11"></a>
+        <h4 class="docSection2Title">7.2.6. <tt>main</tt>: Handling Command-Line Options</h4>
+        <h4 class="docSection2Title">7.2.6. <tt>main</tt>: 处理命令行选项</h4>
+
+        <p class="docText">It turns out that <tt>main</tt> is a good example of how C programs pass arrays to functions. Up to now, we have defined <tt>main</tt> with an empty parameter list:</p>
+        <p class="docText">主函数 <tt>main</tt> 是演示 C 程序如何将数组传递给函数的好例子。直到现在，我们所定义的主函数都只有空的形参表：</p>
+        <pre>
+     int main() { ... }
+</pre><br>
+
+        <p class="docText">However, we often need to pass arguments to <tt>main</tt>. TRaditionally, such arguments are options that determine the operation of the program. For example, assuming our <tt>main</tt> program was in an executable file named <tt>prog</tt>, we might pass options to the program as follows:</p>
+        <p class="docText">但是，我们通常需要给 <tt>main</tt> 传递实参。传统上，主函数的实参是可选的，用来确定程序要执行的操作。比如，假设我们的主函数 <tt>main</tt> 位于名为 <tt>prog</tt> 的可执行文件中，可如下将实参选项传递给程序：</p>
+        <pre>
+     prog -d -o ofile data0
+</pre><br>
+
+	<a name="idd1e51097"></a><a name="idd1e51102"></a><a name="idd1e51106"></a><a name="idd1e51113"></a><a name="idd1e51117"></a><a name="idd1e51122"></a><a name="idd1e51129"></a><a name="idd1e51134"></a>
+        <p class="docText">The way this usage is handled is that <tt>main</tt> actually defines two parameters:</p>
+        <p class="docText">这种用法的处理方法实际上是在主函数 <tt>main</tt> 中定义了两个形参：</p>
+        <pre>
+     int main(int argc, char *argv[]) { ... }
+</pre><br>
+
+        <p class="docText">The second parameter, <tt>argv</tt>, is an array of C-style character strings. The first parameter, <tt>argc</tt>, passes the number of strings in that array. Because the second parameter is an array, we might alternatively define <tt>main</tt> as</p>
+        <p class="docText">第二个形参 <tt>argv</tt> 是一个 C 风格字符串数组。第一个形参 <tt>argc</tt> 则用于传递该数组中字符串的个数。由于第二个参数是一个数组，主函数 <tt>main</tt> 也可以这样定义：</p>
+        <pre>
+     int main(int argc, char **argv) { ... }
+</pre><br>
+
+        <p class="docText">indicating that <tt>argv</tt> points to a <tt>char*</tt>.</p>
+        <p class="docText">表示 <tt>argv</tt> 是指向 <tt>char*</tt> 的指针。</p>
+
+        <p class="docText">When arguments are passed to <tt>main</tt>, the first string in <tt>argv</tt>, if any, is always the name of the program. Subsequent elements pass additional optional strings to <tt>main</tt>. Given the previous command line, <tt>argc</tt> would be set to 5, and <tt>argv</tt> would hold the following C-style character strings:</p>
+        <p class="docText">当将实参传递给主函数 <tt>main</tt> 时，<tt>argv</tt> 中的第一个字符串（如果有的话）通常是程序的名字。接下来的元素将额外的可选字符串传递给主函数 <tt>main</tt>。以前面的命令行为例，<tt>argc</tt> 应设为 5，<tt>argv</tt> 会保存下面几个 C 风格字符串：</p>
+        <pre>
+     argv[0] = "prog";
+     argv[1] = "-d";
+     argv[2] = "-o";
+     argv[3] = "ofile";
+     argv[4] = "data0";
+</pre><br>
+        <a name="ch07sb05"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 7.2.6</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch07qa5q1"></a><b>Exercise 7.15:</b></td>
+
+                    <td>
+                      <p class="docText">Write a <tt>main</tt> function that takes two values as arguments and print their sum.</p>
+                      <p class="docText">编写一个主函数 <tt>main</tt>，使用两个值作为实参，并输出它们的和。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch07qa5q2"></a><b>Exercise 7.16:</b></td>
+
+                    <td>
+                      <p class="docText">Write a program that could accept the options presented in this section. Print the values of the arguments passed to <tt>main</tt>.</p>
+                      <p class="docText">编写程序使之可以接受本节介绍的命令行选项，并输出传递给 <tt>main</tt> 的实参值。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+
+        <a name="ch07lev2sec12"></a>
+        <h4 class="docSection2Title">7.2.7. Functions with Varying Parameters</h4>
+        <h4 class="docSection2Title">7.2.7. 含有可变形参的函数</h4>
+
+	<a name="ch07note15"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Ellipsis parameters are in C++ in order to compile C programs that use <tt>varargs</tt>. See your C compiler documentation for how to use <tt>varargs</tt>. Only simple data types from the C++ program should be passed to functions with ellipses parameters. In particular, objects of most class types are not copied properly when passed to ellipses parameters.</p>
+                <p class="docText">C++ 中的省略符形参是为了编译使用了 <tt>varargs</tt> 的 C 语言程序。关于如何使用 <tt>varargs</tt>，请查阅所用 C 语言编译器的文档。对于 C++ 程序，只能将简单数据类型传递给含有省略符形参的函数。实际上，当需要传递给省略符形参时，大多数类类型对象都不能正确地复制。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">Ellipses parameters are used when it is impossible to list the type and number of all the arguments that might be passed to a function. Ellipses suspend type checking. Their presence tells the compiler that when the function is called, zero or more arguments may follow and that the types of the arguments are unknown. Ellipses may take either of two forms:</p>
+        <p class="docText">在无法列举出传递给函数的所有实参的类型和数目时，可以使用省略符形参。省略符暂停了类型检查机制。它们的出现告知编译器，当调用函数时，可以有 0 或多个实参，而实参的类型未知。省略符形参有下列两种形式：</p>
+        <pre>
+     void foo(parm_list, ...);
+     void foo(...);
+</pre><br>
+
+	<a name="idd1e51269"></a><a name="idd1e51275"></a><a name="idd1e51280"></a><a name="idd1e51286"></a><a name="idd1e51291"></a><a name="idd1e51298"></a><a name="idd1e51304"></a><a name="idd1e51310"></a><a name="idd1e51315"></a>
+        <p class="docText">The first form provides declarations for a certain number of parameters. In this case, type checking is performed when the function is called for the arguments that correspond to the parameters that are explicitly declared, whereas type checking is suspended for the arguments that correspond to the ellipsis. In this first form, the comma following the parameter declarations is optional.</p>
+        <p class="docText">第一种形式为特定数目的形参提供了声明。在这种情况下，当函数被调用时，对于与显示声明的形参相对应的实参进行类型检查，而对于与省略符对应的实参则暂停类型检查。在第一种形式中，形参声明后面的逗号是可选的。</p>
+
+        <p class="docText">Most functions with an ellipsis use some information from a parameter that is explicitly declared to obtain the type and number of optional arguments provided in a function call. The first form of function declaration with ellipsis is therefore most commonly used.</p>
+        <p class="docText">大部分带有省略符形参的函数都利用显式声明的参数中的一些信息，来获取函数调用中提供的其他可选实参的类型和数目。因此带有省略符的第一种形式的函数声明是最常用的。</p>
+<a href="21001535.html" ><img src="images/pixel.gif"  alt="" width="1" height="1" border="0"></a>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch07lev1sec1.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch07lev1sec3.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

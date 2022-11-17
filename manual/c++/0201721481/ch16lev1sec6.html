@@ -1,0 +1,585 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 16.6.  Template Specializations</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch16lev1sec5.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch16lev1sec7.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch16lev1sec6"></a>
+
+        <h3 class="docSection1Title">16.6. Template Specializations</h3>
+	<h3 class="docSection1Title">16.6. 模板特化</h3>
+	
+	<a name="ch16note16"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">The rest of this chapter covers a somewhat advanced topic. It can be safely skipped on first reading.</p>
+                <p class="docText">本章其余部分将介绍一个比较高级的主题，在第一次阅读时可以跳过它。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">It is not always possible to write a single template that is best suited for every possible template argument with which the template might be instantiated. In some cases, the general template definition is simply wrong for a type. The general definition might not compile or might do the wrong thing. At other times, we may be able to take advantage of some specific knowledge about a type to write a more efficient function than the one that is instantiated from the template.</p>
+                <p class="docText">我们并不总是能够写出对所有可能被实例化的类型都最合适的模板。某些情况下，通用模板定义对于某个类型可能是完全错误的，通用模板定义也许不能编译或者做错误的事情；另外一些情况下，可以利用关于类型的一些特殊知识，编写比从模板实例化来的函数更有效率的函数。</p>
+
+        <p class="docText">Our <tt>compare</tt> function and our <tt>Queue</tt> class are both good examples of the problem: Neither works correctly when used with C-style character strings. Let's look again at our <tt>compare</tt> function template:</p>
+                <p class="docText"><tt>compare</tt> 函数和 <tt>Queue</tt> 类都是这一问题的好例子：与 C 风格字符串一起使用进，它们都不能正确工作。让我们再来看看 <tt>compare</tt> 函数模板：</p>
+        <pre>
+     template &lt;typename T&gt;
+     int compare(const T &amp;v1, const T &amp;v2)
+     {
+        if (v1 &lt; v2) return -1;
+        if (v2 &lt; v1) return 1;
+        return 0;
+     }
+</pre><br>
+
+        <p class="docText">If we call this template definition on two <tt>const char*</tt> arguments, the function compares the pointer values. It will tell us the relative positions in memory of these two pointers but says nothing about the contents of the arrays to which the pointers point.</p>
+                <p class="docText">如果用两个 <tt>const char*</tt> 实参调用这个模板定义，函数将比较指针值。它将告诉我们这两个指针在内存中的相对位置，但没有说明归纳法指针所指数组的内容有关的任何事情。</p>
+
+        <p class="docText">To get be able to use <tt>compare</tt> with character strings, we would have to provide a specialized definition that knows how to compare C-style strings. The fact that these versions are specialized is transparent to users of these templates. Calls to a specialized function or use of a specialized class are indistinguishable from uses of a version instantiated from the general template.</p>
+                <p class="docText">为了能够将 <tt>compare</tt> 函数用于字符串，必须提供一个知道怎样比较 C 风格字符串的特殊定义。这些版本是特化的，这一事实对模板的用户透明。对用户而言，调用特化函数或使用特化类，与使用从通用模板实例化的版本无法区别。</p>
+
+<a name="ch16lev2sec27"></a>
+        <h4 class="docSection2Title">16.6.1. Specializing a Function Template</h4>
+        <h4 class="docSection2Title">16.6.1. 函数模板的特化</h4>
+
+<a name="idd1e132125"></a><a name="idd1e132133"></a><a name="idd1e132138"></a><a name="idd1e132143"></a><a name="idd1e132148"></a><a name="idd1e132155"></a><a name="idd1e132162"></a><a name="idd1e132165"></a><a name="idd1e132170"></a><a name="idd1e132175"></a>
+        <p class="docText">A <span class="docEmphStrong">template spacialization</span> is a separate definition in which the actual type(s) or value(s) of one or more template parameter(s) is (are) specified. The form of a specialization is:</p>
+        <p class="docText"><span class="docEmphStrong">模板特化（template specialization）</span>是这样的一个定义，该定义中一个或多个模板形参的实际类型或实际值是指定的。特化的形式如下：</p>
+
+        <ul>
+          <li>
+            <p class="docList">The keyword <tt>template</tt> followed by an empty bracket pair (<tt>&lt;&gt;</tt>),</p>
+            <p class="docList">关键字 <tt>template</tt> 后面接一对空的尖括号（<tt>&lt;&gt;</tt>）；</p>
+          </li>
+
+          <li>
+            <p class="docList">followed by the template name and a bracket pair specifying the template parameters(s) that this specialization defines,</p>
+            <p class="docList">再接模板名和一对尖括号，尖括号中指定这个特化定义的模板形参；</p>
+          </li>
+
+          <li>
+            <p class="docList">the function parameter list,</p>
+            <p class="docList">函数形参表；</p>
+          </li>
+
+          <li>
+            <p class="docList">and the function body.</p>
+            <p class="docList">函数体。</p>
+          </li>
+        </ul>
+
+        <p class="docText">The following program defines a specialization of <tt>compare</tt> when the template parameter type is bound to <tt>const char*</tt>:</p>
+        <p class="docText">下面的程序定义了当模板形参类型绑定到 <tt>const char*</tt> 时，<tt>compare</tt> 函数的特化：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">special version of compare to handle C-style character strings</span>
+     template &lt;&gt;
+     int compare&lt;const char*&gt;(const char* const &amp;v1,
+                              const char* const &amp;v2)
+     {
+         return strcmp(v1, v2);
+     }
+</pre><br>
+
+        <p class="docText">The declaration for the specialization must match that of the corresponding template. In this case, the template has one type parameter and two function parameters. The function parameters are <tt>const</tt> references to the type parameter. Here we are fixing the type parameter to <tt>const char*</tt>; our function parameters, therefore, are <tt>const</tt> references to a <tt>const char*</tt>.</p>
+        <p class="docText">特化的声明必须与对应的模板相匹配。在这个例子中，模板有一个类型形参和两个函数形参，函数形参是类型形参的 <tt>const</tt> 引用，在这里，将类型形参固定为 <tt>const char*</tt>，因此，函数形参是 <tt>const char*</tt> 的 <tt>const</tt> 引用。</p>
+
+        <p class="docText">Now when we call <tt>compare</tt>, passing it two character pointers, the compiler will call our specialized version. It will call the generic version for any other argument types (including plain <tt>char*</tt>):</p>
+        <p class="docText">现在，当调用 <tt>compare</tt> 函数的时候，传给它两个字符指针，编译器将调用特化版本。编译器将为任意其他实参类型（包括普通 <tt>char*</tt>）调用泛型版本：</p>
+        <pre>
+     const char *cp1 = "world", *cp2 = "hi";
+     int i1, i2;
+     compare(cp1, cp2); // <span class="docEmphItalicAlt">calls the specialization</span>
+     compare(i1, i2);   // <span class="docEmphItalicAlt">calls the generic version instantiated with</span> int
+</pre><br>
+        <a name="ch16lev3sec40"></a>
+
+        <h5 class="docSection3Title">Declaring a Template Specialization</h5>
+        <h5 class="docSection3Title">声明模板特化</h5>
+
+	<a name="ch16term15"></a>
+        <p class="docText">As with any function, we can declare a function <span class="docEmphRoman"><a class="docLink" href="ch16lev1sec9.html#gloss16_55" >template specialization</a></span> without defining it. A template specialization declaration looks like the definition but omits the function body:</p>
+        <p class="docText">与任意函数一样，函数模板特化可以声明而无须定义。模板特化声明看起来与定义很像，但省略了函数体：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">declaration of function template explicit specialization</span>
+     template&lt;&gt;
+     int compare&lt;const char*&gt;(const char* const&amp;,
+                              const char* const&amp;);
+</pre><br>
+
+	<a name="idd1e132290"></a><a name="idd1e132295"></a><a name="idd1e132300"></a><a name="idd1e132305"></a><a name="idd1e132310"></a><a name="idd1e132317"></a><a name="idd1e132324"></a><a name="idd1e132331"></a><a name="idd1e132336"></a><a name="idd1e132341"></a>
+        <p class="docText">This declaration consists of an empty template parameter list (<tt>template&lt;&gt;</tt>) followed by the return type, the function name (optionally) followed by explicit template argument(s) specified inside a pair of angle brackets, and the function parameter list. A template specialization must always include the empty template parameter specifier, <tt>template&lt;&gt;</tt>, and it must include the function parameter list. If the template arguments can be inferred from the function parameter list, there is no need to explicitly specify the template arguments:</p>
+        <p class="docText">这个声明由一个后接返回类型的空模板形参表（<tt>template&lt;&gt;</tt>），后接一对尖括号中指定的显式模板实参的函数名（可选），以及函数形参表构成。模板特化必须总是包含空模板形参说明符，即 <tt>template&lt;&gt;</tt>，而且，还必须包含函数形参表。如果可以从函数形参表推断模板实参，则不必显式指定模板实参：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">error: invalid specialization declarations</span>
+     // <span class="docEmphItalicAlt">missing template&lt;&gt;</span>
+     int compare&lt;const char*&gt;(const char* const&amp;,
+                              const char* const&amp;);
+
+     // <span class="docEmphItalicAlt">error: function parameter list missing</span>
+     template&lt;&gt; int compare&lt;const char*&gt;;
+
+     // <span class="docEmphItalicAlt">ok: explicit template argument</span> <span class="docEmphasis">const char*</span> <span class="docEmphItalicAlt">deduced from parameter types</span>
+     template&lt;&gt; int compare(const char* const&amp;,
+                            const char* const&amp;);
+</pre><br>
+        <a name="ch16lev3sec41"></a>
+
+        <h5 class="docSection3Title">Function Overloading versus Template Specializations</h5>
+        <h5 class="docSection3Title">函数重载与模板特化</h5>
+
+        <p class="docText">Omitting the empty template parameter list, <tt>template&lt;&gt;</tt>, on a specialization may have surprising effects. If the specialization syntax is missing, then the effect is to declare an overloaded nontemplate version of the function:</p>
+        <p class="docText">在特化中省略空的模板形参表 <tt>template&lt;&gt;</tt> 会有令人惊讶的结果。如果缺少该特化语法，则结果是声明该函数的重载非模板版本：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">generic template definition</span>
+     template &lt;class T&gt;
+     int compare(const T&amp; t1, const T&amp; t2) { /* ... */ }
+
+     // <span class="docEmphItalicAlt">OK: ordinary function declaration</span>
+     int compare(const char* const&amp;, const char* const&amp;);
+</pre><br>
+
+        <p class="docText">The definition of <tt>compare</tt> does not define a template specialization. Instead, it declares an ordinary function with a return type and a parameter list that could match those of a template instantiation.</p>
+	<p class="docText"><tt>compare</tt> 的定义没有定义模板特化，相反，它声明了一个普通函数，该函数含有返回类型和可与模板实例化相匹配的形参表。</p>
+
+        <p class="docText">We'll look at the interaction of overloading and templates in more detail in the next section. For now, what's important to know is that when we define a nontemplate function, normal conversions are applied to the arguments. When we specialize a template, conversions are not applied to the argument types. In a call to a specialized version of a template, the argument type(s) in the call must match the specialized version function parameter type(s) exactly. If they don't, then the compiler will instantiate an instantiation for the argument(s) from the template definition.</p>
+        <p class="docText">下一节将更详细地介绍重载和模板的交互作用。现在，重要的是知道，当定义非模板函数的时候，对实参应用常规转换；当特化模板的时候，对实参类型不应用转换。在模板特化版本的调用中，实参类型必须与特化版本函数的形参类型完全匹配，如果不完全匹配，编译器将为实参从模板定义实例化一个实例。</p>
+
+	<a name="ch16lev3sec42"></a>
+        <h5 class="docSection3Title">Duplicate Definitions Cannot Always Be Detected</h5>
+        <h5 class="docSection3Title">不是总能检测到重复定义</h5>
+
+        <p class="docText">If a program consists of more than one file, the declaration for a template specialization must be visible in every file in which the specialization is used. A function template cannot be instantiated from the generic template definition in some files and be specialized for the same set of template arguments in other files.</p>
+        <p class="docText">如果程序由多个文件构成，模板特化的声明必须在使用该特化的每个文件中出现。不能在一些文件中从泛型模板定义实例化一个函数模板，而在其他文件中为同一模板实参集合特化该函数模板。</p>
+
+<a name="ch16note17"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="116" height="74" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/bestpractices.jpg;400478" ></td>
+
+              <td valign="top">
+	<a name="idd1e132423"></a><a name="idd1e132428"></a><a name="idd1e132433"></a><a name="idd1e132440"></a>
+                <p class="docText"> As with other function declarations, declarations for template specializations should be included in a header file. That header should then be included in every source file that uses the specialization.</p>
+                <p class="docText">与其他函数声明一样，应在一个头文件中包含模板特化的声明，然后使用该特化的每个源文件包含该头文件。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch16lev3sec43"></a>
+
+        <h5 class="docSection3Title">Ordinary Scope Rules Apply to Specializations</h5>
+        <h5 class="docSection3Title">普通作用域规则适用于特化</h5>
+
+        <p class="docText">Before we can declare or define a specialization, a declaration for the template that it specializes must be in scope. Similarly, a declaration for the specialization must be in scope before that version of the template is called:</p>
+        <p class="docText">在能够声明或定义特化之前，它所特化的模板的声明必须在作用域中。类似地，在调用模板的这个版本之前，特化的声明必须在作用域中：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">define the general compare template</span>
+     template &lt;class T&gt;
+     int compare(const T&amp; t1, const T&amp; t2) { /* ... */ }
+
+     int main() {
+         // <span class="docEmphItalicAlt">uses the generic template definition</span>
+         int i = compare("hello", "world");
+         // ...
+     }
+     // <span class="docEmphItalicAlt">invalid program: explicit specialization after call</span>
+     template&lt;&gt;
+     int compare&lt;const char*&gt;(const char* const&amp; s1,
+                              const char* const&amp; s2)
+     { /* ... */ }
+</pre><br>
+
+        <p class="docText">This program is in error because a call that would match the specialization is made before the specialization is declared. When the compiler sees a call, it must know to expect a specialization for this version. Otherwise, the compiler is allowed to instantiate the function from the template definition.</p>
+        <p class="docText">这个程序有错误，因为在声明特化之前，进行了可以与特化相匹配的一个调用。当编译器看到一个函数调用时，它必须知道这个版本需要特化，否则，编译器将可能从模板定义实例化该函数。</p>
+	<a name="ch16note18"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">A program cannot have both an explicit specialization and an instantiation for the same template with the same set of template arguments.</p>
+        <p class="docText">对具有同一模板实参集的同一模板，程序不能既有显式特化又有实例化。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">It is an error for a specialization to appear after a call to that instance of the template has been seen.</p>
+        <p class="docText">特化出现在对该模板实例的调用之后是错误的。</p>
+
+<a name="ch16sb19"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 16.6.1</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch16qa17q1"></a><b>Exercise 16.52:</b></td>
+
+                    <td>
+                      <p class="docText">Define a function template <tt>count</tt> to count the number of occurrences of some value in a <tt>vector</tt>.</p>
+                      <p class="docText">定义函数模板 <tt>count</tt> 计算一个 <tt>vector</tt> 中某些值的出现次数。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch16qa17q2"></a><b>Exercise 16.53:</b></td>
+
+                    <td>
+                      <p class="docText">Write a program to call the <tt>count</tt> function defined in the previous exercise passing it first a <tt>vector</tt> of <tt>double</tt>s, then a <tt>vector</tt> of <tt>int</tt>s, and finally a <tt>vector</tt> of <tt>char</tt>s.</p>
+                      <p class="docText">编写一个程序调用上题中定义的 <tt>count</tt> 函数，首先传给该函数一个 <tt>double</tt> 型 <tt>vector</tt>，然后传递一个 <tt>int</tt> 型 <tt>vector</tt>，最后传递一个 <tt>char</tt> 型 <tt>vector</tt>。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch16qa17q3"></a><b>Exercise 16.54:</b></td>
+
+                    <td>
+                      <p class="docText">Introduce a specialized template instance of the <tt>count</tt> function to handle <tt>string</tt>s. Rerun the program you wrote to call the function template instantiations.</p>
+                      <p class="docText">引入 <tt>count</tt> 函数的一个特化模板实例以处理 <tt>string</tt> 对象。重新运行你所编写的调用函数模板实例化的程序。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a name="ch16lev2sec28"></a>
+
+        <h4 class="docSection2Title">16.6.2. Specializing a Class Template</h4>
+        <h4 class="docSection2Title">16.6.2. 类模板的特化</h4>
+
+	<a name="idd1e132573"></a><a name="idd1e132578"></a><a name="idd1e132583"></a><a name="idd1e132591"></a><a name="idd1e132598"></a>
+        <p class="docText">Our <tt>Queue</tt> class has a problem similar to the one in <tt>compare</tt> when used with C-style strings. In this case, the problem is in the <tt>push</tt> function. That function copies the value it's given to create a new element in the <tt>Queue</tt>. By default, copying a C-style character string copies only the pointer, not the characters. Copying a pointer in this case has all the problems that shared pointers have in other contexts. The most serious is that if the pointer points to dynamic memory, it's possible for the user to delete the array to which the pointer points.</p>
+                      <p class="docText">当用于 C 风格字符串时，<tt>Queue</tt> 类具有与 <tt>compare</tt> 函数相似的问题。在这种情况下，问题出在 <tt>push</tt> 函数中，该函数复制给定值以创建 <tt>Queue</tt> 中的新元素。默认情况下，复制 C 风格字符串只会复制指针，不会复制字符。这种情况下复制指针将出现共享指针在其他环境中会出现的所有问题，最严重的是，如果指针指向动态内存，用户就有可能删除指针所指的数组。</p>
+
+<a name="ch16lev3sec44"></a>
+        <h5 class="docSection3Title">Defining a Class Specialization</h5>
+        <h5 class="docSection3Title">定义类特化</h5>
+
+        <p class="docText">One way to provide the right behavior for <tt>Queue</tt>'s of C-style strings is to define a specialized version of the entire class for <tt>const char*</tt>:</p>
+        <p class="docText">为 C 风格字符串的 <tt>Queue</tt> 提供正确行为的一种途径，是为 <tt>const char*</tt> 定义整个类的特化版本：</p>
+        <pre>
+     /* <span class="docEmphItalicAlt">definition of specialization for</span> <span class="docEmphasis">const char*</span>
+      * <span class="docEmphItalicAlt">this class forwards its work to</span> <span class="docEmphasis">Queue&lt;string&gt;;</span>
+      * <span class="docEmphItalicAlt">the</span> <span class="docEmphasis">push</span> <span class="docEmphItalicAlt">function translates the</span> <span class="docEmphasis">const char*</span> <span class="docEmphItalicAlt">parameter to a</span> <span class="docEmphasis">string</span>
+      * <span class="docEmphItalicAlt">the</span> <span class="docEmphasis">front</span> <span class="docEmphItalicAlt">functions return a</span> <span class="docEmphasis">string</span> <span class="docEmphItalicAlt">rather than a</span> <span class="docEmphasis">const char*</span>
+      */
+     template&lt;&gt; class Queue&lt;const char*&gt; {
+     public:
+         // <span class="docEmphItalicAlt">no copy control: Synthesized versions work for this class</span>
+         // <span class="docEmphItalicAlt">similarly, no need for explicit default constructor either</span>
+         void push(const char*);
+         void pop()                  {real_queue.pop();}
+         bool empty() const          {return real_queue.empty();}
+         // <span class="docEmphItalicAlt">Note: return type does not match template parameter type</span>
+         std::string front()         {return real_queue.front();}
+         const std::string &amp;front() const
+                                     {return real_queue.front();}
+     private:
+         Queue&lt;std::string&gt; real_queue; // <span class="docEmphasis">forward calls to</span> real_queue
+     };
+</pre><br>
+
+        <p class="docText">This implementation gives <tt>Queue</tt> a single data element: a <tt>Queue</tt> of <tt>string</tt>s. The various members delegate their work to this memberfor example, <tt>pop</tt> is implemented by calling <tt>pop</tt> on <tt>real_queue</tt>.</p>
+        <p class="docText">这个实现给了 <tt>Queue</tt> 一个数据元素：<tt>string</tt> 对象的 <tt>Queue</tt>。各个成员将它们的工作委派给这个成员。例如，通过调用 <tt>real_queue</tt> 的 <tt>pop</tt> 实现 <tt>pop</tt> 成员。</p>
+
+        <p class="docText">This version of the class does not define the copy-control members. Its only data element has a class type that does the right thing when copied, assigned, or destroyed; we can use the synthesized copy-control members.</p>
+        <p class="docText"><tt>Queue</tt> 类的这个版本没有定义复制控制成员，它唯一的数据成员为类类型，该类类型在被复制、被赋值或被撤销时完成正确的工作。可以使用合成的复制控制成员。</p>
+
+        <p class="docText">Our <tt>Queue</tt> class implements mostly, but not entirely, the same interface as the template version of <tt>Queue</tt>. The difference is that we return a <tt>string</tt> rather than a <tt>char*</tt> from the <tt>front</tt> members. We do so to avoid having to manage the character array that would be required if we wanted to return a pointer.</p>
+        <p class="docText">这个 <tt>Queue</tt> 类实现了与 <tt>Queue</tt> 的模板版本大部分相同但不完全相同的接口，区别在于 <tt>front</tt> 成员返回的是 <tt>string</tt> 而不是 <tt>char*</tt>，这样做是为了避免必须管理字符数组——如果想要返回指针，就需要字符数组。</p>
+
+        <p class="docText">It is worth noting that a specialization may define completely different members than the template itself. If a specialization fails to define a member from the template, that member may not be used on objects of the specilization type. The member definitions of the class template are not used to create the definitions for the members of an explicit specialization.</p>
+        <p class="docText">值得注意的是，特化可以定义与模板本身完全不同的成员。如果一个特化无法从模板定义某个成员，该特化类型的对象就不能使用该成员。类模板成员的定义不会用于创建显式特化成员的定义。</p>
+
+	<a name="ch16note19"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="116" height="74" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/bestpractices.jpg;400478" ></td>
+
+              <td valign="top">
+		      <a name="idd1e132745"></a><a name="idd1e132750"></a><a name="idd1e132757"></a><a name="idd1e132764"></a>
+                <p class="docText"> A class template specialization ought to define the same interface as the template it specializes. Doing otherwise will surprise users when they attempt to use a member that is not defined.</p>
+                <p class="docText">类模板特化应该与它所特化的模板定义相同的接口，否则当用户试图使用未定义的成员时会感到奇怪。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch16lev3sec45"></a>
+
+	<h5 class="docSection3Title">Class Specialization Definition</h5>
+	<h5 class="docSection3Title">类特化定义</h5>
+	
+	<a name="ch16note20"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">When a member is defined outside the class specialization, it is not preceded by the tokens <tt>template&lt;&gt;</tt>.</p>
+                <p class="docText">在类特化外部定义成员时，成员之前不能加 <tt>template&lt;&gt;</tt> 标记。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">Our class defines only one member outside the class:</p>
+        <p class="docText">我们的类只在类的外部定义了一个成员：</p>
+        <pre>
+     void Queue&lt;const char*&gt;::push(const char* val)
+     {
+         return real_queue.push(val);
+     }
+</pre><br>
+
+        <p class="docText">Although it does little obvious work, this function implicitly copies the character array to which <tt>val</tt> points. The copy is made in the call to <tt>real_queue.push</tt>, which creates a new <tt>string</tt> from the <tt>const char*</tt> argument. That argument uses the <tt>string</tt> constructor that takes a <tt>const char*</tt>. The <tt>string</tt> constructor copies the characters from the array pointed to by <tt>val</tt> into an unnamed <tt>string</tt> that will be stored in the element we <tt>push</tt> onto <tt>real_queue</tt>.</p>
+        <p class="docText">虽然这个函数几乎没有做什么工作，但它隐式复制了 <tt>val</tt> 指向的字符数组。复制是在对 <tt>real_queue.push</tt> 的调用中进行的，该调用从 <tt>const char*</tt> 实参创建了一个新的 <tt>string</tt> 对象。<tt>const char*</tt> 实参使用了以 <tt>const char*</tt> 为参数的 <tt>string</tt> 构造函数，<tt>string</tt> 构造函数将 <tt>val</tt> 所指的数组中的字符复制到未命名的 <tt>string</tt> 对象，该对象将被存储在 <tt>push</tt> 到 <tt>real_queue</tt> 的元素中。</p>
+
+<a name="ch16sb20"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 16.6.2</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch16qa18q1"></a><b>Exercise 16.55:</b></td>
+
+                    <td>
+                      <p class="docText">The comments on the specialized version of <tt>Queue</tt> for <tt>const char*</tt> note that there is no need to define the default constructor or copy-control members. Explain why the synthesized members suffice for this version of <tt>Queue</tt>.</p>
+        <p class="docText"><tt>Queue</tt> 针对 <tt>const char*</tt> 的特化版本中的注释指出，不必定义默认构造函数或复制控制成员，解释为什么对于 <tt>Queue</tt> 的这个版本合成成员就足够了。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch16qa18q2"></a><b>Exercise 16.56:</b></td>
+
+                    <td>
+                      <p class="docText">We explained the generic behavior of <tt>Queue</tt> if it is not specialized for <tt>const char*</tt>. Using the generic <tt>Queue</tt> template, explain what happens in the following code:</p>
+        <p class="docText">我们已经解释过未针对 <tt>const char*</tt> 特化的 <tt>Queue</tt> 的泛型行为，使用泛型 <tt>Queue</tt> 模板解释下面代码中会发生什么：</p>
+                      <pre>
+     Queue&lt;const char*&gt; q1;
+     q1.push("hi"); q1.push("bye"); q1.push("world");
+     Queue&lt;const char*&gt; q2(q1); // <span class="docEmphasis">q2</span> <span class="docEmphItalicAlt">is a copy of</span> <span class="docEmphasis">q1</span>
+
+     Queue&lt;const char*&gt; q3;     // <span class="docEmphItalicAlt">empty</span> <span class="docEmphasis">Queue</span>
+     q1 = q3;
+</pre><br>
+
+                      <p class="docText">In particular, say what the values of <tt>q1</tt> and <tt>q2</tt> are after the initialization of <tt>q2</tt> and after the assignment to <tt>q3</tt>.</p>
+        <p class="docText">具体而言，就是说明在 <tt>q2</tt> 的初始化和 <tt>q3</tt> 的赋值之后，<tt>q1</tt> 和 <tt>q2</tt> 是什么值。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch16qa18q3"></a><b>Exercise 16.57:</b></td>
+
+                    <td>
+                      <p class="docText">Our specialized <tt>Queue</tt> returns <tt>string</tt>s from the <tt>front</tt> function rather than <tt>const char*</tt>. Why do you suppose we did so? How might you implement the <tt>Queue</tt> to return a <tt>const char*</tt>? Discuss the pros and cons of each approach.</p>
+        <p class="docText">我们的 <tt>Queue</tt> 特化版本从 <tt>front</tt> 函数返回 <tt>string</tt> 对象而不是 <tt>const char*</tt>，你认为为什么这样做？你能够怎样实现 <tt>Queue</tt> 以返回 <tt>const char*</tt>？讨论每种方法的优缺点。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a name="ch16lev2sec29"></a>
+
+        <h4 class="docSection2Title">16.6.3. Specializing Members but Not the Class</h4>
+        <h4 class="docSection2Title">16.6.3. 特化成员而不特化类</h4>
+
+	<a name="idd1e132960"></a><a name="idd1e132965"></a><a name="idd1e132970"></a><a name="idd1e132975"></a><a name="idd1e132983"></a><a name="idd1e132988"></a><a name="idd1e132995"></a><a name="idd1e133000"></a>
+        <p class="docText">If we look a bit more deeply at our class, we can see that we can simplify our code: Rather than specializing the whole template, we can specialize just the <tt>push</tt> and <tt>pop</tt> members. We'll specialize <tt>push</tt> to copy the character array and <tt>pop</tt> to free the memory we used for that copy:</p>
+	<p class="docText">如果更深入一点分析我们的类，就能够看到代码可以简化：除了特化整个模板之外，还可以只特化 <tt>push</tt> 和 <tt>pop</tt> 成员。我们将特化 <tt>push</tt> 成员以复制字符数组，并且特化 <tt>pop</tt> 成员以释放该副本使用的内存：</p>
+        <pre>
+     template &lt;&gt;
+     void Queue&lt;const char*&gt;::push(const char *const &amp;val)
+     {
+          // <span class="docEmphItalicAlt">allocate a new character array and copy characters from</span> <span class="docEmphasis">val</span>
+          char* new_item = new char[strlen(val) + 1];
+          strncpy(new_item, val, strlen(val) + 1);
+          // <span class="docEmphItalicAlt">store pointer to newly allocated and initialized element</span>
+          QueueItem&lt;const char*&gt; *pt =
+              new QueueItem&lt;const char*&gt;(new_item);
+          // <span class="docEmphItalicAlt">put item onto existing queue</span>
+          if (empty())
+              head = tail = pt; // <span class="docEmphItalicAlt">queue has only one element</span>
+          else {
+              tail-&gt;next = pt;  // <span class="docEmphItalicAlt">add new element to end of queue</span>
+              tail = pt;
+          }
+     }
+     template &lt;&gt;
+     void Queue&lt;const char*&gt;::pop()
+     {
+          // <span class="docEmphItalicAlt">remember</span> <span class="docEmphasis">head</span> <span class="docEmphItalicAlt">so we can delete it</span>
+          QueueItem&lt;const char*&gt; *p = head;
+          delete head-&gt;item; // <span class="docEmphItalicAlt">delete the array allocated in</span> <span class="docEmphasis">push</span>
+          head = head-&gt;next; // <span class="docEmphasis">head</span> <span class="docEmphItalicAlt">now points to next element</span>
+          delete p;          // <span class="docEmphItalicAlt">delete old</span> <span class="docEmphasis">head</span> <span class="docEmphItalicAlt">element</span>
+     }
+</pre><br>
+
+        <p class="docText">Now, the class type <tt>Queue&lt;const char*&gt;</tt> will be instantiated from the generic class template definition, with the exception of the <tt>push</tt> and <tt>pop</tt> functions. When we call <tt>push</tt> or <tt>pop</tt> on a <tt>Queue&lt;const char*&gt;</tt>, then the specialized version will be called. When we use any other member, the generic one will be instantiated for <tt>const char*</tt> from the class template.</p><a name="ch16lev3sec46"></a>
+        <p class="docText">现在，类类型 <tt>Queue&lt;const char*&gt;</tt> 将从通用类模板定义实例化而来，而 <tt>push</tt> 和 <tt>pop</tt> 函数例外。调用 <tt>Queue&lt;const char*&gt;</tt> 对象的 <tt>push</tt> 或 <tt>pop</tt> 函数时，将调用特化版本；调用任意其他成员时，将从类模板为 <tt>const char*</tt> 实例化一个通用版本。</p>
+
+<a name="ch16lev3sec46"></a>
+        <h5 class="docSection3Title">Specialization Declarations</h5>
+        <h5 class="docSection3Title">特化声明</h5>
+
+        <p class="docText">Member specializations are declared just as any other function template specialization. They must start with an empty template parameter list:</p>
+        <p class="docText">成员特化的声明与任何其他函数模板特化一样，必须以空的模板形参表开头：</p>
+        <pre>
+     // <span class="docEmphasis">push</span> <span class="docEmphItalicAlt">and</span> <span class="docEmphasis">pop</span> <span class="docEmphItalicAlt">specialized for</span> <span class="docEmphasis">const char*</span>
+     template &lt;&gt;
+     void Queue&lt;const char*&gt;::push(const char* const &amp;);
+     template &lt;&gt; void Queue&lt;const char*&gt;::pop();
+</pre><br>
+
+        <p class="docText">These declarations should be placed in the <tt>Queue</tt> header file.</p>
+        <p class="docText">这些声明应放在 <tt>Queue</tt> 类的头文件中。</p>
+
+<a name="ch16sb21"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 16.6.3</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch16qa19q1"></a><b>Exercise 16.58:</b></td>
+
+                    <td>
+<a name="idd1e133147"></a><a name="idd1e133150"></a><a name="idd1e133157"></a>
+                      <p class="docText">The specialization of <tt>Queue</tt> presented in the previous subsection and the specialization in this subsection of <tt>push</tt> and <tt>pop</tt> apply only to <tt>Queues</tt> of <tt>const char*</tt>. Implement these two different ways of specializing <tt>Queue</tt> that could be used with plain <tt>char*</tt>.</p>
+                      <p class="docText">前一小节中给出的 <tt>Queue</tt> 类的特化，以及本小节中 <tt>push</tt> 和 <tt>pop</tt> 函数的特化，只适用于 <tt>const char*</tt> 类型的 <tt>Queue</tt>。为普通 <tt>char*</tt> 实现特化 <tt>Queue</tt> 的这两种不同方式。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch16qa19q2"></a><b>Exercise 16.59:</b></td>
+
+                    <td>
+                      <p class="docText">If we go the route of specializing only the <tt>push</tt> function, what value is returned by <tt>front</tt> for a <tt>Queue</tt> of C-style character strings?</p>
+                      <p class="docText">如果走只特化 <tt>push</tt> 函数的路线，对于 C 风格字符串的 <tt>Queue</tt>，<tt>front</tt> 返回什么值？</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch16qa19q3"></a><b>Exercise 16.60:</b></td>
+
+                    <td>
+                      <p class="docText">Discuss the pros and cons of the two designs: defining a specialized version of the class for <tt>const char*</tt> versus specializing only the <tt>push</tt> and <tt>pop</tt> functions. In particular, compare and contrast the behavior of <tt>front</tt> and the possibility of errors in user code corrupting the elements in the <tt>Queue</tt>.</p>
+                      <p class="docText">讨论这两个设计的优缺点：为 <tt>const char*</tt> 定义该类的特化版本和只特化 <tt>push</tt> 和 <tt>pop</tt> 函数。具体而言，比较 <tt>front</tt> 的行为的异同以及用户代码中的错误破坏 <tt>Queue</tt> 元素的可能性。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a name="ch16lev2sec30"></a>
+
+        <h4 class="docSection2Title">16.6.4. Class-Template Partial Specializations</h4>
+        <h4 class="docSection2Title">16.6.4. 类模板的部分特化</h4>
+
+        <p class="docText">If a class template has more than one template parameter, we might want to specialize some but not all of the template parameters. We can do so using a class template partial specialization:</p>
+                      <p class="docText">如果类模板有一个以上的模板形参，我们也许想要特化某些模板形参而非全部。使用类模板的部分特化可以做到这一点：</p>
+        <pre>
+     template &lt;class T1, class T2&gt;
+     class some_template {
+         // ...
+     };
+     // <span class="docEmphItalicAlt">partial specialization: fixes</span> <span class="docEmphasis">T2</span> <span class="docEmphItalicAlt">as</span> <span class="docEmphasis">int</span> <span class="docEmphItalicAlt">and allows</span> <span class="docEmphasis">T1</span> <span class="docEmphItalicAlt">to vary</span>
+     template &lt;class T1&gt;
+     class some_template&lt;T1, int&gt; {
+         // ...
+     };
+</pre><br>
+
+	<a name="ch16term9"></a>
+        <p class="docText">A class template <b><a class="docLink" href="ch16lev1sec9.html#gloss16_09" >partial specialization</a></b> is itself a template. The definition of a partial specialization looks like a template definition. Such a definition begins with the keyword <tt>template</tt> followed by a template parameter list enclosed by angle brackets (<tt>&lt;&gt;</tt>). The parameter list of a partial specialization is a subset of the parameter list of the corresponding class template definition. The partial specialization for <tt>some_template</tt> has only one template type parameter named <tt>T1</tt>. The second template argument for <tt>T2</tt> is known to be <tt>int</tt>. The template parameter list for the partial specialization only lists the parameters for which the template arguments are still unknown.</p>
+        <p class="docText">类模板的<b><a class="docLink" href="ch16lev1sec9.html#gloss16_09" >部分特化</a></b>本身也是模板。部分特化的定义看来像模板定义，这种定义以关键字 template 开头，接着是由尖括号（<tt>&lt;&gt;</tt>）括住的模板形参表。部分特化的模板形参表是对应的类模板定义形参表的子集。<tt>some_template</tt> 的部分特化只有一个名为 <tt>T1</tt> 的模板类型形参，第二个模板形参 <tt>T2</tt> 的实参已知为 <tt>int</tt>。部分特化的模板形参表只列出未知模板实参的那些形参。</p><a name="ch16lev3sec47"></a>
+
+	<a name="ch16lev3sec47"></a>
+        <h5 class="docSection3Title">Using a Class-Template Partial Specialization</h5>
+        <h5 class="docSection3Title">使用类模板的部分特化</h5>
+
+<a name="idd1e133308"></a><a name="idd1e133313"></a>
+        <p class="docText">The partial specialization has the same name as the class template to which it correspondsnamely, <tt>some_template</tt>. The name of the class template must be followed by a template argument list. In the previous example, the template argument list is <tt>&lt;T1,int&gt;</tt>. Because the argument value for the first template parameter is unknown, the argument list uses the name of the template parameter <tt>T1</tt> as a placeholder. The other argument is the type <tt>int</tt>, for which the template is partially specialized.</p>
+        <p class="docText">部分特化与对应类模板有相同名字，即这里的 <tt>some_template</tt>。类模板的名字后面必须接着模板实参列表，前面例子中，模板实参列表是 <tt>&lt;T1,int&gt;</tt>。因为第一个模板形参的实参值未知，实参列表使用模板形参名 <tt>T1</tt> 作为占位符，另一个实参是类型 <tt>int</tt>，为 <tt>int</tt> 而部分特化模板。</p>
+
+        <p class="docText">As with any other class template, a partial specialization is instantiated implicitly when used in a program:</p>
+        <p class="docText">像任何其他类模板一样，部分特化是在程序中使用时隐式实例化：</p>
+        <pre>
+     some_template&lt;int, string&gt; foo; // <span class="docEmphItalicAlt">uses template</span>
+     some_template&lt;string, int&gt; bar; // <span class="docEmphItalicAlt">uses partial specialization</span>
+</pre><br>
+
+        <p class="docText">Notice that the type of the second variable, <tt>some_template</tt> parameterized by <tt>string</tt> and <tt>int</tt>, could be instantiated from the generic class template definition as well as from the partial specialization. Why is it that the partial specialization is chosen to instantiate the template? When a parital specialization is declared, the compiler chooses the template definition that is the most specialized for the instantiation. When no partial specialization can be used, the generic template definition is used. The instantiated type of <tt>foo</tt> does not match the partial specialization provided. Thus, the type of <tt>foo</tt> must be instantiated from the general class template, binding <tt>int</tt> to <tt>T1</tt> and <tt>string</tt> to <tt>T2</tt>. The partial specialization is only used to instantiate <tt>some_template</tt> types with a second type of <tt>int</tt>.</p>
+        <p class="docText">注意第二个变量的类型，形参为 <tt>string</tt> 和 <tt>int</tt> 的 <tt>some_template</tt>，既可以从普通类模板定义实例化，也可以从部分特化实例化。为什么选择部分特化来实例化该模板呢？当声明了部分特化的时候，编译器将为实例化选择最特化的模板定义，当没有部分特化可以使用的时候，就使用通用模板定义。<tt>foo</tt> 的实例化类型与提供的部分特化不匹配，因此，<tt>foo 的类型必然从通用类模板实例化，将 <tt>int</tt> 绑定到 <tt>T1</tt> 并将 <tt>string</tt> 绑定到 <tt>T2</tt>。部分特化只用于实例化第二个类型为 <tt>int</tt> 的 <tt>some_template</tt> 类型。</p>
+
+        <p class="docText">The definition of a partial specialization is completely disjointed from the definition of the generic template. The partial specialization may have a completely different set of members from the generic class template. The generic definitions for the members of a class template are never used to instantiate the members of the class template partial specialization.</p>
+        <p class="docText">部分特化的定义与通用模板的定义完全不会冲突。部分特化可以具有与通用类模板完全不同的成员集合。类模板成员的通用定义永远不会用来实例化类模板部分特化的成员。</p>
+	<a href="21001535.html" ><img src="images/pixel.gif"  alt="" width="1" height="1" border="0"></a>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch16lev1sec5.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch16lev1sec7.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

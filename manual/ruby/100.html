@@ -1,0 +1,699 @@
+<html><HEAD><TITLE>Programming Ruby: The Pragmatic Programmer's Guide</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=gb2312"><LINK media=screen href="100_files/pr_style[1].css"  type=text/css rel=StyleSheet></head>
+<BODY bgColor=white>
+<TABLE cellSpacing=0 cellPadding=3 width="100%" bgColor=#c09090 border=0>
+<TBODY>
+<TR>
+<TD colSpan=3>
+<TABLE cellPadding=20 width="100%" bgColor=#701a1a>
+<TBODY>
+<TR>
+<TD width="100%">
+<H1 class=header>Programming Ruby</H1>
+<H3 class=subheader>实用程序员指南</H3></TD></TR></TBODY></TABLE></TD></TR>
+<TR>
+<TD align=left width="33%"><A class=subheader href="99.html" >前一章&lt;</A> </TD>
+<TD vAlign=center align=middle width="33%"><A class=subheader href="95.html" >目录 ^</A> <BR></TD>
+<TD align=right width="33%"><A class=subheader href="101.html" >下一章&gt;</A> <BR></TD></TR></TBODY></TABLE><!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<H1>类，对象和变量</H1>
+<HR>
+<BR>
+<P>看了前面我们谈论到的一些例子，你也许会怀疑ruby的面向对象特性是否属实，这章我们将会详细讲述这方面的内容。我们将会探讨在ruby中如何创建类和对象，并且讨论ruby比其他面向对象语言的一些更强之处。同时，我们也会部分实现我们数亿美元的产品：基于因特网的爵士和布鲁斯自动点唱机。 </P>
+<P></P>
+<P>经过几个月的工作，我们负责的研究人员决定我们的点唱机学要歌曲<EM>（songs</EM>），所以我们要在ruby中建立一个song类来表示现实中的歌曲。我们知道歌曲都有一个名字，演唱者，时长等，所以，我们的song对象也应如此。</P>
+<P></P>我们开始创建了一个类：<CODE>Song</CODE>,<EM>[前面我们已经知道类名以大写字母开头，而方法以小写字母开头]</EM> <CODE>它只含有一个方法：initialize</CODE>. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>class&nbsp;Song
+&nbsp;&nbsp;def&nbsp;initialize(name,&nbsp;artist,&nbsp;duration)
+&nbsp;&nbsp;&nbsp;&nbsp;@name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;name
+&nbsp;&nbsp;&nbsp;&nbsp;@artist&nbsp;&nbsp;&nbsp;=&nbsp;artist
+&nbsp;&nbsp;&nbsp;&nbsp;@duration&nbsp;=&nbsp;duration
+&nbsp;&nbsp;end
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P><CODE>initialize</CODE> 在Ruby中是一个特殊方当法，当你调用<CODE>Song.new</CODE> 来创建一个<CODE>Song</CODE> 对象的时候, Ruby先创建一个没有初始化的对象，然后调用它的<CODE>initialize</CODE> 方法,把传给new的参数再传给 <CODE>initialize</CODE> 这个方法。这样，我们就可以编写代码来设置对象的状态了。 
+<P></P>对于类<CODE>Song来说，i</CODE><CODE>nitialize</CODE> 方法接收3个参数，这三个参数作用域跟方法里的局部变量一样，所以他们的命名方式更具备变量一样，以小写字母开头。 
+<P>每个对象代表自己的歌曲，他们有不同的名字，演唱者和时长等，也就是我们要把这些东西当成对象里面的实例变量。在ruby中实例变量用@开头，比如我们上面的例子，@name，@artist，@duration都是实例变量。</P>
+<P></P>让我们看看我们的成果如何： 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>aSong&nbsp;=&nbsp;Song.new("Bicylops",&nbsp;"Fleck",&nbsp;260)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>aSong.inspect</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"#&lt;Song:0x401b4924&nbsp;@duration=260,&nbsp;@artist=\"Fleck\",&nbsp;@name=\"Bicylops\"&gt;"</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>它已经可以工作了。默认的<CODE>inspect</CODE>方法可以发送给任何对象，并且能得到这个对象的id和它的实例变量。从上面的结果看到我们正确的设置了对象的各个状态。 
+<P></P>我们的经验告诉我们，在开发过程中，我们要多次打印Song中的内容，等inspect的默认格式不能完全满足我们的要求，幸运的是，Ruby有一个标准的消息to_s，当向一个对象发送这个消息时，将会返回一个字符串，比如对于song来说： 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>aSong&nbsp;=&nbsp;Song.new("Bicylops",&nbsp;"Fleck",&nbsp;260)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>aSong.to_s</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"#&lt;Song:0x401b499c&gt;"</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>这样没多少用处，甚至还不如inspect，只有对象id。但是我们可以重载这个to_s方法。同时，我们也会用一点时间来说说Ruby中如何定义一个类。 
+<P></P>在Ruby中，类永远不会关闭，你可以一直往里面加入方法，不光是你自己写的类，系统内建的类也可以加入的。你需要做的是打开一个类的定义，然后就可以加入自己的方法了。 
+<P></P>这对我们来说非常好。在本章以后的例子里，我们只需要添加新的方法，老的方法还继续存在，这样省得我们花费多余的时间去在每个例子里都重写一遍。尽管我们现在写的代码比较分散，但最好还是把它们都写到一个文件中去比较好。 
+<P></P>我想已足够详细了，还是回到我们要添加的to_s方法吧。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>class&nbsp;Song</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;def&nbsp;to_s</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;&nbsp;&nbsp;"Song:&nbsp;#{@name}--#{@artist}&nbsp;(#{@duration})"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>aSong&nbsp;=&nbsp;Song.new("Bicylops",&nbsp;"Fleck",&nbsp;260)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>aSong.to_s</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"Song:&nbsp;Bicylops--Fleck&nbsp;(260)"</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>非常好，我们进步了不少。但是你也许觉得被骗了，我们曾经说过Ruby中所有对象都支持to_s方法，但没有说怎么支持，答案是继承。ruby如何决定当一个对象接受一个消息后执行哪个方法，在下一节我们将会看到。 
+<H2><A name=S1>继承和消息</A></H2>
+<P></P>继承使你能够创建一个基于一个类的特殊化的类，比如，我们的自动点唱机里有song这个类，但是随着市场的需求，我们需要增加对卡拉ok的支持。卡拉ok也是歌曲的一种，只不过光有伴奏，没有演唱音，但是他们需要歌词这个属性，当我们播放卡拉ok时，歌词还要显示出来。 
+<P></P>比较好的办法是定义一个类<CODE>KaraokeSong</CODE>，它就是一个song，但是有一个歌词的属性。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>class&nbsp;KaraokeSong&nbsp;&lt;&nbsp;Song
+&nbsp;&nbsp;def&nbsp;initialize(name,&nbsp;artist,&nbsp;duration,&nbsp;lyrics)
+&nbsp;&nbsp;&nbsp;&nbsp;super(name,&nbsp;artist,&nbsp;duration)
+&nbsp;&nbsp;&nbsp;&nbsp;@lyrics&nbsp;=&nbsp;lyrics
+&nbsp;&nbsp;end
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P>" &lt;&nbsp;Song" 告诉 ruby karaokeSong 这个类是Song的一个子类，Song是karaokeSong的父类。先不用管<CODE>initialize</CODE>这个方法，以后我们会谈到。</P>
+<P></P>我们可以创建<CODE>KaraokeSong</CODE> 对象看看它是否能工作(在最后的系统中，lyrics存在另外的对象里，这个对象有文本和时间信息。为了测试方便，我们这里只用了字符串。这也是无类型语言的优点：我们在执行代码之前不需要对所有对象进行定义。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>aSong&nbsp;=&nbsp;KaraokeSong.new("My&nbsp;Way",&nbsp;"Sinatra",&nbsp;225,&nbsp;"And&nbsp;now,&nbsp;the...")</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>aSong.to_s</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"Song:&nbsp;My&nbsp;Way--Sinatra&nbsp;(225)"</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>这个类已经可以工作了，但是to_s没有显示歌词信息。 
+<P></P>这和ruby如何决定调用哪个方法的机制有关。当ruby看到这个 <CODE>aSong.to_s</CODE>方法调用，它并不需要知道去哪里找<CODE>to_s</CODE>这个方法，而是要在程序运行到此的时候再去调用这个函数。开始在<CODE>aSong</CODE>里面找，如果这个类里面定义了一个和发送给这个对象的消息一样名称的方法的话，就运行这个方法。否则，就会到这个类的父类去找，如果还没找到，再到父类的父类去找。这样一直找到祖先Object。如果找到最高层还没有找到这个方法，一般会返回一个错误。<EM>[实际上，你可以拦截这个错误，你可以在运行时弥补这个错误，见<A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_object.html#Object.method_missing" > <CODE>Object#method_missing</CODE> </A>]</EM> 
+<P></P>
+<P>现在再回到我们的例子，我们向aSong发送了一个消息to_s，在karaokeSong这个类里，ruby找不到to_s这个方法，所以，再去karaokeSong的父类Song去找。在父类里发现了这个方法，所以就执行这个方法，所以，它只打印了除了歌词的信息。类Song一点都不知道lyrics的存在。<BR><BR>我们可以在这里实现这个方法来弥补这个不足，又很多方法可以实现这个方法，我们先来看一下一个不是很好的例子，从Song的to_s拷贝出来一些代码，然后加上lyric信息。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>class&nbsp;KaraokeSong</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;#&nbsp;...</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;def&nbsp;to_s</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;&nbsp;&nbsp;"KS:&nbsp;#{@name}--#{@artist}&nbsp;(#{@duration})&nbsp;[#{@lyrics}]"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>aSong&nbsp;=&nbsp;KaraokeSong.new("My&nbsp;Way",&nbsp;"Sinatra",&nbsp;225,&nbsp;"And&nbsp;now,&nbsp;the...")</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>aSong.to_s</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"KS:&nbsp;My&nbsp;Way--Sinatra&nbsp;(225)&nbsp;[And&nbsp;now,&nbsp;the...]"</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>我们正确地显示了<CODE>@lyrics</CODE> 这个实例变量，但是这样做直接在子类里访问了父类的实例变量，为什么这样实现to_s方法不好呢？ 
+<P></P>这和好的编程风格有关（可以称作<EM>decoupling</EM>）<BR>The answer has to do with good programming style (and something called ). By poking around in our parent's internal state, we're tying ourselves tightly to its implementation. Say we decided to change <CODE>Song</CODE> to store the duration in milliseconds. Suddenly, <CODE>KaraokeSong</CODE> would start reporting ridiculous values. The idea of a karaoke version of ``My Way'' that lasts for 3750 minutes is just too frightening to consider. 
+<P></P>我们需要每个类只操作自己内部的状态，当<CODE>KaraokeSong#to_s</CODE> 被调用的时候，先在<CODE>KaraokeSong#to_s</CODE>调用父类的to_s方法，然后在加上lyric信息返回给调用者。这里需要ruby的关键字"super"。当你不带参数调用super时，ruby向父类发送消息，调用父类的同名函数（即和子类同名的函数），传递给当前类方法的参数会默认的传给父类。比如改写后如下： 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>class&nbsp;KaraokeSong&nbsp;&lt;&nbsp;Song</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;#&nbsp;Format&nbsp;ourselves&nbsp;as&nbsp;a&nbsp;string&nbsp;by&nbsp;appending</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;#&nbsp;our&nbsp;lyrics&nbsp;to&nbsp;our&nbsp;parent's&nbsp;#to_s&nbsp;value.</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;def&nbsp;to_s</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;&nbsp;&nbsp;super&nbsp;+&nbsp;"&nbsp;[#{@lyrics}]"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>aSong&nbsp;=&nbsp;KaraokeSong.new("My&nbsp;Way",&nbsp;"Sinatra",&nbsp;225,&nbsp;"And&nbsp;now,&nbsp;the...")</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>aSong.to_s</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"Song:&nbsp;My&nbsp;Way--Sinatra&nbsp;(225)&nbsp;[And&nbsp;now,&nbsp;the...]"</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>我们显示的声明了<CODE>KaraokeSong</CODE>是Song的一个子类，但是并没有说明Song的父类。如果定义一个类时没有指定父类，默认为Object为它的父类。也就是说，所有的类的祖先都是Object类，而且Object的实例方法在子类中也是可以访问的。比如to_s是ruby中大概35个实例方法之一，这些方法列表后面可以看到。 
+<H3><A name=UA>继承和 Mixins</A></H3>
+<P></P>像c++这样的面向对象语言都支持多重继承，也就是说一个类可以有多个父类，从每个类继承特性。尽管很有效，但它有时候很危险，有可能产生混乱。 
+<P></P>其他一些语言，比如java，支持单继承，一个类只能有一个父类，尽管清洗明了，容易实现，但是也有一些缺点，因为事实上一个事务同时具备很多种事务的特征。比如一个球，既是球形的东西，也是能弹跳的东西。 
+<P></P>ruby采取了有趣而强大的折中办法，你能轻松的实现单继承和多继承。一个ruby只能有一个直接父类，是单继承语言，但是ruby类可以包含其他的mixin(mixin可以看作是一个部分类定义a partial class definition)中的一些功能，从而引入附加的功能，以这种方式实现了多重继承，并且不会出现多继承语言中的问题。 
+<P></P>上面我们已经看到了类和方法，下面来看看对象，也就是类的实例。 
+<H2><A name=S2>对象和属性</A></H2>
+<P><CODE>Song</CODE>对象有一些内部属性，比如名称和演唱者，这些属性都是私有的，其他对象都不能直接访问。一般来说，这样是不错的设计，每个对象只负责自己的完整性，一致性。</P>
+<P>但是，如果把对象装饰的这么秘密将会使这些对象变得毫无作用，我们能创建它，但是我们不能修改它的属性。所以，我们可以定义一些方法，通过这些方法，外部对象可以访问，修改对象的属性。这些从外面看起来表现叫做属性（<EM>attributes</EM>）。</P>
+<P></P>对于我们Song对象，我们可能需要访问它的名字和演唱者，以便在播放的时候打印出来，还有它的时长（可以用类似进度条来显示）。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>class&nbsp;Song</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;def&nbsp;name</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;&nbsp;&nbsp;@name</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;def&nbsp;artist</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;&nbsp;&nbsp;@artist</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;def&nbsp;duration</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;&nbsp;&nbsp;@duration</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>aSong&nbsp;=&nbsp;Song.new("Bicylops",&nbsp;"Fleck",&nbsp;260)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>aSong.artist</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"Fleck"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>aSong.name</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"Bicylops"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>aSong.duration</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>260</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P>这里，我们定义了三个访问方法，每个方法返回一个实例属性。在实际中，这些操作很普遍，所以ruby提供了一个方便的方法：用attr_reader，它将为我们自动创建访问方法。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>class&nbsp;Song</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;attr_reader&nbsp;:name,&nbsp;:artist,&nbsp;:duration</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>aSong&nbsp;=&nbsp;Song.new("Bicylops",&nbsp;"Fleck",&nbsp;260)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>aSong.artist</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"Fleck"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>aSong.name</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"Bicylops"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>aSong.duration</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>260</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>这个例子引入了一些新东西，比如 ":artist"可以当作一个表达式，返回一个指向artist的符号链接。也可以把":artist"当作是artist的名字。这个例子里，我们定义了三个访问方法： <CODE>name</CODE>, <CODE>artist</CODE>, <CODE>duration</CODE>。而实例变量<CODE>@name</CODE>, <CODE>@artist</CODE>, <CODE>@duration</CODE>会自动创建。这样定义访问方法和我们上面写的一样。 
+<H3><A name=UB>可写属性</A></H3>
+<P></P>有时候需要在外部对对象的属性进行修改。比如，一首歌的时长这个属性可能开始的时候只是一个估算的值，当第一次播放的时候，我们知道了它的真正时长，并且要把它写回到Song这个对象。 
+<P></P>在c++或者java中，我们可以用setter方法。<BR><BR>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>class&nbsp;JavaSong&nbsp;{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Java&nbsp;code
+&nbsp;&nbsp;private&nbsp;Duration&nbsp;myDuration;
+&nbsp;&nbsp;public&nbsp;void&nbsp;setDuration(Duration&nbsp;newDuration)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;myDuration&nbsp;=&nbsp;newDuration;
+&nbsp;&nbsp;}
+}
+s&nbsp;=&nbsp;new&nbsp;Song(....)
+s.setDuration(length)
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>在Ruby中，可以象其他变量一样访问属性,比如上面我们调用了<CODE>aSong.name</CODE> ，所以我们也应该像变量一样给属性赋值。在ruby中，这样做就行： 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>class&nbsp;Song</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;def&nbsp;duration=(newDuration)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;&nbsp;&nbsp;@duration&nbsp;=&nbsp;newDuration</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>aSong&nbsp;=&nbsp;Song.new("Bicylops",&nbsp;"Fleck",&nbsp;260)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>aSong.duration</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>260</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>aSong.duration&nbsp;=&nbsp;257&nbsp;&nbsp;&nbsp;#&nbsp;set&nbsp;attribute&nbsp;with&nbsp;updated&nbsp;value</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>aSong.duration</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>257</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>
+<P>赋值语句"<CODE>aSong.duration&nbsp;=&nbsp;257</CODE>"调用了aSong中的方法<CODE>duration=</CODE> 参数为<CODE>257</CODE> 。实际上，一个方法名以=结尾，就像这个属性出现左边的赋值语句一样。同样，ruby也为创建可写属性提供了一个快捷方式</P>
+<P>&nbsp; </P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>class&nbsp;Song
+&nbsp;&nbsp;attr_writer&nbsp;:duration
+end
+aSong&nbsp;=&nbsp;Song.new("Bicylops",&nbsp;"Fleck",&nbsp;260)
+aSong.duration&nbsp;=&nbsp;257
+</PRE></TD></TR></TBODY></TABLE>
+<H3><A name=UC>虚拟属性</A></H3>
+<P></P>
+<P>这些属性访问方法不是对一个对象的实例变量的包装，比如，你需要得到以分钟为单位的时长，而不是以秒为单位：<BR></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>class&nbsp;Song</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;def&nbsp;durationInMinutes</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;&nbsp;&nbsp;@duration/60.0&nbsp;&nbsp;&nbsp;#&nbsp;force&nbsp;floating&nbsp;point</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;def&nbsp;durationInMinutes=(value)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;&nbsp;&nbsp;@duration&nbsp;=&nbsp;(value*60).to_i</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>aSong&nbsp;=&nbsp;Song.new("Bicylops",&nbsp;"Fleck",&nbsp;260)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>aSong.durationInMinutes</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>4.333333333</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>aSong.durationInMinutes&nbsp;=&nbsp;4.2</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>aSong.duration</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>252</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>这里我们用属性方法建立了一个虚拟的实例变量，对于外面来<CODE>说durationInMinutes</CODE>可以看作和其他一样的属性，但实际上，并没有与之对应的实例变量。 
+<P></P>这并不止是有趣而已，在Bertrand Meyer 的杰作《<EM>Object-Oriented Software Construction</EM>》&nbsp;中，作者称这叫做统一访问原则<EM>（Uniform Access Principle）</EM>。通过把这些实例变量和他们计算之后的值隐藏起来，你就可以不用在自己的实现里来处理这些问题，而且，当需要改动的时候，你只需要改动一个文件，而不是很多文件。 
+<H2><A name=S3>类变量和类方法</A></H2>
+<P></P>到目前为止我们讨论的都是实例变量和实例方法，这些变量术语每个不同的对象，用方法来操作，有时候，类也可能需要自己的状态，所以引入了类变量。 
+<H3><A name=UD>Class Variables</A></H3>
+<P></P>一个类变量被所有它的对象实例共享，也可以被下面要提到的类方法修改。在系统中，类变量只有一个拷贝。类变量名以两个at 即"@@"开头，比如"@@count"。不想全局变量和实例变量，类变量在使用之前必须被初始化。通常初始化只是类定一中的一条赋值语句。 
+<P></P>比如，在我们的自动点唱机中，我们想记录一个指定的歌曲播放过多少次，这个次数应该是一个song实例变量，每当这个Song被播放，这个变量都要加1。如果，我们还想计算所有歌曲总共播放了多少次，我们可以找到所有Song对象，然后累加他们的播放次数，或者用全局变量，相反，这里我们用了类变量。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>class&nbsp;Song
+&nbsp;&nbsp;@@plays&nbsp;=&nbsp;0
+&nbsp;&nbsp;def&nbsp;initialize(name,&nbsp;artist,&nbsp;duration)
+&nbsp;&nbsp;&nbsp;&nbsp;@name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;name
+&nbsp;&nbsp;&nbsp;&nbsp;@artist&nbsp;&nbsp;&nbsp;=&nbsp;artist
+&nbsp;&nbsp;&nbsp;&nbsp;@duration&nbsp;=&nbsp;duration
+&nbsp;&nbsp;&nbsp;&nbsp;@plays&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;0
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;play
+&nbsp;&nbsp;&nbsp;&nbsp;@plays&nbsp;+=&nbsp;1
+&nbsp;&nbsp;&nbsp;&nbsp;@@plays&nbsp;+=&nbsp;1
+&nbsp;&nbsp;&nbsp;&nbsp;"This&nbsp;&nbsp;song:&nbsp;#@plays&nbsp;plays.&nbsp;Total&nbsp;#@@plays&nbsp;plays."
+&nbsp;&nbsp;end
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>为了调试方便， <CODE>Song#play</CODE>方法返回了一个字符串，显示了这首歌播放过多少次，和所有歌曲的总的播放次数。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>s1&nbsp;=&nbsp;Song.new("Song1",&nbsp;"Artist1",&nbsp;234)&nbsp;&nbsp;#&nbsp;test&nbsp;songs..</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>s2&nbsp;=&nbsp;Song.new("Song2",&nbsp;"Artist2",&nbsp;345)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>s1.play</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"This&nbsp;&nbsp;song:&nbsp;1&nbsp;plays.&nbsp;Total&nbsp;1&nbsp;plays."</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>s2.play</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"This&nbsp;&nbsp;song:&nbsp;1&nbsp;plays.&nbsp;Total&nbsp;2&nbsp;plays."</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>s1.play</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"This&nbsp;&nbsp;song:&nbsp;2&nbsp;plays.&nbsp;Total&nbsp;3&nbsp;plays."</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>s1.play</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"This&nbsp;&nbsp;song:&nbsp;3&nbsp;plays.&nbsp;Total&nbsp;4&nbsp;plays."</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P>类变量属于类和它的实例私有，如果你想在外面访问它，需要编写访问方法，既可以是实例的访问方法，也可以是下面我们要说到的类的访问方法。</P>
+<H3><A name=UE>Class Methods</A></H3>
+<P></P>有时候，一个类需要提供一个不需要任何类实例就能使用的方法。我们已经见过一个这样的方法了，new方法创建了一个Song对象，但是它不属于Song类。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>aSong&nbsp;=&nbsp;Song.new(....)
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>你将会发现类方法贯穿于ruby的库文件之中。比如，File类的对象表示一个打开的文件，但是File也提供了几个类方法，比如删除文件，我们不需要打开文件，直接调用<A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_file.html#File.delete" > <CODE>File.delete</CODE> </A>，提供要删除的文件名就行了。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>File.delete("doomedFile")
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>类方法和实例方法定义时候是不一样的，类方法定义的时候要加上类名： 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>class&nbsp;Example
+<P></P>
+&nbsp;&nbsp;def&nbsp;instMeth&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;instance&nbsp;method
+&nbsp;&nbsp;end
+<P></P>
+&nbsp;&nbsp;def&nbsp;Example.classMeth&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;class&nbsp;method
+&nbsp;&nbsp;end
+<P></P>
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>我们的自动点唱机是要收钱的，按歌曲数量而不是时间来收，所以提供长的歌曲不如提供短的歌曲效益高。我们不希望在<CODE>SongList</CODE>中出现太长的歌曲，所以我们在SongList里面定一个类方法，判断一首歌是否超过了规定的长度。这个长度存在一个常量里面（常量以大写字母开头），并且在类体里面初始化这个常量。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>class&nbsp;SongList</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;MaxTime&nbsp;=&nbsp;5*60&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;&nbsp;5&nbsp;minutes</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE></CODE></TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;def&nbsp;SongList.isTooLong(aSong)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;aSong.duration&nbsp;&gt;&nbsp;MaxTime</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>song1&nbsp;=&nbsp;Song.new("Bicylops",&nbsp;"Fleck",&nbsp;260)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>SongList.isTooLong(song1)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>false</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>song2&nbsp;=&nbsp;Song.new("The&nbsp;Calling",&nbsp;"Santana",&nbsp;468)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>SongList.isTooLong(song2)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>true</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<H3><A name=UF>单例（Singletons）和其他构造函数 </A></H3>
+<P></P>有时候，你想改变缺省的对象的创建方式，比如，对于我们的点唱机系统，我们又很多点唱机，遍布全国，我们想尽可能的使他容易维护，所以我们需要记录点唱机发生的所有事情，比如一首歌被播放了，收钱了等，所以我们需要一个日志类。因为我们想把带宽留给音乐数据，所以日志记录在本机。我们想一个点唱机系统只有一个log类，并被系统中的所有类共有使用。 
+<P></P>通过使用单例模式，要想使用这个log类，只有一种创建方法：<CODE>Logger.create</CODE>,并且确保系统中只有一个log的实例存在。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>class&nbsp;Logger
+&nbsp;&nbsp;private_class_method&nbsp;:new
+&nbsp;&nbsp;@@logger&nbsp;=&nbsp;nil
+&nbsp;&nbsp;def&nbsp;Logger.create
+&nbsp;&nbsp;&nbsp;&nbsp;@@logger&nbsp;=&nbsp;new&nbsp;unless&nbsp;@@logger
+&nbsp;&nbsp;&nbsp;&nbsp;@@logger
+&nbsp;&nbsp;end
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>我们把logger类的new方法设成了私有的，这样就不能用Looger.new来创建logger对象了。我们提供了一个类方法 <CODE>Logger.create</CODE> ，用到了类变量 <CODE>@@logger</CODE> ，这是一个指向logger类实例的引用。可以看到，如果实例已经创建了，这个方法直接返回已经创建的实例，不会再创建第二个。<EM>[这里的实现是非线程安全的，如果有多个线程来访问这个函数，可能会出产生多个logger对象。我们可以用ruby提供的<CODE>Singleton</CODE> mixin来解决，而不必自己处理线程安全问题。]</EM>我们可以检查一下这两个方法的返回情况。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>Logger.create.id</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>537766930</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>Logger.create.id</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>537766930</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>
+<P>用类方法来包装构造函数，也可以让使用你的类的人感到轻松。比如我们的类Shape代表一个多边形，构造函数接收边数和周长：</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>class&nbsp;Shape
+&nbsp;&nbsp;def&nbsp;initialize(numSides,&nbsp;perimeter)
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;...
+&nbsp;&nbsp;end
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P>但是，多年以后，使用方法变了，现在需要提供shape的名称，边数，和边长而不是周长。而我们只需要加几个类方法就行了：</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>class&nbsp;Shape
+&nbsp;&nbsp;def&nbsp;Shape.triangle(sideLength)
+&nbsp;&nbsp;&nbsp;&nbsp;Shape.new(3,&nbsp;sideLength*3)
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;Shape.square(sideLength)
+&nbsp;&nbsp;&nbsp;&nbsp;Shape.new(4,&nbsp;sideLength*4)
+&nbsp;&nbsp;end
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>类方法还有很多强大有趣的特性，但是目前我们还是要继续我们现在的内容。 
+<H2><A name=S4>Access Control</A></H2>
+<P></P>我们设计一个类的接口的时候，一个重要的问题是，我们应该向外界暴露多少内部实现，外部能访问我们的类有多少限制。如果过多的让外部访问内部的东西，可能增加了耦合，用户越来越依赖我们的类的内部实现，而不是逻辑接口。因为我们要改变一个实例的状态需要调用这个实例的相关方法，控制对实例的方法的访问，就能避免对对象实例的状态的直接修改。Ruby提供了三种保护层次： 
+<UL>
+<LI><B>Public methods</B> 任何人都可以访问，没有访问控制。方法默认都是public（<CODE>initialize</CODE>除外）。 
+<LI><B>Protected methods</B> 可以在本类或者子类中调用。访问控制在家族内。 
+<LI><B>Private methods</B> 不能用显示的接收者来调用。cannot be called with an explicit receiver. Because you cannot specify an object when using them, private methods can be called only in the defining class and by direct descendents within that same object. </LI></UL>
+<P></P>"protected"和"private"两者的区别非常微妙，在ruby中，两者的关系和在其他语言中是不一样的。如果一个方法是protected的，它可以在定义它的实例或者子类的实例来调用。如果一个方法是"private"的，只可以在这个方法所处的对象中被使用，不能直接调用另一个对象的private方法。甚至这个对象就是调用者本身。<BR>Ruby和其他oo语言另一个重要的不同点在于，ruby动态确定访问控制，在程序运行而不是静止时，只有你运行到那一行，才会去判断是否出错。<BR>
+<H3><A name=UG>指定访问控制</A></H3>
+<P>在一个类或者模块定义中设定方法的访问控制层次： <CODE>public</CODE>, <CODE>protected</CODE>,<CODE>private</CODE>。有两种定义方法。</P>如果不带参数使用 public/protected/private，那么这后面的方法默认都是指定的值，比如一行写了private，那么后面的方法默认都是private，除非指定了另外的访问控制符。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>class&nbsp;MyClass
+<P></P>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;def&nbsp;method1&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;default&nbsp;is&nbsp;'public'
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end
+<P></P>
+&nbsp;&nbsp;protected&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;后面方法将是&nbsp;'protected'
+<P></P>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;def&nbsp;method2&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;will&nbsp;be&nbsp;'protected'
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end
+<P></P>
+&nbsp;&nbsp;private&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;后面方法将是&nbsp;'private'
+<P></P>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;def&nbsp;method3&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;will&nbsp;be&nbsp;'private'
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end
+<P></P>
+&nbsp;&nbsp;public&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;subsequent&nbsp;methods&nbsp;will&nbsp;be&nbsp;'public'
+<P></P>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;def&nbsp;method4&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;and&nbsp;this&nbsp;will&nbsp;be&nbsp;'public'
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>另一种方法，定义方法的时候不指定访问控制符，而是将相关的方法列在对应的访问控制后面，比如： 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>class&nbsp;MyClass
+<P></P>
+&nbsp;&nbsp;def&nbsp;method1
+&nbsp;&nbsp;end
+<P></P>
+&nbsp;&nbsp;#&nbsp;...&nbsp;and&nbsp;so&nbsp;on
+<P></P>
+&nbsp;&nbsp;public&nbsp;&nbsp;&nbsp;&nbsp;:method1,&nbsp;:method4
+&nbsp;&nbsp;protected&nbsp;:method2
+&nbsp;&nbsp;private&nbsp;&nbsp;&nbsp;:method3
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P><CODE>initialize</CODE>方法自动声明为private型。 
+<P></P>现在来看看一个例子。假如我们有一个记帐系统，每一个借方（debit）对应一个贷方（credit），我们要求都必须遵守这个规则，所以我们把debit和credit的方法设成private，提供了一个外部接口来处理： 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>class&nbsp;Accounts
+<P></P>
+&nbsp;&nbsp;private
+<P></P>
+&nbsp;&nbsp;&nbsp;&nbsp;def&nbsp;debit(account,&nbsp;amount)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;account.balance&nbsp;-=&nbsp;amount
+&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;&nbsp;&nbsp;def&nbsp;credit(account,&nbsp;amount)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;account.balance&nbsp;+=&nbsp;amount
+&nbsp;&nbsp;&nbsp;&nbsp;end
+<P></P>
+&nbsp;&nbsp;public
+<P></P>
+&nbsp;&nbsp;&nbsp;&nbsp;#...
+&nbsp;&nbsp;&nbsp;&nbsp;def&nbsp;transferToSavings(amount)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;debit(@checking,&nbsp;amount)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;credit(@savings,&nbsp;amount)
+&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;&nbsp;&nbsp;#...
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>Protected access is used when objects need to access the internal state of other objects of the same class. For example, we may want to allow the individual <CODE>Account</CODE> objects to compare their raw balances, but may want to hide those balances from the rest of the world (perhaps because we present them in a different form). 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>class&nbsp;Account
+&nbsp;&nbsp;attr_reader&nbsp;:balance&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;accessor&nbsp;method&nbsp;'balance'
+<P></P>
+&nbsp;&nbsp;protected&nbsp;:balance&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;and&nbsp;make&nbsp;it&nbsp;protected
+<P></P>
+&nbsp;&nbsp;def&nbsp;greaterBalanceThan(other)
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;@balance&nbsp;&gt;&nbsp;other.balance
+&nbsp;&nbsp;end
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>Because the attribute <CODE>balance</CODE> is protected, it's available only within <CODE>Account</CODE> objects. 
+<H2><A name=S5>变量Variables</A></H2>
+<P></P>变量用来跟踪一个对象的状态，是指向其他对象的一个引用 。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>person&nbsp;=&nbsp;"Tim"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>person.id</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>537771100</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>person.type</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>String</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>person</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"Tim"</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>第一行，我们创建了一个新字符串对象"Tim",person是指向这个字符串对象的一个引用，下两行的测试语句显示了这个对象的类型和id，最后显示了它的值。 
+<P></P>但变量是对象吗？ 
+<P></P>在ruby中，答案是否定的。一个变量只是指向一个对象的引用。这些对象可能正在某地，比如堆栈中，变量只是指向了这些对象。<BR>我们再看看稍微负责的例子 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>person1&nbsp;=&nbsp;"Tim"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>person2&nbsp;=&nbsp;person1</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE></CODE></TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>person1[0]&nbsp;=&nbsp;'J'</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE></CODE></TD></TR>
+<TR>
+<TD vAlign=top><CODE>person1</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"Jim"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>person2</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"Jim"</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>我们改变了person1的第一个字符，但是第二个也跟着改了。这是因为变量只是指向一个对象的引用，而不是对象本身<CODE>。赋值语句person2&nbsp;=&nbsp;person1</CODE> 没有创建新的对象，只是person2拷贝了person1的引用而已。所以person1和person2都指向了同一个对象。 
+<P>有时候赋值语句只是为对象建立了别名，而潜在的创建了新的变量指向同一个对象。这在我们的代码中可能会引起问题，但并不像你想的那么容易出错。我们可以用String的dup方法，这个方法会创建一个新的字符串对象，并且内容和消息接受者（方法执行者）一样。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>person1&nbsp;=&nbsp;"Tim"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>person2&nbsp;=&nbsp;person1.dup</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>person1[0]&nbsp;=&nbsp;"J"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>person1</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"Jim"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>person2</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"Tim"</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>如果你不想别人修改一个对象，也可以冻结（freezing）这个对象。如果你修改一个被冻结的对象，ruby会抛出一个<CODE>TypeError</CODE>异常。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>person1&nbsp;=&nbsp;"Tim"
+person2&nbsp;=&nbsp;person1
+person1.freeze&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;prevent&nbsp;modifications&nbsp;to&nbsp;the&nbsp;object
+person2[0]&nbsp;=&nbsp;"J"
+</PRE></TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>prog.rb:4:in&nbsp;`=':&nbsp;can't&nbsp;modify&nbsp;frozen&nbsp;string&nbsp;(TypeError)
+	from&nbsp;prog.rb:4
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>
+<HR>
+
+<TABLE cellSpacing=0 cellPadding=10 bgColor=#a03030 border=0>
+<TBODY>
+<TR>
+<TD align=left width="33%"><A class=subheader href="99.html" >Previous &lt;</A> </TD>
+<TD vAlign=center align=middle width="33%"><A class=subheader href="95.html" >Contents ^</A> <BR></TD>
+<TD align=right width="33%"><A class=subheader href="101.html" >Next &gt;</A> <BR></TD></TR></TBODY></TABLE>
+<P></P><FONT size=-1>Extracted from the book "Programming Ruby - The Pragmatic Programmer's Guide"</FONT> <BR><FONT size=-3>Copyright &copy; 2001 by Addison Wesley Longman, Inc. This material may be distributed only subject to the terms and conditions set forth in the Open Publication License, v1.0 or later (the latest version is presently available at <A href="http://www.opencontent.org/openpub/" >http://www.opencontent.org/openpub/</A>)). 
+<P></P>Distribution of substantively modified versions of this document is prohibited without the explicit permission of the copyright holder. 
+<P></P>Distribution of the work or derivative of the work in any standard (paper) book form is prohibited unless prior permission is obtained from the copyright holder. <BR></FONT></BODY>

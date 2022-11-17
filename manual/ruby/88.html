@@ -1,0 +1,473 @@
+<html><HEAD><TITLE>Ruby参考手册 - Ruby术语集</TITLE>
+<META http-equiv=Content-type content="text/html; charset=gb2312">
+<META http-equiv=Content-Style-Type content=text/css><LINK href="88_files/style[1].css"  type=text/css rel=stylesheet></head>
+<BODY>
+<DIV class=navi><A id=header-navi name=head-navi></A><SPAN class=navi>[<A href="61.html" >Ruby首页</A>]</SPAN>  </DIV>
+<DIV class=body>
+<H1><A id=Ruby.cd.d1.b8.ec.bd.b8 name=Ruby.cd.d1.b8.ec.bd.b8>Ruby术语集</A></H1>
+<H1><BR><A id="" name="">--按英文排序</A></H1>
+<H2><A id=A name=A>A</A><!-- RDLabel: "A" --></H2>
+<DL>
+<DT><A id=AWK name=AWK>AWK</A><!-- RDLabel: "AWK" --> 
+<DD>
+<P>由Alfred Aho(A)、Peter Weinberger(W)和Brian Kernighan(K)共通创建的一种小型<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.a5.b9.a5.af.a5.ea.a5.d7.a5.c8.b8.c0.b8.ec">脚本语言</A>。</P></DD></DL>
+<H2><A id=B name=B>B</A><!-- RDLabel: "B" --></H2>
+<DL>
+<DT><A id=blade name=blade>blade</A><!-- RDLabel: "blade" --> 
+<DD>
+<P>ml archive (<A href="http://blade.nagaokaut.ac.jp/ruby/" >blade/ruby</A>)</P></DD></DL>
+<H2><A id=C name=C>C</A><!-- RDLabel: "C" --></H2>
+<DL>
+<DT><A id=Coerce name=Coerce>Coerce</A><!-- RDLabel: "Coerce" --> 
+<DD>
+<P>进行数据类型变换的方法。如果某数值计算方法从参数那里获得了一个类型不明的实例时, 它会调用<CODE>coerce</CODE>方法来进行数据类型变换。<CODE>coerce</CODE>方法会返回参数中的数值和本身。</P>
+<P>Ruby库的数值类型变换顺序为</P><PRE>Fixnum -&gt; Bignum -&gt; Rational -&gt; Float -&gt; Complex
+</PRE></DD></DL>
+<H2><A id=D name=D>D</A><!-- RDLabel: "D" --></H2>
+<DL>
+<DT><A id=Data name=Data>Data</A><!-- RDLabel: "Data" --> 
+<DD>
+<P>该类可将C中的指针处理成Ruby对象。由C指针、mark函数和free函数构成。如果您想使用C语言来扩充Ruby的功能的话, 就必须掌握该类的使用方法。相反地, 如果您没有这个打算的话, 它也就没什么用了。</P>
+<DT><A id=defined.3f name=defined.3f><CODE>defined?</CODE></A><!-- RDLabel: "defined?" --> 
+<DD>
+<P>该操作符可以检查某对象(表达式)是否已经被定义。若未被定义就返回<CODE>nil</CODE>,若已被定义,就以字符串形式返回它的种类。虽然<CODE>defined?</CODE>看似一个方法,实际上它是Ruby语法中的操作符, 它不会对参数进行计算。因此下面的表达式</P><PRE>defined? print("abc\n")
+</PRE>
+<P>不会输出任何内容。</P></DD></DL>
+<H2><A id=E name=E>E</A><!-- RDLabel: "E" --></H2>
+<DL>
+<DT><A id=Eiffel name=Eiffel>Eiffel</A><!-- RDLabel: "Eiffel" --> 
+<DD>
+<P>面向对象的编程语言。据说,早先matz在读了该语言作者所撰写的《Object-oriented Software Construction》之后顿觉恍然大悟。但奇怪的是Ruby与Eiffel却并不相似。如果硬要找出雷同之处的话, 可能只有两点: 1.Ruby的块以<CODE>end</CODE>结尾;2.Ruby也有<CODE>rescue</CODE>这个保留字。</P>
+<DT><A id=end name=end><CODE>end</CODE></A><!-- RDLabel: "end" --> 
+<DD>
+<P>该保留字表明了块的结束。据统计,大约有33%的人在看到这个end时会联想起Pascal(纯属杜撰)。但它并不和begin连用,因此它可能更接近于Ada或Eiffel。</P>
+<P>Ruby之所以不使用C和Perl中的<CODE>{}</CODE>,主要是因为以下原因</P>
+<UL>
+<LI>
+<P>避开单句·复句的问题</P>
+<P>例如在C语言中, 若想向下例中添加语句时</P><PRE>if (a==b)
+   c();
+</PRE>
+<P>如果写成这样的话</P><PRE>if (a==b)
+   c();
+   d();
+</PRE>
+<P>就会造成难以发现的bug。即使是Pascal也存在这个问题。</P>
+<LI>
+<P>回避<CODE>else</CODE>的问题</P>
+<P>与上例类似, 如果写出下面这样的语句的话</P><PRE>if (a==b)
+   if (c==d) foo();
+else bar();
+</PRE>
+<P>就会引起混乱。其实它的本意应该是</P><PRE>if (a==b) {
+   if (c==d) foo();
+   else bar();
+}
+</PRE>
+<P>这个样子。</P>
+<LI>
+<P>提高可读性</P>
+<P>可能您对此持有异议, 但有的人认为:用end来结束块的做法可以提高程序的可读性。</P>
+<LI>
+<P><CODE>begin</CODE>和<CODE>case</CODE>语法表达上的问题</P>
+<P>说句实话，matz曾多次想把end用作变量。甚至探讨过在ruby语法中添加<CODE>{ }</CODE>的问题，但因为无法完美地解决<CODE>begin</CODE>和<CODE>case</CODE>的语法表达的问题，最终不得不放弃这个念头。恐怕这才是最大的理由吧。</P></LI></UL>
+<DT><A id=ENV name=ENV><CODE>ENV</CODE></A><!-- RDLabel: "ENV" --> 
+<DD>
+<P>该对象的运作方式与访问环境变量的<FONT color=blue>Hash</FONT>相同。实际上，它就是添加了特殊方法的<FONT color=blue>Object</FONT>类的实例。使用该对象来修改<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.b4.c4.b6.ad.ca.d1.bf.f4">环境变量</A>后，其变化将会影响到Ruby的子进程。</P></DD></DL>
+<H2><A id=F name=F>F</A><!-- RDLabel: "F" --></H2>
+<DL>
+<DT><A id=FAQ name=FAQ>FAQ</A><!-- RDLabel: "FAQ" --> 
+<DT><A id=Frequently.20Asked.20Questions name=Frequently.20Asked.20Questions>Frequently Asked Questions</A><!-- RDLabel: "Frequently Asked Questions" --> 
+<DD>
+<P>常见的问题和解答。<FONT color=blue>Ruby FAQ</FONT>尚处于不断完善的阶段，问题和解答是随时更新的。</P></DD></DL>
+<H2><A id=G name=G>G</A><!-- RDLabel: "G" --></H2>
+<DL>
+<DT><A id=goto name=goto>goto</A><!-- RDLabel: "goto" --> 
+<DD>
+<P>Ruby中没有该语句。这并不是因为“我们觉得不应该使用”goto，而是“实现其功能实在是太麻烦了”。实际上，您可以使用<CODE>catch/throw</CODE>或异常来实现goto的功能。</P></DD></DL>
+<H2><A id=H name=H>H</A><!-- RDLabel: "H" --></H2>
+<H2><A id=I name=I>I</A><!-- RDLabel: "I" --></H2>
+<H2><A id=J name=J>J</A><!-- RDLabel: "J" --></H2>
+<DL>
+<DT><A id=JARH name=JARH>JARH</A><!-- RDLabel: "JARH" --> 
+<DT><A id=Just.20another.20Ruby.20hacker.2c name=Just.20another.20Ruby.20hacker.2c>Just another Ruby hacker,</A><!-- RDLabel: "Just another Ruby hacker," --> </DT></DL>
+<H2><A id=K name=K>K</A><!-- RDLabel: "K" --></H2>
+<H2><A id=L name=L>L</A><!-- RDLabel: "L" --></H2>
+<H2><A id=M name=M>M</A><!-- RDLabel: "M" --></H2>
+<DL>
+<DT><A id=main name=main><CODE>main</CODE></A><!-- RDLabel: "main" --> 
+<DD>
+<P>顶层中的<A class=modified-year title="Ruby术语集 (119d)" href="88.html#self">self</A>。因为<CODE>self</CODE>是必不可少的，所以它只是表明在顶层中有个<CODE>Object</CODE>类的实例--self而已。另外为了操作Object类，还特别定义了若干特殊方法。</P>
+<P>已定义的特殊方法</P>
+<UL>
+<LI>private 
+<LI>public 
+<LI>include </LI></UL>
+<DT><A id=matz name=matz>matz</A><!-- RDLabel: "matz" --> 
+<DD>
+<P>Ruby的作者，也叫松本 行弘。请参考<A href="http://www.st.rim.or.jp/~fuku/cmail/" >&lt;URL:http://www.st.rim.or.jp/~fuku/cmail/&gt;</A>，另外，他还是3个孩子的父亲。</P>
+<DT><A id=Mix-in name=Mix-in>Mix-in</A><!-- RDLabel: "Mix-in" --> 
+<DT><A id=a.a5.df.a5.c3.a5.af.a5.b9.a5.a4.a5.f3 name=a.a5.df.a5.c3.a5.af.a5.b9.a5.a4.a5.f3>混合插入、糅合</A><!-- RDLabel: "混合插入、糅合" --> 
+<DD>
+<P>就像在冰淇淋中混合多种配料可以做成美味的混合冰淇淋一样，在类中混合插入各种<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.a5.e2.a5.b8.a5.e5.a1.bc.a5.eb">模块</A>就可以添加相应的功能。请参考<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.b7.d1.be.b5">继承</A>。</P>
+<P>matz坚信滥用多重继承会导致继承关系的混乱，因此Ruby中不允许使用多重继承。同时为充分发挥继承功能的优势，Ruby支持两种继承关系：1.使用is-a语句的继承；2.使用Mix-in来共享并继承模块中的功能。</P></DD></DL>
+<H2><A id=N name=N>N</A><!-- RDLabel: "N" --></H2>
+<H2><A id=O name=O>O</A><!-- RDLabel: "O" --></H2>
+<H2><A id=P name=P>P</A><!-- RDLabel: "P" --></H2>
+<DL>
+<DT><A id=Perl name=Perl>Perl</A><!-- RDLabel: "Perl" --> 
+<DD>
+<P>不必多说了罢</P>
+<DT><A id=POLS name=POLS>POLS</A><!-- RDLabel: "POLS" --> 
+<DD>
+<P>Principle of least surprise</P>
+<DT><A id=Python name=Python>Python</A><!-- RDLabel: "Python" --> 
+<DD>
+<P>Ruby的劲敌。其功力深厚，可谓“千年蛇妖”。但matz认为Python的功能仍不完美，不然就不会创造Ruby了。最要命的是Python限定了名称长度(6个字符)。</P></DD></DL>
+<H2><A id=Q name=Q>Q</A><!-- RDLabel: "Q" --></H2>
+<H2><A id=R name=R>R</A><!-- RDLabel: "R" --></H2>
+<DL>
+<DT><A id=RAA name=RAA>RAA</A><!-- RDLabel: "RAA" --> 
+<DD>
+<P>Ruby Application Archive(<A href="http://www.ruby-lang.org/en/raa.html" >RAA</A>)</P>
+<DT><A id=RCR name=RCR>RCR</A><!-- RDLabel: "RCR" --> 
+<DD>
+<P>Ruby Change Request</P>
+<DT><A id=RD name=RD>RD</A><!-- RDLabel: "RD" --> 
+<DD>
+<P>Ruby Document</P>
+<DT><A id=Ruby name=Ruby>Ruby</A><!-- RDLabel: "Ruby" --> 
+<DD>
+<P>面向对象的脚本语言。Ruby的意思是“紧跟在Perl(pearl是6月的诞生石，Ruby则是7月的诞生石)之后”。Ruby并不是其他单词的缩写。</P></DD></DL>
+<H2><A id=S name=S>S</A><!-- RDLabel: "S" --></H2>
+<DL>
+<DT><A id=Sather name=Sather>Sather</A><!-- RDLabel: "Sather" --> 
+<DD>
+<P>面向对象的编程语言。其实matz钟爱Sather胜过<A class=modified-year title="Ruby术语集 (119d)" href="88.html#Eiffel">Eiffel</A>。但Ruby与Sather一点都不像。</P>
+<DT><A id=self name=self><CODE>self</CODE></A><!-- RDLabel: "self" --> 
+<DD>
+<P>表示<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.a5.ec.a5.b7.a1.bc.a5.d0">被调</A>的表达式。那为什么把它叫做<CODE>self</CODE>呢？因为如果把<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.a5.e1.a5.bd.a5.c3.a5.c9">方法</A>看作动词的话，那么被调就是该动作的主语，从方法的角度来看，被调当然就是<EM>自己</EM>了。一般人认为，Ruby对此并未深究，只不过是模仿<A class=modified-year title="Ruby术语集 (119d)" href="88.html#Smalltalk">Smalltalk</A>的做法罢了。</P>
+<DT><A id=Smalltalk name=Smalltalk>Smalltalk</A><!-- RDLabel: "Smalltalk" --> 
+<DD>
+<P>面向对象的编程语言。它奠定了现代<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.a5.aa.a5.d6.a5.b8.a5.a7.a5.af.a5.c8.bb.d8.b8.fe">面向对象</A> <A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.a5.d1.a5.e9.a5.c0.a5.a4.a5.e0">理论体系</A>的基础。</P>
+<DT><A id=super name=super><CODE>super</CODE></A><!-- RDLabel: "super" --> 
+<DD>
+<P>在重定义的方法中调用上级方法。省略参数时，将使用主调方方法的参数来进行调用。</P>
+<UL>
+<LI>
+<P>问题:</P>
+<P>修改参数中给出的数值后再调用super的话，将会使用原来的值还是修改后的值呢？</P><PRE>def foo(a)
+   print a
+end
+def self.foo(a)
+  a=25
+  super
+end
+foo(5)    # 5 or 25??
+</PRE>
+<LI>
+<P>答案:</P>
+<P>使用修改后的值(25)</P></LI></UL></DD></DL>
+<H2><A id=T name=T>T</A><!-- RDLabel: "T" --></H2>
+<DL>
+<DT><A id=Thread name=Thread>Thread</A><!-- RDLabel: "Thread" --> 
+<DD>
+<P>原为Thread of control的缩略语，意指一系列的控制流。在Ruby中，一个程序内可以同时存在若干线程。</P></DD></DL>
+<H2><A id=U name=U>U</A><!-- RDLabel: "U" --></H2>
+<DL>
+<DT><A id=undef name=undef><CODE>undef</CODE></A><!-- RDLabel: "undef" --> 
+<DD>
+<P>将方法设置为未定义状态。<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.b7.d1.be.b5">继承</A> 和<A class=modified-year title="Ruby术语集 (119d)" href="88.html#Mix-in">Mix-in</A>的功能都是在类中添加方法，而<CODE>undef</CODE>则可以取消方法。但是，如果取消了类所必需的方法(被其他方法所调用的方法)的话，其后果不堪设想。</P></DD></DL>
+<H2><A id=V name=V>V</A><!-- RDLabel: "V" --></H2>
+<H2><A id=W name=W>W</A><!-- RDLabel: "W" --></H2>
+<H2><A id=X name=X>X</A><!-- RDLabel: "X" --></H2>
+<H2><A id=Y name=Y>Y</A><!-- RDLabel: "Y" --></H2>
+<H2><A id=Z name=Z>Z</A><!-- RDLabel: "Z" --></H2>
+<H1><BR><A id="" name="">--按拼音排序</A></H1>
+<H2><A id=A1 name=A1></A>A</H2>
+<DL></DL>
+<H2><A id=B1 name=B1></A>B</H2>
+<DL>
+<DT><A id=a.a5.ec.a5.b7.a1.bc.a5.d0 name=a.a5.ec.a5.b7.a1.bc.a5.d0>被调</A><!-- RDLabel: "被调" --> 
+<DT><A id=Receiver name=Receiver>Receiver</A><!-- RDLabel: "Receiver" --> 
+<DD>
+<P>方法的执行主体。也就是方法调用表达式的`<CODE>.</CODE>'中的左边部分。在方法内，可以使用<A class=modified-year title="Ruby术语集 (119d)" href="88.html#self">self</A>来表示它。另外，您可以使用<CODE>@变量名</CODE>的形式来访问被调的<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.a5.a4.a5.f3.a5.b9.a5.bf.a5.f3.a5.b9.ca.d1.bf.f4">实例变量</A>。</P>
+<DT><A id=a.ca.d1.bf.f4 name=a.ca.d1.bf.f4>变量</A><!-- RDLabel: "变量" --> 
+<DT><A id=Variable name=Variable>Variable</A><!-- RDLabel: "Variable" --> 
+<DD>
+<P>贴在对象上的标签。Ruby的变量包括<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.a5.b0.a5.ed.a1.bc.a5.d0.a5.eb.ca.d1.bf.f4">全局变量</A>、<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.a5.ed.a1.bc.a5.ab.a5.eb.ca.d1.bf.f4">局部变量</A>和<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.a5.a4.a5.f3.a5.b9.a5.bf.a5.f3.a5.b9.ca.d1.bf.f4">实例变量</A>。因为<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.c4.ea.bf.f4">常数</A>的值不能改变，所以不是<EM>变</EM>量。但它也是一种标签，因此在这一点上它与变量是相同的。</P></DD></DL>
+<H2><A id=C1 name=C1></A>C</H2>
+<DL>
+<DT><A id=a.c4.ea.bf.f4 name=a.c4.ea.bf.f4>常数</A><!-- RDLabel: "常数" --> 
+<DT><A id=Constant name=Constant>Constant</A><!-- RDLabel: "Constant" --> 
+<DD>
+<P>一旦定义了就不能再改变的<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.ca.d1.bf.f4">变量</A>。这个定义本身似乎就有点矛盾。</P>
+<DT><A id=a.a5.aa.a1.bc.a5.d0.a1.bc.a5.e9.a5.a4.a5.c9 name=a.a5.aa.a1.bc.a5.d0.a1.bc.a5.e9.a5.a4.a5.c9>重定义</A><!-- RDLabel: "重定义" --> 
+<DT><A id=Override name=Override>Override</A><!-- RDLabel: "Override" --> 
+<DD>
+<P>即指<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.ba.c6.c4.ea.b5.c1">再定义</A>。重新定义超类或<A class=modified-year title="Ruby术语集 (119d)" href="88.html#include">include</A>模块中已经定义的方法。使用<A class=modified-year title="Ruby术语集 (119d)" href="88.html#super">super</A>即可调用原来的方法。</P>
+<DT><A id=a.c3.ea.be.dd.a5.c7.a1.bc.a5.bf.b7.bf name=a.c3.ea.be.dd.a5.c7.a1.bc.a5.bf.b7.bf>抽象数据类型</A><!-- RDLabel: "抽象数据类型" --> 
+<DT><A id=Abstract.20Data.20Type name=Abstract.20Data.20Type>Abstract Data Type</A><!-- RDLabel: "Abstract Data Type" --> 
+<DD>
+<P>将数据构造和对其进行操作的过程封装在一起，就形成了抽象数据类型。对抽象数据进行操作时，必须使用封装内的操作才行。其结果是不能从外部直接使用数据构造，同时一旦内部构造发生变化也不会对外界造成不良影响。我们把这个过程叫做<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.a5.ab.a5.d7.a5.bb.a5.eb.b2.bd">封装</A>。</P>
+<DT><A id=a.bd.e9.b4.fc.b2.bd name=a.bd.e9.b4.fc.b2.bd>初始化</A><!-- RDLabel: "初始化" --> 
+<DT><A id=Initialize name=Initialize>Initialize</A><!-- RDLabel: "Initialize" --> 
+<DD>
+<P>使对象(或“某事物”)变为“就绪”状态。对实例进行初始化操作时，需要重定义<A class=modified-year title="Object (124d)" href="http://rubycn.ce-lab.net/man/built-in-class/class_object.html#initialize" >Object#initialize</A>方法。类方法<A class=modified-old title="Class (614d)" href="http://rubycn.ce-lab.net/man/built-in-class/class_object_module_class.html#new" >Class#new</A>的默认定义就是对新生成的实例执行<CODE>initialize</CODE>方法。传给<CODE>new</CODE>的参数会被原封不动地传给<CODE>initialize</CODE>。另外，若带块调用时，该块会被传给<CODE>initialize</CODE>。</P>
+<P>因此，不必对<A class=modified-old title="Class (614d)" href="http://rubycn.ce-lab.net/man/built-in-class/class_object_module_class.html#new" >Class#new</A>进行重定义。</P>
+<DT><A id=a.bc.ad.bd.f1 name=a.bc.ad.bd.f1>辞典</A><!-- RDLabel: "辞典" --> 
+<DT><A id=Dictionary name=Dictionary>Dictionary</A><!-- RDLabel: "Dictionary" --> 
+<DD>
+<P>根据给出的条目即可查出对应的定义。它是<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.a5.cf.a5.c3.a5.b7.a5.e5">哈希表</A>的别名。面向对象的始作俑者<A class=modified-year title="Ruby术语集 (119d)" href="88.html#Smalltalk">Smalltalk</A>把类似哈希表的数据构造称作“辞典”，所以时至今日仍然有一些人把哈希表称作辞典。</P></DD></DL>
+<H2><A id=D1 name=D1></A>D</H2>
+<DL>
+<DT><A id=a.a5.d3.a5.c3.a5.af.a5.a8.a5.f3.a5.c7.a5.a3.a5.a2.a5.f3 name=a.a5.d3.a5.c3.a5.af.a5.a8.a5.f3.a5.c7.a5.a3.a5.a2.a5.f3>大Endian</A><!-- RDLabel: "大Endian" --> 
+<DT><A id=Big.20Endian name=Big.20Endian>Big Endian</A><!-- RDLabel: "Big Endian" --> 
+<DD>
+<P>美洲大陆的原住民是Indian而并非Endian，那么这个Endian的词源是什么呢？其实它出自Jonathan Swift写的《格列佛游记》。这本书中的人们因为吃鸡蛋的方法不同而分成两类，从圆头开始吃的叫大Endian，从尖头开始吃的叫<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.a5.ea.a5.c8.a5.eb.a5.a8.a5.f3.a5.c7.a5.a3.a5.a2.a5.f3">小Endian</A>。在计算机业界，该词表示CPU等排列数据的一种方式，据说网络一族的人们喜欢大Endian。请参考<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.a5.d0.a5.a4.a5.c8.a5.aa.a1.bc.a5.c0.a1.bc">字节顺序</A>。</P>
+<DT><A id=a.c2.e7.b0.e8.c3.a6.bd.d0 name=a.c2.e7.b0.e8.c3.a6.bd.d0>大规模退出</A><!-- RDLabel: "大规模退出" --> 
+<DT><A id=Non-Local.20Exit name=Non-Local.20Exit>Non-Local Exit</A><!-- RDLabel: "Non-Local Exit" --> 
+<DD>
+<P>它并不是那种发生在<A class=modified-year title="控制结构 (119d)" href="http://rubycn.ce-lab.net/man/syntax_control.html#break" >break</A>, <A class=modified-year title="控制结构 (119d)" href="http://rubycn.ce-lab.net/man/syntax_control.html#next" >next</A>, <A class=modified-year title="控制结构 (119d)" href="http://rubycn.ce-lab.net/man/syntax_control.html#redo" >redo</A>, <A class=modified-year title="控制结构 (119d)" href="http://rubycn.ce-lab.net/man/syntax_control.html#retry" >retry</A>, <A class=modified-year title="控制结构 (119d)" href="http://rubycn.ce-lab.net/man/syntax_control.html#return" >return</A>等方法的范围内的普通退出，而是一种跨度极大的退出。只要没被捕捉到，它甚至会跳出方法调用的牢笼来引发中断。Ruby的大规模退出包括由异常引起的退出和<CODE>catch/throw</CODE>。</P>
+<P>大多数的异常(包括由<CODE>exit</CODE>所引发的<CODE>SystemExit</CODE>在内)都会被<A class=modified-year title="控制结构 (119d)" href="http://rubycn.ce-lab.net/man/syntax_control.html#rescue" >rescue</A> 捕捉到。但是若该异常不值得捕捉(例：内存分配失败／解释器的bug)的话，就会放他一马。</P>
+<P>在<CODE>catch/throw</CODE>中，通常会从被throw的地方起一直跳转到与throw部分具有相同标签的catch部分为止。</P>
+<DT><A id=a.a5.a4.a5.c6.a5.ec.a1.bc.a5.bf name=a.a5.a4.a5.c6.a5.ec.a1.bc.a5.bf>迭代器</A><!-- RDLabel: "迭代器" --> 
+<DT><A id=Iterator name=Iterator>Iterator</A><!-- RDLabel: "Iterator" --> 
+<DD>
+<P>即指<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.a5.d6.a5.ed.a5.c3.a5.af.c9.d5.a4.ad.a5.e1.a5.bd.a5.c3.a5.c9.b8.c6.a4.d3.bd.d0.a4.b7">调用带块方法</A>。当初为了进行迭代操作而设置了带块方法，现在它仍然常被称作迭带器。虽然可以将那些进行迭代操作的方法叫做迭代器，但如果将所有带块方法的调用过程都看作迭带器的话，势必会引起混乱。</P>
+<DT><A id=a.a5.d6.a5.ed.a5.c3.a5.af.c9.d5.a4.ad.a5.e1.a5.bd.a5.c3.a5.c9.b8.c6.a4.d3.bd.d0.a4.b7 name=a.a5.d6.a5.ed.a5.c3.a5.af.c9.d5.a4.ad.a5.e1.a5.bd.a5.c3.a5.c9.b8.c6.a4.d3.bd.d0.a4.b7>调用带块方法</A><!-- RDLabel: "调用带块方法" --> 
+<DD>
+<P>我们把那些可接受代码段(块)的方法叫做带块方法。调用带块方法就是指调用这些带块方法的过程。</P>
+<P>在带块方法中使用<FONT color=blue>yield</FONT>就可以执行块的内容。</P>
+<P>当然了，如何处理给出的块，这完全取决于方法。所以，如果硬是把块传给一个不能带块的方法的话，也不会有什么结果，而且也不会发生错误。</P>
+<DT><A id=a.c6.b0.c5.aa.b7.eb.b9.e7 name=a.c6.b0.c5.aa.b7.eb.b9.e7>动态绑定</A><!-- RDLabel: "动态绑定" --> 
+<DT><A id=Dynamic.20Binding name=Dynamic.20Binding>Dynamic Binding</A><!-- RDLabel: "Dynamic Binding" --> 
+<DD>
+<P>指在运行时根据操作对象的数据类型的不同来选择合适的过程(方法)。它可以提高程序的灵活性。它是面向对象的必要条件之一。在Ruby中<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.ca.d1.bf.f4">变量</A>是没有类型的，因此必然可以进行动态绑定。</P>
+<DT><A id=a.a5.c0.a5.a4.a5.ca.a5.df.a5.c3.a5.af.a5.ed.a1.bc.a5.ab.a5.eb.ca.d1.bf.f4 name=a.a5.c0.a5.a4.a5.ca.a5.df.a5.c3.a5.af.a5.ed.a1.bc.a5.ab.a5.eb.ca.d1.bf.f4>动态局部变量</A><!-- RDLabel: "动态局部变量" --> 
+<DT><A id=Dynamic.20Local.20Variable name=Dynamic.20Local.20Variable>Dynamic Local Variable</A><!-- RDLabel: "Dynamic Local Variable" --> 
+<DD>
+<P>它是一种特殊的<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.a5.ed.a1.bc.a5.ab.a5.eb.ca.d1.bf.f4">局部变量</A>。Ruby的局部变量的作用域是固定的，因此在编译时就会生成局部变量。动态局部变量则有所不同，每次执行时才会生成变量。在块中首次被赋值的局部变量就是动态局部变量，其作用域仅限于块的内部。这主要是为了让各个<A class=modified-year title="Ruby术语集 (119d)" href="88.html#Thread">Thread</A>都能拥有自己独立的变量而设的。</P>
+<DT><A id=a.a5.aa.a5.d6.a5.b8.a5.a7.a5.af.a5.c8 name=a.a5.aa.a5.d6.a5.b8.a5.a7.a5.af.a5.c8>对象</A><!-- RDLabel: "对象" --> 
+<DT><A id=Object name=Object>Object</A><!-- RDLabel: "Object" --> 
+<DD>
+<P>即指<EM>物体</EM>。举个例子，“爱”可能不是对象，但“情书”却是对象。甄别某事物是否属于对象，这可能是个哲学问题。或许正因为如此，面向对象也变得扑朔迷离起来。在计算机业界有人认为对象就是指内存中的特定空间。到底何谓对象，还真是个难题。另外，请参考<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.a5.ab.a5.d7.a5.bb.a5.eb.b2.bd">封装</A>和<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.c3.ea.be.dd.a5.c7.a1.bc.a5.bf.b7.bf">抽象数据类型</A>。</P>
+<DT><A id=a.a5.dd.a5.ea.a5.e2.a5.eb.a5.d5.a5.a3.a5.ba.a5.e0 name=a.a5.dd.a5.ea.a5.e2.a5.eb.a5.d5.a5.a3.a5.ba.a5.e0>多态</A><!-- RDLabel: "多态" --> 
+<DT><A id=a.c2.bf.c2.d6.2c.20Polymorphism name=a.c2.bf.c2.d6.2c.20Polymorphism>多态, Polymorphism</A><!-- RDLabel: "多态, Polymorphism" --> 
+<DD>
+<P>根据对象的不同选择合适的操作。在Ruby中的实现方法是，根据<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.a5.ec.a5.b7.a1.bc.a5.d0">被调</A>的对象的不同来选择不同的方法。</P>
+<UL>
+<LI>
+<P>例</P><PRE>obj = "abc"
+print obj.length, "\n"          # =&gt; 3
+obj = [1,2,3,4]
+print obj.length, "\n"          # =&gt; 4
+</PRE></LI></UL></DD></DL>
+<H2><A id=F1 name=F1></A>F</H2>
+<DL>
+<DT><A id=a.a5.e1.a5.bd.a5.c3.a5.c9 name=a.a5.e1.a5.bd.a5.c3.a5.c9>方法</A><!-- RDLabel: "方法" --> 
+<DT><A id=Method name=Method>Method</A><!-- RDLabel: "Method" --> 
+<DD>
+<P>对<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.a5.aa.a5.d6.a5.b8.a5.a7.a5.af.a5.c8">对象</A>进行的操作。操作对象(<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.a5.ec.a5.b7.a1.bc.a5.d0">被调</A>)以<A class=modified-year title="Ruby术语集 (119d)" href="88.html#self">self</A>来表示。在Ruby中，除去<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.a5.d3.a5.eb.a5.c8.a5.a4.a5.f3.a5.af.a5.e9.a5.b9">内部类</A>的对象以外，通常对象的构造都是动态确定的。某对象的性质由其内部定义的方法所决定。</P>
+<DT><A id=a.a5.ab.a5.d7.a5.bb.a5.eb.b2.bd name=a.a5.ab.a5.d7.a5.bb.a5.eb.b2.bd>封装</A><!-- RDLabel: "封装" --> 
+<DT><A id=Encapsulation name=Encapsulation>Encapsulation</A><!-- RDLabel: "Encapsulation" --> 
+<DD>
+<P>将内部结构和算法隐藏起来，以确保只有特定的过程(也叫<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.a5.e1.a5.bd.a5.c3.a5.c9">方法</A>)才能直接操作数据，这种隔离方法就叫做封装。请参考<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.c3.ea.be.dd.a5.c7.a1.bc.a5.bf.b7.bf">抽象数据类型</A>。</P>
+<P>在Ruby中，只有方法可以操作实例变量，因此可以说Ruby中的封装是强制性的。</P></DD></DL>
+<H2><A id=G1 name=G1></A>G</H2>
+<DL>
+<DT><A id=a.cf.a2.c1.db.c7.db.ce.f3 name=a.cf.a2.c1.db.c7.db.ce.f3>关联数组</A><!-- RDLabel: "关联数组" --> 
+<DT><A id=Associative.20Array name=Associative.20Array>Associative Array</A><!-- RDLabel: "Associative Array" --> 
+<DD>
+<P><A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.a5.cf.a5.c3.a5.b7.a5.e5">哈希表</A>的别名。因为哈希表可以使用任意的键来引出值，这就是“关联”特性。另外，可以将哈希表看作是使用非数字形式索引的数组，这是它的“数组”特性，因此它也叫做“关联数组”。以前是使用硬件来实现关联数组(也叫关联记忆)的功能的，但是随着计算速度的攀升以及关键算法(叫做“哈希表”，它是现在的哈希表的词源)的成功研发，现在只用软件就可以实现其功能了。</P></DD></DL>
+<H2><A id=H1 name=H1></A>H</H2>
+<DL>
+<DT><A id=a.a5.cf.a5.c3.a5.b7.a5.e5 name=a.a5.cf.a5.c3.a5.b7.a5.e5>哈希表</A><!-- RDLabel: "哈希表" --> 
+<DT><A id=Hash name=Hash>Hash</A><!-- RDLabel: "Hash" --> 
+<DD>
+<P>Ruby中的一种从键到值的映像(mapping)。也叫做<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.cf.a2.c1.db.c7.db.ce.f3">关联数组</A>或<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.bc.ad.bd.f1">辞典</A>。哈希表之所以得此名，是因为在实现其功能时使用了一种叫做“哈希表”的算法。哈希的意思是“切碎”，是“hashed beef”中的“hash”。</P>
+<DT><A id=a.b4.d8.bf.f4 name=a.b4.d8.bf.f4>函数</A><!-- RDLabel: "函数" --> 
+<DT><A id=Function name=Function>Function</A><!-- RDLabel: "Function" --> 
+<DD>
+<P>严格地讲，Ruby中没有函数。但那些省略被调的方法调用看来确实很像函数，而且有的方法根本不需要<A class=modified-year title="Ruby术语集 (119d)" href="88.html#self">self</A>或实例变量等被调信息，事实上后者已成为函数了。所以有时也就网开一面地把这样的方法叫成函数了。</P>
+<P>通常将这种函数(式的方法)的<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.b2.c4.bb.eb.c0.ad">方法可视性</A>设成了private，这样就只能以省略被调的形式来调用它们了。这类方法中比较有代表性的是 <A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.a5.e2.a5.b8.a5.e5.a1.bc.a5.eb.b4.d8.bf.f4">模块函数</A>。</P>
+<DT><A id=a.b4.c4.b6.ad.ca.d1.bf.f4 name=a.b4.c4.b6.ad.ca.d1.bf.f4>环境变量</A><!-- RDLabel: "环境变量" --> 
+<DT><A id=Environment.20Variable name=Environment.20Variable>Environment Variable</A><!-- RDLabel: "Environment Variable" --> 
+<DD>
+<P>父进程传给子进程的值。使用<A class=modified-year title="Ruby术语集 (119d)" href="88.html#ENV">ENV</A>就可以访问环境变量。传给子进程只是环境变量的副本，因此子进程无法通过环境变量来向父进程传递信息。这就好比老子不会听小孩的话一样。</P></DD></DL>
+<H2><A id=J1 name=J1></A>J</H2>
+<DL>
+<DT><A id=a.b7.d1.be.b5 name=a.b7.d1.be.b5>继承</A><!-- RDLabel: "继承" --> 
+<DT><A id=Inheritance name=Inheritance>Inheritance</A><!-- RDLabel: "Inheritance" --> 
+<DD>
+<P>主要依赖于从祖先或亲戚那里继承的功能，而自己只做一些补充性的工作。在现实世界中，这种行为是要遭到唾弃的，但在计算机世界里这却是个很经济的做法。继承也可以指在某<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.a5.af.a5.e9.a5.b9">类</A>中添加新功能后生成一个新的类。继承可以用is-a的关系来加以诠释。例如，如果您要生成一个“理科学生”类的话，需要首先继承描述一般学生特征的“学生”类，然后再添加“整天忙于应付实验”等特征后即可生成该类。若不存在is-a关系，而只想共享某些特性或功能时，我们推荐您使用<A class=modified-year title="Ruby术语集 (119d)" href="88.html#Mix-in">Mix-in</A>。</P>
+<DT><A id=a.a5.b9.a5.af.a5.ea.a5.d7.a5.c8 name=a.a5.b9.a5.af.a5.ea.a5.d7.a5.c8>脚本</A><!-- RDLabel: "脚本" --> 
+<DT><A id=Script name=Script>Script</A><!-- RDLabel: "Script" --> 
+<DD>
+<P>脚本，特指由解释器进行处理的较短的程序。当然了，其中也不乏大作。</P>
+<DT><A id=a.a5.b9.a5.af.a5.ea.a5.d7.a5.c8.b8.c0.b8.ec name=a.a5.b9.a5.af.a5.ea.a5.d7.a5.c8.b8.c0.b8.ec>脚本语言</A><!-- RDLabel: "脚本语言" --> 
+<DT><A id=Script.20Language name=Script.20Language>Script Language</A><!-- RDLabel: "Script Language" --> 
+<DD>
+<P>脚本语言。</P>
+<DT><A id=a.a5.ed.a1.bc.a5.ab.a5.eb.ca.d1.bf.f4 name=a.a5.ed.a1.bc.a5.ab.a5.eb.ca.d1.bf.f4>局部变量</A><!-- RDLabel: "局部变量" --> 
+<DT><A id=Local.20Variable name=Local.20Variable>Local Variable</A><!-- RDLabel: "Local Variable" --> 
+<DD>
+<P>只能在特定范围内使用的变量。该范围就是作用域。Ruby的作用域包括</P>
+<UL>
+<LI>程序整体 
+<LI>类·模块定义 
+<LI>方法定义 
+<LI>块 </LI></UL>
+<P>几种。只有块能访问外侧作用域的局部变量。局部变量的作用域 从该变量首次被赋值的位置起 直到该赋值位置所在的作用域结束为止。这个优先范围是静态决定的，与具体的运行情况无关。</P></DD></DL>
+<H2><A id=K1 name=K1></A>K</H2>
+<DL>
+<DT><A id=a.a5.d6.a5.ed.a5.c3.a5.af name=a.a5.d6.a5.ed.a5.c3.a5.af>块</A><!-- RDLabel: "块" --> 
+<DT><A id=Block name=Block>Block</A><!-- RDLabel: "Block" --> 
+<DD>
+<P>可用来构成循环或打家劫舍。</P></DD></DL>
+<H2><A id=L1 name=L1></A>L</H2>
+<DL>
+<DT><A id=a.a5.af.a5.e9.a5.b9.a5.e1.a5.bd.a5.c3.a5.c9 name=a.a5.af.a5.e9.a5.b9.a5.e1.a5.bd.a5.c3.a5.c9>类方法</A><!-- RDLabel: "类方法" --> 
+<DT><A id=Class.20Method name=Class.20Method>Class Method</A><!-- RDLabel: "Class Method" --> 
+<DD>
+<P>就是类的方法。可分为两种：第一种是在所有的类的超类<FONT color=blue>Class</FONT>中定义的，且被所有的类所共享的方法；第二种是各个类所特有的<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.c6.c3.b0.db.a5.e1.a5.bd.a5.c3.a5.c9">特殊方法</A>。这倒没什么问题。重要的是类方法中的<CODE>self</CODE>指的是类本身，这点需要牢记。</P>
+<DT><A id=a.c2.a8.c3.cd name=a.c2.a8.c3.cd>立即值</A><!-- RDLabel: "立即值" --> 
+<DT><A id=Immediate.20Value name=Immediate.20Value>Immediate Value</A><!-- RDLabel: "Immediate Value" --> 
+<DD>
+<P>实际的数值就保存在变量之中，这和<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.bb.b2.be.c8">引用</A>是不同的。目前，Ruby中只有Fixnum、Symbol和nil/true/false是立即值。然而Ruby的某些版本并未将Fixnum算做立即值，这也无关紧要。在理论模型层面上，可以将所有的值都看作是对某对象的引用。</P>
+<DT><A id=a.a5.d1.a5.e9.a5.c0.a5.a4.a5.e0 name=a.a5.d1.a5.e9.a5.c0.a5.a4.a5.e0>理论体系</A><!-- RDLabel: "理论体系" --> 
+<DT><A id=Paradigm name=Paradigm>Paradigm</A><!-- RDLabel: "Paradigm" --> 
+<DD>
+<P>类似于“思维方式”，这个词很难说得清楚。</P></DD></DL>
+<H2><A id=M1 name=M1></A>M</H2>
+<DL>
+<DT><A id=a.a5.aa.a5.d6.a5.b8.a5.a7.a5.af.a5.c8.bb.d8.b8.fe name=a.a5.aa.a5.d6.a5.b8.a5.a7.a5.af.a5.c8.bb.d8.b8.fe>面向对象</A><!-- RDLabel: "面向对象" --> 
+<DD>
+<P>以对象为中心的<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.a5.d1.a5.e9.a5.c0.a5.a4.a5.e0">理论体系</A>。英语中的"Object-Oriented"是个形容词，可是到了日语中就变成名词了。似乎只要将对象置于思考的中心点就万事大吉了，但也要兼顾一下几点</P>
+<UL>
+<LI><A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.b7.d1.be.b5">继承</A> 
+<LI><A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.a5.ab.a5.d7.a5.bb.a5.eb.b2.bd">封装</A> 
+<LI>
+<P><A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.a5.dd.a5.ea.a5.e2.a5.eb.a5.d5.a5.a3.a5.ba.a5.e0">多态</A></P>
+<P>(或者<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.c6.b0.c5.aa.b7.eb.b9.e7">动态绑定</A>)</P></LI></UL>
+<P>有人甚至把它看作是包治百病的“魔法”，但事实上世界并非如此简单。面对对象概念诞生至今已逾20个年头，它已经磨砺成为一把实用的利剑。</P>
+<DT><A id=a.a5.aa.a5.d6.a5.b8.a5.a7.a5.af.a5.c8.bb.d8.b8.fe.c0.df.b7.d7 name=a.a5.aa.a5.d6.a5.b8.a5.a7.a5.af.a5.c8.bb.d8.b8.fe.c0.df.b7.d7>面向对象设计</A><!-- RDLabel: "面向对象设计" --> 
+<DT><A id=Object-Oriented.20Design name=Object-Oriented.20Design>Object-Oriented Design</A><!-- RDLabel: "Object-Oriented Design" --> 
+<DD>
+<P>以对象作为出发点的系统设计</P>
+<DT><A id=a.a5.aa.a5.d6.a5.b8.a5.a7.a5.af.a5.c8.bb.d8.b8.fe.a5.d7.a5.ed.a5.b0.a5.e9.a5.df.a5.f3.a5.b0 name=a.a5.aa.a5.d6.a5.b8.a5.a7.a5.af.a5.c8.bb.d8.b8.fe.a5.d7.a5.ed.a5.b0.a5.e9.a5.df.a5.f3.a5.b0>面向对象编程</A><!-- RDLabel: "面向对象编程" --> 
+<DT><A id=Object-Oriented.20Programming name=Object-Oriented.20Programming>Object-Oriented Programming</A><!-- RDLabel: "Object-Oriented Programming" --> 
+<DD>
+<P>以对象作为编程的中心。</P>
+<DT><A id=a.a5.aa.a5.d6.a5.b8.a5.a7.a5.af.a5.c8.bb.d8.b8.fe.ca.ac.c0.cf name=a.a5.aa.a5.d6.a5.b8.a5.a7.a5.af.a5.c8.bb.d8.b8.fe.ca.ac.c0.cf>面向对象分析</A><!-- RDLabel: "面向对象分析" --> 
+<DT><A id=Object-Oriented.20Analysis name=Object-Oriented.20Analysis>Object-Oriented Analysis</A><!-- RDLabel: "Object-Oriented Analysis" --> 
+<DD>
+<P>以对象为根本的系统分析。</P>
+<DT><A id=a.a5.e2.a5.b8.a5.e5.a1.bc.a5.eb.b4.d8.bf.f4 name=a.a5.e2.a5.b8.a5.e5.a1.bc.a5.eb.b4.d8.bf.f4>模块函数</A><!-- RDLabel: "模块函数" --> 
+<DT><A id=Module.20Function name=Module.20Function>Module Function</A><!-- RDLabel: "Module Function" --> 
+<DD>
+<P>在那些<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.b4.d8.bf.f4">函数</A>式的方法中，模块函数既可用作模块的方法，又可用作特殊方法。例如<FONT color=blue>Math</FONT>模块中的大部分方法都是模块函数。您既可以这样</P><PRE>Math.sqrt(2)
+</PRE>
+<P>又可以这样</P><PRE>include Math
+sqrt(2)
+</PRE>
+<P>来使用它们。</P></DD></DL>
+<H2><A id=N1 name=N1></A>N</H2>
+<DL>
+<DT><A id=a.a5.d3.a5.eb.a5.c8.a5.a4.a5.f3.a5.af.a5.e9.a5.b9 name=a.a5.d3.a5.eb.a5.c8.a5.a4.a5.f3.a5.af.a5.e9.a5.b9>内部类</A><!-- RDLabel: "内部类" --> 
+<DT><A id=Built-In.20Class name=Built-In.20Class>Built-In Class</A><!-- RDLabel: "Built-In Class" --> 
+<DD>
+<P>这些内部类被嵌入Ruby解释器内部，其实例的结构与普通对象有所不同。我们不建议您继承内部类。Ruby的内部类如下所示(实际上远不止这些，更多详情请参考<A class=modified-year title="内部类/模块/异常类 (125d)" href="83.html" >内部类/模块/异常类</A>)</P>
+<UL>
+<LI><FONT color=blue>Array</FONT> 
+<LI><FONT color=blue>Bignum</FONT> 
+<LI><FONT color=blue>Class</FONT> 
+<LI><FONT color=blue>Data</FONT> 
+<LI><FONT color=blue>FalseClass</FONT> 
+<LI><FONT color=blue>File</FONT> 
+<LI><FONT color=blue>Fixnum</FONT> 
+<LI><FONT color=blue>Float</FONT> 
+<LI><FONT color=blue>Hash</FONT> 
+<LI><FONT color=blue>IO</FONT> 
+<LI><FONT color=blue>MatchData</FONT> 
+<LI><FONT color=blue>Module</FONT> 
+<LI><FONT color=blue>NilClass</FONT> 
+<LI><FONT color=blue>Proc</FONT> 
+<LI><FONT color=blue>Regexp</FONT> 
+<LI><FONT color=blue>String</FONT> 
+<LI><FONT color=blue>Struct</FONT> 
+<LI><FONT color=blue>Thread</FONT> 
+<LI><FONT color=blue>TrueClass</FONT> </LI></UL></DD></DL>
+<H2><A id=P1 name=P1></A>P</H2>
+<DL>
+<DT><A id=a.a5.bd.a1.bc.a5.c8 name=a.a5.bd.a1.bc.a5.c8>排序</A><!-- RDLabel: "排序" --> 
+<DT><A id=Sort name=Sort>Sort</A><!-- RDLabel: "Sort" --> 
+<DD>
+<P>将对象依次排列。只要元素是可数的(include了<CODE>Enumerable</CODE>)、且已定义了顺序(定义了&lt;=&gt;)的话，Ruby就可以对这些元素的集合进行排序。这并不仅限于数组，也适用于其他复杂对象的集合。</P>
+<DT><A id=a.c7.cb.b2.f5.c5.aa name=a.c7.cb.b2.f5.c5.aa>破坏性的</A><!-- RDLabel: "破坏性的" --> 
+<DT><A id=Destructive name=Destructive>Destructive</A><!-- RDLabel: "Destructive" --> 
+<DD>
+<P>因为<FONT color=blue>String#chop!</FONT>, <FONT color=blue>Array#concat</FONT>这种方法会直接改变被调的状态，因而会产生“破环性的作用”。不过您不必担心，因为它们不会损坏您的计算机。</P></DD></DL>
+<H2><A id=Q1 name=Q1></A>Q</H2>
+<DL>
+<DT><A id=a.a5.b0.a5.ed.a1.bc.a5.d0.a5.eb.ca.d1.bf.f4 name=a.a5.b0.a5.ed.a1.bc.a5.d0.a5.eb.ca.d1.bf.f4>全局变量</A><!-- RDLabel: "全局变量" --> 
+<DT><A id=Global.20Variable name=Global.20Variable>Global Variable</A><!-- RDLabel: "Global Variable" --> 
+<DD>
+<P>在程序的各个角落中都可以使用的变量。比较危险，少用为佳。</P></DD></DL>
+<H2><A id=R1 name=R1></A>R</H2>
+<DL></DL>
+<H2><A id=S1 name=S1></A>S</H2>
+<DL>
+<DT><A id=a.a5.a4.a5.f3.a5.b9.a5.bf.a5.f3.a5.b9 name=a.a5.a4.a5.f3.a5.b9.a5.bf.a5.f3.a5.b9>实例</A><!-- RDLabel: "实例" --> 
+<DT><A id=Instance name=Instance>Instance</A><!-- RDLabel: "Instance" --> 
+<DD>
+<P>即指<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.a5.aa.a5.d6.a5.b8.a5.a7.a5.af.a5.c8">对象</A>。在强调对象归属于某类时，常使用实例这个词。据说有好多人因为不了解对象和实例的关系，因而搞不懂面对对象到底是怎么一回事儿。</P>
+<DT><A id=a.a5.a4.a5.f3.a5.b9.a5.bf.a5.f3.a5.b9.ca.d1.bf.f4 name=a.a5.a4.a5.f3.a5.b9.a5.bf.a5.f3.a5.b9.ca.d1.bf.f4>实例变量</A><!-- RDLabel: "实例变量" --> 
+<DT><A id=Instance.20Variable name=Instance.20Variable>Instance Variable</A><!-- RDLabel: "Instance Variable" --> 
+<DD>
+<P>对象所特有的变量。Ruby实例变量名前都有一个<CODE>@</CODE>符号，您只能在方法内部使用它。</P></DD></DL>
+<H2><A id=T1 name=T1></A>T</H2>
+<DL>
+<DT><A id=a.c6.c3.b0.db.a5.e1.a5.bd.a5.c3.a5.c9 name=a.c6.c3.b0.db.a5.e1.a5.bd.a5.c3.a5.c9>特殊方法</A><!-- RDLabel: "特殊方法" --> 
+<DT><A id=Singleton.20Method name=Singleton.20Method>Singleton Method</A><!-- RDLabel: "Singleton Method" --> 
+<DD>
+<P>专属于某特定对象的方法。请参考<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.a5.e1.a5.bd.a5.c3.a5.c9">方法</A>。在下列情况下，其他对象也可以继承该特殊方法。</P>
+<UL>
+<LI><FONT color=blue>Kernel#clone</FONT>时 
+<LI>定义了子类时 </LI></UL>
+<P>若在特殊方法中重定义了原先类中的方法时，可以使用<FONT color=blue>super</FONT>来调用原来的方法。</P>
+<DT><A id=a.c6.c3.b0.db.a5.af.a5.e9.a5.b9 name=a.c6.c3.b0.db.a5.af.a5.e9.a5.b9>特殊类</A><!-- RDLabel: "特殊类" --> 
+<DT><A id=Singleton.20Class name=Singleton.20Class>Singleton Class</A><!-- RDLabel: "Singleton Class" --> 
+<DD>
+<P>只对应于某特定对象的假想类。</P></DD></DL>
+<H2><A id=W1 name=W1></A>W</H2>
+<DL>
+<DT><A id=a.a5.c9.a5.ad.a5.e5.a5.e1.a5.f3.a5.c8 name=a.a5.c9.a5.ad.a5.e5.a5.e1.a5.f3.a5.c8>文档</A><!-- RDLabel: "文档" --> 
+<DT><A id=Document name=Document>Document</A><!-- RDLabel: "Document" --> 
+<DD>
+<P>matz最头疼的就是写文档了。他平时总是说“源代码就是文档。连bug也写得清清楚楚”，当然了谁都不以为然。</P></DD></DL>
+<H2><A id=X1 name=X1></A>X</H2>
+<DL>
+<DT><A id=a.a5.ea.a5.c8.a5.eb.a5.a8.a5.f3.a5.c7.a5.a3.a5.a2.a5.f3 name=a.a5.ea.a5.c8.a5.eb.a5.a8.a5.f3.a5.c7.a5.a3.a5.a2.a5.f3>小Endian</A><!-- RDLabel: "小Endian" --> 
+<DT><A id=Little.20Endian name=Little.20Endian>Little Endian</A><!-- RDLabel: "Little Endian" --> 
+<DD>
+<P>开始有10个人，后来越来越少。在计算机业界中，它是表示一种排列数据的形式。据说有一家大的CPU制造商很喜欢小Endian。请参考<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.a5.d0.a5.a4.a5.c8.a5.aa.a1.bc.a5.c0.a1.bc">字节顺序</A>。</P></DD></DL>
+<H2><A id=Y1 name=Y1></A>Y</H2>
+<DL>
+<DT><A id=a.ce.e3.b3.b0 name=a.ce.e3.b3.b0>异常</A><!-- RDLabel: "异常" --> 
+<DT><A id=Exception name=Exception>Exception</A><!-- RDLabel: "Exception" --> 
+<DD>
+<P>遇到非正常情况就会引发异常。发生异常时，只要没使用<FONT color=blue>begin</FONT>中的<CODE>rescue</CODE>进行捕捉的话，它将跨越方法调用的阻拦，进而中断程序(thread)的运行。有了异常处理功能之后，我们就不必再逐一检查Ruby程序中的每个异常情况了。发生异常的地点信息被保存在<FONT color=blue>$@</FONT>中，而异常本身的信息被保存在<FONT color=blue>$!</FONT>中。</P></DD></DL>
+<H2><A id=Z1 name=Z1></A>Z</H2>
+<DL>
+<DT><A id=a.ba.c6.c4.ea.b5.c1 name=a.ba.c6.c4.ea.b5.c1>再定义</A><!-- RDLabel: "再定义" --> 
+<DT><A id=Redefinition name=Redefinition>Redefinition</A><!-- RDLabel: "Redefinition" --> 
+<DD>
+<P>即指<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.a5.aa.a1.bc.a5.d0.a1.bc.a5.e9.a5.a4.a5.c9">重定义</A>。</P>
+<DT><A id=a.a5.d0.a5.a4.a5.c8.a5.aa.a1.bc.a5.c0.a1.bc name=a.a5.d0.a5.a4.a5.c8.a5.aa.a1.bc.a5.c0.a1.bc>字节顺序</A><!-- RDLabel: "字节顺序" --> 
+<DT><A id=Byte.20Order name=Byte.20Order>Byte Order</A><!-- RDLabel: "Byte Order" --> 
+<DD>
+<P>将<CODE>0x01020304</CODE>这4个字节数据按照<CODE>1,2,3,4</CODE>或是<CODE>4,3,2,1</CODE>的顺序排列。前者叫做<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.a5.d3.a5.c3.a5.af.a5.a8.a5.f3.a5.c7.a5.a3.a5.a2.a5.f3">大Endian</A>，而后者叫做<A class=modified-year title="Ruby术语集 (119d)" href="88.html#a.a5.ea.a5.c8.a5.eb.a5.a8.a5.f3.a5.c7.a5.a3.a5.a2.a5.f3">小Endian</A>。人们一直在争论哪种方法更好，但至今尚无定论。</P></DD></DL></DIV>
+<HR>
+
+<DIV class=footer>Originally Written by webmaster@ruby-lang.org<BR>Translated by <A href="http://cn.ce-lab.net/" >Community Engine China</A> (<A href="mailto:rubycn@ce-lab.net">Mail</A>)<BR>Last update on 2004-12-22 </DIV></BODY>

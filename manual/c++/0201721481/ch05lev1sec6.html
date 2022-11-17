@@ -1,0 +1,135 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 5.6.  The Arrow Operator</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch05lev1sec5.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch05lev1sec7.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch05lev1sec6"></a>
+
+        <h3 class="docSection1Title">5.6. The Arrow Operator</h3>
+        <h3 class="docSection1Title">5.6. 箭头操作符</h3>
+
+        <p class="docText">The arrow operator (<tt>-&gt;</tt>) provides a synonym for expressions involving the dot and dereference operators. The dot operator (<a class="docLink" href="ch01lev1sec5.html#ch01lev2sec10" >Section 1.5.2</a>, p. <a class="docLink" href="ch01lev1sec5.html#ch01lev2sec10" >25</a>) fetches an element from an object of class type:</p>
+        <p class="docText">C++ 语言为包含点操作符和解引用操作符的表达式提供了一个同义词：箭头操作符（<tt>-&gt;</tt>）。点操作符（<a class="docLink" href="ch01lev1sec5.html#ch01lev2sec10" >第 1.5.2 节</a>）用于获取类类型对象的成员：</p>
+        <pre>
+     item1.same_isbn(item2); // <span class="docEmphItalicAlt">run the</span> <span class="docEmphasis">same_isbn</span> <span class="docEmphItalicAlt">member of</span> <span class="docEmphasis">item1</span>
+</pre>
+
+        <p class="docText">If we had a pointer (or iterator) to a <tt>Sales_item</tt>, we would have to dereference the pointer (or iterator) before applying the dot operator:</p>
+	<p class="docText">如果有一个指向 <tt>Sales_item</tt> 对象的指针（或迭代器），则在使用点操作符前，需对该指针（或迭代器）进行解引用：</p>
+        <pre>
+     Sales_item *sp = &amp;item1;
+     (*sp).same_isbn(item2); // <span class="docEmphItalicAlt">run</span> <span class="docEmphasis">same_isbn</span> <span class="docEmphItalicAlt">on object to which</span> <span class="docEmphasis">sp</span> <span class="docEmphItalicAlt">points</span>
+</pre>
+
+        <p class="docText">Here we dereference <tt>sp</tt> to get the underlying <tt>Sales_item</tt>. Then we use the dot operator to run <tt>same_isbn</tt> on that object. We must parenthesize the dereference because dereference has a lower precedence than dot. If we omit the parentheses, this code means something quite different:</p>
+	<p class="docText">这里，对 <tt>sp</tt> 进行解引用以获得指定的 <tt>Sales_item</tt> 对象。然后使用点操作符调用指定对象的 <tt>same_isbn</tt> 成员函数。在上述用法中，注意必须用圆括号把解引用括起来，因为解引用的优先级低于点操作符。如果漏掉圆括号，则这段代码的含义就完全不同了：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">run the</span> <span class="docEmphasis">same_isbn</span> <span class="docEmphItalicAlt">member of</span> <span class="docEmphasis">sp</span> <span class="docEmphItalicAlt">then dereference the result!</span>
+     *sp.same_isbn(item2); // <span class="docEmphItalicAlt">error:</span> <span class="docEmphasis">sp</span> <span class="docEmphItalicAlt">has no member named</span> <span class="docEmphasis">same_isbn</span>
+</pre>
+
+	<a name="idd1e34832"></a><a name="idd1e34837"></a><a name="idd1e34843"></a>
+        <p class="docText">This expression attempts to fetch the <tt>same_isbn</tt> member of the object <tt>sp</tt>. It is equivalent to</p>
+	<p class="docText">这个表达式企图获得 <tt>sp</tt> 对象的 <tt>same_isbn</tt> 成员。等价于：</p>
+        <pre>
+     *(sp.same_isbn(item2));  // <span class="docEmphItalicAlt">equivalent to</span> <span class="docEmphasis">*sp.same_isbn(item2);</span>
+</pre>
+
+        <p class="docText">However, <tt>sp</tt> is a pointer, which has no members; this code will not compile.</p>
+        <p class="docText">然而，sp是一个没有成员的指针；这段代码无法通过编译。</p>
+
+        <p class="docText">Because it is easy to forget the parentheses and because this kind of code is a common usage, the language defines the arrow operator as a synonym for a dereference followed by the dot operator. Given a pointer (or iterator) to an object of class type, the following expressions are equivalent:</p>
+	<p class="docText">因为编程时很容易忘记圆括号，而且这类代码又经常使用，所以 C++ 为在点操作符后使用的解引用操作定义了一个同义词：箭头操作符（<tt>-&gt;</tt>）。假设有一个指向类类型对象的指针（或迭代器），下面的表达式相互等价：</p>
+        <pre>
+     (*p).foo; // <span class="docEmphItalicAlt">dereference</span> <span class="docEmphasis">p</span> <span class="docEmphItalicAlt">to get an object and fetch its member named</span> <span class="docEmphasis">foo</span>
+     p-&gt;foo;   // <span class="docEmphItalicAlt">equivalent way to fetch the</span> <span class="docEmphasis">foo</span> <span class="docEmphItalicAlt">from the object to which</span> <span class="docEmphasis">p</span> <span class="docEmphItalicAlt">points</span>
+</pre>
+
+        <p class="docText">More concretely, we can rewrite the call to <tt>same_isbn</tt> as</p>
+	<p class="docText">具体地，可将 <tt>same_isbn</tt> 的调用重写为：</p>
+        <pre>
+     sp-&gt;same_isbn(item2); // <span class="docEmphItalicAlt">equivalent to</span> <span class="docEmphasis">(*sp).same_isbn(item2)</span>
+</pre>
+        <a name="ch05sb10"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 5.6</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch05qa7q1"></a><b>Exercise 5.18:</b></td>
+
+                    <td>
+                      <p class="docText">Write a program that defines a <tt>vector</tt> of pointers to <tt>string</tt>s. Read the <tt>vector</tt>, printing each <tt>string</tt> and its corresponding size.</p>
+		      <p class="docText">编写程序定义一个 <tt>vector</tt> 对象，其每个元素都是指向 <tt>string</tt> 类型的指针，读取该 <tt>vector</tt> 对象，输出每个 <tt>string</tt> 的内容及其相应的长度。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch05qa7q2"></a><b>Exercise 5.19:</b></td>
+
+                    <td>
+                      <p class="docText">Assuming that <tt>iter</tt> is a <tt>vector&lt;string&gt;::iterator</tt>, indicate which, if any, of the following expressions is legal. Explain the behavior of the legal expressions.</p>
+		      <p class="docText">假设 <tt>iter</tt> 为 <tt>vector&lt;string&gt;::iterator</tt> 类型的变量，指出下面哪些表达式是合法的，并解释这些合法表达式的行为。</p>
+                      <pre>
+     (a) *iter++;         (b) (*iter)++;
+     (c) *iter.empty()    (d) iter-&gt;empty();
+     (e) ++*iter;         (f) iter++-&gt;empty();
+</pre>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table>
+        <a href="21001535.html" ><img src="images/pixel.gif"  alt="" width="1" height="1" border="0"></a>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch05lev1sec5.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch05lev1sec7.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml">
+<HEAD><TITLE>HTTP Access Key模块（AcceptLanguageModule）</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=GB2312">
+<STYLE type=text/css>PRE {
+	BACKGROUND-COLOR: #cccccc
+}
+.STYLE1 {
+	COLOR: #ff0000
+}
+</STYLE>
+
+<META content="MSHTML 6.00.6000.16809" name=GENERATOR></HEAD>
+<BODY>
+<H2>HTTP Access Key模块（AcceptLanguageModule）</H2><BR>
+
+<H3>·摘要</H3>
+<H4>这个模块并没有默认添加到源代码树中，具体查看下文。<BR>
+这个模块拒绝一个连接除非请求URL包含一个access key，access key可以根据客户端IP地址或者其它变量创建，这样可以将动态下载限制于某些客户端。<BR>
+示例配置：<BR>
+<PRE>location /download {
+  accesskey             on;
+  accesskey_hashmethod  md5;
+  accesskey_arg         "key";
+  accesskey_signature   "mypass$remote_addr";
+}</PRE>
+一个客户端连接可以被定向到如：http://example.com/download/file.zip?key=09093abeac094<BR>
+<A href="http://wiki.nginx.org/File:Nginx-accesskey-2.0.3.tar.gz" >下载该模块</A></H4>
+<H3>·指令</H3>
+<H3>accesskey</H3>
+<H4>语法：accesskey [on|off] <BR>
+默认值：accesskey off <BR>
+使用字段：main, server, location <BR>
+启用access-key限制。</H4>
+<H3>accesskey_arg </H3>
+<H4>语法：accesskey_arg "string" <BR>
+默认值：accesskey "key" <BR>
+使用字段：main, server, location <BR>
+URL中包含的access key参数。</H4>
+<H3>accesskey_hashmethod </H3>
+<H4>语法：accesskey_hashmethod [md5|sha1]<BR>
+默认值：accesskey_hashmethod md5 <BR>
+使用字段：main, server, location <BR>
+是否在创建key的时候使用MD5或SHA-1。</H4>
+<H3>accesskey_signature </H3>
+<H4>语法：accesskey_signature "string" <BR>
+默认值：accesskey_signature "$remote_addr" <BR>
+使用字段：main, server, location <BR>
+创建access key的字符串，包含独一无二的客户端地址的$remote_addr变量创建的key。最好包含一个秘密短语确保key的完整性，如 "myPassWord$remote_addr"。</H4>
+<H3>·安装</H3>
+<H4>下载：<A href="http://wiki.nginx.org/File:Nginx-accesskey-2.0.3.tar.gz" >File:Nginx-accesskey-2.0.3.tar.gz</A><BR>
+解包，编辑config文件替换"$HTTP_ACCESSKEY_MODULE"为"ngx_http_accesskey_module"，然后编译nginx：
+<PRE>./configure --add-module=path/to/nginx-accesskey</PRE></H4>
+<H3>·其它</H3>
+<H4><A href="http://wiki.nginx.org/NginxHttpAccessKeyModule/" >Nginx Http Access Key Module</A><BR>
+<A href="http://www.owoxengine.com/" >OWOX project</A><BR></H4>
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://179401.cn/analytics/" : "http://179401.cn/analytics/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://shouce.jb51.net/179401.cn/analytics/piwik.php-idsite=1"  style="border:0" alt=""/></p></noscript>
+<!-- End Piwik Tag -->
+</BODY>
+</HTML>
+<H3><A href="http://web.iti.upv.es/~sto/nginx/" >前进->Auth PAM 模块（Auth PAM Module）</A></H3>

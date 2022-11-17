@@ -1,0 +1,176 @@
+﻿<html xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+    <META NAME="save" CONTENT="history" />
+    <title>如何：在 C# 中编写 LINQ 查询</title>
+    <link rel="stylesheet" type="text/css" href="../styles/presentation.css" />
+    <link rel="stylesheet" type="text/css" href="ms-help://Hx/HxRuntime/HxLink.css" />
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/EventUtilities.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/SplitScreen.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/Dropdown.js"> </script>
+    <script type="text/javascript" src="../scripts/script_manifold.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/script_feedBack.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CheckboxMenu.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CommonUtilities.js"> </script>
+    <xml>
+      <MSHelp:Keyword Index="A" Term="45e47fcc-cfa1-4b72-b161-d038ae87bd23" />
+      <MSHelp:Keyword Index="K" Term="查询 [C# 中的 LINQ], 写" />
+      <MSHelp:Keyword Index="K" Term="查询表达式 [C# 中的 LINQ], 编写查询" />
+      <MSHelp:Keyword Index="K" Term="编写 LINQ 查询" />
+      <MSHelp:Attr Name="RevisionNumber" Value="22" />
+      <MSHelp:Attr Name="AssetID" Value="45e47fcc-cfa1-4b72-b161-d038ae87bd23" />
+      <MSHelp:Attr Name="Abstract" Value="本主题演示在 C# 中编写 LINQ 查询的三种方式：" />
+      <MSHelp:Attr Name="codelang" Value="CSharp" />
+      <MSHelp:Attr Name="CommunityContent" Value="1" />
+      <MSHelp:Attr Name="DevLang" Value="CSharp" />
+      <MSHelp:Attr Name="DevLangVers" Value="CSharp" />
+      <MSHelp:Attr Name="DocSet" Value="C#" />
+      <MSHelp:Attr Name="DocSet" Value="C# Lang" />
+      <MSHelp:Attr Name="DocSet" Value="ExpressLibVS" />
+      <MSHelp:Attr Name="ProgModel" Value="managed" />
+      <MSHelp:Attr Name="ShippedIn" Value="vs.90" />
+      <MSHelp:Attr Name="Technology" Value="ManagedCode" />
+      <MSHelp:Attr Name="TopicVersion" Value="09.00.08178.10000" />
+      <MSHelp:Attr Name="Catalog Container" Value="System_Default_Catalog" />
+      <MSHelp:Attr Name="Content Set Container" Value="System_Default_Content_Set" />
+      <MSHelp:Attr Name="TopicType" Value="kbHowTo" />
+      <MSHelp:Attr Name="Locale" Value="zh-chs" />
+    </xml>
+  </head>
+  <body>
+    <input type="hidden" id="userDataCache" class="userDataStyle" />
+    <input type="hidden" id="hiddenScrollOffset" />
+    <img id="collapseImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" title="“折叠”图像" />
+    <img id="expandImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" title="“展开”图像" />
+    <img id="collapseAllImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" />
+    <img id="expandAllImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" />
+    <img id="dropDownImage" style="display:none; height:0; width:0;" src="../icons/dropdown.gif" />
+    <img id="dropDownHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/dropdownHover.gif" />
+    <img id="copyImage" style="display:none; height:0; width:0;" src="../icons/copycode.gif" title="“复制”图像" />
+    <img id="copyHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/copycodeHighlight.gif" title="“复制悬停”图像" />
+    <div id="header">
+      <table id="topTable" cellspacing="0" cellpadding="0">
+        <tr>
+          <td>
+            <span onclick="ExpandCollapseAll(toggleAllImage)" style="cursor:default;" onkeypress="ExpandCollapseAll_CheckKey(toggleAllImage, event)" tabindex="0">
+              <img ID="toggleAllImage" class="toggleAll" src="../icons/collapse_all.gif" /> <label id="collapseAllLabel" for="toggleAllImage" style="display: none;">全部折叠</label><label id="expandAllLabel" for="toggleAllImage" style="display: none;">全部展开</label> </span>
+            <span>    </span>
+            <span id="devlangsDropdown" class="filter" tabindex="0">
+              <img id="devlangsDropdownImage" src="../icons/dropdown.gif" /> <label id="devlangsMenuAllLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：全部 </nobr></label><label id="devlangsMenuMultipleLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：多个 </nobr></label><label id="devlangsMenuVisualBasicLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual Basic </nobr></label><label id="devlangsMenuCSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：C# </nobr></label><label id="devlangsMenuManagedCPlusPlusLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual C++ </nobr></label><label id="devlangsMenuJSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：J# </nobr></label><label id="devlangsMenuJScriptLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：JScript </nobr></label></span>
+          </td>
+        </tr>
+      </table>
+      <div id="devlangsMenu">
+        <input id="VisualBasicCheckbox" type="checkbox" data="VisualBasic,vb,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="VisualBasicCheckbox">Visual Basic</label>
+        <br />
+        <input id="CSharpCheckbox" type="checkbox" data="CSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="CSharpCheckbox">C#</label>
+        <br />
+        <input id="ManagedCPlusPlusCheckbox" type="checkbox" data="ManagedCPlusPlus,cpp,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="ManagedCPlusPlusCheckbox">Visual C++</label>
+        <br />
+        <input id="JSharpCheckbox" type="checkbox" data="JSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JSharpCheckbox">J#</label>
+        <br />
+        <input id="JScriptCheckbox" type="checkbox" data="JScript,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JScriptCheckbox">JScript</label>
+        <br />
+      </div>
+      <table id="bottomTable" cellpadding="0" cellspacing="0">
+        <tr id="headerTableRow1">
+          <td align="left">
+            <span id="runningHeaderText">C# 编程指南</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow2">
+          <td align="left">
+            <span id="nsrTitle">如何：在 C# 中编写 LINQ 查询</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow3">
+          <td align="left">
+            <a href="45e47fcc-cfa1-4b72-b161-d038ae87bd23.htm#exampleToggle" onclick="OpenSection(exampleToggle)">示例</a>  <a href="45e47fcc-cfa1-4b72-b161-d038ae87bd23.htm#seeAlsoToggle" onclick="OpenSection(seeAlsoToggle)">另请参见</a>  
+<script type="text/javascript">
+var fbBody = '%b8%d0%d0%bb%c4%fa%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%bf%aa%b7%a2%b0%e6%b1%e0%d0%b4%cd%c5%b6%d3%bd%ab%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%d3%c3%d3%da%b8%c4%bd%f8%ce%c4%b5%b5%a1%a3%ce%d2%c3%c7%d4%da%c9%f3%d4%c4%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%ca%b1%a3%ac%bf%c9%c4%dc%bb%e1%b8%f8%c4%fa%b7%a2%cb%cd%b5%e7%d7%d3%d3%ca%bc%fe%a3%ac%d2%d4%c7%eb%c4%fa%cc%e1%b9%a9%bd%f8%d2%bb%b2%bd%b5%c4%bd%e2%ca%cd%cb%b5%c3%f7%bb%f2%d5%df%be%cd%bd%e2%be%f6%b7%bd%b0%b8%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%ce%d2%c3%c7%b2%bb%bb%e1%bd%ab%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%d3%c3%d3%da%c8%ce%ba%ce%c6%e4%cb%fb%d3%c3%cd%be%a3%ac%b2%a2%c7%d2%d4%da%c9%f3%d4%c4%cd%ea%d6%ae%ba%f3%a3%ac%ce%d2%c3%c7%b2%bb%bb%e1%d4%d9%b1%a3%c1%f4%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%a1%a3%0d%0a%d3%d0%b9%d8%20Microsoft%20%d2%fe%cb%bd%d5%fe%b2%df%b5%c4%bd%f8%d2%bb%b2%bd%d0%c5%cf%a2%a3%ac%c7%eb%b2%ce%bc%fb%20http%3a%2f%2fprivacy.microsoft.com%2fzh-cn%2fdefault.aspx%a1%a3';
+var fbSubject = 'Customer%20Feedback';
+</script>
+  <span id="headfeedbackarea" class="feedbackhead"><a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);"> 发送反馈意见</a></span>
+</td>
+        </tr>
+      </table>
+      <table id="gradientTable">
+        <tr>
+          <td class="nsrBottom" background="../icons/gradient.gif" />
+        </tr>
+      </table>
+    </div>
+    <div id="mainSection">
+      <div id="mainBody">
+        <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
+        <font color="DarkGray"></font>
+        <p /> <p><font color="DarkGray">更新：2007 年 11 月</font></p><div class="introduction"><p>本主题演示在 C# 中编写 LINQ 查询的三种方式：</p><ol><li><p>使用查询语法。</p></li><li><p>使用方法语法。</p></li><li><p>组合使用查询语法和方法语法。</p></li></ol><p>下面的示例使用前面列出的每种方式演示一些简单的 LINQ 查询。一般的规则是尽可能使用 (1)，而在必要时使用 (2) 和 (3)。</p><div class="alert"><table width="100%" cellspacing="0" cellpadding="0"><tr><th align="left"><img class="note" title="说明" src="../icons/alert_note.gif" /><b>说明：</b></th></tr><tr><td><p>这些查询作用于简单的内存中集合；但是，基本语法与 LINQ to SQL 和 LINQ to XML 中使用的语法相同。</p></td></tr></table></div></div><h1 class="heading"><span onclick="ExpandCollapse(exampleToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(exampleToggle, event)" tabindex="0"><img id="exampleToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />示例</span></h1><div id="exampleSection" class="section" name="collapseableSection" style=""><h3 class="subHeading">查询语法</h3><div class="subsection"><p>编写大多数查询的推荐方式是使用查询语法来创建查询表达式。下面的示例演示了三个查询表达式。第一个查询表达式演示如何通过用 <span sdata="langKeyword" value="where"><span class="keyword">where</span></span> 子句应用条件来筛选或限制结果，它返回源序列中值大于 7 或小于 3 的所有元素。第二个表达式演示如何对返回的结果进行排序。第三个表达式演示如何按照键对结果进行分组，此查询可根据单词的第一个字母返回两个组。</p></div><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Query #1.</span>
+List&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt; numbers = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> List&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt;() { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// The query variable can also be implicitly typed by using var</span>
+IEnumerable&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt; filteringQuery =
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">from</span> num <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> numbers
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">where</span> num &lt; 3 || num &gt; 7
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">select</span> num;
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Query #2.</span>
+IEnumerable&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt; orderingQuery =
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">from</span> num <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> numbers
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">where</span> num &lt; 3 || num &gt; 7
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">orderby</span> num <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">ascending</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">select</span> num;
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Query #3.</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span>[] groupingQuery = { <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"carrots"</span>, <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"cabbage"</span>, <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"broccoli"</span>, <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"beans"</span>, <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"barley"</span> };
+IEnumerable&lt;IGrouping&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">char</span>, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span>&gt;&gt; queryFoodGroups =
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">from</span> item <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> groupingQuery
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">group</span> item <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">by</span> item[0];
+
+</pre></td></tr></table></span></div></div><p>请注意，这些查询的类型是 <span sdata="cer" target="T:System.Collections.Generic.IEnumerable`1"><mshelp:link keywords="T:System.Collections.Generic.IEnumerable`1" tabindex="0">IEnumerable<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span></span>T<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span></span></mshelp:link></span>。所有这些查询都可以使用 <span sdata="langKeyword" value="var"><span class="keyword">var</span></span> 编写，如下面的示例所示：</p><p><span class="code">var query = from num in numbers...</span></p><p>在上述每个示例中，直到您在 <span sdata="langKeyword" value="foreach"><span class="keyword">foreach</span></span> 语句中循环访问查询变量时，查询才会实际执行。有关更多信息，请参见 <span sdata="link"><mshelp:link keywords="37895c02-268c-41d5-be39-f7d936fa88a8" tabindex="0">LINQ 查询介绍</mshelp:link></span>。</p><h3 class="subHeading">方法语法</h3><div class="subsection"><p>某些查询操作必须表示为方法调用。最常见的此类方法是那些返回单一数值的方法，如 <span sdata="cer" target="M:System.Linq.Enumerable.Sum(System.Collections.Generic.IEnumerable{System.Decimal})"><mshelp:link keywords="Overload:System.Linq.Enumerable.Sum" tabindex="0">Sum</mshelp:link></span>、<span sdata="cer" target="M:System.Linq.Enumerable.Max(System.Collections.Generic.IEnumerable{System.Decimal})"><mshelp:link keywords="Overload:System.Linq.Enumerable.Max" tabindex="0">Max</mshelp:link></span>、<span sdata="cer" target="M:System.Linq.Enumerable.Min(System.Collections.Generic.IEnumerable{System.Decimal})"><mshelp:link keywords="Overload:System.Linq.Enumerable.Min" tabindex="0">Min</mshelp:link></span>、<span sdata="cer" target="M:System.Linq.Enumerable.Average(System.Collections.Generic.IEnumerable{System.Decimal})"><mshelp:link keywords="Overload:System.Linq.Enumerable.Average" tabindex="0">Average</mshelp:link></span> 等。这些方法在任何查询中都必须总是最后调用，因为它们仅表示单个值，不能充当其他查询操作的数据源。下面的示例演示查询表达式中的方法调用：</p></div><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>List&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt; numbers1 = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> List&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt;() { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
+List&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt; numbers2 = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> List&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt;() { 15, 14, 11, 13, 19, 18, 16, 17, 12, 10 };
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Query #4.</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">double</span> average = numbers1.Average();
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Query #5.</span>
+IEnumerable&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt; concatenationQuery = numbers1.Concat(numbers2);
+
+</pre></td></tr></table></span></div></div><p>如果该方法具有参数，则这些参数以 <mshelp:link keywords="57e3ba27-9a82-4067-aca7-5ca446b7bf93" tabindex="0">lambda</mshelp:link> 表达式的形式提供，如下面的示例所示：</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Query #6.</span>
+IEnumerable&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt; largeNumbersQuery = numbers2.Where(c =&gt; c &gt; 15);
+
+</pre></td></tr></table></span></div></div><p>在上述查询中，只有查询 4 立即执行。这是因为它返回单个值，而不是一个泛型 <span sdata="cer" target="T:System.Collections.Generic.IEnumerable`1"><mshelp:link keywords="T:System.Collections.Generic.IEnumerable`1" tabindex="0">IEnumerable<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span></span>T<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span></span></mshelp:link></span> 集合。方法本身必须使用 <span sdata="langKeyword" value="foreach"><span class="keyword">foreach</span></span> 才能计算它的值。</p><p>上述每个查询都可以通过结合使用隐式类型化与 <mshelp:link keywords="0777850a-2691-4e3e-927f-0c850f5efe15" tabindex="0">var</mshelp:link> 进行编写，如下面的示例所示：</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// var is used for convenience in these queries</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> average = numbers1.Average();
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> concatenationQuery = numbers1.Concat(numbers2);
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> largeNumbersQuery = numbers2.Where(c =&gt; c &gt; 15);
+
+</pre></td></tr></table></span></div></div><h3 class="subHeading">混合的查询和方法语法</h3><div class="subsection"><p>此示例演示如何对查询子句的结果使用方法语法。只需将查询表达式括在括号内，然后应用点运算符并调用此方法。在下面的示例中，查询 7 返回其值在 3 和 7 之间的数字个数。但是，通常更好的做法是使用另一个变量来存储方法调用的结果。这样就不太容易将查询本身与查询结果相混淆。</p></div><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Query #7.</span>
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Using a query expression with method syntax</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> numCount1 =
+    (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">from</span> num <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> numbers1
+     <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">where</span> num &lt; 3 || num &gt; 7
+     <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">select</span> num).Count();
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Better: Create a new variable to store</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// the method call result</span>
+IEnumerable&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt; numbersQuery =
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">from</span> num <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> numbers1
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">where</span> num &lt; 3 || num &gt; 7
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">select</span> num;
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> numCount2 = numbersQuery.Count();
+
+</pre></td></tr></table></span></div></div><p>由于查询 7 返回单个值而不是一个集合，因此该查询立即执行。</p><p>上述查询可以通过结合使用隐式类型化与 <span sdata="langKeyword" value="var"><span class="keyword">var</span></span> 进行编写，如下所示：</p><div class="code"><span codeLanguage="other"><table width="100%" cellspacing="0" cellpadding="0"><tr><th> </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>var numCount = (from num in numbers...</pre></td></tr></table></span></div><p>它可以按如下方式使用方法语法进行编写：</p><div class="code"><span codeLanguage="other"><table width="100%" cellspacing="0" cellpadding="0"><tr><th> </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>var numCount = numbers.Where(n =&gt; n &lt; 3 || n &gt; 7).Count();</pre></td></tr></table></span></div><p>它可以按如下方式使用显式类型化进行编写：</p><div class="code"><span codeLanguage="other"><table width="100%" cellspacing="0" cellpadding="0"><tr><th> </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>int numCount = numbers.Where(n =&gt; n &lt; 3 || n &gt; 7).Count();</pre></td></tr></table></span></div></div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />请参见</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><h4 class="subHeading">任务</h4><div class="seeAlsoStyle"><span sdata="link"><mshelp:link keywords="2962a610-419a-4276-9ec8-4b7f2af0c081" tabindex="0">演练：在 C# 中编写查询 (LINQ)</mshelp:link></span></div><h4 class="subHeading">概念</h4><div class="seeAlsoStyle"><span sdata="link"><a href="40638f19-fb46-4d26-a2d9-a383b48f5ed4.htm">LINQ 查询表达式（C# 编程指南）</a></span></div><h4 class="subHeading">参考</h4><div class="seeAlsoStyle"><span sdata="link"><a href="7f9bf952-7744-4f91-b676-cddb55d107c3.htm">where 子句（C# 参考）</a></span></div><h4 class="subHeading">其他资源</h4><div class="seeAlsoStyle"><span sdata="link"><mshelp:link keywords="a73c4aec-5d15-4e98-b962-1274021ea93d" tabindex="0">语言集成查询 (LINQ)</mshelp:link></span></div></div></div>
+      <div id="footer">
+        <div class="footerLine">
+          <img width="100%" height="3px" src="../icons/footer.gif" title="“页脚”图像" />
+        </div>
+<span id="feedbackarea">将有关本主题的<a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);">反馈意见</a>发送给 Microsoft。</span>
+</div>
+    </div>
+  </body>
+</html>

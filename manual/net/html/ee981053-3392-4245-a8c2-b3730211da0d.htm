@@ -1,0 +1,380 @@
+﻿<html xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+    <META NAME="save" CONTENT="history" />
+    <title>如何：以各种方式对结果进行分组（C# 编程指南）</title>
+    <link rel="stylesheet" type="text/css" href="../styles/presentation.css" />
+    <link rel="stylesheet" type="text/css" href="ms-help://Hx/HxRuntime/HxLink.css" />
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/EventUtilities.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/SplitScreen.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/Dropdown.js"> </script>
+    <script type="text/javascript" src="../scripts/script_manifold.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/script_feedBack.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CheckboxMenu.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CommonUtilities.js"> </script>
+    <xml>
+      <MSHelp:TOCTitle Title="如何：以各种方式对结果进行分组" />
+      <MSHelp:Keyword Index="A" Term="ee981053-3392-4245-a8c2-b3730211da0d" />
+      <MSHelp:Keyword Index="K" Term="group 子句示例 [C# 中的 LINQ]" />
+      <MSHelp:Keyword Index="K" Term="组 [C#], LINQ 查询表达式" />
+      <MSHelp:Keyword Index="K" Term="查询 [C# 中的 LINQ], 分组" />
+      <MSHelp:Keyword Index="K" Term="查询表达式 [C# 中的 LINQ], 分组" />
+      <MSHelp:Keyword Index="B" Term="LINQGroupingData" />
+      <MSHelp:Attr Name="RevisionNumber" Value="12" />
+      <MSHelp:Attr Name="AssetID" Value="ee981053-3392-4245-a8c2-b3730211da0d" />
+      <MSHelp:Attr Name="Abstract" Value="分组是 LINQ 最强大的功能之一。下面的示例演示如何以各种方式对数据进行分组：" />
+      <MSHelp:Attr Name="codelang" Value="CSharp" />
+      <MSHelp:Attr Name="CommunityContent" Value="1" />
+      <MSHelp:Attr Name="DevLang" Value="CSharp" />
+      <MSHelp:Attr Name="DevLangVers" Value="CSharp" />
+      <MSHelp:Attr Name="DocSet" Value="C#" />
+      <MSHelp:Attr Name="DocSet" Value="C# Lang" />
+      <MSHelp:Attr Name="DocSet" Value="ExpressLibVS" />
+      <MSHelp:Attr Name="ProgModel" Value="managed" />
+      <MSHelp:Attr Name="ShippedIn" Value="vs.90" />
+      <MSHelp:Attr Name="Technology" Value="ManagedCode" />
+      <MSHelp:Attr Name="TopicVersion" Value="09.00.08178.10000" />
+      <MSHelp:Attr Name="Catalog Container" Value="System_Default_Catalog" />
+      <MSHelp:Attr Name="Content Set Container" Value="System_Default_Content_Set" />
+      <MSHelp:Attr Name="TopicType" Value="kbHowTo" />
+      <MSHelp:Attr Name="Locale" Value="zh-chs" />
+    </xml>
+  </head>
+  <body>
+    <input type="hidden" id="userDataCache" class="userDataStyle" />
+    <input type="hidden" id="hiddenScrollOffset" />
+    <img id="collapseImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" title="“折叠”图像" />
+    <img id="expandImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" title="“展开”图像" />
+    <img id="collapseAllImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" />
+    <img id="expandAllImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" />
+    <img id="dropDownImage" style="display:none; height:0; width:0;" src="../icons/dropdown.gif" />
+    <img id="dropDownHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/dropdownHover.gif" />
+    <img id="copyImage" style="display:none; height:0; width:0;" src="../icons/copycode.gif" title="“复制”图像" />
+    <img id="copyHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/copycodeHighlight.gif" title="“复制悬停”图像" />
+    <div id="header">
+      <table id="topTable" cellspacing="0" cellpadding="0">
+        <tr>
+          <td>
+            <span onclick="ExpandCollapseAll(toggleAllImage)" style="cursor:default;" onkeypress="ExpandCollapseAll_CheckKey(toggleAllImage, event)" tabindex="0">
+              <img ID="toggleAllImage" class="toggleAll" src="../icons/collapse_all.gif" /> <label id="collapseAllLabel" for="toggleAllImage" style="display: none;">全部折叠</label><label id="expandAllLabel" for="toggleAllImage" style="display: none;">全部展开</label> </span>
+            <span>    </span>
+            <span id="devlangsDropdown" class="filter" tabindex="0">
+              <img id="devlangsDropdownImage" src="../icons/dropdown.gif" /> <label id="devlangsMenuAllLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：全部 </nobr></label><label id="devlangsMenuMultipleLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：多个 </nobr></label><label id="devlangsMenuVisualBasicLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual Basic </nobr></label><label id="devlangsMenuCSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：C# </nobr></label><label id="devlangsMenuManagedCPlusPlusLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual C++ </nobr></label><label id="devlangsMenuJSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：J# </nobr></label><label id="devlangsMenuJScriptLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：JScript </nobr></label></span>
+          </td>
+        </tr>
+      </table>
+      <div id="devlangsMenu">
+        <input id="VisualBasicCheckbox" type="checkbox" data="VisualBasic,vb,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="VisualBasicCheckbox">Visual Basic</label>
+        <br />
+        <input id="CSharpCheckbox" type="checkbox" data="CSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="CSharpCheckbox">C#</label>
+        <br />
+        <input id="ManagedCPlusPlusCheckbox" type="checkbox" data="ManagedCPlusPlus,cpp,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="ManagedCPlusPlusCheckbox">Visual C++</label>
+        <br />
+        <input id="JSharpCheckbox" type="checkbox" data="JSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JSharpCheckbox">J#</label>
+        <br />
+        <input id="JScriptCheckbox" type="checkbox" data="JScript,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JScriptCheckbox">JScript</label>
+        <br />
+      </div>
+      <table id="bottomTable" cellpadding="0" cellspacing="0">
+        <tr id="headerTableRow1">
+          <td align="left">
+            <span id="runningHeaderText">C# 编程指南</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow2">
+          <td align="left">
+            <span id="nsrTitle">如何：以各种方式对结果进行分组（C# 编程指南）</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow3">
+          <td align="left">
+            <a href="ee981053-3392-4245-a8c2-b3730211da0d.htm#exampleToggle" onclick="OpenSection(exampleToggle)">示例</a>  <a href="ee981053-3392-4245-a8c2-b3730211da0d.htm#seeAlsoToggle" onclick="OpenSection(seeAlsoToggle)">另请参见</a>  
+<script type="text/javascript">
+var fbBody = '%b8%d0%d0%bb%c4%fa%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%bf%aa%b7%a2%b0%e6%b1%e0%d0%b4%cd%c5%b6%d3%bd%ab%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%d3%c3%d3%da%b8%c4%bd%f8%ce%c4%b5%b5%a1%a3%ce%d2%c3%c7%d4%da%c9%f3%d4%c4%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%ca%b1%a3%ac%bf%c9%c4%dc%bb%e1%b8%f8%c4%fa%b7%a2%cb%cd%b5%e7%d7%d3%d3%ca%bc%fe%a3%ac%d2%d4%c7%eb%c4%fa%cc%e1%b9%a9%bd%f8%d2%bb%b2%bd%b5%c4%bd%e2%ca%cd%cb%b5%c3%f7%bb%f2%d5%df%be%cd%bd%e2%be%f6%b7%bd%b0%b8%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%ce%d2%c3%c7%b2%bb%bb%e1%bd%ab%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%d3%c3%d3%da%c8%ce%ba%ce%c6%e4%cb%fb%d3%c3%cd%be%a3%ac%b2%a2%c7%d2%d4%da%c9%f3%d4%c4%cd%ea%d6%ae%ba%f3%a3%ac%ce%d2%c3%c7%b2%bb%bb%e1%d4%d9%b1%a3%c1%f4%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%a1%a3%0d%0a%d3%d0%b9%d8%20Microsoft%20%d2%fe%cb%bd%d5%fe%b2%df%b5%c4%bd%f8%d2%bb%b2%bd%d0%c5%cf%a2%a3%ac%c7%eb%b2%ce%bc%fb%20http%3a%2f%2fprivacy.microsoft.com%2fzh-cn%2fdefault.aspx%a1%a3';
+var fbSubject = 'Customer%20Feedback';
+</script>
+  <span id="headfeedbackarea" class="feedbackhead"><a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);"> 发送反馈意见</a></span>
+</td>
+        </tr>
+      </table>
+      <table id="gradientTable">
+        <tr>
+          <td class="nsrBottom" background="../icons/gradient.gif" />
+        </tr>
+      </table>
+    </div>
+    <div id="mainSection">
+      <div id="mainBody">
+        <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
+        <font color="DarkGray"></font>
+        <p /> <p><font color="DarkGray">更新：2007 年 11 月</font></p><div class="introduction"><p>分组是 LINQ 最强大的功能之一。下面的示例演示如何以各种方式对数据进行分组：</p><ul><li><p>按照单个属性。</p></li><li><p>按照字符串属性的首字母。</p></li><li><p>按照计算出的数值范围。</p></li><li><p>按照布尔谓词或其他表达式。</p></li><li><p>按照复合键。</p></li></ul><p>此外，最后两个查询将它们的结果投影到一个新的匿名类型中，该类型仅包含学生的名字和姓氏。有关更多信息，请参见 <span sdata="link"><a href="c817242e-b12c-4baa-a57e-73ee138f34d1.htm">group 子句（C# 参考）</a></span>。</p></div><h1 class="heading"><span onclick="ExpandCollapse(exampleToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(exampleToggle, event)" tabindex="0"><img id="exampleToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />示例</span></h1><div id="exampleSection" class="section" name="collapseableSection" style=""><p>本主题中的所有示例都使用下列帮助器类和数据源。</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> StudentClass
+{
+    #region data
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">protected</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">enum</span> GradeLevel { FirstYear = 1, SecondYear, ThirdYear, FourthYear };
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">protected</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Student
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> FirstName { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>; <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span>; }
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> LastName { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>; <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span>; }
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> ID { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>; <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span>; }
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> GradeLevel Year;
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> List&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt; ExamScores;
+    }
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">protected</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> List&lt;Student&gt; students = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> List&lt;Student&gt;
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Student {FirstName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Terry"</span>, LastName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Adams"</span>, ID = 120, Year = GradeLevel.SecondYear, ExamScores = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> List&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt;{ 99, 82, 81, 79}},
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Student {FirstName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Fadi"</span>, LastName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Fakhouri"</span>, ID = 116, Year = GradeLevel.ThirdYear,ExamScores = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> List&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt;{ 99, 86, 90, 94}},
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Student {FirstName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Hanying"</span>, LastName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Feng"</span>, ID = 117, Year = GradeLevel.FirstYear, ExamScores = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> List&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt;{ 93, 92, 80, 87}},
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Student {FirstName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Cesar"</span>, LastName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Garcia"</span>, ID = 114, Year = GradeLevel.FourthYear,ExamScores = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> List&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt;{ 97, 89, 85, 82}},
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Student {FirstName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Debra"</span>, LastName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Garcia"</span>, ID = 115, Year = GradeLevel.ThirdYear, ExamScores = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> List&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt;{ 35, 72, 91, 70}},
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Student {FirstName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Hugo"</span>, LastName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Garcia"</span>, ID = 118, Year = GradeLevel.SecondYear, ExamScores = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> List&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt;{ 92, 90, 83, 78}},
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Student {FirstName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Sven"</span>, LastName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Mortensen"</span>, ID = 113, Year = GradeLevel.FirstYear, ExamScores = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> List&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt;{ 88, 94, 65, 91}},
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Student {FirstName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Claire"</span>, LastName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"O'Donnell"</span>, ID = 112, Year = GradeLevel.FourthYear, ExamScores = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> List&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt;{ 75, 84, 91, 39}},
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Student {FirstName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Svetlana"</span>, LastName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Omelchenko"</span>, ID = 111, Year = GradeLevel.SecondYear, ExamScores = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> List&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt;{ 97, 92, 81, 60}},
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Student {FirstName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Lance"</span>, LastName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Tucker"</span>, ID = 119, Year = GradeLevel.ThirdYear, ExamScores = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> List&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt;{ 68, 79, 88, 92}},
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Student {FirstName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Michael"</span>, LastName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Tucker"</span>, ID = 122, Year = GradeLevel.FirstYear, ExamScores = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> List&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt;{ 94, 92, 91, 91}},
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Student {FirstName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Eugene"</span>, LastName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Zabokritski"</span>, ID = 121, Year = GradeLevel.FourthYear, ExamScores = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> List&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt;{ 96, 85, 91, 60}}
+    };
+    #endregion
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//Helper method</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">protected</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> GetPercentile(Student s)
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">double</span> avg = s.ExamScores.Average();
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> avg &gt; 0 ? (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>)avg / 10 : 0;
+    }
+
+
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> QueryHighScores(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> exam, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> score)
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> highScores = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">from</span> student <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> students
+                         <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">where</span> student.ExamScores[exam] &gt; score
+                         <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">select</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> {Name = student.FirstName, Score = student.ExamScores[exam]};
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> item <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> highScores)
+        {
+            Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"{0,-15}{1}"</span>, item.Name, item.Score);
+        }
+    }
+}
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Program
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Main()
+    {
+        StudentClass sc = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> StudentClass();
+        sc.QueryHighScores(1, 90);
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Keep the console window open in debug mode</span>
+        Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Press any key to exit"</span>);
+        Console.ReadKey();
+    }
+}
+
+</pre></td></tr></table></span></div></div><p>下面的示例演示如何通过使用元素的单个属性作为组键对源元素进行分组。在这种情况下，该键为 <span sdata="langKeyword" value="string"><span class="keyword">string</span></span>。还可以使用子字符串作为键。分组操作将对该类型使用默认的相等比较器。</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> GroupBySingleProperty()
+{
+    Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Group by a single property in an object"</span>);
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// queryLastNames is an IEnumerable&lt;IGrouping&lt;string, DataClass.Student&gt;&gt;</span>
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// var is easier to type.</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> queryLastNames =
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">from</span> student <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> students
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">group</span> student <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">by</span> student.LastName <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">into</span> newGroup
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">orderby</span> newGroup.Key
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">select</span> newGroup;
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> nameGroup <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> queryLastNames)
+    {
+        Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Key: {0}"</span>, nameGroup.Key);
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> student <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> nameGroup)
+        {
+            Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"\t{0}, {1}"</span>, student.LastName, student.FirstName);
+        }
+    }
+}
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">/* Output:
+  Group by a single property in an object
+  Key: Feng
+          Feng, Hanying
+  Key: Garcia
+          Garcia, Hugo
+          Garcia, Cesar
+          Garcia, Debra
+  Key: Mortensen
+          Mortensen, Sven
+  Key: O'Donnell
+          O'Donnell, Claire
+  Key: Omelchenko
+          Omelchenko, Svetlana
+  Key: Tucker
+          Tucker, Michael
+          Tucker, Lance
+ */</span>  
+
+</pre></td></tr></table></span></div></div><p>下面的示例演示如何通过使用除对象属性以外的某个项作为组键对源元素进行分组。</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> GroupBySubstring()
+{            
+    Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"\r\nGroup by something other than a property of the object:"</span>);
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> queryFirstLetters =
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">from</span> student <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> students
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">group</span> student <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">by</span> student.LastName[0];
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> studentGroup <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> queryFirstLetters)
+    {
+        Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Key: {0}"</span>, studentGroup.Key);
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Nested foreach is required to access group items</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> student <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> studentGroup)
+        {
+            Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"\t{0}, {1}"</span>, student.LastName, student.FirstName);
+        }
+    }           
+}
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">/* Output:
+        Group by first character:
+        Key: O
+                Omelchenko, Svetlana
+                O'Donnell, Claire
+        Key: G
+                Garcia, Hugo
+                Garcia, Cesar
+                Garcia, Debra
+        Key: M
+                Mortensen, Sven
+        Key: T
+                Tucker, Michael
+                Tucker, Lance
+        Key: F
+                Feng, Hanying
+     */</span>
+
+</pre></td></tr></table></span></div></div><p>下面的示例演示如何通过使用某个数值范围作为组键对源元素进行分组。然后，查询将结果投影到一个匿名类型中，该类型仅包含学生的名字和姓氏以及该学生所属的百分点范围。使用匿名类型的原因是没有必要使用完整的 <span class="code">Student</span> 对象来显示结果。<span class="code">GetPercentile</span> 是一个帮助器函数，它根据学生的平均得分计算百分点：</p><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>static int GetPercentile(Student s)
+{
+   double avg = s.Scores.Average();
+   return avg &gt; 0 ? (int)avg / 10 : 0;
+}</pre></td></tr></table></span></div><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> GroupByRange()
+{            
+    Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"\r\nGroup by numeric range and project into a new anonymous type:"</span>);
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> queryNumericRange =
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">from</span> student <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> students
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">let</span> percentile = GetPercentile(student)
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">group</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> { student.FirstName, student.LastName } <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">by</span> percentile <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">into</span> percentGroup
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">orderby</span> percentGroup.Key
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">select</span> percentGroup;
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Nested foreach required to iterate over groups and group items.</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> studentGroup <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> queryNumericRange)
+    {
+        Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Key: {0}"</span>, (studentGroup.Key * 10));
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> item <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> studentGroup)
+        {
+            Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"\t{0}, {1}"</span>, item.LastName, item.FirstName);
+        }
+    }            
+}
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">/* Output:
+     Group by numeric range and project into a new anonymous type:
+     Key: 60
+             Garcia, Debra
+     Key: 70
+             Omelchenko, Svetlana
+             O'Donnell, Claire
+     Key: 80
+             Garcia, Hugo
+             Mortensen, Sven
+             Garcia, Cesar
+             Feng, Hanying
+             Tucker, Lance
+     Key: 90
+             Tucker, Michael
+     */</span>
+
+</pre></td></tr></table></span></div></div><p>下面的示例演示如何通过使用布尔比较表达式对源元素进行分组。与上述示例一样，结果被投影到一个匿名类型中，因为不需要完整的源元素。请注意，在执行查询时，该匿名类型中的属性将变成 <span class="code">Key</span> 成员上的属性，并且可以通过名称进行访问。</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> GroupByBoolean()
+{            
+    Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"\r\nGroup by a boolean into two groups with string keys"</span>);
+    Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"\"</span>True\<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">" and \"</span>False\<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">" and project into a new anonymous type:"</span>);
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> queryGroupByAverages = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">from</span> student <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> students
+                               <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">group</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> { student.FirstName, student.LastName }
+                                    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">by</span> student.ExamScores.Average() &gt; 75 <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">into</span> studentGroup
+                               <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">select</span> studentGroup;
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> studentGroup <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> queryGroupByAverages)
+    {
+        Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Key: {0}"</span>, studentGroup.Key);
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> student <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> studentGroup)
+            Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"\t{0} {1}"</span>, student.FirstName, student.LastName);
+    }            
+}
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">/* Output:
+         Group by a boolean into two groups with string keys
+         "True" and "False" and project into a new anonymous type:
+         Key: True
+                 Svetlana Omelchenko
+                 Hugo Garcia
+                 Sven Mortensen
+                 Michael Tucker
+                 Cesar Garcia
+                 Hanying Feng
+                 Lance Tucker
+         Key: False
+                 Claire O'Donnell
+                 Debra Garcia
+*/</span>
+
+</pre></td></tr></table></span></div></div><p>下面的示例演示如何使用匿名类型来封装包含多个值的键。在这种情况下，第二个键值是一个布尔值，它指定该学生在第一次考试中的得分是否超过了 85 分。可以按照该键中的任何属性对多组值进行排序。</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> GroupByCompositeKey()
+{
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> queryHighScoreGroups =
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">from</span> student <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> students
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">group</span> student <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">by</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> { FirstLetter = student.LastName[0], Score = student.ExamScores[0] &gt; 85 } <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">into</span> studentGroup
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">orderby</span> studentGroup.Key.FirstLetter
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">select</span> studentGroup;
+
+    Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"\r\nGroup and order by a compound key:"</span>);
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> scoreGroup <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> queryHighScoreGroups)
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> s = scoreGroup.Key.Score == <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">true</span> ? <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"more than"</span> : <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"less than"</span>;
+        Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Name starts with {0} who scored {1} 85"</span>, scoreGroup.Key.FirstLetter, s);
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> item <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> scoreGroup)
+        {
+            Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"\t{0} {1}"</span>, item.FirstName, item.LastName);
+        }
+    }
+}
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">/* Output:
+          Group and order by a compound key:
+          Name starts with F who scored more than 85
+                  Hanying Feng
+          Name starts with G who scored more than 85
+                  Hugo Garcia
+                  Cesar Garcia
+          Name starts with G who scored less than 85
+                  Debra Garcia
+          Name starts with M who scored more than 85
+                  Sven Mortensen
+          Name starts with O who scored more than 85
+                  Svetlana Omelchenko
+          Name starts with O who scored less than 85
+                  Claire O'Donnell
+          Name starts with T who scored more than 85
+                  Michael Tucker
+          Name starts with T who scored less than 85
+                  Lance Tucker
+       */</span>
+
+</pre></td></tr></table></span></div></div></div><h1 class="heading"><span onclick="ExpandCollapse(buildInstructionsToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(buildInstructionsToggle, event)" tabindex="0"><img id="buildInstructionsToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />编译代码</span></h1><div id="buildInstructionsSection" class="section" name="collapseableSection" style=""><p>此示例包含对<span sdata="link"><a href="122d1e3b-1604-4add-b6b4-b84530a77b6b.htm">如何：查询对象集合（C# 编程指南）</a></span>内示例应用程序中定义的对象的引用。若要编译和运行此方法，请将它粘贴到该应用程序的 <span class="code">StudentClass</span> 类中，并且在 <span class="code">Main</span> 方法中添加对它的调用。</p><p>在改写此方法以适合您自己的应用程序时，请记住 LINQ 需要 .NET Framework 3.5 版，并且项目必须包含一个对 System.Core.dll 的引用和一条针对 System.Linq 的 using 指令。LINQ to SQL、LINQ to XML 和 LINQ to DataSet 类型需要其他 using 指令和引用。有关更多信息，请参见 <span sdata="link"><mshelp:link keywords="a929e653-09a3-44be-881f-68ca33f192b2" tabindex="0">如何：创建 LINQ 项目</mshelp:link></span>。</p></div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />请参见</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><h4 class="subHeading">任务</h4><div class="seeAlsoStyle"><span sdata="link"><a href="7b0805cd-53b4-429d-86b6-d37fb08f2c95.htm">如何：对分组操作执行子查询（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="f48c64af-6d4e-473c-ab27-02f78b5ec2b9.htm">如何：对组进行分组（C# 编程指南）</a></span></div><h4 class="subHeading">概念</h4><div class="seeAlsoStyle"><span sdata="link"><a href="40638f19-fb46-4d26-a2d9-a383b48f5ed4.htm">LINQ 查询表达式（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><mshelp:link keywords="43892bd5-1634-479c-8249-bb7525d87c5d" tabindex="0">数据分组</mshelp:link></span></div><h4 class="subHeading">参考</h4><div class="seeAlsoStyle"><span sdata="link"><a href="c817242e-b12c-4baa-a57e-73ee138f34d1.htm">group 子句（C# 参考）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="59c9d7a4-3b0e-475e-b620-0ab86c088e9b.htm">匿名类型（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="cer" target="M:System.Linq.Enumerable.GroupBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})"><mshelp:link keywords="Overload:System.Linq.Enumerable.GroupBy" tabindex="0">GroupBy</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="cer" target="T:System.Linq.IGrouping`2"><mshelp:link keywords="T:System.Linq.IGrouping`2" tabindex="0">IGrouping<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span></span>TKey, TElement<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span></span></mshelp:link></span></div></div></div>
+      <div id="footer">
+        <div class="footerLine">
+          <img width="100%" height="3px" src="../icons/footer.gif" title="“页脚”图像" />
+        </div>
+<span id="feedbackarea">将有关本主题的<a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);">反馈意见</a>发送给 Microsoft。</span>
+</div>
+    </div>
+  </body>
+</html>

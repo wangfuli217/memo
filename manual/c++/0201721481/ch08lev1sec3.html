@@ -1,0 +1,202 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 8.3.  Managing the Output Buffer</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch08lev1sec2.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch08lev1sec4.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch08lev1sec3"></a>
+
+        <h3 class="docSection1Title">8.3. Managing the Output Buffer</h3>
+        <h3 class="docSection1Title">8.3. 输出缓冲区的管理</h3>
+
+        <p class="docText">Each IO object manages a buffer, which is used to hold the data that the program reads and writes. When we write</p>
+        <p class="docText">每个 IO 对象管理一个缓冲区，用于存储程序读写的数据。如有下面语句：</p>
+        <pre>
+    os &lt;&lt; "please enter a value: ";
+</pre><br>
+
+        <p class="docText">the literal string is stored in the buffer associated with the stream <tt>os</tt>. There are several conditions that cause the buffer to be flushedthat is, writtento the actual output device or file:</p>
+        <p class="docText">系统将字符串字面值存储在与流 <tt>os</tt> 关联的缓冲区中。下面几种情况将导致缓冲区的内容被刷新，即写入到真实的输出设备或者文件：</p>
+
+        <div style="font-weight:bold">
+          <ol class="docList" type="1">
+            <li>
+              <div style="font-weight:normal">
+		<a name="idd1e59431"></a><a name="idd1e59437"></a><a name="idd1e59442"></a><a name="idd1e59447"></a><a name="idd1e59454"></a><a name="idd1e59461"></a><a name="idd1e59468"></a><a name="idd1e59475"></a>
+                <p class="docList">The program completes normally. All output buffers are emptied as part of the <tt>return</tt> from <tt>main</tt>.</p>
+                <p class="docList">程序正常结束。作为 <tt>main</tt> 返回工作的一部分，将清空所有输出缓冲区。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">At some indeterminate time, the buffer can become full, in which case it will be flushed before writing the next value.</p>
+                <p class="docList">在一些不确定的时候，缓冲区可能已经满了，在这种情况下，缓冲区将会在写下一个值之前刷新。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">We can flush the buffer explicitly using a manipulator (<a class="docLink" href="ch01lev1sec2.html#ch01lev2sec3" >Section 1.2.2</a>, p. <a class="docLink" href="ch01lev1sec2.html#ch01lev2sec3" >7</a>) such as <tt>endl</tt>.</p>
+                <p class="docList">用操纵符（<a class="docLink" href="ch01lev1sec2.html#ch01lev2sec3" >第 1.2.2 节</a>）显式地刷新缓冲区，例如行结束符 <tt>endl</tt>。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">We can use the <tt>unitbuf</tt> manipulator to set the stream's internal state to empty the buffer after each output operation.</p>
+                <p class="docList">在每次输出操作执行完后，用 <tt>unitbuf</tt> 操作符设置流的内部状态，从而清空缓冲区。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">We can <tt>tie</tt> the output stream to an input stream, in which case the output buffer is flushed whenever the associated input stream is read.</p>
+                <p class="docList">可将输出流与输入流关联（<tt>tie</tt>）起来。在这种情况下，在读输入流时将刷新其关联的输出缓冲区。</p>
+              </div>
+            </li>
+          </ol>
+  </div>
+  
+        <a name="ch08lev2sec7"></a>
+
+        <h4 class="docSection2Title">Flushing the Output Buffer</h4>
+        <h4 class="docSection2Title">输出缓冲区的刷新</h4>
+
+        <p class="docText">Our programs have already used the <tt>endl</tt> manipulator, which writes a newline and flushes the buffer. There are two other similar manipulators. The first, <tt>flush</tt>, is used quite frequently. It flushes the stream but adds no characters to the output. The second, <tt>ends</tt>, is used much less often. It inserts a null character into the buffer and then flushes it:</p>
+        <p class="docText">我们的程序已经使用过 <tt>endl</tt> 操纵符，用于输出一个换行符并刷新缓冲区。除此之外，C++ 语言还提供了另外两个类似的操纵符。第一个经常使用的 <tt>flush</tt>，用于刷新流，但不在输出中添加任何字符。第二个则是比较少用的 <tt>ends</tt>，这个操纵符在缓冲区中插入空字符 null，然后后刷新它：</p>
+        <pre>
+    cout &lt;&lt; "hi!" &lt;&lt; flush;      // <span class="docEmphItalicAlt">flushes the buffer; adds no data</span>
+    cout &lt;&lt; "hi!" &lt;&lt; ends;       // <span class="docEmphItalicAlt">inserts a null, then flushes the buffer</span>
+    cout &lt;&lt; "hi!" &lt;&lt; endl;       // <span class="docEmphItalicAlt">inserts a newline, then flushes the buffer</span>
+</pre><br>
+        <a name="ch08lev2sec8"></a>
+
+        <h4 class="docSection2Title">The <tt>unitbuf</tt> Manipulator</h4>
+        <h4 class="docSection2Title"><tt>unitbuf</tt> 操纵符</h4>
+
+        <p class="docText">If we want to flush every output, it is better to use the <tt>unitbuf</tt> manipulator. This manipulator flushes the stream after every write:</p>
+        <p class="docText">如果需要刷新所有输出，最好使用 <tt>unitbuf</tt> 操纵符。这个操纵符在每次执行完写操作后都刷新流：</p>
+        <pre>
+    cout &lt;&lt; unitbuf &lt;&lt; "first" &lt;&lt; " second" &lt;&lt; nounitbuf;
+</pre><br>
+
+        <p class="docText">is equivalent to writing</p>
+        <p class="docText">等价于：</p>
+        <pre>
+    cout &lt;&lt; "first" &lt;&lt; flush &lt;&lt; " second" &lt;&lt; flush;
+</pre><br>
+
+        <p class="docText">The <tt>nounitbuf</tt> manipulator restores the stream to use normal, system-managed buffer flushing.</p>
+	<p class="docText"><tt>nounitbuf</tt> 操纵符将流恢复为使用正常的、由系统管理的缓冲区刷新方式。</p>
+	
+	<a name="ch08sb03"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Caution: Buffers Are Not Flushed if the Program Crashes</h2>
+              <h2 class="docSidebarTitle">警告：如果程序崩溃了，则不会刷新缓冲区</h2>
+
+		<a name="idd1e59657"></a><a name="idd1e59660"></a><a name="idd1e59668"></a><a name="idd1e59676"></a><a name="idd1e59682"></a><a name="idd1e59690"></a>
+		<p class="docText"><span class="docEmphStrong">Output buffers are <span class="docEmphasis">not</span> flushed if the program terminates abnormally. When attempting to debug a program that has crashed, we often use the last output to help isolate the region of program in which the bug might occur. If the crash is after a particular print statement, then we know that the crash happened after that point in the program.</span></p>
+		<p class="docText"><span class="docEmphStrong">如果程序不正常结束，输出缓冲区将不会刷新。在尝试调试已崩溃的程序时，通常会根据最后的输出找出程序发生错误的区域。如果崩溃出现在某个特定的输出语句后面，则可知是在程序的这个位置之后出错。</span></p>
+
+		<p class="docText"><span class="docEmphStrong">When debugging a program, it is essential to make sure that any output you <span class="docEmphasis">think</span> should have been written was actually flushed. Because the system does not automatically flush the buffers when the program crashes, it is likely that there is output that the program wrote but that has not shown up on the standard output. It is still sitting in an output buffer waiting to be printed.</span></p>
+		<p class="docText"><span class="docEmphStrong">调试程序时，必须保证期待写入的每个输出都确实被刷新了。因为系统不会在程序崩溃时自动刷新缓冲区，这就可能出现这样的情况：程序做了写输出的工作，但写的内容并没有显示在标准输出上，仍然存储在输出缓冲区中等待输出。</p>
+
+              <p class="docText"><span class="docEmphStrong">If you use the last output to help locate the bug, you need to be certain that all the output really did get printed. Making sure that all output operations include an explicit <tt>flush</tt> or call to <tt>endl</tt> is the best way to ensure that you are seeing all the output that the program actually processed.</span></p>
+              <p class="docText"><span class="docEmphStrong">如果需要使用最后的输出给程序错误定位，则必须确定所有要输出的都已经输出。为了确保用户看到程序实际上处理的所有输出，最好的方法是保证所有的输出操作都显式地调用了 <tt>flush</tt> 或 <tt>endl</tt>。</span></p>
+
+              <p class="docText"><span class="docEmphStrong">Countless hours of programmer time have been wasted tracking through code that appeared not to have executed when in fact the buffer simply had not been flushed. For this reason, we tend to use <tt>endl</tt> rather than <tt>\n</tt> when writing output. Using <tt>endl</tt> means we do not have to wonder whether output is pending when a program crashes.</span></p>
+              <p class="docText"><span class="docEmphStrong">如果仅因为缓冲区没有刷新，程序员将浪费大量的时间跟踪调试并没有执行的代码。基于这个原因，输出时应多使用 <tt>endl</tt> 而非 '<tt>\n</tt>'。使用 <tt>endl</tt> 则不必担心程序崩溃时输出是否悬而未决（即还留在缓冲区，未输出到设备中）。</span></p>
+            </td>
+          </tr>
+        </table><br>
+        <a name="ch08lev2sec9"></a>
+
+        <h4 class="docSection2Title">Tying Input and Output Streams Together</h4>
+        <h4 class="docSection2Title">将输入和输出绑在一起</h4>
+
+        <p class="docText">When an input stream is tied to an output stream, any attempt to read the input stream will first flush the buffer associated output stream. The library ties <tt>cout</tt> to <tt>cin</tt>, so the statement</p>
+        <p class="docText">当输入流与输出流绑在一起时，任何读输入流的尝试都将首先刷新其输出流关联的缓冲区。标准库将 <tt>cout</tt> 与 <tt>cin</tt> 绑在一起，因此语句：</p>
+        <pre>
+         cin &gt;&gt; ival;
+</pre><br>
+
+        <p class="docText">causes the buffer associated with <tt>cout</tt> to be flushed.</p>
+	<p class="docText">导致 <tt>cout</tt> 关联的缓冲区被刷新。</p>
+	
+	<a name="ch08note01"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Interactive systems usually should be sure that their input and output streams are tied. Doing so means that we are guaranteed that any output, which might include prompts to the user, has been written before attempting to read.</p>
+                <p class="docText">交互式系统通常应确保它们的输入和输出流是绑在一起的。这样做意味着可以保证任何输出，包括给用户的提示，都在试图读之前输出。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">The <tt>tie</tt> function can be called on either <tt>istream</tt> or an <tt>ostream</tt>. It takes a pointer to an <tt>ostream</tt> and ties the argument stream to the object on which <tt>tie</tt> was called. When a stream ties itself to an <tt>ostream</tt>, then any IO operation on the stream that called <tt>tie</tt> flushes the buffer associated with the argument it passed to <tt>tie</tt>.</p>
+        <p class="docText"><tt>tie</tt> 函数可用 <tt>istream</tt> 或 <tt>ostream</tt> 对象调用，使用一个指向 <tt>ostream</tt> 对象的指针形参。调用 <tt>tie</tt> 函数时，将实参流绑在调用该函数的对象上。如果一个流调用 <tt>tie</tt> 函数将其本身绑在传递给 <tt>tie</tt> 的 <tt>ostream</tt> 实参对象上，则该流上的任何 IO 操作都会刷新实参所关联的缓冲区。</p>
+        <pre>
+    cin.tie(&amp;cout);   // <span class="docEmphItalicAlt">illustration only: the library ties</span> <span class="docEmphasis">cin</span> <span class="docEmphItalicAlt">and</span> <span class="docEmphasis">cout</span> <span class="docEmphItalicAlt">for us</span>
+    ostream *old_tie = cin.tie();
+    cin.tie(0); // <span class="docEmphItalicAlt">break tie to</span> <span class="docEmphasis">cout, cout</span> <span class="docEmphItalicAlt">no longer flushed when</span> <span class="docEmphasis">cin</span> <span class="docEmphItalicAlt">is read</span>
+    cin.tie(&amp;cerr);   // <span class="docEmphItalicAlt">ties</span> <span class="docEmphasis">cin</span> <span class="docEmphItalicAlt">and</span> <span class="docEmphasis">cerr</span>, <span class="docEmphItalicAlt">not necessarily a good idea!</span>
+    // ...
+    cin.tie(0);       // <span class="docEmphItalicAlt">break tie between</span> <span class="docEmphasis">cin</span> <span class="docEmphItalicAlt">and</span> <span class="docEmphasis">cerr</span>
+    cin.tie(old_tie); // <span class="docEmphItalicAlt">restablish normal tie between</span> <span class="docEmphasis">cin</span> <span class="docEmphItalicAlt">and</span> <span class="docEmphasis">cout</span>
+</pre><br>
+
+        <p class="docText">An <tt>ostream</tt> object can be tied to only one <tt>istream</tt> object at a time. To break an existing tie, we pass in an argument of 0.</p>
+	<p class="docText">一个 <tt>ostream</tt> 对象每次只能与一个 <tt>istream</tt> 对象绑在一起。如果在调用 <tt>tie</tt> 函数时传递实参 0，则打破该流上已存在的捆绑。</p>
+	<a href="21001535.html" ><img src="images/pixel.gif"  alt="" width="1" height="1" border="0"></a>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch08lev1sec2.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch08lev1sec4.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

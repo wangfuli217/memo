@@ -1,0 +1,120 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 6.4.  Statement Scope</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch06lev1sec3.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch06lev1sec5.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch06lev1sec4"></a>
+
+        <h3 class="docSection1Title">6.4. Statement Scope</h3>
+        <h3 class="docSection1Title">6.4. 语句作用域</h3>
+
+        <p class="docText">Some statements permit variable definitions within their control structure:</p>
+        <p class="docText">有些语句允许在它们的控制结构中定义变量：</p>
+        <pre>
+     while (int i = get_num())
+         cout &lt;&lt; i &lt;&lt; endl;
+     i = 0; // <span class="docEmphItalicAlt">error: i is not accessible outside the loop</span>
+</pre><br>
+        <a name="ch06note04"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Variables defined in a condition must be initialized. The value tested by the condition is the value of the initialized object.</p>
+                <p class="docText">在条件表达式中定义的变量必须初始化，该条件检验的就是初始化对象的值。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+<a name="idd1e42245"></a><a name="idd1e42253"></a><a name="idd1e42258"></a>
+        <p class="docText">Variables defined as part of the control structure of a statement are visible only until the end of the statement in which they are defined. The scope of such variables is limited to the statement body. Often the statement body itself is a block, which in turn may contain other blocks. A name introduced in a control structure is local to the statement and the scopes nested inside the statement:</p>
+        <p class="docText">在语句的控制结构中定义的变量，仅在定义它们的块语句结束前有效。这种变量的作用域限制在语句体内。通常，语句体本身就是一个块语句，其中也可能包含了其他的块。一个在控制结构里引入的名字是该语句的局部变量，其作用域局限在语句内部。</p>
+        <pre>
+     // <span class="docEmphasis">index</span> <span class="docEmphItalicAlt">is visible only within the</span> <span class="docEmphasis">for</span> <span class="docEmphItalicAlt">statement</span>
+     for (vector&lt;int&gt;::size_type index = 0;
+                     index != vec.size(); ++index)
+     { // <span class="docEmphItalicAlt">new scope, nested within the scope of this</span> <span class="docEmphasis">for</span> <span class="docEmphItalicAlt">statement</span>
+         int square = 0;
+         if (index % 2)                      // <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">index</span> <span class="docEmphItalicAlt">is in scope</span>
+             square = index * index;
+         vec[index] = square;
+     }
+     if (index != vec.size()) // <span class="docEmphItalicAlt">error:</span> <span class="docEmphasis">index</span> <span class="docEmphItalicAlt">is not visible here</span>
+</pre><br>
+
+        <p class="docText">If the program needs to access the value of a variable used in the control statement, then that variable must be defined outside the control structure:</p>
+        <p class="docText">如果程序需要访问某个控制结构中的变量，那么这个变量必须在控制语句外部定义。</p>
+        <pre>
+     vector&lt;int&gt;::size_type index = 0;
+     for ( /* <span class="docEmphItalicAlt">empty</span> */ ; index != vec.size(); ++index)
+         // <span class="docEmphItalicAlt">as before</span>
+     if  (index != vec.size()) // <span class="docEmphItalicAlt">ok: now</span> <span class="docEmphasis">index</span> <span class="docEmphItalicAlt">is in scope</span>
+         // <span class="docEmphItalicAlt">as before</span>
+</pre><br>
+        <a name="ch06note05"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Earlier versions of C++ treated the scope of variables defined inside a <tt>for</tt> differently: Variables defined in the <tt>for</tt> header were treated as if they were defined just before the <tt>for</tt>. Older C++ programs may have code that relies on being able to access these control variables outside the scope of the <tt>for</tt>.</p>
+                <p class="docText">早期的 C++ 版本以不同的方式处理 <tt>for</tt> 语句中定义的变量的作用域：将 <tt>for</tt> 语句头定义的变量视为在 <tt>for</tt> 语句之前定义。有些更旧式的 C++ 程序代码允许在 <tt>for</tt> 语句作用域外访问控制变量。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">One advantage of limiting the scope of variables defined within a control statement to that statement is that the names of such variables can be reused without worrying about whether their current value is correct at each use. If the name is not in scope, then it is impossible to use that name with an incorrect, leftover value.</p>
+        <p class="docText">对于在控制语句中定义的变量，限制其作用域的一个好处是，这些变量名可以重复使用而不必担心它们的当前值在每一次使用时是否正确。对于作用域外的变量，是不可能用到其在作用域内的残留值的。</p>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch06lev1sec3.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch06lev1sec5.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

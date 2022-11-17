@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Form.Element - Prototype JavaScript 框架</title>
+	<link href="../../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>activate</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">activate(element) -> HTMLElement</code></pre>
+			<p>使表单控件获得焦点，如果控件是一个文本输入框，还会选取输入框中的内容。</p>
+		</div>
+		<div id="abody">
+			<p>
+				该方法其实是获取焦点和选择内容两个步骤的组合，因此，下面的两个语句是等价的（只是前一个语句 <strong>不会</strong>
+				返回控件本身）：
+			</p>
+			<pre><code class="javascript">Form.Element.focus('myelement').select() //译注：注意这里调用的是原生的 select 方法
+$('myelement').activate()</code></pre>
+			<p>猜一下哪种调用方式更好？;)</p>
+			<p>
+				<strong>译注：</strong>第一个语句执行时会发生错误，原因在于 <code>Form.Element.focus(element)</code> 方法将传入的参数
+				<code>element</code> 直接返回，并未做任何处理，所以若传入的 <code>element</code> 是一个字符串，则返回值也是一个字符串。
+				另外，<code>select</code> 方法也存在同样的问题。<br />
+				为修正这个问题，请修改 Prototype 的源码，将<strong>第 3562 行和第 3567 行（如果你曾经修正过<a href="../../Element/relativize-1.htm" >
+				Element.relativize</a> 的问题，则为第 3564 行和第 3569 行）</strong>的代码：
+			</p>
+			<pre><code class="ebnf">	$(element).focus();</code></pre>
+			替换为：
+			<pre><code class="ebnf">	element = $(element);
+	element.focus();</code></pre>
+			<p><strong>注意：仅针对 Prototype 1.6.0.3，其它版本未知。</strong></p>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

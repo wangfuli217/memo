@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Element.fire - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>fire<div class="box">1.6.0</div></h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">fire(eventName[, memo]) -> Event</code></pre>
+			<p>在当前元素上触发一个自定义事件。</p>
+		</div>
+		<div id="abody">
+			<p>
+				<code>Element#fire</code> 创建一个具有指定名称的自定义事件，然后在当前元素上触发。自定义事件与原生事件具有完全相同的属性和方法。
+				类似于原生事件，它也会在 DOM 中冒泡传递，除非传递被显式禁止。
+			</p>
+			<p>
+				第二个参数是可选的，它会被赋给事件对象的 <code>memo</code> 属性，以便在事件处理程序中能够读取到这个值。
+			</p>
+			<p>
+				自定义事件是同步分派的：<code>Element#fire</code> 会等待事件生命周期结束，然后返回事件本身。
+			</p>
+			<h3>注意</h3>
+			<p>
+				<code>Element#fire</code> 不支持原生的事件。所有自定义事件的名称 <em>必须</em> 具有限定名（使用冒号分隔，如
+				MyEvent:disable），这是为了避免自定义事件与非标准的原生 DOM 事件（如 <code>mousewheel</code> 和
+				<code>DOMMouseScroll</code>）名称发生冲突。
+			</p>
+			<h3>样例</h3>
+			<pre><code class="javascript">document.observe("widget:frobbed", function(event) {
+	console.log("Element with ID (" + event.target.id + ") frobbed widget #" + event.memo.widgetNumber + ".");
+}); 
+
+var someNode = $('foo'); 
+someNode.fire("widget:frobbed", { widgetNumber: 19 }); 
+//-> "Element with ID (foo) frobbed widget #19."</code></pre>
+			<h3>小提示</h3>
+			<p>
+				调用 <code>Event#stop</code> 后，事件的 <code>stopped</code> 属性将会被设置为 <code>true</code>。
+				因为 <code>Element#fire</code> 返回自定义的事件，所以可以检测事件的 <code>stopped</code>
+				属性判断事件是否已被停用。
+			</p>
+		</div>
+	</div>
+</body>
+</html>

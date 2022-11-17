@@ -1,0 +1,216 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 7.6.  Inline Functions</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch07lev1sec5.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch07lev1sec7.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch07lev1sec6"></a>
+
+        <h3 class="docSection1Title">7.6. Inline Functions</h3>
+        <h3 class="docSection1Title">7.6. 内联函数</h3>
+
+        <p class="docText">Recall the function we wrote on page <a class="docLink" href="ch07lev1sec3.html#page_248" >248</a> that returned a reference to the shorter of its two <tt>string</tt> parameters:</p>
+        <p class="docText">回顾在<a class="docLink" href="ch07lev1sec3.html#page_248" >第 7.3.2 节</a>编写的那个返回两个 <tt>string</tt> 形参中较短的字符串的函数：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">find longer of two</span> <span class="docEmphasis">string</span><span class="docEmphItalicAlt">s</span>
+     const string &amp;shorterString(const string &amp;s1, const string &amp;s2)
+     {
+         return s1.size() &lt; s2.size() ? s1 : s2;
+     }
+</pre><br>
+
+        <p class="docText">The benefits of defining a function for such a small operation include:</p>
+        <p class="docText">为这样的小操作定义一个函数的好处是：</p>
+
+        <ul>
+          <li>
+            <p class="docList">It is easier to read and understand a call to <tt>shorterString</tt> than it would be to read and interpret an expression that used the equivalent conditional expression in place of the function call.</p>
+            <p class="docList">阅读和理解函数 <tt>shorterString</tt> 的调用，要比读一条用等价的条件表达式取代函数调用表达式并解释它的含义要容易得多。</p>
+          </li>
+
+          <li>
+<a name="idd1e53157"></a><a name="idd1e53163"></a><a name="idd1e53170"></a><a name="idd1e53175"></a><a name="idd1e53182"></a><a name="idd1e53187"></a>
+            <p class="docList">If a change needs to be made, it is easier to change the function than to find and change every occurrence of the equivalent expression.</p>
+            <p class="docList">如果需要做任何修改，修改函数要比找出并修改每一处等价表达式容易得多。</p>
+          </li>
+
+          <li>
+            <p class="docList">Using a function ensures uniform behavior. Each test is guaranteed to be implemented in the same manner.</p>
+            <p class="docList">使用函数可以确保统一的行为，每个测试都保证以相同的方式实现。</p>
+          </li>
+
+          <li>
+            <p class="docList">The function can be reused rather than rewritten for other applications.</p>
+            <p class="docList">函数可以重用，不必为其他应用重写代码。</p>
+          </li>
+        </ul>
+
+        <p class="docText">There is, however, one potential drawback to making <tt>shorterString</tt> a function: Calling a function is slower than evaluating the equivalent expression. On most machines, a function call does a lot of work: registers are saved before the call and restored after the return; the arguments are copied; and the program branches to a new location.</p>
+        <p class="docText">但是，将 <tt>shorterString</tt> 写成函数有一个潜在的缺点：调用函数比求解等价表达式要慢得多。在大多数的机器上，调用函数都要做很多工作；调用前要先保存寄存器，并在返回时恢复；复制实参；程序还必须转向一个新位置执行。</p>
+
+<a name="ch07lev2sec20"></a>
+        <h4 class="docSection2Title"><tt>inline</tt> Functions Avoid Function Call Overhead</h4>
+        <h4 class="docSection2Title"><tt>inline</tt> 函数避免函数调用的开销</h4>
+
+        <p class="docText">A function specified as <tt>inline</tt> (usually) is expanded "in line" at each point in the program in which it is invoked. Assuming we made <tt>shorterString</tt> an <tt>inline</tt> function, then this call</p>
+        <p class="docText">将函数指定为 <tt>inline</tt> 函数，（通常）就是将它在程序中每个调用点上“<tt>内联地</tt>”展开。假设我们将 <tt>shorterString</tt> 定义为内联函数，则调用：</p>
+        <pre>
+         cout &lt;&lt; shorterString(s1, s2) &lt;&lt; endl;
+</pre><br>
+
+        <p class="docText">would be expanded during compilation into something like</p>
+        <p class="docText">在编译时将展开为：</p>
+        <pre>
+         cout &lt;&lt; (s1.size() &lt; s2.size() ? s1 : s2)
+              &lt;&lt; endl;
+</pre><br>
+
+        <p class="docText">The run-time overhead of making <tt>shorterString</tt> a function is thus removed.</p>
+        <p class="docText">从而消除了把 <tt>shorterString</tt> 写成函数的额外执行开销。</p>
+
+        <p class="docText">We can define <tt>shorterString</tt> as an inline function by specifying the keyword <tt>inline</tt> before the function's return type:</p>
+        <p class="docText">从而消除了把 <tt>shorterString</tt> 写成函数的额外执行开销。</p>
+        <pre>
+     // <span class="docEmphItalicAlt">inline version: find longer of two</span> <span class="docEmphasis">string</span><span class="docEmphItalicAlt">s</span>
+     inline const string &amp;
+     shorterString(const string &amp;s1, const string &amp;s2)
+     {
+             return s1.size() &lt; s2.size() ? s1 : s2;
+     }
+</pre><br>
+        <a name="ch07note24"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">The <tt>inline</tt> specification is only a <span class="docEmphasis">request</span> to the compiler. The compiler may choose to ignore this request.</p>
+                <p class="docText"><tt>inline</tt> 说明对于编译器来说只是一个<span class="docEmphasis">建议</span>，编译器可以选择忽略这个。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">In general, the <tt>inline</tt> mechanism is meant to optimize small, straight-line functions that are called frequently. Many compilers will not inline a recursive function. A 1,200-line function is also not likely to be explanded inline.</p>
+        <p class="docText">一般来说，内联机制适用于优化小的、只有几行的而且经常被调用的函数。大多数的编译器都不支持递归函数的内联。一个 1200 行的函数也不太可能在调用点内联展开。</p>
+
+<a name="ch07lev2sec21"></a>
+        <h4 class="docSection2Title">Put <tt>inline</tt> Functions in Header Files</h4>
+        <h4 class="docSection2Title">把 <tt>inline</tt> 函数放入头文件</h4>
+
+<a name="ch07note25"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Unlike other function definitions, inlines should be defined in header files.</p>
+                <p class="docText">内联函数应该在头文件中定义，这一点不同于其他函数。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">To expand the code of an <tt>inline</tt> function at the point of call, the compiler must have access to the function definition. The function prototype is insufficient.</p>
+	<p class="docText"><tt>inline</tt> 函数的定义对编译器而言必须是可见的，以便编译器能够在调用点内联展开该函数的代码。此时，仅有函数原型是不够的。</p>
+
+<a name="idd1e53323"></a><a name="idd1e53328"></a><a name="idd1e53333"></a><a name="idd1e53339"></a>
+        <p class="docText">An <tt>inline</tt> function may be defined more than once in a program as long as the definition appears only once in a given source file and the definition is exactly the same in each source file. By putting inline functions in headers, we ensure that the same definition is used whenever the function is called and that the compiler has the function definition available at the point of call.</p>
+	<p class="docText"><tt>inline</tt> 函数可能要在程序中定义不止一次，只要 <tt>inline</tt> 函数的定义在某个源文件中只出现一次，而且在所有源文件中，其定义必须是完全相同的。把 <tt>inline</tt> 函数的定义放在头文件中，可以确保在调用函数时所使用的定义是相同的，并且保证在调用点该函数的定义对编译器可见。</p>
+
+<a name="ch07note26"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Whenever an <tt>inline</tt> function is added to or changed in a header file, every source file that uses that header must be recompiled.</p>
+                <p class="docText">在头文件中加入或修改 <tt>inline</tt> 函数时，使用了该头文件的所有源文件都必须重新编译。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch07sb11"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 7.6</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch07qa11q1"></a><b>Exercise 7.29:</b></td>
+
+                    <td>
+                      <p class="docText">Which one of the following declarations and definitions would you put in a header? In a program text file? Explain why.</p>
+                      <p class="docText">对于下面的声明和定义，你会将哪个放在头文件，哪个放在程序文本文件呢？为什么？</p>
+                      <pre>
+     (a) inline bool eq(const BigInt&amp;, const BigInt&amp;) {...}
+     (b) void putValues(int *arr, int size);
+</pre><br>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch07qa11q2"></a><b>Exercise 7.30:</b></td>
+
+                    <td>
+                      <p class="docText">Rewrite the <tt>is Shorter</tt> function from page <a class="docLink" href="ch07lev1sec2.html#ch07lev3sec7" >235</a> as an <tt>inline</tt> function.</p>
+                      <p class="docText"><a class="docLink" href="ch07lev1sec2.html#ch07lev3sec7" >第 7.2.2 节</a>的函数 <tt>is Shorter</tt> 改写为 <tt>inline</tt> 函数。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch07lev1sec5.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch07lev1sec7.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

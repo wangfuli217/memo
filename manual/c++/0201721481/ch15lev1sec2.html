@@ -1,0 +1,1169 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 15.2.  Defining Base and Derived Classes</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch15lev1sec1.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch15lev1sec3.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch15lev1sec2"></a>
+
+        <h3 class="docSection1Title">15.2. Defining Base and Derived Classes</h3>
+        <h3 class="docSection1Title">15.2. 定义基类和派生类</h3>
+
+        <p class="docText">In many ways, base and derived classes are defined like other classes we have already seen. However, there are some additional features that are required when defining classes in an inheritance hierarchy. This section will present those features. Subsequent sections will see how use of these features impacts classes and the programs we write using inherited classes.</p>
+        <p class="docText">基类和派生类的定义在许多方面像我们已见过的其他类一样。但是，在继承层次中定义类还需要另外一些特性，本节将介绍这些特性，后续的章节将介绍这些特性的使用对类以及使用继承类编写的程序有何影响。</p>
+
+	<a name="ch15lev2sec3"></a>
+        <h4 class="docSection2Title">15.2.1. Defining a Base Class</h4>
+        <h4 class="docSection2Title">15.2.1. 定义基类</h4>
+
+        <p class="docText">Like any other class, a base class has data and function members that define its interface and implementation. In the case of our (very simplified) bookstore pricing application, our <tt>Item_base</tt> class defines the <tt>book</tt> and <tt>net_price</tt> functions and needs to store an ISBN and the standard price for the book:</p>
+	<p class="docText">像任意其他类一样，基类也有定义其接口和实现的数据和函数成员。在（非常简化的）书店定价应用程序的例子中，<tt>Item_base</tt> 类定义了 <tt>book</tt> 和 <tt>net_price</tt> 函数并且需要存储每本书的 ISBN 和标准价格：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">Item sold at an undiscounted price</span>
+     // <span class="docEmphItalicAlt">derived classes will define various discount strategies</span>
+     class Item_base {
+     public:
+         Item_base(const std::string &amp;book = "",
+                   double sales_price = 0.0):
+                          isbn(book), price(sales_price) { }
+         std::string book() const { return isbn; }
+         // <span class="docEmphItalicAlt">returns total sales price for a specified number of items</span>
+         // <span class="docEmphItalicAlt">derived classes will override and apply different discount algorithms</span>
+         virtual double net_price(std::size_t n) const
+                    { return n * price; }
+         virtual ~Item_base() { }
+     private:
+         std::string isbn;     // <span class="docEmphItalicAlt">identifier for the item</span>
+     protected:
+         double price;         // <span class="docEmphItalicAlt">normal, undiscounted price</span>
+     };
+</pre><br>
+
+	<a name="idd1e112834"></a><a name="idd1e112839"></a><a name="idd1e112848"></a><a name="idd1e112857"></a><a name="idd1e112862"></a><a name="idd1e112867"></a><a name="idd1e112874"></a><a name="idd1e112881"></a>
+        <p class="docText">For the most part, this class looks like others we have seen. It defines a constructor along with the functions we have already described. That constructor uses default arguments (<a class="docLink" href="ch07lev1sec4.html#ch07lev2sec17" >Section 7.4.1</a>, p. <a class="docLink" href="ch07lev1sec4.html#ch07lev2sec17" >253</a>), which allows it to be called with zero, one, or two arguments. It initializes the data members from these arguments.</p>
+	<p class="docText">这个类的大部分看起来像我们已见过的其他类一样。它定义了一个构造函数以及我们已描述过的函数，该构造函数使用<a class="docLink" href="ch15lev2sec4.html#ch15lev2sec15" >默认实参（第 7.4.1 节）</a>，允许用 0 个、1 个或两个实参进行调用，它用这些实参初始化数据成员。</p>
+
+        <p class="docText">The new parts are the <tt>protected</tt> access label and the use of the <tt>virtual</tt> keyword on the destructor and the <tt>net_price</tt> function. We'll explain virtual destructors in <a class="docLink" href="ch15lev1sec4.html#ch15lev2sec15" >Section 15.4.4</a> (p. <a class="docLink" href="ch15lev1sec4.html#ch15lev2sec15" >587</a>), but for now it is worth noting that classes used as the root class of an inheritance hierarchy generally define a virtual destructor.</p>
+	<p class="docText">新的部分是 <tt>protected</tt> 访问标号以及对析构函数和 <tt>net_price</tt> 函数所使用的保留字 <tt>virtual</tt>。我们将<a class="docLink" href="ch15lev1sec4.html#ch15lev2sec15" >第 15.4.4 节</a>解释虚析构函数，现在只需注意到继承层次的根类一般都要定义虚析构函数即可。</p>
+
+	<a name="ch15lev3sec1"></a>
+        <h5 class="docSection3Title">Base-Class Member Functions</h5>
+        <h5 class="docSection3Title">基类成员函数</h5>
+
+        <p class="docText">The <tt>Item_base</tt> class defines two functions, one of which is preceded by the keyword <tt>virtual</tt>. The purpose of the <tt>virtual</tt> keyword is to enable dynamic binding. By default, member functions are nonvirtual. Calls to nonvirtual functions are resolved at compile time. To specify that a function is virtual, we precede its return type by the keyword <tt>virtual</tt>. Any non<tt>static</tt> member function, other than a constructor, may be virtual. The <tt>virtual</tt> keyword appears only on the member-function declaration inside the class. The <tt>virtual</tt> keyword may not be used on a function definition that appears outside the class body.</p>
+	<p class="docText"><tt>Item_base</tt> 类定义了两个函数，其中一个前面带有保留字 <tt>virtual</tt>。保留字 <tt>virtual</tt> 的目的是启用动态绑定。成员默认为非虚函数，对非虚函数的调用在编译时确定。为了指明函数为虚函数，在其返回类型前面加上保留字 <tt>virtual</tt>。除了构造函数之外，任意非 <tt>static</tt> 成员函数都可以是虚函数。保留字只在类内部的成员函数声明中出现，不能用在类定义体外部出现的函数定义上。</p>
+
+        <p class="docText">We'll have more to say about virtual functions in <a class="docLink" href="ch15lev1sec2.html#ch15lev2sec6">Section 15.2.4</a> (p. <a class="docLink" href="ch15lev1sec2.html#ch15lev2sec6">566</a>).</p>
+	<p class="docText"><a class="docLink" href="ch15lev1sec2.html#ch15lev2sec6">第 15.2.4 节</a>将进一步介绍虚函数。</p>
+
+	<a name="ch15note02"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="116" height="74" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/bestpractices.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">A base class usually should define as virtual any function that a derived class will need to redefine.</p>
+                <p class="docText">基类通常应将派生类需要重定义的任意函数定义为虚函数。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <a name="ch15lev3sec2"></a>
+        <h5 class="docSection3Title">Access Control and Inheritance</h5>
+        <h5 class="docSection3Title">访问控制和继承</h5>
+
+        <p class="docText">In a base class, the <tt>public</tt> and <tt>private</tt> labels have their ordinary meanings: User code may access the <tt>public</tt> members and may not access the <tt>private</tt> members of the class. The <tt>private</tt> members are accessible only to the members and friends of the base class. A derived class has the same access as any other part of the program to the <tt>public</tt> and <tt>private</tt> members of its base class: It may access the <tt>public</tt> members and has no access to the <tt>private</tt> members.</p>
+	<p class="docText">在基类中，<tt>public</tt> 和 <tt>private</tt> 标号具有普通含义：用户代码可以访问类的 <tt>public</tt> 成员而不能访问 <tt>private</tt> 成员，<tt>private</tt> 成员只能由基类的成员和友元访问。派生类对基类的 <tt>public</tt> 和 <tt>private</tt> 成员的访问权限与程序中任意其他部分一样：它可以访问 <tt>public</tt> 成员而不能访问 <tt>private</tt> 成员。</p>
+
+	<a name="ch15term15"></a>
+        <p class="docText">Sometimes a class used as a base class has members that it wants to allow its derived classes to access, while still prohibiting access to those same members by other users. The <b><a class="docLink" href="ch15lev1sec11.html#gloss15_15" ><span class="docEmphStrong"><tt>protected</tt></span> access label</a></b> is used for such members. A <tt>protected</tt> member may be accessed by a derived object but may not be accessed by general users of the type.</p>
+	<p class="docText">有时作为基类的类具有一些成员，它希望允许派生类访问但仍禁止其他用户访问这些成员。对于这样的成员应使用<b><a class="docLink" href="ch15lev1sec11.html#gloss15_15" ><span class="docEmphStrong"><tt>受保护的</tt></span>访问标号</a></b>。<tt>protected</tt> 成员可以被派生类对象访问但不能被该类型的普通用户访问。</p>
+
+        <p class="docText">Our <tt>Item_base</tt> class expects its derived classes to redefine the <tt>net_price</tt> function. To do so, those classes will need access to the <tt>price</tt> member. Derived classes are expected to access <tt>isbn</tt> in the same way as ordinary users: through the <tt>book</tt> access function. Hence, the <tt>isbn</tt> member is <tt>private</tt> and is inaccessible to classes that inherit from <tt>Item_base</tt>.</p>
+	<p class="docText">我们的 <tt>Item_base</tt> 类希望它的派生类重定义 <tt>net_price</tt> 函数，为了重定义 <tt>net_price</tt> 函数，这些类将需要访问 <tt>price</tt> 成员。希望派生类用与普通用户一样通过 <tt>book</tt> 访问函数访问 <tt>isbn</tt>，因此，<tt>isbn</tt> 成员为 <tt>private</tt>，不能被 <tt>Item_base</tt> 的继承类所访问。</p>
+
+	<a name="ch15sb01"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 15.2.1</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch15qa1q1"></a><b>Exercise 15.1:</b></td>
+
+                    <td>
+		<a name="idd1e113052"></a><a name="idd1e113058"></a><a name="idd1e113065"></a><a name="idd1e113071"></a><a name="idd1e113076"></a>
+                      <p class="docText">What is a virtual member?</p>
+                      <p class="docText">什么是虚成员？</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch15qa1q2"></a><b>Exercise 15.2:</b></td>
+
+                    <td>
+                      <p class="docText">Define the <tt>protected</tt> access label. How does it differ from <tt>private?</tt></p>
+		      <p class="docText">给出 <tt>protected</tt> 访问标号的定义。它与 <tt>private</tt> 有何不同？</p>
+                    </td>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch15qa1q3"></a><b>Exercise 15.3:</b></td>
+
+                    <td>
+                      <p class="docText">Define your own version of the <tt>Item_base</tt> class.</p>
+		      <p class="docText">定义自己的 <tt>Item_base</tt> 类版本。</p>
+                    </td>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch15qa1q4"></a><b>Exercise 15.4:</b></td>
+
+                    <td>
+                      <p class="docText">A library has different kinds of materials that it lends outbooks, CDs, DVDs, and so forth. Each of the different kinds of lending material has different check-in, check-out, and overdue rules. The following class defines a base class that we might use for this application. Identify which functions are likely to be defined as virtual and which, if any, are likely to be common among all lending materials. (Note: we assume that <tt>LibMember</tt> is a class representing a customer of the library, and <tt>Date</tt> is a class representing a calendar day of a particular year.)</p>
+		      <p class="docText">图书馆可以借阅不同种类的资料——书、CD、DVD 等等。不同种类的借阅资料有不同的登记、检查和过期规则。下面的类定义了这个应用程序可以使用的基类。指出在所有借阅资料中，哪些函数可能定义为虚函数，如果有，哪些函数可能是公共的。（注：假定 <tt>LibMember</tt> 是表示图书馆读者的类，<tt>Date</tt> 是表示特定年份的日历日期的类。）</p>
+                      <pre>
+     class Library {
+     public:
+         bool check_out(const LibMember&amp;);
+         bool check_in (const LibMember&amp;);
+         bool is_late(const Date&amp; today);
+         double apply_fine();
+         ostream&amp; print(ostream&amp; = cout);
+         Date due_date() const;
+         Date date_borrowed() const;
+         string title() const;
+         const LibMember&amp; member() const;
+     };
+</pre><br>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+
+        <a name="ch15lev2sec4"></a>
+        <h4 class="docSection2Title">15.2.2. <tt>protected</tt> Members</h4>
+	<h4 class="docSection2Title">15.2.2. <tt>protected</tt> 成员</h4>
+
+        <p class="docText">The <tt>protected</tt> access label can be thought of as a blend of <tt>private</tt> and <tt>public</tt>:</p>
+        <p class="docText">可以认为 <tt>protected</tt> 访问标号是 <tt>private</tt> 和 <tt>public</tt> 的混合：</p>
+
+        <ul>
+          <li>
+            <p class="docList">Like <tt>private</tt> members, <tt>protected</tt> members are inaccessible to users of the class.</p>
+	    <p class="docList">像 <tt>private</tt> 成员一样，<tt>protected</tt> 成员不能被类的用户访问。</p>
+          </li>
+
+          <li>
+            <p class="docList">Like <tt>public</tt> members, the <tt>protected</tt> members are accessible to classes derived from this class.</p>
+	    <p class="docList">像 <tt>public</tt> 成员一样，<tt>protected</tt> 成员可被该类的派生类访问。</p>
+          </li>
+        </ul>
+
+        <p class="docText">In addition, <tt>protected</tt> has another important property:</p>
+	<p class="docText">此外，<tt>protected</tt> 还有另一重要性质：</p>
+
+        <ul>
+          <li>
+            <p class="docList">A derived object may access the <tt>protected</tt> members of its base class <span class="docEmphasis">only</span> through a derived object. The derived class has no special access to the <tt>protected</tt> members of base type objects.</p>
+	    <p class="docList">派生类只能通过派生类对象访问其基类的 <tt>protected</tt> 成员，派生类对其基类类型对象的 <tt>protected</tt> 成员没有特殊访问权限。</p>
+          </li>
+        </ul>
+
+        <p class="docText">As an example, let's assume that <tt>Bulk_item</tt> defines a member function that takes a reference to a <tt>Bulk_item</tt> object and a reference to an <tt>Item_base</tt> object. This function may access the <tt>protected</tt> members of its own object as well as those of its <tt>Bulk_item</tt> parameter. However, it has no special access to the <tt>protected</tt> members in its <tt>Item_base</tt> parameter:</p>
+	<p class="docText">例如，假定 <tt>Bulk_item</tt> 定义了一个成员函数，接受一个 <tt>Bulk_item</tt> 对象的引用和一个 <tt>Item_base</tt> 对象的引用，该函数可以访问自己对象的 <tt>protected</tt> 成员以及 <tt>Bulk_item</tt> 形参的 <tt>protected</tt> 成员，但是，它不能访问 <tt>Item_base</tt> 形参的 <tt>protected</tt> 成员。</p>
+        <pre>
+     void Bulk_item::memfcn(const Bulk_item &amp;d, const Item_base &amp;b)
+     {
+         // <span class="docEmphItalicAlt">attempt to use</span> <span class="docEmphasis">protected</span> <span class="docEmphItalicAlt">member</span>
+         double ret = price;   // <span class="docEmphItalicAlt">ok: uses</span> <span class="docEmphasis">this-&gt;price</span>
+         ret = d.price; // <span class="docEmphItalicAlt">ok: uses</span> <span class="docEmphasis">price</span> <span class="docEmphItalicAlt">from a</span> <span class="docEmphasis">Bulk_item</span> <span class="docEmphItalicAlt">object</span>
+         ret = b.price; // <span class="docEmphItalicAlt">error: no access to</span> <span class="docEmphasis">price</span> <span class="docEmphItalicAlt">from an</span> <span class="docEmphasis">Item_base</span>
+     }
+</pre><br>
+
+	<a name="idd1e113277"></a><a name="idd1e113282"></a><a name="idd1e113287"></a><a name="idd1e113290"></a><a name="idd1e113295"></a><a name="idd1e113298"></a><a name="idd1e113303"></a><a name="idd1e113308"></a>
+        <p class="docText">The use of <tt>d.price</tt> is okay, because the reference to <tt>price</tt> is through an object of type <tt>Bulk_item</tt>. The use of <tt>b.price</tt> is illegal because <tt>Bulk_item</tt> has no special access to objects of type <tt>Item_base</tt>.</p>
+	<p class="docText"><tt>d.price</tt> 的使用正确，因为是通过 <tt>Bulk_item</tt> 类型对象引用 <tt>price</tt>；<tt>b.price</tt> 的使用非法，因为对 <tt>Base_item</tt> 类型的对象没有特殊访问访问权限。</p>
+
+	<a name="ch15sb02"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Key Concept: Class Design and Protected Members</h2>
+              <h2 class="docSidebarTitle">关键概念：类设计与受保护成员</h2>
+
+              <p class="docText"><span class="docEmphStrong">In the absence of inheritance, a class has two kinds of users: members of the class itself and the users of that class. This separation between kinds of users is reflected in the division of the class into <tt>private</tt> and <tt>public</tt> access levels. Users may access only the <tt>public</tt> interface; class members and friends may access both the <tt>public</tt> and <tt>private</tt> members.</span></p>
+	      <p class="docText"><span class="docEmphStrong">如果没有继承，类只有两种用户：类本身的成员和该类的用户。将类划分为 <tt>private</tt> 和 <tt>public</tt> 访问级别反映了用户种类的这一分隔：用户只能访问 <tt>public</tt> 接口，类成员和友元既可以访问 <tt>public</tt> 成员也可以访问 <tt>private</tt> 成员。</span></p>
+
+              <p class="docText"><span class="docEmphStrong">Under inheritance, there is now a third kind of user of a class: programmers who will define new classes that are derived from the class. The provider of a derived class often (but not always) needs access to the (ordinarily <tt>private</tt></span><span class="docEmphStrong">) base-class implementation. To allow that access while still preventing general access to the implementation, an additional access label, <tt>protected</tt></span><span class="docEmphStrong">, is provided. The data and function members in a <tt>protected</tt> section of a class remain inaccessible to the general program, yet are accessible to the derived class. Anything placed within a <tt>private</tt> section of the base class is accessible only to the class itself and its friends. The <tt>private</tt> members are not accessible to the derived classes.</span></p>
+	      <p class="docText"><span class="docEmphStrong">有了继承，就有了类的第三种用户：从类派生定义新类的程序员。派生类的提供者通常（但并不总是）需要访问（一般为 <tt>private</tt> 的）基类实现，为了允许这种访问而仍然禁止对实现的一般访问，提供了附加的 <tt>protected</tt> 访问标号。类的 <tt>protected</tt> 部分仍然不能被一般程序访问，但可以被派生类访问。只有类本身和友元可以访问基类的 <tt>private</tt> 部分，派生类不能访问基类的 <tt>private</tt> 成员。</span></p>
+
+              <p class="docText"><span class="docEmphStrong">When designing a class to serve as a base class, the criteria for designating a member as <tt>public</tt> do not change: It is still the case that interface functions should be <tt>public</tt> and data generally should not be <tt>public</tt></span><span class="docEmphStrong">. A class designed to be inherited from must decide which parts of the implementation to declare as <tt>protected</tt> and which should be <tt>private</tt></span><span class="docEmphStrong">. A member should be made <tt>private</tt> if we wish to prevent subsequently derived classes from having access to that member. A member should be made <tt>protected</tt> if it provides an operation or data that a derived class will need to use in its implementation. In other words, the interface to the derived type is the combination of both the <tt>protected</tt> and <tt>public</tt> members.</span></p>
+	      <p class="docText"><span class="docEmphStrong">定义类充当基类时，将成员设计为 <tt>public</tt> 的标准并没有改变：仍然是接口函数应该为 <tt>public</tt> 而数据一般不应为 <tt>public</tt>。被继承的类必须决定实现的哪些部分声明为 <tt>protected</tt> 而哪些部分声明为 <tt>private</tt>。希望禁止派生类访问的成员应该设为 <tt>private</tt>，提供派生类实现所需操作或数据的成员应设为 <tt>protected</tt>。换句话说，提供给派生类型的接口是 <tt>protected</tt> 成员和 <tt>public</tt> 成员的组合。</span></p>
+            </td>
+          </tr>
+        </table><br>
+
+        <a name="ch15lev2sec5"></a>
+
+        <h4 class="docSection2Title">15.2.3. Derived Classes</h4>
+        <h4 class="docSection2Title">15.2.3. 派生类</h4>
+
+        <p class="docText">To define a derived class, we use a <b><a name="ch15term3"></a><a class="docLink" href="ch15lev1sec11.html#gloss15_03" >class derivation list</a></b> to specify the base class(es). A class derivation list names one or more base classes and has the form</p>
+	<p class="docText">为了定义派生类，使用<b><a class="docLink" href="ch15lev1sec11.html#gloss15_03" >类派生列表</a></b>指定基类。类派生列表指定了一个或多个基类，具有如下形式：</p>
+        <pre>
+     class <span class="docEmphasis">classname: access-label base-class</span>
+</pre><br>
+
+        <p class="docText">where <span class="docEmphasis">access-label</span> is one of <tt>public, protected</tt>, or <tt>private</tt>, and <span class="docEmphasis">base-class</span> is the name of a previously defined class. As we'll see, a derivation list might name more than one base class. Inheritance from a single base class is most common and is the topic of this chapter. <a class="docLink" href="ch17lev1sec3.html#ch17lev1sec3" >Section 17.3</a> (p. <a class="docLink" href="ch17lev1sec3.html#ch17lev1sec3" >731</a>) covers use of multiple base classes.</p>
+	<p class="docText">这里 <span class="docEmphasis">access-label</span> 是 <tt>public</tt>、<tt>protected</tt> 或 <tt>private</tt>，<span class="docEmphasis">base-class</span> 是已定义的类的名字。类派生列表可以指定多个基类。继承单个基类是为常见，也是本章的主题。<a class="docLink" href="ch17lev1sec3.html#ch17lev1sec3" >第 17.3 节</a>讨论多个基类的使用。</p>
+
+	<a name="idd1e113454"></a><a name="idd1e113460"></a><a name="idd1e113465"></a><a name="idd1e113470"></a><a name="idd1e113475"></a><a name="idd1e113480"></a>
+        <p class="docText">We'll have more to say about the access label used in a derivation list in <a class="docLink" href="ch15lev1sec2.html#ch15lev2sec7">Section 15.2.5</a> (p. <a class="docLink" href="ch15lev1sec2.html#ch15lev2sec7">570</a>). For now, what's useful to know is that the access label determines the access to the inherited members. When we want to inherit the interface of a base class, then the derivation should be <tt>public</tt>.</p>
+	<p class="docText"><a class="docLink" href="ch15lev1sec2.html#ch15lev2sec7">第 15.2.5 节</a>将进一步介绍派生列表中使用的访问标号，现在，只需要了解访问标号决定了对继承成员的访问权限。如果想要继承基类的接口，则应该进行 <tt>public</tt> 派生。</p>
+
+        <p class="docText">A derived class inherits the members of its base class and may define additional members of its own. Each derived object contains two parts: those members that it inherits from its base and those it defines itself. Typically, a derived class (re)defines only those aspects that differ from or extend the behavior of the base.</p>
+        <p class="docText">派生类继承基类的成员并且可以定义自己的附加成员。每个派生类对象包含两个部分：从基类继承的成员和自己定义的成员。一般而言，派生类只（重）定义那些与基类不同或扩展基类行为的方面。</p>
+
+	<a name="ch15lev3sec3"></a>
+        <h5 class="docSection3Title">Defining a Derived Class</h5>
+        <h5 class="docSection3Title">定义派生类</h5>
+
+        <p class="docText">In our bookstore application, we will derive <tt>Bulk_item</tt> from <tt>Item_base</tt>, so <tt>Bulk_item</tt> will inherit the <tt>book, isbn</tt>, and <tt>price</tt> members. <tt>Bulk_item</tt> must redefine its <tt>net_price</tt> function and define the data members needed for that operation:</p>
+	<p class="docText">在书店应用程序中，将从 <tt>Item_base</tt> 类派生 <tt>Bulk_item</tt> 类，因此 <tt>Bulk_item</tt> 类将继承 <tt>book</tt>、<tt>isbn</tt> 和 <tt>price</tt> 成员。<tt>Bulk_item</tt> 类必须重定义 <tt>net_price</tt> 函数定义该操作所需要的数据成员：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">discount kicks in when a specified number of copies of same book are sold</span>
+     // <span class="docEmphItalicAlt">the discount is expressed as a fraction used to reduce the normal price</span>
+     class Bulk_item : public Item_base {
+     public:
+         // <span class="docEmphItalicAlt">redefines base version so as to implement bulk purchase discount policy</span>
+         double net_price(std::size_t) const;
+     private:
+         std::size_t min_qty; // <span class="docEmphItalicAlt">minimum purchase for discount to apply</span>
+         double discount;     // <span class="docEmphItalicAlt">fractional discount to apply</span>
+      };
+</pre><br>
+
+        <p class="docText">Each <tt>Bulk_item</tt> object contains four data elements: It inherits <tt>isbn</tt> and <tt>price</tt> from <tt>Item_base</tt> and defines <tt>min_qty</tt> and <tt>discount</tt>. These latter two members specify the minimum quantity and the discount to apply once that number of copies are purchased. The <tt>Bulk_item</tt> class also needs to define a constructor, which we shall do in <a class="docLink" href="ch15lev1sec4.html#ch15lev1sec4" >Section 15.4</a> (p. <a class="docLink" href="ch15lev1sec4.html#ch15lev1sec4" >580</a>).</p>
+	<p class="docText">每个 <tt>Bulk_item</tt> 对象包含四个数据成员：从 <tt>Item_base</tt> 继承的 <tt>isbn</tt> 和 <tt>price</tt>，自己定义的 <tt>min_qty</tt> 和 <tt>discount</tt>，后两个成员指定最小数量以及购买超过该数量时给的折扣。<tt>Bulk_item</tt> 类还需要定义一个构造函数，我们将在<a class="docLink" href="ch15lev1sec4.html#ch15lev1sec4" >第 15.4 节</span>定义它。</p>
+
+	<a name="ch15lev3sec4"></a>
+        <h5 class="docSection3Title">Derived Classes and <tt>virtual</tt> Functions</h5>
+        <h5 class="docSection3Title">派生类和虚函数</h5>
+
+        <p class="docText">Ordinarily, derived classes redefine the virtual functions that they inherit, although they are not requried to do so. If a derived class does not redefine a virtual, then the version it uses is the one defined in its base class.</p>
+        <p class="docText">尽管不是必须这样做，派生类一般会重定义所继承的虚函数。派生类没有重定义某个虚函数，则使用基类中定义的版本。</p>
+
+        <p class="docText">A derived type must include a declaration for each inherited member it intends to redefine. Our <tt>Bulk_item</tt> class says that it will redefine the <tt>net_price</tt> function but will use the inherited version of <tt>book</tt>.</p>
+	<p class="docText">派生类型必须对想要重定义的每个继承成员进行声明。<tt>Bulk_item</tt> 类指出，它将重定义 <tt>net_price</tt> 函数但将使用 <tt>book</tt> 的继承版本。</p>
+
+        <p class="docText">With one exception, the declaration (<a class="docLink" href="ch07lev1sec4.html#ch07lev1sec4" >Section 7.4</a>, p. <a class="docLink" href="ch07lev1sec4.html#ch07lev1sec4" >251</a>)of a virtual function in the derived class must exactly match the way the function is defined in the base. That exception applies to virtuals that return a reference (or pointer) to a type that is itself a base class. A virtual function in a derived class can return a reference (or pointer) to a class that is <tt>public</tt>ly derived from the type returned by the base-class function.</p>
+	<p class="docText">派生类中虚函数的声明（<a class="docLink" href="ch07lev1sec4.html#ch07lev1sec4" >第 7.4 节</a>）必须与基类中的定义方式完全匹配，但有一个例外：返回对基类型的引用（或指针）的虚函数。派生类中的虚函数可以返回基类函数所返回类型的派生类的引用（或指针）。</p>
+
+        <p class="docText">For example, the <tt>Item_base</tt> class might define a virtual function that returned an <tt>Item_base*</tt>. If it did, then the instance defined in the <tt>Bulk_item</tt> class could <a name="idd1e113629"></a>be defined to return either an <tt>Item_base*</tt> or a <tt>Bulk_item*</tt>. We'll see an example of this kind of virtual in <a class="docLink" href="ch15lev1sec9.html#ch15lev1sec9" >Section 15.9</a> (p. <a class="docLink" href="ch15lev1sec9.html#ch15lev1sec9" >607</a>).</p>
+	<p class="docText">例如，<tt>Item_base</tt> 类可以定义返回 <tt>Item_base*</tt> 的虚函数，如果这样，<tt>Bulk_item</tt> 类中定义的实例可以定义为返回 <tt>Item_base*</tt> 或 <tt>Bulk_item*</tt>。<a class="docLink" href="ch15lev1sec9.html#ch15lev1sec9" >第 15.9 节</a>将介绍这种虚函数的一个例子。</p>
+
+	<a name="ch15note03"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Once a function is declared as virtual in a base class it remains virtual; nothing the derived classes do can change the fact that the function is virtual. When a derived class redefines a virtual, it may use the <tt>virtual</tt> keyword, but it is not required to do so.</p>
+		<p class="docText">一旦函数在基类中声明为虚函数，它就一直为虚函数，派生类无法改变该函数为虚函数这一事实。派生类重定义虚函数时，可以使用 <tt>virtual</tt> 保留字，但不是必须这样做。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <a name="ch15lev3sec5"></a>
+        <h5 class="docSection3Title">Derived Objects Contain Their Base Classes as Subobjects</h5>
+        <h5 class="docSection3Title">派生类对象包含基类对象作为子对象</h5>
+
+        <p class="docText">A derived object consists of multiple parts: the (non<tt>static)</tt> members defined in the derived class itself plus the subobjects made up of the (non<tt>static)</tt> members of its base class. We can think of our <tt>Bulk_item</tt> class as consisting of two parts as represented in <a class="docLink" href="ch15lev1sec2.html#ch15fig01">Figure 15.1</a>.</p>
+	<p class="docText">派生类对象由多个部分组成：派生类本身定义的（非 <tt>static</tt>）成员加上由基类（非 <tt>static</tt>）成员组成的子对象。可以认为 <tt>Bulk_item</tt> 对象由<a class="docLink" href="ch15lev1sec2.html#ch15fig01">图 15.1</a> 表示的两个部分组成。</p>
+	
+	<a name="ch15fig01"></a>
+        <center>
+          <h5 class="docFigureTitle">Figure 15.1. Conceptual Structure of a <tt>Bulk_item</tt> Object</h5>
+	  <h5 class="docFigureTitle">图 15.1. <tt>Bulk_item</tt> 对象的概念结构</h5>
+
+          <p class="docText"><img border="0" alt="" width="223" height="157" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/15fig01.gif;400478" ></p>
+        </center><br>
+        <a name="ch15note04"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">There is no requirement that the compiler lay out the base and derived parts of an object contiguously. Hence, <a class="docLink" href="ch15lev1sec2.html#ch15fig01">Figure 15.1</a> is a conceptual, not physical, representation of how classes work.</p>
+		<p class="docText">C++ 语言不要求编译器将对象的基类部分和派生部分和派生部分连续排列，因此，<a class="docLink" href="ch15lev1sec2.html#ch15fig01">图 15.1</a> 是关于类如何工作的概念表示而不是物理表示。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <a name="ch15lev3sec6"></a>
+        <h5 class="docSection3Title">Functions in the Derived May Use Members from the Base</h5>
+        <h5 class="docSection3Title">派生类中的函数可以使用基类的成员</h5>
+
+        <p class="docText">As with any member function, a derived class function can be defined inside the class or outside, as we do here for the <tt>net_price</tt> function:</p>
+	<p class="docText">像任意成员函数一样，派生类函数可以在类的内部或外部定义，正如这里的 <tt>net_price</tt> 函数一样：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">if specified number of items are purchased, use discounted price</span>
+     double Bulk_item::net_price(size_t cnt) const
+     {
+         if (cnt &gt;= min_qty)
+             return cnt * (1 - discount) * price;
+         else
+             return cnt * price;
+     }
+</pre><br>
+
+        <p class="docText">This function generates a discounted price: If the given quantity is more than <tt>min_qty</tt>, we apply the <tt>discount</tt> (which was stored as a fraction) to the <tt>price</tt>.</p>
+	<p class="docText">该函数产生折扣价格：如果给定数量多于 <tt>min_qty</tt>，就对 <tt>price</tt> 应用 <tt>discount</tt>（<tt>discount</tt> 存储为分数）。</a>
+
+	<a name="ch15note05"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+		<a name="idd1e113748"></a><a name="idd1e113753"></a><a name="idd1e113758"></a><a name="idd1e113763"></a><a name="idd1e113768"></a><a name="idd1e113773"></a><a name="idd1e113778"></a><a name="idd1e113783"></a><a name="idd1e113788"></a><a name="idd1e113793"></a><a name="idd1e113798"></a><a name="idd1e113801"></a><a name="idd1e113804"></a><a name="idd1e113809"></a><a name="idd1e113812"></a><a name="idd1e113815"></a>
+                <p class="docText"> Because each derived object has a base-class part, classes may access the <tt>public</tt> and <tt>protected</tt> members of its base class as if those members were members of the derived class itself.</p>
+		<p class="docText">因为每个派生类对象都有基类部分，类可以访问共基类的 <tt>public</tt> 和 <tt>protected</tt> 成员，就好像那些成员是派生类自己的成员一样。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <a name="ch15lev3sec7"></a>
+        <h5 class="docSection3Title">A Class Must Be Defined to Be Used as a Base Class</h5>
+        <h5 class="docSection3Title">用作基类的类必须是已定义的</h5>
+
+        <p class="docText">A class must be defined before it can be used as a base class. Had we declared, but not defined, <tt>Item_base</tt>, we could not use it as our base class:</p>
+	<p class="docText">已定义的类才可以用作基类。如果已经声明了 <tt>Item_base</tt> 类，但没有定义它，则不能用 <tt>Item_base</tt> 作基类：</p>
+        <pre>
+     class Item_base; // <span class="docEmphasis">declared but not defined</span>
+     // <span class="docEmphasis">error: Item_base must be defined</span>
+     class Bulk_item : public Item_base { ... };
+</pre><br>
+
+        <p class="docText">The reason for this restriction should already be easy to see: Each derived class contains, and may access, the members of its base class. To use those members, the derived class must konw what they are. One implication of this rule is that it is impossible to derive a class from itself.</p>
+        <p class="docText">这一限制的原因应该很容易明白：每个派生类包含并且可以访问其基类的成员，为了使用这些成员，派生类必须知道它们是什么。这一规则暗示着不可能从类自身派生出一个类。</p>
+
+	<a name="ch15lev3sec8"></a>
+        <h5 class="docSection3Title">Using a Derived Class as a Base Class</h5>
+        <h5 class="docSection3Title">用派生类作基类</h5>
+
+        <p class="docText">A base class can itself be a derived class:</p>
+        <p class="docText">基类本身可以是一个派生类：</p>
+        <pre>
+     class Base { /* ... */ };
+     class D1: public Base { /* ... */ };
+     class D2: public D1 { /* ... */ };
+</pre><br>
+
+<a name="ch15term9"></a><a name="ch15term10"></a>
+        <p class="docText">Each class inherits all the members of its base class. The most derived type inherits the members of its base, which in turn inherits the members of its base and so on up the inheritance chain. Effectively, the most derived object contains a subobject for each of its <b><a class="docLink" href="ch15lev1sec11.html#gloss15_09" >immediate-base</a></b> and <b><a class="docLink" href="ch15lev1sec11.html#gloss15_10" >indirect-base</a></b> classes.</p>
+	<p class="docText">每个类继承其基类的所有成员。最底层的派生类继承其基类的成员，基类又继承自己的基类的成员，如此沿着继承链依次向上。从效果来说，最底层的派生类对象包含其每个<b><a class="docLink" href="ch15lev1sec11.html#gloss15_09" >直接基类</a></b>和<b><a class="docLink" href="ch15lev1sec11.html#gloss15_10" >间接基类</a></b>的子对象。</p>
+
+	<a name="ch15lev3sec9"></a>
+        <h5 class="docSection3Title">Declarations of Derived Classes</h5>
+        <h5 class="docSection3Title">派生类的声明</h5>
+
+        <p class="docText">If we need to declare (but not yet define) a derived class, the declaration contains the class name but does not include its derivation list. For example, the following forward declaration of <tt>Bulk_item</tt> results in a compile-time error:</p>
+        <p class="docText">如果需要声明（但并不实现）一个派生类，则声明包含类名但不包含派生列表。例如，下面的前向声明会导致编译时错误：</p>
+        <pre>
+     // <span class="docEmphasis">error: a forward declaration must not include the derivation list</span>
+     class Bulk_item : public Item_base;
+</pre><br>
+
+        <p class="docText">The correct forward declarations are:</p>
+        <p class="docText">正确的前向声明为：</p>
+        <pre>
+     // <span class="docEmphasis">forward declarations of both derived and nonderived class</span>
+     class Bulk_item;
+     class Item_base;
+</pre><br>
+
+	<a name="ch15sb03"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 15.2.3</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch15qa2q1"></a><b>Exercise 15.5:</b></td>
+
+                    <td>
+                      <p class="docText">Which of the following declarations, if any, are incorrect?</p>
+                      <p class="docText">如果有，下面声明中哪些是错误的？</p>
+                      <pre>
+     class Base { ... };
+
+     (a) class Derived : public Derived { ... };
+     (b) class Derived : Base { ... };
+     (c) class Derived : private Base { ... };
+     (d) class Derived : public Base;
+     (e) class Derived inherits Base { ... };
+</pre><br>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch15qa2q2"></a><b>Exercise 15.6:</b></td>
+
+                    <td>
+                      <p class="docText">Write your own version of the <tt>Bulk_item</tt> class.</p>
+		      <p class="docText">编写自己的 <tt>Bulk_item</tt> 类版本。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch15qa2q3"></a><b>Exercise 15.7:</b></td>
+
+                    <td>
+                      <p class="docText">We might define a type to implement a limited discount strategy. This class would give a discount for books purchased up to a limit. If the number of copies purchased exceeds that limit, then the normal price should be applied to any books purchased beyond the limit. Define a class that implements this strategy.</p>
+                      <p class="docText">可以定义一个类型实现有限折扣策略。这个类可以给低于某个上限的购书量一个折扣，如果购买的数量超过该上限，则超出部分的书应按正常价格购买。定义一个类实现这种策略。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+
+
+        <a name="ch15lev2sec6"></a>
+        <h4 class="docSection2Title">15.2.4. <tt>virtual</tt> and Other Member Functions</h4>
+	<h4 class="docSection2Title">15.2.4. <tt>virtual</tt> 与其他成员函数</h4>
+
+	<a name="idd1e113925"></a><a name="idd1e113930"></a><a name="idd1e113933"></a><a name="idd1e113938"></a><a name="idd1e113943"></a>
+        <p class="docText">By default, function calls in C++ do not use dynamic binding. To trigger dynamic binding, two conditions must be met: First, only member functions that are specified as virtual can be dynamically bound. By default, member functions are not virtual; nonvirtual functions are not dynamically bound. Second, the call must be made through a reference or a pointer to a base-class type. To understand this requirement, we need to understand what happens when we use a reference or pointer to an object that has a type from an inheritance hierarchy.</p>
+        <p class="docText">C++ 中的函数调用默认不使用动态绑定。要触发动态绑定，满足两个条件：第一，只有指定为虚函数的成员函数才能进行动态绑定，成员函数默认为非虚函数，非虚函数不进行动态绑定；第二，必须通过基类类型的引用或指针进行函数调用。要理解这一要求，需要理解在使用继承层次中某一类型的对象的引用或指针时会发生什么。</p>
+
+
+        <a name="ch15lev3sec10"></a>
+        <h5 class="docSection3Title">Derived to Base Conversions</h5>
+        <h5 class="docSection3Title">从派生类型到基类的转换</h5>
+
+        <p class="docText">Because every derived object contains a base part, we can bind a base-type reference to the base-class part of a derived object. We can also use a pointer to base to point to a derived object:</p>
+	<p class="docText">因为每个派生类对象都包含基类部分，所以可将基类类型的引用绑定到派生类对象的基类部分，也可以用指向基类的指针指向派生类对象：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">function with an</span> <span class="docEmphasis">Item_base</span> <span class="docEmphItalicAlt">reference parameter</span>
+     double print_total(const Item_base&amp;, size_t);
+     Item_base item;           // <span class="docEmphItalicAlt">object of base type</span>
+     // <span class="docEmphItalicAlt">ok: use pointer or reference to</span> <span class="docEmphasis">Item_base</span> <span class="docEmphItalicAlt">to refer to an</span> <span class="docEmphasis">Item_base</span> <span class="docEmphItalicAlt">object</span>
+     print_total(item, 10);    // <span class="docEmphItalicAlt">passes reference to an</span> <span class="docEmphasis">Item_base</span> <span class="docEmphItalicAlt">object</span>
+     Item_base *p = &amp;item;     // <span class="docEmphasis">p</span> <span class="docEmphItalicAlt">points to an</span> <span class="docEmphasis">Item_base</span> <span class="docEmphItalicAlt">object</span>
+
+     Bulk_item bulk;           // <span class="docEmphItalicAlt">object of derived type</span>
+     // <span class="docEmphItalicAlt">ok: can bind a pointer or reference to</span> <span class="docEmphasis">Item_base</span> <span class="docEmphItalicAlt">to a</span> <span class="docEmphasis">Bulk_item</span> <span class="docEmphItalicAlt">object</span>
+     print_total(bulk, 10);    // <span class="docEmphItalicAlt">passes reference to the</span> <span class="docEmphasis">Item_base</span> <span class="docEmphItalicAlt">part of</span> <span class="docEmphasis">bulk</span>
+     p = &amp;bulk;                // <span class="docEmphasis">p</span> <span class="docEmphItalicAlt">points to the</span> <span class="docEmphasis">Item_base</span> <span class="docEmphItalicAlt">part of</span> <span class="docEmphasis">bulk</span>
+</pre><br>
+
+        <p class="docText">This code uses the same base-type pointer to point to an object of the base type and to an object of the derived type. It also calls a function that expects a reference to the base type, passing an object of the base-class type and also passing an object of the derived type. Both uses are fine, because every derived object has a base part.</p>
+	<p class="docText">这段代码使用同一基类类型指针指向基类类型的对象和派生类型的对象，该代码还传递基类类型和派生类型的对象来调用需要基类类型引用的函数，两种使用都是正确的，因为每个派生类对象都拥有基类部分。</p>
+
+	<a name="idd1e114111"></a><a name="idd1e114114"></a><a name="idd1e114119"></a><a name="idd1e114126"></a><a name="idd1e114129"></a><a name="idd1e114134"></a><a name="idd1e114139"></a>
+        <p class="docText">Because we can use a base-type pointer or reference to refer to a derived-type object, when we use a base-type reference or pointer, we don't know the type of the object to which the pointer or reference is bound: A base-type reference or pointer might refer to an object of base type or an object of derived type. Regardless of which actual type the object has, the compiler treats the object as if it is a base type object. Treating a derived object as if it were a base is safe, because every derived object has a base subobject. Also, the derived class inherits the operations of the base class, meaning that any operation that might be performed on a base object is available through the derived object as well.</p>
+	<p class="docText">因为可以使用基类类型的指针或引用来引用派生类型对象，所以，使用基类类型的引用或指针时，不知道指针或引用所绑定的对象的类型：基类类型的引用或指针可以引用基类类型对象，也可以引用派生类型对象。无论实际对象具有哪种类型，编译器都将它当作基类类型对象。将派生类对象当作基类对象是安全的，因为每个派生类对象都拥有基类子对象。而且，派生类继承基类的操作，即，任何可以在基类对象上执行的操作也可以通过派生类对象使用。</p>
+
+	<a name="ch15note06"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+<a name="ch15term21"></a><a name="ch15term7"></a>
+                <p class="docText">The crucial point about references and pointers to base-class types is that the <b><a class="docLink" href="ch15lev1sec11.html#gloss15_21" >static type</a></b>the type of the reference or pointer, which is knowable at compile timeand the <b><a class="docLink" href="ch15lev1sec11.html#gloss15_07" >dynamic type</a></b>the type of the object to which the pointer or reference is bound, which is knowable only at run timemay differ.</p>
+		<p class="docText">基类类型引用和指针的关键点在于<b><a class="docLink" href="ch15lev1sec11.html#gloss15_21" >静态类型</a></b>（在编译时可知的引用类型或指针类型）和<b><a class="docLink" href="ch15lev1sec11.html#gloss15_07" >动态类型</a></b>（指针或引用所绑定的对象的类型这是仅在运行时可知的）可能不同。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <a name="ch15lev3sec11"></a>
+        <h5 class="docSection3Title">Calls to <tt>virtual</tt> Functions May Be Resolved at Run time</h5>
+	<h5 class="docSection3Title">可以在运行时确定 <tt>virtual</tt> 函数的调用</h5>
+
+        <p class="docText">Binding a base-type reference or pointer to a derived object has no effect on the underlying object. The object itself is unchanged and remains a derived object. The fact that the actual type of the object might differ from the static type of the reference or pointer addressing that object is the key to dynamic binding in C++.</p>
+        <p class="docText">将基类类型的引用或指针绑定到派生类对象对基类对象没有影响，对象本身不会改变，仍为派生类对象。对象的实际类型可能不同于该对象引用或指针的静态类型，这是 C++ 中动态绑定的关键。</p>
+
+        <p class="docText">When a virtual function is called through a reference or pointer, the compiler generates code to <span class="docEmphasis">decide at run time</span> which function to call. The function that is called is the one that corresponds to the dynamic type. As an example, let's look again at the <tt>print_total</tt> function:</p>
+	<p class="docText">通过引用或指针调用虚函数时，编译器将生成代码，在运行时确定调用哪个函数，被调用的是与动态类型相对应的函数。例如，我们再来看 <tt>print_total</tt> 函数：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">calculate and print price for given number of copies, applying any discounts</span>
+     void print_total(ostream &amp;os,
+                      const Item_base &amp;item, size_t n)
+     {
+         os &lt;&lt; "ISBN: " &lt;&lt; item.book() // <span class="docEmphItalicAlt">calls</span> <span class="docEmphasis">Item_base::book</span>
+            &lt;&lt; "\tnumber sold: " &lt;&lt; n &lt;&lt; "\ttotal price: "
+            // <span class="docEmphItalicAlt">virtual call: which version of</span> <span class="docEmphasis">net_price</span> <span class="docEmphItalicAlt">to call is resolved at run time</span>
+            &lt;&lt; item.net_price(n) &lt;&lt; endl;
+     }
+</pre><br>
+
+        <p class="docText">Because the <tt>item</tt> parameter is a reference and <tt>net_price</tt> is virtual, the version of <tt>net_price</tt> that is called in <tt>item.net_price(n)</tt> depends at run time on the actual type of the argument bound to the <tt>item</tt> parameter:</p>
+	<p class="docText">因为 <tt>item</tt> 形参是一个引用且 <tt>net_price</tt> 是虚函数，<tt>item.net_price(n)</tt> 所调用的 <tt>net_price</tt> 版本取决于在运行时绑定到 <tt>item</tt> 形参的实参类型：</p>
+        <pre>
+     Item_base base;
+     Bulk_item derived;
+     // <span class="docEmphasis">print_total</span> <span class="docEmphItalicAlt">makes a virtual call to</span> <span class="docEmphasis">net_price</span>
+     print_total(cout, base, 10);     // <span class="docEmphItalicAlt">calls</span> <span class="docEmphasis">Item_base::net_price</span>
+     print_total(cout, derived, 10);  // <span class="docEmphItalicAlt">calls</span> <span class="docEmphasis">Bulk_item::net_price</span>
+</pre><br>
+
+        <p class="docText">In the first call, the <tt>item</tt> parameter is bound, at run time, to an object of type <tt>Item_base</tt>. As a result, the call to <tt>net_price</tt> inside <tt>print_total</tt> calls the version defined in <tt>Item_base</tt>. In the second call, <tt>item</tt> is bound to an object of type <tt>Bulk_item</tt>. In this call, the version of <tt>net_price</tt> called from <tt>print_total</tt> will be the one defined by the <tt>Bulk_item</tt> class.</p>
+	<p class="docText">在第一个调用中，<tt>item</tt> 形参在运行时绑定到 <tt>Item_base</tt> 类型的对象，因此，<tt>print_total</tt> 内部调用 <tt>Item_base</tt> 中定义的 <tt>net_price</tt> 版本。在第二个调用中，<tt>item</tt> 形参绑定到 <tt>Bulk_item</tt> 类型的对象，从 <tt>print_total</tt> 调用的是 <tt>Bulk_item</tt> 类定义的 <tt>net_price</tt> 版本。</p>
+
+	<a name="ch15sb04"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Key Concept: Polymorphism in C++</h2>
+              <h2 class="docSidebarTitle">关键概念：C++ 中的多态性</h2>
+
+		<a name="idd1e114290"></a><a name="idd1e114297"></a><a name="idd1e114302"></a><a name="idd1e114307"></a><a name="idd1e114315"></a><a name="idd1e114320"></a><a name="idd1e114325"></a><a name="idd1e114328"></a><a name="idd1e114333"></a><a name="idd1e114338"></a><a name="idd1e114343"></a><a name="idd1e114348"></a>
+		<p class="docText"><span class="docEmphStrong">The fact that the static and dynamic types of references and pointers can differ is the cornerstone of how C++ supports polymorphism.</span></p>
+		<p class="docText"><span class="docEmphStrong">引用和指针的静态类型与动态类型可以不同，这是 C++ 用以支持多态性的基石。</span></p>
+
+              <p class="docText"><span class="docEmphStrong">When we call a function defined in the base class through a base-class reference or pointer, we do not know the precise type of the object on which the function is executed. The object on which the function executes might be of the base type or it might be an object of a derived type.</span></p>
+	      <p class="docText"><span class="docEmphStrong">通过基类引用或指针调用基类中定义的函数时，我们并不知道执行函数的对象的确切类型，执行函数的对象可能是基类类型的，也可能是派生类型的。</span></p>
+
+              <p class="docText"><span class="docEmphStrong">If the function called is nonvirtual, then regardless of the actual object type, the function that is executed is the one defined by the base type. If the function is virtual, then the decision as to which function to run is delayed until run time. The version of the virtual function that is run is the one defined by the type of the object to which the reference is bound or to which the pointer points.</span></p>
+	      <p class="docText"><span class="docEmphStrong">如果调用非虚函数，则无论实际对象是什么类型，都执行基类类型所定义的函数。如果调用虚函数，则直到运行时才能确定调用哪个函数，运行的虚函数是引用所绑定的或指针所指向的对象所属类型定义的版本。</span></p>
+
+              <p class="docText"><span class="docEmphStrong">From the perspective of the code that we write, we need not care. As long as the classes are designed and implemented correctly, the operations will do the right thing whether the actual object is of base or derived type.</span></p>
+	      <p class="docText"><span class="docEmphStrong">从编写代码的角度看我们无需担心。只要正确地设计和实现了类，不管实际对象是基类类型或派生类型，操作都将完成正确的工作。</span></p>
+
+              <p class="docText"><span class="docEmphStrong">On the other hand, an object is not polymorphicits type is known and unchanging. The dynamic type of an object (as opposed to a reference or pointer) is always the same as the static type of the object. The function that is run, virtual or nonvirtual, is the one defined by the type of the object.</span></p>
+	      <p class="docText"><span class="docEmphStrong">另一方面，对象是非多态的——对象类型已知且不变。对象的动态类型总是与静态类型相同，这一点与引用或指针相反。运行的函数（虚函数或非虚函数）是由对象的类型定义的。</span></p>
+
+<a name="ch15note07"></a>
+              <div class="docNote">
+                <table width="90%" border="0" cellspacing="0" cellpadding="1">
+                  <tr>
+                    <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+                    <td valign="top">
+                      <p class="docText"><span class="docEmphStrong">Virtuals are resolved at run time <span class="docEmphasis">only</span> if the call is made through a reference or pointer. Only in these cases is it possible for an object's dynamic type to be unknown until run time.</span></p>
+		      <p class="docText"><span class="docEmphStrong">只有通过引用或指针调用，虚函数才在运行时确定。只有在这些情况下，直到运行时才知道对象的动态类型。</span></p>
+                    </td>
+                  </tr>
+                </table><br>
+              </div><br>
+            </td>
+          </tr>
+        </table><br>
+
+        <a name="ch15lev3sec12"></a>
+        <h5 class="docSection3Title">Non<tt>virtual</tt> Calls Are Resolved at Compile Time</h5>
+	<h5 class="docSection3Title">在编译时确定非 <tt>virtual</tt> 调用</h5>
+
+        <p class="docText">Regardless of the actual type of the argument passed to <tt>print_total</tt>, the call of <tt>book</tt> is resolved at compile time to <tt>Item_base::book</tt>.</p>
+	<p class="docText">不管传给 <tt>print_total</tt> 的实参的实际类型是什么，对 <tt>book</tt> 的调用在编译时确定为调用 <tt>Item_base::book</tt>。</p>
+
+	<a name="ch15note08"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Even if <tt>Bulk_item</tt> defined its own version of the <tt>book</tt> function, this call would call the one from the base class.</p>
+		<p class="docText">即使 <tt>Bulk_item</tt> 定义了自己的 <tt>book</tt> 函数版本，这个调用也会调用基类中的版本。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">Nonvirtual functions are <span class="docEmphasis">always</span> resolved at compile time based on the type of the object, reference, or pointer from which the function is called. The type of <tt>item</tt> is reference to <tt>const Item_base</tt>, so a call to a nonvirtual function on that object will call the one from <tt>Item_base</tt> regardless of the type of the actual object to which <tt>item</tt> refers at run time.</p>
+	<p class="docText">非虚函数<span class="docEmphasis">总是</span>在编译时根据调用该函数的对象、引用或指针的类型而确定。<tt>item</tt> 的类型是 <tt>const Item_base</tt> 的引用，所以，无论在运行时 <tt>item</tt> 引用的实际对象是什么类型，调用该对象的非虚函数都将会调用 <tt>Item_base</tt> 中定义的版本。</p>
+
+	<a name="ch15lev3sec13"></a>
+        <h5 class="docSection3Title">Overriding the Virtual Mechanism</h5>
+        <h5 class="docSection3Title">覆盖虚函数机制</h5>
+
+        <p class="docText">In some cases, we want to override the virtual mechanism and force a call to use a particular version of a virtual function. We can do so by using the scope operator:</p>
+        <p class="docText">在某些情况下，希望覆盖虚函数机制并强制函数调用使用虚函数的特定版本，这里可以使用作用域操作符：</p>
+        <pre>
+     Item_base *baseP = &amp;derived;
+     // <span class="docEmphItalicAlt">calls version from the base class regardless of the dynamic type of</span> <span class="docEmphasis">baseP</span>
+     double d = baseP-&gt;Item_base::net_price(42);
+</pre><br>
+
+        <p class="docText">This code forces the call to <tt>net_price</tt> to be resolved to the version defined in <tt>Item_base</tt>. The call will be resolved at compile time.</p>
+	<p class="docText">这段代码强制将 <tt>net_price</tt> 调用确定为 <tt>Item_base</tt> 中定义的版本，该调用将在编译时确定。</p>
+
+	<a name="ch15note09"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="116" height="74" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/bestpractices.jpg;400478" ></td>
+
+              <td valign="top">
+	<a name="idd1e114477"></a><a name="idd1e114482"></a><a name="idd1e114487"></a><a name="idd1e114492"></a><a name="idd1e114497"></a><a name="idd1e114502"></a><a name="idd1e114507"></a><a name="idd1e114512"></a>
+                <p class="docText"> Only code inside member functions should ever need to use the scope operator to override the virtual mechanism.</p>
+                <p class="docText">只有成员函数中的代码才应该使用作用域操作符覆盖虚函数机制。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">Why might we wish to override the virtual mechanism? The most common reason is when a derived-class virtual calls the version from the base. In such cases, the base-class version might do work common to all types in the hierarchy. Each derived type adds only whatever is particular to its own type.</p>
+        <p class="docText">为什么会希望覆盖虚函数机制？最常见的理由是为了派生类虚函数调用基类中的版本。在这种情况下，基类版本可以完成继承层次中所有类型的公共任务，而每个派生类型只添加自己的特殊工作。</p>
+
+        <p class="docText">For example, we might define a <tt>Camera</tt> hierarchy with a virtual <tt>display</tt> operation. The <tt>display</tt> function in the <tt>Camera</tt> class would display information common to all <tt>Camera</tt>s. A derived class, such as <tt>PerspectiveCamera</tt>, would need to display both that common information and the information unique to <tt>PerspectiveCamera</tt>. Rather than duplicate the <tt>Camera</tt> operations within <tt>PerspectiveCamera</tt>'s implementation of <tt>display</tt>, we could explicitly invoke the <tt>Camera</tt> version to display the common information. In a case such as this one, we'd know exactly which instance to invoke, so there would be no need to go through the virtual mechanism.</p>
+	<p class="docText">例如，可以定义一个具有虚操作的 <tt>Camera</tt> 类层次。<tt>Camera</tt> 类中的 <tt>display</tt> 函数可以显示所有的公共信息，派生类（如 <tt>PerspectiveCamera</tt>）可能既需要显示公共信息又需要显示自己的独特信息。可以显式调用 <tt>Camera</tt> 版本以显示公共信息，而不是在 <tt>PerspectiveCamera</tt> 的 <tt>display</tt> 实现中复制 <tt>Camera</tt> 的操作。在这种情况下，已经确切知道调用哪个实例，因此，不需要通过虚函数机制。</p>
+
+	<a name="ch15note10"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">When a derived virtual calls the base-class version, it <span class="docEmphasis">must</span> do so explicitly using the scope operator. If the derived function neglected to do so, then the call would be resolved at run time and would be a call to itself, resulting in an infinite recursion.</p>
+		<p class="docText">派生类虚函数调用基类版本时，<span class="docEmphasis">必须</span>显式使用作用域操作符。如果派生类函数忽略了这样做，则函数调用会在运行时确定并且将是一个自身调用，从而导致无穷递归。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <a name="ch15lev3sec14"></a>
+        <h5 class="docSection3Title">Virtual Functions and Default Arguments</h5>
+        <h5 class="docSection3Title">虚函数与默认实参</h5>
+
+        <p class="docText">Like any other function, a virtual function can have default arguments. As usual, the value, if any, of a default argument used in a given call is determined at compile time. If a call omits an argument that has a default value, then the value that is used is the one defined by the type through which the function is called, irrespective of the object's dynamic type. When a virtual is called through a reference or pointer to base, then the default argument is the value specified in the declaration of the virtual in the base class. If a virtual is called through a pointer or reference to derived, the default argument is the one declared in the version in the derived class.</p>
+	<p class="docText">像其他任何函数一样，虚函数也可以有默认实参。通常，如果有用在给定调用中的默认实参值，该值将在编译时确定。如果一个调用省略了具有默认值的实参，则所用的值由调用该函数的类型定义，与对象的动态类型无关。通过基类的引用或指针调用虚函数时，默认实参为在基类虚函数声明中指定的值，如果通过派生类的指针或引用调用虚函数，则默认实参是在派生类的版本中声明的值。</p>
+
+        <p class="docText">Using different default arguments in the base and derived versions of the same virtual is almost guaranteed to cause trouble. Problems are likely to arise when the virtual is called through a reference or pointer to base, but the version that is executed is the one defined by the derived. In such cases, the default argument defined for the base version of the virtual will be passed to the derived version, which was defined using a different default argument.</p>
+	<p class="docText">在同一虚函数的基类版本和派生类版本中使用不同的默认实参几乎一定会引起麻烦。如果通过基类的引用或指针调用虚函数，但实际执行的是派生类中定义的版本，这时就可能会出现问题。在这种情况下，为虚函数的基类版本定义的默认实参将传给派生类定义的版本，而派生类版本是用不同的默认实参定义的。</p>
+
+	<a name="ch15sb05"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 15.2.4</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch15qa3q1"></a><b>Exercise 15.8:</b></td>
+
+                    <td>
+                      <p class="docText">Given the following classes, explain each <tt>print</tt> function:</p>
+                      <p class="docText">对于下面的类，解释每个函数：</p>
+                      <pre>
+     struct base {
+        string name() { return basename; }
+        virtual void print(ostream &amp;os) { os &lt;&lt; basename; }
+     private:
+           string basename;
+     };
+
+     struct derived {
+        void print() { print(ostream &amp;os); os &lt;&lt; " " &lt;&lt; mem; }
+     private:
+           int mem;
+     };
+</pre><br>
+
+                      <p class="docText">If there is a problem in this code, how would you fix it?</p>
+                      <p class="docText">如果该代码有问题，如何修正？</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch15qa3q2"></a><b>Exercise 15.9:</b></td>
+
+                    <td>
+                      <p class="docText">Given the classes in the previous exercise and the following objects, determine which function is called at run time:</p>
+                      <p class="docText">给定上题中的类和如下对象，确定在运行时调用哪个函数：</p>
+                      <pre>
+     base bobj;    base *bp1 = &amp;base;  base &amp;br1 = bobj;
+     derived dobj; base *bp2 = &amp;doboj; base &amp;br2 = dobj;
+
+     (a) bobj.print(); (b) dobj.print();   (c) bp1-&gt;name();
+     (d) bp2-&gt;name();  (e) br1.print();    (f) br2.print();
+</pre><br>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+
+
+
+	<a name="ch15lev2sec7"></a>
+        <h4 class="docSection2Title">15.2.5. Public, Private, and Protected Inheritance</h4>
+        <h4 class="docSection2Title">15.2.5. 公用、私有和受保护的继承</h4>
+
+	<a name="idd1e114602"></a><a name="idd1e114607"></a><a name="idd1e114612"></a><a name="idd1e114615"></a>
+        <p class="docText">Access to members defined within a derived class is controlled in exactly the same way as access is handled for any other class (<a class="docLink" href="ch12lev1sec1.html#ch12lev2sec2" >Section 12.1.2</a>, p. <a class="docLink" href="ch12lev1sec1.html#ch12lev2sec2" >432</a>). A derived class may define zero or more access labels that specify the access level of the members following that label. Access to the members the class inherits is controlled by a combination of the access level of the member in the base class and the access label used in the derived class' derivation list.</p>
+	<p class="docText">派生类中定义的成员访问控制的处理与任意其他类中完全一样（<a class="docLink" href="ch12lev1sec1.html#ch12lev2sec2" >第 12.1.2 节</a>）。派生类可以定义零个或多个访问标号，指定跟随其后的成员的访问级别。对类所继承的成员的访问由基类中的成员访问级别和派生类派生列表中使用的访问标号共同控制。</p>
+
+        <a name="ch15note11"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Each class controls access to the members it defines. A derived class may further restrict but may not loosen the access to the members that it inherits.</p>
+                <p class="docText">每个类控制它所定义的成员的访问。派生类可以进一步限制但不能放松对所继承的成员的访问。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">The base class itself specifies the minimal access control for its own members. If a member is <tt>private</tt> in the base class, then only the base class and its friends may access that member. The derived class has no access to the <tt>private</tt> members of its base class, nor can it make those members accessible to its own users. If a base class member is <tt>public</tt> or <tt>protected</tt>, then the access label used in the derivation list determines the access level of that member in the derived class:</p>
+	<p class="docText">基类本身指定对自身成员的最小访问控制。如果成员在基类中为 <tt>private</tt>，则只有基类和基类的友元可以访问该成员。派生类不能访问基类的 <tt>private</tt> 成员，也不能使自己的用户能够访问那些成员。如果基类成员为 <tt>public</tt> 或 <tt>protected</tt>，则派生列表中使用的访问标号决定该成员在派生类中的访问级别：</p>
+
+        <ul>
+          <li>
+	<a name="ch15term17"></a>
+            <p class="docList">In <b><a class="docLink" href="ch15lev1sec11.html#gloss15_17" ><span class="docEmphStrong"><tt>public</tt> inheritance</span></a></b>, the members of the base retain their access levels: The <tt>public</tt> members of the base are <tt>public</tt> members of the derived and the <tt>protected</tt> members of the base are <tt>protected</tt> in the derived.</p>
+	    <p class="docList">如果是<b><a class="docLink" href="ch15lev1sec11.html#gloss15_17" ><span class="docEmphStrong"><tt>公用</tt>继承</span></a></b>，基类成员保持自己的访问级别：基类的 <tt>public</tt> 成员为派生类的 <tt>public</tt> 成员，基类的 <tt>protected</tt> 成员为派生类的 <tt>protected</tt> 成员。</p>
+          </li>
+
+          <li>
+	<a name="ch15term16"></a>
+            <p class="docList">In <b><a class="docLink" href="ch15lev1sec11.html#gloss15_16" ><span class="docEmphStrong"><tt>protected</tt> inheritance</span></a></b>, the <tt>public</tt> and <tt>protected</tt> members of the base class are <tt>protected</tt> members in the derived class.</p>
+	    <p class="docList">如果是<b><a class="docLink" href="ch15lev1sec11.html#gloss15_16" ><span class="docEmphStrong"><tt>受保护</tt>继承</span></a></b>，基类的 <tt>public</tt> 和 <tt>protected</tt> 成员在派生类中为 <tt>protected</tt> 成员。</p>
+          </li>
+
+          <li>
+            <p class="docList">In <b><a name="ch15term14"></a><a class="docLink" href="ch15lev1sec11.html#gloss15_14" ><span class="docEmphStrong"><tt>private</tt> inheritance</span></a></b>, all the members of the base class are <tt>private</tt> in the derived class.</p>
+	    <p class="docList">如果是<b><a class="docLink" href="ch15lev1sec11.html#gloss15_14" ><span class="docEmphStrong">私有<tt>继承</tt></span></a></b>，基类的的所有成员在派生类中为 <tt>private</tt> 成员。</p>
+          </li>
+        </ul>
+
+	<a name="idd1e114757"></a>
+        <p class="docText">As an example, consider the following hierarchy:</p>
+        <p class="docText">例如，考虑下面的继承层次：</p>
+        <pre>
+     class Base {
+     public:
+         void basemem();   // <span class="docEmphasis">public</span> <span class="docEmphItalicAlt">member</span>
+     protected:
+         int i;            // <span class="docEmphasis">protected</span> <span class="docEmphItalicAlt">member</span>
+         // ...
+     };
+     struct Public_derived : public Base {
+         int use_base() { return i; } // <span class="docEmphItalicAlt">ok: derived classes can access</span> <span class="docEmphasis">i</span>
+         // ...
+     };
+     struct Private_derived : private Base {
+         int use_base() { return i; } // <span class="docEmphItalicAlt">ok: derived classes can access</span> <span class="docEmphasis">i</span>
+     };
+</pre><br>
+
+        <p class="docText">All classes that inherit from <tt>Base</tt> have the same access to the members in <tt>Base</tt>, regardless of the access label in their derivation lists. The derivation access label controls the access that <span class="docEmphasis">users</span> of the derived class have to the members inherited from <tt>Base</tt>:</p>
+	<p class="docText">无论派生列表中是什么访问标号，所有继承 <tt>Base</tt> 的类对 <tt>Base</tt> 中的成员具有相同的访问。派生访问标号将控制派生类的<tt>用户</tt>对从 <tt>Base</tt> 继承而来的成员的访问：</p>
+        <pre>
+     Base b;
+     Public_derived d1;
+     Private_derived d2;
+     b.basemem();   // <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">basemem</span> <span class="docEmphItalicAlt">is</span> <span class="docEmphasis">public</span>
+     d1.basemem();  // <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">basemem</span> <span class="docEmphItalicAlt">is</span> <span class="docEmphasis">public</span> <span class="docEmphItalicAlt">in the derived class</span>
+     d2.basemem();  // <span class="docEmphItalicAlt">error:</span> <span class="docEmphasis">basemem</span> <span class="docEmphItalicAlt">is</span> <span class="docEmphasis">private</span> <span class="docEmphItalicAlt">in the derived class</span>
+</pre><br>
+
+        <p class="docText">Both <tt>Public_derived</tt> and <tt>Private_derived</tt> inherit the <tt>basemem</tt> function. That member retains its access level when the inheritance is <tt>public</tt>, so <tt>d1</tt> can call <tt>basemem</tt>. In <tt>Private_derived</tt>, the members of <tt>Base</tt> are <tt>private</tt>; users of <tt>Private_derived</tt> may not call <tt>basemem</tt>.</p>
+	<p class="docText"><tt>Public_derived</tt> 和 <tt>Private_derived</tt> 都继承了 <tt>basemem</tt> 函数。当进行 <tt>public</tt> 继承时，该成员保持其访问标号，所以，<tt>d1</tt> 可以调用 <tt>basemem</tt>。在 <tt>Private_derived</tt> 中，<tt>Base</tt> 的成员为 <tt>private</tt>，<tt>Private_derived</tt> 的用户不能调用 <tt>basemem</tt>。</p>
+
+        <p class="docText">The derivation access label also controls access from indirectly derived classes:</p>
+        <p class="docText">派生访问标号还控制来自非直接派生类的访问：</p>
+        <pre>
+     struct Derived_from Private : public Private_derived {
+         // <span class="docEmphItalicAlt">error:</span> <span class="docEmphasis">Base::i</span> <span class="docEmphItalicAlt">is</span> <span class="docEmphasis">private</span> <span class="docEmphItalicAlt">in</span> <span class="docEmphasis">Private_derived</span>
+         int use_base() { return i; }
+     };
+     struct Derived_from_Public : public Public_derived {
+         // <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">Base::i</span> <span class="docEmphItalicAlt">remains</span> <span class="docEmphasis">protected</span> <span class="docEmphItalicAlt">in</span> <span class="docEmphasis">Public_derived</span>
+         int use_base() { return i; }
+     };
+</pre><br>
+
+        <p class="docText">Classes derived from <tt>Public_derived</tt> may access <tt>i</tt> from the <tt>Base</tt> class because that member remains a <tt>protected</tt> member in <tt>Public_derived</tt>. Classes derived from <tt>Private_derived</tt> have no such access. To them all the members that <tt>Private_base</tt> inherited from <tt>Base</tt> are <tt>private</tt>.</p>
+	<p class="docText">从 <tt>Public_derived</tt> 派生的类可以访问来自 <tt>Base</tt> 类的 <tt>i</tt>，是因为该成员在 <tt>Public_derived</tt> 中仍为 <tt>protected</tt> 成员。从 <tt>Private_derived</tt> 派生的类没有这样的访问，对它们而言，<tt>Private_derived</tt> 从 <tt>Base</tt> 继承的所有成员均为 <tt>private</tt>。</p>
+
+	<a name="ch15lev3sec15"></a>
+        <h5 class="docSection3Title">Interface versus Implementation Inheritance</h5>
+        <h5 class="docSection3Title">接口继承与实现继承</h5>
+
+	<a name="idd1e114974"></a><a name="idd1e114981"></a><a name="idd1e114984"></a><a name="idd1e114992"></a><a name="idd1e114997"></a><a name="idd1e115000"></a><a name="idd1e115003"></a><a name="idd1e115008"></a><a name="idd1e115013"></a><a name="idd1e115016"></a><a name="idd1e115019"></a><a name="idd1e115022"></a>
+        <p class="docText">A <tt>public</tt>ly derived class inherits the interface of its base class; it has the same interface as its base class. In well-designed class hierarchies, objects of a <tt>public</tt>ly derived class can be used wherever an object of the base class is expected.</p>
+	<p class="docText"><tt>public</tt> 派生类继承基类的接口，它具有与基类相同的接口。设计良好的类层次中，<tt>public</tt> 派生类的对象可以用在任何需要基类对象的地方。</p>
+
+        <p class="docText">Classes derived using either <tt>private</tt> or <tt>protected</tt> do not inherit the base-class interface. Instead, these derivations are often referred to as implementation inheritance. The derived class uses the inherited class in its implementation but does not expose the fact of the inheritance as part of its interface.</p>
+	<p class="docText">使用 <tt>private</tt> 或 <tt>protected</tt> 派生的类不继承基类的接口，相反，这些派生通常被称为实现继承。派生类在实现中使用被继承但继承基类的部分并未成为其接口的一部分。</p>
+
+        <p class="docText">As we'll see in <a class="docLink" href="ch15lev1sec3.html#ch15lev1sec3" >Section 15.3</a> (p. <a class="docLink" href="ch15lev1sec3.html#ch15lev1sec3" >577</a>), whether a class uses interface or implementation inheritance has important implications for users of the derived class.</p>
+	<p class="docText">如<a class="docLink" href="ch15lev1sec3.html#ch15lev1sec3" >第 15.3 节</a>所介绍的，类是使用接口继承还是实现继承对派生类的用户具有重要含义。</p>
+
+	<a name="ch15note12"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">By far the most common form of inheritance is <tt>public</tt>.</p>
+		<p class="docText">迄今为止，最常见的继承形式是 <tt>public</tt>。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <a name="ch15sb06"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Key Concept: Inheritance versus Composition</h2>
+              <h2 class="docSidebarTitle">关键概念：继承与组合</h2>
+
+              <p class="docText"><span class="docEmphStrong">The design of inheritance hierarchies is a complex topic in its own right and well beyond the scope of this language primer. However, there is one important design guide that is so fundamental that every programmer should be familiar with it.</span></p>
+	      <p class="docText"><span class="docEmphStrong">继承层次的设计本身是个复杂的主题，已超出本书的范围。但是，有一个重要的设计指南非常基础，每个程序员都应该熟悉它。</span></p>
+
+              <p class="docText"><span class="docEmphStrong">When we define one class as publicly inherited from another, the derived class should reflect a so-called "Is A" relationship to the base class. In our bookstore example, our base class represents the concept of a book sold at a stipulated price. Our <tt>Bulk_item</tt> is a kind of book, but one with a different pricing strategy.</span></p>
+	      <p class="docText"><span class="docEmphStrong">定义一个类作为另一个类的公用派生类时，派生类应反映与基类的“是一种（Is A）”关系。在书店例子中，基类表示按规定价格销售的书的概念，<tt>Bulk_item</tt> 是一种书，但具有不同的定价策略。</span></p>
+
+              <p class="docText"><span class="docEmphStrong">Another common relationship among types is a so-called "Has A" relationship. Our bookstore classes have a price and they have an ISBN. Types related by a "Has A" relationship imply membership. Thus, our bookstore classes are composed from members representing the price and the ISBN.</span></p>
+	      <p class="docText"><span class="docEmphStrong">类型之间另一种常见的关系是称为“有一个（Has A）”的关系。书店例子中的类具有价格和 ISBN。通过“有一个”关系而相关的类型暗含有成员关系，因此，书店例子中的类由表示价格和 ISBN 的成员组成。</span></p>
+            </td>
+          </tr>
+        </table><br>
+
+        <a name="ch15lev3sec16"></a>
+        <h5 class="docSection3Title">Exempting Individual Members</h5>
+        <h5 class="docSection3Title">去除个别成员</h5>
+
+        <p class="docText">When inheritance is <tt>private</tt> or <tt>protected</tt>, the access level of members of the base may be more restrictive in the derived class than it was in the base:</p>
+	<p class="docText">如果进行 <tt>private</tt> 或 <tt>protected</tt> 继承，则基类成员的访问级别在派生类中比在基类中更受限：</p>
+        <pre>
+     class Base {
+     public:
+         std::size_t size() const { return n; }
+     protected:
+         std::size_t n;
+     };
+     class Derived : private Base { . . . };
+</pre><br>
+        <a name="ch15note13"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">The derived class can restore the access level of an inherited member. The access level cannot be made more or less restrictive than the level originally specified within the base class.</p>
+                <p class="docText">派生类可以恢复继承成员的访问级别，但不能使访问级别比基类中原来指定的更严格或更宽松。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+	<a name="idd1e115136"></a><a name="idd1e115141"></a><a name="idd1e115146"></a><a name="idd1e115154"></a><a name="idd1e115159"></a><a name="idd1e115164"></a><a name="idd1e115173"></a><a name="idd1e115178"></a><a name="idd1e115183"></a>
+        <p class="docText">In this hierarchy, <tt>size</tt> is <tt>public</tt> in <tt>Base</tt> but <tt>private</tt> in <tt>Derived</tt>. To make <tt>size public</tt> in <tt>Derived</tt> we can add a <tt>using</tt> declaration for it to a <tt>public</tt> section in <tt>Derived</tt>. By changing the definition of <tt>Derived</tt> as follows, we can make the <tt>size</tt> member accessible to users and <tt>n</tt> accessible to classes subsequently derived from <tt>Derived</tt>:</p>
+	<p class="docText">在这一继承层次中，<tt>size</tt> 在 <tt>Base</tt> 中为 <tt>public</tt>，但在 <tt>Derived</tt> 中为 <tt>private</tt>。为了使 <tt>size</tt> 在 <tt>Derived</tt> 中成为 <tt>public</tt>，可以在 <tt>Derived</tt> 的 <tt>public</tt> 部分增加一个 <tt>using</tt> 声明。如下这样改变 <tt>Derived</tt> 的定义，可以使 <tt>size</tt> 成员能够被用户访问，并使 <tt>n</tt> 能够被从 <tt>Derived</tt> 派生的类访问：</p>
+        <pre>
+     class Derived : private Base {
+     public:
+        // <span class="docEmphItalicAlt">maintain access levels for members related to the size of the object</span>
+        using Base::size;
+     protected:
+         using Base::n;
+         // ...
+      };
+</pre><br>
+
+        <p class="docText">Just as we can use a <tt>using</tt> declaration (<a class="docLink" href="ch03lev1sec1.html#ch03lev1sec1" >Section 3.1</a>, p. <a class="docLink" href="ch03lev1sec1.html#ch03lev1sec1" >78</a>) to use names from the <tt>std</tt> namespace, we may also use a <tt>using</tt> declaration to access a name from a base class. The form is the same except that the left-hand side of the scope operator is a class name instead of a namespace name.</p>
+	<p class="docText">正如可以使用 <tt>using</tt> 声明（<a class="docLink" href="ch03lev1sec1.html#ch03lev1sec1" >第 3.1 节</a>）从命名空间使用名字，也可以使用 <tt>using</tt> 声明访问基类中的名字，除了在作用域操作符左边用类名字代替命名空间名字之外，使用形式是相同的。</p>
+
+	<a name="ch15lev3sec17"></a>
+        <h5 class="docSection3Title">Default Inheritance Protection Levels</h5>
+        <h5 class="docSection3Title">默认继承保护级别</h5>
+
+        <p class="docText">In <a class="docLink" href="ch02lev1sec8.html#ch02lev1sec8" >Section 2.8</a> (p. <a class="docLink" href="ch02lev1sec8.html#ch02lev1sec8" >65</a>) we learned that classes defined with the <tt>struct</tt> and <tt>class</tt> keywords have different default access levels. Similarly, the default inheritance access level differs depending on which keyword is used to define the derived class. A derived class defined using the <tt>class</tt> keyword has <tt>private</tt> inheritance. A class is defined with the <tt>struct</tt> keyword, has <tt>public</tt> inheritance:</p>
+	<p class="docText">在<a class="docLink" href="ch02lev1sec8.html#ch02lev1sec8" >第 2.8 节</a>介绍过用 <tt>struct</tt> 和 <tt>class</tt> 保留字定义的类具有不同的默认访问级别，同样，默认继承访问级别根据使用哪个保留字定义派生类也不相同。使用 <tt>class</tt> 保留字定义的派生默认具有 <tt>private</tt> 继承，而用 <tt>struct</tt> 保留字定义的类默认具有 <tt>public</tt> 继承：</p>
+        <pre>
+     class Base { /* ... */ };
+     struct D1 : Base { /* ... */ };   // <span class="docEmphasis">public</span> <span class="docEmphItalicAlt">inheritance by default</span>
+     class D2 : Base { /* ... */ };    // <span class="docEmphasis">private</span>       <span class="docEmphItalicAlt">inheritance by default</span>
+</pre><br>
+
+        <p class="docText">It is a common misconception to think that there are deeper differences between classes defined using the <tt>struct</tt> keyword and those defined using <tt>class</tt>. The only differences are the default protection level for members and the default protection level for a derivation. There are no other distinctions:</p>
+	<p class="docText">有一种常见的误解认为用 <tt>struct</tt> 保留字定义的类与用 <tt>class</tt> 定义的类有更大的区别。唯一的不同只是默认的成员保护级别和默认的派生保护级别，没有其他区别：</p>
+        <pre>
+     class D3 : public Base {
+     public:
+         /* ... */
+     };
+     // <span class="docEmphItalicAlt">equivalent definition of</span> <span class="docEmphasis">D3</span>
+     struct D3 : Base {      // <span class="docEmphItalicAlt">inheritance</span> <span class="docEmphasis">public</span> <span class="docEmphItalicAlt">by default</span>
+         /* ... */           // <span class="docEmphItalicAlt">initial member access</span> <span class="docEmphasis">public</span> <span class="docEmphItalicAlt">by default</span>
+     };
+     struct D4 : private Base {
+     private:
+         /* ... */
+     };
+     // <span class="docEmphItalicAlt">equivalent definition of</span> <span class="docEmphasis">D4</span>
+     class D4 : Base {   // <span class="docEmphItalicAlt">inheritance</span> <span class="docEmphasis">private</span> <span class="docEmphItalicAlt">by default</span>
+     /* ... */           // <span class="docEmphItalicAlt">initial member access</span> <span class="docEmphasis">private</span> <span class="docEmphItalicAlt">by default</span>
+     };
+</pre><br>
+        <a name="ch15note14"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="116" height="74" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/bestpractices.jpg;400478" ></td>
+
+              <td valign="top">
+		<a name="idd1e115364"></a><a name="idd1e115369"></a><a name="idd1e115374"></a>
+                <p class="docText"> Although private inheritance is the default when using the <tt>class</tt> keyword, it is also relatively rare in practice. Because private inheritance is so rare, it is usually a good idea to explicitly specify <tt>private</tt>, rather than rely on the default. Being explicit makes it clear that private inheritance is intended and not an oversight.</p>
+		<p class="docText">尽管私有继承在使用 <tt>class</tt> 保留字时是默认情况，但这在实践中相对罕见。因为私有继承是如此罕见，通常显式指定 <tt>private</tt> 是比依赖于默认更好的办法。显式指定可清楚指出想要私有继承而不是一时疏忽。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <a name="ch15sb07"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 15.2.5</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch15qa4q1"></a><b>Exercise 15.10:</b></td>
+
+                    <td>
+                      <p class="docText">In the exercises to <a class="docLink" href="ch15lev1sec2.html#ch15lev2sec3">Section 15.2.1</a> (p. <a class="docLink" href="ch15lev1sec2.html#ch15lev2sec3">562</a>) you wrote a base class to represent the lending policies of a library. Assume the library offers the following kinds of lending materials, each with its own check-out and check-in policy. Organize these items into an inheritance hierarchy:</p>
+		      <p class="docText"><a class="docLink" href="ch15lev1sec2.html#ch15lev2sec3">第 15.2.1 节</a>的习题中编写了一个表示图书馆借阅政策的基类。假定图书馆提供下列种类的借阅资料，每一种有自己的检查和登记政策。将这些项目组织成一个继承层次：</p>
+                      <pre>
+     book                     audio book                  record
+     children's puppet        sega video game             video
+     cdrom book               nintendo video game        rental book
+     sony play stationvideo game
+</pre><br>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch15qa4q2"></a><b>Exercise 15.11:</b></td>
+
+                    <td>
+                      <p class="docText">Choose one of the following general abstractions containing a family of types (or choose one of your own). Organize the types into an inheritance hierarchy:</p>
+                      <p class="docText">在下列包含一族类型的一般抽象中选择一种（或者自己选择一个），将这些类型组织成一个继承层次。</p>
+                      <pre>
+<a name="PLID25"></a>
+</pre>
+
+                      <div class="v1">
+                        <a href="ch15lev1sec2.html#PLID25" >[View full width]</a>
+                      </div>
+                      <pre>
+
+     (a) Graphical file formats (such as gif, tiff, jpeg, bmp)
+     (a) 图像文件格式（如 gif，tiff，jpeg，bmp）
+     (b) Geometric primitives (such as box, circle, sphere, cone)
+     (b) 几何图元（如矩形，圆，球形，锥形）
+     (c) C++ language types (such as class, function, member
+     (c) C++ 语言的类型（如类，函数，成员函数）
+<img border="0" width="14" height="9" alt="" align="left" src="images/ccc.gif" > function)
+<br>
+</pre>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch15qa4q3"></a><b>Exercise 15.12:</b></td>
+
+                    <td>
+                      <p class="docText">For the class you chose in the previous exercise, identify some of the likely virtual functions as well as <tt>public</tt> and <tt>protected</tt> members.</p>
+		      <p class="docText">对上题中选择的类，标出可能的虚函数以及 <tt>public</tt> 和 <tt>protected</tt> 成员。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+
+        <a name="ch15lev2sec8"></a>
+        <h4 class="docSection2Title">15.2.6. Friendship and Inheritance</h4>
+        <h4 class="docSection2Title">15.2.6. 友元关系与继承</h4>
+
+        <p class="docText">As with any other class, a base or derived class can make other class(es) or function(s) friends (<a class="docLink" href="ch12lev1sec5.html#ch12lev1sec5" >Section 12.5</a>, p. <a class="docLink" href="ch12lev1sec5.html#ch12lev1sec5" >465</a>). Friends may access the class' <tt>private</tt> and <tt>protected</tt> data.</p>
+	<p class="docText">像其他类一样，基类或派生类可以使其他类或函数成为友元（<a class="docLink" href="ch12lev1sec5.html#ch12lev1sec5" >第 12.5 节</a>）。友元可以访问类的 <tt>private</tt> 和 <tt>protected</tt> 数据。</p>
+
+	<a name="ch15note15"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Friendship is not inherited. Friends of the base have no special access to members of its derived classes. If a base class is granted friendship, only the base has special access. Classes derived from that base have no access to the class granting friendship.</p>
+                <p class="docText">友元关系不能继承。基类的友元对派生类的成员没有特殊访问权限。如果基类被授予友元关系，则只有基类具有特殊访问权限，该基类的派生类不能访问授予友元关系的类。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">Each class controls friendship to its own members:</p>
+        <p class="docText">每个类控制对自己的成员的友元关系：</p>
+        <pre>
+     class Base {
+         friend class Frnd;
+     protected:
+         int i;
+     };
+     // <span class="docEmphasis">Frnd</span> <span class="docEmphItalicAlt">has no access to members in</span> <span class="docEmphasis">D1</span>
+     class D1 : public Base {
+     protected:
+         int j;
+     };
+     class Frnd {
+     public:
+        int mem(Base b) { return b.i; }  // <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">Frnd is friend to</span> <span class="docEmphasis">Base</span>
+        int mem(D1 d) { return d.i; }    // <span class="docEmphItalicAlt">error: friendship doesn't inherit</span>
+     };
+     // <span class="docEmphasis">D2</span> <span class="docEmphItalicAlt">has no access to members in</span> <span class="docEmphasis">Base</span>
+     class D2 : public Frnd {
+     public:
+        int mem(Base b) { return b.i; } // <span class="docEmphItalicAlt">error: friendship doesn't inherit</span>
+     };
+</pre><br>
+
+	<a name="idd1e115532"></a><a name="idd1e115539"></a><a name="idd1e115548"></a><a name="idd1e115553"></a><a name="idd1e115560"></a><a name="idd1e115567"></a>
+        <p class="docText">If a derived class wants to grant access to its members to the friends of its base class, the derived class must do so explicitly: Friends of the base have no special access to types derived from that base class. Similarly, if a base and its derived types all need access to another class, that class must specifically grant access to the base and each derived class.</p>
+        <p class="docText">如果派生类想要将自己成员的访问权授予其基类的友元，派生类必须显式地这样做：基类的友元对从该基类派生的类型没有特殊访问权限。同样，如果基类和派生类都需要访问另一个类，那个类必须特地将访问权限授予基类的和每一个派生类。</p>
+
+	<a name="ch15lev2sec9"></a>
+        <h4 class="docSection2Title">15.2.7. Inheritance and Static Members</h4>
+        <h4 class="docSection2Title">15.2.7. 继承与静态成员</h4>
+
+        <p class="docText">If a base class defines a <tt>static</tt> member (<a class="docLink" href="ch12lev1sec6.html#ch12lev1sec6" >Section 12.6</a>, p. <a class="docLink" href="ch12lev1sec6.html#ch12lev1sec6" >467</a>) there is only one such member defined for the entire hierarchy. Regardless of the number of classes derived from the base class, there exists a single instance of each <tt>static</tt> member. <tt>static</tt> members obey normal access control: If the member is <tt>private</tt> in the base class, then derived classes have no access to it. Assuming the member is accessible, we can access the <tt>static</tt> member either through the base or derived class. As usual, we can use either the scope operator or the dot or arrow member access operators.</p>
+	<p class="docText">如果基类定义 <tt>static</tt> 成员（<a class="docLink" href="ch12lev1sec6.html#ch12lev1sec6" >第 12.6 节</a>），则整个继承层次中只有一个这样的成员。无论从基类派生出多少个派生类，每个 <tt>static</tt> 成员只有一个实例。<tt>static</tt> 成员遵循常规访问控制：如果成员在基类中为 <tt>private</tt>，则派生类不能访问它。假定可以访问成员，则既可以通过基类访问 <tt>static</tt> 成员，也可以通过派生类访问 <tt>static</tt> 成员。一般而言，既可以使用作用域操作符也可以使用点或箭头成员访问操作符。</p>
+        <pre>
+     struct Base {
+         static void statmem(); // <span class="docEmphasis">public</span> <span class="docEmphItalicAlt">by default</span>
+     };
+     struct Derived : Base {
+         void f(const Derived&amp;);
+     };
+     void Derived::f(const Derived &amp;derived_obj)
+     {
+        Base::statmem();      // <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">Base</span> <span class="docEmphItalicAlt">defines</span> <span class="docEmphasis">statmem</span>
+        Derived::statmem();   // <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">Derived</span> <span class="docEmphItalicAlt">in herits</span> <span class="docEmphasis">statmem</span>
+        // <span class="docEmphItalicAlt">ok: derived objects can be used to access static from base</span>
+        derived_obj.statmem();     // <span class="docEmphItalicAlt">accessed through</span> <span class="docEmphasis">Derived</span> <span class="docEmphItalicAlt">object</span>
+        statmem();                 // <span class="docEmphItalicAlt">accessed through this class</span>
+</pre><br>
+
+        <a name="ch15sb08"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 15.2.7</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch15qa5q1"></a><b>Exercise 15.13:</b></td>
+
+                    <td>
+			<a name="idd1e115673"></a><a name="idd1e115678"></a>
+                      <p class="docText">Given the following classes, list all the ways a member function in <tt>C1</tt> might access the <tt>static</tt> members of <tt>ConcreteBase</tt>. List all the ways an object of type <tt>C2</tt> might access those members.</p>
+		      <p class="docText">对于下面的类，列出 <tt>C1</tt> 中的成员函数访问 <tt>ConcreteBase</tt> 的 <tt>static</tt> 成员的所有方式，列出 <tt>C2</tt> 类型的对象访问这些成员的所有方式。</p>
+                      <pre>
+     struct ConcreteBase {
+         static std::size_t object_count();
+     protected:
+         static std::size_t obj_count;
+     };
+     struct C1 : public ConcreteBase { /* . . . */ };
+     struct C2 : public ConcreteBase { /* . . . */ };
+</pre><br>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a href="21001535.html" ><img src="images/pixel.gif"  alt="" width="1" height="1" border="0"></a>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch15lev1sec1.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch15lev1sec3.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

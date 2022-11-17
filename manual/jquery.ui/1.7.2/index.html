@@ -1,0 +1,159 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+	<head>
+		<title>JQuery.ui中文文档库</title>
+		<link type="text/css" href="styles/jquery-ui-1.7.2.custom.css" rel="stylesheet"></link>
+		<script type="text/javascript" src="scripts/jquery-1.3.2.min.js"></script>
+		<script type="text/javascript" src="scripts/jquery-ui-1.7.2.custom.min.js"></script>
+		<link type="text/css" href="styles/jquery.ui.docs.cn.css" rel="stylesheet"></link>
+		<script type="text/javascript">
+			$(function() {
+				String.prototype.trim = function() {
+					return this.replace(/^\s*/, "").replace(/\s*$/, "");
+				};
+				var selected_plugin = "";
+				$('.uidocs-menu').accordion({
+					active: 0, 
+					collapsible: true, 
+					autoHeight: false, 
+					animated: false, 
+					clearStyle: true, 
+					header: "p", 
+					navigation: true
+				});
+				$('li').click(function() {
+					var text = this.innerText;
+					selected_plugin = text;
+					(
+						function(text) {
+							text = text.trim();
+							$.ajax({
+								type: 'GET', 
+								url: text + '/index.html', 
+								success: function(msg) {
+									$('.uidocs-main').html(msg);
+									$('.uidocs-' + text + '-tabs').tabs();
+								}
+							});
+						}
+					)(text);
+				});
+				gotooption = function(ele) {
+					$('#gotooption').attr('href', "#uidocs_" + selected_plugin.trim() + "_option_" + ele.value)
+					document.getElementById('gotooption').click();
+				};
+				isIE = function(){ //ie? 
+					if (window.navigator.userAgent.toLowerCase().indexOf("msie")>=1) 
+						return true; 
+					else 
+						return false; 
+				} 
+
+				if(!isIE()){ //firefox innerText define
+					HTMLElement.prototype.__defineGetter__(     "innerText", 
+						function(){
+						    var anyString = "";
+						    var childS = this.childNodes;
+     						for(var i=0; i<childS.length; i++) {
+								if(childS[i].nodeType==1)
+									anyString += childS[i].tagName=="BR" ? '\n' : childS[i].innerText;
+								else if(childS[i].nodeType==3)
+									anyString += childS[i].nodeValue;
+							}
+     						return anyString;
+    					} 
+					); 
+					HTMLElement.prototype.__defineSetter__(     "innerText", 
+						function(sText){ 
+							this.textContent=sText; 
+						} 
+					); 
+				}
+				$(window).scroll(function() {
+					$('#float').css('top', document.body.scrollTop + document.body.clientHeight * 0.5 + 'px');
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<div class="uidocs-all">
+			<div class="uidocs-header">
+				<h1>JQuery UI 中文文档库</h1>
+				<h2>剩余未完成部分, 有意愿的网友可以在原基础上修改</h2>
+				<span>目前selectable和datepicker翻译已经完成, 但是没有时间加入到这份文档中, 有时间或需要的朋友可以联系lgg860911@yahoo.com.cn</span>
+			</div>
+			<div class="uidocs-body">
+				<div class="uidocs-menu">
+					<p sizcache="0" sizset="41"><a href="#">协作组件</a></p>
+					<div>
+						<ul>
+							<li><a href="#">draggable</a></li>
+							<li><a href="#">droppable</a></li>
+							<li><a href="#">resizable</a></li>
+							<li><a href="#">selectable(未完成)</a></li>
+							<li><a href="#">sortable</a></li>
+						</ul>
+					</div>
+					<p sizcache="0" sizset="43"><a href="#">可视化构件</a></p>
+					<div>
+						<ul>
+							<li><a href="#">accordion</a></li>
+							<li><a href="#">datepicker(未完成)</a></li>
+							<li><a href="#">dialog(未完成)</a></li>
+							<li><a href="#">progressbar</a></li>
+							<li><a href="#">slider(未完成)</a></li>
+							<li><a href="#">tabs</a></li>
+						</ul>
+					</div>
+					<p sizcache="0" sizset="42"><a href="#">特效</a></p>
+					<div>
+						<ul>
+							<li><a href="#">addClass</a></li>
+							<li><a href="#">removeClass</a></li>
+							<li><a href="#">toggleClass</a></li>
+							<li><a href="#">switchClass</a></li>
+							<li><a href="#">show</a></li>
+							<li><a href="#">hide</a></li>
+							<li><a href="#">toggle</a></li>
+							<li><a href="#">animate</a></li>
+							<li><a href="#">effect</a></a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="uidocs-main"></div>
+			</div>
+		</div>
+		<!--<div id="float" style="text-align: left; position: absolute; left: 0px; top: 50%; background-color: transparent gray; width: 200px; height: 200px;">
+			<select onchange="gotooption(this);" >
+				<option value="addClasses" selected="selected">addClasses</option>
+				<option value="appendTo">appendTo</option>
+				<option value="axis">axis</option>
+				<option value="cancel">cancel</option>
+				<option value="connectToSortable">connectToSortable</option>
+				<option value="containment">containment</option>
+				<option value="cursor">cursor</option>
+				<option value="cursorAt">cursorAt</option>
+				<option value="delay">delay</option>
+				<option value="distance">distance</option>
+				<option value="grid">grid</option>
+				<option value="handle">handle</option>
+				<option value="helper">helper</option>
+				<option value="iframeFix">iframeFix</option>
+				<option value="opacity">opacity</option>
+				<option value="refreshPositions">refreshPositions</option>
+				<option value="revert">revert</option>
+				<option value="revertDuration">revertDuration</option>
+				<option value="scope">scope</option>
+				<option value="scroll">scroll</option>
+				<option value="scrollSensitivity">scrollSensitivity</option>
+				<option value="scrollSpeed">scrollSpeed</option>
+				<option value="snap">snap</option>
+				<option value="snapMode">snapMode</option>
+				<option value="snapTolerance">snapTolerance</option>
+				<option value="stack">stack</option>
+				<option value="zIndex">zIndex</option>
+			</select>
+		</div>
+		-->
+	</body>
+</html>

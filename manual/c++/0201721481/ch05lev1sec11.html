@@ -1,0 +1,365 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 5.11.  The new and delete Expressions</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch05lev1sec10.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch05lev1sec12.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch05lev1sec11"></a>
+
+        <h3 class="docSection1Title">5.11. The <tt>new</tt> and <tt>delete</tt> Expressions</h3>
+	<h3 class="docSection1Title">5.11.  <tt>new</tt> 和 <tt>delete</tt> 表达式</h3>
+
+        <p class="docText">In <a class="docLink" href="ch04lev1sec3.html#ch04lev2sec14" >Section 4.3.1</a> (p. <a class="docLink" href="ch04lev1sec3.html#ch04lev2sec14" >134</a>) we saw how to use <tt>new</tt> and <tt>delete</tt> expressions to dynamically allocate and free arrays. We can also use <tt>new</tt> and <tt>delete</tt> to dynamically allocate and free single objects.</p>
+	<p class="docText"><a class="docLink" href="ch04lev1sec3.html#ch04lev2sec14" >第 4.3.1 节</a>介绍了如何使用 <tt>new</tt> 和 <tt>delete</tt> 表达式动态创建和释放数组，这两种表达式也可用于动态创建和释放单个对象。</p>
+
+        <p class="docText">When we define a variable, we specify a type and a name. When we dynamically allocate an object, we specify a type but do not name the object. Instead, the <tt>new</tt> expression returns a pointer to the newly allocated object; we use that pointer to access the object:</p>
+	<p class="docText">定义变量时，必须指定其数据类型和名字。而动态创建对象时，只需指定其数据类型，而不必为该对象命名。取而代之的是，<tt>new</tt> 表达式返回指向新创建对象的指针，我们通过该指针来访问此对象：</p>
+
+        <pre>
+     int i;              // <span class="docEmphItalicAlt">named, uninitialized</span> <span class="docEmphasis">int</span> <span class="docEmphItalicAlt">variable</span>
+     int *pi = new int;  // <span class="docEmphasis">pi</span> <span class="docEmphItalicAlt">points to dynamically allocated,</span>
+                         // <span class="docEmphItalicAlt">unnamed, uninitialized</span> <span class="docEmphasis">int</span>
+</pre>
+
+        <p class="docText">This <tt>new</tt> expression allocates one object of type <tt>int</tt> from the free store and returns the address of that object. We use that address to initialize the pointer <tt>pi</tt>.</p>
+	<p class="docText">这个 <tt>new</tt> 表达式在自由存储区中分配创建了一个整型对象，并返回此对象的地址，并用该地址初始化指针 <tt>pi</tt>。</p>
+
+	<a name="ch05lev2sec17"></a>
+        <h4 class="docSection2Title">Initializing Dynamically Allocated Objects</h4>
+        <h4 class="docSection2Title">动态创建对象的初始化</h4>
+
+        <p class="docText">Dynamically allocated objects may be initialized, in much the same way as we initialize variables:</p>
+        <p class="docText">动态创建的对象可用初始化变量的方式实现初始化：</p>
+        <pre>
+     int i(1024);              // <span class="docEmphItalicAlt">value of</span> <span class="docEmphasis">i</span> <span class="docEmphItalicAlt">is 1024</span>
+     int *pi = new int(1024);  // <span class="docEmphItalicAlt">object to which</span> <span class="docEmphasis">pi</span> <span class="docEmphItalicAlt">points is 1024</span>
+     string s(10, '9');                   // <span class="docEmphItalicAlt">value of</span> <span class="docEmphasis">s</span> <span class="docEmphItalicAlt">is "9999999999"</span>
+     string *ps = new string(10, '9');    // <span class="docEmphasis">*ps</span> <span class="docEmphItalicAlt">is "9999999999"</span>
+</pre>
+
+        <p class="docText">We must use the direct-initialization syntax (<a class="docLink" href="ch02lev1sec3.html#ch02lev2sec12" >Section 2.3.3</a>, p. <a class="docLink" href="ch02lev1sec3.html#ch02lev2sec12" >48</a>) to initialize dynamically allocated objects. When an initializer is present, the <tt>new</tt> expression allocates the required memory and initializes that memory using the given initializer(s). In the case of <tt>pi</tt>, the newly allocated object is initialized to 1024. The object pointed to by <tt>ps</tt> is initialized to a string of 10 nines.</p>
+	<p class="docText">C++ 使用直接初始化（direct-initialization）语法规则（<a class="docLink" href="ch02lev1sec3.html#ch02lev2sec12" >第 2.3.3 节</a>）初始化动态创建的对象。如果提供了初值，<tt>new</tt> 表达式分配到所需要的内存后，用给定的初值初始化该内存空间。在本例中，<tt>pi</tt> 所指向的新创建对象将被初始化为 1024，而 <tt>ps</tt> 所指向的对象则初始化为十个9的字符串。</p>
+
+	<a name="ch05lev2sec18"></a>
+        <h4 class="docSection2Title">Default Initialization of Dynamically Allocated Objects</h4>
+        <h4 class="docSection2Title">动态创建对象的默认初始化</h4>
+
+	<a name="idd1e38138"></a><a name="idd1e38142"></a><a name="idd1e38145"></a><a name="idd1e38150"></a>
+        <p class="docText">If we do not explicitly state an initializer, then a dynamically allocated object is initialized in the same way as is a variable that is defined inside a function. (<a class="docLink" href="ch02lev1sec3.html#ch02lev2sec13" >Section 2.3.4</a>, p. <a class="docLink" href="ch02lev1sec3.html#ch02lev2sec13" >50</a>) If the object is of class type, it is initialized using the default constructor for the type; if it is of built-in type, it is uninitialized.</p>
+        <p class="docText">如果不提供显式初始化，动态创建的对象与在函数内定义的变量初始化方式相同（<a class="docLink" href="ch02lev1sec3.html#ch02lev2sec13" >第 2.3.4 节</a>）。对于类类型的对象，用该类的默认构造函数初始化；而内置类型的对象则无初始化。</p>
+        <pre>
+     string *ps = new string; // <span class="docEmphItalicAlt">initialized to empty</span> <span class="docEmphasis">string</span>
+     int *pi = new int;       // <span class="docEmphasis">pi</span> <span class="docEmphItalicAlt">points to an uninitialized</span> <span class="docEmphasis">int</span>
+</pre>
+
+        <p class="docText">As usual, it is undefined to use the value associated with an uninitialized object in any way other than to assign a good value to it.</p>
+        <p class="docText">通常，除了对其赋值之外，对未初始化的对象所关联的值的任何使用都是没有定义的。</p>
+
+	<a name="ch05note12"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="116" height="74" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/bestpractices.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Just as we (almost) always initialize the objects we define as variables, it is (almost) always a good idea to initialize dynamically allocated objects.</p>
+                <p class="docText">正如我们（几乎）总是要初始化定义为变量的对象一样，在动态创建对象时，（几乎）总是对它做初始化也是一个好办法。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <p class="docText">We can also value-initialize (<a class="docLink" href="ch03lev1sec3.html#ch03lev2sec6" >Section 3.3.1</a>, p. <a class="docLink" href="ch03lev1sec3.html#ch03lev2sec6" >92</a>) a dynamically allocated object:</p>
+        <p class="docText">同样也可对动态创建的对象做值初始化（value-initialize）（<a class="docLink" href="ch03lev1sec3.html#ch03lev2sec6" >第 3.3.1 节</a>）：</p>
+        <pre>
+     string *ps = new string();  // <span class="docEmphItalicAlt">initialized to empty</span> <span class="docEmphasis">string</span>
+     int *pi = new int();  // <span class="docEmphasis">pi</span> <span class="docEmphItalicAlt">points to an</span> <span class="docEmphasis">int</span> <span class="docEmphItalicAlt">value-initialized to 0</span>
+     cls *pc = new cls();  // <span class="docEmphasis">pc</span> <span class="docEmphItalicAlt">points to a value-initialized object of type</span> <span class="docEmphasis">cls</span>
+</pre>
+
+        <p class="docText">We indicate that we want to value-initialize the newly allocated object by following the type name by a pair of empty parentheses. The empty parentheses signal that we want initialization but are not supplying a specific initial value. In the case of class types (such as <tt>string</tt>) that define their own constructors, requesting value-initialization is of no consequence: The object is initialized by running the default constructor whether we leave it apparently uninitialized or ask for value-initialization. In the case of built-in types or types that do not define any constructors, the difference is significant:</p>
+	<p class="docText">以上表明程序员想通过在类型名后面使用一对内容为空的圆括号对动态创建的对象做值初始化。内容为空的圆括号表示虽然要做初始化，但实际上并未提供特定的初值。对于提供了默认构造函数的类类型（例如 <tt>string</tt>），没有必要对其对象进行值初始化：无论程序是明确地不初始化还是要求进行值初始化，都会自动调用其默认构造函数初始化该对象。而对于内置类型或没有定义默认构造函数的类型，采用不同初始化方式则有显著的差别：</p>
+        <pre>
+     int *pi = new int;         // <span class="docEmphasis">pi</span> <span class="docEmphItalicAlt">points to an uninitialized</span> <span class="docEmphasis">int</span>
+     int *pi = new int();       // <span class="docEmphasis">pi</span> <span class="docEmphItalicAlt">points to an</span> <span class="docEmphasis">int</span> <span class="docEmphItalicAlt">value-initialized to 0</span>
+</pre>
+
+        <p class="docText">In the first case, the <tt>int</tt> is uninitialized; in the second case, the <tt>int</tt> is initialized to zero.</p>
+	<p class="docText">第一个语句的 <tt>int</tt> 型变量没有初始化，而第二个语句的 <tt>int</tt> 型变量则被初始化为0。</p>
+
+	<a name="ch05note13"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">The <tt>()</tt> syntax for value initialization must follow a type name, not a variable. As we'll see in <a class="docLink" href="ch07lev1sec4.html#ch07lev1sec4" >Section 7.4</a> (p. <a class="docLink" href="ch07lev1sec4.html#ch07lev1sec4" >251</a>)</p>
+		<p class="docText">值初始化的 <tt>()</tt> 语法必须置于类型名后面，而不是变量后。正如我们将要学习的<a class="docLink" href="ch07lev1sec4.html#ch07lev1sec4" >第 7.4 节</a>的例子：</p>
+              </td>
+            </tr>
+          </table>
+          <pre>
+     int x(); // <span class="docEmphItalicAlt">does not value initialize</span> <span class="docEmphasis">x</span>
+</pre><br>
+
+          <p class="docText">declares a function named <tt>x</tt> with no arguments that returns an <tt>int</tt>.</p>
+	  <p class="docText">这个语句声明了一个名为 <tt>x</tt>、没有参数而且返回 <tt>int</tt> 值的函数。</p>
+        </div><br>
+
+        <a name="ch05lev2sec19"></a>
+        <h4 class="docSection2Title">Memory Exhaustion</h4>
+        <h4 class="docSection2Title">耗尽内存</h4>
+
+        <p class="docText">Although modern machines tend to have huge memory capacity, it is always possible that the free store will be exhausted. If the program uses all of available memory, then it is possible for a <tt>new</tt> expression to fail. If the <tt>new</tt> expression cannot acquire the requested memory, it throws an exception named <tt>bad_alloc</tt>. We'll look at how exceptions are thrown in <a class="docLink" href="ch06lev1sec13.html#ch06lev1sec13" >Section 6.13</a> (p. <a class="docLink" href="ch06lev1sec13.html#ch06lev1sec13" >215</a>).</p>
+	<p class="docText">尽管现代机器的内存容量越来越大，但是自由存储区总有可能被耗尽。如果程序用完了所有可用的内存，<tt>new</tt> 表达式就有可能失败。如果 <tt>new</tt> 表达式无法获取需要的内存空间，系统将抛出名为 <tt>bad_alloc</tt> 的异常。我们将在<a class="docLink" href="ch06lev1sec13.html#ch06lev1sec13" >第 6.13 节</a>介绍如何抛出异常。</p>
+
+	<a name="ch05lev2sec20"></a>
+        <h4 class="docSection2Title">Destroying Dynamically Allocated Objects</h4>
+        <h4 class="docSection2Title">撤销动态创建的对象</h4>
+
+	<a name="idd1e38354"></a><a name="idd1e38357"></a><a name="idd1e38361"></a><a name="idd1e38367"></a><a name="idd1e38374"></a><a name="idd1e38379"></a><a name="idd1e38385"></a>
+        <p class="docText">When our use of the object is complete, we must <span class="docEmphasis">explicitly</span> return the object's memory to the free store. We do so by applying the <tt>delete</tt> expression to a pointer that addresses the object we want to release.</p>
+	<p class="docText">动态创建的对象用完后，程序员必须<span class="docEmphasis">显式</span>地将该对象占用的内存返回给自由存储区。C++ 提供了 <tt>delete</tt> 表达式释放指针所指向的地址空间。</p>
+        <pre>
+     delete pi;
+</pre>
+
+        <p class="docText">frees the memory associated with the <tt>int</tt> object addressed by <tt>pi</tt>.</p>
+	<p class="docText">该命令释放 <tt>pi</tt> 指向的 <tt>int</tt> 型对象所占用的内存空间。</p>
+
+	<a name="ch05note14"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">It is illegal to apply <tt>delete</tt> to a pointer that addresses memory that was not allocated by <tt>new</tt>.</p>
+		<p class="docText">如果指针指向不是用 <tt>new</tt> 分配的内存地址，则在该指针上使用 <tt>delete</tt> 是不合法的。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+<a name="ch05term9"></a>
+        <p class="docText">The effect of deleting a pointer that addresses memory that was not allocated by new is undefined. The following are examples of safe and unsafe <span class="docEmphRoman"><a class="docLink" href="ch05lev1sec14.html#gloss05_09" >delete expressions</a></span>:</p>
+	<p class="docText">C++ 没有明确定义如何释放指向不是用 <tt>new</tt> 分配的内存地址的指针。下面提供了一些安全的和不安全的 <span class="docEmphRoman"><a class="docLink" href="ch05lev1sec14.html#gloss05_09" >delete expressions</a></span> 表达式。</p>
+        <pre>
+     int i;
+     int *pi = &amp;i;
+     string str = "dwarves";
+     double *pd = new double(33);
+     delete str; // <span class="docEmphItalicAlt">error:</span> <span class="docEmphasis">str</span> <span class="docEmphItalicAlt">is not a dynamic object</span>
+     delete pi;  // <span class="docEmphItalicAlt">error:</span> <span class="docEmphasis">pi</span> <span class="docEmphItalicAlt">refers to a local</span>
+     delete pd;  // <span class="docEmphItalicAlt">ok</span>
+</pre>
+
+        <p class="docText">It is worth noting that the compiler might refuse to compile the delete of <tt>str</tt>. The compiler knows that <tt>str</tt> is not a pointer and so can detect this error at compile-time. The second error is more insidious: In general, compilers cannot tell what kind of object a pointer addresses. Most compilers will accept this code, even though it is in error.</p>
+	<p class="docText">值得注意的是：编译器可能会拒绝编译 <tt>str</tt> 的 <tt>delete</tt> 语句。编译器知道 <tt>str</tt> 并不是一个指针，因此会在编译时就能检查出这个错误。第二个错误则比较隐蔽：通常来说，编译器不能断定一个指针指向什么类型的对象，因此尽管这个语句是错误的，但在大部分编译器上仍能通过。</p>
+
+	<a name="ch05lev2sec21"></a>
+        <h4 class="docSection2Title"><tt>delete</tt> of a Zero-Valued Pointer</h4>
+        <h4 class="docSection2Title">零值指针的删除</h4>
+
+        <p class="docText">It is legal to <tt>delete</tt> a pointer whose value is zero; doing so has no effect:</p>
+	<p class="docText">如果指针的值为 <tt>0</tt>，则在其上做 <tt>delete</tt> 操作是合法的，但这样做没有任何意义：</p>
+        <pre>
+     int *ip = 0;
+     delete ip; // <span class="docEmphItalicAlt">ok: always ok to delete a pointer that is equal to 0</span>
+</pre>
+
+        <p class="docText">The language guarantees that deleting a pointer that is equal to zero is safe.</p>
+        <p class="docText">C++ 保证：删除 0 值的指针是安全的。</p>
+
+	<a name="ch05lev2sec22"></a>
+        <h4 class="docSection2Title">Resetting the Value of a Pointer after a <tt>delete</tt></h4>
+	<h4 class="docSection2Title">在 <tt>delete</tt> 之后，重设指针的值</h4>
+
+        <p class="docText">When we write</p>
+        <p class="docText">执行语句</p>
+        <pre>
+     delete p;
+</pre>
+
+        <p class="docText"><tt>p</tt> becomes undefined. Although <tt>p</tt> is undefined, on many machines, <tt>p</tt> still contains the address of the object to which it pointed. However, the memory to which <tt>p</tt> points was freed, so <tt>p</tt> is no longer valid.</p>
+	<p class="docText">后，<tt>p</tt> 变成没有定义。在很多机器上，尽管 <tt>p</tt> 没有定义，但仍然存放了它之前所指向对象的地址，然而 <tt>p</tt> 所指向的内存已经被释放，因此 <tt>p</tt> 不再有效。</p>
+
+	<a name="ch05term8"></a>
+        <p class="docText">After deleting a pointer, the pointer becomes what is referred to as a <b><a class="docLink" href="ch05lev1sec14.html#gloss05_08" >dangling pointer</a></b>. A dangling pointer is one that refers to memory that once held an object but does so no longer. A dangling pointer can be the source of program errors that are difficult to detect.</p>
+        <p class="docText">删除指针后，该指针变成<b><a class="docLink" href="ch05lev1sec14.html#gloss05_08" >悬垂指针</a></b>。悬垂指针指向曾经存放对象的内存，但该对象已经不再存在了。悬垂指针往往导致程序错误，而且很难检测出来。</p>
+
+	<a name="ch05note15"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="116" height="74" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/bestpractices.jpg;400478" ></td>
+
+              <td valign="top">
+		<a name="idd1e38539"></a><a name="idd1e38545"></a><a name="idd1e38552"></a>
+                <p class="docText">Setting the pointer to 0 after the object it refers to has been deleted makes it clear that the pointer points to no object.</p>
+                <p class="docText">一旦删除了指针所指向的对象，立即将指针置为 0，这样就非常清楚地表明指针不再指向任何对象。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <a name="ch05lev2sec23"></a>
+        <h4 class="docSection2Title">Dynamic Allocation and Deallocation of <tt>const</tt> Objects</h4>
+	<h4 class="docSection2Title"><tt>const</tt> 对象的动态分配和回收</h4>
+
+        <p class="docText">It is legal to dynamically create <tt>const</tt> objects:</p>
+	<p class="docText">C++ 允许动态创建 <tt>const</tt> 对象：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">allocate and initialize a</span> <span class="docEmphasis">const</span> <span class="docEmphItalicAlt">object</span>
+     const int *pci = new const int(1024);
+</pre>
+
+	<a name="ch05term14"></a>
+        <p class="docText">Like any <tt>const</tt>, a dynamically created <tt>const</tt> must be initialized when it is created and once initialized cannot be changed. The value returned from this <span class="docEmphRoman"><a class="docLink" href="ch05lev1sec14.html#gloss05_14" >new expression</a></span> is a pointer to <tt>const int</tt>. Like the address of any other <tt>const</tt> object, the return from a <tt>new</tt> that allocates a <tt>const</tt> object may only be assigned to a pointer to <tt>const</tt>.</p>
+	<p class="docText">与其他常量一样，动态创建的 <tt>const</tt> 对象必须在创建时初始化，并且一经初始化，其值就不能再修改。上述 <span class="docEmphRoman"><a class="docLink" href="ch05lev1sec14.html#gloss05_14" >new 表达式</a></span>返回指向 <tt>int</tt> 型 <tt>const</tt> 对象的指针。与其他 <tt>const</tt> 对象的地址一样，由于 <tt>new</tt> 返回的地址上存放的是 <tt>const</tt> 对象，因此该地址只能赋给指向 <tt>const</tt> 的指针。</p>
+
+        <p class="docText">A <tt>const</tt> dynamic object of a class type that defines a default constructor may be initialized implicitly:</p>
+	<p class="docText">对于类类型的 <tt>const</tt> 动态对象，如果该类提供了默认的构造函数，则此对象可隐式初始化：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">allocate default initialized</span> <span class="docEmphasis">const</span> <span class="docEmphItalicAlt">empty string</span>
+     const string *pcs = new const string;
+</pre>
+
+        <p class="docText">This <tt>new</tt> expression does not explicitly initialize the object pointed to by <tt>pcs</tt>. Instead, the object to which <tt>pcs</tt> points is implicitly initialized to the empty <tt>string</tt>. Objects of built-in type or of a class type that does not provide a default constructor must be explicitly initialized.</p>
+	<p class="docText"> <tt>new</tt> 表达式没有显式初始化 <tt>pcs</tt> 所指向的对象，而是隐式地将 <tt>pcs</tt> 所指向的对象初始化为空的 <tt>string</tt> 对象。内置类型对象或未提供默认构造函数的类类型对象必须显式初始化。</p>
+
+	<a name="ch05sb17"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Caution: Managing Dynamic Memory Is Error-Prone</h2>
+              <h2 class="docSidebarTitle">警告：动态内存的管理容易出错</h2>
+
+              <p class="docText"><span class="docEmphStrong">The following three common program errors are associated with dynamic memory allocation:</span></p>
+              <p class="docText"><span class="docEmphStrong">下面三种常见的程序错误都与动态内存分配相关：</span></p>
+
+              <div style="font-weight:bold">
+                <ol class="docList" type="1">
+                  <li>
+                    <div style="font-weight:normal">
+                      <p class="docList"><span class="docEmphStrong">Failing to <tt>delete</tt> a pointer to dynamically allocated memory, thus preventing the memory from being returned to the free store. Failure to delete dynamically allocated memory is spoken of as a "memory leak." Testing for memory leaks is difficult because they often do not appear until the application is run for a test period long enough to actually exhaust memory.</span></p>
+		      <p class="docList"><span class="docEmphStrong">删除（ <tt>delete</tt> ）指向动态分配内存的指针失败，因而无法将该块内存返还给自由存储区。删除动态分配内存失败称为“内存泄漏（memory leak）”。内存泄漏很难发现，一般需等应用程序运行了一段时间后，耗尽了所有内存空间时，内存泄漏才会显露出来。</span></p>
+                    </div>
+                  </li>
+
+                  <li>
+                    <div style="font-weight:normal">
+                      <p class="docList"><span class="docEmphStrong">Reading or writing to the object after it has been deleted. This error can sometimes be detected by setting the pointer to 0 after deleting the object to which the pointer had pointed.</span></p>
+                      <p class="docList"><span class="docEmphStrong">读写已删除的对象。如果删除指针所指向的对象之后，将指针置为 0 值，则比较容易检测出这类错误。</span></p>
+                    </div>
+                  </li>
+
+                  <li>
+                    <div style="font-weight:normal">
+                      <p class="docList"><span class="docEmphStrong">Applying a delete expression to the same memory location twice. This error can happen when two pointers address the same dynamically allocated object. If <tt>delete</tt> is applied to one of the pointers, then the object's memory is returned to the free store. If we subsequently <tt>delete</tt> the second pointer, then the free store may be corrupted.</span></p>
+		      <p class="docList"><span class="docEmphStrong">对同一个内存空间使用两次 <tt>delete</tt> 表达式。当两个指针指向同一个动态创建的对象，删除时就会发生错误。如果在其中一个指针上做 <tt>delete</tt> 运算，将该对象的内存空间返还给自由存储区，然后接着 <tt>delete</tt> 第二个指针，此时则自由存储区可能会被破坏。</span></p>
+                    </div>
+                  </li>
+                </ol>
+              </div>
+
+              <p class="docText"><span class="docEmphStrong">These kinds of errors in manipulating dynamically allocated memory are considerably easier to make than they are to track down and fix.</span></p>
+              <p class="docText"><span class="docEmphStrong">操纵动态分配的内存时，很容易发生上述错误，但这些错误却难以跟踪和修正。</span></p>
+            </td>
+          </tr>
+        </table><br>
+
+        <a name="ch05lev2sec24"></a>
+        <h4 class="docSection2Title">Deleting a <tt>const</tt> Object</h4>
+	<h4 class="docSection2Title">删除 <tt>const</tt> 对象</h4>
+
+	<a name="idd1e38708"></a><a name="idd1e38711"></a>
+        <p class="docText">Although the value of a <tt>const</tt> object cannot be modified, the object itself can be destroyed. As with any other dynamic object, a <tt>const</tt> dynamic object is freed by deleting a pointer that points to it:</p>
+	<p class="docText">尽管程序员不能改变 <tt>const</tt> 对象的值，但可撤销对象本身。如同其他动态对象一样， <tt>const</tt> 动态对象也是使用删除指针来释放的：</p>
+        <pre>
+     delete pci; // <span class="docEmphItalicAlt">ok: deletes a</span> <span class="docEmphasis">const</span> <span class="docEmphItalicAlt">object</span>
+</pre>
+
+        <p class="docText">Even though the operand of the delete expression is a pointer to <tt>const int</tt>, the delete expression is valid and causes the memory to which <tt>pci</tt> refers to be deallocated.</p>
+	<p class="docText">即使 <tt>delete</tt> 表达式的操作数是指向 <tt>int</tt> 型 <tt>const</tt> 对象的指针，该语句同样有效地回收 <tt>pci</tt> 所指向的内容。</p>
+
+	<a name="ch05sb18"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 5.11</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch05qa13q1"></a><b>Exercise 5.30:</b></td>
+
+                    <td>
+                      <p class="docText">Which of the following, if any, are illegal or in error?</p>
+                      <p class="docText">下列语句哪些（如果有的话）是非法的或错误的？</p>
+                      <pre>
+     (a) vector&lt;string&gt; svec(10);
+     (b) vector&lt;string&gt; *pvec1 = new vector&lt;string&gt;(10);
+     (c) vector&lt;string&gt; **pvec2 = new vector&lt;string&gt;[10];
+     (d) vector&lt;string&gt; *pv1 = &amp;svec;
+     (e) vector&lt;string&gt; *pv2 = pvec1;
+
+     (f) delete svec;
+     (g) delete pvec1;
+     (h) delete [] pvec2;
+     (i) delete pv1;
+     (j) delete pv2;
+</pre><br>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch05lev1sec10.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch05lev1sec12.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

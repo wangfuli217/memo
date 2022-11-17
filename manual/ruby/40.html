@@ -1,0 +1,96 @@
+<html><HEAD><TITLE>29、杂项 - RUBY文档中心</TITLE>
+<STYLE type=text/css>
+<!--
+.code2 {font-size:14.7px;font-family:arial;color:#00009a;line-height:150%;background-color:#EFEFEF;height=25px;vertical-align=middle;margin-left: 20px;}
+.code {font-size:14.7px;font-family:arial;color:#00009a;background-color:#EFEFEF;line-height: 150%}
+.quote {font-size:14.7px;font-family:arial;color:#666666;line-height:150%;}
+-->
+</STYLE>
+
+<META http-equiv=Content-Type content="text/html; charset=gb2312"><LINK href="40_files/news[1].css"  rel=stylesheet></head>
+<BODY topMargin=0>
+<STYLE type=text/css>
+<!--
+body {
+	margin-top: 50px;
+}
+.style12 {font-size: 33px}
+.style15 {
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-weight: bold;
+}
+.style17 {font-family: "黑体", "楷体_GB2312", "新宋体"}
+.style18 {font-size: 12px}
+-->
+</STYLE>
+
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #929292 1px groove" cellSpacing=0 cellPadding=3 width=772 align=center bgColor=#ffffff border=0>
+<TBODY>
+<TR>
+<TD height=20></TD></TR>
+<TR>
+<TD bgColor=#8acd38 height=30>&nbsp;</TD></TR>
+<TR>
+<TD height=50></TD></TR></TBODY></TABLE>
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #ffffff 1px groove" borderColor=#ffffff cellSpacing=0 cellPadding=3 width=772 align=center bgColor=#ffffff border=0>
+<TBODY>
+<TR>
+<TD align=middle>
+<DIV class=moer-title><IMG src="51_files/logo_read[1].gif" > 29、杂项</DIV>
+<P>转帖：oasis_me　　发表时间：2005-6-15 21:47:42　　点击次数：314 </P></TD></TR>
+<TR>
+<TD height=50></TD></TR></TBODY></TABLE>
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #ffffff 1px groove" borderColor=#ffffff cellSpacing=0 cellPadding=3 width=772 align=center bgColor=#ffffff border=0>
+<TBODY>
+<TR>
+<TD width="10%" bgColor=#ffffff>&nbsp;</TD>
+<TD class=moer-ask vAlign=top align=left width="5%" bgColor=#ffffff>&nbsp;</TD>
+<TD vAlign=top align=left width="75%">
+<TABLE cellSpacing=0 cellPadding=0>
+<TBODY>
+<TR>
+<TD class=moer-content vAlign=top align=left>本章处理一些实际问题.<BR><BR><B>语句定界符</B><BR><BR>有些语言需要一定类型的标点,一般会是分号(;)来结束程序的每一语句.Ruby却采用了shell里的sh和csh的方便做法.一行中的多个语句由分号分开,但在行尾分号却并不需要;一个换行被看作一个分号.如果行以反斜杠(\)结束,随后的换行将忽略;这就允许你的单个逻辑行可以跨越数行.<BR><BR><B>注释</B><BR><BR>为什么写注释?虽然良好的代码可自成文档,但那种自以为别人能看懂并按你的方式很快去理解的想法是错误的.除此之外,你自己在离开数天后也会是另一个人;一段时间后我们忘了我们还未修补或增强程序中的哪些部分,你会说,我知道我写了这个的,但我究竟写的是些什么?<BR><BR>一些有经验的程序员会相当正确地指出,矛盾的和过期的注释比没有强.当然,有了注释并不意味着代码的可读性;如果你的代码不清晰,它也许是多虫的.当你学习Ruby的时候,你会发现自己需要更多的注释;然后当你可以通过更简单,优雅,可读的代码来表达思想时,它们就会减少.<BR><BR>Ruby遵从一些普遍的书写习惯,用井号(#)表示注释的开始.跟在#号后面直到#号这行结束为止的代码都将被解释器忽略.<BR><BR>同时,为了方便写大块的注释,&nbsp;Ruby解释器省略以"=begin"和"=end"开始的行中间的一切.<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>#!/usr/bin/env&nbsp;ruby<BR>=begin<BR>**********************************************************************<BR>&nbsp;&nbsp;This&nbsp;is&nbsp;a&nbsp;comment&nbsp;block,&nbsp;something&nbsp;you&nbsp;write&nbsp;for&nbsp;the&nbsp;benefit&nbsp;of<BR>&nbsp;&nbsp;human&nbsp;readers&nbsp;(including&nbsp;yourself).&nbsp;&nbsp;The&nbsp;interpreter&nbsp;ignores&nbsp;it.<BR>&nbsp;&nbsp;There&nbsp;is&nbsp;no&nbsp;need&nbsp;for&nbsp;a&nbsp;'#'&nbsp;at&nbsp;the&nbsp;start&nbsp;of&nbsp;every&nbsp;line.<BR>**********************************************************************<BR>=end&nbsp;</TD></TR></TBODY></TABLE><BR><BR><B>组织你的代码</B><BR><BR>Ruby读到什么就处理什么.没有编译处理;如果有什么还没读到,就被简单地认为未定义.<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>#&nbsp;this&nbsp;results&nbsp;in&nbsp;an&nbsp;"undefined&nbsp;method"&nbsp;error:<BR>print&nbsp;successor(3),"\n"<BR>def&nbsp;successor(x)<BR>&nbsp;&nbsp;x&nbsp;+&nbsp;1<BR>end&nbsp;</TD></TR></TBODY></TABLE><BR><BR>这并不是像一开始认为的那样,强迫你以从上至下的方式组织你的代码.只要你确保其在调用前将被定义,当解释器遇到一个方法定义时,它能安全地接受暂未定义的引用.<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>#&nbsp;Conversion&nbsp;of&nbsp;fahrenheit&nbsp;to&nbsp;celsius,&nbsp;broken<BR>#&nbsp;down&nbsp;into&nbsp;two&nbsp;steps.<BR>def&nbsp;f_to_c(f)<BR>&nbsp;&nbsp;scale(f&nbsp;-&nbsp;32.0)&nbsp;&nbsp;#&nbsp;This&nbsp;is&nbsp;a&nbsp;forward&nbsp;reference,&nbsp;but&nbsp;it's&nbsp;okay.<BR>end<BR>def&nbsp;scale(x)<BR>&nbsp;&nbsp;x&nbsp;*&nbsp;5.0&nbsp;/&nbsp;9.0<BR>end<BR>printf&nbsp;"%.1f&nbsp;is&nbsp;a&nbsp;comfortable&nbsp;temperature.\n",&nbsp;f_to_c(72.3)&nbsp;</TD></TR></TBODY></TABLE><BR><BR>所以,一方面看起来比使用Perl或Java要稍稍不方便一些,但却没有写C那么严格(要求你永远维持所指的部分排序).将最高层的代码放在源文件的最后总是可行的.即使这样也比看见时要好的多.一个明智而无痛苦的好办法是将main定义在文件顶端,再在底端调用它.<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>#!/usr/bin/env&nbsp;ruby<BR>def&nbsp;main<BR>&nbsp;&nbsp;#&nbsp;Express&nbsp;the&nbsp;top&nbsp;level&nbsp;logic&nbsp;here...<BR>end<BR>#&nbsp;...&nbsp;put&nbsp;support&nbsp;code&nbsp;here,&nbsp;organized&nbsp;as&nbsp;you&nbsp;see&nbsp;fit&nbsp;...<BR>main&nbsp;#&nbsp;...&nbsp;and&nbsp;start&nbsp;execution&nbsp;here.&nbsp;</TD></TR></TBODY></TABLE><BR><BR>Ruby也提供了将复杂程序分割为可读,可重用,逻辑相关的大块的工具.我们已看到用&nbsp;include&nbsp;来访问模块.你将发现&nbsp;load&nbsp;和&nbsp;require&nbsp;也很有用.load的作用类似于文件的复制加粘贴(和C的#include处理器指令相似).require更复杂,仅在需要时才加载,而且最多加载一次.load和require还有其它一些区别;在语言手册,FAQ中可找到更多信息.<BR><BR><B>就是这些了...</B><BR><BR>这个教程应该足够帮助你开始编写Ruby程序了.随着问题的深入,你可以深入参考手册.FAQ和库参考也是很重要的资源.<BR><BR>祝好运,编程快乐!</TD></TR>
+<TR>
+<TD class=moer-content vAlign=top align=left height=30></TD></TR>
+<TR>
+<TD vAlign=top align=left><SPAN style="FONT-WEIGHT: bold; FONT-SIZE: 12px">版权声明：</SPAN>RUBY文档中心的所有文章标明[<B>原创</B>]的均为本站作品，版权属RUBY中文化计划，若转载请注明；标明[<B>翻译</B>]的其外文版权归原作者，译文版权属RUBY中文化计划；标明[<B>转贴</B>]的，若原作者感到侵犯了他的著作权，那么请及时跟主持人联系，我们会尽快更正。</TD></TR></TBODY></TABLE></TD>
+<TD width="10%" bgColor=#ffffff>&nbsp;</TD></TR></TBODY></TABLE>
+<STYLE type=text/css>
+<!--
+body {
+	margin-bottom: 20px;
+}
+-->
+</STYLE>
+
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #929292 1px groove; BORDER-BOTTOM: #929292 1px groove" cellSpacing=0 cellPadding=0 width=772 align=center>
+<TBODY>
+<TR>
+<TD bgColor=#ffffff>
+<DIV align=center>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P><IMG height=11 src="55_files/logo_small[1].gif"  width=8> 版权所有(C) <A href="http://www.moer.net/ruby/index.asp" >RUBY中文化计划</A></P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></DIV></TD></TR></TBODY></TABLE>
+<DIV align=center></DIV>
+<div style="display:none;">
+<script type="text/javascript" src="http://shouce.jb51.net/js/stat.js" ></script>
+</div>
+</BODY>

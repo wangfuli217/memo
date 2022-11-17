@@ -1,0 +1,205 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml">
+<HEAD><TITLE>SSL模块（SSL）</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=GB2312">
+<STYLE type=text/css>PRE {
+	BACKGROUND-COLOR: #cccccc
+}
+.STYLE1 {
+	COLOR: #ff0000
+}
+</STYLE>
+
+<META content="MSHTML 6.00.6000.16809" name=GENERATOR></HEAD>
+<BODY>
+<H2>SSL模块（SSL）</H2><BR>
+
+<H3>·摘要</H3>
+<H4>这个模块提供HTTPS支持<BR>
+支持通过以下两个限制检察客户端证书：<BR>
+·0.8.7之前的版本无法为过期证书指定列表。<BR>
+·如果你有一个证书链文件（有时称为一个中级证书），你并不需要像apache那样对每个都进行指定，你只需要将证书链中的信息追加到主证书文件中（通过cat chain.crt >> mysite.com.crt命令），之后可以不适用证书链文件，只需要让nginx指向主证书文件。<BR>
+默认情况下模块并未被安装，如果要使用该模块则需要在编译时指定--with-http_ssl_module参数，安装模块依赖于OpenSSL库和一些引用文件，通常这些文件并不在同一个软件包中。<BR>
+下面的例子是一个使用SSL的示例配置，为了减少CPU负载，可以将其指到一个工作进程，并且启用keepalive。
+<PRE>worker_processes 1;
+http {
+  server {
+    listen               443;
+    ssl                  on;
+    ssl_certificate      /usr/local/nginx/conf/cert.pem;
+    ssl_certificate_key  /usr/local/nginx/conf/cert.key;
+    keepalive_timeout    70;
+  }
+}</PRE>
+如果使用证书链文件，只需要将其追加到你的.crt文件（上例中为cret.pem），你自己的证书需要位于文件的顶部，否则密钥无法对其进行匹配。<BR>
+0.7.14版本以后通常将ssl参数使用到listen指令中：<BR>
+<PRE>server {
+  listen 443 default ssl;
+  ssl_certificate      /usr/local/nginx/conf/cert.pem;
+  ssl_certificate_key  /usr/local/nginx/conf/cert.key;  
+  ...
+}</PRE></H4>
+<H3>生成证书</H3>
+<H4>可以通过以下步骤生成一个简单的证书：<BR>
+<PRE>$ cd /usr/local/nginx/conf
+$ openssl genrsa -des3 -out server.key 1024
+$ openssl req -new -key server.key -out server.csr
+$ cp server.key server.key.org
+$ openssl rsa -in server.key.org -out server.key
+$ openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
+</PRE>
+在nginx.conf中配置这个证书：<BR>
+<PRE>server {
+    server_name YOUR_DOMAINNAME_HERE;
+    listen 443;
+    ssl on;
+    ssl_certificate /usr/local/nginx/conf/server.crt;
+    ssl_certificate_key /usr/local/nginx/conf/server.key;
+}</PRE>
+重启nginx。<BR>
+这样就可以通过以下方式访问：<BR>
+<PRE>https://YOUR_DOMAINNAME_HERE</PRE></H4>
+<H3>在多个server块中使用通配符证书。</H3>
+<H4>在某些情况下你可能需要在一个非安全验证的域中指定一个或多个安全验证的子域，并且能够在HTTP和HTTPS子域中共享资源，要实现这种功能则需要带通配符的子域，如*.nginx.org，下面的例子中表示如何配置一个标准的www子域，一个安全验证子域，并且两个子域均能访问的共享图片域。<BR>
+使用这种配置最好http块中指定一个证书文件和密钥用于多个server，这样在每个server中都会继承它的一个工作拷贝。<BR>
+<PRE>ssl_certificate      common.crt;
+ssl_certificate_key  common.key;
+ 
+server {
+  listen           80;
+  server_name      www.nginx.org;
+  ...
+}
+ 
+server {
+  listen           443 ssl;
+  server_name      secure.nginx.org;
+  ...
+}
+ 
+server {
+  listen           80;
+  listen           443;
+  server_name      images.nginx.org;
+  ...
+}</PRE>
+</H4>
+<H3>·指令</H3>
+<H3>ssl </H3>
+<H4>语法：ssl [on|off] <BR>
+默认值：ssl off <BR>
+使用字段：main, server <BR>
+开启HTTPS。</H4>
+<H3>ssl_certificate </H3>
+<H4>语法：ssl_certificate file <BR>
+默认值：ssl_certificate cert.pem <BR>
+使用字段：main, server <BR>
+为这个虚拟主机指定PEM格式的证书文件，一个文件可以包含其他的证书，同样，密钥也必须是PEM格式，0.6.7版本以后，这里的路径为相对于nginx.conf的路径，而不是编译时的prefix路径。</H4>
+<H3>ssl_certificate_key </H3>
+<H4>语法：ssl_certificate_key file  <BR>
+默认值：ssl_certificate_key cert.pem <BR>
+使用字段：main, server  <BR>
+为这个虚拟主机指定PEM格式的密钥，0.6.7版本以后，这里的路径为相对于nginx.conf的路径，而不是编译时的prefix路径。</H4>
+<H3>ssl_client_certificate </H3>
+<H4>语法：ssl_client_certificate file <BR>
+默认值：none <BR>
+使用字段：main, server <BR>
+指出PEM格式的证书认证文件，在检查客户端证书时使用。</H4>
+<H3>ssl_dhparam </H3>
+<H4>语法：ssl_dhparam file <BR>
+默认值：none <BR>
+使用字段：main, server <BR>
+指出PEM格式并带有Diffie-Hellman参数的文件，用于TLS会话。</H4>
+<H3>ssl_ciphers </H3>
+<H4>语法：ssl_ciphers file <BR>
+默认值：ssl_ciphers ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP <BR>
+使用字段：main, server <BR>
+指出允许的密码，密码指定为OpenSSL支持的格式，如：
+<PRE>ssl_ciphers  ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP;</PRE>
+使用下列命令查看完整格式列表：
+<PRE>openssl ciphers</PRE></H4>
+<H3>ssl_crl </H3>
+<H4>语法：ssl_crl file <BR>
+默认值：none <BR>
+使用字段：http, server <BR>
+指定一个PEM格式的证书吊销列表文件，用于检查客户端证书（0.8.7以后版本）</H4>
+<H3>ssl_prefer_server_ciphers </H3>
+<H4>语法：ssl_prefer_server_ciphers [on|off] <BR>
+默认值：ssl_prefer_server_ciphers off <BR>
+使用字段：main, server <BR>
+依赖SSLv3和TLSv1协议的服务器密码将优先于客户端密码。</H4>
+<H3>ssl_protocols </H3>
+<H4>语法：ssl_protocols [SSLv2] [SSLv3] [TLSv1] <BR>
+默认值：ssl_protocols SSLv2 SSLv3 TLSv1 <BR>
+使用字段：main, server <BR>
+指定要使用的SSL协议。</H4>
+<H3>ssl_verify_client </H3>
+<H4>语法：ssl_verify_client on|off|optional  <BR>
+默认值：ssl_verify_client off <BR>
+使用字段：main, server <BR>
+启用客户端证书审核，参数“optional”在客户端主动提出时检查证书(0.8.7与0.7.63版本之前为"ask")。</H4>
+<H3>ssl_verify_depth </H3>
+<H4>语法：ssl_verify_depth number <BR>
+默认值：ssl_verify_depth 1 <BR>
+使用字段：main, server <BR>
+设置客户证书认证链的长度。</H4>
+<H3>ssl_session_cache </H3>
+<H4>语法：ssl_session_cache off|none|builtin:size and/or shared:name:size <BR>
+默认值：ssl_session_cache off <BR>
+使用字段： main, server <BR>
+设置储存SSL会话的缓存类型和大小。<BR>
+缓存类型为：<BR>
+<H5>·off - 强制关闭：nginx告诉客户端这个会话已经不能被再次使用。<BR>
+·none - 非强制关闭：nginx告诉客户端这个会话可以被再次使用，但是nginx实际上并不使用它们，这是为某些使用ssl_session_cache的邮件客户端提供的一种变通方案，可以使用在邮件代理和HTTP服务器中。<BR>
+·builtin - 内建OpenSSL缓存，仅能用在一个工作进程中，缓存大小在会话总数中指定，注意：如果要使用这个类型可能会引起内存碎片问题，具体请查看下文中参考文档。<BR>
+·shared - 缓存在所有的工作进程中共享，缓存大小指定单位为字节，1MB缓存大概保存4000个会话，每个共享的缓存必须有自己的名称，相同名称的缓存可以使用在不同的虚拟主机中。<BR>
+</H5>
+可以同时使用两个缓存类型，如：
+<PRE>ssl_session_cache  builtin:1000  shared:SSL:10m;</PRE>
+然而，使用共享缓存而不适用内建缓存将更为有效。<BR>
+0.8.34版本之前如果ssl_verify_client设置为'on'或者'optional'时这里必须设置为none或off。 </H4>
+<H3>ssl_session_timeout</H3>
+<H4>语法：ssl_session_timeout time <BR>
+默认值：ssl_session_timeout 5m <BR>
+使用字段： main, server <BR>
+设置客户端能够反复使用储存在缓存中的会话参数时间。<BR></H4>
+<H3>ssl_engine</H3>
+<H4>语法：ssl_engine <BR>
+指定使用的OpenSSL引擎，如Padlock，需要比较新版本的OpenSSL。</H4>
+<H3>·内置变量</H3>
+<H4>ngx_http_ssl_module模块支持下列内建变量：<BR>
+<H5>·$ssl_cipher - 返回建立的SSL连接中那些使用的密码字段。<BR>
+·$ssl_client_serial - 返回建立的SSL连接中客户端证书的序列号。<BR>
+·$ssl_client_s_dn - 返回建立的SSL连接中客户端证书的DN主题字段。<BR>
+·$ssl_client_i_dn - 返回建立的SSL连接中客户端证书的DN发行者字段。<BR>
+·$ssl_protocol - 返回建立的SSL连接中使用的协议。<BR>
+·$ssl_session_id - 需要0.8.20以上版本。<BR>
+·$ssl_client_cert <BR>
+·$ssl_client_raw_cert <BR>
+·$ssl_client_verify - 如果客户端证书审核通过，这个变量为“SUCCESS”。 <BR></H5></H4>
+<H3>·非标准错误代码</H3>
+<H4>这个模块支持一些非标准的HTTP错误代码，可以借助error_page指令用于调试：<BR>
+<H5>·495 - 检查客户端证书时发生错误。<BR>
+·496 - 客户端无法提供必须的证书。<BR>
+·497 - 传送到HTTPS的普通请求。<BR></H5>
+在请求完整的废除后调试完成，并取得一些内置变量，如：$request_uri, $uri, $arg等。</H4>
+<H3>·参考文档</H3>
+<H4><A href="http://sysoev.ru/nginx/docs/http/ngx_http_ssl_module.html" >Original Documentation</A><BR>
+<A href="http://kbeezie.com/view/free-ssl-with-nginx/" >注册一个SSL证书。</A><BR>
+<A href="http://marc.info/?t=120127289900027" >ssl_session_cache中的内存碎片与初始状态。</A><BR>
+<A href="http://wiki.nginx.org/NginxHttpSslModule/" >Nginx Http SSL Module</A></H4>
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://179401.cn/analytics/" : "http://179401.cn/analytics/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://shouce.jb51.net/179401.cn/analytics/piwik.php-idsite=1"  style="border:0" alt=""/></p></noscript>
+<!-- End Piwik Tag -->
+</BODY>
+</HTML>
+<H3><A href="StubStatus.html" >Stub Status模块（Stub Status）</A></H3>

@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+    <!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+    <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+         <title>Columnstore</title> 
+        <link rel="shortcut icon" href="../../../static_star_theme/img/favicon.ico"/>
+        <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,700italic' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../static_star_theme/css/theme.css" type="text/css" /> 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+    </head>
+
+    <body class="wy-body-for-nav" role="document">
+
+    <div class="wy-grid-for-nav">
+
+        <div class="wy-full-navbar" data-swiftype-index="false">
+            <a href="http://www.memsql.com" class="logo">
+                <img src="../../../static_star_theme/img/memsql_logo_horizontal_white.svg" />
+            </a>
+            <div class="global nav">
+                <div class="pull-left left-links">
+                </div>
+                <div class="pull-right right-links">
+                    <a href="http://www.memsql.com/community/" style="word-spacing: 2px;">Community Edition</a>
+                    <a href="http://blog.memsql.com">Blog</a>
+                    <a href="http://www.memsql.com/memsql-partners">Partners</a>
+                    <a href="http://www.memsql.com/resources">Resources</a>
+                    <a href="../../../index.html">Documentation</a>
+                    <a href="http://www.memsql.com/contact">Contact</a>
+                </div>
+            </div>
+            <div class="nav-links">
+                <a href="http://www.memsql.com/product">Product</a>
+                <a href="http://www.memsql.com/solutions">Solutions</a>
+                <a href="http://www.memsql.com/case-studies">Case Studies</a>
+                <a href="http://www.memsql.com/company">Company</a>
+                <a class="download" href="http://www.memsql.com/download/">Download Now</a>
+            </div>
+        </div>
+
+        <nav data-toggle="wy-nav-shift" class="wy-nav-side" data-swiftype-index="false">
+            <div class="wy-side-nav-search">
+                <div role="search">
+  <form id="search-form" class="wy-form" method="get">
+    <input type="text" id="st-search-input" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+            </div>
+
+            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                
+                 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">MemSQL Docs Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro/index.html">How MemSQL Works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../setup/quick_start/index.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../setup/get_started/index.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">User Manual</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../connecting/index.html">How to Connect to MemSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../how_to_run_queries/index.html">How to Run Queries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../multi_insert_examples/index.html">Concurrent Multi-Insert Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../data_loading/index.html">Loading Data Into MemSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../porting-apps/index.html">How to Port Your Applications to MemSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../memory_management/index.html">Memory Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../distributed_architecture/index.html">Distributed Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../codegen/index.html">Code Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/index.html">Database Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../distributed_sql/index.html">Distributed SQL</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="index.html">Columnstore</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="index.html#creating-a-columnstore-table">Creating a Columnstore table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#loading-inserting-data">Loading/Inserting Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#columnstore-and-row-store-overview">Columnstore and Row Store overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#memsql-s-columnstore">MemSQL&#8217;s Columnstore</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#where-to-go-from-here">Where to Go from Here</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../geospatial/index.html">Geospatial Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../json/json/index.html">Javascript Object Notation (JSON)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Operations Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ref/commands_by_type/index.html">SQL Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/config/index.html">Configuration Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ops/index.html">MemSQL Ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../loader/index.html">MemSQL Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../archive/index.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../editions/index.html">MemSQL Editions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq/index.html">Frequently Asked Questions</a></li>
+</ul>
+ 
+            </div>
+            &nbsp;
+        </nav>
+
+        <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+            <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+                <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+                <a href="../../../index.html" class="logo">
+                    <img src="../../../static_star_theme/img/memsql_logo_horizontal_white.svg" />
+                    <span class="subtitle">Documentation</span>
+                </a>
+            </nav>
+
+            <div class="wy-nav-content">
+                <div class="rst-content">
+                    <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../index.html">MemSQL Documentation</a> &raquo;</li>
+      
+          <li><a href="../index.html">User Manual</a> &raquo;</li>
+      
+    <li>Columnstore</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+                    <div role="main" class="document">
+                        
+  <div class="section" id="columnstore">
+<span id="columnar"></span><h1>Columnstore<a class="headerlink" href="index.html#columnstore" title="Permalink to this headline">¶</a></h1>
+<p>MemSQL supports storing and processing data using two types of stores, a
+completely in-memory row store and a disk-backed columnstore. When you need to
+store data that is greater than your memory capacity or you wish to add
+cost-effective data retention to your application, you should use the MemSQL
+columnstore, which compresses and processes data on disk. Since MemSQL has two
+storage engines &#8211; an in-memory row engine and a disk-backed column engine &#8211;
+you can merge real-time and historical data together in a single query. The
+selection of store is done through defining indexes on a table, some indexes
+leverage the row store and some leverage the columnstore technology. The only
+reason to choose either store is to improve performance. Row stores support a
+larger variety of workloads, so they are a good starting point. Examples of
+when a columnstore vs. a row store is recommended are included at the end of
+this section. A database in MemSQL can leverage both stores at the same time
+and a single query can combine data across both stores. This section provides a
+conceptual overview of MemSQL&#8217;s columnstore and includes considerations for
+optimizing your database performance using the columnstore. The columnstore is
+enabled by adding a <tt class="docutils literal"><span class="pre">CLUSTERED</span> <span class="pre">COLUMNSTORE</span></tt> index to a table. When defining a
+clustered columnstore index on a table, the table itself is physically stored
+using the columnstore. Currently, MemSQL supports one columnstore index per
+table. Combining columnstore indexes with other index types, except shard keys,
+is not supported in this version of MemSQL.</p>
+<div class="section" id="creating-a-columnstore-table">
+<h2>Creating a Columnstore table<a class="headerlink" href="index.html#creating-a-columnstore-table" title="Permalink to this headline">¶</a></h2>
+<p>Here&#8217;s an example of a query that creates a Columnstore table:</p>
+<div class="highlight"><pre><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="nf">groups</span> <span class="p">(</span>
+    <span class="ss">`user_id`</span> <span class="kt">INT</span><span class="p">,</span>
+    <span class="ss">`user_group`</span> <span class="kt">INT</span><span class="p">,</span>
+    <span class="ss">`dt`</span> <span class="kt">DATETIME</span><span class="p">,</span>
+    <span class="k">KEY</span> <span class="p">(</span><span class="ss">`user_group`</span><span class="p">)</span> <span class="k">USING</span> <span class="n">CLUSTERED</span> <span class="n">COLUMNSTORE</span><span class="p">,</span>
+    <span class="n">SHARD</span> <span class="k">KEY</span> <span class="p">(</span><span class="ss">`dt`</span><span class="p">,</span> <span class="ss">`user_id`</span><span class="p">)</span>
+<span class="p">);</span>
+</pre></div>
+<p>As with any other MemSQL table, we define a <tt class="docutils literal"><span class="pre">SHARD</span> <span class="pre">KEY</span></tt>. We define it on
+<tt class="docutils literal"><span class="pre">user_id</span></tt> since it should allow for a more even distribution and preventing
+skew. It is also possible to randomly distribute data by having an empty shard
+key, with <tt class="docutils literal"><span class="pre">SHARD</span> <span class="pre">KEY()</span></tt>.</p>
+<p>To create a columnstore table, you must include <tt class="docutils literal"><span class="pre">CLUSTERED</span> <span class="pre">COLUMNSTORE</span></tt> key
+in the definition. Note that you can only have one <tt class="docutils literal"><span class="pre">CLUSTERED</span> <span class="pre">COLUMNSTORE</span></tt>
+key as well as the <tt class="docutils literal"><span class="pre">SHARD</span> <span class="pre">KEY</span></tt>. You cannot add any other key, including
+<tt class="docutils literal"><span class="pre">PRIMARY</span> <span class="pre">KEY</span></tt>, to the columnstore table.</p>
+<p>If a <tt class="docutils literal"><span class="pre">CLUSTERED</span> <span class="pre">COLUMNSTORE</span></tt> is defined on a table, the rows of that table
+will be stored in a highly compressed columnar format on the disk. We describe
+the details of the format below. While MemSQL can execute any query on the
+Columnstore table that it can execute on Row Store tables, some queries are
+more suitable for Columnstore tables than others. Some queries that can benefit
+from using Columnstore include:</p>
+<ul class="simple">
+<li>Queries that need to scan several columns out of a table that contains many columns. Columnstore table will only materialize columns that it actually needs to perform the query;</li>
+<li>Queries that require to scan a lot of data in <tt class="docutils literal"><span class="pre">CLUSTERED</span> <span class="pre">COLUMNSTORE</span></tt> key order. Because the data is highly compressed, and is stored in order, such a scan can very efficiently utilize the processor cache.</li>
+<li>Joins between two Columnstore tables on the <tt class="docutils literal"><span class="pre">CLUSTERED</span> <span class="pre">COLUMNSTORE</span></tt> key. Such a join will be executed as a Merge Join, resulting in a very good performance and very low memory overhead.</li>
+<li>Queries with high selectivity on the <tt class="docutils literal"><span class="pre">CLUSTERED</span> <span class="pre">COLUMNSTORE</span></tt> key. By leveraging a technique called <tt class="docutils literal"><span class="pre">segment</span> <span class="pre">elimination</span></tt> MemSQL can open only those Row Segments that actually contain relevant rows, significantly improving the performance of queries with high selectivity.</li>
+</ul>
+<p>See <a class="reference internal" href="index.html#columnar-query-efficiency"><em>Query Efficiency and the MemSQL Columnstore</em></a> for more details.</p>
+<p>Columnstore table is also not constrained by the amount of available memory,
+unlike a Row Store table.</p>
+</div>
+<div class="section" id="loading-inserting-data">
+<h2>Loading/Inserting Data<a class="headerlink" href="index.html#loading-inserting-data" title="Permalink to this headline">¶</a></h2>
+<p>Columnstore is stored in an extremely compressed format and performs well for
+queries that aggregate over one or more columns.  Due to this compression, the
+primary means of ingesting data into the Columnstore table should be either
+manual issuing of <a class="reference internal" href="../../ref/LOAD_DATA/index.html"><em>LOAD DATA</em></a> commands, or using the
+<a class="reference internal" href="../../loader/index.html"><em>MemSQL Loader</em></a>.</p>
+<p>While <a class="reference internal" href="../../ref/INSERT/index.html"><em>INSERT</em></a> and <a class="reference internal" href="../../ref/UPDATE/index.html"><em>UPDATE</em></a> queries are also supported, if your workload uses them heavily, Row Store might be a more appropriate format.</p>
+</div>
+<div class="section" id="columnstore-and-row-store-overview">
+<h2>Columnstore and Row Store overview<a class="headerlink" href="index.html#columnstore-and-row-store-overview" title="Permalink to this headline">¶</a></h2>
+<p>Row-oriented stores, or &#8220;row stores&#8221; are the most common type of data stores used by relational databases. As the name suggests, a row store treats each row as a unit and stores all fields for a given row together in the same physical location. This makes row stores great for transactional workloads, where the database frequently selects, inserts, updates, and deletes individual rows, often referencing either most or all columns.</p>
+<p>Column-oriented stores, or &#8220;columnstores&#8221; treat each column as a unit and stores segments of data for each column together in the same physical location. This enables two important capabilities, one is to scan each column individually, in essence being able to scan only the columns that are needed to execute a query with a high degree of locality. The other capability is that columnstores lend themselves well to compression, for example repeating and similar values can be easily compressed together. A simplified example is shown here:</p>
+<p><strong>Logical table and row store representation</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="44%" />
+<col width="28%" />
+<col width="28%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">ProductId</th>
+<th class="head">Color</th>
+<th class="head">Price</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+<td>Red</td>
+<td>10</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>Red</td>
+<td>20</td>
+</tr>
+<tr class="row-even"><td>3</td>
+<td>Black</td>
+<td>20</td>
+</tr>
+<tr class="row-odd"><td>4</td>
+<td>White</td>
+<td>20</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Columnstore</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>ProductId</strong></td>
+</tr>
+<tr class="row-even"><td>1</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+</tr>
+<tr class="row-even"><td>3</td>
+</tr>
+<tr class="row-odd"><td>4</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Color</strong></td>
+</tr>
+<tr class="row-even"><td>Red <strong>x 2</strong></td>
+</tr>
+<tr class="row-odd"><td>Black</td>
+</tr>
+<tr class="row-even"><td>White</td>
+</tr>
+</tbody>
+</table>
+<p><em>&#8220;x 2&#8221; indicates that the value is repeated twice.</em></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Price</strong></td>
+</tr>
+<tr class="row-even"><td>10</td>
+</tr>
+<tr class="row-odd"><td>20 <strong>x 3</strong></td>
+</tr>
+</tbody>
+</table>
+<p><em>&#8220;x 3&#8221; indicates that the value is repeated three times.</em></p>
+<p>By physically organizing data by columns, the database is able to scan and aggregate data for individual columns very quickly, simply because less data needs to be scanned. This makes columnstores well suited to analytical workloads. The trade-off of using the columnstore is that it does not lend itself well to inserting or manipulating individual rows quickly. Columnstores are usually batch-loaded for optimal performance. The combination of efficient batch loading and processing of analytic queries contribute to columnstores&#8217; frequently being used in data warehousing scenarios.</p>
+</div>
+<div class="section" id="memsql-s-columnstore">
+<h2>MemSQL&#8217;s Columnstore<a class="headerlink" href="index.html#memsql-s-columnstore" title="Permalink to this headline">¶</a></h2>
+<p>In addition to the storage format, MemSQL&#8217;s in-memory row and columnstores differ in their storage medium: in the in-memory row store, as the name suggests, all data is always kept completely in-memory while the columnstore is backed by disk, using flash or SSD is recommended. The row store should typically be used for highly concurrent OLTP and mixed OLTP/analytical workloads. The columnstore should be used primarily for applications where the data set does not fit in memory, the queries use mostly aggregates (in these cases the columnstore performs much better than the row store), or where cost-efficiency does not make using the in-memory row store possible.</p>
+<div class="section" id="how-the-memsql-columnstore-works">
+<h3>How the MemSQL columnstore works<a class="headerlink" href="index.html#how-the-memsql-columnstore-works" title="Permalink to this headline">¶</a></h3>
+<p>In MemSQL there are a few concepts that are important to understand in order to make the best possible use of the columnstore:</p>
+<ul class="simple">
+<li><strong>Clustered columnstore index</strong> - A clustered columnstore index represents the full table structure and is its primary storage.</li>
+<li><strong>Columnstore key column(s)</strong> - When creating a columnstore index one or more columns need to be defined as the key column(s) for the columnstore index. The key column(s) are used to construct the columnstore and selecting a good columnstore key can significantly improve performance as covered later in this section.</li>
+<li><strong>Row segment</strong> - A row segment represents a set of rows in the columnstore index.</li>
+<li><strong>Column segment</strong> - Column segments are part of a row segment and contain all values for a specific column within the row segment. Values in column segments are always stored in the same logical order across column segments within the same row segment. Each column segment stores meta data in-memory which includes; the minimum and maximum values contained within the segment, the total row count in the segment, and a bitmask of which rows within the segment have been deleted.</li>
+<li><strong>Row segment group</strong> - A row segment group represents a set of row segments that are sorted together on the columnstore key column(s). This means that within a row segment group there will be no row segments with overlapping value ranges for the column(s) that make up the key for the columnstore index. Everytime an <tt class="docutils literal"><span class="pre">INSERT/UPDATE/LOAD</span></tt> is run on the table, a new row segment group is created, information on how this affects query performance and how to minimize the number of row segment groups is covered later in this section.</li>
+</ul>
+<p>Below is an example of a MemSQL columnstore index on the <tt class="docutils literal"><span class="pre">Products</span></tt> table using the <tt class="docutils literal"><span class="pre">Price</span></tt> column as it&#8217;s key.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Column segments typically contain order of 10&#8217;s of thousands of rows, in this example the segment size is 5 rows for readability .</p>
+</div>
+<p><strong>Logical table and row store representation</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="34%" />
+<col width="22%" />
+<col width="22%" />
+<col width="22%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">ProductId</th>
+<th class="head">Color</th>
+<th class="head">Price</th>
+<th class="head">Qty</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+<td>Red</td>
+<td>10</td>
+<td>2</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>Red</td>
+<td>20</td>
+<td>2</td>
+</tr>
+<tr class="row-even"><td>3</td>
+<td>Black</td>
+<td>20</td>
+<td>2</td>
+</tr>
+<tr class="row-odd"><td>4</td>
+<td>White</td>
+<td>30</td>
+<td>2</td>
+</tr>
+<tr class="row-even"><td>5</td>
+<td>Red</td>
+<td>20</td>
+<td>2</td>
+</tr>
+<tr class="row-odd"><td>6</td>
+<td>Black</td>
+<td>10</td>
+<td>2</td>
+</tr>
+<tr class="row-even"><td>7</td>
+<td>White</td>
+<td>25</td>
+<td>2</td>
+</tr>
+<tr class="row-odd"><td>8</td>
+<td>Red</td>
+<td>30</td>
+<td>2</td>
+</tr>
+<tr class="row-even"><td>9</td>
+<td>Black</td>
+<td>50</td>
+<td>2</td>
+</tr>
+<tr class="row-odd"><td>10</td>
+<td>White</td>
+<td>15</td>
+<td>2</td>
+</tr>
+<tr class="row-even"><td>11</td>
+<td>Red</td>
+<td>5</td>
+<td>2</td>
+</tr>
+<tr class="row-odd"><td>12</td>
+<td>Red</td>
+<td>20</td>
+<td>2</td>
+</tr>
+<tr class="row-even"><td>13</td>
+<td>Black</td>
+<td>35</td>
+<td>2</td>
+</tr>
+<tr class="row-odd"><td>14</td>
+<td>White</td>
+<td>30</td>
+<td>2</td>
+</tr>
+<tr class="row-even"><td>15</td>
+<td>Red</td>
+<td>4</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Columnstore</strong> - Each row segment contains one column segment per column in the table. For simplicity this example contains the initial load of the table and has a single row segment group.</p>
+<p><strong>Row segment group #1 of 1</strong></p>
+<p><strong>Row segment #1 of 3</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Price</strong> 4-15</td>
+</tr>
+<tr class="row-even"><td><table border="1" class="first docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Price</strong> 4-15</td>
+</tr>
+<tr class="row-even"><td>4</td>
+</tr>
+<tr class="row-odd"><td>5</td>
+</tr>
+<tr class="row-even"><td>10 <strong>x 2</strong></td>
+</tr>
+<tr class="row-odd"><td>15</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>ProductId</strong>    1-15</td>
+</tr>
+<tr class="row-even"><td>15</td>
+</tr>
+<tr class="row-odd"><td>11</td>
+</tr>
+<tr class="row-even"><td>6</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+</tr>
+<tr class="row-even"><td>10</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Color</strong> Black-White</td>
+</tr>
+<tr class="row-even"><td>Red <strong>x 2</strong></td>
+</tr>
+<tr class="row-odd"><td>Black</td>
+</tr>
+<tr class="row-even"><td>Red</td>
+</tr>
+<tr class="row-odd"><td>White</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="last docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Qty</strong> 2-2</td>
+</tr>
+<tr class="row-even"><td>2 <strong>x 5</strong></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Row segment #2 of 3</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Price</strong> 20-25</td>
+</tr>
+<tr class="row-even"><td><table border="1" class="first docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Price</strong> 20-25</td>
+</tr>
+<tr class="row-even"><td>20 <strong>x 4</strong></td>
+</tr>
+<tr class="row-odd"><td>25</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>ProductId</strong> 2-12</td>
+</tr>
+<tr class="row-even"><td>3</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+</tr>
+<tr class="row-even"><td>5</td>
+</tr>
+<tr class="row-odd"><td>12</td>
+</tr>
+<tr class="row-even"><td>7</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Color</strong> Black-White</td>
+</tr>
+<tr class="row-even"><td>Black</td>
+</tr>
+<tr class="row-odd"><td>Red <strong>x 3</strong></td>
+</tr>
+<tr class="row-even"><td>White</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="last docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Qty</strong> 2-2</td>
+</tr>
+<tr class="row-even"><td>2 <strong>x 5</strong></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Row segment #3 of 3</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Price</strong> 30-50</td>
+</tr>
+<tr class="row-even"><td><table border="1" class="first docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Price</strong> 20-30</td>
+</tr>
+<tr class="row-even"><td>30 <strong>x 3</strong></td>
+</tr>
+<tr class="row-odd"><td>35</td>
+</tr>
+<tr class="row-even"><td>50</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>ProductId</strong> 4-14</td>
+</tr>
+<tr class="row-even"><td>8</td>
+</tr>
+<tr class="row-odd"><td>4</td>
+</tr>
+<tr class="row-even"><td>14</td>
+</tr>
+<tr class="row-odd"><td>13</td>
+</tr>
+<tr class="row-even"><td>9</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Color</strong> Black-White</td>
+</tr>
+<tr class="row-even"><td>Red</td>
+</tr>
+<tr class="row-odd"><td>White <strong>x 2</strong></td>
+</tr>
+<tr class="row-even"><td>Black <strong>x 2</strong></td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="last docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Qty</strong> 2-2</td>
+</tr>
+<tr class="row-even"><td>2 <strong>x 5</strong></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<p><em>&#8220;x N&#8221; indicates that the value is repeated N times.</em></p>
+</div>
+<div class="section" id="query-efficiency-and-the-memsql-columnstore">
+<span id="columnar-query-efficiency"></span><h3>Query Efficiency and the MemSQL Columnstore<a class="headerlink" href="index.html#query-efficiency-and-the-memsql-columnstore" title="Permalink to this headline">¶</a></h3>
+<p>Queries against tables with a columnstore index in MemSQL can take advantage of four characteristics of a columnstore index:</p>
+<ol class="arabic simple">
+<li>All queries will be able to take advantage of the fact that only the column segments containing columns referenced in the query will need to be scanned as well as the fact that the columnstore&#8217;s compression causes less data to need to be scanned. Taking the above table as an example the query <tt class="docutils literal"><span class="pre">SELECT</span> <span class="pre">SUM(Qty)</span> <span class="pre">FROM</span> <span class="pre">Products;</span></tt> will only need to scan the three <tt class="docutils literal"><span class="pre">Qty</span></tt> column segments each of which only contain a single value due to the compression.</li>
+<li>Some queries can be satisfied simply by reading the in-memory meta data for column segments referenced in the query. As an example, the query <tt class="docutils literal"><span class="pre">SELECT</span> <span class="pre">COUNT(*)</span> <span class="pre">FROM</span> <span class="pre">Products;</span></tt> will only need to read the row count and delete bitmask for all column segments of any column in meta data to produce its result, completely eliminating the need to read column segments from disk. Queries that use the <tt class="docutils literal"><span class="pre">MIN</span></tt> or <tt class="docutils literal"><span class="pre">MAX</span></tt> aggregates can eliminate the need to read column segments from disk if no deletes have been performed against the column segment.</li>
+<li>Some queries can reduce the number of segments that need to be read from disk by eliminating these segments based on the segment meta data (min and max values for the segment). The efficiency of this method depends on what percentage of segments that can actually be eliminated.</li>
+</ol>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li>For queries that filter on the key column of the columnstore index, segment elimination is typically very efficient as row segments within each row segment group will not have overlapping segments. For example, in the above table the query <tt class="docutils literal"><span class="pre">SELECT</span> <span class="pre">AVG(Price),</span> <span class="pre">AVG(Qty)</span> <span class="pre">FROM</span> <span class="pre">Products</span> <span class="pre">WHERE</span> <span class="pre">Price</span> <span class="pre">BETWEEN</span> <span class="pre">1</span> <span class="pre">AND</span> <span class="pre">10;</span></tt> will eliminate all segments except <tt class="docutils literal"><span class="pre">row</span> <span class="pre">segment:</span> <span class="pre">#1</span> <span class="pre">Column</span> <span class="pre">segment:</span> <span class="pre">Price</span> <span class="pre">4-15</span></tt> and <tt class="docutils literal"><span class="pre">row</span> <span class="pre">segment:</span> <span class="pre">#1</span> <span class="pre">Column</span> <span class="pre">segment:</span> <span class="pre">Qty</span> <span class="pre">2-2</span></tt> which will be scanned.</li>
+<li>For queries that filter on the non-key columns of the columnstore index, segment elimination can be much less valuable as row segments within each row segment group can have overlapping segments. For example, in the above table the query <tt class="docutils literal"><span class="pre">SELECT</span> <span class="pre">AVG(Price)</span> <span class="pre">FROM</span> <span class="pre">Products</span> <span class="pre">WHERE</span> <span class="pre">Color</span> <span class="pre">=</span> <span class="pre">'Red';</span></tt> will be forced to scan all segments for the <tt class="docutils literal"><span class="pre">Price</span></tt> and <tt class="docutils literal"><span class="pre">Color</span></tt> columns as no segments can be eliminated (basically because the value <tt class="docutils literal"><span class="pre">Red</span></tt> is contained in all segments of the <tt class="docutils literal"><span class="pre">Color</span></tt> column)</li>
+</ol>
+</div></blockquote>
+<ol class="arabic simple" start="4">
+<li>Queries that join tables on columns that are the index columns of a columnstore index can be performed very efficiently through the use of a merge join algorithm allowing the join to be performed by simply scanning two segments that need to be joined in lock-step.</li>
+</ol>
+</div>
+<div class="section" id="updating-data-in-the-columnstore">
+<h3>Updating data in the Columnstore<a class="headerlink" href="index.html#updating-data-in-the-columnstore" title="Permalink to this headline">¶</a></h3>
+<p>When using MemSQL columnstore indexes the following are changes that can occur against the store.</p>
+<ol class="arabic simple">
+<li><strong>Insert</strong> - Inserts into a columnstore index will always create a new row segment group. This means that many individual inserts into a columnstore index will cause many small segments to be created.</li>
+</ol>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li><strong>Optimized insert</strong> - An optimized insert will load a set of data and pre-sort it in the order of the columnstore key column(s), this will cause the load to always create a single new row segment group. <tt class="docutils literal"><span class="pre">LOAD</span> <span class="pre">DATA</span></tt> will produce an optimized insert.</li>
+<li><strong>Regular insert</strong> - A regular insert will create one row segment group per 100,000 rows as it will not pre-sort the rows. If less than 100,000 rows is inserted, a single row segment group is created.</li>
+</ol>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><strong>Delete</strong> - Deleting a row in a columnstore index causes the row to be marked as deleted in the segment meta data leaving the data in place within the row segment. Segments which only contain deleted rows are removed, and the optimization process covered below will compact segments that require optimization.</li>
+<li><strong>Update</strong> - An update in a columnstore index is internally performed as a delete followed by an insert. As with inserts it is more efficient to update many rows at a time to reduce the number of segments created.</li>
+<li><strong>Optimization</strong> - MemSQL has optimization routines that run automatically as well as can be started manually. These routines attempt to automatically merge row segment groups together in order to improve query efficiency. DML statements can be performed while columnstore optimizations take place.</li>
+</ol>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li><strong>Automatic background optimization</strong> - MemSQL has background threads that automatically optimize columnstore indexes as needed. These optimizations are run in a single thread to minimize impact to concurrent query workloads. The background optimization will attempt to keep the number of row segment groups low but will not attempt to create a single row segment group due to the cost of this operation.</li>
+<li><strong>Manual optimization - Regular</strong> - This optimization is started using the <tt class="docutils literal"><span class="pre">OPTIMIZE</span> <span class="pre">TABLE</span> <span class="pre">&lt;table_name&gt;;</span></tt> statement and will cause the same process as the background optimization to be started; however, the process will be run using multiple threads to finish the optimization as fast as possible which may impact the performance of the currently run workload.  See <a class="reference internal" href="index.html#columnstore-mergers"><em>Maintenance of the row segments</em></a> for details.</li>
+<li><strong>Manual optimization - Full</strong> - This optimization is started using the <tt class="docutils literal"><span class="pre">OPTIMIZE</span> <span class="pre">TABLE</span> <span class="pre">&lt;table_name&gt;</span> <span class="pre">FULL;</span></tt> statement and will start the manual optimization with the change that it will cause a single row segment group to be generated. This will cause the whole table to be sorted and should be expected to take more time than the other optimizations to complete.  See <a class="reference internal" href="index.html#columnstore-mergers"><em>Maintenance of the row segments</em></a> for details.</li>
+</ol>
+</div></blockquote>
+</div>
+<div class="section" id="recommendations-for-optimal-performance">
+<h3>Recommendations for optimal performance<a class="headerlink" href="index.html#recommendations-for-optimal-performance" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Avoid small-row-count inserts into tables with columnstore indexes (such as single row inserts) as each of these inserts will create a new row segment group.</li>
+<li>Favor loading data into tables with columnstore indexes using the <tt class="docutils literal"><span class="pre">LOAD</span> <span class="pre">DATA</span></tt> statement or using <a class="reference internal" href="../../loader/index.html"><em>MemSQL Loader</em></a>. If you cannot use <tt class="docutils literal"><span class="pre">LOAD</span> <span class="pre">DATA</span></tt>, use <tt class="docutils literal"><span class="pre">INSERT</span> <span class="pre">..</span> <span class="pre">SELECT</span> <span class="pre">..</span></tt>. Note that you can insert rows into a table using a columnstore index from a row store index using <tt class="docutils literal"><span class="pre">INSERT</span> <span class="pre">..</span> <span class="pre">SELECT</span> <span class="pre">..</span></tt>.</li>
+<li>Columnstore indexes work best in scenarios where at least thousands of rows are added or updated in a single statement.</li>
+<li>Fewer row segment groups provides better performance due to more efficient queries. Avoid workloads that will create many row segment groups.</li>
+<li>Avoid updates that affect a small number of rows as these will also create many small row segment groups and decrease query performance.</li>
+</ul>
+</div>
+<div class="section" id="maintenance-of-the-row-segments">
+<span id="columnstore-mergers"></span><h3>Maintenance of the row segments<a class="headerlink" href="index.html#maintenance-of-the-row-segments" title="Permalink to this headline">¶</a></h3>
+<p>Columnstore table will have the best performance if the rows in the table are
+in global sorted order across all the row segments. In reality, maintaining
+such an order is not feasible in a presence of continuous writes.</p>
+<p>MemSQL uses an advanced algorithm that allows to maintain the order as close to
+sorted as possible, while data is being ingested or updated.  Such a process is
+called <tt class="docutils literal"><span class="pre">background</span> <span class="pre">merging</span></tt> and is constantly running in the background if
+the order of the row segments can be improved.</p>
+<p><tt class="docutils literal"><span class="pre">Background</span> <span class="pre">merger</span></tt> is optimistic, in a sense that if at any point it tries
+to move data around, which is also being changed by a concurrent
+<a class="reference internal" href="../../ref/UPDATE/index.html"><em>UPDATE</em></a> or <a class="reference internal" href="../../ref/DELETE/index.html"><em>DELETE</em></a> query, it will discard all the work it
+has done so far and start over. It works on a small chunk of data at a time, so
+it is always a relatively small amount of work that is being discarded.
+However, in a presense of a very heavy workload it can be a significant slow
+down compared to a <tt class="docutils literal"><span class="pre">pessimistic</span></tt> merger, which locks the row segments it is
+currently processing.  A user can manually trigger a <tt class="docutils literal"><span class="pre">pessimistic</span></tt> merger by
+running an <tt class="docutils literal"><span class="pre">OPTIMIZE</span> <span class="pre">TABLE</span></tt> command.  We will explain how to decide whether
+such a command is necessary, and how to run it, below.</p>
+<p>MemSQL uses a concept of a <tt class="docutils literal"><span class="pre">Row</span> <span class="pre">Segment</span> <span class="pre">Group</span></tt> to describe a set of Row
+Segments, that are sorted together. Row Segments form a Row Segment Group if
+and only if there&#8217;s an order on the Row Segments such that for each Row Segment
+the smallest row in it is no smaller than the largest row in any Row Segment
+before it. Here and below when we say that one row is smaller than other row we
+mean that the value of columns of the <tt class="docutils literal"><span class="pre">CLUSTERED</span> <span class="pre">COLUMNAR</span></tt> key of that row
+are smaller than those of the other row.</p>
+<p>If the data had a perfect global order, it would consist of a single Row
+Segment Group. If the data is in a completely random order, it is likely to
+comprise as many Row Segment Groups as there are Row Segments. The goal of the
+<tt class="docutils literal"><span class="pre">background</span> <span class="pre">merger</span></tt> is to move data around the Row Segments in such a way
+that the number of Segment Row Groups is as small as possible.</p>
+<p>To inspect the current state of the Row Segment Groups of a particular table,
+run <tt class="docutils literal"><span class="pre">SHOW</span> <span class="pre">COLUMNAR</span> <span class="pre">MERGE</span> <span class="pre">STATUS</span> <span class="pre">FOR</span> <span class="pre">&lt;table_name&gt;</span></tt> query:</p>
+<div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="k">SHOW</span> <span class="n">COLUMNAR</span> <span class="n">MERGE</span> <span class="n">STATUS</span> <span class="k">FOR</span> <span class="n">groups</span><span class="p">;</span>
+<span class="o">+------------------+-------+-------------------------+----------+-----------+</span>
+<span class="o">|</span> <span class="n">Merger</span>           <span class="o">|</span> <span class="n">State</span> <span class="o">|</span> <span class="n">Plan</span>                    <span class="o">|</span> <span class="n">Progress</span> <span class="o">|</span> <span class="n">Partition</span> <span class="o">|</span>
+<span class="o">+------------------+-------+-------------------------+----------+-----------+</span>
+<span class="o">|</span> <span class="p">(</span><span class="n">Current</span> <span class="n">groups</span><span class="p">)</span> <span class="o">|</span> <span class="no">NULL</span>  <span class="o">|</span> <span class="mi">741</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">1</span>                <span class="o">|</span> <span class="no">NULL</span>     <span class="o">|</span>         <span class="mi">0</span> <span class="o">|</span>
+<span class="o">|</span> <span class="p">(</span><span class="n">Current</span> <span class="n">groups</span><span class="p">)</span> <span class="o">|</span> <span class="no">NULL</span>  <span class="o">|</span> <span class="mi">782</span><span class="p">,</span><span class="mi">20</span>                  <span class="o">|</span> <span class="no">NULL</span>     <span class="o">|</span>         <span class="mi">1</span> <span class="o">|</span>
+<span class="o">|</span> <span class="p">(</span><span class="n">Current</span> <span class="n">groups</span><span class="p">)</span> <span class="o">|</span> <span class="no">NULL</span>  <span class="o">|</span> <span class="mi">701</span><span class="p">,</span><span class="mi">40</span><span class="p">,</span><span class="mi">5</span>                <span class="o">|</span> <span class="no">NULL</span>     <span class="o">|</span>         <span class="mi">2</span> <span class="o">|</span>
+<span class="o">|</span> <span class="p">(</span><span class="n">Current</span> <span class="n">groups</span><span class="p">)</span> <span class="o">|</span> <span class="no">NULL</span>  <span class="o">|</span> <span class="mi">326</span><span class="p">,</span><span class="mi">207</span><span class="p">,</span><span class="mi">123</span><span class="p">,</span><span class="mi">37</span><span class="p">,</span><span class="mi">21</span><span class="p">,</span><span class="mi">19</span><span class="p">,</span><span class="mi">17</span> <span class="o">|</span> <span class="no">NULL</span>     <span class="o">|</span>         <span class="mi">3</span> <span class="o">|</span>
+<span class="o">+------------------+-------+-------------------------+----------+-----------+</span>
+<span class="mi">4</span> <span class="n">rows</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+<p>Let&#8217;s look closely at the first row of the result. According to it, the slice of the table that is stored on the partition <tt class="docutils literal"><span class="pre">1</span></tt> has three Row Segment Groups, one consisting of 741 Row Segments, one consisting of 16 Row Segments, and one consisting of a single Row Segment. Consider the impact of such a split into Row Segment Groups on a very simple query like</p>
+<div class="highlight"><pre><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">groups</span> <span class="k">WHERE</span> <span class="n">user_group</span> <span class="o">=</span> <span class="mi">15</span><span class="p">;</span>
+</pre></div>
+<p>By the definition of the Row Segment Group, the very first row segment group will have at most one Row Segment that contains rows with <tt class="docutils literal"><span class="pre">user_group</span></tt> equal to 15, unless <tt class="docutils literal"><span class="pre">user_group</span> <span class="pre">=</span> <span class="pre">15</span></tt> is on the boundary of two Row Segments, or if there&#8217;s a large data skew and several Row Segments consist only of rows with <tt class="docutils literal"><span class="pre">user_group</span> <span class="pre">=</span> <span class="pre">15</span></tt>. Similarly, at most one Row Segment in the second Row Segment Group contains relevant rows, and the only segment of the third Row Segment Group might also contain relevant groups. This way, only three Row Segments out of 758 will in fact be opened and materialized.  While the query in this example is very simple, similar reasoning works for significantly more complex queries.</p>
+<p>Now take a look at the Row Segment Groups on partition <tt class="docutils literal"><span class="pre">3</span></tt>. Clearly, it is significantly less optimized that the remaining three, and a select query like the one shown above will result in materializing 8 Row Segments.  If the <tt class="docutils literal"><span class="pre">background</span> <span class="pre">merger</span></tt> is enabled, and no workload is running concurrently, within several seconds this partition would get optimized. However, in a presence of a heavy workload the optimistic <tt class="docutils literal"><span class="pre">background</span> <span class="pre">merger</span></tt> might fall behind. In this case it might be reasonable to manually trigger a pessimistic merger by calling:</p>
+<div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="k">OPTIMIZE</span> <span class="k">TABLE</span> <span class="n">groups</span>
+<span class="n">Empty</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">32</span><span class="p">.</span><span class="mi">36</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+<p>If we run <tt class="docutils literal"><span class="pre">SHOW</span> <span class="pre">COLUMNAR</span> <span class="pre">MERGE</span> <span class="pre">STATUS</span></tt> as the <tt class="docutils literal"><span class="pre">OPTIMIZE</span> <span class="pre">TABLE</span></tt> is being executed, we migth see the manual merger in action:</p>
+<div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="k">SHOW</span> <span class="n">COLUMNAR</span> <span class="n">MERGE</span> <span class="n">STATUS</span> <span class="k">FOR</span> <span class="n">groups</span><span class="p">;</span>
+<span class="o">+------------------+----------+-------------------------+----------+-----------+</span>
+<span class="o">|</span> <span class="n">Merger</span>           <span class="o">|</span> <span class="n">State</span>    <span class="o">|</span> <span class="n">Plan</span>                    <span class="o">|</span> <span class="n">Progress</span> <span class="o">|</span> <span class="n">Partition</span> <span class="o">|</span>
+<span class="o">+------------------+----------+-------------------------+----------+-----------+</span>
+<span class="o">|</span> <span class="p">(</span><span class="n">Current</span> <span class="n">groups</span><span class="p">)</span> <span class="o">|</span> <span class="no">NULL</span>     <span class="o">|</span> <span class="mi">741</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">1</span>                <span class="o">|</span> <span class="no">NULL</span>     <span class="o">|</span>         <span class="mi">0</span> <span class="o">|</span>
+<span class="o">|</span> <span class="p">(</span><span class="n">Current</span> <span class="n">groups</span><span class="p">)</span> <span class="o">|</span> <span class="no">NULL</span>     <span class="o">|</span> <span class="mi">782</span><span class="p">,</span><span class="mi">20</span>                  <span class="o">|</span> <span class="no">NULL</span>     <span class="o">|</span>         <span class="mi">1</span> <span class="o">|</span>
+<span class="o">|</span> <span class="p">(</span><span class="n">Current</span> <span class="n">groups</span><span class="p">)</span> <span class="o">|</span> <span class="no">NULL</span>     <span class="o">|</span> <span class="mi">701</span><span class="p">,</span><span class="mi">40</span><span class="p">,</span><span class="mi">5</span>                <span class="o">|</span> <span class="no">NULL</span>     <span class="o">|</span>         <span class="mi">2</span> <span class="o">|</span>
+<span class="o">|</span> <span class="p">(</span><span class="n">Current</span> <span class="n">groups</span><span class="p">)</span> <span class="o">|</span> <span class="no">NULL</span>     <span class="o">|</span> <span class="mi">326</span><span class="p">,</span><span class="mi">207</span><span class="p">,</span><span class="mi">123</span><span class="p">,</span><span class="mi">37</span><span class="p">,</span><span class="mi">21</span><span class="p">,</span><span class="mi">19</span><span class="p">,</span><span class="mi">17</span> <span class="o">|</span> <span class="no">NULL</span>     <span class="o">|</span>         <span class="mi">3</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">Manual</span> <span class="n">Merger</span>    <span class="o">|</span> <span class="n">Working</span>  <span class="o">|</span> <span class="mi">326</span><span class="o">+</span><span class="mi">207</span><span class="o">+</span><span class="mi">123</span><span class="o">+</span><span class="mi">37</span><span class="o">+</span><span class="mi">21</span><span class="o">+</span><span class="mi">19</span><span class="o">+</span><span class="mi">17</span> <span class="o">|</span> <span class="mi">53</span><span class="p">.</span><span class="mi">12</span><span class="o">%</span>   <span class="o">|</span>         <span class="mi">3</span> <span class="o">|</span>
+<span class="o">+------------------+-------+----------------------------+----------+-----------+</span>
+<span class="mi">5</span> <span class="n">rows</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+<p>What this new row indicates is that there&#8217;s a manual merger running on the partition 3, and that at this time it has done <tt class="docutils literal"><span class="pre">53.12%</span></tt> of the work.</p>
+<p>When the merger is done, the table now is in a better shape:</p>
+<div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="k">SHOW</span> <span class="n">COLUMNAR</span> <span class="n">MERGE</span> <span class="n">STATUS</span> <span class="k">FOR</span> <span class="n">groups</span><span class="p">;</span>
+<span class="o">+------------------+-------+----------+----------+-----------+</span>
+<span class="o">|</span> <span class="n">Merger</span>           <span class="o">|</span> <span class="n">State</span> <span class="o">|</span> <span class="n">Plan</span>     <span class="o">|</span> <span class="n">Progress</span> <span class="o">|</span> <span class="n">Partition</span> <span class="o">|</span>
+<span class="o">+------------------+-------+----------+----------+-----------+</span>
+<span class="o">|</span> <span class="p">(</span><span class="n">Current</span> <span class="n">groups</span><span class="p">)</span> <span class="o">|</span> <span class="no">NULL</span>  <span class="o">|</span> <span class="mi">741</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">1</span> <span class="o">|</span> <span class="no">NULL</span>     <span class="o">|</span>         <span class="mi">0</span> <span class="o">|</span>
+<span class="o">|</span> <span class="p">(</span><span class="n">Current</span> <span class="n">groups</span><span class="p">)</span> <span class="o">|</span> <span class="no">NULL</span>  <span class="o">|</span> <span class="mi">782</span><span class="p">,</span><span class="mi">20</span>   <span class="o">|</span> <span class="no">NULL</span>     <span class="o">|</span>         <span class="mi">1</span> <span class="o">|</span>
+<span class="o">|</span> <span class="p">(</span><span class="n">Current</span> <span class="n">groups</span><span class="p">)</span> <span class="o">|</span> <span class="no">NULL</span>  <span class="o">|</span> <span class="mi">701</span><span class="p">,</span><span class="mi">40</span><span class="p">,</span><span class="mi">5</span> <span class="o">|</span> <span class="no">NULL</span>     <span class="o">|</span>         <span class="mi">2</span> <span class="o">|</span>
+<span class="o">|</span> <span class="p">(</span><span class="n">Current</span> <span class="n">groups</span><span class="p">)</span> <span class="o">|</span> <span class="no">NULL</span>  <span class="o">|</span> <span class="mi">730</span><span class="p">,</span><span class="mi">20</span>   <span class="o">|</span> <span class="no">NULL</span>     <span class="o">|</span>         <span class="mi">3</span> <span class="o">|</span>
+<span class="o">+------------------+-------+----------+----------+-----------+</span>
+<span class="mi">4</span> <span class="n">rows</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+<p>Note, that at no point any of the partitions was merged into a single Row Segment Group. The reason for that is that both optimistic and pessimistic merger use an advanced algortihm that is optimized to do small amortized chunks of work in a presence of concurrent writes and maintain data in a few Row Segment Groups, rather than to attempt to merge all the data into a single Row Segment Group.  In cases when it is acceptable to sacrifice some time on data ingestion to achieve even higher <tt class="docutils literal"><span class="pre">SELECT</span></tt> performance, it is possible to run a manual command that merges data on each partition into a single Row Segment Group:</p>
+<div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="k">OPTIMIZE</span> <span class="k">TABLE</span> <span class="n">groups</span> <span class="n">FULL</span>
+<span class="n">Empty</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">57</span><span class="p">.</span><span class="mi">36</span> <span class="n">sec</span><span class="p">)</span>
+
+<span class="n">memsql</span><span class="o">&gt;</span> <span class="k">SHOW</span> <span class="n">COLUMNAR</span> <span class="n">MERGE</span> <span class="n">STATUS</span> <span class="k">FOR</span> <span class="n">groups</span><span class="p">;</span>
+<span class="o">+------------------+-------+------+----------+-----------+</span>
+<span class="o">|</span> <span class="n">Merger</span>           <span class="o">|</span> <span class="n">State</span> <span class="o">|</span> <span class="n">Plan</span> <span class="o">|</span> <span class="n">Progress</span> <span class="o">|</span> <span class="n">Partition</span> <span class="o">|</span>
+<span class="o">+------------------+-------+------+----------+-----------+</span>
+<span class="o">|</span> <span class="p">(</span><span class="n">Current</span> <span class="n">groups</span><span class="p">)</span> <span class="o">|</span> <span class="no">NULL</span>  <span class="o">|</span> <span class="mi">758</span>  <span class="o">|</span> <span class="no">NULL</span>     <span class="o">|</span>         <span class="mi">0</span> <span class="o">|</span>
+<span class="o">|</span> <span class="p">(</span><span class="n">Current</span> <span class="n">groups</span><span class="p">)</span> <span class="o">|</span> <span class="no">NULL</span>  <span class="o">|</span> <span class="mi">802</span>  <span class="o">|</span> <span class="no">NULL</span>     <span class="o">|</span>         <span class="mi">1</span> <span class="o">|</span>
+<span class="o">|</span> <span class="p">(</span><span class="n">Current</span> <span class="n">groups</span><span class="p">)</span> <span class="o">|</span> <span class="no">NULL</span>  <span class="o">|</span> <span class="mi">746</span>  <span class="o">|</span> <span class="no">NULL</span>     <span class="o">|</span>         <span class="mi">2</span> <span class="o">|</span>
+<span class="o">|</span> <span class="p">(</span><span class="n">Current</span> <span class="n">groups</span><span class="p">)</span> <span class="o">|</span> <span class="no">NULL</span>  <span class="o">|</span> <span class="mi">750</span>  <span class="o">|</span> <span class="no">NULL</span>     <span class="o">|</span>         <span class="mi">3</span> <span class="o">|</span>
+<span class="o">+------------------+-------+------+----------+-----------+</span>
+<span class="mi">4</span> <span class="n">rows</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+<p>At this time any highly selective select will materialize only one Row Segment per partition.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Unlike <tt class="docutils literal"><span class="pre">OPTIMIZE</span> <span class="pre">TABLE</span> <span class="pre">&lt;name&gt;</span></tt>, which takes amortized time proportional to the size of recently loaded data,
+<tt class="docutils literal"><span class="pre">OPTIMIZE</span> <span class="pre">TABLE</span> <span class="pre">&lt;name&gt;</span> <span class="pre">FULL</span></tt> always takes time in the order of magnitude of the size of the entire table, unless
+data in that table is already sorted.</p>
+</div>
+</div>
+<div class="section" id="choosing-a-columnstore-or-row-store">
+<h3>Choosing a Columnstore or Row Store<a class="headerlink" href="index.html#choosing-a-columnstore-or-row-store" title="Permalink to this headline">¶</a></h3>
+<p>The following table enumerates the strengths and intended uses of each storage engine.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="42%" />
+<col width="58%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">In-Memory Row Store</th>
+<th class="head">Flash, SSD, or Disk-based Columnstore</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Operational/transactional workloads</td>
+<td>Analytical workloads</td>
+</tr>
+<tr class="row-odd"><td>Single-record insert performance</td>
+<td>Batched load performance</td>
+</tr>
+<tr class="row-even"><td>Random seek performance</td>
+<td>Fast aggregations and table scans</td>
+</tr>
+<tr class="row-odd"><td>Updates are frequent</td>
+<td>Updates are rare</td>
+</tr>
+<tr class="row-even"><td>Any types of deletes</td>
+<td>Deletes that remove large # of rows</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>Compression</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="system-considerations">
+<h3>System considerations<a class="headerlink" href="index.html#system-considerations" title="Permalink to this headline">¶</a></h3>
+<p>As mentioned above, the columnstore is primarily disk-based and high throughput disks are desirable to ensure the fastest load and query times.  Locally attached SSDs are the simplest way to achieve this, however, other disk systems can be used to achieve high throughput.</p>
+</div>
+</div>
+<div class="section" id="where-to-go-from-here">
+<h2>Where to Go from Here<a class="headerlink" href="index.html#where-to-go-from-here" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="../../admin/index.html"><em>Operations Manual</em></a></li>
+<li><a class="reference internal" href="../database/index.html"><em>Databases</em></a></li>
+<li><a class="reference internal" href="../table/index.html"><em>Tables</em></a></li>
+<li><a class="reference internal" href="../schema/index.html"><em>Schemas</em></a></li>
+</ul>
+</div>
+</div>
+
+
+                    </div>
+                    <footer data-swiftype-index="false">
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../geospatial/index.html" class="btn btn-neutral float-right" title="Geospatial Guide">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../distributed_sql/index.html" class="btn btn-neutral" title="Distributed SQL"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&copy; Copyright 2015, MemSQL</p>
+  </div>
+</footer>
+                </div>
+            </div>
+
+        </section>
+    </div>
+
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/underscore-min.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery.ba-hashchange.min.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery.swiftype.search.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery.swiftype.autocomplete.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/theme.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/search.js"></script> 
+
+        <!-- Google Analytics -->
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-21693588-3', 'auto');
+            ga('send', 'pageview');
+        </script>
+        <!-- End Google Analytics -->
+
+        <script type="text/javascript">
+            $.ajax({
+                url: document.location.protocol + '//munchkin.marketo.net/munchkin.js',
+                dataType: 'script',
+                cache: true,
+                success: function() {
+                    Munchkin.init('759-YLI-316');
+                }
+            });
+        </script>
+    </body>
+</html>

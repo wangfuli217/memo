@@ -1,0 +1,629 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 8.4.  File Input and Output</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch08lev1sec3.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch08lev1sec5.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch08lev1sec4"></a>
+
+        <h3 class="docSection1Title">8.4. File Input and Output</h3>
+        <h3 class="docSection1Title">8.4. 文件的输入和输出</h3>
+
+	<a name="idd1e59887"></a><a name="idd1e59891"></a><a name="idd1e59897"></a><a name="idd1e59903"></a><a name="idd1e59910"></a><a name="idd1e59916"></a><a name="idd1e59920"></a><a name="idd1e59926"></a><a name="idd1e59933"></a><a name="idd1e59937"></a><a name="idd1e59943"></a><a name="idd1e59950"></a>
+        <p class="docText">The <tt>fstream</tt> header defines three types to support file IO:</p>
+        <p class="docText"><tt>fstream</tt> 头文件定义了三种支持文件 IO 的类型：</p>
+
+        <div style="font-weight:bold">
+          <ol class="docList" type="1">
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList"><tt>ifstream</tt>, derived from <tt>istream</tt>, reads from a file.</p>
+                <p class="docList"><tt>ifstream</tt>，由 <tt>istream</tt> 派生而来，提供读文件的功能。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList"><tt>ofstream</tt>, derived from <tt>ostream</tt>, writes to a file.</p>
+                <p class="docList"><tt>ofstream</tt>，由 <tt>ostream</tt> 派生而来，提供写文件的功能。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList"><tt>fstream</tt>, derived from <tt>iostream</tt>, reads and writes the same file.</p>
+                <p class="docList"><tt>fstream</tt>，由 <tt>iostream</tt> 派生而来，提供读写同一个文件的功能。</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+
+        <p class="docText">The fact that these types are derived from the corresponding <tt>iostream</tt> types means that we already know most of what we need to know about how to use the <tt>fstream</tt> types. In particular, we can use the IO operators (<tt>&lt;&lt;</tt> and <tt>&gt;&gt;</tt>) to do formatted IO on a file, and the material covered in the previous sections on condition states apply identically to <tt>fstream</tt> objects.</p>
+        <p class="docText">这些类型都由相应的 <tt>iostream</tt> 类型派生而来，这个事实意味着我们已经知道使用 <tt>fstream</tt> 类型需要了解的大部分内容了。特别是，可使用 IO 操作符（<tt>&lt;&lt;</tt> 和 <tt>&gt;&gt;</tt> ）在文件上实现格式化的 IO，而且在前面章节介绍的条件状态也同样适用于 <tt>fstream</tt> 对象。</p>
+
+        <p class="docText">In addition to the behavior that <tt>fstream</tt> types inherit, they also define two new operations of their own<tt>open</tt> and <tt>close</tt>along with a constructor that takes the name of a file to open. These operations can be called on objects of <tt>fstream, ifstream</tt>, or <tt>ofstream</tt> but not on the other IO types.</p>
+	<p class="docText"><tt>fstream</tt> 类型除了继承下来的行为外，还定义了两个自己的新操作—— <tt>open</tt> 和 <tt>close</tt>，以及形参为要打开的文件名的构造函数。<tt>fstream</tt>、<tt>ifstream</tt> 或 <tt>ofstream</tt> 对象可调用这些操作，而其他的 IO 类型则不能调用。</p>
+	
+	<a name="ch08lev2sec10"></a>
+        <h4 class="docSection2Title">8.4.1. Using File Stream Objects</h4>
+        <h4 class="docSection2Title">8.4.1. 文件流对象的使用</h4>
+
+        <p class="docText">So far our programs have used the library-defined objects, <tt>cin, cout</tt>, and <tt>cerr</tt>. When we want to read or write a file, we must define our own objects, and bind them to the desired files. Assuming that <tt>ifile</tt> and <tt>ofile</tt> are <tt>strings</tt> with the names of the files we want to read and write, we might write code such as</p>
+        <p class="docText">迄今为止，我们的程序已经使用过标准库定义的对象：<tt>cin</tt>、<tt>cout</tt> 和 <tt>cerr</tt>。需要读写文件时，则必须定义自己的对象，并将它们绑定在需要的文件上。假设 <tt>ifile</tt> 和 <tt>ofile</tt> 是存储希望读写的文件名的 <tt>strings</tt> 对象，可如下编写代码：</p>
+        <pre>
+    // <span class="docEmphItalicAlt">construct an</span> <span class="docEmphasis">ifstream</span> <span class="docEmphItalicAlt">and bind it to the file named</span> <span class="docEmphasis">ifile</span>
+    ifstream infile(ifile.c_str());
+    // <span class="docEmphasis">ofstream</span> <span class="docEmphItalicAlt">output file object to write file named</span> <span class="docEmphasis">ofile</span>
+    ofstream outfile(ofile.c_str());
+</pre><br>
+
+        <p class="docText">to define and open a pair of <tt>fstream</tt> objects. <tt>infile</tt> is a stream that we can read and <tt>outfile</tt> is a stream that we can write. Supplying a file name as an initializer to an <tt>ifstream</tt> or <tt>ofstream</tt> object has the effect of opening the specified file.</p>
+        <p class="docText">上述代码定义并打开了一对 <tt>fstream</tt> 对象。<tt>infile</tt> 是读的流，而 <tt>outfile</tt> 则是写的流。为 <tt>ifstream</tt> 或者 <tt>ofstream</tt> 对象提供文件名作为初始化式，就相当于打开了特定的文件。</p>
+        <pre>
+    ifstream infile;    // <span class="docEmphItalicAlt">unbound input file stream</span>
+    ofstream outfile;   // <span class="docEmphItalicAlt">unbound output file stream</span>
+</pre><br>
+
+        <p class="docText">These definitions define <tt>infile</tt> as a stream object that will read from a file and <tt>outfile</tt> as an object that we can use to write to a file. Neither object is as yet bound to a file. Before we use an <tt>fstream</tt> object, we must also bind it to a file to read or write:</p>
+        <p class="docText">上述语句将 <tt>infile</tt> 定义为读文件的流对象，将 <tt>outfile</tt> 定义为写文件的对象。这两个对象都没有捆绑具体的文件。在使用 <tt>fstream</tt> 对象之前，还必须使这些对象捆绑要读写的文件：</p>
+        <pre>
+    infile.open("in");   // <span class="docEmphItalicAlt">open file named "in" in the current directory</span>
+    outfile.open("out"); // <span class="docEmphItalicAlt">open file named "out" in the current directory</span>
+</pre><br>
+
+        <p class="docText">We bind an existing <tt>fstream</tt> object to the specified file by calling the <tt>open</tt> member. The <tt>open</tt> function does whatever system-specific operations are required to locate the given file and open it for reading or writing as appropriate.</p>
+	<p class="docText">调用 <tt>open</tt> 成员函数将已存在的 <tt>fstream</tt> 对象与特定文件绑定。为了实现读写，需要将指定的文件打开并定位，<tt>open</tt> 函数完成系统指定的所有需要的操作。</p>
+	
+	<a name="ch08sb04"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Caution: File Names in C++</h2>
+              <h2 class="docSidebarTitle">警告：C++ 中的文件名</h2>
+
+		<a name="idd1e60150"></a><a name="idd1e60156"></a><a name="idd1e60160"></a><a name="idd1e60167"></a><a name="idd1e60174"></a><a name="idd1e60181"></a>
+              <p class="docText"><span class="docEmphStrong">For historical reasons, the IO library uses C-style character strings (<a class="docLink" href="ch04lev1sec3.html#ch04lev1sec3" >Section 4.3</a>, p. <a class="docLink" href="ch04lev1sec3.html#ch04lev1sec3" >130</a>) rather than C++ <tt>strings</tt> to refer to file names. When we call <tt>open</tt> or use a file name as the initializer when creating an <tt>fstream</tt> object, the argument we pass is a C-style string, not a library <tt>string</tt>. Often our programs obtain file names by reading the standard input. As usual, it is a good idea to read into a <tt>string</tt>, not a C-style character array. Assuming that the name of the file we wish to use is in a <tt>string</tt>, we can use the <tt>c_str</tt> member (<a class="docLink" href="ch04lev1sec3.html#ch04lev2sec15" >Section 4.3.2</a>, p. <a class="docLink" href="ch04lev1sec3.html#ch04lev2sec15" >139</a>) to obtain a C-style string.</span></p>
+	      <p class="docText"><span class="docEmphStrong">由于历史原因，IO 标准库使用 C 风格字符串（<a class="docLink" href="ch04lev1sec3.html#ch04lev1sec3" >第 4.3 节</a>）而不是 C++ <tt>strings</tt> 类型的字符串作为文件名。在创建 <tt>fstream</tt> 对象时，如果调用 <tt>open</tt> 或使用文件名作初始化式，需要传递的实参应为 C 风格字符串，而不是标准库 <tt>strings</tt> 对象。程序常常从标准输入获得文件名。通常，比较好的方法是将文件名读入 string 对象，而不是 C 风格字符数组。假设要使用的文件名保存在 <tt>string</tt> 对象中，则可调用 <tt>c_str</tt> 成员（<a class="docLink" href="ch04lev1sec3.html#ch04lev2sec15" >第 4.3.2 节</a>）获取 C 风格字符串。</p>
+            </td>
+          </tr>
+        </table><br>
+        <a name="ch08lev3sec1"></a>
+
+        <h5 class="docSection3Title">Checking Whether an Open Succeeded</h5>
+        <h5 class="docSection3Title">检查文件打开是否成功</h5>
+
+        <p class="docText">After opening a file, it is usually a good idea to verify that the open succeeded:</p>
+        <p class="docText">打开文件后，通常要检验打开是否成功，这是一个好习惯：</p>
+        <pre>
+    // <span class="docEmphItalicAlt">check that the</span> <span class="docEmphasis">open</span> <span class="docEmphItalicAlt">succeeded</span>
+    if (!infile) {
+        cerr &lt;&lt; "error: unable to open input file: "
+             &lt;&lt; ifile &lt;&lt; endl;
+        return -1;
+    }
+</pre><br>
+
+        <p class="docText">This condition is similar to those we've used to test whether <tt>cin</tt> had hit end-of-file or encountered some other error. When we test a stream, the effect is to test whether the object is "okay" for input or output. If the <tt>open</tt> fails, then the state of the <tt>fstream</tt> object is that it is not ready for doing IO. When we test the object</p>
+        <p class="docText">这个条件与之前测试 <tt>cin</tt> 是否到达文件尾或遇到某些其他错误的条件类似。检查流等效于检查对象是否“适合”输入或输出。如果打开（<tt>open</tt>）失败，则说明 <tt>fstream</tt> 对象还没有为 IO 做好准备。当测试对象</p>
+        <pre>
+    if (outfile) // <span class="docEmphItalicAlt">ok to use outfile?</span>
+</pre><br>
+
+        <p class="docText">a <tt>true</tt> return means that it is okay to use the file. Because we want to know if the file is <span class="docEmphasis">not</span> okay, we invert the return from checking the stream:</p>
+        <p class="docText">返回 <tt>true</tt> 意味着文件已经可以使用。由于希望知道文件是否未准备好，则对返回值取反来检查流：</p>
+        <pre>
+    if (!outfile) // <span class="docEmphItalicAlt">not ok to use outfile?</span>
+</pre><br>
+        <a name="ch08lev3sec2"></a>
+
+        <h5 class="docSection3Title">Rebinding a File Stream to a New File</h5>
+        <h5 class="docSection3Title">将文件流与新文件重新捆绑</h5>
+
+        <p class="docText">Once an <tt>fstream</tt> has been opened, it remains associated with the specified file. To associate the <tt>fstream</tt> with a different file, we must first <tt>close</tt> the existing file and then <tt>open</tt> a different file:</p>
+        <p class="docText"><tt>fstream</tt> 对象一旦打开，就保持与指定的文件相关联。如果要把 <tt>fstream</tt> 对象与另一个不同的文件关联，则必须先关闭（<tt>close</tt>）现在的文件，然后打开（<tt>open</tt>）另一个文件：要点是在尝试打开新文件之前，必须先关闭当前的文件流。open 函数会检查流是否已经打开。如果已经打开，则设置内部状态，以指出发生了错误。接下来使用文件流的任何尝试都会失败。</p>
+        <pre>
+     ifstream infile("in");      // <span class="docEmphItalicAlt">opens file named "in" for reading</span>
+     infile.close();             // <span class="docEmphItalicAlt">closes "in"</span>
+     infile.open("next");        // <span class="docEmphItalicAlt">opens file named "next" for reading</span>
+</pre><br>
+
+	
+	<a name="ch08lev3sec3"></a>
+        <h5 class="docSection3Title">Clearing the State of a File Stream</h5>
+        <h5 class="docSection3Title">清除文件流的状态</h5>
+
+        <p class="docText">Consider a program that has a <tt>vector</tt> containing names of files it should open and read, doing some processing on the words stored in each file. Assuming the <tt>vector</tt> is named <tt>files</tt>, such a progam might have a loop like the following:</p>
+        <p class="docText">考虑这样的程序，它有一个 <tt>vector</tt> 对象，包含一些要打开并读取的文件名，程序要对每个文件中存储的单词做一些处理。假设该 <tt>vector</tt> 对象命名为 <tt>files</tt>，程序也许会有如下循环：</p>
+        <pre>
+    // <span class="docEmphItalicAlt">for each file in the</span> <span class="docEmphasis">vector</span>
+    while (it != files.end()) {
+        ifstream input(it-&gt;c_str());   // <span class="docEmphItalicAlt">open the file;</span>
+        // <span class="docEmphItalicAlt">if the file is ok, read and "process" the input</span>
+        if (!input)
+            break;                  // <span class="docEmphItalicAlt">error: bail out!</span>
+        while(input &gt;&gt; s)               // <span class="docEmphItalicAlt">do the work on this file</span>
+            process(s);
+        ++it;                           // <span class="docEmphItalicAlt">increment iterator to get next file</span>
+    }
+</pre><br>
+
+	<a name="idd1e60381"></a>
+        <p class="docText">Each trip through the loop constructs the <tt>ifstream</tt> named <tt>input</tt> open to read the indicated file. The initializer in the constructor uses the arrow operator (<a class="docLink" href="ch05lev1sec6.html#ch05lev1sec6" >Section 5.6</a>, p. <a class="docLink" href="ch05lev1sec6.html#ch05lev1sec6" >164</a>) which dereferences <tt>it</tt> and fetches the <tt>c_str</tt> member from the underlying <tt>string</tt> that <tt>it</tt> currently denotes. The file is opened by the constructor, and assuming the <tt>open</tt> succeeded, we read that file until we hit end-of-file or some other error condition. At that point, <tt>input</tt> is in an error state. Any further attempt to read from <tt>input</tt> will fail. Because <tt>input</tt> is local to the <tt>while</tt> loop, it is created on each iteration. That means that it starts out each iteration in a clean state<tt>input.good()</tt> is <tt>true</tt>.</p>
+	<p class="docText">每一次循环都构造了名为 <tt>input</tt> 的 <tt>ifstream</tt> 对象，打开并读取指定的文件。构造函数的初始化式使用了箭头操作符（<a class="docLink" href="ch05lev1sec6.html#ch05lev1sec6" >第 5.6 节</a>）对 <tt>it</tt> 进行解引用，从而获取 <tt>it</tt> 当前表示的 <tt>string</tt> 对象的 <tt>c_str</tt> 成员。文件由构造函数打开，并假设打开成功，读取文件直到到达文件结束符或者出现其他的错误条件为止。在这个点上，<tt>input</tt> 处于错误状态。任何读 <tt>input</tt> 的尝试都会失败。因为 <tt>input</tt> 是 <tt>while</tt> 循环的局部变量，在每次迭代中创建。这就意味着它在每次循环中都以干净的状态即 <tt>input.good()</tt> 为 <tt>true</tt>，开始使用。</p>
+
+        <p class="docText">If we wanted to avoid creating a new stream object on each trip through the <tt>while</tt>, we might move the definition of <tt>input</tt> out of the <tt>while</tt>. This simple change means that we must manage the stream state more carefully. When we encounter end-of-file, or any other error, the internal state of the stream is set so that further reads or writes are not allowed. Closing a stream does not change the internal state of the stream object. If the last read or write operation failed, the state of the object remains in a failure mode until we execute <tt>clear</tt> to reset the condition of the stream. After the <tt>clear</tt>, it is as if we had created the object afresh.</p>
+        <p class="docText">如果希望避免在每次 <tt>while</tt> 循环过程中创建新流对象，可将 <tt>input</tt> 的定义移到 <tt>while</tt> 之前。这点小小的改动意味着必须更仔细地管理流的状态。如果遇到文件结束符或其他错误，将设置流的内部状态，以便之后不允许再对该流做读写操作。关闭流并不能改变流对象的内部状态。如果最后的读写操作失败了，对象的状态将保持为错误模式，直到执行 <tt>clear</tt> 操作重新恢复流的状态为止。调用 <tt>clear</tt> 后，就像重新创建了该对象一样。</p>
+
+        <p class="docText">If we wish to reuse an existing stream object, our <tt>while</tt> loop must remember to <tt>close</tt> and <tt>clear</tt> the stream on each trip through the loop:</p>
+        <p class="docText">如果打算重用已存在的流对象，那么 <tt>while</tt> 循环必须在每次循环进记得关闭（<tt>close</tt>）和清空（<tt>clear</tt>）文件流：</p>
+        <pre>
+    ifstream input;
+    vector&lt;string&gt;::const_iterator it = files.begin();
+    //   <span class="docEmphItalicAlt">for each file in the</span> <span class="docEmphasis">vector</span>
+    while (it != files.end()) {
+        input.open(it-&gt;c_str());  // <span class="docEmphItalicAlt">open the file</span>
+        // <span class="docEmphItalicAlt">if the file is ok, read and "process" the input</span>
+        if (!input)
+            break;                    // <span class="docEmphItalicAlt">error: bail out!</span>
+        while(input &gt;&gt; s) // <span class="docEmphItalicAlt">do the work on this file</span>
+            process(s);
+        input.close();        // <span class="docEmphItalicAlt">close file when we're done with it</span>
+        input.clear();        // <span class="docEmphItalicAlt">reset state to ok</span>
+        ++it;                 // <span class="docEmphItalicAlt">increment iterator to get next file</span>
+    }
+</pre><br>
+
+        <p class="docText">Had we neglected the call to <tt>clear</tt>, this loop would read only the first file. To see why, consider what happens in this loop: First we open the indicated file. Assuming <tt>open</tt> succeeded, we read the file until we hit end-of-file or some other error condition. At that point, <tt>input</tt> is in an error state. If we <tt>close</tt> but do not <tt>clear</tt> <a name="idd1e60515"></a><a name="idd1e60520"></a><a name="idd1e60525"></a><a name="idd1e60530"></a><a name="idd1e60533"></a><a name="idd1e60539"></a><a name="idd1e60545"></a><a name="idd1e60550"></a><a name="idd1e60553"></a><a name="idd1e60559"></a><a name="idd1e60564"></a>the stream, then any subsequent input operation on <tt>input</tt> will fail. Once we have <tt>close</tt>d the file, we can <tt>open</tt> the next one. However, the read of <tt>input</tt> in the inner <tt>while</tt> will failafter all, the last read from this stream hit end-of-file. The fact that the end-of-file was on a different file is irrelevant!</p>
+	<p class="docText">如果忽略 <tt>clear</tt> 的调用，则循环只能读入第一个文件。要了解其原因，就需要考虑在循环中发生了什么：首先打开指定的文件。假设打开成功，则读取文件直到文件结束或者出现其他错误条件为止。在这个点上，<tt>input</tt> 处于错误状态。如果在关闭（<tt>close</tt>）该流前没有调用 <tt>clear</tt> 清除流的状态，接着在 <tt>input</tt> 上做的任何输入运算都会失败。一旦关闭该文件，再打开　下一个文件时，在内层 <tt>while</tt> 循环上读 <tt>input</tt> 仍然会失败——毕竟最后一次对流的读操作到达了文件结束符，事实上该文件结束符对应的是另一个与本文件无关的其他文件。</p>
+	
+	<a name="ch08note02"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">If we reuse a file stream to read or write more than one file, we must <tt>clear</tt> the stream before using it to read from another file.</p>
+                <p class="docText">如果程序员需要重用文件流读写多个文件，必须在读另一个文件之前调用 <tt>clear</tt> 清除该流的状态。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch08sb05"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 8.4.1</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch08qa3q1"></a><b>Exercise 8.6:</b></td>
+
+                    <td>
+                      <p class="docText">Because <tt>ifstream</tt> inherits from <tt>istream</tt>, we can pass an <tt>ifstream</tt> object to a function that takes a reference to an <tt>istream</tt>. Use the function you wrote for the first exercise in <a class="docLink" href="ch08lev1sec2.html#ch08lev1sec2" >Section 8.2</a> (p. <a class="docLink" href="ch08lev1sec2.html#ch08lev1sec2" >291</a>) to read a named file.</p>
+                      <p class="docText">由于 <tt>ifstream</tt> 继承了 <tt>istream</tt>，因此可将 <tt>ifstream</tt> 对象传递给形参为 <tt>istream</tt> 引用的函数。使用<a class="docLink" href="ch08lev1sec2.html#ch08lev1sec2" >第 8.2 节</a>第一个习题编写的函数读取已命名的文件。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch08qa3q2"></a><b>Exercise 8.7:</b></td>
+
+                    <td>
+                      <p class="docText">The two programs we wrote in this section used a <tt>break</tt> to exit the <tt>while</tt> loop if the open failed for any file in the <tt>vector</tt>. Rewrite these two loops to print a warning message if a file can't be opened and continue processing by getting the next file name from the <tt>vector</tt>.</p>
+                      <p class="docText">本节编写的两个程序，在打开 <tt>vector</tt> 容器中存放的任何文件失败时，使用 <tt>break</tt> 跳出 <tt>while</tt> 循环。重写这两个循环，如果文件无法打开，则输出警告信息，然后从 <tt>vector</tt> 中获取下一个文件名继续处理。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch08qa3q3"></a><b>Exercise 8.8:</b></td>
+
+                    <td>
+                      <p class="docText">The programs in the previous exercise can be written without using a <tt>continue</tt> statement. Write the program with and without using a <tt>continue</tt>.</p>
+                      <p class="docText">上一个习题的程序可以不用 <tt>continue</tt> 语句实现。分别使用或不使用 <tt>continue</tt> 语句编写该程序。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch08qa3q4"></a><b>Exercise 8.9:</b></td>
+
+                    <td>
+                      <p class="docText">Write a function to open a file for input and read its contents into a <tt>vector</tt> of <tt>string</tt>s, storing each line as a separate element in the <tt>vector</tt>.</p>
+                      <p class="docText">编写函数打开文件用于输入，将文件内容读入 <tt>string</tt> 类型的 <tt>vector</tt> 容器，每一行存储为该容器对象的一个元素。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch08qa3q5"></a><b>Exercise 8.10:</b></td>
+
+                    <td>
+                      <p class="docText">Rewrite the previous program to store each word in a separate element.</p>
+                      <p class="docText">重写上面的程序，把文件中的每个单词存储为容器的一个元素。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a name="ch08lev2sec11"></a>
+
+        <h4 class="docSection2Title">8.4.2. File Modes</h4>
+        <h4 class="docSection2Title">8.4.2. 文件模式</h4>
+
+	<a name="ch08term4"></a>
+        <p class="docText">Whenever we open a fileeither through a call to <tt>open</tt> or as part of initializing a stream from a file namea <b><a class="docLink" href="ch08lev1sec7.html#gloss08_04" >file mode</a></b> is specified. Each <tt>fstream</tt> class defines a set of values that represent different modes in which the stream could be opened. Like the condition state flags, the file modes are integral constants that we use with the bitwise operators (<a class="docLink" href="ch05lev1sec3.html#ch05lev1sec3" >Section 5.3</a>, p. <a class="docLink" href="ch05lev1sec3.html#ch05lev1sec3" >154</a>) to set one or more modes when we open a given file. The file stream constructors and <tt>open</tt> have a default argument (<a class="docLink" href="ch07lev1sec4.html#ch07lev2sec17" >Section 7.4.1</a>, p. <a class="docLink" href="ch07lev1sec4.html#ch07lev2sec17" >253</a>) to set the file mode. The value of the default varies based on the type of the stream. Alternatively, we can supply the mode in which to open the file. <a class="docLink" href="ch08lev1sec4.html#ch08table03">Table 8.3</a> on the next page lists the file modes and their meanings.</p>
+	<p class="docText">在打开文件时，无论是调用 <tt>open</tt> 还是以文件名作为流初始化的一部分，都需指定<b><a class="docLink" href="ch08lev1sec7.html#gloss08_04" >文件模式（file mode）</a></b>。每个 <tt>fstream</tt> 类都定义了一组表示不同模式的值，用于指定流打开的不同模式。与条件状态标志一样，文件模式也是整型常量，在打开指定文件时，可用位操作符（<a class="docLink" href="ch05lev1sec3.html#ch05lev1sec3" >第 5.3 节</a>）设置一个或多个模式。文件流构造函数和 <tt>open</tt> 函数都提供了默认实参（<a class="docLink" href="ch07lev1sec4.html#ch07lev2sec17" >第 7.4.1 节</a>）设置文件模式。默认值因流类型的不同而不同。此外，还可以显式地以模式打开文件。<a class="docLink" href="ch08lev1sec4.html#ch08table03">表 8.3</a> 列出了文件模式及其含义。</p>
+	
+	<a name="ch08table03"></a>
+        <h5 class="docTableTitle">Table 8.3. File Modes</h5>
+        <h5 class="docTableTitle">表 8.3 文件模式</h5>
+
+        <table cellspacing="0" class="allBorders" border="1" rules="none" cellpadding="5">
+          <colgroup>
+            <col width="100">
+            <col width="300">
+          </colgroup>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>in</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">open for input</p>
+              <p class="docText">打开文件做读操作</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>out</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">open output</p>
+              <p class="docText">打开文件做写操作</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>app</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">seek to the end before every write</p>
+              <p class="docText">在每次写之前找到文件尾</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>ate</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">seek to the end immediately after the open</p>
+              <p class="docText">打开文件后立即将文件定位在文件尾</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>trunc</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">truncate an existing stream when opening it</p>
+              <p class="docText">打开文件时清空已存在的文件流</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>binary</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">do IO operations in binary mode</p>
+              <p class="docText">以二进制模式进行 IO 操作</p>
+            </td>
+          </tr>
+        </table><br>
+
+        <p class="docText">The modes <tt>out, trunc</tt>, and <tt>app</tt> may be specifed only for files associated with an <tt>ofstream</tt> or an <tt>fstream</tt>; <tt>in</tt> may be specified only for files associated with either <tt>ifstream</tt> or <tt>fstream</tt>. Any file may be opened in <tt>ate</tt> or <tt>binary</tt> mode. The <tt>ate</tt> mode has an effect only at the open: Opening a file in <tt>ate</tt> mode puts the file at the end-of-file immediately after the open. A stream opened in <tt>binary</tt> mode processes the file as a sequence of bytes; it does no interpretation of the characters in the stream.</p>
+        <p class="docText"><tt>out</tt>、<tt>trunc</tt> 和 <tt>app</tt> 模式只能用于指定与 <tt>ofstream</tt> 或 <tt>fstream</tt> 对象关联的文件；<tt>in</tt> 模式只能用于指定与 <tt>ifstream</tt> 或 <tt>fstream</tt> 对象关联的文件。所有的文件都可以用 <tt>ate</tt> 或 <tt>binary</tt> 模式打开。<tt>ate</tt> 模式只在打开时有效：文件打开后将定位在文件尾。以 <tt>binary</tt> 模式打开的流则将文件以字节序列的形式处理，而不解释流中的字符。</p>
+
+        <p class="docText">By default, files associated with an <tt>ifstream</tt> are opened in <tt>in</tt> mode, which is the mode that permits the file to be read. Files opened by an <tt>ofstream</tt> are opened in <tt>out</tt> mode, which permits the file to be written. A file opened in <tt>out</tt> mode is truncated: All data stored in the file is discarded.</p>
+	<p class="docText">默认时，与 <tt>ifstream</tt> 流对象关联的文件将以 <tt>in</tt> 模式打开，该模式允许文件做读的操作：与 <tt>ofstream</tt> 关联的文件则以 <tt>out</tt> 模式打开，使文件可写。以 <tt>out</tt> 模式打开的文件会被清空：丢弃该文件存储的所有数据。</p>
+	
+	<a name="ch08note03"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">In effect, specifying <tt>out</tt> mode for an <tt>ofstream</tt> is equivalent to specifying both <tt>out</tt> and <tt>trunc</tt>.</p>
+		<p class="docText">从效果来看，为 <tt>ofstream</tt> 对象指定 <tt>out</tt> 模式等效于同时指定了 <tt>out</tt> 和 <tt>trunc</tt> 模式。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">The only way to preserve the existing data in a file opened by an <tt>ofstream</tt> is to specify <tt>app</tt> mode explicitly:</p>
+	<p class="docText">对于用 <tt>ofstream</tt> 打开的文件，要保存文件中存在的数据，唯一方法是显式地指定 <tt>app</tt> 模式打开：</p>
+        <pre>
+    //  output <span class="docEmphItalicAlt">mode by default; truncates file named "file1"</span>
+    ofstream outfile("file1");
+    // <span class="docEmphItalicAlt">equivalent effect: "file1" is explicitly truncated</span>
+    ofstream outfile2("file1", ofstream::out | ofstream::trunc);
+    //  <span class="docEmphasis">append</span> <span class="docEmphItalicAlt">mode; adds new data at end of existing file named "file2"</span>
+    ofstream appfile("file2", ofstream::app);
+</pre><br>
+
+        <p class="docText">The definition of <tt>outfile2</tt> uses the bitwise OR operator (<a class="docLink" href="ch05lev1sec3.html#ch05lev1sec3" >Section 5.3</a>, p. <a class="docLink" href="ch05lev1sec3.html#ch05lev1sec3" >154</a>) to open <tt>inOut</tt> in both <tt>out</tt> and <tt>trunc</tt> mode.</p>
+	<p class="docText"><tt>outfile2</tt> 的定义使用了按位或操作符（<a class="docLink" href="ch05lev1sec3.html#ch05lev1sec3" >第 5.3 节</a>）将相应的文件同时以 <tt>out</tt> 和 <tt>trunc</tt> 模式打开。</p>
+	
+	<a name="ch08lev3sec4"></a>
+        <h5 class="docSection3Title">Using the Same File for Input and Output</h5>
+        <h5 class="docSection3Title">对同一个文件作输入和输出运算</h5>
+
+        <p class="docText">An <tt>fstream</tt> object can both read and write its associated file. How an <tt>fstream</tt> uses its file depends on the mode specified when we open the file.</p>
+        <p class="docText"><tt>fstream</tt> 对象既可以读也可以写它所关联的文件。<tt>fstream</tt> 如何使用它的文件取决于打开文件时指定的模式。</p>
+
+        <p class="docText">By default, an <tt>fstream</tt> is opened with both <tt>in</tt> and <tt>out</tt> set. A file opened with both <tt>in</tt> and <tt>out</tt> mode set is not truncated. If we open the file associated with an <tt>fstream</tt> with <tt>out</tt> mode, but not <tt>in</tt> mode specified, then the file is truncated. The file is also truncated if <tt>trunc</tt> is specified, regardless of whether <tt>in</tt> is specified. The following definition opens the file <tt>copyOut</tt> in both input and output mode:</p>
+        <p class="docText">默认情况下，<tt>fstream</tt> 对象以 <tt>in</tt> 和 <tt>out</tt> 模式同时打开。当文件同时以 <tt>in</tt> 和 <tt>out</tt> 打开时不清空。如果打开 <tt>fstream</tt> 所关联的文件时，只使用 <tt>out</tt> 模式，而不指定 <tt>in</tt> 模式，则文件会清空已存在的数据。如果打开文件时指定了 <tt>trunc</tt> 模式，则无论是否同时指定了 <tt>in</tt> 模式，文件同样会被清空。下面的定义将 <tt>copyOut</tt> 文件同时以输入和输出的模式打开：</p>
+        <pre>
+    // <span class="docEmphItalicAlt">open for input and output</span>
+    fstream inOut("copyOut", fstream::in | fstream::out);
+</pre><br>
+
+        <p class="docText"><a class="docLink" href="app01lev1sec3.html#app01lev2sec18" >Appendix A.3.8</a> (p. <a class="docLink" href="app01lev1sec3.html#app01lev2sec18" >837</a>) discusses how to use a file that is opened for both input and output.</p>
+	<p class="docText">对于同时以输入和输出的模式打开的文件，<a class="docLink" href="app01lev1sec3.html#app01lev2sec18" >附录 A.3.8</a> 将讨论其使用方法。</p>
+	
+	<a name="ch08lev3sec5"></a>
+        <h5 class="docSection3Title">Mode Is an Attribute of a File, Not a Stream</h5>
+        <h5 class="docSection3Title">模式是文件的属性而不是流的属性</h5>
+
+	<a name="idd1e61036"></a><a name="idd1e61041"></a><a name="idd1e61049"></a><a name="idd1e61057"></a>
+        <p class="docText">The mode is set each time a file is opened:</p>
+        <p class="docText">每次打开文件时都会设置模式</p>
+        <pre>
+    ofstream outfile;
+    // <span class="docEmphItalicAlt">output mode set to out, "scratchpad" truncated</span>
+    outfile.open("scratchpad", ofstream::out);
+    outfile.close();    // <span class="docEmphItalicAlt">close</span> <span class="docEmphasis">outfile</span> <span class="docEmphItalicAlt">so we can rebind it</span>
+    // <span class="docEmphItalicAlt">appends to file named "precious"</span>
+    outfile.open("precious", ofstream::app);
+    outfile.close();
+    // <span class="docEmphasis">output</span> <span class="docEmphItalicAlt">mode set by default, "out" truncated</span>
+    outfile.open("out");
+</pre><br>
+
+        <p class="docText">The first call to <tt>open</tt> specifies <tt>ofstream::out</tt>. The file named "scratchpad" in the current directory is opened in output mode; the file will be truncated. When we open the file named "precious," we ask for append mode. Any data in the file remains, and all writes are done at the end of the file. When we opened "out," we did not specify an output mode explicitly. It is opened in <tt>out</tt> mode, meaning that any data currently in "out" is discarded.</p>
+	<p class="docText">第一次调用 <tt>open</tt> 函数时，指定的模式是 <tt>ofstream::out</tt>。当前目录中名为“scratchpad”的文件以输出模式打开并清空。而名为“precious”的文件，则要求以添加模式打开：保存文件里的原有数据，所有的新内容在文件尾部写入。在打开“out”文件时，没有明确指明输出模式，该文件则以 <tt>out</tt> 模式打开，这意味着当前存储在“out”文件中的任何数据都将被丢弃。</p>
+	
+	<a name="ch08note04"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Any time <tt>open</tt> is called, the file mode is set, either explicitly or implicitly. If a mode is not specified, the default value is used.</p>
+                <p class="docText">只要调用 <tt>open</tt> 函数，就要设置文件模式，其模式的设置可以是显式的也可以是隐式的。如果没有指定文件模式，将使用默认值。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch08lev3sec6"></a>
+
+        <h5 class="docSection3Title">Valid Combinations for Open Mode</h5>
+        <h5 class="docSection3Title">打开模式的有效组合</h5>
+
+        <p class="docText">Not all open modes can be specified at once. Some are nonsensical, such as opening a file setting both <tt>in</tt> and <tt>trunc</tt>. That would yield a stream we intend to read but that we have truncated so that there is no data to read. <a class="docLink" href="ch08lev1sec4.html#ch08table04">Table 8.4</a> lists the valid mode combinations and their meanings.</p>
+	<p class="docText">并不是所有的打开模式都可以同时指定。有些模式组合是没有意义的，例如同时以 <tt>in</tt> 和 <tt>trunc</tt> 模式打开文件，准备读取所生成的流，但却因为 <tt>trunc</tt> 操作而导致无数据可读。<a class="docLink" href="ch08lev1sec4.html#ch08table04">表 8.4</a> 列出了有效的模式组合及其含义。</p>
+	
+	<a name="ch08table04"></a>
+        <h5 class="docTableTitle">Table 8.4. File Mode Combinations</h5>
+        <h5 class="docTableTitle">表 8.4 文件模式的组合</h5>
+
+        <table cellspacing="0" class="allBorders" border="1" rules="none" cellpadding="5">
+          <colgroup>
+            <col width="200">
+            <col width="300">
+          </colgroup>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>out</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">open for output; deletes existing data in the file</p>
+              <p class="docText">打开文件做写操作，删除文件中已有的数据</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>out | app</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">open for output; all writes at end of file</p>
+              <p class="docText">打开文件做写操作，在文件尾写入</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>out | trunc</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">same as <tt>out</tt></p>
+              <p class="docText">与 <tt>out</tt> 模式相同</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>in</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">open for input</p>
+              <p class="docText">打开文件做读操作</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>in | out</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">open for both input and output;<br>
+              positioned to read the beginning of the file</p>
+              <p class="docText">打开文件做读、写操作，并定位于文件开头处<br>
+</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>in | out | trunc</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">open for both input and output,<br>
+              deletes existing data in the file</p>
+              <p class="docText">打开文件做读、写操作，删除文件中已有的数据<br>
+</p>
+            </td>
+          </tr>
+        </table><br>
+
+        <p class="docText">Any open mode combination may also include <tt>ate</tt>. The effect of adding <tt>ate</tt> to any of these modes changes only the initial position of the file. Adding <tt>ate</tt> to any of these mode combinations positions the file to the end before the first input or output operation is performed.</p>
+	<p class="docText">上述所有的打开模式组合还可以添加 <tt>ate</tt> 模式。对这些模式添加 <tt>ate</tt> 只会改变文件打开时的初始化定位，在第一次读或写之前，将文件定位于文件末尾处。</p>
+	
+	<a name="ch08lev2sec12"></a>
+        <h4 class="docSection2Title">8.4.3. A Program to Open and Check Input Files</h4>
+        <h4 class="docSection2Title">8.4.3. 一个打开并检查输入文件的程序</h4>
+
+	<a name="idd1e61251"></a><a name="idd1e61256"></a><a name="idd1e61264"></a><a name="idd1e61272"></a><a name="idd1e61276"></a><a name="idd1e61284"></a><a name="idd1e61289"></a><a name="idd1e61293"></a><a name="idd1e61300"></a>
+        <p class="docText">Several programs in this book open a given file for input. Because we need to do this work in several programs, we'll write a function, named <tt>open_file</tt>, to perform it. Our function takes references to an <tt>ifstream</tt> and a <tt>string</tt>. The <tt>string</tt> holds the name of a file to associate with the given <tt>ifstream</tt>:</p>
+        <p class="docText">本书有好几个程序都要打开给定文件用输入。由于需要在多个程序里做这件工作，我们编写一个名为 <tt>open_file</tt> 的函数实现这个功能。这个函数有两个引用形参，分别是 <tt>ifstream</tt> 和 <tt>string</tt> 类型，其中 <tt>string</tt> 类型的引用形参存储与指定 <tt>ifstream</tt> 对象关联的文件名：</p>
+        <pre>
+    // <span class="docEmphItalicAlt">opens in binding it to the given</span> <span class="docEmphasis">file</span>
+    ifstream&amp; open_file(ifstream &amp;in, const string &amp;file)
+    {
+        in.close();     // <span class="docEmphasis">close</span> <span class="docEmphItalicAlt">in case it was already open</span>
+        in.clear();     // <span class="docEmphasis">clear</span> <span class="docEmphItalicAlt">any existing errors</span>
+        // <span class="docEmphItalicAlt">if the open fails, the stream will be in an invalid state</span>
+        in.open(file.c_str()); // <span class="docEmphItalicAlt">open the file we were given</span>
+        return in; // <span class="docEmphItalicAlt">condition state is</span> <span class="docEmphasis">good</span> <span class="docEmphItalicAlt">if</span> <span class="docEmphasis">open</span> <span class="docEmphItalicAlt">succeeded</span>
+    }
+</pre><br>
+
+        <p class="docText">Because we do not know what state the stream is in, we start by calling <tt>close</tt> and <tt>clear</tt> to put the stream into a valid state. We next attempt to <tt>open</tt> the given file. If the open fails, the stream's condition state will indicate that the stream is unusable. We finish by returning the stream, which is either bound to the given file and ready to use or is in an error condition.</p>
+	<p class="docText">由于不清楚流 <tt>in</tt> 的当前状态，因此首先调用 <tt>close</tt> 和 <tt>clear</tt> 将这个流设置为有效状态。然后尝试打开给定的文件。如果打开失败，流的条件状态将标志这个流是不可用的。最后返回流对象 <tt>in</tt>，此时，<tt>in</tt> 要么已经与指定文件绑定起来了，要么处于错误条件状态。</p>
+	
+	<a name="ch08sb06"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 8.4.3</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch08qa4q1"></a><b>Exercise 8.11:</b></td>
+
+                    <td>
+                      <p class="docText">In the <tt>open_file</tt> function, explain why we call <tt>clear</tt> before the call to <tt>open</tt>. What would happen if we neglected to make this call? What would happen if we called <tt>clear</tt> after the <tt>open</tt>?</p>
+                      <p class="docText">对于 <tt>open_file</tt> 函数，请解释为什么在调用 <tt>open</tt> 前先调用 <tt>clear</tt> 函数。如果忽略这个函数调用，会出现什么问题？如果在 <tt>open</tt> 后面调用 <tt>clear</tt> 函数，又会怎样？</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch08qa4q2"></a><b>Exercise 8.12:</b></td>
+
+                    <td>
+                      <p class="docText">In the <tt>open_file</tt> function, explain what the effect would be if the program failed to execute the <tt>close</tt>.</p>
+                      <p class="docText">对于 <tt>open_file</tt> 函数，请解释如果程序执行 <tt>close</tt> 函数失败，会产生什么结果？</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch08qa4q3"></a><b>Exercise 8.13:</b></td>
+
+                    <td>
+                      <p class="docText">Write a program similar to <tt>open_file</tt> that opens a file for output.</p>
+                      <p class="docText">编写类似 <tt>open_file</tt> 的程序打开文件用于输出。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch08qa4q4"></a><b>Exercise 8.14:</b></td>
+
+                    <td>
+                      <p class="docText">Use <tt>open_file</tt> and the program you wrote for the first exercise in <a class="docLink" href="ch08lev1sec2.html#ch08lev1sec2" >Section 8.2</a> (p. <a class="docLink" href="ch08lev1sec2.html#ch08lev1sec2" >291</a>) to open a given file and read its contents.</p>
+                      <p class="docText">使用 <tt>open_file</tt> 函数以及<a class="docLink" href="ch08lev1sec2.html#ch08lev1sec2" >第 8.2 节</a>第一个习题编写的程序，打开给定的文件并读取其内容。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a href="21001535.html" ><img src="images/pixel.gif"  alt="" width="1" height="1" border="0"></a>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch08lev1sec3.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch08lev1sec5.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

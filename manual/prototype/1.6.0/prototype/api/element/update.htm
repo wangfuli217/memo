@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Element.update - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>update</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">update(element[, newContent]) -> HTMLElement</code></pre>
+			<p>
+				替换 <code>element</code> 的内容为参数 <code>newContent</code> 指定的内容，返回元素本身。<br />
+				<strong>译注：</strong>该方法类似于 <code>element.innerHTML = newContent</code>。
+			</p>
+		</div>
+		<div id="abody">
+			<p><code>newContent</code> 可以是纯文本、HTML 片断或任意具有 <code>toString()</code> 方法的 JavaScript 对象。</p>
+			<p>
+				如果 <code>newContent</code> 中包含 <code>&lt;script&gt;</code> 标签，更新后将会自动运行标签中所包含的 Javascript 
+				代码（<code>Element.update</code> 方法内部调用了 <a href="../string/evalScripts.htm" >String#evalScripts</a> 方法）。
+			</p>
+			<p>
+				如果未提供参数，<code>Element.update</code> 将简单的清除 <code>element</code> 的内容。
+			</p>
+			<p>
+				注意：在 IE6 及以上版本中，该方法允许对与元素相关的表的内容进行无缝更新。
+			</p>
+			<h3>样例</h3>
+			<pre><code class="html">&lt;div id="fruits"&gt;carrot, eggplant and cucumber&lt;/div&gt;</code></pre>
+			<p>传递一个普通的字符串：</p>
+			<pre><code class="javascript">$('fruits').update('kiwi, banana and apple'); 
+// -> HTMLElement
+$('fruits').innerHTML 
+// -> 'kiwi, banana and apple' </code></pre>
+			<p>清除元素的内容：</p>
+			<pre><code class="javascript">$('fruits').update(); 
+// -> HTMLElement 
+$('fruits').innerHTML;
+// -> '' (一个空字符串) </code></pre>
+			<p>使用一个 HTML 片断：</p>
+			<pre><code class="javascript">$('fruits').update('&lt;p&gt;Kiwi, banana &lt;em&gt;and&lt;/em&gt; apple.&lt;/p&gt;'); 
+// -> HTMLElement 
+$('fruits').innerHTML; 
+// -> '&lt;p&gt;Kiwi, banana &lt;em&gt;and&lt;/em&gt; apple.&lt;/p&gt;' </code></pre>
+			<p>具有 &lt;script&gt; 标签的 HTML 片断：</p>
+			<pre><code class="javascript">$('fruits').update('&lt;p&gt;Kiwi, banana &lt;em&gt;and&lt;/em&gt; apple.&lt;/p&gt;&lt;script&gt;alert("updated!")&lt;/script&gt;'); 
+// -> HTMLElement（并弹出提示框显示："updated"）
+$('fruits').innerHTML; // -> '&lt;p&gt;Kiwi, banana &lt;em&gt;and&lt;/em&gt; apple.&lt;/p&gt;' </code></pre>
+			<p>使用 <code>toString()</code> 方法：</p>
+			<pre><code class="javascript">$('fruits').update(123); 
+// -> HTMLElement 
+$('fruits').innerHTML;
+// -> '123' </code></pre>
+			<p>最后，在自定义对象中增加 <code>toString</code> 方法，实现一些有趣的功能：</p>
+			<pre><code class="javascript">var Fruit = Class.create(); 
+Fruit.prototype = { 
+	initialize: function(fruit){ this.fruit = fruit; }, 
+	toString: function(){ return 'I am a fruit and my name is "' + this.fruit + '".'; }
+} 
+var apple = new Fruit('apple'); 
+$('fruits').update(apple);
+$('fruits').innerHTML; 
+// -> 'I am a fruit and my name is "apple".' </code></pre>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

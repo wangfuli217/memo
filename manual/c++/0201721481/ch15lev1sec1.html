@@ -1,0 +1,165 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 15.1.  OOP: An Overview</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch15.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch15lev1sec2.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch15lev1sec1"></a>
+
+        <h3 class="docSection1Title">15.1. OOP: An Overview</h3>
+        <h3 class="docSection1Title">15.1. 面向对象编程：概述</h3>
+
+	<a name="ch15term13"></a>
+        <p class="docText">The key idea behind OOP is <b><a class="docLink" href="ch15lev1sec11.html#gloss15_13" >polymorphism</a></b>. Polymorphism is derived from a Greek word meaning "many forms." We speak of types related by inheritance as polymorphic types, because in many cases we can use the "many forms" of a derived or base type interchangeably. As we'll see, in C++, polymorphism applies only to references or pointers to types related by inheritance.</p>
+	<p class="docText">面向对象编程的关键思想是多态性（polymorphism）。多态性派生于一个希腊单词，意思是“许多形态”。之所以称通过继承而相关联的类型为多态类型，是因为在许多情况下可以互换地使用派生类型或基类型的“许多形态”。正如我们将看到的，在 C++ 中，多态性仅用于通过继承而相关联的类型的引用或指针。</p>
+	
+	<a name="ch15lev2sec1"></a>
+        <h4 class="docSection2Title">Inheritance</h4>
+        <h4 class="docSection2Title">继承</h4>
+
+	<a name="ch15term2"></a><a name="ch15term4"></a>
+        <p class="docText">Inheritance lets us define classes that model relationships among types, sharing what is common and specializing only that which is inherently different. Members defined by the <b><a class="docLink" href="ch15lev1sec11.html#gloss15_02" >base class</a></b> are inherited by its <b><a class="docLink" href="ch15lev1sec11.html#gloss15_04" >derived classes</a></b>. The derived class can use, without change, those operations that do not depend on the specifics of the derived type. It can redefine those member functions that do depend on its type, specializing the function to take into account the peculiarities of the derived type. Finally, a derived class may define additional members beyond those it inherits from its base class.</p>
+	<p class="docText">通过继承我们能够定义这样的类，它们对类型之间的关系建模，共享公共的东西，仅仅特化本质上不同的东西。派生类（derived class）能够继承基类（base class）定义的成员，派生类可以无须改变而使用那些与派生类型具体特性不相关的操作，派生类可以重定义那些与派生类型相关的成员函数，将函数特化，考虑派生类型的特性。最后，除了从基类继承的成员之外，派生类还可以定义更多的成员。</p>
+
+	<a name="ch15term11"></a>
+        <p class="docText">Classes related by inheritance are often described as forming an <b><a class="docLink" href="ch15lev1sec11.html#gloss15_11" >inheritance hierarchy</a></b>. There is one class, referred to as the root, from which all the other classes inherit, directly or indirectly. In our bookstore example, we will define a base class, which we'll name <tt>Item_base</tt>, to represent undiscounted books. From <tt>Item_base</tt> we will inherit a second class, which we'll name <tt>Bulk_item</tt>, to represent books sold with a quantity discount.</p>
+	<p class="docText">我们经常称因继承而相关联的类为构成了一个<b><a class="docLink" href="ch15lev1sec11.html#gloss15_04" >继承层次</a></b>。其中有一个类称为根，所以其他类直接或间接继承根类。在书店例子中，我们将定义一个基类，命名为 <tt>Item_base</tt>，命名为 <tt>Bulk_item</tt>，表示带数量折扣销售的书。</p>
+
+        <p class="docText">At a minimum, these classes will define the following operations:</p>
+	<p class="docText">这些类至少定义如下操作：</p>
+
+        <ul>
+          <li>
+            <p class="docList">an operation named <tt>book</tt> that will return the ISBN</p>
+	    <p class="docList">名为 <tt>book</tt> 的操作，返回 ISBN。</p>
+          </li>
+
+          <li>
+            <p class="docList">an operation named <tt>net_price</tt> that returns the price for purchasing a specified number of copies of a book</p>
+	    <p class="docList">名为 <tt>net_price</tt> 的操作，返回购买指定数量的书的价格。</p>
+          </li>
+        </ul>
+
+	<a name="idd1e112537"></a><a name="idd1e112540"></a><a name="idd1e112546"></a><a name="idd1e112549"></a><a name="idd1e112554"></a><a name="idd1e112560"></a><a name="idd1e112566"></a><a name="idd1e112571"></a><a name="idd1e112574"></a>
+        <p class="docText">Classes derived from <tt>Item_base</tt> will inherit the <tt>book</tt> function without change: The derived classes have no need to redefine what it means to fetch the ISBN. On the other hand, each derived class will need to define its own version of the <tt>net_price</tt> function to implement an appropriate discount pricing strategy.</p>
+	<p class="docText"><tt>Item_base</tt> 的派生类将无须改变地继承 <tt>book</tt> 函数：派生类不需要重新定义获取 ISBN 的含义。另一方面，每个派生类需要定义自己的 <tt>net_price</tt> 函数版本，以实现适当的折扣价格策略。</p>
+
+	<a name="ch15term22"></a>
+        <p class="docText">In C++, a base class must indicate which of its functions it intends for its derived classes to redefine. Functions defined as <b><a class="docLink" href="ch15lev1sec11.html#gloss15_22" ><span class="docEmphStrong"><tt>virtual</tt></span></a></b> are ones that the base expects its derived classes to redefine. Functions that the base class intends its children to inherit are not defined as virtual.</p>
+	<p class="docText">在 C++ 中，基类必须指出希望派生类重写哪些函数，定义为 <b><a class="docLink" href="ch15lev2sec11.html#gloss15_22" ><span class="docEmphStrong"><tt>virtual</tt></span></a></b> 的函数是基类期待派生类重新定义的，基类希望派生类继承的函数不能定义为虚函数。</p>
+
+        <p class="docText">Given this discussion, we can see that our classes will define three (<tt>const</tt>) member functions:</p>
+	<p class="docText">讨论过这些之后，可以看到我们的类将定义三个（<tt>const</tt>）成员函数：</p>
+
+        <ul>
+          <li>
+            <p class="docList">A nonvirtual function, <tt>std::string book()</tt>, that returns the ISBN. It will be defined by <tt>Item_base</tt> and inherited by <tt>Bulk_item</tt>.</p>
+	    <p class="docList">非虚函数 <tt>std::string book()</tt>，返回 ISBN。由 <tt>Item_base</tt> 定义，<tt>Bulk_item</tt> 继承。</p>
+          </li>
+
+          <li>
+            <p class="docList">Two versions of the virtual function, <tt>double net_price(size_t)</tt>, to return the total price for a given number of copies of a specific book. Both <tt>Item_base</tt> and <tt>Bulk_item</tt> will define their own versions of this function.</p>
+	    <p class="docList">虚函数 <tt>double net_price(size_t)</tt> 的两个版本，返回给定数目的某书的总价。<tt>Item_base</tt> 类和 <tt>Bulk_item</tt> 类将定义该函数自己的版本。</p>
+          </li>
+        </ul>
+
+	<a name="ch15lev2sec2"></a>
+        <h4 class="docSection2Title">Dynamic Binding</h4>
+        <h4 class="docSection2Title">动态绑定</h4>
+
+	<a name="ch15term6"></a>
+        <p class="docText"><b><a class="docLink" href="ch15lev1sec11.html#gloss15_06" >Dynamic binding</a></b> lets us write programs that use objects of any type in an inheritance hierarchy without caring about the objects' specific types. Programs that use these classes need not distinguish between functions defined in the base or in a derived class.</p>
+	<p class="docText"><b><a class="docLink" href="ch15lev1sec11.html#gloss15_06" >动态绑定</a></b>我们能够编写程序使用继承层次中任意类型的对象，无须关心对象的具体类型。使用这些类的程序无须区分函数是在基类还是在派生类中定义的。</p>
+
+        <p class="docText">For example, our bookstore application would let a customer select several books in a single sale. When the customer was done shopping, the application would calculate the total due. One part of figuring the final bill would be to print for each book purchased a line reporting the total quantity and sales price for that portion of the purchase.</p>
+        <p class="docText">例如，书店应用程序可以允许顾客在一次交易中选择几本书，当顾客购书时，应用程序可以计算总的应付款，指出最终账单的一个部分将是为每本书打印一行，以显示总数和售价。</p>
+
+        <p class="docText">We might define a function named <tt>print_total</tt> to manage this part of the application. The <tt>print_total</tt> function, given an item and a count, should print the ISBN and the total price for purchasing the given number of copies of that particular book. The output of this function should look like:</p>
+	<p class="docText">可以定义一个名为 <tt>print_total</tt> 的函数管理应用程序的这个部分。给定一个项目和数量，函数应打印 ISBN 以及购买给定数量的某书的总价。这个函数的输出应该像这样：</p>
+        <pre>
+     <span class="docEmphStrong">ISBN: 0-201-54848-8 number sold: 3 total price: 98</span>
+     <span class="docEmphStrong">ISBN: 0-201-82470-1 number sold: 5 total price: 202.5</span>
+</pre><br>
+
+        <p class="docText">Our <tt>print_total</tt> function might look something like the following:</p>
+	<p class="docText">可以这样编写 <tt>print_total</tt> 函数：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">calculate and print price for given number of copies, applying any discounts</span>
+     void print_total(ostream &amp;os,
+                      const Item_base &amp;item, size_t n)
+     {
+          os &lt;&lt; "ISBN: " &lt;&lt; item.book() // <span class="docEmphItalicAlt">calls</span> <span class="docEmphasis">Item_base::book</span>
+             &lt;&lt; "\tnumber sold: " &lt;&lt; n &lt;&lt; "\ttotal price: "
+             // <span class="docEmphItalicAlt">virtual call: which version of</span> <span class="docEmphasis">net_price</span> <span class="docEmphItalicAlt">to call is resolved at run time</span>
+             &lt;&lt; item.net_price(n) &lt;&lt; endl;
+     }
+</pre><br>
+
+        <p class="docText">The function's work is trivial: It prints the results of calling <tt>book</tt> and <tt>net_price</tt> on its <tt>item</tt> parameter. There are two interesting things about this function.</p>
+	<p class="docText">该函数的工作很普通：调用其 <tt>item</tt> 形参的 <tt>book</tt> 和 <tt>net_price</tt> 函数，打印结果。关于这个函数，有两点值得注意。</p>
+
+	<a name="idd1e112713"></a><a name="idd1e112718"></a><a name="idd1e112723"></a>
+        <p class="docText">First, even though its second parameter is a reference to <tt>Item_base</tt>, we can pass either an <tt>Item_base</tt> object or a <tt>Bulk_item</tt> object to this function.</p>
+	<p class="docText">第一，虽然这个函数的第二形参是 <tt>Item_base</tt> 的引用但可以将 <tt>Item_base</tt> 对象或 <tt>Bulk_item</tt> 对象传给它。</p>
+
+        <p class="docText">Second, because the parameter is a reference and the <tt>net_price</tt> function is virtual, the call to <tt>net_price</tt> will be resolved at run time. The version of <tt>net_price</tt> that is called will depend on the type of the argument passed to <tt>print_total</tt>. When the argument to <tt>print_total</tt> is a <tt>Bulk_item</tt>, the version of <tt>net_price</tt> that is run will be the one defined in <tt>Bulk_item</tt> that applies a discount. If the argument is an <tt>Item_base</tt> object, then the call will be to the version defined by <tt>Item_base</tt>.</p>
+	<p class="docText">第二，因为形参是引用且 <tt>net_price</tt> 是虚函数，所以对 <tt>net_price</tt> 的调用将在运行时确定。调用哪个版本的 <tt>net_price</tt> 将依赖于传给 <tt>print_total</tt> 的实参。如果传给 <tt>print_total</tt> 的实参是一个 <tt>Bulk_item</tt> 对象，将运行 <tt>Bulk_item</tt> 中定义的应用折扣的 <tt>net_price</tt>；如果实参是一个 <tt>Item_base</tt> 对象，则调用由 <tt>Item_base</tt> 定义的版本。</p>
+
+	<a name="ch15note01"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">In C++, dynamic binding happens when a virtual function is called through a reference (or a pointer) to a base class. The fact that a reference (or pointer) might refer to either a base- or a derived-class object is the key to dynamic binding. Calls to virtual functions made through a reference (or pointer) are resolved at run time: The function that is called is the one defined by the actual type of the object to which the reference (or pointer) refers.</p>
+                <p class="docText">在 C++ 中，通过基类的引用（或指针）调用虚函数时，发生动态绑定。引用（或指针）既可以指向基类对象也可以指向派生类对象，这一事实是动态绑定的关键。用引用（或指针）调用的虚函数在运行时确定，被调用的函数是引用（或指针）所指对象的实际类型所定义的。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch15.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch15lev1sec2.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

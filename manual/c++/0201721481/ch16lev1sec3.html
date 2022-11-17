@@ -1,0 +1,239 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 16.3.  Template Compilation Models</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch16lev1sec2.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch16lev1sec4.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch16lev1sec3"></a>
+
+        <h3 class="docSection1Title">16.3. Template Compilation Models</h3>
+        <h3 class="docSection1Title">16.3. 模板编译模型</h3>
+
+        <p class="docText">When the compiler sees a template definition, it does not generate code immediately. The compiler produces type-specific instances of the template only when it sees a use of the template, such as when a function template is called or an object of a class template is defined.</p>
+        <p class="docText">当编译器看到模板定义的时候，它不立即产生代码。只有在看到用到模板时，如调用了函数模板或调用了类模板的对象的时候，编译器才产生特定类型的模板实例。</p>
+
+        <p class="docText">Ordinarily, when we call a function, the compiler needs to see only a declaration for the function. Similarly, when we define an object of class type, the class definition must be available, but the definitions of the member functions need not be present. As a result, we put class definitions and function declarations in header files and definitions of ordinary and class-member functions in source files.</p>
+        <p class="docText">一般而言，当调用函数的时候，编译器只需要看到函数的声明。类似地，定义类类型的对象时，类定义必须可用，但成员函数的定义不是必须存在的。因此，应该将类定义和函数声明放在头文件中，而普通函数和类成员函数的定义放在源文件中。</p>
+
+
+
+        <p class="docText">Templates are different: To generate an instantiation, the compiler must have access to the source code that defines the template. When we call a function template or a member function of a class template, the compiler needs the function definition. It needs the code we normally put in the source files.</p>
+                      <p class="docText">模板则不同：要进行实例化，编译器必须能够访问定义模板的源代码。当调用函数模板或类模板的成员函数的时候，编译器需要函数定义，需要那些通常放在源文件中的代码。</p>
+
+        <p class="docText">Standard C++ defines two models for compiling template code. In each of these models, we structure our programs in largely the same way: Class definitions and function declarations go in header files, and function and member definitions go in source files. The two models differ in how the definitions from the source files are made available to the compiler. As of this writing, all compilers support the first model, known as the "inclusion" model; only some compilers support the second, "separate compilation" model.</p>
+                      <p class="docText">标准 C++ 为编译模板代码定义了两种模型。在两种模型中，构造程序的方式很大程度上是相同的：类定义和函数声明放在头文件中，而函数定义和成员定义放在源文件中。两种模型的不同在于，编译器怎样使用来自源文件的定义。如本书所述，所有编译器都支持第一种模型，称为“包含”模型，只有一些编译器支持第二种模型，“分别编译”模型。</p>
+
+<a name="ch16note09"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">To compile code that uses your own class and function templates, you must consult your compiler's user's guide to see how your compiler handles instantiation.</p>
+                      <p class="docText">要编译使用自己的类模板和函数模板的代码，必须查阅编译器的用户指南，看看编译器怎样处理实例化。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch16lev2sec12"></a>
+
+        <h4 class="docSection2Title">Inclusion Compilation Model</h4>
+        <h4 class="docSection2Title">包含编译模型</h4>
+
+	<a name="ch16term5"></a>
+	<a name="idd1e127348"></a><a name="idd1e127354"></a><a name="idd1e127359"></a><a name="idd1e127365"></a><a name="idd1e127372"></a><a name="idd1e127376"></a><a name="idd1e127382"></a><a name="idd1e127388"></a><a name="idd1e127395"></a><a name="idd1e127401"></a><a name="idd1e127406"></a>
+        <p class="docText">In the <b><a class="docLink" href="ch16lev1sec9.html#gloss16_05" >inclusion compilation model</a></b>, the compiler must see the definition for any template that is used. Typically, we make the definitions available by adding a <tt>#include</tt> directive to the headers that declare function or class templates. That <tt>#include</tt> brings in the source file(s) that contain the associated definitions:</p>
+                      <p class="docText">在<b><a class="docLink" href="ch16lev1sec9.html#gloss16_05" >包含编译模型</a></b>中，编译器必须看到用到的所有模板的定义。一般而言，可以通过在声明函数模板或类模板的头文件中添加一条 <tt>#include</tt> 指示使定义可用，该 <tt>#include</tt> 引入了包含相关定义的源文件：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">header file</span> <span class="docEmphasis">utlities.h</span>
+     #ifndef UTLITIES_H // <span class="docEmphItalicAlt">header gaurd (Section 2.9.2, p. 69)</span>
+     #define UTLITIES_H
+     template &lt;class T&gt; int compare(const T&amp;, const T&amp;);
+     // <span class="docEmphItalicAlt">other declarations</span>
+
+     #include "utilities.cc" // <span class="docEmphItalicAlt">get the definitions for</span> <span class="docEmphasis">compare</span> <span class="docEmphItalicAlt">etc.</span>
+     #endif
+
+     // <span class="docEmphItalicAlt">implemenatation file</span> <span class="docEmphasis">utlities.cc</span>
+     template &lt;class T&gt; int compare(const T &amp;v1, const T &amp;v2)
+     {
+         if (v1 &lt; v2) return -1;
+         if (v2 &lt; v1) return 1;
+         return 0;
+     }
+     // <span class="docEmphItalicAlt">other definitions</span>
+</pre><br>
+
+        <p class="docText">This strategy lets us maintain the separation of header files and implementation files but ensures that the compiler will see both files when compiling code that uses the templates.</p>
+      <p class="docText">这一策略使我们能够保持头文件和实现文件的分享，但是需要保证编译器在编译使用模板的代码时能看到两种文件。</p>
+
+        <p class="docText">Some, especially older, compilers that use the inclusion model may generate multiple instantiations. If two or more separately compiled source files use the same template, these compilers will generate an instantiation for the template in each file. Ordinarily, this approach implies that a given template will be instantiated more than once. At link time, or during a prelink phase, the compiler selects one instantiation, discarding the others. In such cases, compile-time performance can be significantly degraded if there are a lot of files that instantiate the same template. This compile-time degradation is unlikely to be a problem on modern computers for many applications. However, in the context of large systems, the compile-time hit may become important.</p>
+        <p class="docText">某些使用包含模型的编译器，特别是较老的编译器，可以产生多个实例。如果两个或多个单独编译的源文件使用同一模板，这些编译器将为每个文件中的模板产生一个实例。通常，这种方法意味着给定模板将实例化超过一次。在链接的时候，或者在预链接阶段，编译器会选择一个实例化而丢弃其他的。在这种情况下，如果有许多实例化同一模板的文件，编译时性能会显著降低。对许多应用程序而言，这种编译时性能降低不大可能在现代计算机上成为问题，但是，在大系统环境中，编译时选择问题可能变得非常重要。</p>
+
+        <p class="docText">Such compilers often support mechanisms that avoid the compile-time overhead implicit in multiple instantiations of the same template. The way compilers optimize compile-time performance varies from one compiler to the next. If compile time for programs using templates is too burdensome, consult your compiler's user's guide to see what support your compiler offers to avoid redundant instantiations.</p>
+        <p class="docText">这种编译器通常支持某些机制，避免同一模板的多个实例化中隐含的编译进开销。编译器优化编译时性能的方法各不相同。如果使用模板的程序的编译时间难于承担，请查阅编译器的用户指南，看看你的编译器能提供什么支持以避免多余的实例化。</p><a name="ch16lev2sec13"></a>
+
+        <h4 class="docSection2Title">Separate Compilation Model</h4>
+        <h4 class="docSection2Title">分别编译模型</h4>
+
+        <p class="docText">In the <b><a name="ch16term10"></a><a class="docLink" href="ch16lev1sec9.html#gloss16_10" >separate compilation model</a></b>, the compiler keeps track of the associated template definitions for us. However, we must tell the compiler to remember a given template definition. We use the <b><a name="ch16term2"></a><a class="docLink" href="ch16lev1sec9.html#gloss16_02" ><span class="docEmphStrong"><tt>export</tt> keyword</span></a></b> to do so.</p>
+        <p class="docText">在<b><a class="docLink" href="ch16lev1sec9.html#gloss16_10" >分别编译模型</a></b>中，编译器会为我们跟踪相关的模板定义。但是，我们必须让编译器知道要记住给定的模板定义，可以使用 <b><a name="ch16term2"></a><a class="docLink" href="ch16lev1sec9.html#gloss16_02" ><span class="docEmphStrong"><tt>export</tt> 关键字</span></a></b>来做这件事。</p>
+
+	<a name="idd1e127486"></a><a name="idd1e127494"></a><a name="idd1e127500"></a>
+        <p class="docText">The <tt>export</tt> keyword indicates that a given definition might be needed to generate instantiations in other files. A template may be defined as exported only once in a program. The compiler figures out how to locate the template definition when it needs to generate these instantiations. The <tt>export</tt> keyword need not appear on the template declaration.</p>
+        <p class="docText"><tt>export</tt> 关键字能够指明给定的定义可能会需要在其他文件中产生实例化。在一个程序中，一个模板只能定义为导出一次。编译器在需要产生这些实例化时计算出怎样定位模板定义。<tt>export</tt> 关键字不必在模板声明中出现。</p>
+
+        <p class="docText">Ordinarily, we indicate that a function template is <tt>export</tt>ed as part of its definition. We do so by including the keyword <tt>export</tt> before the <tt>template</tt> keyword:</p>
+        <p class="docText">一般我们在函数模板的定义中指明函数模板为导出的，这是通过在关键字 <tt>template</tt> 之前包含 <tt>export</tt> 关键字而实现的：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">the template definition goes in a separately-compiled source file</span>
+     export template &lt;typename Type&gt;
+     Type sum(Type t1, Type t2) /* ...*/
+</pre><br>
+
+        <p class="docText">The declaration for this function template, should, as usual, be put in a header. The declaration must not specify <tt>export</tt>.</p>
+        <p class="docText">这个函数模板的声明像通常一样应放在头文件中，声明不必指定 <tt>export</tt>。</p>
+
+        <p class="docText">Using <tt>export</tt> on a class template is a bit more complicated. As usual, the class declaration must go in a header file. The class body in the header should not use the <tt>export</tt> keyword. If we used <tt>export</tt> in the header, then that header could be used by only one source file in the program.</p>
+        <p class="docText">对类模板使用 <tt>export</tt> 更复杂一些。通常，类声明必须放在头文件中，头文件中的类定义体不应该使用关键字 <tt>export</tt>，如果在头文件中使用了 <tt>export</tt>，则该头文件只能被程序中的一个源文件使用。</p>
+
+        <p class="docText">Instead, we <tt>export</tt> the class in the class implementation file:</p>
+        <p class="docText">相反，应该在类的实现文件中使用 <tt>export</tt>：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">class template header goes in shared header file</span>
+     template &lt;class Type&gt; class Queue { ... };
+     // <span class="docEmphasis">Queue.ccimplementation</span> <span class="docEmphItalicAlt">file declares</span> <span class="docEmphasis">Queue</span> <span class="docEmphItalicAlt">as exported</span>
+     export template &lt;class Type&gt; class Queue;
+     #include "Queue.h"
+     // <span class="docEmphasis">Queue</span> <span class="docEmphItalicAlt">member definitions</span>
+</pre><br>
+
+        <p class="docText">The members of an exported class are automatically declared as exported. It is also possible to declare individual members of a class template as exported. In this case, the keyword <tt>export</tt> is not specified on the class template itself. It is specified only on the specific member definitions to be exported. The definition of exported member functions need not be visible when the member is used. The definitions of any nonexported member must be treated as in the inclusion model: The definition should be placed inside the header that defines the class template.</p>
+        <p class="docText">导出类的成员将自动声明为导出的。也可以将类模板的个别成员声明为导出的，在这种情况下，关键字 <tt>export</tt> 不在类模板本身指定，而是只在被导出的特定成员定义上指定。导出成员函数的定义不必在使用成员时可见。任意非导出成员的定义必须像在包含模型中一样对待：定义应放在定义类模板的头文件中。</p>
+
+<a name="ch16sb10"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 16.3</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch16qa9q1"></a><b>Exercise 16.27:</b></td>
+
+                    <td>
+                      <p class="docText">Determine which compilation model your compiler uses. Write and call a function template to find the median value in a <tt>vector</tt> that holds objects of unknown type. (Note: The median is a value such that half the elements are larger than the median, and half are smaller.) Structure your program in the normal way: The function definition should go in one file, a declaration for it in a header, which the code that defines and uses the function template should include.</p>
+                      <p class="docText">确定你的编译器使用的是哪种编译模型。编写并调用函数模板，在保存未知类型对象的 <tt>vector</tt> 中查找中间值。（注：中间值是这样一个值，一半元素比它大，一半元素比它小。）用常规方式构造你的程序：函数定义应放在一个文件中，它的声明放在一个头文件中，定义和使用函数模板的代码应包含该头文件。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch16qa9q2"></a><b>Exercise 16.28:</b></td>
+
+                    <td>
+                      <p class="docText">Where would you place the definitions for the member functions and <tt>static</tt> data members of your class templates if the compiler you use supports the separation compilation model? Explain why.</p>
+                      <p class="docText">如果所用的编译器支持分别编译模型，将类模板的成员函数和 <tt>static</tt> 数据成员的定义放在哪里？为什么？</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch16qa9q3"></a><b>Exercise 16.29:</b></td>
+
+                    <td>
+                      <p class="docText">Where would you put those template member definitions if your compiler uses the inclusion model? Explain why.</p>
+                      <p class="docText">如果你的编译器使用包含模型，将那些模板成员定义放在哪里？为什么？</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a name="ch16sb11"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Caution: Name Lookup in Class Templates</h2>
+              <h2 class="docSidebarTitle">警告：类模板中的名字查找</h2>
+
+	<a name="idd1e127645"></a><a name="idd1e127651"></a><a name="idd1e127656"></a><a name="idd1e127661"></a>
+              <p class="docText"><span class="docEmphStrong">Compiling templates is a surprisingly difficult task. Fortunately, it is a task handled by compiler writers. Unfortunately, some of that complexity is pushed onto users of templates: Templates contain two kinds of names:</span></p>
+              <p class="docText">编译模板是异常困难的工作。幸好，它是由编译器作者处理的任务。不幸的是，某些复杂性被推到模板用户的身上：模板包含两种名字：</p>
+
+              <div style="font-weight:bold">
+                <ol class="docList" type="1">
+                  <li>
+                    <div style="font-weight:normal">
+                      <p class="docList"><span class="docEmphStrong">Those that do not depend on a template parameter</span></p>
+                      <p class="docList">独立于模板形参的那些名字</p>
+                    </div>
+                  </li>
+
+                  <li>
+                    <div style="font-weight:normal">
+                      <p class="docList"><span class="docEmphStrong">Those that do depend on a template parameter</span></p>
+                      <p class="docList">依赖于模板形参的那些名字</p>
+                    </div>
+                  </li>
+                </ol>
+              </div>
+
+              <p class="docText"><span class="docEmphStrong">It is up to the template designer to ensure that all names that do not depend on a template parameter are defined in the same scope as the template itself.</span></p>
+              <p class="docText">设计者的责任是，保证所有不依赖于模板形参的名字在模板本身的作用域中定义。</p>
+
+              <p class="docText"><span class="docEmphStrong">It is up to <span class="docEmphasis">users</span> of a template to ensure that declarations for all functions, types, and operators associated with the types used to instantiate the template are visible. This responsibility means that the user must ensure that these declarations are visible when a member of a class template or a function template is instantiated.</span></p>
+              <p class="docText">模板用户的责任是，保证与用来实例化模板的类型相关的所有函数、类型和操作符的声明可见。这个责任意味着，在实例化类模板的成员或函数模板的时候，用户必须保证这些声明是可见的。</p>
+
+              <p class="docText"><span class="docEmphStrong">Both of these requirements are easily satisfied by well-structured programs that make appropriate use of headers. Authors of templates should provide a header that contains declarations for all the names used in the class template or in the definitions of its members. Before defining a template on a particular type or using a member of that template, the user must ensure that the header for the template type and the header that defines the type used as the element type are included.</span></p>
+              <p class="docText">适当使用头文件的结构良好的程序都容易满足这两个要求。模板的作者应提供头文件，该头文件包含在类模板或在其成员定义中使用的所有名字的声明。在用特定类型定义模板或者使用该模板的成员之前，用户必须保证包含了模板类型的头文件，以及定义用作成员类型的类型的头文件。</p>
+            </td>
+          </tr>
+        </table><br>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch16lev1sec2.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch16lev1sec4.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

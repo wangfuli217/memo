@@ -1,0 +1,505 @@
+<html><HEAD><TITLE>Ruby参考手册 - 控制结构</TITLE>
+<META http-equiv=Content-type content="text/html; charset=gb2312">
+<META http-equiv=Content-Style-Type content=text/css><LINK href="77_files/style[1].css"  type=text/css rel=stylesheet></head>
+<BODY>
+<DIV class=navi><A id=header-navi name=head-navi></A><SPAN class=navi>[<A href="61.html" >Ruby首页</A>]</SPAN>  </DIV>
+<DIV class=body>
+<H1><A id=a.c0.a9.b8.e6.b9.bd.c2.a4 name=a.c0.a9.b8.e6.b9.bd.c2.a4>控制结构</A><!-- RDLabel: "控制结构" --></H1>
+<UL>
+<LI><A class=modified-month title="控制结构 (12d)" href="77.html#a.be.f2.b7.ef.ca.ac.b4.f4">条件分支</A> 
+<UL>
+<LI><A class=modified-month title="控制结构 (12d)" href="77.html#if">if</A> 
+<LI><A class=modified-month title="控制结构 (12d)" href="77.html#if.20.bd.a4.be.fe.bb.d2">if 修饰句</A> 
+<LI><A class=modified-month title="控制结构 (12d)" href="77.html#unless">unless</A> 
+<LI><A class=modified-month title="控制结构 (12d)" href="77.html#unless.20.bd.a4.be.fe.bb.d2">unless 修饰句</A> 
+<LI><A class=modified-month title="控制结构 (12d)" href="77.html#case">case</A> </LI></UL>
+<LI><A class=modified-month title="控制结构 (12d)" href="77.html#a.b7.ab.a4.ea.ca.d6.a4.b7">循环</A> 
+<UL>
+<LI><A class=modified-month title="控制结构 (12d)" href="77.html#while">while</A> 
+<LI><A class=modified-month title="控制结构 (12d)" href="77.html#while.20.bd.a4.be.fe.bb.d2">while 修饰句</A> 
+<LI><A class=modified-month title="控制结构 (12d)" href="77.html#until">until</A> 
+<LI><A class=modified-month title="控制结构 (12d)" href="77.html#until.bd.a4.be.fe.bb.d2">until修饰句</A> 
+<LI><A class=modified-month title="控制结构 (12d)" href="77.html#for">for</A> 
+<LI><A class=modified-month title="控制结构 (12d)" href="77.html#break">break</A> 
+<LI><A class=modified-month title="控制结构 (12d)" href="77.html#next">next</A> 
+<LI><A class=modified-month title="控制结构 (12d)" href="77.html#redo">redo</A> 
+<LI><A class=modified-month title="控制结构 (12d)" href="77.html#retry">retry</A> </LI></UL>
+<LI><A class=modified-month title="控制结构 (12d)" href="77.html#a.ce.e3.b3.b0.bd.e8.cd.fd">异常处理</A> 
+<UL>
+<LI><A class=modified-month title="控制结构 (12d)" href="77.html#raise">raise</A> 
+<LI><A class=modified-month title="控制结构 (12d)" href="77.html#begin">begin</A> 
+<LI><A class=modified-month title="控制结构 (12d)" href="77.html#rescue.bd.a4.be.fe.bb.d2">rescue修饰句</A> </LI></UL>
+<LI><A class=modified-month title="控制结构 (12d)" href="77.html#a.a4.bd.a4.ce.c2.be">其他</A> 
+<UL>
+<LI><A class=modified-month title="控制结构 (12d)" href="77.html#return">return</A> 
+<LI><A class=modified-month title="控制结构 (12d)" href="77.html#BEGIN">BEGIN</A> 
+<LI><A class=modified-month title="控制结构 (12d)" href="77.html#END">END</A> </LI></UL></LI></UL>
+<P>(与C等语言不同的是)Ruby的控制结构是表达式，其中的一部分还会返回值(也有不返回值的，若把这些不返回值的表达式放在赋值表达式右边的话，就会引发 <B>parse error</B>)。</P>
+<P>Ruby中包括从C和Perl那里继承来的控制结构，还包括一种可以将控制结构抽象化的功能，即 <FONT color=blue>带块的方法调用</FONT>。带块的方法调用使类的设计者可以自己定义一些包括循环在内的控制结构。</P>
+<H2><A id=a.be.f2.b7.ef.ca.ac.b4.f4 name=a.be.f2.b7.ef.ca.ac.b4.f4>条件分支</A><!-- RDLabel: "条件分支" --></H2>
+<H3><A id=if name=if>if</A><!-- RDLabel: "if" --></H3>
+<P>例:</P><PRE>if age &gt;= 12 then
+  print "adult fee\n"
+else
+  print "child fee\n"
+end
+gender = if foo.gender == "male" then "male" else "female" end
+</PRE>
+<P>语法:</P><PRE>if 表达式 [then]
+  表达式 ...
+[elsif 表达式 [then]
+  表达式 ... ]
+...
+[else
+  表达式 ... ]
+end
+</PRE>
+<P>若条件表达式的计算结果为真时，将计算then以下的表达式。若if的条件表达式为伪时，将计算elsif的条件部分。可以存在若干个elsif部分，若所有的if以及elsif的条件表达式都为伪的话，如果有else部分，就计算它的表达式。</P>
+<P><CODE>if</CODE> 表达式的结果取决于条件成立部分(或else部分)中最后被计算的表达式的结果。若没有else部分，且所有条件均不成立的话，就返回nil。</P>
+<P>Ruby中只有<CODE>false</CODE>和<CODE>nil</CODE>代表伪，其他都是真，甚至0或空字符串也是如此。</P>
+<P>请注意，在Ruby中，和if对应的是<CODE>elsif</CODE>，而并非<CODE>else if</CODE>(C的语句)或者<CODE>elif</CODE>(sh的语句)。</P>
+<P>另外，当<CODE>if</CODE> 条件表达式中出现正则表达式字面值时，将作如下处理</P><PRE>$_ =~ 字面值
+</PRE>
+<H3><A id=if.20.bd.a4.be.fe.bb.d2 name=if.20.bd.a4.be.fe.bb.d2>if 修饰句</A><!-- RDLabel: "if 修饰句" --></H3>
+<P>例:</P><PRE>print "debug\n" if $DEBUG
+</PRE>
+<P>语法:</P><PRE>表达式 if 表达式
+</PRE>
+<P>当右边的条件成立时，计算左边的表达式，并返回其结果。若条件不成立则返回nil。</P>
+<H3><A id=unless name=unless>unless</A><!-- RDLabel: "unless" --></H3>
+<P>例:</P><PRE>unless baby?
+  feed_meat
+else
+  feed_milk
+end
+</PRE>
+<P>语法:</P><PRE>unless 表达式 [then]
+  表达式 ...
+[else
+  表达式 ... ]
+end
+</PRE>
+<P><CODE>unless</CODE>与<CODE>if</CODE>相反，当条件表达式结果为伪时，才计算then后面的表达式。unless表达式中不能安插elsif语句。</P>
+<H3><A id=unless.20.bd.a4.be.fe.bb.d2 name=unless.20.bd.a4.be.fe.bb.d2>unless 修饰句</A><!-- RDLabel: "unless 修饰句" --></H3>
+<P>例:</P><PRE>print "stop\n" unless valid(passwd)
+</PRE>
+<P>语法:</P><PRE>表达式 unless 表达式
+</PRE>
+<P>当右边的条件不成立时，计算左边的表达式，并返回其结果。若条件不成立时返回nil。</P>
+<H3><A id=case name=case>case</A><!-- RDLabel: "case" --></H3>
+<P>例:</P><PRE>case $age
+when 0 .. 2
+  "baby"
+when 3 .. 6
+  "little child"
+when 7 .. 12
+  "child"
+when 13 .. 18
+  "youth"
+else
+  "adult"
+end
+</PRE>
+<P>语法:</P><PRE>case [表达式]
+[when 表达式 [, 表达式] ...[, `*' 表达式] [then]
+  表达式..]..
+[when `*' 表达式 [then]
+  表达式..]..
+[else
+  表达式..]
+end
+</PRE>
+<P><CODE>case</CODE>先对一个表达式进行匹配判断，然后根据匹配结果进行分支选择。它使用"==="操作符比较when的指定值和最初那个表达式的计算值，若一致的话就计算when部分的内容。</P>
+<P>也就是说</P><PRE>case 表达式0
+when 表达式1, 表达式2
+  stmt1
+when 表达式3, 表达式4
+  stmt2
+else
+  stmt3
+end
+</PRE>
+<P>基本上等同于下面的if表达式。</P><PRE>_tmp = 表达式0
+if 表达式1 === _tmp or 表达式2 === _tmp
+  stmt1
+elsif 表达式3 === _tmp or 表达式4 === _tmp
+  stmt2
+else
+  stmt3
+end
+</PRE>
+<P>when 部分的计算顺序同上面这个if句的计算顺序是相同的。即从上到下(从左到右)地计算"==="。另外，“表达式0”只计算一次。</P>
+<P>若when 部分中的最后一个表达式前带"*"的话，该表达式将被当作数组展开。</P><PRE>ary = [1,2,3]
+
+case v
+when *ary
+ ..
+end
+</PRE>
+<P>等同于</P><PRE>case v
+when 1, 2, 3
+ ..
+end
+</PRE>
+<P>请参考描述各个类中"==="方法技术细节的文档，来了解"==="在何种条件下为真。</P>
+<P>当<CODE>case</CODE>的“表达式”部分被省略时，将计算第一个when条件部分为真的表达式。</P><PRE>foo = false
+bar = true
+quu = false
+
+case
+when foo then puts 'foo is true'
+when bar then puts 'bar is true'
+when quu then puts 'quu is true'
+end
+# 显示 "bar is true"
+</PRE>
+<P><CODE>case</CODE>将返回条件成立的when部分(或else部分)中最后被计算的表达式的结果。若所有条件都不成立的话，则返回nil。</P>
+<H2><A id=a.b7.ab.a4.ea.ca.d6.a4.b7 name=a.b7.ab.a4.ea.ca.d6.a4.b7>循环</A><!-- RDLabel: "循环" --></H2>
+<H3><A id=while name=while>while</A><!-- RDLabel: "while" --></H3>
+<P>例:</P><PRE>ary = [0,2,4,8,16,32,64,128,256,512,1024]
+i = 0
+while i &lt; ary.length
+  print ary[i]
+  i += 1
+end
+</PRE>
+<P>语法:</P><PRE>while 表达式 [do]
+   ...
+end
+</PRE>
+<P>只要表达式的计算值为真，就循环执行while语句中的内容。while不返回值。</P>
+<P><FONT color=blue>ruby 1.7 特性</FONT>: <CODE>while</CODE>返回<CODE>nil</CODE>。另外，可以使用带参数的break，将while表达式的返回值设为那个参数的值。</P>
+<H3><A id=while.20.bd.a4.be.fe.bb.d2 name=while.20.bd.a4.be.fe.bb.d2>while 修饰句</A><!-- RDLabel: "while 修饰句" --></H3>
+<P>例:</P><PRE>sleep(60) while io_not_ready?
+</PRE>
+<P>语法:</P><PRE>表达式 while 表达式
+</PRE>
+<P>只要右边表达式的计算值为真，就循环执行左边部分。</P>
+<P>若左边表达式是begin，且即不含rescue，又不含ensure的话，则只在开始时计算一次然后就执行循环。</P>
+<P><FONT color=blue>ruby 1.7 特性</FONT>: 在version 1.7中，即使出现rescue/ensure部分也会作相同处理。</P>
+<P>例:</P><PRE>send_request(data)
+begin
+  res = get_response()
+end while res == 'Continue'
+</PRE>
+<P><CODE>while</CODE> 修饰的表达式没有返回值。</P>
+<P><FONT color=blue>ruby 1.7 特性</FONT>: <CODE>while</CODE>修饰的表达式返回nil。另外，可以使用带参数的break，将while修饰的表达式的返回值设为那个参数的值。</P>
+<H3><A id=until name=until>until</A><!-- RDLabel: "until" --></H3>
+<P>例:</P><PRE>until f.eof?
+  print f.gets
+end
+</PRE>
+<P>语法:</P><PRE>until 表达式 [do]
+   ...
+end
+</PRE>
+<P>在表达式的计算值变为真之前，一直循环执行until中的内容。until不返回值。</P>
+<P><FONT color=blue>ruby 1.7 特性</FONT>: <CODE>until</CODE> 返回 <CODE>nil</CODE>。另外，可以使用带参数的break，将until表达式的返回值设定为那个参数的值。</P>
+<H3><A id=until.bd.a4.be.fe.bb.d2 name=until.bd.a4.be.fe.bb.d2>until修饰句</A><!-- RDLabel: "until修饰句" --></H3>
+<P>例:</P><PRE>print(f.gets) until f.eof?
+</PRE>
+<P>语法:</P><PRE>表达式 until 表达式
+</PRE>
+<P>在右边表达式的计算值变为真之前，一直循环执行左边部分。</P>
+<P>若左边表达式是begin，且即不含rescue，又不含ensure的话，则只在开始时计算一次然后就执行循环。</P>
+<P><FONT color=blue>ruby 1.7 特性</FONT>: 在version 1.7中，即使出现rescue/ensure部分也会作相同处理</P>
+<P>例:</P><PRE>send_request(data)
+begin
+  res = get_response()
+end until res == 'OK'
+</PRE>
+<P><CODE>until</CODE>修饰的表达式没有返回值。</P>
+<P><FONT color=blue>ruby 1.7 特性</FONT>: <CODE>until</CODE>修饰的表达式返回nil。另外，可以使用带参数的break，将until修饰的表达式的返回值设为那个参数的值。</P>
+<H3><A id=for name=for>for</A><!-- RDLabel: "for" --></H3>
+<P>例:</P><PRE>for i in [1, 2, 3]
+  print i*2, "\n"
+end
+</PRE>
+<P>语法:</P><PRE>for lhs ...  in 表达式 [do]
+  表达式..
+end
+</PRE>
+<P>先计算表达式得到一个对象，然后分别针对该对象中的每个要素，循环执行for的内容。这基本等价于</P><PRE>(表达式).each `{' `|' lhs..`|' 表达式.. `}'
+</PRE>
+<P>之所以说“基本”是因为，do...end以及由{}构成的块中导入了新的局部变量的有效范围，而for语句对于局部变量的有效范围没有任何影响。</P>
+<P><CODE>for</CODE>将返回<CODE>in</CODE>所指对象的each方法的返回值。</P>
+<P>若想使用多个循环变量的话，可以这样</P><PRE>for i,j in [[1,2], [3,4], [5,6]]
+  p [i,j]
+end
+=&gt; [1, 2]
+   [3, 4]
+   [5, 6]
+</PRE>
+<P>使用for或each时，每次只能取一个数组元素进行循环，而不能一次取多个。</P><PRE>for i,j in [1, 2, 3]
+  p [i,j]
+end
+
+=&gt; [1, nil]
+   [2, nil]
+   [3, nil]
+
+# 可能您希望这样[1,2] [3,nil]，但实际上这是行不通的
+</PRE>
+<P>您必须自己定义这样的方法(迭代器)。请参考 <FONT color=blue><B>each</B></FONT>。</P><PRE>class Array
+  def each2
+    i = 0
+    while i &lt; self.size
+      yield self[i], self[i+1]
+      i += 2
+    end
+  end
+end
+</PRE>
+<H3><A id=break name=break>break</A><!-- RDLabel: "break" --></H3>
+<P>例:</P><PRE>i = 0
+while i &lt; 3
+  print i, "\n"
+  break
+end
+</PRE>
+<P>语法:</P><PRE>break
+
+break val             ruby 1.7 特性
+</PRE>
+<P><CODE>break</CODE>将退出最内层的循环。所谓循环是指，下列之一</P>
+<UL>
+<LI>while 
+<LI>until 
+<LI>for 
+<LI>迭代 </LI></UL>
+<P>与C语言不同，break只能从循环中退出，而不能从case中退出。</P>
+<P>若使用break退出for或迭代循环后，该循环将返回nil。<FONT color=blue>ruby 1.7 特性</FONT>:但如果使用了参数的话，循环将返回那个参数的值。</P>
+<H3><A id=next name=next>next</A><!-- RDLabel: "next" --></H3>
+<P>例:</P><PRE># 忽略空行的cat
+ARGF.each_line do |line|
+  next if line.strip.empty?
+  print line
+end
+</PRE>
+<P>语法:</P><PRE>next
+
+next val              ruby 1.7 特性
+</PRE>
+<P><CODE>next</CODE>将跳转到最内侧循环的头部。在<FONT color=blue>迭代器</FONT>中，它将跳离<FONT color=blue>yield</FONT>调用。</P>
+<P>使用<CODE>next</CODE>跳离yield后，yield表达式将返回nil。<FONT color=blue>ruby 1.7 特性</FONT>:但如果使用了参数的话，yield表达式的返回值就是该参数的值。</P>
+<H3><A id=redo name=redo>redo</A><!-- RDLabel: "redo" --></H3>
+<P>例:</P><PRE>redo
+</PRE>
+<P>语法:</P><PRE>redo
+</PRE>
+<P>不检查循环条件，重新开始当前循环。</P>
+<H3><A id=retry name=retry>retry</A><!-- RDLabel: "retry" --></H3>
+<P>例:</P><PRE>retry
+</PRE>
+<P>语法:</P><PRE>retry
+</PRE>
+<P>在迭代、块或for语句中使用retry，意味着重启迭代器。同时迭代器的参数也将被重新计算。</P><PRE>for i in 1..5
+  retry if some_condition # 从 i == 1 开始重新执行
+end
+
+# 用户定义的 "until循环"
+def UNTIL(cond)
+  return if cond
+  yield
+  retry
+end
+</PRE>
+<P>除了循环以外，还可以在rescue部分(后述)中使用<CODE>retry</CODE>。这时将从begin表达式开始重新执行。使用retry可以在某处理过程成功之前，一直循环该处理过程。</P><PRE>begin
+  do_something # exception raised
+rescue
+  # handles error
+  retry  # restart from beginning
+end
+</PRE>
+<P>若在rescue部分、迭代器块或for语句之外使用retry的话会引发<FONT color=blue>LocalJumpError</FONT>异常。</P>
+<P>归纳一下，在迭代调用中使用<CODE>break</CODE>, <CODE>next</CODE>, <CODE>redo</CODE>, <CODE>retry</CODE>的作用如下。</P><PRE>def iter
+ (a)
+  :
+ (b)
+ yield
+ (c)
+  :
+ (d)
+end
+iter { retry }   -&gt; 跳到 (a)
+iter { redo  }   -&gt; 跳到 (b)
+iter { next  }   -&gt; 跳到 (c)
+iter { break }   -&gt; 跳到 (d)
+</PRE>
+<P>严格地讲(a)是从计算参数开始的。(b)指的是即将开始执行块的时候(yield的参数不会被再次计算)。(d)指的是方法的终结。</P><PRE>def iter(var = p("(a)"))
+  p " : "
+  yield
+  p "(c)"
+  p " : "
+ensure
+  p "(d)"
+end
+
+iter { p "(b)"; retry }     # =&gt; (a) .. (b)(d)(a) .. (b)(d)(a) ...
+iter { p "(b)"; redo  }     # =&gt; (a) .. (b)(b)(b)(b) ...
+iter { p "(b)"; next  }     # =&gt; (a) .. (b)(c) .. (d)
+iter { p "(b)"; break }     # =&gt; (a)..(b)(d)
+</PRE>
+<H2><A id=a.ce.e3.b3.b0.bd.e8.cd.fd name=a.ce.e3.b3.b0.bd.e8.cd.fd>异常处理</A><!-- RDLabel: "异常处理" --></H2>
+<H3><A id=raise name=raise>raise</A><!-- RDLabel: "raise" --></H3>
+<P>例:</P><PRE>raise "you lose"  # 引发RuntimeError异常
+# 下面两个将引发SyntaxError异常
+raise SyntaxError, "invalid syntax"
+raise SyntaxError.new("invalid syntax")
+raise             # 再次引发上一个异常
+</PRE>
+<P>语法:</P><PRE>raise
+raise message或exception
+raise error_type, message
+raise error_type, message, traceback
+</PRE>
+<P>引发异常。第一句将再次引发上一个异常。第二句中，若参数是字符串的话，就把它当作错误信息(message)再引发<FONT color=blue>RuntimeError</FONT>异常。若参数为异常对象则引发该异常。第三句中，将引发第一个参数所指的异常，并以第二个参数的内容作为错误信息。第四句中，第三参数装载的是源自于<FONT color=blue>$@</FONT>或<FONT color=blue>caller</FONT>的堆栈信息，它指明发生异常的地点。</P>
+<P>可以使用begin表达式的rescue部分来捕捉异常。这时使用rescue <I>error_type =&gt; var</I>就可以得到异常对象。您还可以从内部变量<FONT color=blue>$!</FONT>中获得这个对象。另外，变量<FONT color=blue>$@</FONT>中装载的是发生异常的源代码位置。</P>
+<P><FONT color=blue>raise</FONT>并不是Ruby的保留字，它是<FONT color=blue>Kernel</FONT>模块中定义的函数式的方法。</P>
+<H3><A id=begin name=begin>begin</A><!-- RDLabel: "begin" --></H3>
+<P>例:</P><PRE>begin
+  do_something
+rescue
+  recover
+ensure
+  must_to_do
+end
+</PRE>
+<P>语法:</P><PRE>begin
+  表达式..
+[rescue [error_type,..] [=&gt; evar] [then]
+  表达式..]..
+[else
+  表达式..]
+[ensure
+  表达式..]
+end
+</PRE>
+<P>若给出了rescue部分(可以有若干个)的话，就可以在发生异常时捕捉到它。若存在与异常类型一致的rescue部分的话，就执行rescue的内容。可以使用<FONT color=blue>$!</FONT>来查看异常的情况。另外，若事先设定了变量<I>evar</I>的话，它也可以像$!一样存储那些异常的信息。</P><PRE>begin
+  raise "error message"
+rescue =&gt; evar
+  p $!
+  p evar
+end
+# =&gt; #&lt;RuntimeError: error message&gt;
+     #&lt;RuntimeError: error message&gt;
+</PRE>
+<P>rescue部分使用<FONT color=blue>Object#kind of?</FONT>来判断刚才的异常的类是否就是自己期待的异常类，或者这二者是否处于父类／子类的关系。</P>
+<P>若<I>error_type</I>被省略，则将捕捉<FONT color=blue>StandardError</FONT>的子类中的所有异常。Ruby的内部异常(除了<FONT color=blue>SystemExit</FONT>和<FONT color=blue>Interrupt</FONT>这些退出命令以外)是<FONT color=blue>StandardError</FONT>的子类。</P>
+<P>请参考<FONT color=blue>异常类</FONT>来了解异常类的层次关系。</P>
+<P>在<CODE>rescue</CODE>部分中，<I>error_type</I>与普通的参数一样接受计算，若符合的话就执行相应部分的内容。若<I>error_type</I>的计算值既非类又非模块的话，则引发<FONT color=blue>TypeError</FONT>异常。</P>
+<P>若运行过程中没发生异常，则开始计算可选的else部分。</P>
+<P>若存在<CODE>ensure</CODE>部分的话，则在begin表达式结束之前一定会计算它。</P>
+<P><CODE>begin</CODE>表达式整体的计算值取决于，begin的内容部分/rescue部分/else部分中最后被计算的句子的值。若各部分中均无语句时，其值为nil。不管怎样，ensure部分的值始终会被忽略。</P>
+<H3><A id=rescue.bd.a4.be.fe.bb.d2 name=rescue.bd.a4.be.fe.bb.d2>rescue修饰句</A><!-- RDLabel: "rescue修饰句" --></H3>
+<P>例:</P><PRE>open("nonexistent file") rescue STDERR.puts "Warning: #$!"
+</PRE>
+<P>语法:</P><PRE>表达式1 rescue 表达式2
+</PRE>
+<P>若表达式1中发生异常时就计算表达式2。这等同于下例。不能指定想捕捉的异常类。(也就是说，只能捕捉<FONT color=blue>StandardError</FONT>异常类的子类了)</P><PRE>begin
+  表达式1
+rescue
+  表达式2
+end
+</PRE>
+<P>在包括rescue修饰句的表达式中，若没发生异常则返回表达式1的值，若发生异常则返回表达式2的值。但在大多数场合中，因为考虑到优先度的问题，所以需要使用括号将整个表达式括起来。</P><PRE>var = open("nonexistent file") rescue false
+p var
+=&gt; nil      # 因为只定义了一个空变量var
+
+var = (open("nonexistent file") rescue false)
+p var
+=&gt; false
+</PRE>
+<P>特别是传递给某方法的参数时，有必要使用双重括号。</P><PRE>p(open("nonexistent file") rescue false)
+=&gt; parse error
+
+p((open("nonexistent file") rescue false))
+=&gt; false
+</PRE>
+<P><FONT color=blue>ruby 1.7 特性</FONT>: 在1.7中，rescue的优先度发生了变化，因此免去了这些烦恼。</P><PRE>var = open("nonexistent file") rescue false
+p var
+=&gt; false
+
+p(open("nonexistent file") rescue false)
+=&gt; false
+</PRE>
+<H2><A id=a.a4.bd.a4.ce.c2.be name=a.a4.bd.a4.ce.c2.be>其他</A><!-- RDLabel: "其他" --></H2>
+<H3><A id=return name=return>return</A><!-- RDLabel: "return" --></H3>
+<P>例:</P><PRE>return
+return 12
+return 1,2,3
+</PRE>
+<P>语法:</P><PRE>return [表达式[`,' 表达式 ... ]]
+</PRE>
+<P>结束方法的运行，且把表达式的值设定为方法的返回值。若给出了2个以上的表达式，则将把这些表达式化为一个数组，然后把该数组设定为方法的返回值。若省略表达式，将返回值设为nil。</P>
+<H3><A id=BEGIN name=BEGIN>BEGIN</A><!-- RDLabel: "BEGIN" --></H3>
+<P>例:</P><PRE>BEGIN {
+   ...
+}
+</PRE>
+<P>语法:</P><PRE>BEGIN '{' 语句.. '}'
+</PRE>
+<P>注册初始化例程(routine)。BEGIN块所指定的语句的执行顺序将先于该文件中任何语句。若有多个BEGIN块的话，将按照出现顺序依次执行。</P>
+<P>BEGIN块在编译时被注册。也就是说，同一条语句只会被注册一次。</P><PRE>if false
+  BEGIN { p "begin" }
+end
+
+# =&gt; "begin"
+</PRE>
+<P>BEGIN块引入了独立的局部变量作用域，因此不能和外部共享局部变量。为了与块外交换信息，必须借助于常数或全局变量。</P><PRE>BEGIN { $foo, foo = true, true }
+p $foo  # =&gt; true
+p foo   # undefined local variable or method `foo' for main:Object (NameError)
+</PRE>
+<P>BEGIN不能出现在方法定义表达式中，否则会引发 parse error。</P><PRE>def foo
+  BEGIN { p "begin" }
+end
+# =&gt; -:2: BEGIN in method
+</PRE>
+<H3><A id=END name=END>END</A><!-- RDLabel: "END" --></H3>
+<P>例:</P><PRE>END {
+   ... 
+}
+</PRE>
+<P>语法:</P><PRE>END '{' 语句.. '}'
+</PRE>
+<P>注册“善后”例程。END块中指定的语句会在解释器结束前得到执行。关于Ruby退出程序时的相关处理问题，请参考<A href="68.html" >结束时的相关处理</A>。</P>
+<P>若注册了若干END块的话，则以与注册时相反的顺序依次执行这些块。</P><PRE>END { p 1 }
+END { p 2 }
+END { p 3 }
+
+# =&gt; 3
+     2
+     1
+</PRE>
+<P>END块中同一条语句只会执行一次。如下例，即使把END块置入循环中，也只会注册一次。若想实现复用，请使用 <FONT color=blue>at_exit</FONT>。</P><PRE>5.times do |i|
+  END { p i }
+end
+# =&gt; 0
+</PRE>
+<P>若把END块置入方法定义表达式中会引起警告。若有意如此，请使用<FONT color=blue>at_exit</FONT>。</P><PRE>def foo
+  END { p "end" }
+end
+p foo
+
+# =&gt; -:2: warning: END in method; use at_exit
+     nil
+     "end"
+</PRE>
+<P>END与BEGIN不同的是，它在运行时进行注册。因此，下例中的END块将不会运行。</P><PRE>if false
+  END { p "end" }
+end
+</PRE>
+<P>END和<FONT color=blue>at_exit</FONT>中注册的善后处理无法取消。</P>
+<P>END块与BEGIN块不同的是，它同周围部分共享作用域。也就是说，它的作用域同迭代器一样。</P>
+<P>若END块中发生了异常，将中断该块。但解释器并不结束，只是发出信息，并且试图处理完所有的善后例程。</P>
+<P>例:</P><PRE>END { p "FOO" }
+END { raise "bar"; p "BAR" }
+END { raise "baz"; p "BAZ" }
+
+=&gt; baz (RuntimeError)
+   bar (RuntimeError)
+   "FOO"
+</PRE>
+<HR>
+</DIV>
+<DIV class=footer>Originally Written by webmaster@ruby-lang.org<BR>Translated by <A href="http://cn.ce-lab.net/" >Community Engine China</A> (<A href="mailto:rubycn@ce-lab.net">Mail</A>)<BR>Last update on 2004-12-22 </DIV></BODY>

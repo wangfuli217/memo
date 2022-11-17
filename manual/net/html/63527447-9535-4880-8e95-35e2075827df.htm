@@ -1,0 +1,285 @@
+﻿<html xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+    <META NAME="save" CONTENT="history" />
+    <title>如何：实现接口事件（C# 编程指南）</title>
+    <link rel="stylesheet" type="text/css" href="../styles/presentation.css" />
+    <link rel="stylesheet" type="text/css" href="ms-help://Hx/HxRuntime/HxLink.css" />
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/EventUtilities.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/SplitScreen.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/Dropdown.js"> </script>
+    <script type="text/javascript" src="../scripts/script_manifold.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/script_feedBack.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CheckboxMenu.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CommonUtilities.js"> </script>
+    <xml>
+      <MSHelp:TOCTitle Title="如何：实现接口事件" />
+      <MSHelp:Keyword Index="A" Term="63527447-9535-4880-8e95-35e2075827df" />
+      <MSHelp:Keyword Index="K" Term="事件 [C#], 接口中" />
+      <MSHelp:Keyword Index="K" Term="接口 [C#], 类中的事件实现" />
+      <MSHelp:Attr Name="RevisionNumber" Value="18" />
+      <MSHelp:Attr Name="AssetID" Value="63527447-9535-4880-8e95-35e2075827df" />
+      <MSHelp:Attr Name="Abstract" Value="接口可声明事件。下面的示例演示如何在类中实现接口事件。实现接口事件的规则与实现任何接口方法或属性的规则基本相同。" />
+      <MSHelp:Attr Name="codelang" Value="CSharp" />
+      <MSHelp:Attr Name="CommunityContent" Value="1" />
+      <MSHelp:Attr Name="DevLang" Value="CSharp" />
+      <MSHelp:Attr Name="DevLangVers" Value="CSharp" />
+      <MSHelp:Attr Name="DocSet" Value="C#" />
+      <MSHelp:Attr Name="DocSet" Value="C# Lang" />
+      <MSHelp:Attr Name="DocSet" Value="ExpressLibVS" />
+      <MSHelp:Attr Name="ProgModel" Value="managed" />
+      <MSHelp:Attr Name="ShippedIn" Value="vs.90" />
+      <MSHelp:Attr Name="Technology" Value="ManagedCode" />
+      <MSHelp:Attr Name="TopicVersion" Value="09.00.08178.10000" />
+      <MSHelp:Attr Name="Catalog Container" Value="System_Default_Catalog" />
+      <MSHelp:Attr Name="Content Set Container" Value="System_Default_Content_Set" />
+      <MSHelp:Attr Name="TopicType" Value="kbHowTo" />
+      <MSHelp:Attr Name="Locale" Value="zh-chs" />
+    </xml>
+  </head>
+  <body>
+    <input type="hidden" id="userDataCache" class="userDataStyle" />
+    <input type="hidden" id="hiddenScrollOffset" />
+    <img id="collapseImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" title="“折叠”图像" />
+    <img id="expandImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" title="“展开”图像" />
+    <img id="collapseAllImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" />
+    <img id="expandAllImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" />
+    <img id="dropDownImage" style="display:none; height:0; width:0;" src="../icons/dropdown.gif" />
+    <img id="dropDownHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/dropdownHover.gif" />
+    <img id="copyImage" style="display:none; height:0; width:0;" src="../icons/copycode.gif" title="“复制”图像" />
+    <img id="copyHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/copycodeHighlight.gif" title="“复制悬停”图像" />
+    <div id="header">
+      <table id="topTable" cellspacing="0" cellpadding="0">
+        <tr>
+          <td>
+            <span onclick="ExpandCollapseAll(toggleAllImage)" style="cursor:default;" onkeypress="ExpandCollapseAll_CheckKey(toggleAllImage, event)" tabindex="0">
+              <img ID="toggleAllImage" class="toggleAll" src="../icons/collapse_all.gif" /> <label id="collapseAllLabel" for="toggleAllImage" style="display: none;">全部折叠</label><label id="expandAllLabel" for="toggleAllImage" style="display: none;">全部展开</label> </span>
+            <span>    </span>
+            <span id="devlangsDropdown" class="filter" tabindex="0">
+              <img id="devlangsDropdownImage" src="../icons/dropdown.gif" /> <label id="devlangsMenuAllLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：全部 </nobr></label><label id="devlangsMenuMultipleLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：多个 </nobr></label><label id="devlangsMenuVisualBasicLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual Basic </nobr></label><label id="devlangsMenuCSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：C# </nobr></label><label id="devlangsMenuManagedCPlusPlusLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual C++ </nobr></label><label id="devlangsMenuJSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：J# </nobr></label><label id="devlangsMenuJScriptLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：JScript </nobr></label></span>
+          </td>
+        </tr>
+      </table>
+      <div id="devlangsMenu">
+        <input id="VisualBasicCheckbox" type="checkbox" data="VisualBasic,vb,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="VisualBasicCheckbox">Visual Basic</label>
+        <br />
+        <input id="CSharpCheckbox" type="checkbox" data="CSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="CSharpCheckbox">C#</label>
+        <br />
+        <input id="ManagedCPlusPlusCheckbox" type="checkbox" data="ManagedCPlusPlus,cpp,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="ManagedCPlusPlusCheckbox">Visual C++</label>
+        <br />
+        <input id="JSharpCheckbox" type="checkbox" data="JSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JSharpCheckbox">J#</label>
+        <br />
+        <input id="JScriptCheckbox" type="checkbox" data="JScript,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JScriptCheckbox">JScript</label>
+        <br />
+      </div>
+      <table id="bottomTable" cellpadding="0" cellspacing="0">
+        <tr id="headerTableRow1">
+          <td align="left">
+            <span id="runningHeaderText">C# 编程指南</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow2">
+          <td align="left">
+            <span id="nsrTitle">如何：实现接口事件（C# 编程指南）</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow3">
+          <td align="left">
+            <a href="63527447-9535-4880-8e95-35e2075827df.htm#exampleToggle" onclick="OpenSection(exampleToggle)">示例</a>  <a href="63527447-9535-4880-8e95-35e2075827df.htm#seeAlsoToggle" onclick="OpenSection(seeAlsoToggle)">另请参见</a>  
+<script type="text/javascript">
+var fbBody = '%b8%d0%d0%bb%c4%fa%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%bf%aa%b7%a2%b0%e6%b1%e0%d0%b4%cd%c5%b6%d3%bd%ab%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%d3%c3%d3%da%b8%c4%bd%f8%ce%c4%b5%b5%a1%a3%ce%d2%c3%c7%d4%da%c9%f3%d4%c4%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%ca%b1%a3%ac%bf%c9%c4%dc%bb%e1%b8%f8%c4%fa%b7%a2%cb%cd%b5%e7%d7%d3%d3%ca%bc%fe%a3%ac%d2%d4%c7%eb%c4%fa%cc%e1%b9%a9%bd%f8%d2%bb%b2%bd%b5%c4%bd%e2%ca%cd%cb%b5%c3%f7%bb%f2%d5%df%be%cd%bd%e2%be%f6%b7%bd%b0%b8%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%ce%d2%c3%c7%b2%bb%bb%e1%bd%ab%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%d3%c3%d3%da%c8%ce%ba%ce%c6%e4%cb%fb%d3%c3%cd%be%a3%ac%b2%a2%c7%d2%d4%da%c9%f3%d4%c4%cd%ea%d6%ae%ba%f3%a3%ac%ce%d2%c3%c7%b2%bb%bb%e1%d4%d9%b1%a3%c1%f4%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%a1%a3%0d%0a%d3%d0%b9%d8%20Microsoft%20%d2%fe%cb%bd%d5%fe%b2%df%b5%c4%bd%f8%d2%bb%b2%bd%d0%c5%cf%a2%a3%ac%c7%eb%b2%ce%bc%fb%20http%3a%2f%2fprivacy.microsoft.com%2fzh-cn%2fdefault.aspx%a1%a3';
+var fbSubject = 'Customer%20Feedback';
+</script>
+  <span id="headfeedbackarea" class="feedbackhead"><a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);"> 发送反馈意见</a></span>
+</td>
+        </tr>
+      </table>
+      <table id="gradientTable">
+        <tr>
+          <td class="nsrBottom" background="../icons/gradient.gif" />
+        </tr>
+      </table>
+    </div>
+    <div id="mainSection">
+      <div id="mainBody">
+        <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
+        <font color="DarkGray"></font>
+        <p /> <p><font color="DarkGray">更新：2007 年 11 月</font></p><div class="introduction"><p><mshelp:link keywords="7da38e81-4f99-4bc5-b07d-c986b687eeba" tabindex="0">接口</mshelp:link>可声明<mshelp:link keywords="7858fd85-153b-4259-85d0-6aa13c35f174" tabindex="0">事件</mshelp:link>。下面的示例演示如何在类中实现接口事件。实现接口事件的规则与实现任何接口方法或属性的规则基本相同。</p></div><h3 class="procedureSubHeading">在类中实现接口事件</h3><div class="subSection"><ul><li><p>在类中声明事件，然后在适当的区域调用该事件。</p><div class="code"><span codeLanguage="other"><table width="100%" cellspacing="0" cellpadding="0"><tr><th> </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>public interface IDrawingObject
+{
+    event EventHandler ShapeChanged;
+}
+public class MyEventArgs : EventArgs {…}
+public class Shape : IDrawingObject
+{
+    event EventHandler ShapeChanged;
+    void ChangeShape()
+    {
+        // Do something before the event…
+        OnShapeChanged(new MyEventsArgs(…));
+        // or do something after the event. 
+    }
+    protected virtual void OnShapeChanged(MyEventArgs e)
+    {
+        if(ShapeChanged != null)
+        {
+           ShapeChanged(this, e);
+        }
+    }
+}</pre></td></tr></table></span></div></li></ul></div><h1 class="heading"><span onclick="ExpandCollapse(exampleToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(exampleToggle, event)" tabindex="0"><img id="exampleToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />示例</span></h1><div id="exampleSection" class="section" name="collapseableSection" style=""><p>下面的示例演示如何处理以下的不常见情况：您的类是从两个以上的接口继承的，每个接口都含有同名事件）。在这种情况下，您至少要为其中一个事件提供显式接口实现。为事件编写显式接口实现时，必须编写 <span sdata="langKeyword" value="add"><span class="keyword">add</span></span> 和 <span sdata="langKeyword" value="remove"><span class="keyword">remove</span></span> 事件访问器。这两个事件访问器通常由编译器提供，但在这种情况下编译器不能提供。</p><p>您可以提供自己的访问器，以便指定这两个事件是由您的类中的同一事件表示，还是由不同事件表示。例如，根据接口规范，如果事件应在不同时间引发，则可以将每个事件与类中的一个单独实现关联。在下面的示例中，订户将形状引用强制转换为 <span class="code">IShape</span> 或 <span class="code">IDrawingObject</span>，从而确定自己将会接收哪个 <span class="code">OnDraw</span> 事件。</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">namespace</span> WrapTwoInterfaceEvents
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">using</span> System;
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">interface</span> IDrawingObject
+    {
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Raise this event before drawing</span>
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// the object.</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">event</span> EventHandler OnDraw;
+    }
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">interface</span> IShape
+    {
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Raise this event after drawing</span>
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// the shape.</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">event</span> EventHandler OnDraw;
+    }
+
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Base class event publisher inherits two</span>
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// interfaces, each with an OnDraw event</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Shape : IDrawingObject, IShape
+    {
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Create an event for each interface event</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">event</span> EventHandler PreDrawEvent;
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">event</span> EventHandler PostDrawEvent;
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">object</span> objectLock = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Object();
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Explicit interface implementation required.</span>
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Associate IDrawingObject's event with</span>
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// PreDrawEvent</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">event</span> EventHandler IDrawingObject.OnDraw
+        {
+            add
+            {
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">lock</span> (objectLock)
+                {
+                    PreDrawEvent += <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">value</span>;
+                }
+            }
+            remove
+            {
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">lock</span> (objectLock)
+                {
+                    PreDrawEvent -= <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">value</span>;
+                }
+            }
+        }
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Explicit interface implementation required.</span>
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Associate IShape's event with</span>
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// PostDrawEvent</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">event</span> EventHandler IShape.OnDraw
+        {
+            add 
+            {
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">lock</span> (objectLock)
+                {
+                    PostDrawEvent += <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">value</span>;
+                }
+            }
+            remove
+            {
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">lock</span> (objectLock)
+                {
+                    PostDrawEvent -= <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">value</span>;
+                }
+            }
+
+
+        }
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// For the sake of simplicity this one method</span>
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// implements both interfaces. </span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Draw()
+        {
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Raise IDrawingObject's event before the object is drawn.</span>
+            EventHandler handler = PreDrawEvent;
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> (handler != <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">null</span>)
+            {
+                handler(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span>, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> EventArgs());
+            }
+            Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Drawing a shape."</span>);
+
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// RaiseIShape's event after the object is drawn.</span>
+            handler = PostDrawEvent;
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> (handler != <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">null</span>)
+            {
+                handler(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span>, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> EventArgs());
+            }
+        }
+    }
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Subscriber1
+    {
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// References the shape object as an IDrawingObject</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> Subscriber1(Shape shape)
+        {
+            IDrawingObject d = (IDrawingObject)shape;
+            d.OnDraw += <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> EventHandler(d_OnDraw);
+        }
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> d_OnDraw(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">object</span> sender, EventArgs e)
+        {
+            Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Sub1 receives the IDrawingObject event."</span>);
+        }
+    }
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// References the shape object as an IShape</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Subscriber2
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> Subscriber2(Shape shape)
+        {
+            IShape d = (IShape)shape;
+            d.OnDraw += <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> EventHandler(d_OnDraw);
+        }
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> d_OnDraw(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">object</span> sender, EventArgs e)
+        {
+            Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Sub2 receives the IShape event."</span>);
+        }
+    }
+
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Program
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Main(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span>[] args)
+        {
+            Shape shape = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Shape();
+            Subscriber1 sub = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Subscriber1(shape);
+            Subscriber2 sub2 = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Subscriber2(shape);
+            shape.Draw();
+
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Keep the console window open in debug mode.</span>
+            System.Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Press any key to exit."</span>);
+            System.Console.ReadKey();
+        }
+    }
+
+}
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">/* Output:
+    Sub1 receives the IDrawingObject event.
+    Drawing a shape.
+    Sub2 receives the IShape event.
+*/</span>
+
+</pre></td></tr></table></span></div></div></div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />请参见</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><h4 class="subHeading">任务</h4><div class="seeAlsoStyle"><span sdata="link"><a href="2d20556a-0aad-46fc-845e-f85d86ea617a.htm">如何：在派生类中引发基类事件（C# 编程指南）</a></span></div><h4 class="subHeading">概念</h4><div class="seeAlsoStyle"><span sdata="link"><a href="ac0f23a2-6bf3-4077-be99-538ae5fd3bc5.htm">C# 编程指南</a></span></div><h4 class="subHeading">参考</h4><div class="seeAlsoStyle"><span sdata="link"><a href="a8e51b22-d294-44fb-9539-0072f06c4cb3.htm">事件（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="97de039b-c76b-4b9c-a27d-8c1e1c8d93da.htm">委托（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="181c901f-0d4c-4f29-97fc-895079617bf2.htm">显式接口实现（C# 编程指南）</a></span></div></div></div>
+      <div id="footer">
+        <div class="footerLine">
+          <img width="100%" height="3px" src="../icons/footer.gif" title="“页脚”图像" />
+        </div>
+<span id="feedbackarea">将有关本主题的<a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);">反馈意见</a>发送给 Microsoft。</span>
+</div>
+    </div>
+  </body>
+</html>

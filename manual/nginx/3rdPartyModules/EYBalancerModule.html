@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml">
+<HEAD><TITLE>EY Balancer模块（EY Balancer Module）</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=GB2312">
+<STYLE type=text/css>PRE {
+	BACKGROUND-COLOR: #cccccc
+}
+.STYLE1 {
+	COLOR: #ff0000
+}
+</STYLE>
+
+<META content="MSHTML 6.00.6000.16809" name=GENERATOR></HEAD>
+<BODY>
+<H2>EY Balancer模块（EY Balancer Module）</H2><BR>
+
+<H3>·摘要</H3>
+<H4>为nginx增加一个请求队列以便通过上游服务器允许的并发请求。<BR>
+作者：Ry Dahl<BR>
+<A href="http://github.com/ry/nginx-ey-balancer/tarball/master/" >点击这里下载</A><BR>
+在一个upstream指令中使用“max_connections N;”意为每个上游服务器每次给予N个请求，例如，如果你有两台上游服务器并且使用"max_connections 1;" 指令，那么将每次产生两个请求依次在每个上游服务器上。<BR>
+一些分析报告：<A href="http://four.livejournal.com/955976.html" >http://four.livejournal.com/955976.html</A><BR></H4>
+<H3>·用法</H3>
+<H4><PRE>  upstream mongrels {
+    server 127.0.0.1:8001;
+    server 127.0.0.1:8002;
+    max_connections 1;
+  }
+</PRE></H4>
+<H3>·安装</H3>
+<H4>这个模块依赖nginx安装包，它同样包含一个Makefile以便能够更容易将其安装到nginx并且执行测试，如果使用Makefile则必须修改其第一行指向nginx源代码树，如下例：
+<PRE>  tar -zxf nginx-0.6.35.tar.gz
+  tar -xzf ngx_max_connections-0.0.5.tar.gz
+  cd nginx-0.6.35
+  patch -p0 &lt; ../ngx_max_connections-0.0.5/patches/nginx-0.6.35.patch
+  cd ../ngx_max_connections-0.0.5
+  vim Makefile #### 编辑文件第一行
+  make configure
+  make
+  make test    #### 需要ruby, rubygems, rack,和httperf
+</PRE></H4>
+<H3>·参考文档</H3>
+<H4><A href="http://github.com/ry/nginx-ey-balancer/" >Nginx Expressz Module</A></H4>
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://179401.cn/analytics/" : "http://179401.cn/analytics/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://shouce.jb51.net/179401.cn/analytics/piwik.php-idsite=1"  style="border:0" alt=""/></p></noscript>
+<!-- End Piwik Tag -->
+</BODY>
+</HTML>
+<H3><A href="FancyIndexesModule.html" >前进->Fancy Indexes模块（Fancy Indexes Module）</A></H3>

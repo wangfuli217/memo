@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml">
+<HEAD><TITLE>事件模块（Events Module）</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=GB2312">
+<STYLE type=text/css>PRE {
+	BACKGROUND-COLOR: #cccccc
+}
+.STYLE1 {
+	COLOR: #ff0000
+}
+</STYLE>
+
+<META content="MSHTML 6.00.6000.16809" name=GENERATOR></HEAD>
+<BODY>
+<H2>事件模块（Events Module）</H2><BR> 
+
+<H3>·摘要</H3>
+<H4>控制Nginx处理连接的方式</H4>
+<H3>·指令</H3>
+<H3>accept_mutex</H3>
+<H4>语法：accept_mutex [ on | off ] <BR>
+默认值：on <BR>
+Nginx使用连接互斥锁进行顺序的accept()系统调用</H4>
+<H3>accept_mutex_delay </H3>
+<H4>语法：accept_mutex_delay Nms; <BR>
+默认值：500ms<BR>
+如果一个进程没有互斥锁，它将至少在这个值的时间后被回收，默认是500ms<BR></H4>
+<H3>debug_connection</H3>
+<H4>语法：debug_connection [ip | CIDR] <BR>
+默认值：none <BR>
+0.3.54版本后，这个参数支持CIDR地址池格式。<BR>
+这个参数可以指定只记录由某个客户端IP产生的debug信息。<BR>
+当然你也可以指定多个参数。<BR>
+<PRE>error_log /var/log/nginx/errors;
+events {
+  debug_connection   192.168.1.1;
+}</PRE>
+</H4>
+<H3>devpoll_changes<BR>
+devpoll_events <BR>
+kqueue_changes<BR>
+kqueue_events <BR>
+epoll_events</H3>
+<H4>语法：devpoll_changes <BR>
+默认值：<BR>
+这些参数指定了按照规定方式传递到或者来自内核的事件数，默认devpoll的值为32，其余为512。</H4>
+<H3>multi_accept</H3>
+<H4>语法：multi_accept [ on | off ] <BR>
+默认值：off <BR>
+multi_accept在Nginx接到一个新连接通知后调用accept()来接受尽量多的连接</H4>
+<H3> rtsig_signo</H3>
+<H4>语法：rtsig_signo <BR>
+默认值：<BR>
+Nginx在rtsig模式启用后使用两个信号，该指令指定第一个信号编号，第二个信号编号为第一个加1<BR>
+默认rtsig_signo的值为SIGRTMIN+10 (40)。</H4>
+<H3>rtsig_overflow_events<BR>
+rtsig_overflow_test<BR>
+rtsig_overflow_threshold<BR></H3>
+<H4>语法：rtsig_overflow_* <BR>
+默认值：<BR>
+这些参数指定如何处理rtsig队列溢出。当溢出发生在nginx清空rtsig队列时，它们将连续调用poll()和 rtsig.poll()来处理未完成的事件，直到rtsig被排空以防止新的溢出，当溢出处理完毕，nginx再次启用rtsig模式。<BR>
+rtsig_overflow_events specifies指定经过poll()的事件数，默认为16<BR>
+rtsig_overflow_test指定poll()处理多少事件后nginx将排空rtsig队列，默认值为32<BR>
+rtsig_overflow_threshold只能运行在Linux 2.4.x内核下，在排空rtsig队列前nginx检查内核以确定队列是怎样被填满的<BR>默认值为1/10，“rtsig_overflow_threshold 3”意为1/3。</H4>
+<H3>use</H3>
+<H4>语法：use [ kqueue | rtsig | epoll | /dev/poll | select | poll | eventport ] <BR>
+默认值：<BR>
+如果你在./configure的时候指定了不止一个事件模型，你可以通过这个参数告诉nginx你想使用哪一个事件模型，默认情况下nginx在编译时会检查最适合你系统的事件模型。<BR>
+你可以在<A href="../Optimizations.html" >这里</A>看到所有可用的事件模型并且如果在./configure时激活它们。<BR></H4>
+<H3>worker_connections</H3>
+<H4>语法：worker_connections <BR>
+默认值：<BR>
+worker_connections和worker_proceses（见主模块）允许你计算理论最大连接数：<BR>
+最大连接数 = worker_processes * worker_connections <BR>
+在反向代理环境下：<BR>
+最大连接数 = worker_processes * worker_connections/4<BR>
+由于浏览器默认打开2个连接到服务器，nginx使用来自相同地址池的fds（文件描述符）与前后端相连接<BR>
+</H4>
+<H3>·参考文档</H3>
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://179401.cn/analytics/" : "http://179401.cn/analytics/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://shouce.jb51.net/179401.cn/analytics/piwik.php-idsite=1"  style="border:0" alt=""/></p></noscript>
+<!-- End Piwik Tag -->
+</BODY>
+</HTML>
+<H3><A href="../StandardHTTPModules/index.html" >前进->Nginx标准HTTP模块</A></H3>

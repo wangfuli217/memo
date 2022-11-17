@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+    <!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+    <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+         <title>Concurrent Multi-Insert Examples</title> 
+        <link rel="shortcut icon" href="../../../static_star_theme/img/favicon.ico"/>
+        <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,700italic' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../static_star_theme/css/theme.css" type="text/css" /> 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+    </head>
+
+    <body class="wy-body-for-nav" role="document">
+
+    <div class="wy-grid-for-nav">
+
+        <div class="wy-full-navbar" data-swiftype-index="false">
+            <a href="http://www.memsql.com" class="logo">
+                <img src="../../../static_star_theme/img/memsql_logo_horizontal_white.svg" />
+            </a>
+            <div class="global nav">
+                <div class="pull-left left-links">
+                </div>
+                <div class="pull-right right-links">
+                    <a href="http://www.memsql.com/community/" style="word-spacing: 2px;">Community Edition</a>
+                    <a href="http://blog.memsql.com">Blog</a>
+                    <a href="http://www.memsql.com/memsql-partners">Partners</a>
+                    <a href="http://www.memsql.com/resources">Resources</a>
+                    <a href="../../../index.html">Documentation</a>
+                    <a href="http://www.memsql.com/contact">Contact</a>
+                </div>
+            </div>
+            <div class="nav-links">
+                <a href="http://www.memsql.com/product">Product</a>
+                <a href="http://www.memsql.com/solutions">Solutions</a>
+                <a href="http://www.memsql.com/case-studies">Case Studies</a>
+                <a href="http://www.memsql.com/company">Company</a>
+                <a class="download" href="http://www.memsql.com/download/">Download Now</a>
+            </div>
+        </div>
+
+        <nav data-toggle="wy-nav-shift" class="wy-nav-side" data-swiftype-index="false">
+            <div class="wy-side-nav-search">
+                <div role="search">
+  <form id="search-form" class="wy-form" method="get">
+    <input type="text" id="st-search-input" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+            </div>
+
+            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                
+                 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">MemSQL Docs Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro/index.html">How MemSQL Works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../setup/quick_start/index.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../setup/get_started/index.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">User Manual</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../connecting/index.html">How to Connect to MemSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../how_to_run_queries/index.html">How to Run Queries</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="index.html">Concurrent Multi-Insert Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="index.html#python">Python</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#bash">Bash</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#java">Java</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#c">C</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#nodejs">NodeJS</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../data_loading/index.html">Loading Data Into MemSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../porting-apps/index.html">How to Port Your Applications to MemSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../memory_management/index.html">Memory Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../distributed_architecture/index.html">Distributed Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../codegen/index.html">Code Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/index.html">Database Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../distributed_sql/index.html">Distributed SQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../columnar/index.html">Column Store</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../geospatial/index.html">Geospatial Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../json/json/index.html">Javascript Object Notation (JSON)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Operations Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ref/commands_by_type/index.html">SQL Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/config/index.html">Configuration Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ops/index.html">MemSQL Ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../loader/index.html">MemSQL Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../archive/index.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../editions/index.html">MemSQL Editions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq/index.html">Frequently Asked Questions</a></li>
+</ul>
+ 
+            </div>
+            &nbsp;
+        </nav>
+
+        <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+            <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+                <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+                <a href="../../../index.html" class="logo">
+                    <img src="../../../static_star_theme/img/memsql_logo_horizontal_white.svg" />
+                    <span class="subtitle">Documentation</span>
+                </a>
+            </nav>
+
+            <div class="wy-nav-content">
+                <div class="rst-content">
+                    <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../index.html">MemSQL Documentation</a> &raquo;</li>
+      
+          <li><a href="../index.html">User Manual</a> &raquo;</li>
+      
+    <li>Concurrent Multi-Insert Examples</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+                    <div role="main" class="document">
+                        
+  <div class="section" id="concurrent-multi-insert-examples">
+<h1><a class="toc-backref" href="index.html#id9">Concurrent Multi-Insert Examples</a><a class="headerlink" href="index.html#concurrent-multi-insert-examples" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="index.html#concurrent-multi-insert-examples" id="id9">Concurrent Multi-Insert Examples</a><ul>
+<li><a class="reference internal" href="index.html#python" id="id10">Python</a><ul>
+<li><a class="reference internal" href="index.html#dependencies" id="id11">Dependencies</a></li>
+<li><a class="reference internal" href="index.html#code" id="id12">Code</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="index.html#bash" id="id13">Bash</a><ul>
+<li><a class="reference internal" href="index.html#id1" id="id14">Dependencies</a></li>
+<li><a class="reference internal" href="index.html#id2" id="id15">Code</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="index.html#java" id="id16">Java</a><ul>
+<li><a class="reference internal" href="index.html#id3" id="id17">Dependencies</a></li>
+<li><a class="reference internal" href="index.html#id4" id="id18">Code</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="index.html#c" id="id19">C</a><ul>
+<li><a class="reference internal" href="index.html#id5" id="id20">Dependencies</a></li>
+<li><a class="reference internal" href="index.html#id6" id="id21">Code</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="index.html#nodejs" id="id22">NodeJS</a><ul>
+<li><a class="reference internal" href="index.html#id7" id="id23">Dependencies</a></li>
+<li><a class="reference internal" href="index.html#id8" id="id24">Code</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="python">
+<h2><a class="toc-backref" href="index.html#id10">Python</a><a class="headerlink" href="index.html#python" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="dependencies">
+<h3><a class="toc-backref" href="index.html#id11">Dependencies</a><a class="headerlink" href="index.html#dependencies" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/memsql/memsql-python.git">MemSQL Python library</a></li>
+</ul>
+</div>
+<div class="section" id="code">
+<h3><a class="toc-backref" href="index.html#id12">Code</a><a class="headerlink" href="index.html#code" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span class="c">#!/usr/bin/python</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+
+<span class="kn">from</span> <span class="nn">memsql.common</span> <span class="kn">import</span> <span class="n">database</span>
+
+<span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
+
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&quot;--host&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&quot;The hostname of the MemSQL node to connect to&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&quot;--port&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&quot;The port of the MemSQL node to connect to&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&quot;--user&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s">&quot;root&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&quot;The user of the MemSQL node to connect to&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&quot;--password&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&quot;The password of the MemSQL node to connect to&quot;</span><span class="p">)</span>
+
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&quot;--database&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s">&quot;simple_benchmark&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&quot;The database to use - note: this database should not exist&quot;</span><span class="p">)</span>
+
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&quot;--num-workers&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&quot;The number of insert threads&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&quot;--time&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&quot;The number of seconds to run the benchmark for&quot;</span><span class="p">)</span>
+
+<span class="n">options</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
+<span class="n">HOST</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">PORT</span> <span class="o">=</span> <span class="bp">None</span>
+
+<span class="n">TABLE</span> <span class="o">=</span> <span class="s">&quot;tbl&quot;</span>
+<span class="n">BATCH_SIZE</span> <span class="o">=</span> <span class="mi">5000</span>
+
+<span class="c"># Pre-generate the workload query</span>
+<span class="n">QUERY_TEXT</span> <span class="o">=</span> <span class="s">&quot;INSERT INTO </span><span class="si">%s</span><span class="s"> (val) VALUES </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">TABLE</span><span class="p">,</span> <span class="s">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s">&quot;(1)&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">BATCH_SIZE</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">get_connection</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">database</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Returns a new connection to the database. &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">host</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">host</span> <span class="o">=</span> <span class="n">HOST</span>
+    <span class="k">if</span> <span class="n">port</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">port</span> <span class="o">=</span> <span class="n">PORT</span>
+
+    <span class="k">return</span> <span class="n">database</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+        <span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span>
+        <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span>
+        <span class="n">user</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">user</span><span class="p">,</span>
+        <span class="n">password</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">password</span><span class="p">,</span>
+        <span class="n">database</span><span class="o">=</span><span class="n">db</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">InsertWorker</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A simple thread which inserts empty rows in a loop. &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stopping</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">InsertWorker</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stopping</span> <span class="o">=</span> <span class="n">stopping</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exception</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">get_connection</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+            <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">stopping</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
+                <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">QUERY_TEXT</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">test_connection</span><span class="p">():</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">get_connection</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="s">&quot;information_schema&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+            <span class="n">conn</span><span class="o">.</span><span class="n">ping</span><span class="p">()</span>
+    <span class="k">except</span> <span class="n">database</span><span class="o">.</span><span class="n">MySQLError</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;Unable to connect to MemSQL with provided connection details.&quot;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;Please verify that MemSQL is running @ </span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">HOST</span><span class="p">,</span> <span class="n">PORT</span><span class="p">))</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">setup_test_db</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Create a database and table for this benchmark to use. &quot;&quot;&quot;</span>
+
+    <span class="k">with</span> <span class="n">get_connection</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="s">&quot;information_schema&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Creating database </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">options</span><span class="o">.</span><span class="n">database</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c"># note: the following query will fail if there is an existing database</span>
+            <span class="n">conn</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s">&#39;CREATE DATABASE </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">options</span><span class="o">.</span><span class="n">database</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">database</span><span class="o">.</span><span class="n">MySQLError</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;Database </span><span class="si">%s</span><span class="s"> already exists - since we drop the database at&quot;</span> <span class="o">%</span> <span class="n">options</span><span class="o">.</span><span class="n">database</span><span class="p">)</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;the end of this script, please specify an un-used database&quot;</span><span class="p">)</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;with the --database flag.&quot;</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">conn</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s">&#39;USE </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">options</span><span class="o">.</span><span class="n">database</span><span class="p">)</span>
+
+        <span class="n">conn</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s">&#39;CREATE TABLE IF NOT EXISTS </span><span class="si">%s</span><span class="s"> (id INT AUTO_INCREMENT PRIMARY KEY, val INT)&#39;</span> <span class="o">%</span> <span class="n">TABLE</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">warmup</span><span class="p">():</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&#39;Warming up workload&#39;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">get_connection</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">QUERY_TEXT</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">run_benchmark</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Run a set of InsertWorkers and record their performance. &quot;&quot;&quot;</span>
+
+    <span class="n">stopping</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
+    <span class="n">workers</span> <span class="o">=</span> <span class="p">[</span> <span class="n">InsertWorker</span><span class="p">(</span><span class="n">stopping</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">num_workers</span><span class="p">)</span> <span class="p">]</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="s">&#39;Launching </span><span class="si">%d</span><span class="s"> workers&#39;</span> <span class="o">%</span> <span class="n">options</span><span class="o">.</span><span class="n">num_workers</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&#39;Workload will take approximately </span><span class="si">%d</span><span class="s"> seconds.&#39;</span> <span class="o">%</span> <span class="n">options</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+
+    <span class="p">[</span> <span class="n">worker</span><span class="o">.</span><span class="n">start</span><span class="p">()</span> <span class="k">for</span> <span class="n">worker</span> <span class="ow">in</span> <span class="n">workers</span> <span class="p">]</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="s">&#39;Stopping workload&#39;</span><span class="p">)</span>
+
+    <span class="n">stopping</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+    <span class="p">[</span> <span class="n">worker</span><span class="o">.</span><span class="n">join</span><span class="p">()</span> <span class="k">for</span> <span class="n">worker</span> <span class="ow">in</span> <span class="n">workers</span> <span class="p">]</span>
+
+    <span class="k">with</span> <span class="n">get_connection</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;SELECT COUNT(*) AS count FROM </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">TABLE</span><span class="p">)</span><span class="o">.</span><span class="n">count</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%d</span><span class="s"> rows inserted using </span><span class="si">%d</span><span class="s"> threads&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">options</span><span class="o">.</span><span class="n">num_workers</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%.1f</span><span class="s"> rows per second&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">count</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">time</span><span class="p">)))</span>
+
+<span class="k">def</span> <span class="nf">cleanup</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Cleanup the database this benchmark is using. &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">get_connection</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+            <span class="n">conn</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s">&#39;DROP DATABASE IF EXISTS </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">options</span><span class="o">.</span><span class="n">database</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">database</span><span class="o">.</span><span class="n">MySQLError</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">HOST</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">host</span> <span class="ow">or</span> <span class="s">&quot;127.0.0.1&quot;</span>
+    <span class="n">PORT</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">port</span> <span class="ow">or</span> <span class="mi">3306</span>
+
+    <span class="n">cleanup</span><span class="p">()</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">test_connection</span><span class="p">()</span>
+        <span class="n">setup_test_db</span><span class="p">()</span>
+        <span class="n">warmup</span><span class="p">()</span>
+        <span class="n">run_benchmark</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;Interrupted... exiting...&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="bash">
+<h2><a class="toc-backref" href="index.html#id13">Bash</a><a class="headerlink" href="index.html#bash" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3><a class="toc-backref" href="index.html#id14">Dependencies</a><a class="headerlink" href="index.html#id1" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">mysql</span></tt> client program.</li>
+<li>Bourne-Again Shell (<tt class="docutils literal"><span class="pre">bash</span></tt>).</li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h3><a class="toc-backref" href="index.html#id15">Code</a><a class="headerlink" href="index.html#id2" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span class="c">#!/bin/bash</span>
+
+<span class="nv">MHOST</span><span class="o">=</span><span class="s2">&quot;127.0.0.1&quot;</span>
+<span class="nv">MPORT</span><span class="o">=</span><span class="s2">&quot;3306&quot;</span>
+<span class="nv">MUSER</span><span class="o">=</span><span class="s2">&quot;root&quot;</span>
+<span class="nv">MDB</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+<span class="nv">NUM_WORKERS</span><span class="o">=</span>128
+<span class="nv">BATCH_SIZE</span><span class="o">=</span>256
+
+memsql_exec<span class="o">()</span>
+<span class="o">{</span>
+        mysql -h <span class="nv">$MHOST</span> -P <span class="nv">$MPORT</span> -u <span class="nv">$MUSER</span> <span class="nv">$MDB</span> -e <span class="s2">&quot;$1&quot;</span>
+<span class="o">}</span>
+
+memsql_exec_multi<span class="o">()</span>
+<span class="o">{</span>
+        mysql -h <span class="nv">$MHOST</span> -P <span class="nv">$MPORT</span> -u <span class="nv">$MUSER</span> <span class="nv">$MDB</span> -e <span class="se">\</span>
+                <span class="s2">&quot;$(for ((b = 0; b &lt; $BATCH_SIZE; b++)); do</span>
+<span class="s2">                        echo &quot;</span><span class="nv">$1</span>;<span class="s2">&quot;</span>
+<span class="s2">                done)&quot;</span>
+<span class="o">}</span>
+
+<span class="nb">echo</span> <span class="s2">&quot;Creating database test&quot;</span>
+memsql_exec <span class="s2">&quot;CREATE DATABASE IF NOT EXISTS test&quot;</span>
+<span class="nv">MDB</span><span class="o">=</span><span class="s2">&quot;test&quot;</span>
+
+<span class="nb">echo</span> <span class="s2">&quot;Creating table tbl&quot;</span>
+memsql_exec <span class="s2">&quot;CREATE TABLE IF NOT EXISTS tbl (id INT AUTO_INCREMENT PRIMARY KEY)&quot;</span>
+
+<span class="nb">echo</span> <span class="s2">&quot;Launching $NUM_WORKERS workers&quot;</span>
+sleep 1
+<span class="nb">declare</span> -a WORKERS
+<span class="k">for</span> <span class="o">((</span><span class="nv">worker</span> <span class="o">=</span> 0; worker &lt; <span class="nv">$NUM_WORKERS</span>; worker++<span class="o">))</span>; <span class="k">do</span>
+        <span class="o">(</span><span class="k">while</span> <span class="o">[</span> 1 <span class="o">]</span>; <span class="k">do</span>
+<span class="k">                </span><span class="nb">echo</span> <span class="s2">&quot;Worker $worker inserting&quot;</span>
+                memsql_exec_multi <span class="s2">&quot;INSERT INTO tbl VALUES (NULL)&quot;</span>
+        <span class="k">done</span><span class="o">)</span> &amp;
+        WORKERS<span class="o">[</span><span class="nv">$worker</span><span class="o">]=</span><span class="nv">$!</span>
+<span class="k">done</span>
+
+sleep 10
+
+<span class="k">for</span> <span class="o">((</span><span class="nv">worker</span> <span class="o">=</span> 0; worker &lt; <span class="nv">$NUM_WORKERS</span>; worker++<span class="o">))</span>; <span class="k">do</span>
+<span class="k">        </span><span class="nb">echo</span> <span class="s2">&quot;Killing worker $worker&quot;</span>
+        <span class="nb">kill</span> <span class="k">${</span><span class="nv">WORKERS</span><span class="p">[</span><span class="nv">$worker</span><span class="p">]</span><span class="k">}</span>
+        <span class="nb">wait</span> <span class="k">${</span><span class="nv">WORKERS</span><span class="p">[</span><span class="nv">$worker</span><span class="p">]</span><span class="k">}</span> 2&gt;/dev/null
+<span class="k">done</span>
+<span class="nb">echo</span> <span class="s2">&quot;Cleaning up&quot;</span>
+sleep 1
+memsql_exec <span class="s2">&quot;DROP DATABASE test&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="java">
+<h2><a class="toc-backref" href="index.html#id16">Java</a><a class="headerlink" href="index.html#java" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id3">
+<h3><a class="toc-backref" href="index.html#id17">Dependencies</a><a class="headerlink" href="index.html#id3" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>JDBC library (package <tt class="docutils literal"><span class="pre">libmysql-java</span></tt> on Debian-based distributions)</li>
+</ul>
+</div>
+<div class="section" id="id4">
+<h3><a class="toc-backref" href="index.html#id18">Code</a><a class="headerlink" href="index.html#id4" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-Java"><div class="highlight"><pre>import java.sql.*;
+import java.util.Properties;
+import java.util.concurrent.*;
+
+public class Sample {
+    private static final String dbClassName = &quot;com.mysql.jdbc.Driver&quot;;
+    private static final String CONNECTION = &quot;jdbc:mysql://127.0.0.1:3306/&quot;;
+    private static final String USER = &quot;root&quot;;
+    private static final String PASSWORD = &quot;&quot;;
+    private static void executeSQL(Connection conn, String sql) throws SQLException {
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
+        }
+    }
+    private static void ResetEnvironment() throws SQLException {
+        Properties p = new Properties();
+        p.put(&quot;user&quot;, USER);
+        p.put(&quot;password&quot;, PASSWORD);
+        try (Connection conn = DriverManager.getConnection(CONNECTION, p)) {
+            for (String query: new String[] {
+                    &quot;DROP DATABASE IF EXISTS test&quot;,
+                    &quot;CREATE DATABASE test&quot;,
+                    &quot;USE test&quot;,
+                    &quot;CREATE TABLE tbl (id INT AUTO_INCREMENT PRIMARY KEY)&quot;
+            }) {
+                executeSQL(conn, query);
+            }
+        }
+    }
+    private static void worker() {
+        Properties properties = new Properties();
+        properties.put(&quot;user&quot;, USER);
+        properties.put(&quot;password&quot;, PASSWORD);
+        try (Connection conn = DriverManager.getConnection(CONNECTION, properties)) {
+            executeSQL(conn, &quot;USE test&quot;);
+            while (!Thread.interrupted()) {
+                executeSQL(conn, &quot;INSERT INTO tbl VALUES (NULL)&quot;);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void main(String[] args) throws ClassNotFoundException, SQLException, InterruptedException {
+        Class.forName(dbClassName);
+        ResetEnvironment();
+        ExecutorService executor = Executors.newFixedThreadPool(20);
+        for (int i = 0; i &lt; 20; i++) {
+            executor.submit(new Runnable() {
+                @Override
+                public void run() {
+                    worker();
+                }
+            });
+        }
+        Thread.sleep(20000);
+        executor.shutdownNow();
+        if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
+            System.err.println(&quot;Pool did not terminate&quot;);
+        }
+    }
+}
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="c">
+<h2><a class="toc-backref" href="index.html#id19">C</a><a class="headerlink" href="index.html#c" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id5">
+<h3><a class="toc-backref" href="index.html#id20">Dependencies</a><a class="headerlink" href="index.html#id5" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>C compiler (e.g. <tt class="docutils literal"><span class="pre">gcc</span></tt>)</li>
+<li><tt class="docutils literal"><span class="pre">pthreads</span></tt> library (present on most Linux distributions)</li>
+<li><tt class="docutils literal"><span class="pre">mysqlclient</span></tt> library, available from the <tt class="docutils literal"><span class="pre">libmysqlclient-dev</span></tt> package on
+Debian-based distributions.</li>
+</ul>
+</div>
+<div class="section" id="id6">
+<h3><a class="toc-backref" href="index.html#id21">Code</a><a class="headerlink" href="index.html#id6" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-C"><div class="highlight"><pre>/* Compile with:
+ *
+ * cc multi_threaded_inserts.c -lmysqlclient -pthread -o mti
+ */
+
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+
+#include &lt;mysql/mysql.h&gt;
+
+const static char *host = &quot;127.0.0.1&quot;;
+const static char *user = &quot;root&quot;;
+const static char *passwd = &quot;&quot;;
+const static size_t port = 3306;
+
+#define NUM_WORKERS 20
+
+static volatile int keep_going = 1;
+
+void *insert_worker(void *worker_id);
+
+int main()
+{
+    my_init();
+
+    MYSQL conn;
+    mysql_init(&amp;conn);
+
+    printf(&quot;Connecting to MemSQL...\n&quot;);
+    if (mysql_real_connect(&amp;conn, host, user, passwd, NULL, port, NULL, 0) != &amp;conn)
+    {
+        printf(&quot;Could not connect to the MemSQL database!\n&quot;);
+        goto failure;
+    }
+
+    printf(&quot;Creating database &#39;test&#39;...\n&quot;);
+    if (mysql_query(&amp;conn, &quot;create database test&quot;) || mysql_query(&amp;conn, &quot;use test&quot;))
+    {
+        printf(&quot;Could not create &#39;test&#39; database!\n&quot;);
+        goto failure;
+    }
+
+    printf(&quot;Creating table &#39;tbl&#39; in database &#39;test&#39;...\n&quot;);
+    if (mysql_query(&amp;conn, &quot;create table tbl (id bigint auto_increment primary key)&quot;))
+    {
+        printf(&quot;Could not create &#39;tbl&#39; table in the &#39;test&#39; database!\n&quot;);
+        goto failure;
+    }
+
+    printf(&quot;Launching %lu insert workers...\n&quot;, NUM_WORKERS);
+
+    pthread_t workers[NUM_WORKERS];
+
+    size_t i;
+    for (i = 0; i &lt; NUM_WORKERS; ++i)
+    {
+        pthread_create(&amp;workers[i], NULL, &amp;insert_worker, (void *)i);
+    }
+
+    printf(&quot;Running inserts for %lu seconds...\n&quot;, 10);
+    sleep(10);
+    keep_going = 0;
+
+    size_t rows_inserted = 0;
+    for (i = 0; i &lt; NUM_WORKERS; ++i)
+    {
+        size_t rows_i;
+        pthread_join(workers[i], &amp;rows_i);
+        rows_inserted += rows_i;
+    }
+
+    printf(&quot;Inserted %lu rows. Cleaning up...\n&quot;, rows_inserted);
+
+    if (mysql_query(&amp;conn, &quot;drop database test&quot;))
+    {
+        printf(&quot;Could not drop the testing database &#39;test&#39;!\n&quot;);
+    }
+    mysql_close(&amp;conn);
+
+    return 0;
+
+failure:
+    mysql_close(&amp;conn);
+    return 1;
+}
+
+void *insert_worker(void *worker_id)
+{
+    size_t id = (size_t) worker_id;
+
+    MYSQL conn;
+    mysql_init(&amp;conn);
+    if (mysql_real_connect(&amp;conn, host, user, passwd, &quot;test&quot;, port, NULL, 0) != &amp;conn)
+    {
+        printf(&quot;Worker %lu could not connect to the MemSQL database! Aborting...\n&quot;, id);
+        exit(1);
+    }
+
+    size_t i;
+    for (i = 0; keep_going; i += 8)
+    {
+        if (mysql_query(&amp;conn, &quot;insert into tbl values (null), (null), (null),&quot;
+                        &quot;(null), (null), (null), (null), (null)&quot;))
+        {
+            printf(&quot;Worker %lu failed to insert data, aborting...\n&quot;, id);
+            exit(1);
+        }
+    }
+
+    mysql_close(&amp;conn);
+
+    return (void *)i;
+}
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="nodejs">
+<h2><a class="toc-backref" href="index.html#id22">NodeJS</a><a class="headerlink" href="index.html#nodejs" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id7">
+<h3><a class="toc-backref" href="index.html#id23">Dependencies</a><a class="headerlink" href="index.html#id7" title="Permalink to this headline">¶</a></h3>
+<p>NPM packages <tt class="docutils literal"><span class="pre">mysql</span></tt> and <tt class="docutils literal"><span class="pre">promise</span></tt> (run <tt class="docutils literal"><span class="pre">npm</span> <span class="pre">install</span> <span class="pre">mysql</span></tt> and <tt class="docutils literal"><span class="pre">npm</span>
+<span class="pre">install</span> <span class="pre">promise</span></tt>).</p>
+</div>
+<div class="section" id="id8">
+<h3><a class="toc-backref" href="index.html#id24">Code</a><a class="headerlink" href="index.html#id8" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-JavaScript"><div class="highlight"><pre>var mysql = require(&quot;mysql&quot;);
+var Promise = require(&quot;promise&quot;);  // jshint ignore:line
+var util = require(&quot;util&quot;);
+var timers = require(&quot;timers&quot;);
+
+/**
+ * Tweak the following globals to fit your environment
+ * ###################################################
+ */
+
+var HOST = &quot;127.0.0.1&quot;;
+var PORT = 3306;
+var USER = &quot;root&quot;;
+var PASSWORD = &quot;&quot;;
+
+// Specify which database and table to work with.
+// Note: this database will be dropped at the end of this script
+var DATABASE = &quot;test&quot;;
+var TABLE = &quot;tbl&quot;;
+
+// The number of workers to run
+var NUM_WORKERS = 20;
+
+// Run the workload for this many seconds
+var WORKLOAD_TIME = 10;
+
+// Batch size to use
+var BATCH_SIZE = 5000;
+
+/**
+ * Internal code starts here
+ * #########################
+ */
+
+// Pre-generate the insert query
+var _batch = [];
+for (var i = 0; i &lt; BATCH_SIZE; ++i) { _batch.push(&quot;()&quot;); }
+_batch = _batch.join(&quot;,&quot;);
+
+var QUERY_TEXT = util.format(&quot;INSERT INTO %s VALUES %s&quot;, TABLE, _batch);
+
+var EXIT_FLAG = false;
+
+var get_connection = function(db) {
+    var conn = mysql.createConnection({
+        host: HOST,
+        port: PORT,
+        user: USER,
+        password: PASSWORD,
+        database: (db || DATABASE)
+    });
+
+    return new Promise(function(resolve, reject) {
+        conn.connect(function(err) {
+            if (err) { reject(err); }
+            else { resolve(conn); }
+        });
+    });
+};
+
+var query = function(conn, query_text) {
+    return new Promise(function(resolve, reject) {
+        conn.query(query_text, function(err, rows, fields) {
+            if (err) { reject(err); }
+            else { resolve(rows); }
+        });
+    });
+};
+
+var chained_query = function() {
+    var args = arguments;
+    return function(conn) {
+        return query(conn, util.format.apply(util.format, args))
+            .then(function(rows) { return conn; });
+    };
+};
+
+var setup_test_db = function() {
+    console.log(&quot;Setting up database&quot;);
+    return get_connection(&quot;information_schema&quot;)
+        .then(chained_query(&quot;CREATE DATABASE IF NOT EXISTS %s&quot;, DATABASE))
+        .then(chained_query(&quot;USE %s&quot;, DATABASE))
+        .then(chained_query(&quot;CREATE TABLE IF NOT EXISTS %s (id INT AUTO_INCREMENT PRIMARY KEY)&quot;, TABLE));
+};
+
+var insert_worker = function() {
+    return get_connection()
+        .then(function(conn) {
+            return new Promise(function(resolve, reject) {
+                (function _loop() {
+                    conn.query(QUERY_TEXT, function(err) {
+                        if (err) { reject(err); }
+                        else if (EXIT_FLAG) { resolve(); }
+                        else { _loop(); }
+                    });
+                }());
+            });
+        });
+};
+
+var warmup = function() {
+    console.log(&quot;Warming up workload&quot;);
+    return get_connection()
+        .then(chained_query(QUERY_TEXT));
+};
+
+var do_benchmark = function() {
+    return new Promise(function(resolve, reject) {
+        console.log(&quot;Launching %d workers&quot;, NUM_WORKERS);
+
+        var workers = [];
+        for (var i = 0; i &lt; NUM_WORKERS; ++i) {
+            workers.push(insert_worker());
+        }
+
+        timers.setTimeout(function() {
+            console.log(&quot;Stopping workload&quot;);
+            EXIT_FLAG = true;
+
+            resolve(Promise.all(workers));
+        }, WORKLOAD_TIME * 1000);
+    });
+};
+
+var print_stats = function() {
+    return get_connection()
+        .then(function(conn) {
+            return query(conn, util.format(&quot;SELECT COUNT(*) AS count FROM %s&quot;, TABLE));
+        })
+        .then(function(rows) {
+            var count = rows[0].count;
+            console.log(&quot;%d rows inserted using %d workers&quot;, count, NUM_WORKERS);
+            console.log(&quot;%d rows per second&quot;, count / WORKLOAD_TIME);
+        });
+};
+
+var cleanup_test_db = function() {
+    console.log(&quot;Cleaning up&quot;);
+    return get_connection(&quot;information_schema&quot;)
+        .then(chained_query(&quot;DROP DATABASE %s&quot;, DATABASE));
+};
+
+var main = function() {
+    setup_test_db()
+        .then(warmup)
+        .then(do_benchmark)
+        .then(print_stats)
+        .then(cleanup_test_db, function(err) {
+            console.error(&quot;Error: &quot;, err);
+            return cleanup_test_db();
+        })
+        .then(
+            function() { process.exit(0); },
+            function() { process.exit(1); }
+        );
+};
+
+main();
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+                    </div>
+                    <footer data-swiftype-index="false">
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../data_loading/index.html" class="btn btn-neutral float-right" title="Loading Data Into MemSQL">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../how_to_run_queries/index.html" class="btn btn-neutral" title="How to Run Queries"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&copy; Copyright 2015, MemSQL</p>
+  </div>
+</footer>
+                </div>
+            </div>
+
+        </section>
+    </div>
+
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/underscore-min.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery.ba-hashchange.min.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery.swiftype.search.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery.swiftype.autocomplete.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/theme.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/search.js"></script> 
+
+        <!-- Google Analytics -->
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-21693588-3', 'auto');
+            ga('send', 'pageview');
+        </script>
+        <!-- End Google Analytics -->
+
+        <script type="text/javascript">
+            $.ajax({
+                url: document.location.protocol + '//munchkin.marketo.net/munchkin.js',
+                dataType: 'script',
+                cache: true,
+                success: function() {
+                    Munchkin.init('759-YLI-316');
+                }
+            });
+        </script>
+    </body>
+</html>

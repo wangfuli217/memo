@@ -1,0 +1,318 @@
+<html>
+	<META http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<head>
+		<title>Section 2.8.&nbsp; Class Types</title>
+		<link rel="STYLESHEET" type="text/css" href="images/style.css" >
+		<link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+	</head>
+	<body>
+		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<td>
+					<div STYLE="MARGIN-LEFT: 0.15in;">
+						<a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle"  alt="Team LiB"></a>
+					</div>
+				</td>
+				<td align="right">
+					<div STYLE="MARGIN-LEFT: 0.15in;">
+						<a href="ch02lev1sec7.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a>
+						<a href="ch02lev1sec9.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+					</div>
+				</td>
+			</tr>
+		</table><br>
+		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<td valign="top"><a name="ch02lev1sec8"></a>
+					<h3 class="docSection1Title">2.8. Class Types</h3>
+					<h3 class="docSection1Title">2.8. 类类型</h3>
+
+					<a name="ch02term6"></a>
+					<p class="docText">In C++ we define our own data types by defining a <B><a class="docLink" href="ch02lev1sec11.html#gloss02_06" >class</a></b>. A class defines the data that an object of its type contains and the operations that can be executed by objects of that type. The library types <tt>string, istream</tt>, and <tt>ostream</tt> are all defined as classes.</P>
+					<p class="docText">C++ 中，通过定义<B><a class="docLink" href="ch02lev1sec11.html#gloss02_06" >类</a></b>来自定义数据类型。类定义了该类型的对象包含的数据和该类型的对象可以执行的操作。标准库类型string、istream和ostream都定义成类。</P>
+
+					<p class="docText">C++ support for classes is extensivein fact, defining classes is so important that we shall devote <a class="docLink" href="part03.html#part03" >Parts III</a> through <a class="docLink" href="part05.html#part05" >V</a> to describing C++ support for classes and operations using class types.</p>
+					<p class="docText">C++对类的支持非常丰富——事实上，定义类是如此重要，我们把<a class="docLink" href="part03.html#part03" >第三</a>到<a class="docLink" href="part05.html#part05" >第五部分</a>全部用来描述 C++ 对类及类操作的支持。</P>
+
+					<p class="docText">In <a class="docLink" href="ch01.html#ch01" >Chapter 1</a> we used the <tt>Sales_item</tt> type to solve our bookstore problem. We used objects of type <tt>Sales_item</tt> to keep track of sales data associated with a particular ISBN. In this section, we'll take a first look at how a simple class, such as <tt>Sales_item</tt>, might be defined.</P>
+					<p class="docText">在<a class="docLink" href="ch01.html#ch01" >第一章</a>中，我们使用 <tt>Sales_item</tt> 类型来解决书店问题。使用 <tt>Sales_item</tt> 类型的对象来记录对应于特定 ISBN 的销售数据。在这节中，我们先了解如何定义简单的类，如 <tt>Sales_item</tt> 类。</P>
+
+					<a name="ch02lev2sec25"></a>
+					<h4 class="docSection2Title">Class Design Starts with the Operations</h4>
+					<h4 class="docSection2Title">从操作开始设计类</h4>
+					
+<a name="ch02term28"></a>
+<a name="ch02term25"></a>
+					<p class="docText">Each class defines an <B><a class="docLink" href="ch02lev1sec11.html#gloss02_28" >interface</a></b> and <B><a class="docLink" href="ch02lev1sec11.html#gloss02_25" >implementation</a></b>. The interface consists of the operations that we expect code that uses the class to execute. The implementation typically includes the data needed by the class. The implementation also includes any functions needed to define the class but that are not intended for general use.</p>
+					<p class="docText">每个类都定义了一个<B><a class="docLink" href="ch02lev1sec11.html#gloss02_28" >接口</a></b>和一个<B><a class="docLink" href="ch02lev1sec11.html#gloss02_25" >实现</a></b>。接口由使用该类的代码需要执行的操作组成。实现一般包括该类所需要的数据。实现还包括定义该类需要的但又不供一般性使用的函数。</P>
+
+					<p class="docText">When we define a class, we usually begin by defining its interfacethe operations that the class will provide. From those operations we can then determine what data the class will require to accomplish its tasks and whether it will need to define any functions to support the implementation.</p>
+					<p class="docText">定义类时，通常先定义该类的接口，即该类所提供的操作。通过这些操作，可以决定该类完成其功能所需要的数据，以及是否需要定义一些函数来支持该类的实现。</P>
+					
+					<p class="docText">The operations our type will support are the operations we used in <a class="docLink" href="ch01.html#ch01" >Chapter 1</a>. These operations were outlined in <a class="docLink" href="ch01lev1sec5.html#ch01lev2sec9" >Section 1.5.1</a> (p. <a class="docLink" href="ch01lev1sec5.html#ch01lev2sec9" >21</a>):</p>
+					<p class="docText">我们将要定义的类型所支持的操作，就是我们在<a class="docLink" href="ch01.html#ch01" >第一章</a>中所用到的操作。这些操作如下（参见<a class="docLink" href="ch01lev1sec5.html#ch01lev2sec9" >第 1.5.1 节</a>）：</P>
+					<ul>
+						<li>
+						<a name="idd1e12725"></a><a name="idd1e12730"></a><a name="idd1e12735"></a><a name="idd1e12740"></a><a name="idd1e12745"></a><a name="idd1e12750"></a>
+						<p class="docList">The addition operator to add two <tt>Sales_items</tt></P>
+						<p class="docList">加法操作符，将两个 <tt>Sales_item</tt> 相加。</P>
+						</li>
+						<LI>
+						<p class="docList">The input and output operators to read and write <tt>Sales_item</tt> objects</P>
+						<p class="docList">输入和输出操作符，读和写 <tt>Sales_item</tt> 对象。</P>
+						</li>
+						<li>
+						<p class="docList">The assignment operator to assign one <tt>Sales_item</tt> object to another</p>
+						<p class="docList">赋值操作符，把 <tt>Sales_item</tt> 对象赋给另一个 <tt>Sales_item</tt> 对象。</P>
+						</LI>
+						<LI>
+						<p class="docList">The <tt>same_isbn</tt> function to determine if two objects refer to the same book</p>
+						<p class="docList"><tt>same_isbn</tt> 函数，检测两个对象是否指同一本书。</P>
+						</li>
+					</ul>
+					
+					<p class="docText">We'll see how to define these operations in <a class="docLink" href="ch07.html#ch07" >Chapters 7</a> and <a class="docLink" href="ch14.html#ch14" >14</a> after we learn how to define functions and operators. Even though we can't yet implement these functions, we can figure out what data they'll need by thinking a bit about what these operations must do. Our <tt>Sales_item</tt> class must</p>
+					<p class="docText">在学完怎样定义函数和操作符后，我们将会在<a class="docLink" href="ch07.html#ch07" >第七章</a>和<a class="docLink" href="ch14.html#ch14" >第十四章</a>看到该怎样来定义这些操作。虽然现在不能实现这些函数，但通过思考这些操作必须要实现的功能，我们可以看出该类需要什么样的数据。<tt>Sales_item</tt> 类必须</p>
+					<div style="font-weight:bold">
+						<ol class="docList" type="1">
+							<li>
+							<div style="font-weight:normal">
+								<p class="docList">Keep track of how many copies of a particular book were sold</p>
+								<p class="docList">记录特定书的销售册数。</p>
+							</div>
+							</li>
+							<li>
+							<div style="font-weight:normal">
+								<p class="docList">Report the total revenue for that book</p>
+								<p class="docList">记录该书的总销售收入。</p>
+							</div>
+							</li>
+							<li>
+							<div style="font-weight:normal">
+								<p class="docList">Calculate the average sales price for that book</p>
+								<p class="docList">计算该书的平均售价。</p>
+							</div>
+							</li>
+					</ol>
+				</div>
+				
+				<p class="docText">Looking at this list of tasks, we can see that we'll need an <tt>unsigned</tt> to keep track of how many books are sold and a <tt>double</tt> to keep track of the total revenue. From these data we can calculate the average sales price as total revenue divided by number sold. Because we also want to know which book we're reporting on, we'll also need a <tt>string</tt> to keep track of the ISBN.</p>
+				<p class="docText">查看以上所列出的任务，可以知道需要一个 <tt>unsigned</tt> 类型的对象来记录书的销售册数，一个 <tt>double</tt> 类型的对象来记录总销售收入，然后可以用总收入除以销售册数计算出平均售价。因为我们还想知道是在记录哪本书，所以还需要定义一个 <tt>string</tt> 类型的对象来记录书的 ISBN。</p>
+
+<a name="ch02lev2sec26"></a>
+<h4 class="docSection2Title">Defining the <tt>Sales_item</tt> Class</h4>
+<h4 class="docSection2Title">定义 <tt>Sales_item</tt> 类</h4>
+
+<p class="docText">Evidently what we need is the ability to define a data type that will have these three data elements and the operations we used in <a class="docLink" href="ch01.html#ch01" >Chapter 1</a>. In C++, the way we define such a data type is to define a class:</p>
+<p class="docText">很明显，我们需要能够定义一种包含这三个数据元素和在<a class="docLink" href="ch01.html#ch01" >第一章</a>所用到的操作的数据类型。在 C++ 语言中，定义这种数据类型的方法就是定义类：</p>
+
+<pre>
+     class Sales_item {
+     public:
+         // <span class="docEmphItalicAlt">operations on</span> <span class="docEmphasis">Sales_item</span> <span class="docEmphItalicAlt">objects will go here</span>
+     private:
+         std::string isbn;
+         unsigned units_sold;
+         double revenue;
+     };
+</pre>
+
+<p class="docText">A class definition starts with the keyword <tt>class</tt> followed by an identifier that names the class. The body of the class appears inside curly braces. The close curly must be followed by a semicolon.</p>
+<p class="docText">类定义以关键字 <tt>class</tt> 开始，其后是该类的名字标识符。类体位于花括号里面。花括号后面必须要跟一个分号。</p>
+
+<a name="ch02note18"></a>
+<div class="docNote">
+	<p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" id="195131139046" align="LEFT" width="57" height="96" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" >
+			</td>
+			<td valign="top">
+				<p class="docText">It is a common mistake among new programmers to forget the semicolon at the end of a class definition.</p>
+				<p class="docText">编程新手经常会忘记类定义后面的分号，这是个很普遍的错误！</p>
+			</td>
+		</tr>
+	</table>
+	</p>
+</div>
+
+<a name="ch02term13"></a>
+<p class="docText">The class body, which can be empty, defines the data and operations that make up the type. The operations and data that are part of a class are referred to as its <span class="docEmphStrong">members</span>. The operations are referred to as the member functions (<a class="docLink" href="ch01lev1sec5.html#ch01lev2sec10" >Section 1.5.2</a>, p. <a class="docLink" href="ch01lev1sec5.html#ch01lev2sec10" >24</a>) and the data as <b><a class="docLink" href="ch02lev1sec11.html#gloss02_13" >data members</a></b>.</p>
+<p class="docText">类体可以为空。类体定义了组成该类型的数据和操作。这些操作和数据是类的一部分，也称为类的<span class="docEmphStrong">成员</span>。操作称为成员函数（<a class="docLink" href="ch01lev1sec5.html#ch01lev2sec10" >第 1.5.2 节</a>），而数据则称为<b><a class="docLink" href="ch02lev1sec11.html#gloss02_13" >数据成员</a></b>。</p>
+
+<a name="idd1e12892"></a><a name="idd1e12895"></a><a name="idd1e12898"></a><a name="idd1e12904"></a><a name="idd1e12910"></a><a name="idd1e12915"></a><a name="idd1e12920"></a><a name="idd1e12923"></a><a name="idd1e12926"></a><a name="idd1e12931"></a><a name="idd1e12936"></a><a name="idd1e12941"></a><a name="idd1e12946"></a><a name="idd1e12951"></a>
+<a name="ch02term1"></a>
+<p class="docText">The class also may contain zero or more <tt>public</tt> or <tt>private</tt> <B><a class="docLink" href="ch02lev1sec11.html#gloss02_01" >access labels</a></b>. An access label controls whether a member is accessible outside the class. Code that uses the class may access only the <tt>public</tt> members.</P>
+<p class="docText">类也可以包含 0 个到多个 <tt>private</tt> 或 <tt>public</tt> <B><a class="docLink" href="ch02lev1sec11.html#gloss02_01" >访问标号</a></b>。访问标号控制类的成员在类外部是否可访问。使用该类的代码可能只能访问 <tt>public</tt> 成员。</p>
+
+<p class="docText">When we define a class, we define a new type. The class name is the name of that type. By naming our class <tt>Sales_item</tt> we are saying that <tt>Sales_item</tt> is a new type and that programs may define variables of this type.</p>
+<p class="docText">定义了类，也就定义了一种新的类型。类名就是该类型的名字。通过命名 <tt>Sales_item</tt> 类，表示 <tt>Sales_item</tt> 是一种新的类型，而且程序也可以定义该类型的变量。</p>
+
+<p class="docText">Each class defines its own scope (<a class="docLink" href="ch02lev1sec3.html#ch02lev2sec15" >Section 2.3.6</a>, p. <a class="docLink" href="ch02lev1sec3.html#ch02lev2sec15" >54</a>). That is, the names given to the data and operations inside the class body must be unique within the class but can reuse names defined outside the class.</p>
+<p class="docText">每一个类都定义了它自己的作用域（<a class="docLink" href="ch02lev1sec3.html#ch02lev2sec15" >第 2.3.6 节</a>）。也就是说，数据和操作的名字在类的内部必须唯一，但可以重用定义在类外的名字。</p>
+
+<a name="ch02lev2sec27"></a>
+<h4 class="docSection2Title">Class Data Members</h4>
+<h4 class="docSection2Title">类的数据成员</h4>
+
+<a name="ch02term7"></a>
+<p class="docText">The data <span class="docEmphRoman"><a class="docLink" href="ch02lev1sec11.html#gloss02_07" >members of a class</a></span> are defined in somewhat the same way that normal variables are defined. We specify a type and give the member a name just as we do when defining a simple variable:</p>
+<p class="docText">定义类的数据成员和定义普通变量有些相似。我们同样是指定一种类型并给该成员一个名字：</p>
+<pre>
+     std::string isbn;
+     unsigned units_sold;
+     double revenue;
+</pre>
+
+<p class="docText">Our class has three data members: a member of type <tt>string</tt> named <tt>isbn</tt>, an <tt>unsigned</tt> member named <tt>units_sold</tt>, and a member of type <tt>double</tt> named <tt>revenue</tt>. The data members of a class define the contents of the objects of that class type. When we define objects of type <tt>Sales_item</tt>, those objects will contain a <tt>string</tt>, an <tt>unsigned</tt>, and a <tt>double</tt>.</p>
+<p class="docText">这个类含有三个数据成员：一个名为 <tt>isbn</tt> 的 <tt>string</tt> 类型成员，一个名为 <tt>units_sold</tt> 的 <tt>unsigned</tt> 类型成员，一个名为 <tt>revenue</tt> 的 <tt>double</tt> 类型成员。类的数据成员定义了该类类型对象的内容。当定义 <tt>Sales_item</tt> 类型的对象时，这些对象将包含一个 <tt>string</tt> 型变量，一个 <tt>unsigned</tt> 型变量和一个 <tt>double</tt> 型变量。</p>
+
+<p class="docText">There is one crucially important difference between how we define variables and class data members: We ordinarily cannot initialize the members of a class as part of their definition. When we define the data members, we can only name them and say what types they have. Rather than initializing data members when they are defined inside the class definition, classes control initialization through special member functions called constructors (<a class="docLink" href="ch02lev1sec3.html#ch02lev2sec12" >Section 2.3.3</a>, p. <a class="docLink" href="ch02lev1sec3.html#ch02lev2sec12" >49</a>). We will define the <tt>Sales_item</tt> constructors in <a class="docLink" href="ch07lev1sec7.html#ch07lev2sec24" >Section 7.7.3</a> (p. <a class="docLink" href="ch07lev1sec7.html#ch07lev2sec24" >262</a>).</P>
+<p class="docText">定义变量和定义数据成员存在非常重要的区别：一般不能把类成员的初始化作为其定义的一部分。当定义数据成员时，只能指定该数据成员的名字和类型。类不是在类定义里定义数据成员时初始化数据成员，而是通过称为构造函数（<a class="docLink" href="ch02lev1sec3.html#ch02lev2sec12" >第 2.3.3 节</a>）的特殊成员函数控制初始化。我们将在<a class="docLink" href="ch07lev1sec7.html#ch07lev2sec24" >第 7.7.3 节</a>定义 <tt>Sales_item</tt> 的构造函数。</p>
+
+<a name="ch02lev2sec28"></a>
+<H4 class="docSection2Title">Access Labels</h4>
+<H4 class="docSection2Title">访问标号</h4>
+
+<p class="docText">Access labels control whether code that uses the class may use a given member. Member functions of the class may use any member of their own class, regardless of the access level. The access labels, <tt>public</tt> and <tt>private</tt>, may appear multiple times in a class definition. A given label applies until the next access label is seen.</p>
+<p class="docText">访问标号负责控制使用该类的代码是否可以使用给定的成员。类的成员函数可以使用类的任何成员，而不管其访问级别。访问标号 <tt>public</tt>、<tt>private</tt> 可以多次出现在类定义中。给定的访问标号应用到下一个访问标号出现时为止。</p>
+
+<a name="ch02term39"></a>
+<p class="docText">The <b><a class="docLink" href="ch02lev1sec11.html#gloss02_39" >public</a></b> section of a class defines members that can be accessed by any part of the program. Ordinarily we put the operations in the <tt>public</tt> section so that any code in the program may execute these operations.</P>
+<p class="docText">类中<b><a class="docLink" href="ch02lev1sec11.html#gloss02_39" >public</a></b> 部分定义的成员在程序的任何部分都可以访问。一般把操作放在 <tt>public</tt> 部分，这样程序的任何代码都可以执行这些操作。</p>
+
+<a name="ch02term38"></a>
+<p class="docText">Code that is not part of the class does not have access to the <B><a class="docLink" href="ch02lev1sec11.html#gloss02_38" >private</a></b> members. By making the <tt>Sales_item</tt> data members <tt>private</tt>, we ensure that code that operates on <tt>Sales_item</tt> objects cannot directly manipulate the data members. Programs, such as the one we wrote in <a class="docLink" href="ch01.html#ch01" >Chapter 1</a>, may not access the <tt>private</tt> members of the class. Objects of type <tt>Sales_item</tt> may execute the operations but not change the data directly.</p>
+<p class="docText">不是类的组成部分的代码不能访问 <B><a class="docLink" href="ch02lev1sec11.html#gloss02_38" >private</a></b> 成员。通过设定 <tt>Sales_item</tt> 的数据成员为 <tt>private</tt>，可以保证对 <tt>Sales_item</tt> 对象进行操作的代码不能直接操纵其数据成员。就像我们在<a class="docLink" href="ch01.html#ch01" >第一章</a>编写的程序那样，程序不能访问类中的 <tt>private</tt> 成员。<tt>Sales_item</tt> 类型的对象可以执行那些操作，但是不能直接修改这些数据。</p>
+
+<a name="ch02lev2sec29"></a>
+<h4 class="docSection2Title">Using the <tt>struct</tt> Keyword</h4>
+<h4 class="docSection2Title">使用 <tt>struct</tt> 关键字</h4>
+
+<a name="idd1e13119"></a>
+<a name="ch02term53"></a>
+<p class="docText">C++ supports a second keyword, <span class="docEmphRoman"><a class="docLink" href="ch02lev1sec11.html#gloss02_53" ><span class="docEmphRoman"><tt>struct</tt></span></a></span>, that can be used to define class types. The <tt>struct</tt> keyword is inherited from C.</p>
+<p class="docText">C++ 支持另一个关键字 <span class="docEmphRoman"><a class="docLink" href="ch02lev1sec11.html#gloss02_53" ><span class="docEmphRoman"><tt>struct</tt></span></a></span>，它也可以定义类类型。<tt>struct</tt> 关键字是从 C 语言中继承过来的。</p>
+
+<p class="docText">If we define a class using the <tt>class</tt> keyword, then any members defined before the first access label are implicitly <tt>private</tt>; ifwe usethe <tt>struct</tt> keyword, then those members are <tt>public</tt>. Whether we define a class using the <tt>class</tt> keyword or the <tt>struct</tt> keyword affects only the default initial access level.</P>
+<p class="docText">如果使用 <tt>class</tt> 关键字来定义类，那么定义在第一个访问标号前的任何成员都隐式指定为 <tt>private</tt>；如果使用 <tt>struct</tt> 关键字，那么这些成员都是 <tt>public</tt>。使用 <tt>class</tt> 还是 <tt>struct</tt> 关键字来定义类，仅仅影响默认的初始访问级别。</p>
+
+<p class="docText">We could have defined our <tt>Sales_item</tt> equivalently by writing</p>
+<p class="docText">可以等效地定义 <tt>Sales_item</tt> 类为：</p>
+<pre>
+     struct Sales_item {
+         // <span class="docEmphItalicAlt">no need for public label, members are public by default</span>
+         // <span class="docEmphItalicAlt">operations on</span> <span class="docEmphasis">Sales_item</span> <span class="docEmphItalicAlt">objects</span>
+     private:
+         std::string isbn;
+         unsigned units_sold;
+         double revenue;
+     };
+</pre>
+
+<p class="docText">There are only two differences between this class definition and our initial class definition: Here we use the <tt>struct</tt> keyword, and we eliminate the use of <tt>public</tt> keyword immediately following the opening curly brace. Members of a <tt>struct</tt> are public, unless otherwise specified, so there is no need for the <tt>public</tt> label.</P>
+<p class="docText">本例的类定义和前面的类定义只有两个区别：这里使用了关键字 <tt>struct</tt>，并且没有在花括号后使用关键字 <tt>public</tt>。<tt>struct</tt> 的成员都是 <tt>public</tt>，除非有其他特殊的声明，所以就没有必要添加 <tt>public</tt> 标号。</p>
+
+<a name="ch02note19"></a>
+<div class="docNote">
+	<p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" id="195131139046" align="LEFT" width="50" height="54" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" >
+			</td>
+			<td valign="top">
+				<p class="docText">The only difference between a class defined with the <tt>class</tt> keyword or the <tt>struct</tt> keyword is the default access level: By default, members in a <tt>struct</tt> are <tt>public</tt>; those in a <tt>class</tt> are <tt>private</tt>.</p>
+				<p class="docText">用 <tt>class</tt> 和 <tt>struct</tt> 关键字定义类的唯一差别在于默认访问级别：默认情况下，<tt>struct</tt> 的成员为 <tt>public</tt>，而 <tt>class</tt> 的成员为 <tt>private</tt>。</p>
+			</td>
+		</tr>
+	</table>
+	</p>
+</div>
+
+<a name="ch02sb19"></a>
+<p>
+<table cellspacing="0" width="90%" border="1" cellpadding="5">
+	<tr>
+		<td>
+			<h2 class="docSidebarTitle">Exercises Section 2.8</h2>
+			<blockquote>
+				<p>
+				<table border="0" cellspacing="16" cellpadding="0">
+					<tr valign="top">
+						<TD align="right" class="docText" width="50"><a name="ch02qa12q1"></a>
+							<B>Exercise 2.28:</b></td>
+						<TD>
+							<p class="docText">Compile the following program to determine whether your compiler warns about a missing semicolon after a class definition:</p>
+							<p class="docText">编译以下程序，确定你的编译器是否会警告遗漏了类定义后面的分号。</p>
+<pre>
+     class Foo  {
+           // <span class="docEmphasis">empty</span>
+     } // <span class="docEmphasis">Note: no semicolon</span>
+     int main()
+     {
+         return 0;
+     }
+</pre>
+
+<p class="docText">If the diagnostic is confusing, remember the message for future reference.</P>
+<p class="docText">如果编译器的诊断结果难以理解，记住这些信息以备后用。</P>
+
+						</TD>
+						
+					</tr>
+					<tr valign="top">
+						<td align="right" class="docText" width="50">
+							<a name="ch02qa12q2"></a>
+							<b>Exercise 2.29:</b>
+						</td>
+						<TD>
+							<p class="docText">Distinguish between the <tt>public</tt> and <tt>private</tt> sections of a class.</p>
+							<p class="docText">区分类中的 <tt>public</tt> 部分和 <tt>private</tt> 部分。</p>
+						</TD>
+					</TR>
+					<tr valign="top">
+						<td align="right" class="docText" width="50">
+							<a name="ch02qa12q3"></a>
+							<b>Exercise 2.30:</b>
+						</TD>
+						<TD>
+							<p class="docText">Define the data members of classes to represent the following types:</p>
+							<p class="docText">定义表示下列类型的类的数据成员：</p>
+<pre>
+     (a) a phone number            (b) an address
+     (c) an employee or a company  (d) a student at a university
+</pre>
+						</td>
+					</tr>
+				</table>
+				</P>
+			</blockquote>
+		</td>
+	</tr>
+</table>
+</P>
+
+
+</td>
+</TR>
+</table><br />
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+		<td>
+			<div STYLE="MARGIN-LEFT: 0.15in;">
+				<a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle"  alt="Team LiB"></a>
+			</div>
+		</td>
+		<td align="right">
+			<div STYLE="MARGIN-LEFT: 0.15in;">
+				<a href="ch02lev1sec7.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a>
+				<a href="ch02lev1sec9.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+			</div>
+		</td>
+	</tr>
+</table>
+</body></html>
+

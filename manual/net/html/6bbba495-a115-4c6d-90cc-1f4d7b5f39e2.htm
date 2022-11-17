@@ -1,0 +1,173 @@
+﻿<html xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+    <META NAME="save" CONTENT="history" />
+    <title>创建和引发异常（C# 编程指南）</title>
+    <link rel="stylesheet" type="text/css" href="../styles/presentation.css" />
+    <link rel="stylesheet" type="text/css" href="ms-help://Hx/HxRuntime/HxLink.css" />
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/EventUtilities.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/SplitScreen.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/Dropdown.js"> </script>
+    <script type="text/javascript" src="../scripts/script_manifold.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/script_feedBack.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CheckboxMenu.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CommonUtilities.js"> </script>
+    <xml>
+      <MSHelp:TOCTitle Title="创建和引发异常" />
+      <MSHelp:Keyword Index="A" Term="6bbba495-a115-4c6d-90cc-1f4d7b5f39e2" />
+      <MSHelp:Keyword Index="K" Term="捕获异常 [C#]" />
+      <MSHelp:Keyword Index="K" Term="异常 [C#], 创建" />
+      <MSHelp:Keyword Index="K" Term="异常 [C#], 引发" />
+      <MSHelp:Keyword Index="K" Term="引发异常 [C#]" />
+      <MSHelp:Attr Name="RevisionNumber" Value="19" />
+      <MSHelp:Attr Name="AssetID" Value="6bbba495-a115-4c6d-90cc-1f4d7b5f39e2" />
+      <MSHelp:Attr Name="Abstract" Value="异常用于指示在运行程序时发生了错误。此时将创建一个描述错误的异常对象，然后使用 throw 关键字“引发”该对象。然后运行时搜索最兼容的异常处理程序。" />
+      <MSHelp:Attr Name="codelang" Value="CSharp" />
+      <MSHelp:Attr Name="CommunityContent" Value="1" />
+      <MSHelp:Attr Name="DevLang" Value="CSharp" />
+      <MSHelp:Attr Name="DevLangVers" Value="CSharp" />
+      <MSHelp:Attr Name="DocSet" Value="C#" />
+      <MSHelp:Attr Name="DocSet" Value="C# Lang" />
+      <MSHelp:Attr Name="DocSet" Value="ExpressLibVS" />
+      <MSHelp:Attr Name="ProgModel" Value="managed" />
+      <MSHelp:Attr Name="ShippedIn" Value="vs.90" />
+      <MSHelp:Attr Name="Technology" Value="ManagedCode" />
+      <MSHelp:Attr Name="TopicVersion" Value="09.00.08178.10000" />
+      <MSHelp:Attr Name="Catalog Container" Value="System_Default_Catalog" />
+      <MSHelp:Attr Name="Content Set Container" Value="System_Default_Content_Set" />
+      <MSHelp:Attr Name="TopicType" Value="kbRef" />
+      <MSHelp:Attr Name="Locale" Value="zh-chs" />
+    </xml>
+  </head>
+  <body>
+    <input type="hidden" id="userDataCache" class="userDataStyle" />
+    <input type="hidden" id="hiddenScrollOffset" />
+    <img id="collapseImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" title="“折叠”图像" />
+    <img id="expandImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" title="“展开”图像" />
+    <img id="collapseAllImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" />
+    <img id="expandAllImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" />
+    <img id="dropDownImage" style="display:none; height:0; width:0;" src="../icons/dropdown.gif" />
+    <img id="dropDownHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/dropdownHover.gif" />
+    <img id="copyImage" style="display:none; height:0; width:0;" src="../icons/copycode.gif" title="“复制”图像" />
+    <img id="copyHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/copycodeHighlight.gif" title="“复制悬停”图像" />
+    <div id="header">
+      <table id="topTable" cellspacing="0" cellpadding="0">
+        <tr>
+          <td>
+            <span onclick="ExpandCollapseAll(toggleAllImage)" style="cursor:default;" onkeypress="ExpandCollapseAll_CheckKey(toggleAllImage, event)" tabindex="0">
+              <img ID="toggleAllImage" class="toggleAll" src="../icons/collapse_all.gif" /> <label id="collapseAllLabel" for="toggleAllImage" style="display: none;">全部折叠</label><label id="expandAllLabel" for="toggleAllImage" style="display: none;">全部展开</label> </span>
+            <span>    </span>
+            <span id="devlangsDropdown" class="filter" tabindex="0">
+              <img id="devlangsDropdownImage" src="../icons/dropdown.gif" /> <label id="devlangsMenuAllLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：全部 </nobr></label><label id="devlangsMenuMultipleLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：多个 </nobr></label><label id="devlangsMenuVisualBasicLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual Basic </nobr></label><label id="devlangsMenuCSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：C# </nobr></label><label id="devlangsMenuManagedCPlusPlusLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual C++ </nobr></label><label id="devlangsMenuJSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：J# </nobr></label><label id="devlangsMenuJScriptLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：JScript </nobr></label></span>
+          </td>
+        </tr>
+      </table>
+      <div id="devlangsMenu">
+        <input id="VisualBasicCheckbox" type="checkbox" data="VisualBasic,vb,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="VisualBasicCheckbox">Visual Basic</label>
+        <br />
+        <input id="CSharpCheckbox" type="checkbox" data="CSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="CSharpCheckbox">C#</label>
+        <br />
+        <input id="ManagedCPlusPlusCheckbox" type="checkbox" data="ManagedCPlusPlus,cpp,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="ManagedCPlusPlusCheckbox">Visual C++</label>
+        <br />
+        <input id="JSharpCheckbox" type="checkbox" data="JSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JSharpCheckbox">J#</label>
+        <br />
+        <input id="JScriptCheckbox" type="checkbox" data="JScript,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JScriptCheckbox">JScript</label>
+        <br />
+      </div>
+      <table id="bottomTable" cellpadding="0" cellspacing="0">
+        <tr id="headerTableRow1">
+          <td align="left">
+            <span id="runningHeaderText">C# 编程指南</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow2">
+          <td align="left">
+            <span id="nsrTitle">创建和引发异常（C# 编程指南）</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow3">
+          <td align="left">
+            <a href="6bbba495-a115-4c6d-90cc-1f4d7b5f39e2.htm#seeAlsoToggle" onclick="OpenSection(seeAlsoToggle)">另请参见</a>  
+<script type="text/javascript">
+var fbBody = '%b8%d0%d0%bb%c4%fa%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%bf%aa%b7%a2%b0%e6%b1%e0%d0%b4%cd%c5%b6%d3%bd%ab%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%d3%c3%d3%da%b8%c4%bd%f8%ce%c4%b5%b5%a1%a3%ce%d2%c3%c7%d4%da%c9%f3%d4%c4%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%ca%b1%a3%ac%bf%c9%c4%dc%bb%e1%b8%f8%c4%fa%b7%a2%cb%cd%b5%e7%d7%d3%d3%ca%bc%fe%a3%ac%d2%d4%c7%eb%c4%fa%cc%e1%b9%a9%bd%f8%d2%bb%b2%bd%b5%c4%bd%e2%ca%cd%cb%b5%c3%f7%bb%f2%d5%df%be%cd%bd%e2%be%f6%b7%bd%b0%b8%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%ce%d2%c3%c7%b2%bb%bb%e1%bd%ab%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%d3%c3%d3%da%c8%ce%ba%ce%c6%e4%cb%fb%d3%c3%cd%be%a3%ac%b2%a2%c7%d2%d4%da%c9%f3%d4%c4%cd%ea%d6%ae%ba%f3%a3%ac%ce%d2%c3%c7%b2%bb%bb%e1%d4%d9%b1%a3%c1%f4%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%a1%a3%0d%0a%d3%d0%b9%d8%20Microsoft%20%d2%fe%cb%bd%d5%fe%b2%df%b5%c4%bd%f8%d2%bb%b2%bd%d0%c5%cf%a2%a3%ac%c7%eb%b2%ce%bc%fb%20http%3a%2f%2fprivacy.microsoft.com%2fzh-cn%2fdefault.aspx%a1%a3';
+var fbSubject = 'Customer%20Feedback';
+</script>
+  <span id="headfeedbackarea" class="feedbackhead"><a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);"> 发送反馈意见</a></span>
+</td>
+        </tr>
+      </table>
+      <table id="gradientTable">
+        <tr>
+          <td class="nsrBottom" background="../icons/gradient.gif" />
+        </tr>
+      </table>
+    </div>
+    <div id="mainSection">
+      <div id="mainBody">
+        <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
+        <font color="DarkGray"></font>
+        <p /> <p><font color="DarkGray">更新：2007 年 11 月</font></p><div class="introduction"><p>异常用于指示在运行程序时发生了错误。此时将创建一个描述错误的异常对象，然后使用 <mshelp:link keywords="5ac4feef-4b1a-4c61-aeb4-61d549e5dd42" tabindex="0">throw</mshelp:link> 关键字“引发”该对象。然后运行时搜索最兼容的异常处理程序。</p><p>当存在下列一种或多种情况时，程序员应引发异常：</p><ul><li><p>方法无法完成其中定义的功能。</p><p>例如，如果方法的参数具有无效值：</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> CopyObject(SampleClass original)
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> (original == <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">null</span>)
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">throw</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> System.ArgumentException(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Parameter cannot be null"</span>, <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"original"</span>);
+    }
+
+}
+
+</pre></td></tr></table></span></div></div></li><li><p>根据对象的状态，对某个对象进行不适当的调用。</p><p>一个示例可能尝试对只读文件执行写操作。在对象状态不允许某项操作的情况下，引发 <span sdata="cer" target="T:System.InvalidOperationException"><mshelp:link keywords="T:System.InvalidOperationException" tabindex="0">InvalidOperationException</mshelp:link></span> 的一个实例或基于此类的派生类的对象。以下为引发 <span sdata="cer" target="T:System.InvalidOperationException"><mshelp:link keywords="T:System.InvalidOperationException" tabindex="0">InvalidOperationException</mshelp:link></span> 对象的方法的示例：</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> ProgramLog
+{
+    System.IO.FileStream logFile = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">null</span>;
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> OpenLog(System.IO.FileInfo fileName, System.IO.FileMode mode) {}
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> WriteLog()
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> (!<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span>.logFile.CanWrite)
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">throw</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> System.InvalidOperationException(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Logfile cannot be read-only"</span>);
+        }
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Else write data to the log and return.</span>
+    }
+}
+
+</pre></td></tr></table></span></div></div></li><li><p>方法的参数导致了异常。</p><p>在此情况下，应捕获原始异常并创建一个 <span sdata="cer" target="T:System.ArgumentException"><mshelp:link keywords="T:System.ArgumentException" tabindex="0">ArgumentException</mshelp:link></span> 实例。原始异常应作为 <span sdata="cer" target="P:System.Exception.InnerException"><mshelp:link keywords="P:System.Exception.InnerException" tabindex="0">InnerException</mshelp:link></span> 参数传递给 <span sdata="cer" target="T:System.ArgumentException"><mshelp:link keywords="T:System.ArgumentException" tabindex="0">ArgumentException</mshelp:link></span> 的构造函数：</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> GetValueFromArray(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>[] array, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> index)
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">try</span>
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> array[index];
+    }
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">catch</span> (System.IndexOutOfRangeException ex)
+    {
+        System.ArgumentException argEx = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> System.ArgumentException(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Index is out of range"</span>, <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"index"</span>, ex);
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">throw</span> argEx;
+    }
+}
+
+</pre></td></tr></table></span></div></div></li></ul><p>异常包含一个名为 <span sdata="cer" target="P:System.Exception.StackTrace"><mshelp:link keywords="P:System.Exception.StackTrace" tabindex="0">StackTrace</mshelp:link></span> 的属性。此字符串包含当前调用堆栈上的方法的名称，以及为每个方法引发异常的位置（文件名和行号）。<span sdata="cer" target="P:System.Exception.StackTrace"><mshelp:link keywords="P:System.Exception.StackTrace" tabindex="0">StackTrace</mshelp:link></span> 对象由公共语言运行时 (CLR) 从 <span sdata="langKeyword" value="throw"><span class="keyword">throw</span></span> 语句点开始自动创建，因此必须从堆栈跟踪的开始点引发异常。</p><p>所有异常都包含一个名为 <span sdata="cer" target="P:System.Exception.Message"><mshelp:link keywords="P:System.Exception.Message" tabindex="0">Message</mshelp:link></span> 的属性。应该设置此字符串来解释发生异常的原因。注意，不应将安全敏感信息放在消息文本中。除 <span sdata="cer" target="P:System.Exception.Message"><mshelp:link keywords="P:System.Exception.Message" tabindex="0">Message</mshelp:link></span> 之外，<span sdata="cer" target="T:System.ArgumentException"><mshelp:link keywords="T:System.ArgumentException" tabindex="0">ArgumentException</mshelp:link></span> 还包含一个名为 <span sdata="cer" target="P:System.ArgumentException.ParamName"><mshelp:link keywords="P:System.ArgumentException.ParamName" tabindex="0">ParamName</mshelp:link></span> 的属性，应将该属性设置为导致引发异常的参数的名称。对于属性设置器，<span sdata="cer" target="P:System.ArgumentException.ParamName"><mshelp:link keywords="P:System.ArgumentException.ParamName" tabindex="0">ParamName</mshelp:link></span> 应设置为 <span class="code">value</span>。</p><p>公共的受保护方法应在其无法完成预期功能时引发异常。引发的异常类应该是符合错误条件的最确切的可用异常。这些异常应编写为类功能的一部分，派生类或对原始类的更新应保留相同的行为，以实现向后兼容性。</p></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle0)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle0, event)" tabindex="0"><img id="sectionToggle0" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />引发异常时要避免的情况</span></h1><div id="sectionSection0" class="section" name="collapseableSection" style=""><p>下表确定了在引发异常时要避免的做法：</p><ul><li><p>不应使用异常来更改正常执行过程中的程序流程。异常只能用于报告和处理错误条件。</p></li><li><p>只能引发异常，而不能作为返回值或参数返回异常。</p></li><li><p>不要从自己的源代码中有意引发 <span sdata="cer" target="T:System.Exception"><mshelp:link keywords="T:System.Exception" tabindex="0">System<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span></span>Exception</mshelp:link></span>、<span sdata="cer" target="T:System.SystemException"><mshelp:link keywords="T:System.SystemException" tabindex="0">System<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span></span>SystemException</mshelp:link></span>、<span sdata="cer" target="T:System.NullReferenceException"><mshelp:link keywords="T:System.NullReferenceException" tabindex="0">System<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span></span>NullReferenceException</mshelp:link></span> 或 <span sdata="cer" target="T:System.IndexOutOfRangeException"><mshelp:link keywords="T:System.IndexOutOfRangeException" tabindex="0">System<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span></span>IndexOutOfRangeException</mshelp:link></span>。</p></li><li><p>不要创建可在调试模式下引发但不会在发布模式下引发的异常。若要在开发阶段确定运行时错误，请改用调试断言。</p></li></ul></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle1)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle1, event)" tabindex="0"><img id="sectionToggle1" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />定义异常类</span></h1><div id="sectionSection1" class="section" name="collapseableSection" style=""><p>程序可以引发 <span sdata="cer" target="N:System"><mshelp:link keywords="N:System" tabindex="0">System</mshelp:link></span> 命名空间中的预定义异常类（前面注明的情况除外），或通过从 <span sdata="cer" target="T:System.ApplicationException"><mshelp:link keywords="T:System.ApplicationException" tabindex="0">ApplicationException</mshelp:link></span> 派生来创建它们自己的异常类。派生类至少应定义四个构造函数：一个是默认构造函数，一个用来设置消息属性，一个用来设置 <span sdata="cer" target="P:System.Exception.Message"><mshelp:link keywords="P:System.Exception.Message" tabindex="0">Message</mshelp:link></span> 属性和 <span sdata="cer" target="P:System.Exception.InnerException"><mshelp:link keywords="P:System.Exception.InnerException" tabindex="0">InnerException</mshelp:link></span> 属性。第四个构造函数用于序列化异常。新异常类应该可序列化。例如：</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>[Serializable()]
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> InvalidDepartmentException : System.Exception
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> InvalidDepartmentException() { }
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> InvalidDepartmentException(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> message) { }
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> InvalidDepartmentException(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> message, System.Exception inner) { }
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Constructor needed for serialization </span>
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// when exception propagates from a remoting server to the client.</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">protected</span> InvalidDepartmentException(System.Runtime.Serialization.SerializationInfo info,
+        System.Runtime.Serialization.StreamingContext context) { }
+}
+
+</pre></td></tr></table></span></div></div><p>仅当新属性提供的数据有助于解决异常时，才应将其添加到异常类。如果向派生的异常类添加了新属性，则应重写 <span class="code">ToString()</span> 以返回添加的信息。</p></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle2)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle2, event)" tabindex="0"><img id="sectionToggle2" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />C# 语言规范</span></h1><div id="sectionSection2" class="section" name="collapseableSection" style=""><p>有关更多信息，请参见 <span sdata="link"><a href="e5d5a5cc-636b-4bff-b9c8-a8edc6207c22.htm">C# 语言规范</a></span>中的以下各章节：</p><ul><li><p>8.9.5 throw 语句</p></li><li><p>8.10 try 语句</p></li><li><p>16 异常</p></li></ul></div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />请参见</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><h4 class="subHeading">概念</h4><div class="seeAlsoStyle"><span sdata="link"><a href="ac0f23a2-6bf3-4077-be99-538ae5fd3bc5.htm">C# 编程指南</a></span></div><h4 class="subHeading">参考</h4><div class="seeAlsoStyle"><span sdata="link"><a href="0001887f-4fa2-47e2-8034-2819477e2344.htm">异常和异常处理（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="b4e4ecf2-b907-4e58-891f-2563762258e9.htm">异常处理（C# 编程指南）</a></span></div></div></div>
+      <div id="footer">
+        <div class="footerLine">
+          <img width="100%" height="3px" src="../icons/footer.gif" title="“页脚”图像" />
+        </div>
+<span id="feedbackarea">将有关本主题的<a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);">反馈意见</a>发送给 Microsoft。</span>
+</div>
+    </div>
+  </body>
+</html>

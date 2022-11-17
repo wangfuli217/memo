@@ -1,0 +1,565 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 7.3.  The return Statement</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch07lev1sec2.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch07lev1sec4.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch07lev1sec3"></a>
+
+        <h3 class="docSection1Title">7.3. The <tt>return</tt> Statement</h3>
+        <h3 class="docSection1Title">7.3. <tt>return</tt> 语句</h3>
+
+        <p class="docText">A <tt>return</tt> statement terminates the function that is currently executing and returns control to the function that called the now-terminated function. There are two forms of <tt>return</tt> statements:</p>
+        <p class="docText"><tt>return</tt> 语句用于结束当前正在执行的函数，并将控制权返回给调用此函数的函数。<tt>return</tt> 语句有两种形式：</p>
+        <pre>
+     return;
+     return <span class="docEmphasis">expression;</span>
+</pre><br>
+        <a name="ch07lev2sec13"></a>
+
+        <h4 class="docSection2Title">7.3.1. Functions with No Return Value</h4>
+        <h4 class="docSection2Title">7.3.1. 没有返回值的函数</h4>
+
+        <p class="docText">A <tt>return</tt> with no value may be used only in a function that has a return type of <tt>void</tt>. Functions that return <tt>void</tt> are not required to contain a <tt>return</tt> statement. In a <tt>void</tt> function, an implicit <tt>return</tt> takes place after the function's final statement.</p>
+        <p class="docText">不带返回值的 <tt>return</tt> 语句只能用于返回类型为 <tt>void</tt> 的函数。在返回类型为 <tt>void</tt> 的函数中，<tt>return</tt> 返回语句不是必需的，隐式的 <tt>return</tt> 发生在函数的最后一个语句完成时。</p>
+
+        <p class="docText">Typically, a <tt>void</tt> function uses a <tt>return</tt> to cause premature termination of the function. This use of <tt>return</tt> parallels the use of the <tt>break</tt> (<a class="docLink" href="ch06lev1sec10.html#ch06lev1sec10" >Section 6.10</a>, p. <a class="docLink" href="ch06lev1sec10.html#ch06lev1sec10" >212</a>) statement inside a loop. For example, we could rewrite our <tt>swap</tt> program to avoid doing any work if the values are identical:</p>
+        <p class="docText">一般情况下，返回类型是 <tt>void</tt> 的函数使用 <tt>return</tt> 语句是为了引起函数的强制结束，这种 <tt>return</tt> 的用法类似于循环结构中的 <tt>break</tt> 语句（<a class="docLink" href="ch06lev1sec10.html#ch06lev1sec10" >第 6.10 节</a>）的作用。例如，可如下重写 <tt>swap</tt> 程序，使之在输入的两个数值相同时不执行任何工作：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">swap</span> <span class="docEmphItalicAlt">acts on references to its arguments</span>
+     void swap(int &amp;v1, int &amp;v2)
+     {
+          // <span class="docEmphItalicAlt">if values already the same, no need to swap, just return</span>
+          if (v1 == v2)
+              return;
+          // <span class="docEmphItalicAlt">ok, have work to do</span>
+          int tmp = v2;
+          v2 = v1;
+          v1 = tmp;
+          // <span class="docEmphItalicAlt">no explicit return necessary</span>
+     }
+</pre><br>
+
+        <p class="docText">This function first checks if the values are equal and if so exits the function. If the values are unequal, the function swaps them. An implicit return occurs after the last assignment statement.</p>
+	<p class="docText">这个函数首先检查两个值是否相等，如果相等则退出函数；如果不相等，则交换这两个值，隐式的 <tt>return</tt> 发生在最后一个赋值语句后。</p>
+
+<a name="idd1e51437"></a><a name="idd1e51442"></a><a name="idd1e51447"></a>
+        <p class="docText">A function with a <tt>void</tt> return type ordinarily may not use the second form of the <tt>return</tt> statement. However, a <tt>void</tt> function may return the result of calling another function that returns <tt>void</tt>:</p>
+        <p class="docText">返回类型为 <tt>void</tt> 的函数通常不能使用第二种形式的 <tt>return</tt> 语句，但是，它可以返回另一个返回类型同样是 <tt>void</tt> 的函数的调用结果：</p>
+        <pre>
+     void do_swap(int &amp;v1, int &amp;v2)
+     {
+         int tmp = v2;
+         v2 = v1;
+         v1 = tmp;
+         // <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">void</span> <span class="docEmphItalicAlt">function doesn't need an explicit return</span>
+     }
+     void swap(int &amp;v1, int &amp;v2)
+     {
+         if (v1 == v2)
+             return false; // <span class="docEmphItalicAlt">error:</span> <span class="docEmphasis">void</span> <span class="docEmphItalicAlt">function cannot return a value</span>
+         return do_swap(v1, v2); // <span class="docEmphItalicAlt">ok: returns call to a</span> <span class="docEmphasis">void</span> <span class="docEmphItalicAlt">function</span>
+
+     }
+</pre><br>
+
+        <p class="docText">Attempting to return any other expression is a compile-time error.</p>
+        <p class="docText">返回任何其他表达式的尝试都会导致编译时的错误。</p>
+
+<a name="ch07lev2sec14"></a>
+        <h4 class="docSection2Title">7.3.2. Functions that Return a Value</h4>
+        <h4 class="docSection2Title">7.3.2. 具有返回值的函数</h4>
+
+        <p class="docText">The second form of the <tt>return</tt> statement provides the function's result. Every return in a function with a return type other than <tt>void</tt> must return a value. The value returned must have the same type as the function return type, or must have a type that can be implicitly converted to that type.</p>
+        <p class="docText"><tt>return</tt> 语句的第二种形式提供了函数的结果。任何返回类型不是 <tt>void</tt> 的函数必须返回一个值，而且这个返回值的类型必须和函数的返回类型相同，或者能隐式转化为函数的返回类型。</p>
+
+        <p class="docText">Although C++ cannot guarantee the correctness of a result, it can guarantee that every <tt>return</tt> from a function returns a result of the appropriate type. The following program, for example, won't compile:</p>
+        <p class="docText">尽管 C++ 不能确保结果的正确性，但能保证函数每一次 <tt>return</tt> 都返回适当类型的结果。例如，下面的程序就不能通过编译：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">Determine whether two strings are equal</span>.
+     // <span class="docEmphItalicAlt">If they differ in size, determine whether the smaller</span>
+     // <span class="docEmphItalicAlt">one holds the same characters as the larger one</span>
+     bool str_subrange(const string &amp;str1, const string &amp;str2)
+     {
+         // <span class="docEmphItalicAlt">same sizes: return normal equality test</span>
+         if (str1.size() == str2.size())
+             return str1 == str2;    // <span class="docEmphItalicAlt">ok, == returns bool</span>
+         // <span class="docEmphItalicAlt">find size of smaller string</span>
+         string::size_type size = (str1.size() &lt; str2.size())
+                                  ? str1.size() : str2.size();
+         string::size_type i = 0;
+         // <span class="docEmphItalicAlt">look at each element up to size of smaller string</span>
+         while (i != size) {
+             if (str1[i] != str2[i])
+                 return;   // <span class="docEmphItalicAlt">error: no return value</span>
+         }
+         // <span class="docEmphItalicAlt">error: control might flow off the end of the function without a</span> <span class="docEmphasis">return</span>
+         // <span class="docEmphItalicAlt">the compiler is unlikely to detect this error</span>
+      }
+</pre><br>
+
+<a name="idd1e51560"></a><a name="idd1e51565"></a><a name="idd1e51569"></a><a name="idd1e51573"></a><a name="idd1e51578"></a><a name="idd1e51584"></a><a name="idd1e51594"></a><a name="idd1e51599"></a><a name="idd1e51606"></a><a name="idd1e51612"></a><a name="idd1e51618"></a><a name="idd1e51623"></a><a name="idd1e51628"></a><a name="idd1e51637"></a><a name="idd1e51644"></a><a name="idd1e51649"></a><a name="idd1e51654"></a><a name="idd1e51661"></a>
+        <p class="docText">The <tt>return</tt> from within the <tt>while</tt> loop is an error because it fails to return a value. The compiler should detect this error.</p>
+        <p class="docText"><tt>while</tt> 循环中的 <tt>return</tt> 语句是错误的，因为它没有返回任何值，编译器将检查出这个错误。</p>
+
+        <p class="docText">The second error occurs because the function fails to provide a <tt>return</tt> after the <tt>while</tt> loop. If we call this function with one <tt>string</tt> that is a subset of the other, execution would fall out of the <tt>while</tt>. There should be are turn to handle this case. The compiler may or may not detect this error. If a program is generated, what happens at run time is undefined.</p>
+	<p class="docText">第二个错误源于函数没有在 <tt>while</tt> 循环后提供 <tt>return</tt> 语句。调用这个函数时，如果一个 <tt>string</tt> 是另一个 <tt>string</tt> 的子集，执行会退出 <tt>while</tt> 循环。这里应该有一个 <tt>return</tt> 语句来处理这种情况。编译器有可能检查出也有可能检查不出这种错误。执行程序时，不确定在运行阶段会出现什么问题。</p>
+
+<a name="ch07note16"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Failing to provide a <tt>return</tt> after a loop that does contain a <tt>return</tt> is particularly insidious because many compilers will not detect it. The behavior at run time is undefined.</p>
+                <p class="docText">在含有 <tt>return</tt> 语句的循环后没有提供 <tt>return</tt> 语句是很危险的，因为大部分的编译器不能检测出这个漏洞，运行时会出现什么问题是不确定的。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch07lev3sec17"></a>
+
+        <h5 class="docSection3Title">Return from <tt>main</tt></h5>
+        <h5 class="docSection3Title">主函数 <tt>main</tt> 的返回值</h5>
+
+        <p class="docText">There is one exception to the rule that a function with a return type other than <tt>void</tt> must return a value: The <tt>main</tt> function is allowed to terminate without a return. If control reaches the end of <tt>main</tt> and there is no return, then the compiler implicitly inserts a return of 0.</p>
+        <p class="docText">返回类型不是 <tt>void</tt> 的函数必须返回一个值，但此规则有一个例外情况：允许主函数 <tt>main</tt> 没有返回值就可结束。如果程序控制执行到主函数 <tt>main</tt> 的最后一个语句都还没有返回，那么编译器会隐式地插入返回 0 的语句。</p>
+
+        <p class="docText">Another way in which the return from <tt>main</tt> is special is how its returned value is treated. As we saw in <a class="docLink" href="ch01lev1sec1.html#ch01lev1sec1" >Section 1.1</a> (p. <a class="docLink" href="ch01lev1sec1.html#ch01lev1sec1" >2</a>), the value returned from <tt>main</tt> is treated as a status indicator. A zero return indicates success; most other values indicate failure. A nonzero value has a machine-dependent meaning. To make return values machine-independent, the <tt>cstdlib</tt> header defines two preprocessor variables (<a class="docLink" href="ch02lev1sec9.html#ch02lev2sec31" >Section 2.9.2</a>, p. <a class="docLink" href="ch02lev1sec9.html#ch02lev2sec31" >69</a>) that we can use to indicate success or failure:</p>
+        <p class="docText">关于主函数 <tt>main</tt> 返回的另一个特别之处在于如何处理它的返回值。在<a class="docLink" href="ch01lev1sec1.html#ch01lev1sec1" >第 1.1 节</a>已知，可将主函数 <tt>main</tt> 返回的值视为状态指示器。返回 0 表示程序运行成功，其他大部分返回值则表示失败。非 0 返回值的意义因机器不同而不同，为了使返回值独立于机器，<tt>cstdlib</tt> 头文件定义了两个预处理变量（<a class="docLink" href="ch02lev1sec9.html#ch02lev2sec31" >第 2.9.2 节</a>），分别用于表示程序运行成功和失败：</p>
+        <pre>
+     #include &lt;cstdlib&gt;
+     int main()
+     {
+         if (some_failure)
+             return EXIT_FAILURE;
+         else
+             return EXIT_SUCCESS;
+     }
+</pre><br>
+
+        <p class="docText">Our code no longer needs to use the precise machine-dependent values. Instead, those values are defined in <tt>cstdlib</tt>, and our code need not change.</p>
+        <p class="docText">我们的代码不再需要使用那些依赖于机器的精确返回值。相应地，这些值都在 <tt>cstdlib</tt> 库中定义，我们的代码不需要做任何修改。</p>
+
+<a name="ch07lev3sec18"></a>
+        <h5 class="docSection3Title">Returning a Nonreference Type</h5>
+        <h5 class="docSection3Title">返回非引用类型</h5>
+
+<a name="ch07term25"></a>
+        <p class="docText">The value returned by a function is used to initialize a <b><a class="docLink" href="ch07lev1sec11.html#gloss07_25" >temporary object</a></b> created at the point at which the call was made. A temporary object is an unnamed object created by the compiler when it needs a place to store a result from evaluating an expression. C++ programmers usually use the term "temporary" as an abreviation of "temporary object."</p>
+        <p class="docText">函数的返回值用于初始化在调用函数处创建的<b><a class="docLink" href="ch07lev1sec11.html#gloss07_25" >临时对象</a></b>。在求解表达式时，如果需要一个地方储存其运算结果，编译器会创建一个没有命名的对象，这就是临时对象。在英语中，C++ 程序员通常用 temporary 这个术语来代替 temporary object。</p>
+
+        <p class="docText">The temporary is initialized by the value returned by a function in much the same way that parameters are initialized by their arguments. If the return type is not a reference, then the return value is copied into the temporary at the call site. The value returned when a function returns a nonreference type can be a local object or the result of evaluating an expression.</p>
+        <p class="docText">用函数返回值初始化临时对象与用实参初始化形参的方法是一样的。如果返回类型不是引用，在调用函数的地方会将函数返回值复制给临时对象。当函数返回非引用类型时，其返回值既可以是局部对象，也可以是求解表达式的结果。</p>
+
+<a name="idd1e51775"></a><a name="idd1e51780"></a><a name="idd1e51785"></a><a name="idd1e51790"></a><a name="idd1e51797"></a><a name="idd1e51802"></a><a name="idd1e51807"></a><a name="page_248"></a>
+        <p class="docText">As an example, we might want to write a function that, given a counter, a word, and an ending, gives us back the plural version of the word if the counter is greater than one:</p>
+        <p class="docText">例如，下面的程序提供了一个计数器、一个单词 word 和单词结束字符串 ending，当计数器的值大于 1 时，返回该单词的复数版本：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">return plural version of word if</span> <span class="docEmphasis">ctr</span> <span class="docEmphItalicAlt">isn't 1</span>
+     string make_plural(size_t ctr, const string &amp;word,
+                                    const string &amp;ending)
+     {
+         return (ctr == 1) ? word : word + ending;
+     }
+</pre><br>
+
+        <p class="docText">We might use such a function to print a message with either a plural or singular ending.</p>
+        <p class="docText">我们可以使用这样的函数来输出单词的单数或复数形式。</p>
+
+        <p class="docText">This function either returns a copy of its parameter named <tt>word</tt> or it returns an unnamed temporary <tt>string</tt> that results from adding <tt>word</tt> and <tt>ending</tt>. In either case, the <tt>return</tt> copies that <tt>string</tt> to the call site.</p>
+        <p class="docText">这个函数要么返回其形参 <tt>word</tt> 的副本，要么返回一个未命名的临时 <tt>string</tt> 对象，这个临时对象是由字符串 <tt>word</tt> 和 <tt>ending</tt> 的相加而产生的。这两种情况下，<tt>return</tt> 都在调用该函数的地方复制了返回的 <tt>string</tt> 对象。</p>
+
+<a name="ch07lev3sec19"></a>
+        <h5 class="docSection3Title">Returning a Reference</h5>
+        <h5 class="docSection3Title">返回引用</h5>
+
+        <p class="docText">When a function returns a reference type, the return value is not copied. Instead, the object itself is returned. As an example, consider a function that returns a reference to the shorter of its two <tt>string</tt> parameters:</p>
+        <p class="docText">当函数返回引用类型时，没有复制返回值。相反，返回的是对象本身。例如，考虑下面的函数，此函数返回两个 <tt>string</tt> 类型形参中较短的那个字符串的引用：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">find longer of two</span> <span class="docEmphasis">string</span><span class="docEmphItalicAlt">s</span>
+     const string &amp;shorterString(const string &amp;s1, const string &amp;s2)
+     {
+         return s1.size() &lt; s2.size() ? s1 : s2;
+     }
+</pre><br>
+
+        <p class="docText">The parameters and return type are references to <tt>const string</tt>. The <tt>strings</tt> are not copied either when calling the function or when returning the result.</p>
+        <p class="docText">形参和返回类型都是指向 <tt>const string</tt> 对象的引用，调用函数和返回结果时，都没有复制这些 <tt>string</tt> 对象。</p>
+
+<a name="ch07lev3sec20"></a>
+        <h5 class="docSection3Title">Never Return a Reference to a Local Object</h5>
+        <h5 class="docSection3Title">千万不要返回局部对象的引用</h5>
+
+<a name="ch07note17"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">There's one crucially important thing to understand about returning a reference: Never return a reference to a local variable.</p>
+                <p class="docText">理解返回引用至关重要的是：千万不能返回局部变量的引用。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">When a function completes, the storage in which the local objects were allocated is freed. A reference to a local object refers to undefined memory after the function terminates. Consider the following function:</p>
+        <p class="docText">当函数执行完毕时，将释放分配给局部对象的存储空间。此时，对局部对象的引用就会指向不确定的内存。考虑下面的程序：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">Disaster: Function returns a reference to a local object</span>
+     const string &amp;manip(const string&amp; s)
+     {
+          string ret = s;
+          // <span class="docEmphItalicAlt">transform ret in some way</span>
+          return ret; // <span class="docEmphItalicAlt">Wrong: Returning reference to a local object!</span>
+     }
+</pre><br>
+
+<a name="idd1e51922"></a><a name="idd1e51929"></a><a name="idd1e51934"></a><a name="idd1e51939"></a><a name="idd1e51946"></a><a name="idd1e51951"></a><a name="idd1e51956"></a><a name="idd1e51961"></a><a name="idd1e51964"></a><a name="idd1e51969"></a><a name="idd1e51974"></a><a name="idd1e51981"></a><a name="idd1e51988"></a><a name="idd1e51993"></a>
+        <p class="docText">This function will fail at run time because it returns a reference to a local object. When the function ends, the storage in which <tt>ret</tt> resides is freed. The return value refers to memory that is no longer available to the program.</p>
+        <p class="docText">这个函数会在运行时出错，因为它返回了局部对象的引用。当函数执行完毕，字符串 <tt>ret</tt> 占用的储存空间被释放，函数返回值指向了对于这个程序来说不再有效的内存空间。</p>
+
+<a name="ch07note18"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="84" height="51" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/tip.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">One good way to ensure that the return is safe is to ask: To what <span class="docEmphasis">pre-existing</span> object is the reference referring?</p>
+                <p class="docText">确保返回引用安全的一个好方法是：请自问，这个引用指向哪个在此之前存在的对象？</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch07lev3sec21"></a>
+
+        <h5 class="docSection3Title">Reference Returns Are Lvalues</h5>
+        <h5 class="docSection3Title">引用返回左值</h5>
+
+        <p class="docText">A function that returns a reference returns an lvalue. That function, therefore, can be used wherever an lvalue is required:</p>
+        <p class="docText">返回引用的函数返回一个左值。因此，这样的函数可用于任何要求使用左值的地方：</p>
+        <pre>
+     char &amp;get_val(string &amp;str, string::size_type ix)
+     {
+         return str[ix];
+     }
+     int main()
+     {
+         string s("a value");
+         cout &lt;&lt; s &lt;&lt; endl;   // <span class="docEmphItalicAlt">prints</span> <span class="docEmphasis">a value</span>
+         get_val(s, 0) = 'A'; // <span class="docEmphItalicAlt">changes</span> <span class="docEmphasis">s[0]</span> <span class="docEmphItalicAlt">to</span> <span class="docEmphasis">A</span>
+
+         cout &lt;&lt; s &lt;&lt; endl;   // <span class="docEmphItalicAlt">prints</span> <span class="docEmphasis">A value</span>
+         return 0;
+     }
+</pre><br>
+
+        <p class="docText">It may be surprising to assign to the return of a function, but the return is a reference. As such, it is just a synonym for the element returned.</p>
+        <p class="docText">给函数返回值赋值可能让人惊讶，由于函数返回的是一个引用，因此这是正确的，该引用是被返回元素的同义词。</p>
+
+        <p class="docText">If we do not want the reference return to be modifiable, the return value should be declared as <tt>const</tt>:</p>
+        <p class="docText">如果不希望引用返回值被修改，返回值应该声明为 <tt>const</tt>：</p>
+        <pre>
+     const char &amp;get_val(...
+</pre><br>
+        <a name="ch07lev3sec22"></a>
+
+        <h5 class="docSection3Title">Never Return a Pointer to a Local Object</h5>
+        <h5 class="docSection3Title">千万不要返回指向局部对象的指针</h5>
+
+        <p class="docText">The return type for a function can be most any type. In particular, it is possible for a function to return a pointer. For the same reasons that it is an error to return a reference to a local object, it is also an error to return a pointer to a local object. Once the function completes, the local objects are freed. The pointer would be a dangling pointer (<a class="docLink" href="ch05lev1sec11.html#ch05lev1sec11" >Section 5.11</a>, p. <a class="docLink" href="ch05lev1sec11.html#ch05lev1sec11" >176</a>) that refers to a nonexistent object.</p>
+        <p class="docText">函数的返回类型可以是大多数类型。特别地，函数也可以返回指针类型。和返回局部对象的引用一样，返回指向局部对象的指针也是错误的。一旦函数结束，局部对象被释放，返回的指针就变成了指向不再存在的对象的悬垂指针（<a class="docLink" href="ch05lev1sec11.html#ch05lev1sec11" >第 5.11 节</a>）。</p>
+
+        <a name="ch07sb06"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 7.3.2</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+<a name="ch07qa6q1"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 7.17:</b></td>
+
+                    <td>
+<a name="idd1e52128"></a><a name="idd1e52133"></a><a name="idd1e52139"></a><a name="idd1e52145"></a>
+                      <p class="docText">When is it valid to return a reference? A <tt>const</tt> reference?</p>
+                      <p class="docText">什么时候返回引用是正确的？而什么时候返回 <tt>const</tt> 引用是正确的？</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+<a name="ch07qa6q2"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 7.18:</b></td>
+
+                    <td>
+                      <p class="docText">What potential run-time problem does the following function have?</p>
+                      <p class="docText">下面函数存在什么潜在的运行时问题？</p>
+                      <pre>
+     string &amp;processText() {
+         string text;
+         while (cin &gt;&gt; text) { /* ... */ }
+         // ....
+         return text;
+     }
+</pre><br>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch07qa6q3"></a><b>Exercise 7.19:</b></td>
+
+                    <td>
+                      <p class="docText">Indicate whether the following program is legal. If so, explain what it does; if not, make it legal and then explain it:</p>
+                      <p class="docText">判断下面程序是否合法；如果合法，解释其功能；如果不合法，更正它并解释原因。</p>
+                      <pre>
+     int &amp;get(int *arry, int index) { return arry[index]; }
+     int main() {
+         int ia[10];
+         for (int i = 0; i != 10; ++i)
+              get(ia, i) = 0;
+     }
+</pre><br>
+
+
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+
+<a name="ch07lev2sec15"></a>
+        <h4 class="docSection2Title">7.3.3. Recursion</h4>
+        <h4 class="docSection2Title">7.3.3. 递归</h4>
+
+<a name="ch07term22"></a>
+        <p class="docText">A function that calls itself, either directly or indirectly, is a <b><a class="docLink" href="ch07lev1sec11.html#gloss07_22" ><span class="docEmphasis">recursive function</span></a></b>. An example of a simple recursive function is one that computes the factorial of a number. The factorial of a number <tt>n</tt> is the product of the numbers from 1 to <tt>n</tt>. The factorial of 5, for example, is 120.</p>
+        <p class="docText">直接或间接调用自己的函数称为<b><a class="docLink" href="ch07lev1sec11.html#gloss07_22" ><span class="docEmphasis">递归函数</span></a></b>。一个简单的递归函数例子是阶乘的计算。数 <tt>n</tt> 阶乘是从 1 到 <tt>n</tt> 的乘积。例如，5 的阶乘就是 120。</p>
+        <pre>
+     1 * 2 * 3 * 4 * 5 = 120
+</pre><br>
+
+                      <p class="docText">A natural way to solve this problem is recursively:</p>
+                      <p class="docText">解决这个问题的自然方法就是递归：</p>
+                      <pre>
+     // <span class="docEmphItalicAlt">calculate</span> <span class="docEmphasis">val!</span><span class="docEmphItalicAlt">, which is</span> <span class="docEmphasis">1*2 *3 ... * val</span>
+     int factorial(int val)
+     {
+         if (val &gt; 1)
+             return factorial(val-1) * val;
+          return 1;
+     }
+</pre><br>
+
+        <p class="docText">A recursive function must always define a stopping condition; otherwise, the function will recurse "forever," meaning that the function will continue to call itself until the program stack is exhausted. This is sometimes called an "infinite recursion error." In the case of <tt>factorial</tt>, the stopping condition occurs when <tt>val</tt> is 1.</p>
+        <p class="docText">递归函数必须定义一个终止条件；否则，函数就会“永远”递归下去，这意味着函数会一直调用自身直到程序栈耗尽。有时候，这种现象称为“无限递归错误”。对于函数 <tt>factorial</tt>，<tt>val</tt> 为 1 是终止条件。</p>
+
+        <p class="docText">As another example, we can define a recursive function to find the greatest common divisor:</p>
+        <p class="docText">另一个例子是求最大公约数的递归函数：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">recursive version greatest common divisor program</span>
+     int rgcd(int v1, int v2)
+     {
+         if (v2 != 0)                // <span class="docEmphItalicAlt">we're done once</span> <span class="docEmphasis">v2</span> <span class="docEmphItalicAlt">gets to zero</span>
+             return rgcd(v2, v1%v2); // <span class="docEmphItalicAlt">recurse, reducing</span> <span class="docEmphasis">v2</span> <span class="docEmphItalicAlt">on each call</span>
+         return v1;
+     }
+</pre><br>
+
+        <p class="docText">In this case the stopping condition is a remainder of 0. If we call <tt>rgcd</tt> with the arguments <tt>(15, 123)</tt>, then the result is three. <a class="docLink" href="ch07lev1sec3.html#ch07table01">Table 7.1</a> on the next page traces the execution.</p>
+        <p class="docText">这个例子中，终止条件是余数为 0。如果用实参 <tt>(15, 123)</tt> 来调用 <tt>rgcd</tt> 函数，结果为 3。<a class="docLink" href="ch07lev1sec3.html#ch07table01">表 7.1</a> 跟踪了它的执行过程。</p>
+
+<a name="ch07table01"></a>
+        <h5 class="docTableTitle">Table 7.1. Trace of rgcd(15,123)</h5>
+        <h5 class="docTableTitle">表 7.1. rgcd(15, 123) 的跟踪过程</h5>
+
+        <table cellspacing="0" class="allBorders" border="1" rules="none" cellpadding="5">
+          <colgroup>
+            <col width="175">
+            <col width="175">
+            <col width="150">
+          </colgroup>
+
+          <tr>
+            <td class="bottomBorder" align="left" valign="top">
+<a name="idd1e52283"></a><a name="idd1e52288"></a><a name="idd1e52291"></a><a name="idd1e52294"></a><a name="idd1e52300"></a>
+              <p class="docText"><tt>v1</tt></p>
+            </td>
+
+            <td class="bottomBorder" align="right" valign="top">
+              <p class="docText"><tt>v2</tt></p>
+            </td>
+
+            <td class="bottomBorder" align="right" valign="top">
+              <p class="docText"><span class="docEmphStrong">Return</span></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>15</tt></p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText"><tt>123</tt></p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText"><tt>rgcd(123, 15)</tt></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>123</tt></p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText"><tt>15</tt></p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText"><tt>rgcd(15, 3)</tt></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>15</tt></p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText"><tt>3</tt></p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText"><tt>rgcd(3, 0)</tt></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>3</tt></p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText"><tt>0</tt></p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText"><tt>3</tt></p>
+            </td>
+          </tr>
+        </table><br>
+
+        <p class="docText">The last call,</p>
+        <p class="docText">最后一次调用：</p>
+        <pre>
+     rgcd(3,0)
+</pre><br>
+
+        <p class="docText">satisfies the stopping condition. It returns the greatest common denominator, 3. This value successively becomes the return value of each prior call. The value is said to percolate upward until the execution returns to the function that called <tt>rgcd</tt> in the first place.</p>
+        <p class="docText">满足了终止条件，它返回最大公约数 3。该值依次成为前面每个调用的返回值。这个过程称为此值向上回渗（percolate），直到执行返回到第一次调用 <tt>rgcd</tt> 的函数。</p>
+
+	<a name="ch07note19"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">The <tt>main</tt> function may <span class="docEmphasis">not</span> call itself.</p>
+                <p class="docText">主函数 <tt>main</tt> <span class="docEmphasis">不能</span>调用自身。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch07sb07"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 7.3.3</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+			  <a name="ch07qa7q1"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 7.20:</b></td>
+
+                    <td>
+                      <p class="docText">Rewrite <tt>factorial</tt> as an iterative function.</p>
+                      <p class="docText">将函数 <tt>factorial</tt> 重写为迭代函数（即非递归函数）。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+<a name="ch07qa7q2"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 7.21:</b></td>
+
+                    <td>
+                      <p class="docText">What would happen if the stopping condition in <tt>factorial</tt> were:</p>
+                      <p class="docText">如是函数 <tt>factorial</tt> 的终止条件为：</p>
+                      <pre>
+     if (val != 0)
+</pre><br>
+		      <p class="docText">会出现什么问题？</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch07lev1sec2.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch07lev1sec4.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

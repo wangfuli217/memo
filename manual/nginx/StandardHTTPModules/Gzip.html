@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml">
+<HEAD><TITLE>Gzip模块（Gzip）</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=GB2312">
+<STYLE type=text/css>PRE {
+	BACKGROUND-COLOR: #cccccc
+}
+.STYLE1 {
+	COLOR: #ff0000
+}
+</STYLE>
+
+<META content="MSHTML 6.00.6000.16809" name=GENERATOR></HEAD>
+<BODY>
+<H2>Gzip模块（Gzip）</H2><BR>
+
+<H3>·摘要</H3>
+<H4>这个模块允许在文件传输过程中使用gzip压缩。<BR>
+如下例：<PRE>
+  gzip             on;
+  gzip_min_length  1000;
+  gzip_proxied     expired no-cache no-store private auth;
+  gzip_types       text/plain application/xml;
+  gzip_disable     "MSIE [1-6]\.";</PRE>
+可以使用$gzip_ratio变量指定压缩比率。</H4>
+<H3>·指令</H3>
+<H3>gzip</H3>
+<H4>语法：gzip on|off <BR>
+默认值：gzip off <BR>
+使用字段：http, server, location, location中的if字段<BR>
+指定是否启用gzip压缩。</H4>
+<H3>gzip_buffers </H3>
+<H4>语法：gzip_buffers number size <BR>
+默认值：gzip_buffers 4 4k/8k <BR>
+使用字段：http, server, location <BR>
+指定缓存压缩应答的缓冲区数量和大小，如果不设置，一个缓存区的大小为分页大小，根据环境的不同可能是4k或8k。</H4>
+<H3>gzip_comp_level</H3>
+<H4>语法：gzip_comp_level 1..9 <BR>
+默认值：gzip_comp_level 1 <BR>
+使用字段：http, server, location <BR>
+指定压缩等级，其值从1到9，1为最小化压缩（处理速度快），9为最大化压缩（处理速度慢）。</H4>
+<H3>gzip_disable </H3>
+<H4>语法：gzip_disable regex <BR>
+使用字段：http, server, location <BR>
+使用正则表达式来指定某些不需要gzip压缩的浏览器（将和User-Agents进行匹配）。依赖于PCRE库。在0.6.23版本中首次使用。<BR>
+0.7.63版本以后，你可以为IE5.5和IE6 SP1使用msie6参数来禁止gzip压缩。
+<PRE>gzip_disable     "msie6";</PRE></H4>
+<H3>gzip_http_version </H3>
+<H4>语法：gzip_http_version 1.0|1.1 <BR>
+默认值：gzip_http_version 1.1 <BR>
+使用字段：http, server, location <BR>
+是否根据HTTP请求版本来启用gzip压缩。<BR>
+当HTTP版本为1.0时，Vary: Accept-Encoding没有被设置，这将引起某些代理缓存失效，可以使用<A href="HTTPHeaders.html" >add_header</A>，同样，在使用这个版本时Content-Length也没有设置，因此Keepalive不能在这个版本使用。</H4>
+<H3>gzip_min_length</H3>
+<H4>语法：gzip_min_length length <BR>
+默认值：gzip_min_length 0 <BR>
+使用字段：http, server, location <BR>
+设置被压缩的最小请求，单位为bytes。少于这个值大小的请求将不会被压缩，这个值由请求头中的Content-Length字段决定。</H4>
+<H3>gzip_proxied </H3>
+<H4>语法：gzip_proxied [off|expired|no-cache|no-store|private|no_last_modified|no_etag|auth|any] ... 
+<BR>
+默认值：gzip_proxied off <BR>
+使用字段：http, server, location <BR>
+根据某些请求和应答来决定是否在对代理请求的应答启用压缩，事实上，代理请求取决于请求头中的“Via”字段，指令中可以同时指定多个不同的参数：<BR>
+<H5>·off - 为所有代理请求禁用压缩。<BR>
+·expired - 当“Expires”头禁用缓存时启用压缩。<BR>
+·no-cache - 当“Cache-Control”头设置为no-cache时启用压缩。<BR>
+·no-store - 当“Cache-Control”头设置为no-store时启用压缩。<BR>
+·private - 当“Cache-Control”头设置为private时启用压缩。<BR>
+·no_last_modified - 当“Last-Modified”没有定义时启用压缩。<BR>
+·no_etag - 没有“ETag”头时启用压缩。<BR>
+·auth - 当有一个“Authorization”头时启用压缩。<BR>
+·any - 为所有请求启用压缩。</H5></H4>
+<H3>gzip_types </H3>
+<H4>gzip_types mime-type [mime-type ...] <BR>
+默认值：gzip_types text/html <BR>
+使用字段：http, server, location <BR>
+为除“text/html”之外的MIME类型启用压缩，“text/html”总是会被压缩。</H4>
+<H3>gzip_vary </H3>
+<H4>ggzip_vary on|off <BR>
+默认值：gzip_vary off <BR>
+使用字段：http, server, location <BR>
+启用应答头“Vary: Accept-Encoding”，注意，由于一个bug将导致IE 4-6无法缓存内容。</H4>
+<H3>·参考文档</H3>
+<H4><A href="http://sysoev.ru/nginx/docs/http/ngx_http_geo_module.html" >Original Documentation</A><BR>
+<A href="http://wiki.nginx.org/NginxHttpGzipModule/" >Nginx Http Gzip Module</A></H4>
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://179401.cn/analytics/" : "http://179401.cn/analytics/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://shouce.jb51.net/179401.cn/analytics/piwik.php-idsite=1"  style="border:0" alt=""/></p></noscript>
+<!-- End Piwik Tag -->
+</BODY>
+</HTML>
+<H3><A href="HTTPHeaders.html" >前进->HTTP头处理模块（HTTP Headers）</A></H3>

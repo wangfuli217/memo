@@ -1,0 +1,1585 @@
+<html>
+<META http-equiv="Content-Type" content="text/html; charset=utf-8">
+<head>
+	<title>Section A.3.&nbsp; The IO Library Revisited</title>
+	<link rel="STYLESHEET" type="text/css" href="images/style.css" >
+	<link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+		<tr>
+			<td>
+				<div STYLE="MARGIN-LEFT: 0.15in;">
+					<a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle"  alt="Team LiB"></a>
+				</div>
+			</td>
+			
+			<td align="right">
+				<div STYLE="MARGIN-LEFT: 0.15in;">
+					<a href="app01lev1sec2.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a>
+					<a href="index.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+				</div>
+			</td>
+		</tr>
+	</table><br>
+	
+	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+		<tr>
+			<td valign="top"><a name="app01lev1sec3"></a>
+				<h3 class="docSection1Title" id="432172-859">A.3. The IO Library Revisited</h3>
+				<h3 class="docSection1Title" id="432172-859">A.3. 再谈 IO 库</h3>
+
+				<a name="idd1e158339"></a><a name="idd1e158342"></a><a name="idd1e158348"></a><a name="idd1e158351"></a><a name="idd1e158356"></a>
+				<p class="docText">In <a class="docLink" href="ch08.html#ch08" >Chapter 8</a> we introduced the basic architecture and most commonly used parts of the IO library. This Appendix completes our coverage of the IO library.</P>
+				<p class="docText"><a class="docLink" href="ch08.html#ch08" >第八章</a>介绍过 IO 库的基本体系结构以及最常使用的部分，本附录完成对 IO 库的讨论。</p>
+				<a name="app01lev2sec11"></a>
+				
+				<H4 class="docSection2Title">A.3.1. Format State</h4>
+				<H4 class="docSection2Title">A.3.1. 格式状态</h4>
+				<p class="docText">In addition to a condition state (<a class="docLink" href="ch08lev1sec2.html#ch08lev1sec2" >Section 8.2</a>, p. <a class="docLink" href="ch08lev1sec2.html#ch08lev1sec2" >287</a>), each <tt>iostream</tt> object also maintains a format state that controls the details of how IO is formatted. The format state controls aspects of formatting such as the notational base for an integral value, the precision of a floating-point value, the width of an output element, and so on. The library also defines a set of manipulators (listed in Tables A.2 (p. 829) and A.3 (p. 833) for modifying the format state of an object. Simply speaking, a manipulator is a function or object that can be used as an operand to an input or output operator. A manipulator returns the stream object to which it is applied, so we can output multiple manipulators and data in a single statement.</P>
+				<p class="docText">除了条件状态（<a class="docLink" href="ch08lev1sec2.html#ch08lev1sec2" >第 8.2 节</a>）之外，每个 <tt>iostream</tt> 对象还维持一个控制 IO 格式化细节的格式状态。格式状态控制格式化特征，如是整型值的基数、浮点值的精度、输出元素的宽度等。标准库还定义了一组操纵符（在<a class="docLink" href="app01lev1sec3.html#app01table02">表 A.2</a> 和<a class="docLink" href="app01lev1sec3.html#app01table03">表 A.3</a> 列出）来修改对象的格式状态。简单说来，操纵符是可用作输入或输出操作符操作数的函数或对象。操纵符返回其应用于的流对象，所以可以在一个语句中输出多个操纵符和数据。</p>
+				
+<a name="app01table02"></a>
+<P>
+<table cellspacing="0" class="allBorders" border="1" RULES="none" cellpadding="5">
+	<caption>
+		<h5 class="docTableTitle">Table A.2. Manipulators Defined in <tt>iostream</tt></h5>
+		<h5 class="docTableTitle">表 A.2. <tt>iostream</tt> 中定义的操纵符</h5>
+	</caption>
+	<colgroup><col width="20"><col width="150"><col width="300"></colgroup><thead></thead>
+<tr>
+	<TD class="docTableCell" align="left" valign="top">&nbsp;</TD>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText"><tt>boolalpha</tt></p>
+</td>
+<td class="docTableCell" align="left" valign="top">
+	<p class="docText">Display true and false as strings</P>
+	<p class="docText">将真和假显示为字符串</P>
+</td>
+</tr>
+<TR>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText"><tt>x</tt></p>
+</TD>
+<td class="docTableCell" align="left" valign="top">
+	<p class="docText"><tt>noboolalpha</tt></P></td>
+<td class="docTableCell" align="left" valign="top">
+	<p class="docText">Display true and false as 0, 1</p></td></tr>
+	<p class="docText">将真和假显示为 1, 0</p></td></tr>
+<tr>
+	<td class="docTableCell" align="left" valign="top">&nbsp;</td>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText"><tt>showbase</tt></p></td>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText">Generate prefix indicating numeric base</p>
+		<p class="docText">产生指出数的基数的前缀</p>
+</td>
+</tr>
+<tr>
+	<TD class="docTableCell" align="left" valign="top">
+		<p class="docText"><tt>x</tt></p></td>
+	<TD class="docTableCell" align="left" valign="top"><p class="docText"><tt>noshowbase</tt></P></td>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText">Do not generate notational base prefix</p>
+		<p class="docText">不产生记数基数前缀</p>
+</td>
+</tr>
+<TR>
+	<td class="docTableCell" align="left" valign="top">&nbsp;</TD>
+	<TD class="docTableCell" align="left" valign="top">
+		<p class="docText"><tt>showpoint</tt></p></td>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText">Always display decimal point</P>
+		<p class="docText">总是显示小数点</P>
+</TD></tr>
+<tr>
+	<td class="docTableCell" align="left" valign="top"><p class="docText"><tt>x</tt></p></TD>
+	<td class="docTableCell" align="left" valign="top"><p class="docText"><tt>noshowpoint</tt></p></TD>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText">Only display decimal point if fraction</p>
+		<p class="docText">有小数部分才显示小数点</p>
+</TD></tr>
+<TR>
+	<td class="docTableCell" align="left" valign="top">&nbsp;</td>
+	<td class="docTableCell" align="left" valign="top"><p class="docText"><tt>showpos</tt></p></td>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText">Display + in nonnegative numbers</p>
+		<p class="docText">显示非负数中的 +</p>
+</td></tr>
+<tr>
+	<td class="docTableCell" align="left" valign="top"><p class="docText"><tt>x</tt></p></td>
+	<TD class="docTableCell" align="left" valign="top"><p class="docText"><tt>noshowpos</tt></P></td>
+	<TD class="docTableCell" align="left" valign="top">
+		<p class="docText">Do not display + in nonnegative numbers</p>
+		<p class="docText">不显示非负数中的 +</p>
+</td></TR>
+<TR>
+	<td class="docTableCell" align="left" valign="top">&nbsp;</td>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText"><tt>uppercase</tt></p>
+	</td>
+	<TD class="docTableCell" align="left" valign="top">
+		<p class="docText">Print 0X in hexadecimal, E in scientific</p>
+		<p class="docText">在十六进制中打印 0X，科学记数法中打印 E</p>
+	</TD>
+</TR>
+<tr>
+	<td class="docTableCell" align="left" valign="top"><p class="docText"><tt>x</tt></p></TD>
+	<TD class="docTableCell" align="left" valign="top"><p class="docText"><tt>nouppercase</tt></p></td>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText">Print 0x in hexadecimal, e in scientific</p>
+		<p class="docText">在十六进制中打印 0x，科学记数法中打印 e</p>
+	</TD></tr><tr>
+	<TD class="docTableCell" align="left" valign="top"><p class="docText"><tt>x</tt></p></td>
+	<TD class="docTableCell" align="left" valign="top"><p class="docText"><tt>dec</tt></p></TD>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText">Display in decimal numeric base</p>
+		<p class="docText">用十进制显示</p>
+	</td></tr>
+<tr>
+	<td class="docTableCell" align="left" valign="top">&nbsp;</td>
+	<td class="docTableCell" align="left" valign="top"><p class="docText"><tt>hex</tt></p></td>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText">Display in hexadecimal numeric base</p>
+		<p class="docText">用十六进制显示</p>
+</td></TR>
+<TR>
+	<td class="docTableCell" align="left" valign="top">&nbsp;</TD>
+	<td class="docTableCell" align="left" valign="top"><p class="docText"><tt>oct</tt></p></TD>
+	<TD class="docTableCell" align="left" valign="top">
+		<p class="docText">Display in octal numeric base</p>
+		<p class="docText">用八进制显示</p>
+	</td>
+</tr>
+<tr>
+	<td class="docTableCell" align="left" valign="top">&nbsp;</TD>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText"><tt>left</tt></P>
+	</TD>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText">Add fill characters to right of value</p>
+		<p class="docText">在值的右边增加填充字符</p>
+	</td>
+</TR>
+<TR>
+	<td class="docTableCell" align="left" valign="top">&nbsp;</td>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText"><tt>right</tt></p>
+	</TD>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText">Add fill characters to left of value</p>
+		<p class="docText">在值的左边增加填充字符</p>
+	</TD>
+</tr>
+<tr>
+	<TD class="docTableCell" align="left" valign="top">&nbsp;</td>
+	<TD class="docTableCell" align="left" valign="top">
+		<p class="docText"><tt>internal</tt></p>
+	</td>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText">Add fill characters between sign and value</p>
+		<p class="docText">在符号和值之间增加填充字符</p>
+	</td>
+</tr>
+<tr>
+	<td class="docTableCell" align="left" valign="top">&nbsp;</td>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText"><tt>fixed</tt></p>
+	</td>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText">Display floating-point in decimal notation</P>
+		<p class="docText">用小数形式显示浮点数</P>
+	</TD>
+</tr>
+<TR>
+	<td class="docTableCell" align="left" valign="top">&nbsp;</td>
+	<TD class="docTableCell" align="left" valign="top">
+		<p class="docText"><tt>scientific</tt></P>
+	</td>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText">Display floating-point in scientific notation</p>
+		<p class="docText">用科学记数法显示浮点数</p>
+	</td>
+</tr>
+<TR>
+	<td class="docTableCell" align="left" valign="top">&nbsp;</TD>
+	<TD class="docTableCell" align="left" valign="top">
+		<p class="docText"><tt>flush</tt></p>
+	</td>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText">Flush ostream buffer</P>
+		<p class="docText">刷新 ostream 缓冲区</P>
+	</td>
+</tr>
+<tr>
+	<td class="docTableCell" align="left" valign="top">&nbsp;</td>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText"><tt>ends</tt></p>
+	</td>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText">Insert null, then flush ostream buffer</p>
+		<p class="docText">插入空字符，然后刷新 ostream 缓冲区</p>
+	</td>
+</tr>
+<tr>
+	<td class="docTableCell" align="left" valign="top">&nbsp;</td>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText"><tt>endl</tt></p>
+	</td>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText">Insert newline, then flush ostream buffer</p>
+		<p class="docText">插入换行符，然后刷新 ostream 缓冲区</p>
+	</td>
+</tr>
+<tr>
+	<td class="docTableCell" align="left" valign="top">&nbsp;</td>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText"><tt>unitbuf</tt></p>
+	</TD>
+	<TD class="docTableCell" align="left" valign="top">
+		<p class="docText">Flush buffers after every output operation</p>
+		<p class="docText">在每个输出操作之后刷新缓冲区</p>
+	</TD>
+</tr>
+<tr>
+	<TD class="docTableCell" align="left" valign="top">
+		<p class="docText"><tt>x</tt></P>
+	</td>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText"><tt>nounitbuf</tt></p>
+	</td>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText">Restore normal buffer flushing</P>
+		<p class="docText">恢复常规缓冲区刷新</P>
+	</td>
+</tr>
+<tr>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText"><tt>x</tt></p>
+	</td>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText"><tt>skipws</tt></P>
+	</td>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText">Skip whitespace with input operators</p>
+		<p class="docText">为输入操作符跳过空白</p>
+	</td>
+</tr>
+<tr>
+	<td class="docTableCell" align="left" valign="top">&nbsp;</TD>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText"><tt>noskipws</tt></p>
+	</td>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText">Do not skip whitespace with input operators</P>
+		<p class="docText">不为输入操作符跳过空白</P>
+	</td>
+</tr>
+<tr>
+	<td class="docTableCell" align="left" valign="top">&nbsp;</td>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText"><tt>ws</tt></p>
+	</td>
+	<td class="docTableCell" align="left" valign="top">
+		<p class="docText">&quot;Eat&quot; whitespace</p>
+		<p class="docText">“吃掉”空白</p>
+	</td>
+</tr>
+<tr>
+	<td class="docTableFooter" align="left" valign="top" colspan="2">
+		<p class="docText">x <span class="docEmphasis">indicates default stream state</span></p>
+		<p class="docText">注：带 x <span class="docEmphasis">的是默认流状态。</span></p>
+	</td>
+</tr>
+</table>
+</p>
+
+<a name="app01table03"></a>
+<p>
+<table cellspacing="0" class="allBorders" border="1" RULES="none" cellpadding="5">
+	<caption>
+		<h5 class="docTableTitle">Table A.3. Manipulators Defined in <tt>iomanip</tt></h5>
+		<h5 class="docTableTitle">表 A.3. <tt>iomanip</tt> 中定义的操纵符</h5>
+	</caption>
+	<colgroup>
+		<col width="200">
+		<col width="300">
+	</colgroup>
+	<thead>
+	</thead>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>setfill(ch)</tt></p>
+		</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Fill whitespace with <tt>ch</tt></p>
+			<p class="docText">用 <tt>ch</tt> 填充空白</p>
+		</td>
+	</tr>
+	<tr>
+		<TD class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>setprecision(n)</tt></P>
+		</td>
+		<TD class="docTableCell" align="left" valign="top">
+			<p class="docText">Set floating-point precision to <tt>n</tt></p>
+			<p class="docText">将浮点精度置为 <tt>n</tt></p>
+		</td>
+	</tr>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>setw(w)</tt></p>
+		</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Read or write value to <tt>w</tt> characters</p>
+			<p class="docText">读写 <tt>w</tt> 个字符的值</p>
+		</td>
+	</tr>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>setbase(b)</tt></p>
+		</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Output integers in base <tt>b</tt></p>
+			<p class="docText">按基数 <tt>b</tt> 输出整数</p>
+		</td>
+	</tr>
+</table></p>
+
+				<p class="docText">When we read or write a manipulator, no data are read or written. Instead, an action is taken. Our programs have already used one manipulator, <tt>endl</tt>, which we &quot;write&quot; to an output stream as if it were a value. But <tt>endl</tt> isn't a value; instead, it performs an operation: It writes a newline and flushes the buffer.</p>
+				<p class="docText">读写操纵符的时候，不读写数据，相反，会采取某种行动。示例程序已经使用过一个操纵符——<tt>endl</tt>，我们将它“写”至输出流，就好像它是一个值一样。但 <tt>endl</tt> 并不是一个值，相反，它执行一个操作：写换行符并刷新缓冲区。</p>
+
+				<a name="app01lev2sec12"></a>
+				<h4 class="docSection2Title">A.3.2. Many Manipulators Change the Format State</H4>
+				<h4 class="docSection2Title">A.3.2. 许多操纵符改变格式状态</H4>
+				
+				<p class="docText">Many manipulators change the format state of the stream. They change the format of how floating-pointer numbers are printed or whether a <tt>bool</tt> is displayed as a numeric value or using the <tt>bool</tt> literals, <tt>true</tt> or <tt>false</tt>, and so forth.</p>
+				<p class="docText">许多操纵符改变流的格式状态。它们改变显示浮点数的格式，将 <tt>bool</tt> 值显示为数值还是使用 <tt>bool</tt> 字面值 <tt>true</tt> 和 <tt>false</tt> 的格式，诸如此类。</p>
+
+				<a name="app01note02"></a>
+				<div class="docNote">
+					<p>
+					<table width="90%" border="0" cellspacing="0" cellpadding="1">
+						<tr>
+							<td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="57" height="96" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+							<td valign="top">
+								<p class="docText">Manipulators that change the format state of the stream usually leave the format state changed for all subsequent IO.</p>
+								<p class="docText">改变流格式状态的操纵符通常为后续 IO 保留改变后的格式状态。</p>
+							</td>
+						</tr>
+					</table>
+					</p>
+				</div>
+
+<p class="docText">Most of the manipulators that change the format state provide set/unset pairs; one manipulator sets the format state to a new value and the other unsets it, restoring the normal default formatting.</P>
+<p class="docText">大多数改变格式状态的操纵符提供设置／复原对，一个操纵符将格式状态置为新值而另一个进行复原，恢复常规默认格式。</P>
+
+<p class="docText">The fact that a manipulator makes a persistent change to the format state can be useful when we have a set of IO operations that want to use the same formatting. Indeed, some programs take advantage of this aspect of manipulators to reset the behavior of one or more formatting rules for all its input or output. In such cases, the fact that a manipulator changes the stream is a desirable property.</P>
+<p class="docText">操纵符进行格式状态的持久改变，在有一组 IO 操作希望使用相同格式化的时候，这一事实有用。事实上，一些各市利用操纵符的这个特征，为自己的所有输入或输出重置一个或多个格式化规则的行为。这种情况下，操纵符改变流是希望得到的性质。</P>
+
+<p class="docText">However, many programs (and, more importantly, programmers) expect the state of the stream to match the normal library defaults. In these cases, leaving the state of the stream in a nonstandard state can lead to errors.</p>
+<p class="docText">但是，许多程序（更重要的是，许多程序员）希望流的状态与标准库默认值匹配。这些情况下，使流状态停留在非标准状态可能会导致错误。</P>
+
+<a name="app01note03"></a>
+<div class="docNote">
+	<p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="116" height="74" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/bestpractices.jpg;400478" ></td>
+			<td valign="top">
+				<p class="docText">It is usually best to undo any state change made by a manipulator. Ordinarily, a stream should be in its ordinary, default state after every IO operation.</p>
+				<p class="docText">取消操纵符的任何状态改变通常是最好的。一般而言，流应该在每个 IO 操作之后处于通常的默认状态。</p>
+			</td>
+		</tr>
+	</table>
+	</p>
+</div>
+
+<a name="app01lev3sec17"></a>
+<H5 class="docSection3Title">Using <tt>flags</tt> Operation to Restore the Format State</h5>
+<H5 class="docSection3Title">用 <tt>flags</tt> 操纵恢复格式状态</h5>
+
+<a name="idd1e158452"></a><a name="idd1e158457"></a><a name="idd1e158463"></a>
+<p class="docText">An even better approach to managing changes to format state uses the <tt>flags</tt> operations. The <tt>flags</tt> operations are similar to the <tt>rdstate</tt> and <tt>setstate</tt> operations that manage the condition state of the stream. In this case, the library defines a pair of <tt>flags</tt> functions:</p>
+<p class="docText">管理格式状态改变的一个更好的办法是使用 <tt>flags</tt> 操作。<tt>flags</tt> 操作类似于管理流的条件状态的 <tt>rdstate</tt> 和 <tt>setstate</tt> 操作。这种情况下，标准库定义了一对 <tt>flags</tt> 函数：</p>
+
+<ul>
+	<li>
+	<p class="docList"><tt>flags()</tt> with no arguments returns the stream's current format state. The value returned is a library defined type named <tt>fmtflags</tt>.</p>
+	<p class="docList">不带实参的 <tt>flags()</tt> 返回流的当前格式状态。返回值是名为 <tt>fmtflags</tt> 的标准库定义类型。</p>
+	</li>
+	<li>
+	<p class="docList"><tt>flags(arg)</tt> takes a <tt>fmtflags</tt> argument and sets the stream's format as indicated by the argument.</p>
+	<p class="docList"><tt>flags(arg)</tt> 接受一个实参并将流格式置为实参所指定的格式。</p>
+	</li>
+</ul>
+
+<p class="docText">We can use these functions to remember and restore the format state of either an input or output stream:</p>
+<p class="docText">可以使用这些函数记住并恢复输入或输出流的格式状态：</p>
+
+<pre>
+     void display(ostream&amp; os)
+     {
+          // <span class="docEmphItalicAlt">remember the current format state</span>
+          ostream::fmtflags curr_fmt = os.flags();
+          // <span class="docEmphItalicAlt">do output that uses manipulators that change the format state of</span> <span class="docEmphasis">os</span>
+          os.flags(curr_fmt);              // <span class="docEmphItalicAlt">restore the original format state of</span> <span class="docEmphasis">os</span>
+     }
+</pre>
+
+
+<a name="app01lev2sec13"></a>
+<h4 class="docSection2Title">A.3.3. Controlling Output Formats</H4>
+<h4 class="docSection2Title">A.3.3. 控制输出格式</H4>
+
+<p class="docText">Many of the manipulators allow us to change the appearance of our output. There are two broad categories of output control: controlling the presentation of numeric values and controlling the amount and placment of padding.</P>
+<p class="docText">许多操纵符使我们能够改变输出的外观。有两大类的输出控制：控制数值的表示，以及控制填充符的数量和布局。</P>
+
+<a name="app01lev3sec18"></a>
+<h5 class="docSection3Title">Controlling the Format of Boolean Values</H5>
+<h5 class="docSection3Title">控制布尔值和格式</H5>
+
+<p class="docText">One example of a manipulator that changes the formatting state of its object is the <tt>boolalpha</tt> manipulator. By default, <tt>bool</tt> values print as 1 or 0. A <tt>true</tt> value is written as the integer 1 and a <tt>false</tt> value as 0. We can override this formatting by applying the <tt>boolalpha</tt> manipulator to the stream:</p>
+<p class="docText">改变对象格式化状态的操纵符的一个例子是 <tt>boolalpha</tt> 操纵符。默认情况下，将 <tt>bool</tt> 值显示为 1 或 0，<tt>true</tt> 值显示为 1，而 <tt>false</tt> 值显示为 0。可以通过流的 <tt>boolalpha</tt> 操纵符覆盖这个格式化：</p>
+
+<pre>
+     cout &lt;&lt; "default bool values: "
+          &lt;&lt; true &lt;&lt; " " &lt;&lt; false
+          &lt;&lt; "\nalpha bool values: "
+          &lt;&lt; boolalpha
+          &lt;&lt; true &lt;&lt; " " &lt;&lt; false
+          &lt;&lt; endl;
+</pre>
+
+<p class="docText">When executed, the program generates the following:</P>
+<p class="docText">执行时，这段程序产生下面的输出：</p>
+
+<pre>
+     <span class="docEmphStrong">default bool values: 1 0</span>
+     <span class="docEmphStrong">alpha bool values: true false</span>
+</pre>
+
+<p class="docText">Once we &quot;write&quot; <tt>boolalpha</tt> on <tt>cout</tt>, we've changed how <tt>cout</tt> will print <tt>bool</tt> values from this point on. Subsequent operations that print <tt>bool</tt>s will print them as either <tt>true</tt> or <tt>false</tt>.</p>
+<p class="docText">一旦将 <tt>boolalpha</tt> “写”至 <tt>cout</tt>，从这个点起就改变了 <tt>cout</tt> 将怎样显示 <tt>bool</tt> 值，后续显示 <tt>bool</tt> 值的操作将用 <tt>true</tt> 或 <tt>false</tt> 进行显示。</p>
+
+<a name="idd1e158612"></a><a name="idd1e158617"></a><a name="idd1e158622"></a><a name="idd1e158628"></a><a name="idd1e158634"></a><a name="idd1e158640"></a><a name="idd1e158646"></a><a name="idd1e158652"></a><a name="idd1e158658"></a><a name="idd1e158664"></a><a name="idd1e158670"></a><a name="idd1e158676"></a><a name="idd1e158682"></a><a name="idd1e158687"></a><a name="idd1e158692"></a>
+<p class="docText">To undo the format state change to <tt>cout</tt>, we must apply <tt>noboolalpha</tt>:</p>
+<p class="docText">要取消 <tt>cout</tt> 的格式状态改变，必须应用 <tt>noboolalpha</tt>：</p>
+
+<pre>
+bool bool_val;
+cout &lt;&lt; boolalpha    // <span class="docEmphItalicAlt">sets internal state of</span> <span class="docEmphasis">cout</span>
+     &lt;&lt; bool_val
+     &lt;&lt; noboolalpha; // <span class="docEmphItalicAlt">resets internal state to default formatting</span>
+</pre>
+
+<p class="docText">Now we change the formatting of <tt>bool</tt> values only to print of <tt>bool_val</tt> and immediately reset the stream back to its initial state.</P>
+<p class="docText">现在只改变 <tt>bool</tt> 值的格式化来显示 <tt>bool_val</tt>，并且立即将流重置为原来的状态。</p>
+
+<a name="app01lev3sec19"></a>
+<h5 class="docSection3Title">Specifying the Base for Integral Values</H5>
+<h5 class="docSection3Title">指定整型值的基数</H5>
+
+<p class="docText">By default, integral values are written and read in decimal notation. The programmer can change the notational base to octal or hexadecimal or back to decimal (the representation of floating-point values is unaffected) by using the manipulators <tt>hex, oct</tt>, and <tt>dec:</tt></P>
+<p class="docText">默认情况下，用十进制读写整型值。通过使用操纵符 <tt>hex</tt>、<tt>oct</tt> 和 <tt>dec</tt>，程序员可以将表示进制改为八进制、十六进制或恢复十进制（浮点值的表示不受影响）：</P>
+
+<pre>
+     const int ival = 15, jval = 1024; // <span class="docEmphasis">const,</span> <span class="docEmphItalicAlt">so values never change</span>
+     cout &lt;&lt; "default: ival = " &lt;&lt; ival
+          &lt;&lt; " jval = " &lt;&lt; jval &lt;&lt; endl;
+     cout &lt;&lt; "printed in octal: ival = " &lt;&lt; oct &lt;&lt; ival
+          &lt;&lt; " jval = " &lt;&lt; jval &lt;&lt; endl;
+     cout &lt;&lt; "printed in hexadecimal: ival = " &lt;&lt; hex &lt;&lt; ival
+          &lt;&lt; " jval = " &lt;&lt; jval &lt;&lt; endl;
+     cout &lt;&lt; "printed in decimal: ival = " &lt;&lt; dec &lt;&lt; ival
+          &lt;&lt; " jval = " &lt;&lt; jval &lt;&lt; endl;
+</pre>
+
+<p class="docText">When compiled and executed, the program generates the following output:</p>
+<p class="docText">编译和执行的时候，程序产生下面的输出：</p>
+
+<pre>
+     <span class="docEmphStrong">default: ival = 15 jval = 1024</span>
+     <span class="docEmphStrong">printed in octal: ival = 17 jval = 2000</span>
+     <span class="docEmphStrong">printed in hexadecimal: ival = f jval = 400</span>
+     <span class="docEmphStrong">printed in decimal: ival = 15 jval = 1024</span>
+</pre>
+
+<p class="docText">Notice that like <tt>boolalpha</tt>, these manipulators change the format state. They affect the immediately following output, and all subsequent integral output, until the format is reset by invoking another manipulator.</P>
+<p class="docText">注意，像 <tt>boolalpha</tt> 一样，这些操纵符改变格式状态。它们影响紧接在后面的输出，以及所有后续的整型输出，直到通过调用另一操纵符重围格式为止。</p>
+
+<a name="app01lev3sec20"></a>
+
+<H5 class="docSection3Title">Indicating Base on the Output</h5>
+<H5 class="docSection3Title">指出输出的基数</h5>
+
+<p class="docText">By default, when we print numbers, there is no visual cue as to what notational base was used. Is 20, for example, really 20, or an octal representation of 16? When printing numbers in decimal mode, the number is printed as we expect. If we need to print octal or hexadecimal values, it is likely that we should also use the <tt>showbase</tt> manipulator. The <tt>showbase</tt> manipulator causes the output stream to use the same conventions as used for specifying the base of an integral constant:</p>
+<p class="docText">默认情况下，显示数值的时候，不存在关于所用基数的可见记号。例如，20 是 20,还是 16 的八进制表示？按十进制模式显示数值的时候，会按我们期待的格式打印数值。如果需要打印八进制或十六进制值，可能应该也使用 <tt>showbase</tt> 操纵符。<tt>showbase</tt> 操纵符导致输出流使用的约定，与指定整型常量基数所用的相同：</p>
+
+<ul>
+	<li>
+	<p class="docList">A leading 0x indicates hexadecimal</P>
+	<p class="docList">以 0x 为前导表示十六进制。</P>
+	</li>
+	<li>
+	<p class="docList">A leading 0 indicates octal</P>
+	<p class="docList">以 0 为前导表示八进制。</P>
+	</li>
+	<li>
+	<p class="docList">The absence of either indicates decimal</P>
+	<p class="docList">没有任何前导表示十进制。</P>
+	</li>
+</UL>
+
+<a name="idd1e158816"></a><a name="idd1e158822"></a><a name="idd1e158827"></a><a name="idd1e158833"></a><a name="idd1e158839"></a><a name="idd1e158845"></a><a name="idd1e158851"></a><a name="idd1e158857"></a><a name="idd1e158863"></a><a name="idd1e158868"></a><a name="idd1e158873"></a>
+<p class="docText">Here is the program revised to use <tt>showbase</tt>:</p>
+<p class="docText">修改程序使用 <tt>showbase</tt> 如下：</p>
+
+<pre>
+     const int ival = 15, jval = 1024; // <span class="docEmphasis">const</span> <span class="docEmphItalicAlt">so values never change</span>
+     cout &lt;&lt; showbase; // <span class="docEmphItalicAlt">show base when printing integral values</span>
+     cout &lt;&lt; "default: ival = " &lt;&lt; ival
+          &lt;&lt; " jval = " &lt;&lt; jval &lt;&lt; endl;
+     cout &lt;&lt; "printed in octal: ival = " &lt;&lt; oct &lt;&lt; ival
+          &lt;&lt; " jval = " &lt;&lt; jval &lt;&lt; endl;
+     cout &lt;&lt; "printed in hexadecimal: ival = " &lt;&lt; hex &lt;&lt; ival
+          &lt;&lt; " jval = " &lt;&lt; jval &lt;&lt; endl;
+     cout &lt;&lt; "printed in decimal: ival = " &lt;&lt; dec &lt;&lt; ival
+          &lt;&lt; " jval = " &lt;&lt; jval &lt;&lt; endl;
+     cout &lt;&lt; noshowbase; // <span class="docEmphItalicAlt">reset state of the stream</span>
+</pre>
+
+<p class="docText">The revised output makes it clear what the underlying value really is:</p>
+<p class="docText">修改后的输出使得基础值到底是什么很清楚：</p>
+
+<pre>
+     <span class="docEmphStrong">default: ival = 15 jval = 1024</span>
+     <span class="docEmphStrong">printed in octal: ival = 017 jval = 02000</span>
+     <span class="docEmphStrong">printed in hexadecimal: ival = 0xf jval = 0x400</span>
+     <span class="docEmphStrong">printed in decimal: ival = 15 jval = 1024</span>
+</pre>
+
+<p class="docText">The <tt>noshowbase</tt> manipulator resets <tt>cout</tt> so that it no longer displays the notational base of integral values.</p>
+<p class="docText"><tt>noshowbase</tt> 操纵符重置 <tt>cout</tt>，以便它不再显示整型值的表示基数。</p>
+
+<p class="docText">By default, hexadecimal values are printed in lowercase with a lowercase x. We could display the <tt>X</tt> and the hex digits <tt>a</tt><tt>f</tt> as uppercase by applying the <tt>uppercase</tt> manipulator.</p>
+<p class="docText">默认情况下，十六进制值用带小写 <tt>x</tt> 的小写形式打印。可以应用 <tt>uppercase</tt> 操纵符显示 <tt>X</tt> 并将十六进制数字 <tt>a</tt> - <tt>f</tt> 显示为大写字母。</p>
+
+<pre>
+     cout &lt;&lt; uppercase &lt;&lt; showbase &lt;&lt; hex
+          &lt;&lt; "printed in hexadecimal: ival = " &lt;&lt; ival
+          &lt;&lt; " jval = " &lt;&lt; jval &lt;&lt; endl
+          &lt;&lt; nouppercase &lt;&lt; endl;
+</pre>
+
+<p class="docText">The preceding program generates the following output:</p>
+<p class="docText">前面的程序产生下面的输出：</p>
+
+<pre>
+     <span class="docEmphStrong">printed in hexadecimal: ival = 0XF jval = 0X400</span>
+</pre>
+
+<p class="docText">To revert back to the lowercase x, we apply the nouppercase manipulator.</p>
+<p class="docText">要恢复小写，就应用 nouppercase 操纵符。</p>
+
+<a name="app01lev3sec21"></a>
+<h5 class="docSection3Title">Controlling the Format of Floating-Point Values</h5>
+<h5 class="docSection3Title">控制浮点值的格式</h5>
+
+<p class="docText">There are three aspects of formatting floating-point values that we can control:</p>
+<p class="docText">对于浮点值的格式化，可以控制下面三个方面：</p>
+
+<ul>
+	<li>
+	<p class="docList">Precision: how many digits are printed</p>
+	<p class="docList">精度：显示多少位数字。</p>
+	</li>
+	<li>
+	<p class="docList">Notation: whether to print in decimal or scientific notation</p>
+	<p class="docList">记数法：用小数还是科学记法法显示。</p>
+	</li>
+	<li>
+	<p class="docList">Handling of the decimal point for floating-point values that are whole numbers</p>
+	<p class="docList">对是整数的浮点值的小数点的处理。</p>
+	</li>
+</ul>
+
+<p class="docText">By default, floating-point values are printed using six digits of precision. If the value has no fractional part, then the decimal point is omitted. Whether the number is printed using decimal or scientific notation depends on the value of the floating-point number being printed. The library chooses a format that enhances readability of the number. Very large and very small values are printed using scientific notation. Other values use fixed decimal.</p>
+<p class="docText">默认情况下，使用六位数字的精度显示浮点值。如果值没有小数部分，则省略小数点。使用小数形式还是科学记数法显示数值取决于被显示的浮点数的值，标准库选择增强数值可读性的格式，非常大和非常小的值使用科学记数法显示，其他值使用小数形式。</p>
+
+<a name="app01lev3sec22"></a>
+<h5 class="docSection3Title">Specifying How Much Precision to Print</H5>
+<h5 class="docSection3Title">指定显示精度</H5>
+
+<a name="idd1e159004"></a><a name="idd1e159010"></a><a name="idd1e159015"></a><a name="idd1e159021"></a><a name="idd1e159027"></a><a name="idd1e159035"></a>
+<p class="docText">By default, precision controls the total number of digits that are printed. When printed, floating-point values are rounded, not truncated, to the current precision. Thus, if the current precision is four, then <tt>3.14159</tt> becomes <tt>3.142</tt>; if the precision is three, then it is printed as <tt>3.14</tt>.</p>
+<p class="docText">默认情况下，精度控制显示的数字总位数。显示的时候，将浮点值四舍五入到当前精度。因此，如果当前精度是 4，则 <tt>3.14159</tt> 成为 <tt>3.142</tt>；如果精度是 3，打印为 <tt>3.14</tt>。</p>
+
+<p class="docText">We can change the precision through a member function named <tt>precision</tt> or by using the <tt>setprecision</tt> manipulator. The <tt>precision</tt> member is overloaded (<a class="docLink" href="ch07lev1sec8.html#ch07lev1sec8" >Section 7.8</a>, p. <a class="docLink" href="ch07lev1sec8.html#ch07lev1sec8" >265</a>): One version takes an <tt>int</tt> value and sets the precision to that new value. It returns the <span class="docEmphasis">previous</span> precision value. The other version takes no arguments and returns the current precision value. The <tt>setprecision</tt> manipulator takes an argument, which it uses to set the precision.</P>
+<p class="docText">通过名为 <tt>precision</tt> 的成员函数，或者通过使用 <tt>setprecision</tt> 操纵符，可以改变精度。<tt>precision</tt> 成员是重载的（<a class="docLink" href="ch07lev1sec8.html#ch07lev1sec8" >第 7.8 节</a>）：一个版本接受一个 <tt>int</tt> 值并将精度设置为那个新值，它返回<span class="docEmphasis">先前</span>的精度值；另一个版本不接受实参并返回当前精度值。<tt>setprecision</tt> 操纵符接受一个实参，用来设置精度。</p>
+
+
+<a name="idd1e159502"></a><a name="idd1e159508"></a><a name="idd1e159513"></a><a name="idd1e159518"></a><a name="idd1e159524"></a><a name="idd1e159530"></a><a name="idd1e159536"></a><a name="idd1e159542"></a>
+<p class="docText">The following program illustrates the different ways we can control the precision use when printing floating point values:</P>
+<p class="docText">下面的程序说明控制显示浮点值所用精度的不同方法：</P>
+
+<pre>
+     // <span class="docEmphasis">cout.precision</span> <span class="docEmphItalicAlt">reports current precision value</span>
+     cout &lt;&lt; "Precision: " &lt;&lt; cout.precision()
+          &lt;&lt; ", Value: "   &lt;&lt; sqrt(2.0) &lt;&lt; endl;
+     // <span class="docEmphasis">cout.precision(12)</span> <span class="docEmphItalicAlt">asks that 12 digits of precision to be printed</span>
+     cout.precision(12);
+     cout &lt;&lt; "Precision: " &lt;&lt; cout.precision()
+          &lt;&lt; ", Value: "   &lt;&lt; sqrt(2.0) &lt;&lt; endl;
+     // <span class="docEmphItalicAlt">alternative way to set precision using</span> <span class="docEmphasis">setprecision</span> <span class="docEmphItalicAlt">manipulator</span>
+     cout &lt;&lt; setprecision(3);
+     cout &lt;&lt; "Precision: " &lt;&lt; cout.precision()
+          &lt;&lt; ", Value: "   &lt;&lt; sqrt(2.0) &lt;&lt; endl;
+</pre>
+
+<p class="docText">When compiled and executed, the program generates the following output:</p>
+<p class="docText">编译并执行后，程序产生下面的输出：</p>
+
+<pre>
+     <span class="docEmphStrong">Precision: 6, Value: 1.41421</span>
+     <span class="docEmphStrong">Precision: 12, Value: 1.41421356237</span>
+     <span class="docEmphStrong">Precision: 3, Value: 1.41</span>
+</pre>
+
+<p class="docText">This program calls the library <tt>sqrt</tt> function, which is found in the <tt>cmath</tt> header. The <tt>sqrt</tt> function is overloaded and can be called on either a <tt>float, double</tt>, or <tt>long double</tt> argument. It returns the square root of its argument.</p>
+<p class="docText">这个程序调用标准库中的 <tt>sqrt</tt> 函数，可以在头文件 <tt>cmath</tt> 中找到它。<tt>sqrt</tt> 函数量重载的，可以用 <tt>float</tt>、<tt>double</tt> 或 <tt>long double</tt> 实参调用，它返回实参的平方根。</p>
+
+<a name="app01note04"></a>
+<div class="docNote">
+	<p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<TD width="60" valign="top">
+				<img border="0" alt="" id="195131139046" align="LEFT" width="50" height="54" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" >
+			</td>
+			<td valign="top">
+				<p class="docText"> The <tt>setprecision</tt> manipulators and other manipulators that take arguments are defined in the <tt>iomanip</tt> header.</P>
+				<p class="docText">操纵符和其他接受实参的操纵符定义在头文件 <tt>iomanip</tt> 中。</P>
+			</td>
+		</tr>
+	</table>
+	</p>
+</div>
+
+<a name="app01lev3sec23"></a>
+<h5 class="docSection3Title">Controlling the Notation</h5>
+<h5 class="docSection3Title">控制记数法</h5>
+
+<p class="docText">By default, the notation used to print floating-point values depends on the size of the number: If the number is either very large or very small, it will be printed in scientific notation; otherwise, fixed decimal is used. The library chooses the notation that makes the number easiest to read.</p>
+<p class="docText">默认情况下，用于显示浮点值的记数法取决于数的大小：如果数很大或很小，将按科学记数法显示，否则，使用固定位数的小数。标准库选择使得数容易阅读的记数法。</p>
+
+<a name="app01note05"></a>
+<div class="docNote">
+	<p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<TR>
+			<td width="60" valign="top">
+				<img border="0" alt="" id="195131139046" align="LEFT" width="116" height="74" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/bestpractices.jpg;400478" >
+			</td>
+			<TD valign="top">
+				<p class="docText"> When printing a floating-point number as a plain number (as opposed to printing money, or a percentage, where we want to control the appearance of the value), it is usually best to let the library choose the notation to use. The one time to force either scientific or fixed decimal is when printing a table in which the decimal points should line up.</p>
+				<p class="docText">将浮点数显示为普通数（相对于显示货币、百分比，那时我们希望控制值的外观）的时候，通常最好让标准库来选择使用的记数法。要强制科学记数法或固定位数小数的一种情况是在显示表的时候，表中的小数点应该对齐。</p>
+			</td>
+		</TR>
+	</table>
+	</P>
+</div>
+
+<p class="docText">If we want to force either scientific or fixed notation, we can do so by using the appropriate manipulator: The <tt>scientific</tt> manipulator changes the stream to use scientific notation. As with printing the <tt>x</tt> on hexadecimal integral values, we can also control the case of the <tt>e</tt> in scientific mode through the <tt>uppercase</tt> manipulator. The <tt>fixed</tt> manipulator changes the stream to use fixed decimal.</p>
+<p class="docText">如果希望强制科学记数法或固定位数小数表示，可以通过使用适当的操纵符做到这一点：<tt>scientific</tt> 操纵符将流变为使用科学记数法。像在十六进制值上显示 <tt>x</tt> 一样，也可以通过 <tt>uppercase</tt> 操纵符控制科学记数法中的 <tt>e</tt>。<tt>fixed</tt> 操纵符将流为使用固定位数小数表示。</p>
+
+<a name="idd1e159671"></a><a name="idd1e159677"></a><a name="idd1e159683"></a><a name="idd1e159691"></a><a name="idd1e159699"></a>
+<p class="docText">These manipulators change the default meaning of the precision for the stream. After executing either <tt>scientific</tt> or <tt>fixed</tt>, the precision value controls the number of digits after the decimal point. By default, precision specifies the total number of digitsboth before and after the decimal point. Using <tt>fixed</tt> or <tt>scientific</tt> lets us print numbers lined up in columns. This strategy ensures that the decimal point is always in a fixed position relative to the fractional part being printed.</p>
+<p class="docText">这些操纵符改变流精度的默认含义。执行 <tt>scientific</tt> 或 <tt>fixed</tt> 之后，精度值控制小数点之后的数位。默认情况下，精度指定数字的总位数——小数点之前和之后。使用 <tt>fixed</tt> 或 <tt>scientific</tt> 命名我们能够按列对齐来显示数，这一策略保证小数点总是在相对于被显示的小数部分固定的位置。</p>
+
+<a name="app01lev3sec24"></a>
+<h5 class="docSection3Title">Reverting to Default Notation for Floating-Point Values</h5>
+<h5 class="docSection3Title">恢复浮点值的默认记数法</h5>
+
+<p class="docText">Unlike the other manipulators, there is no manipulator to return the stream to its default state in which it chooses a notation based on the value being printed. Instead, we must call the <tt>unsetf</tt> member to undo the change made by either <tt>scientific</tt> or <tt>fixed</tt>. To return the stream to default handling of float values we pass <tt>unsetf</tt> function a library-defined value named <tt>floatfield</tt>:</p>
+<p class="docText">与其他操纵符不同，不存在将流恢复为根据被显示值选择记数法的默认状态的操纵符，相反，我们必须调用 <tt>unsetf</tt> 成员来取消 <tt>scientific</tt> 或 <tt>fixed</tt> 所做的改变。要将流恢复为浮点值的默认处理，将名为 <tt>floatfield</tt> 的标准库定义值传给 <tt>unsetf</tt> 函数：</p>
+
+<pre>
+     // <span class="docEmphItalicAlt">reset to default handling for notation</span>
+     cout.unsetf(ostream::floatfield);
+</pre>
+
+<p class="docText">Except for undoing their effect, using these manipulators is like using any other manipulator:</p>
+<p class="docText">除了取消它们的效果之外，使用这些操纵符像使用任意其他操纵符一样：</p>
+
+<pre>
+     cout &lt;&lt; sqrt(2.0) &lt;&lt; '\n' &lt;&lt; endl;
+     cout &lt;&lt; "scientific: " &lt;&lt; scientific &lt;&lt; sqrt(2.0) &lt;&lt; '\n'
+          &lt;&lt; "fixed decimal: " &lt;&lt; fixed &lt;&lt; sqrt(2.0) &lt;&lt; "\n\n";
+     cout &lt;&lt; uppercase
+          &lt;&lt; "scientific: " &lt;&lt; scientific &lt;&lt; sqrt(2.0) &lt;&lt; '\n'
+          &lt;&lt; "fixed decimal: " &lt;&lt; fixed &lt;&lt; sqrt(2.0) &lt;&lt; endl
+          &lt;&lt; nouppercase;
+     // <span class="docEmphItalicAlt">reset to default handling for notation</span>
+     cout.unsetf(ostream::floatfield);
+     cout &lt;&lt; '\n' &lt;&lt; sqrt(2.0) &lt;&lt; endl;
+</pre>
+
+<p class="docText">produces the following output:</p>
+<p class="docText">产生如下输出：</p>
+
+<pre>
+     <span class="docEmphStrong">1.41421</span>
+
+     <span class="docEmphStrong">scientific: 1.414214e+00</span>
+     <span class="docEmphStrong">fixed decimal: 1.414214</span>
+
+     <span class="docEmphStrong">scientific: 1.414214E+00</span>
+     <span class="docEmphStrong">fixed decimal: 1.414214</span>
+
+     <span class="docEmphStrong">1.41421</span>
+</pre>
+
+<a name="app01lev3sec25"></a>
+<h5 class="docSection3Title">Printing the Decimal Point</h5>
+<h5 class="docSection3Title">显示小数点</h5>
+
+<p class="docText">By default, when the fractional part of a floating-point value is 0, the decimal point is not displayed. The <tt>showpoint</tt> manipulator forces the decimal point to be printed:</P>
+<p class="docText">默认情况下，当浮点值的小数部分为 0 的时候，不显示小数点。<tt>showpoint</tt> 操纵符强制显示小数点：</P>
+
+<pre>
+     cout &lt;&lt; 10.0 &lt;&lt; endl;        // <span class="docEmphItalicAlt">prints</span> <span class="docEmphasis">10</span>
+     cout &lt;&lt; showpoint &lt;&lt; 10.0    // <span class="docEmphItalicAlt">prints</span> <span class="docEmphasis">10.0000</span>
+          &lt;&lt; noshowpoint &lt;&lt; endl; // <span class="docEmphItalicAlt">revert to default handling of decimal point</span>
+</pre>
+
+<a name="idd1e159818"></a><a name="idd1e159823"></a><a name="idd1e159828"></a><a name="idd1e159834"></a><a name="idd1e159840"></a><a name="idd1e159846"></a><a name="idd1e159852"></a><a name="idd1e159858"></a><a name="idd1e159864"></a><a name="idd1e159870"></a><a name="idd1e159876"></a><a name="idd1e159882"></a><a name="idd1e159888"></a><a name="idd1e159894"></a><a name="idd1e159900"></a><a name="idd1e159905"></a><a name="idd1e159910"></a><a name="idd1e159915"></a>
+<p class="docText">The <tt>noshowpoint</tt> manipulator reinstates the default behavior. The next output expression will have the default behavior, which is to suppress the decimal point if the floating-point value has a 0 fractional part.</p>
+<p class="docText"><tt>noshowpoint</tt> 操纵符恢复默认行为。下一个输出表达式将具有默认行为，即，如果浮点值小数部分为 0,就取消小数点。</p>
+
+<a name="app01lev3sec26"></a>
+<H5 class="docSection3Title">Padding the Output</h5>
+<H5 class="docSection3Title">填充输出</h5>
+
+<p class="docText">When printing data in columns, we often want fairly fine control over how the data are formatted. The library provides several manipulators to help us accomplish the control we might need:</p>
+<p class="docText">按栏显示数据的时候，经常很希望很好地控制数据的格式化。标准库提供下面几个操纵帮助我们实现需要的控制：</p>
+
+<UL>
+	<LI>
+	<p class="docList"><tt>setw</tt> to specify the minimum space for the <span class="docEmphasis">next</span> numeric or string value.</p>
+	<p class="docList"><tt>setw</tt>，指定下一个数值或字符串的最小间隔。</p>
+	</li>
+	<li>
+	<p class="docList"><tt>left</tt> to left-justify the output.</p>
+	<p class="docList"><tt>left</tt>，左对齐输出。</p>
+	<p class="docList"><tt>right</tt> to right-justfiy the output. Output is right-justified by default.</p>
+	<p class="docList"><tt>right</tt>，右对齐输出。输出默认为右对齐。</p>
+	</LI>
+	<li>
+	<p class="docList"><tt>internal</tt> controls placement of the sign on negative values. <tt>internal</tt> left-justifies the sign and right-justifies the value, padding any intervening space with blanks.</P>
+	<p class="docList"><tt>internal</tt>，控制负值的符号位置。<tt>internal</tt> 左对齐符号且右对齐值，用空格填充介于其间的空间。</P>
+	</LI>
+	<li>
+	<p class="docList"><tt>setfill</tt> lets us specify an alternative character to use when padding the output. By default, the value is a space.</p>
+	<p class="docList"><tt>setfill</tt>，使我们能够指定填充输出时使用的另一个字符。默认情况下，值是空格。</p>
+	</li>
+</UL>
+
+<a name="app01note06"></a>
+<div class="docNote">
+	<P>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" id="195131139046" align="LEFT" width="50" height="54" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" >
+			</td>
+			<td valign="top">
+				<p class="docText"><tt>setw</tt>, like <tt>endl</tt>, does not change the internal state of the output stream. It determines the size of only the <span class="docEmphasis">next</span> output.</P>
+				<p class="docText">像 <tt>endl</tt> 一样，<tt>setw</tt> 不改变输出流的内部状态，它只决定下一个输出的长度。</P>
+			</td>
+		</tr>
+	</table>
+	</p>
+</div>
+
+<p class="docText">The following program illustrates these manipulators</P>
+<p class="docText">下面程序段说明了这些操纵符：</P>
+
+<pre>
+     int i = -16;
+     double d = 3.14159;
+     // <span class="docEmphItalicAlt">pad first column to use minimum of 12 positions in the output</span>
+     cout &lt;&lt; "i: " &lt;&lt; setw(12) &lt;&lt; i &lt;&lt; "next col" &lt;&lt; '\n'
+          &lt;&lt; "d: " &lt;&lt; setw(12) &lt;&lt; d &lt;&lt; "next col" &lt;&lt; '\n';
+     // <span class="docEmphItalicAlt">pad first column and left-justify all columns</span>
+     cout &lt;&lt; left
+          &lt;&lt; "i: " &lt;&lt; setw(12) &lt;&lt; i &lt;&lt; "next col" &lt;&lt; '\n'
+          &lt;&lt; "d: " &lt;&lt; setw(12) &lt;&lt; d &lt;&lt; "next col" &lt;&lt; '\n'
+          &lt;&lt; right; // <span class="docEmphItalicAlt">restore normal justification</span>
+     // <span class="docEmphItalicAlt">pad first column and right-justify all columns</span>
+     cout &lt;&lt; right
+          &lt;&lt; "i: " &lt;&lt; setw(12) &lt;&lt; i &lt;&lt; "next col" &lt;&lt; '\n'
+          &lt;&lt; "d: " &lt;&lt; setw(12) &lt;&lt; d &lt;&lt; "next col" &lt;&lt; '\n';
+     // <span class="docEmphItalicAlt">pad first column but put the padding internal to the field</span>
+     cout &lt;&lt; internal
+          &lt;&lt; "i: " &lt;&lt; setw(12) &lt;&lt; i &lt;&lt; "next col" &lt;&lt; '\n'
+          &lt;&lt; "d: " &lt;&lt; setw(12) &lt;&lt; d &lt;&lt; "next col" &lt;&lt; '\n';
+     // <span class="docEmphItalicAlt">pad first column, using # as the pad character</span>
+     cout &lt;&lt; setfill('#')
+          &lt;&lt; "i: " &lt;&lt; setw(12) &lt;&lt; i &lt;&lt; "next col" &lt;&lt; '\n'
+          &lt;&lt; "d: " &lt;&lt; setw(12) &lt;&lt; d &lt;&lt; "next col" &lt;&lt; '\n'
+          &lt;&lt; setfill(' '); // <span class="docEmphItalicAlt">restore normal pad character</span>
+</pre>
+
+<a name="idd1e160025"></a><a name="idd1e160031"></a><a name="idd1e160037"></a><a name="idd1e160043"></a><a name="idd1e160049"></a><a name="idd1e160054"></a>
+<p class="docText">When executed, this program generates</P>
+<p class="docText">执行时，该程序段产生如下输出：</P>
+
+<pre>
+     <span class="docEmphStrong">i:          -16next col</span>
+     <span class="docEmphStrong">d:      3.14159next col</span>
+     <span class="docEmphStrong">i: -16         next col</span>
+     <span class="docEmphStrong">d: 3.14159     next col</span>
+     <span class="docEmphStrong">i:          -16next col</span>
+     <span class="docEmphStrong">d:      3.14159next col</span>
+     <span class="docEmphStrong">i: -         16next col</span>
+     <span class="docEmphStrong">d:      3.14159next col</span>
+     <span class="docEmphStrong">i: -#########16next col</span>
+     <span class="docEmphStrong">d: #####3.14159next col</span>
+</pre>
+
+
+
+<a name="app01lev2sec14"></a>
+<h4 class="docSection2Title">A.3.4. Controlling Input Formatting</H4>
+<h4 class="docSection2Title">A.3.4. 控制输入格式化</H4>
+
+<p class="docText">By default, the input operators ignore whitespace (blank, tab, newline, formfeed, and carriage return). The following loop</p>
+<p class="docText">默认情况下，输入操作符忽略空白（空格、制表符、换行符、进纸和回车）。对下面的循环：</p>
+
+<pre>
+     while (cin &gt;&gt; ch)
+         cout &lt;&lt; ch;
+</pre>
+
+<p class="docText">given the input sequence</P>
+<p class="docText">给定输入序列</P>
+
+<pre>
+     <span class="docEmphStrong">a b   c</span>
+     <span class="docEmphStrong">d</span>
+</pre>
+
+<p class="docText">executes four times to read the characters <tt>a</tt> through <tt>d</tt>, skipping the intervening blanks, possible tabs, and newline characters. The output from this program is</P>
+<p class="docText">循环执行四次从字符 <tt>a</tt> 读到 <tt>d</tt>，跳过介于其间的空格、可能的制表符和换行符。该程序段的输出是：</P>
+
+<pre>
+     <span class="docEmphStrong">abcd</span>
+</pre>
+
+<p class="docText">The <tt>noskipws</tt> manipulator causes the input operator to read, rather than skip, whitespace. To return to the default behavior, we apply <tt>skipws</tt> manipulator:</P>
+<p class="docText"><tt>noskipws</tt> 操纵符导致输入操作符读（而不是跳过）空白。要返回默认行为，应用 <tt>skipws</tt> 操纵符：</P>
+
+<pre>
+     cin &gt;&gt; noskipws;      // <span class="docEmphItalicAlt">set</span> <span class="docEmphasis">cin</span> <span class="docEmphItalicAlt">so that it reads whitespace</span>
+     while (cin &gt;&gt; ch)
+             cout &lt;&lt; ch;
+     cin &gt;&gt; skipws; // <span class="docEmphItalicAlt">reset</span> <span class="docEmphasis">cin</span> <span class="docEmphItalicAlt">to default state so that it discards whitespace</span>
+</pre>
+
+<p class="docText">Given the same input as before, this loop makes seven iterations, reading white-space as well as the characters in the input. This loop generates</p>
+<p class="docText">给定与前面相同的输入，该循环进行 7 次迭代，读输入中的空白以及字符。该循环产生如下输出：</p>
+
+<pre>
+     <span class="docEmphStrong">a b    c</span>
+     <span class="docEmphStrong">d</span>
+</pre>
+
+<a name="app01lev2sec15"></a>
+<h4 class="docSection2Title">A.3.5. Unformatted Input/Output Operations</h4>
+<h4 class="docSection2Title">A.3.5. 未格式化的输入／输出操作</h4>
+
+<a name="idd1e160276"></a><a name="idd1e160283"></a><a name="idd1e160290"></a><a name="idd1e160297"></a><a name="idd1e160303"></a>
+<p class="docText">So far, our programs have used only formatted IO operations. The input and output operators (<tt>&lt;&lt;</tt> and <tt>&gt;&gt;</tt>) format the data they read or write according to the data type being handled. The input operators ignore whitespace; the output operators apply padding, precision, and so on.</p>
+<p class="docText">迄今为止，示例程序中只使用过格式化的 IO 操作。输入和输出操作符（<tt>&lt;&lt;</tt> 和 <tt>&gt;&gt;</tt>）根据被处理数据的类型格式化所读写的数据。输入操作符忽略空白，输出操作符应用填充、精度等。</p>
+
+<p class="docText">The library also provides a rich set of low-level operations that support unformatted IO. These operations let us deal with a stream as a sequence of uninterpreted bytes rather than as a sequence of data types, such as <tt>char, int, string</tt>, and so on.</p>
+<p class="docText">标准库还提供了丰富的支持未格式化 IO 的低级操作，这些操作使我们能够将流作为未解释的字节序列处理，而不是作为数据类型（如 <tt>char</tt>、<tt>int</tt>、<tt>string</tt> 等）的序列处理。</p>
+
+<a name="app01lev2sec16"></a>
+<h4 class="docSection2Title">A.3.6. Single-Byte Operations</h4>
+<h4 class="docSection2Title">A.3.6. 单字节操作</h4>
+
+<p class="docText">Several of the unformatted operations deal with a stream one byte at a time. They read rather than ignore whitespace. For example, we could use the unformatted IO operations <tt>get</tt> and <tt>put</tt> to read the characters one at a time:</p>
+<p class="docText">几个未格式化的操作一次一个字节地处理流，它们不忽略空白地读。例如，可以使用未格式化 IO 操作 <tt>get</tt> 和 <tt>put</tt> 一次读一个字符：</p>
+
+<pre>
+     char ch;
+     while (cin.get(ch))
+             cout.put(ch);
+</pre>
+
+<p class="docText">This program preserves the whitespace in the input. Its output is identical to the input. Given the same input as read by the previous program that used <tt>noskipws</tt>, this program generates the same output:</p>
+<p class="docText">该程序段保持输入中的空白。它的输出与输入相同。给定与前面使用 <tt>noskipws</tt> 的程序段相同的输入，该程序段产生相同的输出：</p>
+
+<pre>
+     <span class="docEmphStrong">a b    c</span>
+     <span class="docEmphStrong">d</span>
+</pre>
+
+<a name="app01table04"></a>
+<P>
+<table cellspacing="0" class="allBorders" border="1" RULES="none" cellpadding="5">
+	<caption>
+		<H5 class="docTableTitle">Table A.4. Single-Byte Low-Level IO Operations</h5>
+		<H5 class="docTableTitle">表 A.4. 单字节低级 IO 操作</h5>
+	</caption>
+	<colgroup>
+		<col width="150">
+		<col width="350">
+	</colgroup>
+	<thead>
+	</thead>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>is.get(ch)</tt></p>
+		</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Puts next byte from the <tt>istream is</tt> in character <tt>ch</tt>. Returns <tt>is</tt>.</p>
+			<p class="docText">将 <tt>istream is</tt> 的下一个字节放入 <tt>ch</tt>，返回 <tt>is</tt></p>
+		</td>
+	</tr>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>os.put(ch)</tt></P>
+		</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Puts character <tt>ch</tt> onto the <tt>ostream os</tt>. Returns <tt>os</tt>.</P>
+			<p class="docText">将字符 <tt>ch</tt> 放入 <tt>ostream</tt>，返回 <tt>os</tt></P>
+		</td>
+	</tr>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>is.get()</tt></P>
+		</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Returns next byte from <tt>is</tt> as an <tt>int</tt>.</p>
+			<p class="docText">返回 <tt>is</tt> 的下一字节作为一个 <tt>int</tt> 值</p>
+		</td>
+	</tr>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>is.putback(ch)</tt></P>
+		</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Puts character <tt>ch</tt> back on <tt>is</tt>; returns <tt>is</tt>.</P>
+			<p class="docText">将字符 <tt>ch</tt> 放回 <tt>is</tt>，返回 <tt>is</tt></P>
+		</td>
+	</TR>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>is.unget()</tt></p>
+		</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Moves <tt>is</tt> back one byte; returns <tt>is</tt>.</p>
+			<p class="docText">将 <tt>is</tt> 退回一个字节，返回 <tt>is</tt></p>
+		</td>
+	</tr>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>is.peek()</tt></p>
+		</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Returns the next byte as an <tt>int</tt> but doesn't remove it.</P>
+			<p class="docText">将下一字节作为 <tt>int</tt> 值返回但不移出它</p>
+		</td>
+	</tr>
+</table>
+</P>
+
+<a name="app01lev3sec27"></a>
+<h5 class="docSection3Title">Putting Back onto an Input Stream</H5>
+<h5 class="docSection3Title">在输入流上倒退</H5>
+
+<p class="docText">Sometimes we need to read a character in order to know that we aren't ready for it yet. In such cases, we'd like to put the character back onto the stream. The library gives us three ways to do so, each of which has subtle differences from the others:</P>
+<p class="docText">有时我们需要读一个字符才知道还没有为它作好准备，在这种情况下，希望将字符放回流上。标准库给出三种方法做到这一点，它们之间有下列微妙的区别：</P>
+
+<ul>
+	<li>
+	<p class="docList"><tt>peek</tt> returns a copy of the next character on the input stream but does not change the stream. The value returned by <tt>peek</tt> stays on the stream and will be the next one retrieved.</p>
+	<p class="docList"><tt>peek</tt>，返回输入流上下一字符的副本但不改变流。<tt>peek</tt> 返回的值留在流上，且将是下一个被检索的。</p>
+	</li>
+	<li>
+	<a name="idd1e160516"></a><a name="idd1e160519"></a><a name="idd1e160530"></a><a name="idd1e160537"></a>
+	<p class="docList"><tt>unget</tt> backs up the input stream so that whatever value was last returned is still on the stream. We can call <tt>unget</tt> even if we do not know what value was last taken from the stream.</P>
+	<p class="docList"><tt>unget</tt>，使输入流倒退，以便最后返回的值仍在流上。即使不知道最近从流获得的是什么值，也可以调用 <tt>unget</tt>。</P>
+	</li>
+	<LI>
+	<p class="docList"><tt>putback</tt> is a more specialized version of <tt>unget</tt>: It returns the last value read from the stream but takes an argument that must be the same as the one that was last read. Few programs use <tt>putback</tt> because the simpler <tt>unget</tt> does the same job with fewer constraints.</P>
+	<p class="docList"><tt>putback</tt>，<tt>unget</tt> 的更复杂的版本。它返回从流中读到的最后一个值，但接受最后一次读的同一实参。很少有程序使用 <tt>putback</tt>，因为更简单的 <tt>unget</tt> 也可以完成相同工作而约束更少。</P>
+	</li>
+</ul>
+
+<p class="docText">In general, we are guaranteed to be able to put back at most one value before the next read. That is, we are not guaranteed to be able to call <tt>putback</tt> or <tt>unget</tt> successively without an intervening read operation.</p>
+<p class="docText">一般而言，保证能够在下一次读之前放回最多一个值，也就是说，不保证能够连续调用 <tt>putback</tt> 或 <tt>unget</tt> 而没有介于其间的读操作。</p>
+
+<a name="app01lev3sec28"></a>
+<H5 class="docSection3Title"><tt>int</tt> Return Values from Input Operations</H5>
+<H5 class="docSection3Title">输入操作的 <tt>int</tt> 返回值</H5>
+
+<p class="docText">The version of <tt>get</tt> that takes no argument and the <tt>peek</tt> function return a character from the input stream as an <tt>int</tt>. This fact can be surprising; it might seem more natural to have these functions return a <tt>char</tt>.</p>
+<p class="docText">不接受实参的 <tt>get</tt> 版本和 <tt>peek</tt> 函数从输入流返回一个字符作为 <tt>int</tt> 值。这个事实可能令人惊讶，因为这些函数返回 <tt>char</tt> 值似乎更自然。</p>
+
+<p class="docText">The reason that these functions return an <tt>int</tt> is to allow them to return an end-of-file marker. A given character set is allowed to use every value in the <tt>char</tt> range to represent an actual character. Thus, there is no extra value in that range to use to represent end-of-file.</p>
+<p class="docText">这些函数返回 <tt>int</tt> 值的原因是为了允许它们返回一个文件结束标记。允许给定字符集使用 <tt>char</tt> 范围的每一个值来表示实际字符，因此，该范围中没有额外值用来表示文件结束符。</p>
+
+<p class="docText">Instead, these functions convert the character to <tt>unsigned char</tt> and then promote that value to <tt>int</tt>. As a result, even if the character set has characters that map to negative values, the <tt>int</tt> returned from these operations will be a positive value (<a class="docLink" href="ch02lev1sec1.html#ch02lev2sec1" >Section 2.1.1</a>, p. <a class="docLink" href="ch02lev1sec1.html#ch02lev2sec1" >36</a>). By returning end-of-file as a negative value, the library guarantees that end-of-file will be distinct from any legitimate character value. Rather than requiring us to know the actual value returned, the <tt>iostream</tt> header defines a <tt>const</tt> named <tt>EOF</tt> that we can use to test if the value returned from <tt>get</tt> is end-of-file. It is essential that we use an <tt>int</tt> to hold the return from these functions:</p>
+<p class="docText">相反，这些函数将字符转换为 <tt>unsigned char</tt>，然后将那个值提升为 <tt>int</tt>，因此，即使字符集有映射到负值的字符，从这些操作返回的值也将是一个正值（<a class="docLink" href="ch02lev1sec1.html#ch02lev2sec1" >第 2.1.1 节</a>）。通过将文件结束符作为负值返回，标准库保证文件结束符区别于任意合法字符值。为了不要求我们知道返回的实际值，头文件 <tt>iostream</tt> 定义了名为 <tt>EOF</tt> 的 <tt>const</tt>，可以使用它来测试 <tt>get</tt> 的返回值是否为文件结束符。实质上我们使用 <tt>int</tt> 对象来保存这些函数的返回值：</p>
+
+<pre>
+     int ch;   // <span class="docEmphItalicAlt">NOTE:</span> <span class="docEmphasis">int</span><span class="docEmphItalicAlt">, not</span> <span class="docEmphasis">char</span><span class="docEmphItalicAlt">!!!!</span>
+     // <span class="docEmphItalicAlt">loop to read and write all the data in the input</span>
+     while ((ch = cin.get()) != EOF)
+              cout.put(ch);
+</pre>
+<p class="docText">This program operates identically to one on page <a class="docLink" href="app01lev1sec3.html#app01lev2sec15">834</a>, the only difference being the version of <tt>get</tt> that is used to read the input.</P>
+<p class="docText">这个程序段与 <a class="docLink" href="app01lev1sec3.html#app01lev2sec15">A.3.6 节</a>中的那个程序段同样操作，唯一的区别是用来读输入的 <tt>get</tt> 版本不同。</P>
+
+<a name="app01lev2sec17"></a>
+<h4 class="docSection2Title">A.3.7. Multi-Byte Operations</h4>
+<h4 class="docSection2Title">A.3.7. 多字节操作</h4>
+
+<p class="docText">Other unformatted IO operations deal with chunks of data at a time. These operations can be important if speed is an issue, but like other low-level operations they are error-prone. In particular, these operations require us to allocate and manage the character arrays (<a class="docLink" href="ch04lev1sec3.html#ch04lev2sec14" >Section 4.3.1</a>, p. <a class="docLink" href="ch04lev1sec3.html#ch04lev2sec14" >134</a>) used to store and retrieve data.</P>
+<p class="docText">其他未格式化 IO 操作一次处理数据块。如果速度是一个问题，这些操作可能就很重要。但像其他低级操作一样，它们是容易出错的。尤其是，这些操作要求我们分配和管理用于存储和检索数据的字符数组（<a class="docLink" href="ch04lev1sec3.html#ch04lev2sec14" >第 4.3.1 节</a>）。</P>
+
+<p class="docText">The multi-byte operations are listed in <a class="docLink" href="app01lev1sec3.html#app01table05">Table A.5</a> (p. <a class="docLink" href="app01lev1sec3.html#app01table05">837</a>). It is worth noting that the <tt>get</tt> member is overloaded; there is a third version that reads a sequence of characters.</p>
+<p class="docText">多字节操作在<a class="docLink" href="app01lev1sec3.html#app01table05">表 A.5</a> 列出。值得注意的是，<tt>get</tt> 成员是重载的，存在读字符序列的第三个版本。</p>
+
+<a name="app01table05"></a>
+<p>
+<table cellspacing="0" class="allBorders" border="1" RULES="none" cellpadding="5">
+	<caption>
+		<h5 class="docTableTitle">Table A.5. Multi-Byte Low-Level IO Operations</h5>
+		<h5 class="docTableTitle">表 A.5. 多字节低级 IO 操作</h5>
+	</caption>
+	<colgroup>
+		<col width="150">
+		<col width="350">
+	</colgroup>
+	<thead>
+	</thead>
+	<tr>
+		<TD class="docTableCell" align="left" valign="top" colspan="2">
+			<p class="docText"><tt>is.get(sink, size, delim)</tt></p>
+		</td>
+	</TR>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">&nbsp;</TD>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Reads up to <tt>size</tt> bytes from <tt>is</tt> and stores them in the character array pointed to by <tt>sink</tt>. Reads until encountering the <tt>delim</tt> character or until it has read <tt>size</tt> bytes or encounters end-of-file. If the <tt>delim</tt> is present, it is left on the input stream and not read into <tt>sink</tt>.</P>
+			<p class="docText">从 <tt>is</tt> 中读 <tt>size</tt> 个字节并将它们存储到 <tt>sink</tt> 所指向的字符数组中。读操作直到遇到 <tt>delim</tt> 字符，或已经读入了 <tt>size</tt> 个字节，或遇到文件结束符才结束。如果出现了 <tt>delim</tt>，就将它留在输入流上，不读入到 <tt>sink</tt> 中。</P>
+		</td>
+	</tr>
+	<tr>
+		<td class="docTableCell" align="left" valign="top" colspan="2">
+			<p class="docText"><tt>is.getline(sink, size, delim)</tt></p>
+		</td>
+	</tr>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">&nbsp;</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Same behavior as three-argument version of <tt>get</tt> but reads and discards <tt>delim</tt>.</p>
+			<p class="docText">与三个实参的 <tt>get</tt> 行为类似，但读并丢弃 <tt>delim</tt></p>
+		</td>
+	</TR>
+	<TR>
+		<td class="docTableCell" align="left" valign="top" colspan="2">
+			<p class="docText"><tt>is.read(sink, size)</tt></P>
+		</td>
+	</tr>
+	<TR>
+		<TD class="docTableCell" align="left" valign="top">&nbsp;</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Reads up to <tt>size</tt> bytes into the character array <tt>sink</tt>. Returns <tt>is</tt>.</p>
+			<p class="docText">读 <tt>size</tt> 个字节到数组 <tt>sink</tt>。返回 <tt>is</tt></p>
+		</td>
+	</tr>
+	<TR>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>is.gcount()</tt></P>
+		</TD>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Returns number of bytes read from the stream <tt>is</tt> by last call to an unformatted read operation.</p>
+			<p class="docText">返回最后一个未格式化读操作从流 <tt>is</tt> 中读到的字节数</p>
+		</td>
+	</TR>
+	<TR>
+		<td class="docTableCell" align="left" valign="top" colspan="2">
+			<p class="docText"><tt>os.write(source, size)</tt></p>
+		</td>
+	</tr>
+	<TR>
+		<td class="docTableCell" align="left" valign="top">&nbsp;</td>
+		<TD class="docTableCell" align="left" valign="top">
+			<p class="docText">Writes <tt>size</tt> bytes from the character array <tt>source</tt> to <tt>os</tt>. Returns <tt>os</tt>.</p>
+			<p class="docText">将 <tt>size</tt> 个字从数组 <tt>source</tt> 写至 <tt>os</tt>。返回 <tt>os</tt></p>
+		</td>
+	</TR>
+	<tr>
+		<TD class="docTableCell" align="left" valign="top" colspan="2">
+			<p class="docText"><tt>is.ignore(size, delim)</tt></p>
+		</td>
+	</tr>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">&nbsp;</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Reads and ignores at most <tt>size</tt> characters up to but not including <tt>delim</tt>. By default, <tt>size</tt> is 1 and <tt>delim</tt> is end-of-file.</p>
+			<p class="docText">读并忽略至多 <tt>size</tt> 个字符，直到遇到 <tt>delim</tt>，但不包括 <tt>delim</tt>。默认情况下，<tt>size</tt> 是 1 而 <tt>delim</tt> 是文件结束符</p>
+		</td>
+	</tr>
+</table>
+</p>
+
+
+<a name="app01sb01"></a>
+<p>
+<table cellspacing="0" width="90%" border="1" cellpadding="5">
+	<TR>
+		<td>
+			<H2 class="docSidebarTitle">Caution: Low-Level Routines Are Error-Prone</h2>
+			<H2 class="docSidebarTitle">警告：低级例程容易出错</h2>
+
+<a name="idd1e160711"></a><a name="idd1e160720"></a><a name="idd1e160731"></a>
+<p class="docText"><span class="docEmphStrong">In general, we advocate using the higher-level abstractions provided by the library. The IO operations that return <tt>int</tt> are a good example of why.</span></p>
+<p class="docText"><span class="docEmphStrong">一般提倡使用标准库提供的高级抽象。返回 <tt>int</tt> 值的 IO 操作是一个很好的例子。</span></p>
+
+<p class="docText"><span class="docEmphStrong">It is a common programming error to assign the return from <tt>get</tt> or one of the other <tt>int</tt> returning functions to a <tt>char</tt> rather than an <tt>int</tt>.</span> <span class="docEmphStrong">Doing so is an error but an error the compiler will not detect. Instead, what happens depends on the machine and on the input data. For example, on a machine in which <tt>char</tt>s are implemented as <tt>unsigned char</tt>s, this loop will run forever:</span></p>
+<p class="docText"><span class="docEmphStrong">将 <tt>get</tt> 或其他返回 <tt>int</tt> 值的函数的返回值赋给 <tt>char</tt> 对象而不是 <tt>int</tt> 对象，是常见的错误，但编译器不检测这样的错误，相反，发生什么取决于机器和输入数据。例如，在将 <tt>char</tt> 实现为 <tt>unsigned char</tt> 的机器上，这是一个死循环：</span></p>
+
+<a name="PLID26"></a>
+<pre><div class="v1"><a href="app01lev1sec3.html#PLID26" >[View full width]</a></div>
+     char ch;    // <span class="docEmphItalicAlt">Using a char here invites disaster!</span>
+     // <span class="docEmphItalicAlt">return from cin.get is converted from int to char and
+<img border="0" width="14" height="9" alt="" align="left" src="images/ccc.gif" > then compared to an int</span>
+     while ((ch = cin.get()) != EOF)
+              cout.put(ch);
+</pre>
+
+<p class="docText"><span class="docEmphStrong">The problem is that when <tt>get</tt> returns <tt>EOF</tt>, that value will be converted to an <tt>unsigned char</tt> value. That converted value is no longer equal to the integral value of <tt>EOF</tt>, and the loop will continue forever.</span></p>
+<p class="docText"><span class="docEmphStrong">问题在于，当 <tt>get</tt> 返回 <tt>EOF</tt> 的时候，那个值将被转换为 <tt>unsigned char</tt> 值，转换后的值不再等于 <tt>EOF</tt> 的整型值，循环将永远继续。</span></p>
+
+<p class="docText"><span class="docEmphStrong">At least that error is likely to be caught in testing. On machines for which <tt>char</tt>s are implemented as <tt>signed char</tt>s, we can't say with confidence what the behavior of the loop might be. What happens when an out-of-bounds value is assigned to a <tt>signed</tt> value is up to the compiler. On many machines, this loop will appear to work, unless a character in the input matches the EOF value. While such characters are unlikely in ordinary data, presumably low-level IO is necessary only when reading binary values that do not map directly to ordinary characters and numeric values. For example, on our machine, if the input contains a character whose value is <tt>'\377'</tt> then the loop terminates prematurely. <tt>'\377'</tt> is the value on our machine to which -1 converts when used as a <tt>signed char</tt>. If the input has this value, then it will be treated as the (premature) end-of-file indicator.</span></p>
+<p class="docText"><span class="docEmphStrong">至少还可能在测试中捕获这个错误。在将 <tt>char</tt> 实现为 <tt>signed char</tt> 的机器上，不能确切地说出该循环的行为。当将超出边界的值赋给 <tt>signed</tt> 值时发生什么由编译器负责。在许多机器上，这个循环看起来能工作，除非输入中的字符与 EOF 值匹配。虽然这样的字符不可能在普通数据中，但是，大概只有在读不直接映射到普通字符和数值的二进制值的时候，低级 IO 才是必要的。例如，在我们的机器上，如果输入包含值为 <tt>'\377'</tt> 的字符，循环就提前终止。<tt>'\377'</tt> 是我们的机器上 -1 作为 <tt>signed char</tt> 使用的时候所转换的值，如果输入中有这个值，就将它当作（提早的）文件结束指示符对待。</span></p>
+
+<p class="docText"><span class="docEmphStrong">Such bugs do not happen when reading and writing typed values. If you can use the more type-safe, higher-level operations supported by the library, do so.</span></p>
+<p class="docText"><span class="docEmphStrong">在读写类型化值的时候不会发生这样的错误。如果可以使用标准库支持的更为类型安全的、更高级的操作，就使用。</span></p>
+</td>
+</tr>
+</table>
+</p>
+
+<p class="docText">The <tt>get</tt> and <tt>getline</tt> functions take the same parameters, and their actions are similar but not identical. In each case, <tt>sink</tt> is a <tt>char</tt> array into which the data are placed. The functions read until one of the following conditions occurs:</p>
+<p class="docText"><tt>get</tt> 函数和 <tt>getline</tt> 函数接受相同形参，它们的行为类似但不相同。在每个函数中，<tt>sink</tt> 是一个存放数据的 <tt>char</tt> 数组。函数进行读，直到下面条件中的一个发生：</p>
+
+<ul>
+	<LI>
+	<p class="docList"><tt>size - 1</tt> characters are read</P>
+	<p class="docList">读到了 <tt>size - 1</tt> 个字符。</P>
+	</li>
+	<LI>
+	<p class="docList">End-of-file is encountered</p>
+	<p class="docList">遇到文件结束符。</p>
+	</li>
+	<LI>
+	<p class="docList">The delimiter character is encountered</P>
+	<p class="docList">遇到分隔符。</P>
+	</li>
+</ul>
+
+<p class="docText">Following any of these conditions, a null character is put in the next open position in the array. The difference between these functions is the treatment of the delimiter. <tt>get</tt> leaves the delimiter as the next character of the <tt>istream</tt>. <tt>getline</tt> reads and discards the delimiter. In either case, the delimiter is <span class="docEmphasis">not</span> stored in <tt>sink</tt>.</p>
+<p class="docText">遵循这些条件中的任意一个，将一个空字符放到数组中下一个开放位置。两个函数之间的区别是对待分隔符的方法。<tt>get</tt> 将分隔符留作 <tt>istream</tt> 的下一个字符，<tt>getline</tt> 读入并丢弃分隔符，两种情况下，都<span class="docEmphasis">不在</span> <tt>sink</tt> 中存储分隔符。</p>
+
+<a name="app01note07"></a>
+<div class="docNote">
+	<p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<TD width="60" valign="top">
+				<img border="0" alt="" id="195131139046" align="LEFT" width="57" height="96" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" >
+			</td>
+			<TD valign="top">
+				<p class="docText">It is a common error to intend to remove the delimiter from the stream but to forget to do so.</P>
+				<p class="docText">想要从流中移去分隔符但忘了这样做，是一个常见的错误。</P>
+			</td>
+		</tr>
+	</table>
+	</P>
+</div>
+
+
+<a name="app01lev3sec29"></a>
+<h5 class="docSection3Title">Determining How Many Characters Were Read</H5>
+<h5 class="docSection3Title">确定读了多少字符</H5>
+
+<a name="idd1e161070"></a><a name="idd1e161077"></a><a name="idd1e161084"></a><a name="idd1e161091"></a><a name="idd1e161099"></a><a name="idd1e161106"></a>
+<p class="docText">Several of the read operations read an unknown number of bytes from the input. We can call <tt>gcount</tt> to determine how many characters the last unformatted input operation read. It is esssential to call <tt>gcount</tt> before any intervening unformatted input operation. In particular, the single-character operations that put characters back on the stream are also unformatted input operations. If <tt>peek, unget</tt>, or <tt>putback</tt> are called before calling <tt>gcount</tt>, then the return value will be 0!</P>
+<p class="docText">有几个读操作中从输入中读未知数目的字节。可以调用 <tt>gcount</tt> 操作来确定最后一个未格式化输入操作读了多少字符。有必要在任意插入的未格式化输入操作之前调用 <tt>gcount</tt>。尤其是，将字符放回流上的单字符操作也是未格式化输入操作，如果在调用 <tt>gcount</tt> 之前调用 <tt>peek</tt>、<tt>unget</tt> 或 <tt>putback</tt>，则返回值将是 0！</P>
+
+<a name="app01lev2sec18"></a>
+<h4 class="docSection2Title">A.3.8. Random Access to a Stream</H4>
+<h4 class="docSection2Title">A.3.8. 流的随机访问</H4>
+
+<p class="docText">The various stream types generally support random access to the data in their associated stream. We can reposition the stream so that it skips around, reading first the last line, then the first, and so on. The library provides a pair of functions to <span class="docEmphasis">seek</span> to a given location and to <span class="docEmphasis">tell</span> the current location in the associated stream.</p>
+<p class="docText">不同的流类型一般支持对相关流中数据的随机访问。可以重新定位流，以便环绕跳过，首先读最后一行，再读第一行，以此类推。标准库提供一对函数<span class="docEmphasis">定位</span>给定位置并<span class="docEmphasis">告诉（tell）</span>相关流中的当前位置。</p>
+
+<a name="app01note08"></a>
+<div class="docNote">
+	<p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<TR>
+			<TD width="60" valign="top">
+				<img border="0" alt="" id="195131139046" align="LEFT" width="57" height="96" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" >
+			</td>
+			<td valign="top">
+				<p class="docText">Random IO is an inherently system-dependent. To understand how to use these features, you must consult your system's documentation.</p>
+				<p class="docText">随机 IO 是一个固有的随系统而定的特征。要理解怎样使用这些特征，必须查阅系统的文档。</p>
+			</td>
+		</tr>
+	</table>
+	</p>
+</div>
+
+<a name="app01lev3sec30"></a>
+<H5 class="docSection3Title">Seek and Tell Functions</h5>
+<H5 class="docSection3Title">seek 和 tell 函数</h5>
+
+<a name="idd1e161166"></a><a name="idd1e161172"></a><a name="idd1e161178"></a><a name="idd1e161189"></a><a name="idd1e161195"></a><a name="idd1e161201"></a><a name="idd1e161212"></a><a name="idd1e161223"></a><a name="idd1e161234"></a><a name="idd1e161240"></a><a name="idd1e161246"></a><a name="idd1e161254"></a><a name="idd1e161265"></a>
+<p class="docText">To support random access, the IO types maintain a marker that determines where the next read or write will happen. They also provide two functions: One repositions the marker by <span class="docEmphasis">seek</span>ing to a given position; the second <span class="docEmphasis">tell</span>s us the current position of the marker. The library actually defines two pairs of <span class="docEmphasis">seek</span> and <span class="docEmphasis">tell</span> functions, which are described in <a class="docLink" href="app01lev1sec3.html#app01table06">Table A.6</a>. One pair is used by input streams, the other by output streams. The input and output versions are distinguished by a suffix that is either a <tt>g</tt> or a <tt>p</tt>. The <tt>g</tt> versions indicate that we are &quot;getting&quot; (reading) data, and the <tt>p</tt> functions indicate that we are &quot;putting&quot; (writing) data.</p>
+<p class="docText">为了支持随机访问，IO类型维持一个标记，该标记决定下一个读或写发生在哪里。IO 类型还提供两个函数：一个通过 <span class="docEmphasis">seek</span> 指定位置重新安置该标记，另一个 <span class="docEmphasis">tell</span> 我们标记的当前位置。标准库实际上定义了两对 <span class="docEmphasis">seek</span> 和 <span class="docEmphasis">tell</span> 函数（<a class="docLink" href="app01lev1sec3.html#app01table06">表 A.6</a> 给出对它们的描述），一对由输入流使用，另一对由输出流使用。输入和输出版本由后缀 <tt>g</tt> 和 <tt>p</tt> 区分，<tt>g</tt> 版本指出正在“获取”（读）数据，<tt>p</tt> 函数指出正在“放置”（写）数据。</p>
+
+<a name="app01table06"></a>
+<p>
+<table cellspacing="0" class="allBorders" border="1" RULES="none" cellpadding="5">
+	<caption>
+		<H5 class="docTableTitle">Table A.6. Seek and Tell Functions</H5>
+		<H5 class="docTableTitle">表 A.6. seek 和 tell 函数</H5>
+	</caption>
+	<colgroup>
+		<col width="100">
+		<col width="300">
+	</colgroup>
+	<thead>
+	</thead>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>seekg</tt></p>
+		</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Reposition the marker in an input stream</p>
+			<p class="docText">重新定位输入流中的标记</p>
+		</td>
+	</tr>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>tellg</tt></P>
+		</td>
+		<TD class="docTableCell" align="left" valign="top">
+			<p class="docText">Return the current position of the marker in an input stream</p>
+			<p class="docText">返回输入流中标记的当前位置</p>
+		</td>
+	</tr>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>seekp</tt></p>
+		</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Reposition the marker for an output stream</p>
+			<p class="docText">重新定位输出流中的标记</p>
+		</td>
+	</tr>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>tellp</tt></P>
+		</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Return the current position of the marker in an output stream</P>
+			<p class="docText">返回输出流中标记的当前位置</p>
+		</td>
+	</tr>
+</table>
+</p>
+
+<p class="docText">Logically enough, we can use only the <tt>g</tt> versions on an <tt>istream</tt> or its derived types <tt>ifstream</tt>, or <tt>istringstream</tt>, and we can use only the <tt>p</tt> versions on an <tt>ostream</tt> or its derived types <tt>ofstream</tt>, and <tt>ostringstream</tt>. An <tt>iostream, fstream</tt>, or <tt>stringstream</tt> can both read and write the associated stream; we can use either the <tt>g</tt> or <tt>p</tt> versions on objects of these types.</p>
+<p class="docText">逻辑上，只能在 <tt>istream</tt> 类型或其派生类型 <tt>ifstream</tt> 或 <tt>istringstream</tt> 之上使用 <tt>g</tt> 版本，并且只能在 <tt>ostream</tt> 类型或其派生类型 <tt>ofstream</tt> 或 <tt>ostringstream</tt> 之上使用 <tt>p</tt> 版本。<tt>iostream</tt> 对象、<tt>fstream</tt> 对象或 <tt>stringstream</tt> 对象对相关流既能读又能写，可以在这些类型的对象上使用 <tt>g</tt> 或 <tt>p</tt> 版本的任何一个。</p>
+
+<a name="app01lev3sec31"></a>
+<h5 class="docSection3Title">There Is Only One Marker</h5>
+<h5 class="docSection3Title">只有一个标记</h5>
+
+<p class="docText">The fact that the library distinguishes between the &quot;putting&quot; and &quot;getting&quot; versions of the <tt>seek</tt> and <tt>tell</tt> functions can be misleading. Even though the library makes this distinction, it maintains only a single marker in the filethere is <span class="docEmphasis">not</span> a distinct read marker and write marker.</p>
+<p class="docText">标准库区分 <tt>seek</tt> 函数和 <tt>tell</tt> 函数的“放置”和“获取”版本，这一事实可能会令人误解。虽然标准库进行这种区分，但它只在文件中维持一个标记——<span class="docEmphasis">没有</span>可区分的读标记和写标记。</p>
+
+<p class="docText">When we're dealing with an input-only or output-only stream, the distinction isn't even apparent. We can use only the <tt>g</tt> or only the <tt>p</tt> versions on such streams. If we attempt to call <tt>tellp</tt> on an <tt>ifstream</tt>, the compiler will complain. Similarly, it will not let us call <tt>seekg</tt> on an <tt>ostringstream</tt>.</p>
+<p class="docText">处理只输入或只输出的流的时候，区别并不明显。在这样的流上，只能使用 <tt>g</tt> 版本或只能使用 <tt>p</tt> 版本。如果 <tt>ifstream</tt> 对象上调用 <tt>tellp</tt>，编译器将会给出错误提示。类似地，编译器不允许在 <tt>ostringstream</tt> 对象上调用 <tt>seekg</tt>。</p>
+
+<p class="docText">When using the <tt>fstream</tt> and <tt>stringstream</tt> types that can both read and write, there is a single buffer that holds data to be read and written and a single marker denoting the current position in the buffer. The library maps both the <tt>g</tt> and <tt>p</tt> positions to this single marker.</P>
+<p class="docText">使用既能读又能写的 <tt>fstream</tt> 类型和 <tt>stringstream</tt> 类型的时候，只有一个保存数据的缓冲区和一个表示缓冲区中当前位置的标记，标准库将 <tt>g</tt> 位置和 <tt>p</tt> 位置都映射到这个标记。</P>
+
+<a name="app01note09"></a>
+<div class="docNote">
+	<p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<TR>
+			<TD width="60" valign="top">
+				<img border="0" alt="" id="195131139046" align="LEFT" width="50" height="54" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" >
+			</td>
+			<td valign="top">
+				<p class="docText">Because there is only a single marker, we <span class="docEmphasis">must</span> do a <tt>seek</tt> to reposition the marker whenever we switch between reading and writing.</p>
+				<p class="docText">因为只有一个标记，所以，在读和写之间切换时<span class="docEmphasis">必须</span>进行 <tt>seek</tt> 来重新定位标记。</p>
+			</td>
+		</tr>
+	</table>
+	</p>
+</div>
+
+<a name="app01lev3sec32"></a>
+<h5 class="docSection3Title">Plain <tt>iostream</tt>s Usually Do Not Allow Random Access</H5>
+<h5 class="docSection3Title">普通 <tt>iostream</tt> 对象一般不允许随机访问</H5>
+
+<p class="docText">The <tt>seek</tt> and <tt>tell</tt> functions are defined for all the stream types. Whether they do anything useful depends on the kind of object to which the stream is bound. On most systems, the streams bound to <tt>cin, cout, cerr</tt> and <tt>clog</tt> do <span class="docEmphasis">not</span> support random accessafter all, what would it mean to jump ten places back when writing directly to <tt>cout</tt>? We can call the <tt>seek</tt> and <tt>tell</tt> functions, but these functions will fail at run time, leaving the stream in an invalid state.</p>
+<p class="docText"><tt>seek</tt> 函数和 <tt>tell</tt> 函数是为所有流类型定义的，它们是否完成有用的工作取决于流所绑定的对象的类别。在大多数系统上，绑定到 <tt>cin</tt>、<tt>cout</tt>、<tt>cerr</tt> 和 <tt>clog</tt> 的流<span class="docEmphasis">不</span>支持随机访问——直接写 <tt>cout</tt> 的时候，回跳 10 个位置会意味着什么？可以调用 <tt>seek</tt> 函数和 <tt>tell</tt> 函数，但这些函数将在运行时失败，使得流处于无效状态。</p>
+
+<a name="app01note10"></a>
+<div class="docNote">
+	<p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" id="195131139046" align="LEFT" width="57" height="96" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" >
+			</td>
+			<td valign="top">
+				<a name="idd1e161503"></a><a name="idd1e161510"></a><a name="idd1e161517"></a><a name="idd1e161524"></a><a name="idd1e161531"></a><a name="idd1e161539"></a>
+				<p class="docText">Because the <tt>istream</tt> and <tt>ostream</tt> types usually do not support random access, the remainder of this section should be considered as applicable to only the <tt>fstream</tt> and <tt>sstream</tt> types.</p>
+				<p class="docText">因为 <tt>istream</tt> 和 <tt>ostream</tt> 类型一般不支持随机访问，所以，应该认为本节其余部分只能应用于 <tt>fstream</tt> 和 <tt>sstream</tt> 类型。</p>
+			</td>
+		</tr>
+	</table>
+	</p>
+</div>
+
+<a name="app01lev3sec33"></a>
+<h5 class="docSection3Title">Repositioning the Marker</h5>
+<h5 class="docSection3Title">重新定位标记</h5>
+
+<p class="docText">The <tt>seekg</tt> and <tt>seekp</tt> functions are used to change the read and write positions in a file or a <tt>string</tt>. After a call to <tt>seekg</tt>, the read position in the stream is changed; a call to <tt>seekp</tt> sets the position at which the next write will take place.</p>
+<p class="docText"><tt>seekg</tt> 函数和 <tt>seekp</tt> 函数用于改变文件或 <tt>string</tt> 对象中的读写位置。调用 <tt>seekg</tt> 函数之后，改变流中的读位置，<tt>seekp</tt> 函数调用将位置置于下一个写将发生的地方。</p>
+
+<p class="docText">There are two versions of the seek functions: One moves to an &quot;absolute&quot; address within the file; the other moves to a byte offset from a given position:</p>
+<p class="docText"><tt>seek</tt> 函数有两个版本：一个移动到文件中的一个“绝对”地址，另一个移动到给定位置的字节偏移量处：</p>
+
+<pre>
+     // <span class="docEmphItalicAlt">set the indicated marker a fixed position within a file or string</span>
+     seekg(new_position); // <span class="docEmphItalicAlt">set read marker</span>
+     seekp(new_position); // <span class="docEmphItalicAlt">set write marker</span>
+
+     // <span class="docEmphItalicAlt">offset some distance from the indicated position</span>
+     seekg(offset, dir); // <span class="docEmphItalicAlt">set read marker</span>
+     seekp(offset, dir); // <span class="docEmphItalicAlt">set write marker</span>
+</pre>
+
+<p class="docText">The first version sets the current position to a given location. The second takes an offset and an indicator of where to offset from. The possible values for the offset are listed in <a class="docLink" href="app01lev1sec3.html#app01table07">Table A.7</a>.</p>
+<p class="docText">第一个版本将当前位置置于给定地点，第二个版本接受一个偏移量以及从何处偏移的指示器。偏移量的可能值在<a class="docLink" href="app01lev1sec3.html#app01table07">表 A.7</a> 中列出。</p>
+
+<a name="app01table07"></a>
+<p>
+<table cellspacing="0" class="allBorders" border="1" RULES="none" cellpadding="5">
+	<caption>
+		<h5 class="docTableTitle">Table A.7. Offset From Argument to <tt>seek</tt></h5>
+		<h5 class="docTableTitle">表 A.7. <tt>seek</tt> 实参的偏移量</h5>
+	</caption>
+	<colgroup>
+		<col width="100">
+		<col width="300">
+	</colgroup>
+	<thead>
+	</thead>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>beg</tt></p>
+		</td>
+
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">The beginning of the stream</p>
+			<p class="docText">流的开头</p>
+		</td>
+	</tr>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>cur</tt></p>
+		</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">The current position of the stream</P>
+			<p class="docText">流的当前位置</p>
+		</td>
+	</TR>
+	<TR>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>end</tt></p>
+		</td>
+		<TD class="docTableCell" align="left" valign="top">
+			<p class="docText">The end of the stream</P>
+			<p class="docText">流的末尾</p>
+		</td>
+	</tr>
+</table>
+</p>
+
+<p class="docText">The argument and return types for these functions are machine-dependent types defined in both <tt>istream</tt> or <tt>ostream</tt>. The types, named <tt>pos_type</tt> and <tt>off_type</tt>, represent a file position and an offset from that position, respectively. A value of type <tt>off_type</tt> can be positive or negative; we can <tt>seek</tt> forward or backward in the file.</P>
+<p class="docText">这些函数的实参类型和返回类型是与机器相关的类型，在 <tt>istream</tt> 和 <tt>ostream</tt> 中定义。名为 <tt>pos_type</tt> 和 <tt>off_type</tt> 的类型分别表示文件位置和从该位置的偏移量。<tt>off_type</tt> 类型的值可以为正也可以为负，在文件中可以进行前向或后向 <tt>seek</tt>。</P>
+
+<a name="app01lev3sec34"></a>
+<h5 class="docSection3Title">Accessing the Marker</h5>
+<h5 class="docSection3Title">访问标记</h5>
+
+<p class="docText">The current position is returned by either <tt>tellg</tt> or <tt>tellp</tt>, depending on whether we're looking for the read or write position. As before, the <tt>p</tt> indicates putting (writing) and the <tt>g</tt> indicates getting (reading). The <tt>tell</tt> functions are usually used to remember a location so that we can subsequently <tt>seek</tt> back to it:</P>
+<p class="docText">当前位置由 <tt>tellg</tt> 或 <tt>tellp</tt> 返回，取决于正在查找读位置还是写位置。像前面一样，<tt>p</tt> 指出放置（写）而 <tt>g</tt> 指出获取（读）。<tt>tell</tt> 函数一般用于记住一个位置，以便随后可以通过 <tt>seek</tt> 回到那里：</P>
+
+<pre>
+     // <span class="docEmphItalicAlt">remember current write position in mark</span>
+    ostringstream writeStr; // output stringstream
+    ostringstream::pos_type mark = writeStr.tellp();
+     // ...
+     if (cancelEntry)
+          // <span class="docEmphItalicAlt">return to marked position</span>
+          writeStr.seekp(mark);
+</pre>
+
+<a name="idd1e161738"></a><a name="idd1e161744"></a><a name="idd1e161750"></a><a name="idd1e161756"></a>
+<p class="docText">The <tt>tell</tt> functions return a value that indicates the position in the associated stream. As with the <tt>size_type</tt> of a <tt>string</tt> or <tt>vector</tt>, we do not know the actual type of the object returned from <tt>tellg</tt> or <tt>tellp</tt>. Instead, we use the <tt>pos_type</tt> member of the appropriate stream class.</p>
+<p class="docText"><tt>tell</tt> 函数返回一个值，指出相关流中的位置。像 <tt>string</tt> 对象或 <tt>vector</tt> 对象的 <tt>size_type</tt> 一样，我们不知道从 <tt>tellg</tt> 或 <tt>tellp</tt> 返回的对象实际类型，而是使用适当流类的 <tt>pos_type</tt> 成员来代替。</p>
+
+<a name="app01lev2sec19"></a>
+<H4 class="docSection2Title">A.3.9. Reading and Writing to the Same File</h4>
+<H4 class="docSection2Title">A.3.9. 读写同一文件</h4>
+
+<p class="docText">Let's look at a programming example. Assume we are given a file to read. We are to write a new line at the end of the file that contains the relative position at which each line begins. For example, given the following file,</P>
+<p class="docText">看一个程序示例，假定给定一个文件来读，我们将在文件的末尾写一个新行，该行包含每一行开头的相对位置。例如，给定下面的文件，</P>
+
+<pre>
+     <span class="docEmphStrong">abcd</span>
+     <span class="docEmphStrong">efg</span>
+     <span class="docEmphStrong">hi</span>
+     <span class="docEmphStrong">j</span>
+</pre>
+
+<p class="docText">the program should produce the following modified file:</p>
+<p class="docText">这段程序应产生修改过后文件如下：</p>
+
+<pre>
+        <span class="docEmphStrong">abcd</span>
+        <span class="docEmphStrong">efg</span>
+        <span class="docEmphStrong">hi</span>
+        <span class="docEmphStrong">j</span>
+        <span class="docEmphStrong">5 9 12 14</span>
+</pre>
+
+<p class="docText">Note that our program need not write the offset for the first lineit always occurs at position 0. It should print the offset that corresponds to the end of the data portion of the file. That is, it should record the position after the end of the input so that we'll know where the original data ends and where our output begins.</p>
+<p class="docText">注意，程序不必写第一行的偏移量——它总是出现在位置 0，程序应该显示对应于文件数据部分末尾的偏移量，也就是说，它应该记录输入末尾之后的位置，以便我们知道原始数据在何处结束以及我们的输出从何处开始。</p>
+
+<p class="docText">We can write this program by writing a loop that reads a line at a time:</p>
+<p class="docText">通过编写一次读一行的循环可以编写这个程序：</p>
+
+<pre>
+     int main()
+     {
+         // <span class="docEmphItalicAlt">open for input and output and pre-position file pointers to end of file</span>
+         fstream inOut("copyOut",
+                        fstream::ate | fstream::in | fstream::out);
+         if (!inOut) {
+             cerr &lt;&lt; "Unable to open file!" &lt;&lt; endl;
+             return EXIT_FAILURE;
+         }
+         // <span class="docEmphasis">inOut</span> <span class="docEmphItalicAlt">is opened in</span> <span class="docEmphasis">ate</span> <span class="docEmphItalicAlt">mode, so it starts out positioned at the end,</span>
+         // <span class="docEmphItalicAlt">which we must remember as it is the original end-of-file position</span>
+         ifstream::pos_type end_mark = inOut.tellg();
+         inOut.seekg(0, fstream::beg); // <span class="docEmphItalicAlt">reposition to start of the file</span>
+         int cnt = 0;                  // <span class="docEmphItalicAlt">accumulator for byte count</span>
+         string line;                  // <span class="docEmphItalicAlt">hold each line of input</span>
+         // <span class="docEmphItalicAlt">while we haven't hit an error and are still reading the original data</span>
+         // <span class="docEmphItalicAlt">and successfully read another line from the file</span>
+         while (inOut &amp;&amp; inOut.tellg() != end_mark
+                      &amp;&amp; getline(inOut, line))
+         {
+             cnt += line.size() + 1; //   <span class="docEmphItalicAlt">add 1 to account for the newline</span>
+         // <span class="docEmphItalicAlt">remember current read marker</span>
+         ifstream::pos_type mark = inOut.tellg();
+             inOut.seekp(0, fstream::end);// <span class="docEmphItalicAlt">set write marker to end</span>
+             inOut &lt;&lt; cnt;        // <span class="docEmphItalicAlt">write the accumulated length</span>
+             // <span class="docEmphItalicAlt">print separator if this is not the last line</span>
+             if (mark != end_mark) inOut &lt;&lt; " ";
+             inOut.seekg(mark);         // <span class="docEmphItalicAlt">restore read position</span>
+          }
+          inOut.clear();                // <span class="docEmphItalicAlt">clear flags in case we hit an error</span>
+          inOut.seekp(0, fstream::end); // <span class="docEmphItalicAlt">seek to end</span>
+          inOut &lt;&lt; "\n";                // <span class="docEmphItalicAlt">write a newline at end of file</span>
+          return 0;
+     }
+</pre>
+
+<p class="docText">This program opens the <tt>fstream</tt> using the <tt>in, out</tt>, and <tt>ate</tt> modes. The first two modes indicate that we intend to both read and write to the same file. By also opening it in <tt>ate</tt> mode, the file starts out positioned at the end. As usual, we check that the open succeeded, and exit if it did not.</p>
+<p class="docText">这个程序使用 <tt>in</tt>、<tt>out</tt> 和 <tt>ate</tt> 模式打开 <tt>fstream</tt>。前两种模式指出，我们打算对同一文件进行读写；通过用 <tt>ate</tt> 模式打开，文件首先定位于末端。照常，要检查打开是否成功，如果不成功就退出。</p>
+
+<a name="app01lev3sec35"></a>
+<h5 class="docSection3Title">Initial Setup</h5>
+<h5 class="docSection3Title">初始设置</h5>
+
+<p class="docText">The core of our program will loop through the file a line at a time, recording the relative position of each line as it does so. Our loop should read the contents of the file up to but not including the line that we are adding to hold the line offsets. Because we will be writing to the file, we can't just stop the loop when it encounters end-of-file. Instead, the loop should end when it reaches the point at which the original input ended. To do so, we must first remember the original end-of-file position.</p>
+<p class="docText">这段程序的核心部分将循环通过文件，一次一行，循环过程中记录每一行的相对位置。循环应该读文件的内容，直到但不包含正在增加的保存行偏移量的那一行。因为将对文件进行写，所以不是在遇到文件结束符时停止循环，相反，应在到达原始输入结束处结束循环。要做到这一点，必须首先记住原来文件结束符的位置。</p>
+
+<p class="docText">We opened the file in <tt>ate</tt> mode, so it is already positioned at the end. We store the initial end position in <tt>end_mark</tt>. Of course, having remembered the end position, we must reposition the read marker at the beginning of the file before we attempt to read any data.</p>
+<p class="docText">因为是以 <tt>ate</tt> 模式打开文件，所以文件已经定位在末端。将原来的末端位置存储在 <tt>end_mark</tt> 中。当然，记住了结束位置之后，在试图读任意数据之前，必须将读标记重新定位于文件开头。</p>
+
+<a name="app01lev3sec36"></a>
+<h5 class="docSection3Title">Main Processing Loop</h5>
+<h5 class="docSection3Title">主处理循环</h5>
+
+<p class="docText">Our <tt>while</tt> loop has a three-part condition.</P>
+<p class="docText"><tt>while</tt> 循环有三部分条件。</P>
+
+<p class="docText">We first check that the stream is valid. Assuming the first test on <tt>inOut</tt> succeeds, we then check whether we've exhausted our original input. We do this check by comparing the current read position returned from <tt>tellg</tt> with the position we remembered in <tt>end_mark</tt>. Finally, assuming that both tests succeeded, we call <tt>getline</tt> to read the next line of input. If <tt>getline</tt> succeeds, we perform the body of the loop.</P>
+<p class="docText">首先检察流是否有效。假定第一个测试 <tt>inOut</tt> 成功，接着检查是否已经耗尽了原始输入，通过将从 <tt>tellg</tt> 返回的当前读位置与 <tt>end_mark</tt> 中记录的位置相比较，进行这个检查。最后，假定两个测试都成功，就调用 <tt>getline</tt> 来调用 <tt>getline</tt> 来读下一行输入，如果 <tt>getline</tt> 成功，就执行循环体。</P>
+
+<p class="docText">The job that the <tt>while</tt> does is to increment the counter to determine the offset at which the next line starts and write that marker at the end of the file. Notice that the end of the file advances on each trip through the loop.</p>
+<p class="docText"><tt>while</tt> 所做的工作是将计数器增量，以确定下一行开始处的偏移量，并将那个标记写至文件末尾。注意，每通过一次循环都向前推进文件的末尾。</p>
+
+<p class="docText">We start by remembering the current position in <tt>mark</tt>. We need to keep that value because we have to reposition the file in order to write the next relative offset. The <tt>seekp</tt> call does this repositioning, resetting the file pointer to the end of the file. We write the counter value and then restore the file position to the value we remembered in <tt>mark</tt>. The effect is that we return the marker to the same place it was after the last read. Having restored the marker, we're ready to repeat the condition in the <tt>while</tt>.</P>
+<p class="docText">首先将当前位置记在 <tt>mark</tt> 中，需要保存那个值，是因为要写下一个相对偏移量必须重新定位文件。<tt>seekp</tt> 的调用进行这个重新定位，将文件指针重置到文件末尾。写计数器值然后将文件位置恢复为 <tt>mark</tt> 中所记录的值，效果是将标记返回到最后一次读之后的同一地方。恢复了标记之后，就准备重复检测 <tt>while</tt> 中的条件。</P>
+
+<a name="app01lev3sec37"></a>
+<h5 class="docSection3Title">Completing the File</h5>
+<h5 class="docSection3Title">完成文件</h5>
+
+<p class="docText">Once we exit the loop, we have read each line and calculated all the starting offsets. All that remains is to print the offset of the last line. As with the other writes, we call <tt>seekp</tt> to position the file at the end and write the value of <tt>cnt</tt>. The only tricky part is remembering to <tt>clear</tt> the stream. We might exit the loop due to an end-of-file or other input error. If so, <tt>inOut</tt> would be in an error state, and both the <tt>seekp</tt> and the output expression would fail.</P>
+<p class="docText">一旦退出了循环，就已经读过了每一行并计算了所有行开头的偏移量。剩下的是显示最后一行的偏移量。像对其他写操作一样，调用 <tt>seekp</tt> 将文件定位在末尾，并写 <tt>cnt</tt> 的值。唯一复杂的部分是记得对流进行 <tt>clear</tt>。可能因为文件结束符或其他输入错误而退出循环，如果是这样，<tt>inOut</tt> 将处于错误状态，而 <tt>seekp</tt> 和输出表达式都将失败。</P>
+
+</td>
+</tr>
+</table>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+		<td>
+			<div STYLE="MARGIN-LEFT: 0.15in;">
+				<a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle"  alt="Team LiB"></a>
+			</div>
+		</td>
+		<td align="right">
+			<div STYLE="MARGIN-LEFT: 0.15in;">
+				<a href="app01lev1sec2.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a>
+				<a href="index.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+			</div>
+		</td>
+	</tr>
+</table>
+</body>
+</html>

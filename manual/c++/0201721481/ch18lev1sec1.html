@@ -1,0 +1,1329 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 18.1.  Optimizing Memory Allocation</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch18.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch18lev1sec2.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch18lev1sec1"></a>
+
+        <h3 class="docSection1Title">18.1. Optimizing Memory Allocation</h3>
+        <h3 class="docSection1Title">18.1. 优化内存分配</h3>
+
+<a name="idd1e144672"></a>
+        <p class="docText"><span class="docEmphasis">Memory allocation</span> in C++ is a typed operation: <tt>new</tt> (<a class="docLink" href="ch05lev1sec11.html#ch05lev1sec11" >Section 5.11</a>, p. <a class="docLink" href="ch05lev1sec11.html#ch05lev1sec11" >174</a>) allocates memory for a specified type and constructs an object of that type in the newly allocated memory. A <tt>new</tt> expression automatically runs the appropriate constructor to initialize each dynamically allocated object of class type.</p>
+        <p class="docText">C++ 的内存分配是一种类型化操作：<tt>new</tt>（<a class="docLink" href="ch05lev1sec11.html#ch05lev1sec11" >第 5.11 节</a>）为特定类型分配内存，并在新分配的内存中构造该类型的一个对象。<tt>new</tt> 表达式自动运行合适的构造函数来初始化每个动态分配的类类型对象。</p>
+
+        <p class="docText">The fact that <tt>new</tt> allocates memory on a per-object basis can impose unacceptable run-time overhead on some classes. Such classes might need to make user-level allocation of objects of the class type faster. A common strategy such classes use is to preallocate memory to be used when new objects are created, constructing each new object in preallocated memory as needed.</p>
+        <p class="docText"><tt>new</tt> 基于每个对象分配内存的事实可能会对某些类强加不可接受的运行时开销，这样的类可能需要使用用户级的类类型对象分配能够更快一些。这样的类使用的通用策略是，预先分配用于创建新对象的内存，需要时在预先分配的内存中构造每个新对象。</p>
+
+        <p class="docText">Other classes want to minimize allocations needed for their own data members. For example, the library <tt>vector</tt> class preallocates (<a class="docLink" href="ch09lev1sec4.html#ch09lev1sec4" >Section 9.4</a>, p. <a class="docLink" href="ch09lev1sec4.html#ch09lev1sec4" >330</a>) extra memory to hold additional elements if and when they are added. New elements are added in this reserved capacity. Preallocating elements allows <tt>vector</tt> to efficiently add elements while keeping the elements in contiguous memory.</p>
+        <p class="docText">另外一些类希望按最小尺寸为自己的数据成员分配需要的内存。例如，标准库中的 <tt>vector</tt> 类预先分配（<a class="docLink" href="ch09lev1sec4.html#ch09lev1sec4" >第 9.4 节</a>）额外内存以保存加入的附加元素，将新元素加入到这个保留容量中。将元素保持在连续内存中的时候，预先分配的元素使 <tt>vector</tt> 能够高效地加入元素。</p>
+
+        <p class="docText">In each of these casespreallocating memory to hold user-level objects or to hold the internal data for a classthere is the need to decouple memory allocation from object construction. The obvious reason to decouple allocation and construction is that constructing objects in preallocated memory is wasteful. Objects may be created that are never used. Those objects that are used must be reassigned new values when the preallocated object is actually used. More subtly, some classes could not use preallocated memory if it had to be constructed. As an example, consider <tt>vector</tt>, which uses a preallocation strategy. If objects in preallocated memory had to be constructed, then it would not be possible to have <tt>vector</tt>s of types that do not have a default constructorthere would be no way for <tt>vector</tt> to know how to construct these objects.</p>
+        <p class="docText">在每种情况下（预先分配内存以保存用户级对象或者保存类的内部数据）都需要将内存分配与对象构造分离开。将内存分配与对象构造分离开的明显的理由是，在预先分配的内存中构造对象很浪费，可能会创建从不使用的对象。当实际使用预先分配的对象的时候，被使用的对象必须重新赋以新值。更微妙的是，如果预先分配的内存必须被构造，某些类就不能使用它。例如，考虑 <tt>vector</tt>，它使用了预先分配策略。如果必须构造预先分配的内存中的对象，就不能有基类型为没有默认构造函数的 <tt>vector</tt>——<tt>vector</tt> 没有办法知道怎样构造这些对象。</p>
+
+<a name="ch18note01"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">The techniques presented in this section are not guaranteed to make all programs faster. Even when they do improve performance, they may carry other costs such as space usage or difficulty of debugging. It is always best to defer optimization until the program is known to work and when run-time measurements indicate that improving memory allocation will solve known performance problems.</p>
+                <p class="docText">本节提出的技术不保证使所有程序更快。即使它们确实能改善性能，也可能带来其他开销，如空间的使用或调试困难。最好将优化推迟到已知程序能够工作，并且运行时测试指出改进内存分配将解决已知的性能问题的时候。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <a name="ch18lev2sec1"></a>
+
+        <h4 class="docSection2Title">18.1.1. Memory Allocation in C++</h4>
+        <h4 class="docSection2Title">18.1.1. C++ 中的内存分配</h4>
+
+        <p class="docText">In C++ memory allocation and object construction are closely intertwined, as are object destruction and memory deallocation. When we use a <tt>new</tt> expression, memory is allocated, and an object is constructed in that memory. When we use a <tt>delete</tt> expression, a destructor is called to destroy the object and the memory used by the object is returned to the system.</p>
+        <p class="docText">C++ 中，内存分配和对象构造紧密纠缠，就像对象和内存回收一样。使用 <tt>new</tt> 表达式的时候，分配内存，并在该内存中构造一个对象：使用 <tt>delete</tt> 表达式的时候，调用析构函数撤销对象，并将对象所用内存返还给系统。</p>
+
+        <p class="docText">When we take over memory allocation, we must deal with both these tasks. When we allocate raw memory, we must construct object(s) in that memory. Before freeing that memory, we must ensure that the objects are properly destroyed.</p>
+        <p class="docText">接管内存分配时，必须处理这两个任务。分配原始内存时，必须在该内存中构造对象；在释放该内存之前，必须保证适当地撤销这些对象。</p>
+
+<a name="ch18note02"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+<a name="idd1e144755"></a><a name="idd1e144759"></a><a name="idd1e144763"></a><a name="idd1e144770"></a><a name="idd1e144777"></a><a name="idd1e144781"></a>
+                <p class="docText"> Assigning to an object in unconstructed memory rather than initializing it is undefined. For many classes, doing so causes a crash at run time. Assignment involves obliterating the existing object. If there is no existing object, then the actions in the assignment operator can have disastrous effects.</p>
+                <p class="docText">对未构造的内存中的对象进行赋值而不是初始化，其行为是未定义的。对许多类而言，这样做引起运行时崩溃。赋值涉及删除现存对象，如果没有现存对象，赋值操作符中的动作就会有灾难性效果。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <p class="docText">C++ provides two ways to allocate and free unconstructed, raw memory:</p>
+        <p class="docText">C++ 提供下面两种方法分配和释放未构造的原始内存。</p>
+
+        <div style="font-weight:bold">
+          <ol class="docList" type="1">
+            <li>
+              <div style="font-weight:normal">
+<a name="ch18term1"></a>
+                <p class="docList">The <b><a class="docLink" href="ch18lev1sec9.html#gloss18_01" ><span class="docEmphStrong"><tt>allocator</tt></span> class</a></b>, which provides type-aware memory allocation. This class supports an abstract interface to allocating memory and subsequently using that memory to hold objects.</p>
+                <p class="docList"><b><a class="docLink" href="ch18lev1sec9.html#gloss18_01" ><span class="docEmphStrong"><tt>allocator</tt></span> 类</a></b>，它提供可感知类型的内存分配。这个类支持一个抽象接口，以分配内存并随后使用该内存保存对象。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">The library <tt>operator new</tt> and <tt>operator delete</tt> functions, which allocate and free raw, untyped memory of a requested size.</p>
+                <p class="docList">标准库中的 <tt>operator new</tt> 和 <tt>operator delete</tt>，它们分配和释放需要大小的原始的、未类型化的内存。</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+
+        <p class="docText">C++ also provides various ways to construct and destroy objects in raw memory:</p>
+        <p class="docText">C++ 还提供不同的方法在原始内存中构造和撤销对象。</p>
+
+        <div style="font-weight:bold">
+          <ol class="docList" type="1">
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">The <tt>allocator</tt> class defines members named <tt>construct</tt> and <tt>destroy</tt>, which operate as their names suggest. The <tt>construct</tt> member initializes objects in unconstructed memory; the <tt>destroy</tt> member runs the appropriate destructor on objects.</p>
+                <p class="docList"><tt>allocator</tt> 类定义了名为 <tt>construct</tt> 和 <tt>destroy</tt> 的成员，其操作正如它们的名字所指出的那样：<tt>construct</tt> 成员在未构造内存中初始化对象，<tt>destroy</tt> 成员在对象上运行适当的析构函数。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">The placement <tt>new</tt> expression takes a pointer to unconstructed memory and initializes an object or an array in that space.</p>
+                <p class="docList">定位 <tt>new</tt> 表达式接受指向未构造内存的指针，并在该空间中初始化一个对象或一个数组。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">We can directly call an object's destructor to destroy the object. Running the destructor does not free the memory in which the object resides.</p>
+                <p class="docList">可以直接调用对象的析构函数来撤销对象。运行析构函数并不释放对象所在的内存。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">The algorithms <tt>uninitialized_fill</tt> and <tt>uninitialized_copy</tt> execute like the <tt>fill</tt> and <tt>copy</tt> algorithms except that they construct objects in their destination rather than assigning to them.</p>
+                <p class="docList">算法 <tt>uninitialized_fill</tt> 和 <tt>uninitialized_copy</tt> 像 <tt>fill</tt> 和 <tt>copy</tt> 算法一样执行，除了它们的目的地构造对象而不是给对象赋值之外。</p>
+              </div>
+            </li>
+          </ol>
+        </div><a name="ch18note03"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Modern C++ programs ordinarily ought to use the <tt>allocator</tt> class to allocate memory. It is safer and more flexible. However, when constructing objects, the placement <tt>new</tt> expression is more flexible than the <tt>allocator::construct</tt> member. There are some cases where placement <tt>new</tt> must be used.</p>
+                <p class="docText">现代 C++ 程序一般应该使用 <tt>allocator</tt> 类来分配内存，它更安全更灵活。但是，在构造对象的时候，用 <tt>new</tt> 表达式比 <tt>allocator::construct</tt> 成员更灵活。有几种情况下必须使用 <tt>new</tt>。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <a name="ch18lev2sec2"></a>
+
+        <h4 class="docSection2Title">18.1.2. The <tt>allocator</tt> Class</h4>
+        <h4 class="docSection2Title">18.1.2. <tt>allocator</tt> 类</h4>
+
+        <p class="docText">The <tt>allocator</tt> class is a template that provides typed memory allocation and object construction and destruction. <a class="docLink" href="ch18lev1sec1.html#ch18table01">Table 18.1</a> on the following page outlines the operations that <tt>allocator</tt> supports.</p>
+        <p class="docText"><tt>allocator</tt> 类是一个模板，它提供类型化的内存分配以及对象构造与撤销。<a class="docLink" href="ch18lev1sec1.html#ch18table01">表 18.1</a> 概述了 <tt>allocator</tt> 类支持的操作。</p>
+
+<a name="ch18table01"></a>
+        <h5 class="docTableTitle">Table 18.1. Standard <tt>allocator</tt> Class and Customized Algorithms</h5>
+        <h5 class="docTableTitle">表 18.1. 标准 <tt>allocator</tt> 类与定制算法</h5>
+
+        <table cellspacing="0" class="allBorders" border="1" rules="none" cellpadding="5">
+          <colgroup>
+            <col width="200">
+            <col width="300">
+          </colgroup>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>allocator&lt;T&gt; a;</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Defines an <tt>allocator</tt> object named <tt>a</tt> that can allocate memory or construct objects of type <tt>T</tt>.</p>
+              <p class="docText">定义名为 <tt>a</tt> 的 <tt>allocator</tt> 对象，可以分配内存或构造 <tt>T</tt> 类型的对象</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>a.allocate(n)</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Allocates raw, unconstructed memory to hold <tt>n</tt> objects of type <tt>T</tt>.</p>
+              <p class="docText">分配原始的未构造内存以保存 <tt>T</tt> 类型的 <tt>n</tt> 个对象</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>a.deallocate(p, n)</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Deallocates memory that held <tt>n</tt> objects of type <tt>T</tt> starting at address contained in the <tt>T*</tt> pointer named <tt>p</tt>. It is the user's responsibility to run <tt>destroy</tt> on any objects that were constructed in this memory before calling <tt>deallocate</tt>.</p>
+              <p class="docText">释放内存，在名为 <tt>p</tt> 的 <tt>T*</tt> 指针中包含的地址处保存 <tt>T</tt> 类型的 <tt>n</tt> 个对象。运行调用 <tt>deallocate</tt> 之前在该内存中构造的任意对象的 <tt>destroy</tt> 是用户的责任</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>a.construct(p, t)</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Constructs a new element in the memory pointed to by the <tt>T*</tt> pointer <tt>p</tt>. The copy constructor of type <tt>T</tt> is run to initialize the object from <tt>t</tt>.</p>
+              <p class="docText">在 <tt>T*</tt> 指针 <tt>p</tt> 所指内存中构造一个新元素。运行 <tt>T</tt> 类型的复制构造函数用 <tt>t</tt> 初始化该对象</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>a.destroy(p)</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Runs the destructor on the object pointed to by the <tt>T*</tt> pointer <tt>p</tt>.</p>
+              <p class="docText">运行 <tt>T*</tt> 指针 <tt>p</tt> 所指对象的析构函数</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top" colspan="2">
+              <p class="docText"><tt>uninitialized_copy(b, e, b2)</tt></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top"> </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Copies elements from the input range denoted by iterators <tt>b</tt> and <tt>e</tt> into unconstructed, raw memory beginning at iterator <tt>b2</tt>. The function constructs elements in the destination, rather than assigning them. The destination denoted by <tt>b2</tt> is assumed large enough to hold a copy of the elements in the input range.</p>
+              <p class="docText">从迭代器 <tt>b</tt> 和 <tt>e</tt> 指出的输入范围将元素复制到从迭代器 <tt>b2</tt> 开始的未构造的原始内存中。该函数在目的地构造元素，而不是给它们赋值。假定由 <tt>b2</tt> 指出的目的地足以保存输入范围中元素的副本</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top" colspan="2">
+              <p class="docText"><tt>uninitialized_fill(b, e, t)</tt></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top"> </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Initializes objects in the range denoted by iterators <tt>b</tt> and <tt>e</tt> as a copy of <tt>t</tt>. The range is assumed to be unconstructed, raw memory. The objects are constructed using the copy constructor.</p>
+              <p class="docText">将由迭代器 <tt>b</tt> 和 <tt>e</tt> 指出的范围中的对象初始化为 <tt>t</tt> 的副本。假定该范围是未构造的原始内存。使用复制构造函数构造对象</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top" colspan="2">
+              <p class="docText"><tt>uninitialized_fill_n(b, e, t, n)</tt></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top"> </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Initializes at most an integral number <tt>n</tt> objects in the range denoted by iterators <tt>b</tt> and <tt>e</tt> as a copy of <tt>t</tt>. The range is assumed to be at least <tt>n</tt> elements in size. The objects are constructed using the copy constructor.</p>
+              <p class="docText">将由迭代器 <tt>b</tt> 和 <tt>e</tt> 指出的范围中至多 <tt>n</tt> 个对象初始化为 <tt>t</tt> 的副本。假定范围至少为 <tt>n</tt> 个元素大小。使用复制构造函数构造对象</p>
+            </td>
+          </tr>
+        </table><br>
+
+        <p class="docText">The <tt>allocator</tt> class separates allocation and object construction. When an <tt>allocator</tt> object allocates memory, it allocates space that is appropriately sized and aligned to hold objects of the given type. However, the memory it allocates is unconstructed. Users of <tt>allocator</tt> must separately <tt>construct</tt> and <tt>destroy</tt> objects placed in the memory it allocates.</p>
+        <p class="docText"><tt>allocator</tt> 类将内存分配和对象构造分开。当 <tt>allocator</tt> 对象分配内存的时候，它分配适当大小并排列成保存给定类型对象的空间。但是，它分配的内存是未构造的，<tt>allocator</tt> 的用户必须分别 <tt>construct</tt> 和 <tt>destroy</tt> 放置在该内存中的对象。</p>
+
+<a name="ch18lev3sec1"></a>
+        <h5 class="docSection3Title">Using <tt>allocator</tt> to Manage Class Member Data</h5>
+        <h5 class="docSection3Title">使用 <tt>allocator</tt> 管理类成员数据</h5>
+
+<a name="idd1e145164"></a><a name="idd1e145170"></a><a name="idd1e145177"></a>
+        <p class="docText">To understand how we might use a preallocation strategy and the <tt>allocator</tt> class to manage the internal data needs of a class, let's think a bit more about how memory allocation in the <tt>vector</tt> class might work.</p>
+        <p class="docText">为了理解可以怎样使用预分配策略以及 <tt>allocator</tt> 类来管理类的内部数据需要，让我们再想想 <tt>vector</tt> 类中的内存分配会怎样工作。</p>
+
+        <p class="docText">Recall that the <tt>vector</tt> class stores its elements in contiguous storage. To obtain acceptable performance, <tt>vector</tt> preallocates more elements than are needed (<a class="docLink" href="ch09lev1sec4.html#ch09lev1sec4" >Section 9.4</a>, p. <a class="docLink" href="ch09lev1sec4.html#ch09lev1sec4" >330</a>). Each <tt>vector</tt> member that adds elements to the container checks whether there is space available for another element. If so, then the member initializes an object in the next available spot in preallocated memory. If there isn't a free element, then the <tt>vector</tt> is reallocated: The <tt>vector</tt> obtains new space, copies the existing elements into that space, adds the new element, and frees the old space.</p>
+        <p class="docText">回忆一下，<tt>vector</tt> 类将元素保存在连续的存储中。为了获得可接受的性能，<tt>vector</tt> 预先分配比所需元素更多的元素（<a class="docLink" href="ch09lev1sec4.html#ch09lev1sec4" >第 9.4 节</a>）。每个将元素加到容器中的 <tt>vector</tt> 成员检查是否有可用空间以容纳另一元素。如果有，该成员在预分配内存中下一可用位置初始化一个对象；如果没有自由元素，就重新分配 <tt>vector</tt>：<tt>vector</tt> 获取新的空间，将现在元素复制到空间，增加新元素，并释放旧空间。</p>
+
+        <p class="docText">The storage that <tt>vector</tt> uses starts out as unconstructed memory; it does not yet hold any objects. When the elements are copied to or added in this preallocated space, they must be constructed using the <tt>construct</tt> member of <tt>allocator</tt>.</p>
+        <p class="docText"><tt>vector</tt> 所用存储开始是未构造内存，它还没有保存任何对象。将元素复制或增加到这个预分配空间的时候，必须使用 <tt>allocator</tt> 类的 <tt>construct</tt> 成员构造元素。</p>
+
+<a name="idd1e145229"></a><a name="idd1e145233"></a><a name="idd1e145240"></a><a name="idd1e145246"></a>
+        <p class="docText">To illustrate these concepts we'll implement a small portion of <tt>vector</tt>. We'll name our class <tt>Vector</tt> to distinguish it from the standard <tt>vector</tt> class:</p>
+        <p class="docText">为了说明这些概念，我们将实现 <tt>vector</tt> 的一小部分。将我们的类命名为 <tt>Vector</tt>，以区别于标准类 <tt>vector</tt>：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">pseudo-implementation of memory allocation strategy for a</span> <span class="docEmphasis">vector</span><span class="docEmphItalicAlt">-like class</span>
+     template &lt;class T&gt; class Vector {
+     public:
+         Vector(): elements(0), first_free(0), end(0) { }
+         void push_back(const T&amp;);
+          // ...
+     private:
+         static std::allocator&lt;T&gt; alloc; // <span class="docEmphItalicAlt">object to get raw memory</span>
+         void reallocate(); // <span class="docEmphItalicAlt">get more space and copy existing elements</span>
+         T* elements;       // <span class="docEmphItalicAlt">pointer to first element in the array</span>
+         T* first_free;     // <span class="docEmphItalicAlt">pointer to first free element in the array</span>
+         T* end;            // <span class="docEmphItalicAlt">pointer to one past the end of the array</span>
+         // ...
+     };
+</pre>
+
+        <p class="docText">Each <tt>Vector&lt;T&gt;</tt> type defines a <tt>static</tt> data member of type <tt>allocator&lt;T&gt;</tt> to allocate and construct the elements in <tt>Vector</tt>s of the given type. Each <tt>Vector</tt> object keeps its elements in a built-in array of the indicated type and maintains three pointers into that array:</p>
+        <p class="docText">每个 <tt>Vector&lt;T&gt;</tt> 类型定义一个 <tt>allocator&lt;T&gt;</tt> 类型的 <tt>static</tt> 数据成员，以便在给定类型的 <tt>Vector</tt> 中分配和构造元素。每个 <tt>Vector</tt> 对象在指定类型的内置数组中保存其元素，并维持该数组的下列三个指针：</p>
+
+        <ul>
+          <li>
+            <p class="docList"><tt>elements</tt>, which points to the first element in the array</p>
+            <p class="docList"><tt>elements</tt>，指向数组的第一个元素。</p>
+          </li>
+
+          <li>
+            <p class="docList"><tt>first_free</tt>, which points just after the last actual element</p>
+            <p class="docList"><tt>first_free</tt>，指向最后一个实际元素之后的那个元素。</p>
+          </li>
+
+          <li>
+            <p class="docList"><tt>end</tt>, which points just after the end of the array itself</p>
+            <p class="docList"><tt>end</tt>，指向数组本身之后的那个元素。</p>
+          </li>
+        </ul>
+
+        <p class="docText"><a class="docLink" href="ch18lev1sec1.html#ch18fig01">Figure 18.1</a> illustrates the meaning of these pointers.</p>
+        <p class="docText"><a class="docLink" href="ch18lev1sec1.html#ch18fig01">图 18.1</a> 说明了这些指针的含义。</p>
+
+<a name="ch18fig01"></a>
+        <center>
+          <h5 class="docFigureTitle">Figure 18.1. <tt>Vector</tt> Memory Allocation Strategy</h5>
+          <h5 class="docFigureTitle">图 18.1. <tt>Vector</tt> 内存分配策略</h5>
+
+          <p class="docText"><img border="0" alt="" width="400" height="82" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/18fig01.gif;400478" ></p>
+        </center><br>
+
+        <p class="docText">We can use these pointers to determine the size and capacity of the <tt>Vector</tt>:</p>
+        <p class="docText">可以使用这些指针来确定 <tt>Vector</tt> 的大小和容量：</p>
+
+        <ul>
+          <li>
+            <p class="docList">The <tt>size</tt> of a <tt>Vector</tt> (the number of elements actually in use) is equal to <tt>first_free</tt> <tt>elements</tt>.</p>
+            <p class="docList"><tt>Vector</tt> 的 <tt>size</tt>（实际使用的元素的数目）等于 <tt>first_free-elements</tt>。</p>
+          </li>
+
+          <li>
+            <p class="docList">The <tt>capacity</tt> of a <tt>Vector</tt> (the total number of elements that could be defined before the <tt>Vector</tt> has to be reallocated) is equal to <tt>end</tt> <tt>elements</tt>.</p>
+            <p class="docList"><tt>Vector</tt> 的 <tt>capacity</tt>（在必须重新分配 <tt>Vector</tt> 之前，可以定义的元素的总数）等于<tt>end</tt>-<tt>elements</tt>。</p>
+          </li>
+
+          <li>
+            <p class="docList">The free capacity (the number of elements that can be added before a reallocation is necessary) is <tt>end</tt> <tt>first_free</tt>.</p>
+            <p class="docList">自由空间（在需要重新分配之前，可以增加的元素的数目）是 <tt>end</tt>-<tt>first_free</tt>。</p>
+          </li>
+        </ul><a name="ch18lev3sec2"></a>
+
+        <h5 class="docSection3Title">Using <tt>construct</tt></h5>
+        <h5 class="docSection3Title">使用 <tt>construct</tt></h5>
+
+<a name="idd1e145422"></a><a name="idd1e145429"></a><a name="idd1e145436"></a>
+        <p class="docText">The <tt>push_back</tt> member uses these pointers to add a new element to the end of the <tt>Vector</tt>:</p>
+        <p class="docText"><tt>push_back</tt> 成员使用这些指针将新元素加到 <tt>Vector</tt> 末尾：</p>
+        <pre>
+     template &lt;class T&gt;
+     void Vector&lt;T&gt;::push_back(const T&amp; t)
+     {
+         // <span class="docEmphItalicAlt">are we out of space?</span>
+         if (first_free == end)
+           reallocate(); // <span class="docEmphItalicAlt">gets more space and copies existing elements to it</span>
+         alloc.construct(first_free, t);
+         ++first_free;
+     }
+</pre><br>
+
+        <p class="docText">The <tt>push_back</tt> function starts by determining whether there is space available. If not, it calls <tt>reallocate</tt>. That member allocates new space and copies the existing elements. It resets the pointers to point to the newly allocated space.</p>
+	<p class="docText"><tt>push_back</tt> 函数首先确定是否有可用空间，如果没有，就调用 <tt>reallocate</tt> 函数，<tt>reallocate</tt> 分配新空间并复制现存元素，将指针重置为指向新分配的空间。</p>
+
+        <p class="docText">Once <tt>push_back</tt> knows that there is room for the new element, it asks the <tt>allocator</tt> object to <tt>construct</tt> a new last element. The <tt>construct</tt> function uses the copy constructor for type <tt>T</tt> to copy the value <tt>t</tt> into the element denoted by <tt>first_free</tt>. It then increments <tt>first_free</tt> to indicate that one more element is in use.</p>
+        <p class="docText">一旦 <tt>push_back</tt> 函数知道还有空间容纳新元素，它就请求 <tt>allocator</tt> 对象构造一个新的最后元素。<tt>construct</tt> 函数使用类型 <tt>T</tt> 的复制构造函数将 <tt>t</tt> 值复制到由 <tt>first_free</tt> 指出的元素，然后，将 <tt>first_free</tt> 加 1 以指出又有一个元素在用。</p>
+
+<a name="ch18lev3sec3"></a>
+        <h5 class="docSection3Title">Reallocating and Copying Elements</h5>
+        <h5 class="docSection3Title">重新分配元素与复制元素</h5>
+
+        <p class="docText">The <tt>reallocate</tt> function has the most work to do:</p>
+        <p class="docText"><tt>reallocate</tt> 函数所做的工作最多：</p>
+        <pre>
+     template &lt;class T&gt; void Vector&lt;T&gt;::reallocate()
+     {
+         // <span class="docEmphItalicAlt">compute size of current array and allocate space for twice as many elements</span>
+         std::ptrdiff_t size = first_free - elements;
+         std::ptrdiff_t newcapacity = 2 * max(size, 1);
+         // <span class="docEmphItalicAlt">allocate space to hold</span> <span class="docEmphasis">newcapacity</span> <span class="docEmphItalicAlt">number of elements of type</span> <span class="docEmphasis">T</span>
+         T* newelements = alloc.allocate(newcapacity);
+
+         // <span class="docEmphItalicAlt">construct copies of the existing elements in the new space</span>
+         uninitialized_copy(elements, first_free, newelements);
+         // <span class="docEmphItalicAlt">destroy the old elements in reverse order</span>
+         for (T *p = first_free; p != elements; /* <span class="docEmphItalicAlt">empty</span> */ )
+            alloc.destroy(--p);
+
+         // <span class="docEmphasis">deallocate</span> <span class="docEmphItalicAlt">cannot be called on a 0 pointer</span>
+         if (elements)
+             // <span class="docEmphItalicAlt">return the memory that held the elements</span>
+             alloc.deallocate(elements, end - elements);
+         // <span class="docEmphItalicAlt">make our data structure point to the new elements</span>
+         elements = newelements;
+         first_free = elements + size;
+         end = elements + newcapacity;
+     }
+</pre>
+
+<a name="idd1e145554"></a><a name="idd1e145561"></a><a name="idd1e145568"></a><a name="idd1e145575"></a>
+        <p class="docText">We use a simple but surprisingly effective strategy of allocating twice as much memory each time we reallocate. The function starts by calculating the current number of elements in use, doubling that number, and asking the <tt>allocator</tt> object to obtain the desired amount of space. If the <tt>Vector</tt> is empty, we allocate two elements.</p>
+        <p class="docText">我们使用一个简单但效果惊人的策略：每次重新分配时分配两倍内存。函数首先计算当前在用的元素数目，将该数目翻倍，并请求 <tt>allocator</tt> 对象来获得所需数量的空间。如果 <tt>Vector</tt> 为空，就分配两个元素。</p>
+
+        <p class="docText">If <tt>Vector</tt> holds <tt>int</tt>s, the call to <tt>allocate</tt> allocates space for <tt>newcapacity</tt> number of <tt>int</tt>s. If it holds <tt>string</tt>s, then it allocates that space for the given number of <tt>string</tt>s.</p>
+	<p class="docText">如果 <tt>Vector</tt> 保存 <tt>int</tt> 值，<tt>allocate</tt> 函数调用为 <tt>newcapacity</tt> 数目的 <tt>int</tt> 值分配空间；如果 <tt>Vector</tt> 保存 <tt>string</tt> 对象，它就为给定数目的 <tt>string</tt> 对象分配空间。</p>
+
+        <p class="docText">The call to <tt>uninitialized_copy</tt> uses a specialized version of the standard <tt>copy</tt> algorithm. This version expects its destination to be raw, unconstructed memory. Rather than assigning elements from the input range to the destination, it copy-constructs each element in the destination. The copy constructor for <tt>T</tt> is used to copy each element from the input range to the destination.</p>
+        <p class="docText"><tt>uninitialized_copy</tt> 调用使用标准 <tt>copy</tt> 算法的特殊版本。这个版本希望目的地是原始的未构造内存，它在目的地复制构造每个元素，而不是将输入范围的元素赋值给目的地，使用 <tt>T</tt> 的复制构造函数从输入范围将每个元素复制到目的地。</p>
+
+        <p class="docText">The <tt>for</tt> loop calls the <tt>allocator</tt> member <tt>destroy</tt> on each object in the old array. It destroys the elements in reverse order, starting with the last element in the array and finishing with the first. The <tt>destroy</tt> function runs the destructor for type <tt>T</tt> to free any resources used by the old elements.</p>
+        <p class="docText"><tt>for</tt> 循环对旧数组中每个对象调用 <tt>allocator</tt> 的 <tt>destroy</tt> 成员它按逆序撤销元素，从数组中最后一个元素开始，以第一个元素结束。<tt>destroy</tt> 函数运行 <tt>T</tt> 类型的析构函数来释放旧元素所用的任何资源。</p>
+
+        <p class="docText">Once the elements have been copied and destroyed, we free the space used by the original array. We must check that <tt>elements</tt> actually pointed to an array before calling <tt>deallocate</tt>.</p>
+        <p class="docText">一旦复制和撤销了元素，就释放原来数组所用的空间。在调用 <tt>deallocate</tt> 之前，必须检查 <tt>elements</tt> 是否实际指向一个数组。</p>
+
+<a name="ch18note04"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText"><tt>deallocate</tt> expects a pointer that points to space that was allocated by <tt>allocate</tt>. It is not legal to pass <tt>deallocate</tt> a zero pointer.</p>
+                <p class="docText"><tt>deallocate</tt> 期待指向由 <tt>allocate</tt> 分配的空间的指针，传给 <tt>deallocate</tt> 一个零指针是不合法的。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <p class="docText">Finally, we have to reset the pointers to address the newly allocated and initialized array. The <tt>first_free</tt> and <tt>end</tt> pointers are set to denote one past the last constructed element and one past the end of the allocated space, respectively.</p>
+        <p class="docText">最后，必须重置指针以指向新分配并初始化的数组。将 <tt>first_free</tt> 和 <tt>end</tt> 指针分别置为指向最后构造的元素之后的单元以及所分配空间末尾的下一单元。</p>
+
+<a name="ch18sb01"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 18.1.2</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+<a name="ch18qa1q1"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 18.1:</b></td>
+
+                    <td>
+                      <p class="docText">Implement your own version of the <tt>Vector</tt> class including versions of the <tt>vector</tt> members <tt>reserve</tt> (<a class="docLink" href="ch09lev1sec4.html#ch09lev1sec4" >Section 9.4</a>, p. <a class="docLink" href="ch09lev1sec4.html#ch09lev1sec4" >330</a>), <tt>resize</tt> (<a class="docLink" href="ch09lev1sec3.html#ch09lev2sec10" >Section 9.3.5</a>, p. <a class="docLink" href="ch09lev1sec3.html#ch09lev2sec10" >323</a>), and the <tt>const</tt> and non<tt>const</tt> subscript operators (<a class="docLink" href="ch14lev1sec5.html#ch14lev1sec5" >Section 14.5</a>, p. <a class="docLink" href="ch14lev1sec5.html#ch14lev1sec5" >522</a>).</p>
+                      <p class="docText">实现自己的 <tt>Vector</tt> 类的版本，包括 <tt>vector</tt> 成员 <tt>reserve</tt>（<a class="docLink" href="ch09lev1sec4.html#ch09lev1sec4" >第 9.4 节</a>）、<tt>resize</tt>（<a class="docLink" href="ch09lev1sec3.html#ch09lev2sec10" >第 9.3.5 节</a>）以及 <tt>const</tt> 和非 <tt>const</tt> 下标操作符（<a class="docLink" href="ch14lev1sec5.html#ch14lev1sec5" >第 14.5 节</a>）。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+<a name="ch18qa1q2"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 18.2:</b></td>
+
+                    <td>
+                      <p class="docText">Define a typedef that uses the corresponding pointer type as the <tt>iterator</tt> for your <tt>Vector</tt>.</p>
+                      <p class="docText">定义一个类型别名，使用对应指针类型作为 <tt>Vector</tt> 的 <tt>iterator</tt>。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+			<a name="ch18qa1q3"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 18.3:</b></td>
+
+                    <td>
+                      <p class="docText">To test your <tt>Vector</tt> class, reimplement earlier programs you wrote using <tt>vector</tt> to use <tt>Vector</tt> instead.</p>
+		      <p class="docText">为了测试你的 <tt>Vector</tt> 类，重新实现前面用 <tt>vector</tt> 编写的程序，用 <tt>Vector</tt> 代替 <tt>vector</tt>。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a name="ch18lev2sec3"></a>
+
+        <h4 class="docSection2Title">18.1.3. <tt>operator new</tt> and <tt>operator delete</tt> Functions</h4>
+        <h4 class="docSection2Title">18.1.3. <tt>operator new</tt> 函数和 <tt>operator delete</tt> 函数</h4>
+
+        <p class="docText">The previous subsection used the <tt>vector</tt> class to show how we could use the <tt>allocator</tt> class to manage a pool of memory for a class' internal data storage. In the next three subsections we'll look at how we might implement the same strategy using the more primitive library facilities.</p>
+        <p class="docText">前几节使用 <tt>vector</tt> 类说明了怎样使用 <tt>allocator</tt> 类来管理用于类的内部数据存储的内存池，下面三节将介绍怎样用更基本的标准库机制实现相同的策略。</p>
+
+<a name="idd1e145792"></a><a name="idd1e145800"></a><a name="idd1e145806"></a><a name="idd1e145814"></a><a name="idd1e145820"></a><a name="idd1e145825"></a><a name="idd1e145835"></a><a name="idd1e145840"></a>
+        <p class="docText">First, we need to understand a bit more about how <tt>new</tt> and <tt>delete</tt> expressions work. When we use a <tt>new</tt> expression</p>
+        <p class="docText">首先，需要对 <tt>new</tt> 和 <tt>delete</tt> 表达式怎样工作有更多的理解。当使用 <tt>new</tt> 表达式</p>
+        <pre>
+     // new expression
+     string * sp = new string("initialized");
+</pre>
+
+<a name="ch18term15"></a>
+        <p class="docText">three steps actually take place. First, the expression calls a library function named <b><a class="docLink" href="ch18lev1sec9.html#gloss18_15" ><span class="docEmphStrong"><tt>operator new</tt></span></a></b> to allocate raw, untyped memory large enough to hold an object of the specified type. Next, a constructor for the type is run to construct the object from the specified initializers. Finally, a pointer to the newly allocated and constructed object is returned.</p>
+        <p class="docText">的时候，实际上发生三个步骤。首先，该表达式调用名为 <b><a class="docLink" href="ch18lev1sec9.html#gloss18_15" ><span class="docEmphStrong"><tt>operator new</tt></span></a></b> 的标准库函数，分配足够大的原始的未类型化的内存，以保存指定类型的一个对象；接下来，运行该类型的一个构造函数，用指定初始化式构造对象；最后，返回指向新分配并构造的对象的指针。</p>
+
+        <p class="docText">When we use a <tt>delete</tt> expression to delete a dynamically allocated object:</p>
+        <p class="docText">当使用 <tt>delete</tt> 表达式 </p>
+        <pre>
+     delete sp;
+</pre>
+
+<a name="ch18term14"></a>
+        <p class="docText">two steps happen. First, the appropriate destructor is run on the object to which <tt>sp</tt> points. Then, the memory used by the object is freed by calling a library function named <b><a class="docLink" href="ch18lev1sec9.html#gloss18_14" ><span class="docEmphStrong"><tt>operator delete</tt></span></a></b>.</p>
+        <p class="docText">删除动态分配对象的时候，发生两个步骤。首先，对 <tt>sp</tt> 指向的对象运行适当的析构函数；然后，通过调用名为 <b><a class="docLink" href="ch18lev1sec9.html#gloss18_14" ><span class="docEmphStrong"><tt>operator delete</tt></span></a></b> 的标准库函数释放该对象所用内存。</p>
+
+<a name="ch18sb02"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Terminology: <tt>new</tt> Expression versus <tt>operator new</tt> Function</h2>
+              <h2 class="docSidebarTitle">术语对比：<tt>new</tt> 表达式与 <tt>operator new</tt> 函数</h2>
+
+              <p class="docText"><span class="docEmphStrong">The library functions <tt>operator new</tt> and <tt>operator delete</tt> are misleadingly named. Unlike other <tt>operator</tt> functions, such as <tt>operator=</tt>, these functions do not overload the <tt>new</tt> or <tt>delete</tt> expressions. In fact, we cannot redefine the behavior of the <tt>new</tt> and <tt>delete</tt> expressions.</span></p>
+              <p class="docText"><span class="docEmphStrong">标准库函数 <tt>operator new</tt> 和 <tt>operator delete</tt> 的命名容易让人误解。与其他 <tt>operator</tt> 函数（如 <tt>operator=</tt>）不同，这些函数没有重载 <tt>new</tt> 或 <tt>delete</tt> 表达式，实际上，我们不能重定义 <tt>new</tt> 和 <tt>delete</tt> 表达式的行为。</span></p>
+
+              <p class="docText"><span class="docEmphStrong">A <tt>new</tt> expression executes by calling an <tt>operator new</tt> function to obtain memory and then constructs an object in that memory. A <tt>delete</tt> expression executes by destroying an object and then calls an <tt>operator delete</tt> function to free the memory used by the object.</span></p>
+              <p class="docText"><span class="docEmphStrong">通过调用 <tt>operator new</tt> 函数执行 <tt>new</tt> 表达式获得内存，并接着在该内存中构造一个对象，通过撤销一个对象执行 <tt>delete</tt> 表达式，并接着调用 <tt>operator delete</tt> 函数，以释放该对象使用的内存。</span></p>
+
+<a name="ch18note05"></a>
+              <div class="docNote">
+                <table width="90%" border="0" cellspacing="0" cellpadding="1">
+                  <tr>
+                    <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+                    <td valign="top">
+                      <p class="docText"><span class="docEmphStrong">Because the <tt>new</tt> (or <tt>delete</tt>) expressions and the underlying library functions have the same name, it is easy to confuse the two.</span></p>
+                      <p class="docText"><span class="docEmphStrong">因为 <tt>new</tt>（或 <tt>delete</tt>）表达式与标准库函数同名，所以二者容易混淆。</span></p>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </td>
+          </tr>
+        </table>
+        <a name="ch18lev3sec4"></a>
+
+        <h5 class="docSection3Title">The <tt>operator new</tt> and <tt>operator delete</tt> Interface</h5>
+        <h5 class="docSection3Title"><tt>operator new</tt> 和 <tt>operator delete</tt> 接口</h5>
+
+        <p class="docText">There are two overloaded versions of <tt>operator new</tt> and <tt>operator delete</tt> functions. Each version supports the related <tt>new</tt> and <tt>delete</tt> expression:</p>
+        <p class="docText"><tt>operator new</tt> 和 <tt>operator delete</tt> 函数有两个重载版本，每个版本支持相关的 <tt>new</tt> 表达式和 <tt>delete</tt> 表达式：</p>
+        <pre>
+     void *operator new(size_t);       // <span class="docEmphItalicAlt">allocate an object</span>
+     void *operator new[](size_t);     // <span class="docEmphItalicAlt">allocate an array</span>
+
+     void *operator delete(void*);     // <span class="docEmphItalicAlt">free an object</span>
+     void *operator delete[](void*);   // <span class="docEmphItalicAlt">free an array</span>
+</pre><br>
+        <a name="ch18lev3sec5"></a>
+
+        <h5 class="docSection3Title">Using the Allocation Operator Functions</h5>
+        <h5 class="docSection3Title">使用分配操作符函数</h5>
+
+<a name="idd1e146031"></a><a name="idd1e146042"></a><a name="idd1e146053"></a><a name="idd1e146059"></a><a name="idd1e146068"></a><a name="idd1e146077"></a><a name="idd1e146082"></a>
+        <p class="docText">Although the <tt>operator new</tt> and <tt>operator delete</tt> functions are intended to be used by <tt>new</tt> expressions, they are generally available functions in the library. We can use them to obtain unconstructed memory. They are somewhat analogous to the <tt>allocate</tt> and <tt>deallocate</tt> members of the <tt>allocator</tt> class. For example, instead of using an <tt>allocator</tt>, we could have used the <tt>operator new</tt> and <tt>operator delete</tt> functions in our <tt>Vector</tt> class. When we allocated new space we wrote</p>
+        <p class="docText">虽然 <tt>operator new</tt> 和 <tt>operator delete</tt> 函数的设计意图是供 <tt>new</tt> 表达式使用，但它们通常是标准库中的可用函数。可以使用它们获得未构造内存，它们有点类似 <tt>allocate</tt> 类的 <tt>allocator</tt> 和 <tt>deallocate</tt> 成员。例如，代替使用 <tt>allocator</tt> 对象，可以在 <tt>Vector</tt> 类中使用 <tt>operator new</tt> 和 <tt>operator delete</tt> 函数。在分配新空间时我们曾编写</p>
+        <pre>
+     // <span class="docEmphItalicAlt">allocate space to hold</span> <span class="docEmphasis">newcapacity</span> <span class="docEmphItalicAlt">number of elements of type</span> <span class="docEmphasis">T</span>
+     T* newelements = alloc.allocate(newcapacity);
+</pre>
+
+        <p class="docText">which could be rewritten as</p>
+        <p class="docText">这可以重新编写为</p>
+        <pre>
+     // <span class="docEmphItalicAlt">allocate unconstructed memory to hold</span> <span class="docEmphasis">newcapacity</span> <span class="docEmphItalicAlt">elements of type</span> <span class="docEmphasis">T</span>
+     T* newelements = static_cast&lt;T*&gt;
+                    (operator new[](newcapacity * sizeof(T)));
+</pre>
+
+        <p class="docText">Similarly, when we deallocated the old space pointed to be the <tt>Vector</tt> member <tt>elements</tt> we wrote</p>
+        <p class="docText">类似地，在重新分配由 <tt>Vector</tt> 成员 <tt>elements</tt> 指向的旧空间的时候，我们曾经编写</p>
+        <pre>
+     // <span class="docEmphItalicAlt">return the memory that held the elements</span>
+     alloc.deallocate(elements, end - elements);
+</pre><br>
+
+        <p class="docText">which could be rewritten as</p>
+        <p class="docText">这可以重新编写为</p>
+        <pre>
+     // <span class="docEmphItalicAlt">deallocate the memory that they occupied</span>
+     operator delete[](elements);
+</pre>
+
+        <p class="docText">These functions behave similarly to the <tt>allocate</tt> and <tt>deallocate</tt> members of the <tt>allocator</tt> class. However, they differ in one important respect: They operate on <tt>void*</tt> pointers rather than typed pointers.</p>
+        <p class="docText">这些函数的表现与 <tt>allocate</tt> 类的 <tt>allocator</tt> 和 <tt>deallocate</tt> 成员类似。但是，它们在一个重要方面有不同：它们在 <tt>void*</tt> 指针而不是类型化的指针上进行操作。</p>
+
+<a name="ch18note06"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="116" height="74" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/bestpractices.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">In general, it is more type-safe to use an <tt>allocator</tt> rather than using the <tt>operator new</tt> and <tt>operator delete</tt> functions directly.</p>
+                <p class="docText">一般而言，使用 <tt>allocator</tt> 比直接使用 <tt>operator new</tt> 和 <tt>operator delete</tt> 函数更为类型安全。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <p class="docText">The <tt>allocate</tt> member allocates typed memory, so programs that use it can avoid the necessity of calculating the byte-count amount of memory needed. They also can avoid casting (<a class="docLink" href="ch05lev1sec12.html#ch05lev2sec28" >Section 5.12.4</a>, p. <a class="docLink" href="ch05lev1sec12.html#ch05lev2sec28" >183</a>) the return from <tt>operator new</tt>. Similarly, <tt>deallocate</tt> frees memory of a specific type, again avoiding the necessity for converting to <tt>void*</tt>.</p>
+        <p class="docText"><tt>allocate</tt> 成员分配类型化的内存，所以使用它的程序可以不必计算以字节为单位的所需内存量，它们也可以避免对 <tt>operator new</tt> 的返回值进行强制类型转换（<a class="docLink" href="ch05lev1sec12.html#ch05lev2sec28" >第 5.12.4 节</a>）。类似地，<tt>deallocate</tt> 释放特定类型的内存，也不必转换为 <tt>void*</tt>。</p>
+
+<a name="ch18lev2sec4"></a>
+        <h4 class="docSection2Title">18.1.4. Placement <tt>new</tt> Expressions</h4>
+        <h4 class="docSection2Title">18.1.4. 定位 <tt>new</tt> 表达式</h4>
+
+        <p class="docText">The library functions <tt>operator new</tt> and <tt>operator delete</tt> are lower-level versions of the <tt>allocator</tt> members <tt>allocate</tt> and <tt>deallocate</tt>. Each allocates but does not initialize memory.</p>
+        <p class="docText">标准库函数 <tt>operator new</tt> 和 <tt>operator delete</tt> 是 <tt>allocator</tt> 的 <tt>allocate</tt> 和 <tt>deallocate</tt> 成员的低级版本，它们都分配但不初始化内存。</p>
+
+        <p class="docText">There are also lower-level alternatives to the <tt>allocator</tt> members <tt>construct</tt> and <tt>destroy</tt>. These members initialize and destroy objects in space allocated by an <tt>allocator</tt> object.</p>
+        <p class="docText"><tt>allocator</tt> 的成员 <tt>construct</tt> 和 <tt>destroy</tt> 也有两个低级选择，这些成员在由 <tt>allocator</tt> 对象分配的空间中初始化和撤销对象。</p>
+
+<a name="ch18term16"></a>
+<a name="idd1e146303"></a><a name="idd1e146314"></a><a name="idd1e146319"></a><a name="idd1e146329"></a><a name="idd1e146338"></a>
+        <p class="docText">Analogous to the <tt>construct</tt> member, there is a third kind of <tt>new</tt> expression, referred to as <b><a class="docLink" href="ch18lev1sec9.html#gloss18_16" >placement <span class="docEmphStrong"><tt>new</tt></span></a></b>. The placement <tt>new</tt> expression initializes an object in raw memory that was already allocated. It differs from other versions of <tt>new</tt> in that it does not allocate memory. Instead, it takes a pointer to allocated but unconstructed memory and initializes an object in that memory. In effect, placement <tt>new</tt> allows us to construct an object at a specific, preallocated memory address.</p>
+        <p class="docText">类似于 <tt>construct</tt> 成员，有第三种 <tt>new</tt> 表达式，称为<b><a class="docLink" href="ch18lev1sec9.html#gloss18_16" >定位<span class="docEmphStrong"> <tt>new</tt></span></a></b>。定位 <tt>new</tt> 表达式在已分配的原始内存中初始化一个对象，它与 <tt>new</tt> 的其他版本的不同之处在于，它不分配内存。相反，它接受指向已分配但未构造内存的指针，并在该内存中初始化一个对象。实际上，定位 <tt>new</tt> 表达式使我们能够在特定的、预分配的内存地址构造一个对象。</p>
+
+        <p class="docText">The form of a placement <tt>new</tt> expression is:</p>
+        <p class="docText">定位 <tt>new</tt> 表达式的形式是：</p>
+        <pre>
+     new <span class="docEmphasis">(place_address) type</span>
+     new <span class="docEmphasis">(place_address) type (initializer-list)</span>
+</pre>
+
+        <p class="docText">where <tt>place_address</tt> must be a pointer and the <span class="docEmphasis">initializer-list</span> provides (a possibly empty) list of initializers to use when constructing the newly allocated object.</p>
+        <p class="docText">其中 <tt>place_address</tt> 必须是一个指针，而 <span class="docEmphasis">initializer-list</span> 提供了（可能为空的）初始化列表，以便在构造新分配的对象时使用。</p>
+
+        <p class="docText">We could use a placement <tt>new</tt> expression to replace the call to <tt>construct</tt> in our <tt>Vector</tt> implementation. The original code</p>
+        <p class="docText">可以使用定位 <tt>new</tt> 表达式代替 <tt>Vector</tt> 实现中的 <tt>construct</tt> 调用。原来的代码</p>
+        <pre>
+     // <span class="docEmphItalicAlt">construct a copy</span> <span class="docEmphasis">t</span> <span class="docEmphItalicAlt">in the element to which</span> <span class="docEmphasis">first_free</span> <span class="docEmphItalicAlt">points</span>
+     alloc.construct (first_free, t);
+</pre>
+
+        <p class="docText">would be replaced by the equivalent placement <tt>new</tt> expression</p>
+        <p class="docText">可以用等价的定位 <tt>new</tt> 表达式代替</p>
+        <pre>
+     // <span class="docEmphItalicAlt">copy</span> <span class="docEmphasis">t</span> <span class="docEmphItalicAlt">into element addressed by</span> <span class="docEmphasis">first_free</span>
+     new (first_free) T(t);
+</pre>
+
+        <p class="docText">Placement <tt>new</tt> expressions are more flexible than the <tt>construct</tt> member of class <tt>allocator</tt>. When placement <tt>new</tt> initializes an object, it can use any constructor, and builds the object directly. The <tt>construct</tt> function always uses the copy constructor.</p>
+        <p class="docText">定位 <tt>new</tt> 表达式比 <tt>allocator</tt> 类的 <tt>construct</tt> 成员更灵活。定位 <tt>new</tt> 表达式初始化一个对象的时候，它可以使用任何构造函数，并直接建立对象。<tt>construct</tt> 函数总是使用复制构造函数。</p>
+
+        <p class="docText">For example, we could initialize an allocated but unconstructed <tt>string</tt> from a pair of iterators in either of these two ways:</p>
+        <p class="docText">例如，可以用下面两种方式之一，从一对迭代器初始化一个已分配但未构造的 <tt>string</tt> 对象：</p>
+        <pre>
+     allocator&lt;string&gt; alloc;
+     string *sp = alloc.allocate(2); // <span class="docEmphItalicAlt">allocate space to hold 2</span> <span class="docEmphasis">string</span><span class="docEmphItalicAlt">s</span>
+     // <span class="docEmphItalicAlt">two ways to construct a string from a pair of iterators</span>
+     new (sp) string(b, e);                    // <span class="docEmphItalicAlt">construct directly in place</span>
+     alloc.construct(sp + 1, string(b, e));   // <span class="docEmphItalicAlt">build and copy a temporary</span>
+</pre>
+
+        <p class="docText">The placement <tt>new</tt> expression uses the <tt>string</tt> constructor that takes a pair of iterators to construct the <tt>string</tt> directly in the space to which <tt>sp</tt> points. When we call <tt>construct</tt>, we must first construct the <tt>string</tt> from the iterators to get a <tt>string</tt> object to pass to <tt>construct</tt>. That function then uses the <tt>string</tt> copy constructor to copy that unnamed, temporary <tt>string</tt> into the object to which <tt>sp</tt> points.</p>
+	<p class="docText">定位 <tt>new</tt> 表达式使用了接受一对迭代器的 <tt>string</tt> 构造函数，在 <tt>sp</tt> 指向的空间直接构造 <tt>string</tt> 对象。当调用 <tt>construct</tt> 函数的时候，必须首先从迭代器构造一个 <tt>string</tt> 对象，以获得传递给 <tt>construct</tt> 的 <tt>string</tt> 对象，然后，该函数使用 <tt>string</tt> 的复制构造函数，将那个未命名的临时 <tt>string</tt> 对象复制到 <tt>sp</tt> 指向的对象中。</p>
+
+        <p class="docText">Often the difference is irrelevant: For valuelike classes, there is no observable difference between constructing the object directly in place and constructing a temporary and copying it. And the performance difference is rarely meaningful. But for some classes, using the copy constructor is either impossible (because the copy constructor is private) or should be avoided. In these cases, use of placement <tt>new</tt> may be necessary.</p>
+        <p class="docText">通常，这些区别是不相干的：对值型类而言，在适当的位置直接构造对象与构造临时对象并进行复制之间没有可观察到的区别，而且性能差别基本没有意义。但对某些类而言，使用复制构造函数是不可能的（因为复制构造函数是私有的），或者是应该避免的，在这种情况下，也许有必要使用定位 <tt>new</tt> 表达式。</p>
+
+<a name="ch18sb03"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 18.1.4</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+<a name="ch18qa2q1"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 18.4:</b></td>
+
+                    <td>
+<a name="idd1e146560"></a><a name="idd1e146569"></a>
+                      <p class="docText">Why do you think <tt>construct</tt> is limited to using only the copy constructor for the element type?</p>
+                      <p class="docText">你认为为什么限制 <tt>construct</tt> 函数只能使用元素类型的复制构造函数？</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+<a name="ch18qa2q2"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 18.5:</b></td>
+
+                    <td>
+                      <p class="docText">Why can placement <tt>new</tt> expressions be more flexible?</p>
+                      <p class="docText">为什么定位 <tt>new</tt> 表达式更灵活？</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table>
+
+
+
+<a name="ch18lev2sec5"></a>
+        <h4 class="docSection2Title">18.1.5. Explicit Destructor Invocation</h4>
+        <h4 class="docSection2Title">18.1.5. 显式析构函数的调用</h4>
+
+        <p class="docText">Just as placement <tt>new</tt> is a lower-level alternative to using the <tt>allocate</tt> member of the <tt>allocator</tt> class, we can use an explicit call to a destructor as the lower-level alternative to calling <tt>destroy</tt>.</p>
+	<p class="docText">正如定位 <tt>new</tt> 表达式是使用 <tt>allocate</tt> 类的 <tt>construct</tt> 成员的低级选择，我们可以使用析构函数的显式调用作为调用 <tt>destroy</tt> 函数的低级选择。</p>
+
+
+        <p class="docText">In the version of <tt>Vector</tt> that used an <tt>allocator</tt>, we clean up each element by calling <tt>destroy</tt>:</p>
+        <p class="docText">在使用 <tt>allocator</tt> 对象的 <tt>Vector</tt> 版本中，通过调用 <tt>destroy</tt> 函数清除每个元素：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">destroy the old elements in reverse order</span>
+     for (T *p = first_free; p != elements; /* <span class="docEmphItalicAlt">empty</span> */ )
+         alloc.destroy(--p);
+</pre>
+
+        <p class="docText">For programs that use a placement <tt>new</tt> expression to construct the object, we call the destructor explicitly:</p>
+        <p class="docText">对于使用定位 <tt>new</tt> 表达式构造对象的程序，显式调用析构函数：</p>
+        <pre>
+     for (T *p = first_free; p != elements; /* <span class="docEmphItalicAlt">empty</span> */ )
+         p-&gt;~T(); // <span class="docEmphItalicAlt">call the destructor</span>
+</pre>
+
+        <p class="docText">Here we invoke a destructor directly. The arrow operator dereferences the iterator <tt>p</tt> to obtain the object to which <tt>p</tt> points. We then call the destructor, which is the name of the type preceded by a tilde (<tt>~</tt>).</p>
+        <p class="docText">在这里直接调用析构函数。箭头操作符对迭代器 <tt>p</tt> 解引用以获得 <tt>p</tt> 所指的对象，然后，调用析构函数，析构函数以类名前加 <tt>~</tt> 来命名。</p>
+
+        <p class="docText">The effect of calling the destructor explicitly is that the object itself is properly cleaned up. However, the memory in which the object resided is not freed. We can reuse the space if desired.</p>
+        <p class="docText">显式调用析构函数的效果是适当地清除对象本身。但是，并没有释放对象所占的内存，如果需要，可以重用该内存空间。</p>
+
+<a name="ch18note07"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Calling the <tt>operator delete</tt> function does not run the destructor; it only frees the indicated memory.</p>
+                <p class="docText">调用 <tt>operator delete</tt> 函数不会运行析构函数，它只释放指定的内存。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch18sb04"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 18.1.5</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+<a name="ch18qa3q1"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 18.6:</b></td>
+
+                    <td>
+                      <p class="docText">Reimplement your <tt>Vector</tt> class to use <tt>operator new, operator delete</tt>, placement <tt>new</tt>, and direct calls to the destructor.</p>
+                      <p class="docText">重新实现 <tt>Vector</tt> 类，使用 <tt>operator new、operator delete</tt>、定位 <tt>new</tt> 表达式，并直接调用析构函数。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+<a name="ch18qa3q2"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 18.7:</b></td>
+
+                    <td>
+                      <p class="docText">Test your new version by running the same programs that you ran against your initial <tt>Vector</tt> implementation.</p>
+                      <p class="docText">运行为原来的 <tt>Vector</tt> 实现而运行的程序，测试你的新版本。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+<a name="ch18qa3q3"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 18.8:</b></td>
+
+                    <td>
+                      <p class="docText">Which version do you think is better, and why?</p>
+                      <p class="docText">你认为哪个版本更好？为什么？</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a name="ch18lev2sec6"></a>
+
+        <h4 class="docSection2Title">18.1.6. Class Specific <tt>new</tt> and <tt>delete</tt></h4>
+        <h4 class="docSection2Title">18.1.6. 类特定的 <tt>new</tt> 和 <tt>delete</tt></h4>
+
+<a name="idd1e146732"></a><a name="idd1e146739"></a><a name="idd1e146747"></a><a name="idd1e146757"></a><a name="idd1e146767"></a><a name="idd1e146774"></a><a name="idd1e146784"></a><a name="idd1e146789"></a><a name="idd1e146796"></a><a name="idd1e146803"></a><a name="idd1e146808"></a><a name="idd1e146815"></a><a name="idd1e146824"></a><a name="idd1e146829"></a><a name="idd1e146836"></a><a name="idd1e146843"></a><a name="idd1e146848"></a>
+        <p class="docText">The previous subsections looked at how a class can take over memory management for its own internal data structure. Another way to optimize memory allocation involves optimizing the behavior of <tt>new</tt> expressions. As an example, consider the <tt>Queue</tt> class from <a class="docLink" href="ch16.html#ch16" >Chapter 16</a>. That class doesn't hold its elements directly. Instead, it uses <tt>new</tt> expressions to allocate objects of type <tt>QueueItem</tt>.</p>
+	<p class="docText">前几节介绍了类怎样能够接管自己的内部数据结构的内存管理，另一种优化内存分配的方法涉及优化 <tt>new</tt> 表达式的行为。作为例子，考虑<a class="docLink" href="ch16.html#ch16" >第十六章</a>的 <tt>Queue</tt> 类。该类不直接保存它的元素，相反，它使用 <tt>new</tt> 表达式分配 <tt>QueueItem</tt> 类型的对象。</p>
+
+        <p class="docText">It might be possible to improve the performance of <tt>Queue</tt> by preallocating a block of raw memory to hold <tt>QueueItem</tt> objects. When a new <tt>QueueItem</tt> object is created, it could be constructed in this preallocated space. When <tt>QueueItem</tt> objects are freed, we'd put them back in the block of preallocated objects rather than actually returning memory to the system.</p>
+        <p class="docText">通过预先分配一块原始内存以保存 <tt>QueueItem</tt> 对象，也许有可能改善 <tt>Queue</tt> 的性能。创建新 <tt>QueueItem</tt> 对象的时候，可以在这个预先分配的空间中构造对象。释放 <tt>QueueItem</tt> 对象的时候，将它们放回预先分配对象的块中，而不是将内存真正返回给系统。</p>
+
+        <p class="docText">The difference between this problem and our <tt>Vector</tt> implementation is that in this case, we want to optimize the behavior of <tt>new</tt> and <tt>delete</tt> expressions when applied to objects of a particular type. By default, <tt>new</tt> expressions allocate memory by calling the version of <tt>operator new</tt> that is defined by the library. A class may manage the memory used for objects of its type by defining its own members named <tt>operator new</tt> and <tt>operator delete</tt>.</p>
+        <p class="docText">这个问题与 <tt>Vector</tt> 的实现之间的区别在于，在这种情况下，我们希望在应用于特定类型的时候优化 <tt>new</tt> 和 <tt>delete</tt> 表达式的行为。默认情况下，<tt>new</tt> 表达式通过调用由标准库定义的 <tt>operator new</tt> 版本分配内存。通过定义自己的名为 <tt>operator new</tt> 和 <tt>operator delete</tt> 的成员，类可以管理用于自身类型的内存。</p>
+
+        <p class="docText">When the compiler sees a <tt>new</tt> or <tt>delete</tt> expression for a class type, it looks to see if the class has a member <tt>operator new</tt> or <tt>operator delete</tt>. If the class defines (or inherits) its own member <tt>new</tt> and <tt>delete</tt> functions, then those functions are used to allocate and free the memory for the object. Otherwise, the standard library versions of these functions are called.</p>
+        <p class="docText">编译器看到类类型的 <tt>new</tt> 或 <tt>delete</tt> 表达式的时候，它查看该类是否有 <tt>operator new</tt> 或 <tt>operator delete</tt> 成员，如果类定义（或继承）了自己的成员 <tt>new</tt> 和 <tt>delete</tt> 函数，则使用那些函数为对象分配和释放内存；否则，调用这些函数的标准库版本。</p>
+
+        <p class="docText">When we optimize the behavior of <tt>new</tt> and <tt>delete</tt>, we need only define new versions of the <tt>operator new</tt> and <tt>operator delete</tt>. The <tt>new</tt> and <tt>delete</tt> expressions themselves take care of constructing and destroying the objects.</p>
+        <p class="docText">优化 <tt>new</tt> 和 <tt>delete</tt> 的行为的时候，只需要定义 <tt>operator new</tt> 和 <tt>operator delete</tt> 的新版本，<tt>new</tt> 和 <tt>delete</tt> 表达式自己照管对象的构造和撤销。</p>
+
+<a name="ch18lev3sec6"></a>
+        <h5 class="docSection3Title">Member <tt>new</tt> and <tt>delete</tt> Functions</h5>
+        <h5 class="docSection3Title">成员 <tt>new</tt> 和 <tt>delete</tt> 函数</h5>
+
+<a name="ch18note08"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">If a class defines either of these members, it should define both of them.</p>
+                <p class="docText">如果类定义了这两个成员中的一个，它也应该定义另一个。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <p class="docText">A class member <tt>operator new</tt> function must have a return type of <tt>void*</tt> and take a parameter of type <tt>size_t</tt>. The function's <tt>size_t</tt> parameter is initialized by the <tt>new</tt> expression with the size, in bytes, of the amount of memory to allocate.</p>
+        <p class="docText">类成员 <tt>operator new</tt> 函数必须具有返回类型 <tt>void*</tt> 并接受 <tt>size_t</tt> 类型的形参。由 <tt>new</tt> 表达式用以字节计算的分配内存量初始化函数的 <tt>size_t</tt> 形参。</p>
+
+        <p class="docText">A class member <tt>operator delete</tt> function must have a <tt>void</tt> return type. It can be defined to take a single parameter of type <tt>void*</tt> or to take two parameters, a <tt>void*</tt> and a <tt>size_t</tt>. The <tt>void*</tt> parameter is initialized by the <tt>delete</tt> expression with the pointer that was <tt>delete</tt>d. That pointer might be a null pointer. If present, the <tt>size_t</tt> parameter is initialized automatically by the compiler with the size in bytes of the object addressed by the first parameter.</p>
+	<p class="docText">类成员 <tt>operator delete</tt> 函数必须具有返回类型 <tt>void</tt>。它可以定义为接受单个 <tt>void*</tt> 类型形参，也可以定义为接受两个形参，即 <tt>void*</tt> 和 <tt>size_t</tt> 类型。由 <tt>delete</tt> 表达式用被 <tt>delete</tt> 的指针初始化 <tt>void*</tt> 形参，该指针可以是空指针。如果提供了 <tt>size_t</tt> 形参，就由编译器用第一个形参所指对象的字节大小自动初始化 <tt>size_t</tt> 形参。</p>
+
+        <p class="docText">The <tt>size_t</tt> parameter is unnecessary unless the class is part of an inheritance hierarchy. When we <tt>delete</tt> a pointer to a type in an inheritance hierarchy, the pointer might point to a base-class object or an object of a derived class. In general, the size of a derived-type object is larger than the size of a base-class object. If the base class has a <tt>virtual</tt> destructor (<a class="docLink" href="ch15lev1sec4.html#ch15lev2sec15" >Section 15.4.4</a>, p. <a class="docLink" href="ch15lev1sec4.html#ch15lev2sec15" >587</a>), then the size passed to <tt>operator delete</tt> will vary depending on the dynamic type of the object to which the deleted pointer points. If the base class does not have a virtual destructor, then, as usual, the behavior of deleting a pointer to a derived object through a base-class pointer is undefined.</p>
+	<p class="docText">除非类是某继承层次的一部分，否则形参 <tt>size_t</tt> 不是必需的。当 <tt>delete</tt> 指向继承层次中类型的指针时，指针可以指向基类对象，也可以指向派生类对象。派生类对象的大小一般比基类对象大。如果基类有 <tt>virtual</tt> 析构函数（<a class="docLink" href="ch15lev1sec4.html#ch15lev2sec15" >第 15.4.4 节</a>），则传给 <tt>operator delete</tt> 的大小将根据被删除指针所指对象的动态类型而变化；如果基类没有 <tt>virtual</tt> 析构函数，那么，通过基类指针删除指向派生类对象的指针的行为，跟往常一样是未定义的。</p>
+
+<a name="idd1e147042"></a><a name="idd1e147047"></a><a name="idd1e147052"></a><a name="idd1e147057"></a><a name="idd1e147062"></a>
+        <p class="docText">These functions are implicitly static members (<a class="docLink" href="ch12lev1sec6.html#ch12lev2sec32" >Section 12.6.1</a>, p. <a class="docLink" href="ch12lev1sec6.html#ch12lev2sec32" >469</a>). There is no need to declare them <tt>static</tt> explicitly, although it is legal to do so. The member <tt>new</tt> and <tt>delete</tt> functions must be static because they are used either before the object is constructed (<tt>operator new</tt>) or after it has been destroyed (<tt>operator delete</tt>). There are, therefore, no member data for these functions to manipulate. As with any other static member function, <tt>new</tt> and <tt>delete</tt> may access only static members of their class directly.</p>
+        <p class="docText">这些函数隐式地为静态函数（<a class="docLink" href="ch12lev1sec6.html#ch12lev2sec32" >第 12.6.1 节</a>），不必显式地将它们声明为 <tt>static</tt>，虽然这样做是合法的。成员 <tt>new</tt> 和 <tt>delete</tt> 函数必须是静态的，因为它们要么在构造对象之前使用（<tt>operator new</tt>），要么在撤销对象之后使用（<tt>operator delete</tt>），因此，这些函数没有成员数据可操纵。像任意其他静态成员函数一样，<tt>new</tt> 和 <tt>delete</tt> 只能直接访问所属类的静态成员。</p>
+
+<a name="ch18lev3sec7"></a>
+        <h5 class="docSection3Title">Array Operator <tt>new[]</tt> and Operator <tt>delete[]</tt></h5>
+        <h5 class="docSection3Title">数组操作符 <tt>new[]</tt> 和操作符 <tt>delete[]</tt></h5>
+
+        <p class="docText">We can also define member <tt>operator new[]</tt> and <tt>operator delete[]</tt> to manage arrays of the class type. If these <tt>operator</tt> functions exist, the compiler uses them in place of the global versions.</p>
+        <p class="docText">也可以定义成员 <tt>operator new[]</tt> 和 <tt>operator delete[]</tt> 来管理类类型的数组。如果这些 <tt>operator</tt> 函数存在，编译器就使用它们代替全局版本。</p>
+
+        <p class="docText">A class member <tt>operator new[]</tt> must have a return type of <tt>void*</tt> and take a first parameter of type <tt>size_t</tt>. The operator's <tt>size_t</tt> parameter is initialized automatically with a value that represents the number of bytes required to store an array of the given number of elements of the specified type.</p>
+        <p class="docText">类成员 <tt>operator new[]</tt> 必须具有返回类型 <tt>void*</tt>，并且接受的第一个形参类型为 <tt>size_t</tt>。用表示存储特定类型给定数目元素的数组的字节数值自动初始化操作符的 <tt>size_t</tt> 形参。</p>
+
+        <p class="docText">The member operator <tt>delete[]</tt> must have a <tt>void</tt> return type and a first parameter of type <tt>void*</tt>. The operator's <tt>void*</tt> parameter is initialized automatically with a value that represents the beginning of the storage in which the array is stored.</p>
+        <p class="docText">成员操作符 operator <tt>delete[]</tt> 必须具有返回类型 <tt>void</tt>，并且第一个形参为 <tt>void*</tt> 类型。用表示数组存储起始位置的值自动初始化操作符的 <tt>void*</tt> 形参。</p>
+
+        <p class="docText">The operator <tt>delete[]</tt> for a class may also have two parameters instead of one, the second parameter being a <tt>size_t</tt>. If present, the additional parameter is initialized automatically by the compiler with the size in bytes of the storage required to store the array.</p>
+        <p class="docText">类的操作符 <tt>delete[]</tt> 也可以有两个形参，第二个形参为 <tt>size_t</tt>。如果提供了附加形参，由编译器用数组所需存储量的字节数自动初始化这个形参。</p>
+
+<a name="ch18lev3sec8"></a>
+        <h5 class="docSection3Title">Overriding Class-Specific Memory Allocation</h5>
+        <h5 class="docSection3Title">覆盖类特定的内存分配</h5>
+
+        <p class="docText">A user of a class that defines its own member <tt>new</tt> and <tt>delete</tt> can force a <tt>new</tt> or <tt>delete</tt> expression to use the global library functions through the use of the global scope resolution operator. If the user writes</p>
+        <p class="docText">如果类定义了自己的成员 <tt>new</tt> 和 <tt>delete</tt>，类的用户就可以通过使用全局作用域确定操作符，强制 <tt>new</tt> 或 <tt>delete</tt> 表达式使用全局的库函数。如果用户编写</p>
+        <pre>
+     Type *p = ::new Type; // <span class="docEmphItalicAlt">uses global</span> <span class="docEmphasis">operator new</span>
+     ::delete p;           // <span class="docEmphItalicAlt">uses global</span> <span class="docEmphasis">operator delete</span>
+</pre>
+
+        <p class="docText">then <tt>new</tt> invokes the global <tt>operator new</tt> even if class <tt>Type</tt> defines its own class-specific <tt>operator new</tt>; similarly for <tt>delete</tt>.</p>
+        <p class="docText">那么，即使类定义了自己的类特定的 <tt>operator new</tt>，也调用全局的 <tt>operator new</tt>；<tt>delete</tt> 类似。</p>
+
+<a name="ch18note09"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">If storage was allocated with a <tt>new</tt> expression invoking the global <tt>operator new</tt> function, then the <tt>delete</tt> expression should also invoke the global <tt>operator delete</tt> function.</p>
+                <p class="docText">如果用 <tt>new</tt> 表达式调用全局 <tt>operator new</tt> 函数分配内存，则 <tt>delete</tt> 表达式也应该调用全局 <tt>operator delete</tt> 函数。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <a name="ch18sb05"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 18.1.6</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+<a name="ch18qa4q1"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 18.9:</b></td>
+
+                    <td>
+                      <p class="docText">Declare members <tt>new</tt> and <tt>delete</tt> for the <tt>QueueItem</tt> class.</p>
+                      <p class="docText">为 <tt>QueueItem</tt> 类声明成员 <tt>new</tt> 和 <tt>delete</tt>。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a name="ch18lev2sec7"></a>
+
+        <h4 class="docSection2Title">18.1.7. A Memory-Allocator Base Class</h4>
+        <h4 class="docSection2Title">18.1.7. 一个内存分配器基类</h4>
+
+<a name="ch18note10"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+<a name="idd1e147280"></a><a name="idd1e147286"></a><a name="idd1e147292"></a><a name="idd1e147304"></a><a name="idd1e147307"></a>
+                <p class="docText"> Like the generic handle class (<a class="docLink" href="ch16lev1sec5.html#ch16lev1sec5" >Section 16.5</a>, p. <a class="docLink" href="ch16lev1sec5.html#ch16lev1sec5" >666</a>) this example represents a fairly sophisticated use of C++. Understanding this example requires (and demonstrates) a good grasp of both inheritance and templates. It may be useful to delay studying this example until you are comfortable with these features.</p>
+                <p class="docText">像泛型句柄类一样（<a class="docLink" href="ch16lev1sec5.html#ch16lev1sec5" >第 16.5 节</a>），这个例子表示 C++ 的相当复杂的使用，理解这个例子需要（并认证）良好掌握地继承和模板，将对这个例子的研究推迟到你熟悉这些特征之后，也许是有用的。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+<a name="ch18term7"></a>
+        <p class="docText">Having seen how to declare class-specific member <tt>new</tt> and <tt>delete</tt>, we might next implement those members for <tt>QueueItem</tt>. Before doing so, we need to decide how we'll improve over the built-in library <tt>new</tt> and <tt>delete</tt> functions. One common strategy is to preallocate a block of raw memory to hold unconstructed objects. When new elements are created, they could be constructed in one of these preallocated objects. When elements are freed, we'd put them back in the block of preallocated objects rather than actually returning memory to the system. This kind of strategy is often known as maintaining a <b><a class="docLink" href="ch18lev1sec9.html#gloss18_07" >freelist</a></b>. The freelist might be implemented as a linked list of objects that have been allocated but not constructed.</p>
+        <p class="docText">已经看过了怎样声明类特定的成员 <tt>new</tt> 和 <tt>delete</tt>，下面就可以为 <tt>QueueItem</tt> 类实现这些成员，在这样做之前，需要决定怎样改进内置库的 <tt>new</tt> 和 <tt>delete</tt> 函数。一个通用策略是预先分配一场原始内存来保存未构造的对象，创建新元素的时候，可以在一个预先分配的对象中构造；释放元素的时候，将它们放回预先分配对象的块中，而不是将内存实际返还给系统。这种策略常被称为维持一个<b><a class="docLink" href="ch18lev1sec9.html#gloss18_07" >自由列表</a></b>。可以将自由列表实现为已分配但未构造的对象的链表。</p>
+
+        <p class="docText">Rather than implementing a freelist-based allocation strategy for <tt>QueueItem</tt>, we'll observe that <tt>QueueItem</tt> is not unique in wanting to optimize allocation of objects of its type. Many classes might have the same need. Because this behavior might be generally useful, we'll define a new class that we'll name <tt>CachedObj</tt> to handle the freelist. A class, such as <tt>QueueItem</tt>, that wants to opimize allocation of objects of its type could use the <tt>CachedObj</tt> class rather than implementing its own <tt>new</tt> and <tt>delete</tt> members directly.</p>
+        <p class="docText">除了为 <tt>QueueItem</tt> 类实现基于自由列表的分配策略，我们注意到 <tt>QueueItem</tt> 不是唯一希望优化其对象分配的类，许多类都可能有同一需要。因为这个行为也许通常是有用的，所以我们将定义一个名为 <tt>CachedObj</tt> 的新类来处理自由列表。像 <tt>QueueItem</tt> 这样希望优化其对象分配的类可以使用 <tt>CachedObj</tt> 类，而不用直接实现自己的 <tt>new</tt> 和 <tt>delete</tt> 成员。</p>
+
+        <p class="docText">The <tt>CachedObj</tt> class will have a simple interface: Its only job is to allocate and manage a freelist of allocated but unconstructed objects. This class will define a member <tt>operator new</tt> that will return the next element from the freelist, removing it from the freelist. The <tt>operator new</tt> will allocate new raw memory whenever the freelist becomes empty. The class will also define <tt>operator delete</tt> to put an element back on the freelist when an object is destroyed.</p>
+        <p class="docText"><tt>CachedObj</tt> 类有简单的接口：它的工作只是分配和管理已分配但未构造对象的自由列表。这个类将定义一个成员 <tt>operator new</tt>，返回自由列表的下一个元素，并将该元素从自由列表中删除。当自由列表为空的时候，<tt>operator new</tt> 将分配新的原始内存。这个类还定义 <tt>operator delete</tt>，在撤销对象时将元素放回自由列表。</p>
+
+        <p class="docText">Classes that wish to use a freelist allocation strategy for their own types will <span class="docEmphasis">inherit</span> from <tt>CachedObj</tt>. Through inheritance, these classes can use the <tt>CachedObj</tt> definition of <tt>operator new</tt> and <tt>operator delete</tt> along with the data members needed to represent the freelist. Because the <tt>CachedObj</tt> class is intended as a base class, we'll give it a <tt>public</tt> virtual destructor.</p>
+        <p class="docText">希望为自己的类型使用自由列表分配策略的类将<span class="docEmphasis">继承</span> <tt>CachedObj</tt> 类，通过继承，这些类可以使用 <tt>CachedObj</tt> 类的 <tt>operator new</tt> 和 <tt>operator delete</tt> 定义，以及表示自由列表所需的数据成员。因为打算将 <tt>CachedObj</tt> 类作为基类，所以将给它一个 <tt>public</tt> 虚析构函数。</p>
+
+<a name="ch18note11"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">As we'll see, <tt>CachedObj</tt> may be used only for types that are not involved in an inheritance hierarchy. Unlike the member <tt>new</tt> and <tt>delete</tt> operations, <tt>CachedObj</tt> has no way to allocate different sized objects depending on the actual type of the object: Its freelist holds objects of a single size. Hence, it may be used only for classes, such as <tt>QueueItem</tt>, that do not serve as base classes.</p>
+                <p class="docText">正如我们将看到的，<tt>CachedObj</tt> 只能用于不包含在继承层次中类型。与成员 <tt>new</tt> 和 <tt>delete</tt> 操作不同，<tt>CachedObj</tt> 类没有办法根据对象的实际类型分配不同大小的对象：它的自由列表保存单一大小的对象。因此，它只能用于不作基类使用的类，如 <tt>QueueItem</tt> 类。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <p class="docText">The data members defined by the <tt>CachedObj</tt> class, and inherited by its derived classes, are:</p>
+        <p class="docText">由 <tt>CachedObj</tt> 类定义并被它的派生类继承的数据成员是：</p>
+
+        <ul>
+          <li>
+            <p class="docList">A <tt>static</tt> pointer to the head of the freelist</p>
+            <p class="docList">指向自由列表表头的 <tt>static</tt> 指针。</p>
+          </li>
+
+          <li>
+            <p class="docList">A member named <tt>next</tt> that points from one <tt>CachedObj</tt> to the next</p>
+	    <p class="docList">名为 <tt>next</tt>、从一个 <tt>CachedObj</tt> 对象指向另一个 <tt>CachedObj</tt> 对象的指针。</p>
+          </li>
+        </ul>
+
+<a name="idd1e147463"></a><a name="idd1e147469"></a>
+        <p class="docText">The <tt>next</tt> pointer chains the elements together onto the freelist. Each type that we derive from <tt>CachedObj</tt> will contain its own type-specific data plus a single pointer inherited from the <tt>CachedObj</tt> base class. Each object has an extra pointer used by the memory allocator but not by the inherited type itself. When the object is in use, this pointer is meaningless and not used. When the object is available for use and is on the freelist, then the <tt>next</tt> pointer is used to point to the next available object.</p>
+        <p class="docText"><tt>next</tt> 指针将元素链入自由列表。从 <tt>CachedObj</tt> 类派生的每个类型都包含自己的类型特定的数据，加上一个从 <tt>CachedObj</tt> 基类继承的指针。每个对象具有由内存分配器使用但被继承类型自己不用的一个额外指针，对象在使用的时候，该指针无意义且不使用；对象可供使用并在自由列表中的时候，就使用 <tt>next</tt> 指针来指向下一个可用的对象。</p>
+
+        <p class="docText">If we used <tt>CachedObj</tt> to optimize allocation of our <tt>Screen</tt> class, objects of type <tt>Screen</tt> (conceptually) would look like the illustration in <a class="docLink" href="ch18lev1sec1.html#ch18fig02">Figure 18.2</a>.</p>
+        <p class="docText">如果使用 <tt>CachedObj</tt> 类来优化 <tt>Screen</tt> 类的分配，<tt>Screen</tt> 类型的对象（概念上）看起来如<a class="docLink" href="ch18lev1sec1.html#ch18fig02">图 18.2</a> 所示。</p>
+
+<a name="ch18fig02"></a>
+        <center>
+          <h5 class="docFigureTitle">Figure 18.2. Illustration of a <tt>CachedObj</tt> Derived Class</h5>
+          <h5 class="docFigureTitle">图 18.2. <tt>CachedObj</tt> 派生类举例</h5>
+
+          <p class="docText"><img border="0" alt="" width="250" height="173" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/18fig02.gif;400478" ></p>
+        </center><br>
+        <a name="ch18lev3sec9"></a>
+
+        <h5 class="docSection3Title">The <tt>CachedObj</tt> Class</h5>
+        <h5 class="docSection3Title"><tt>CachedObj</tt> 类</h5>
+
+        <p class="docText">The only remaining question is what types to use for the pointers in <tt>CachedObj</tt>. We'd like to use the freelist approach for any type, so the class will be a template. The pointers will point to an object of the template type:</p>
+	<p class="docText">剩下的唯一问题是 <tt>CachedObj</tt> 类中的指针使用什么类型。我们希望为任意类型使用自由列表方法，所以 <tt>CachedObj</tt> 类将是一个模板，指针将指向该模板类型的对象：</p>
+        <pre>
+     /* <span class="docEmphItalicAlt">memory allocation class: Pre-allocates objects and</span>
+      * <span class="docEmphItalicAlt">maintains a freelist of objects that are unused</span>
+      * <span class="docEmphItalicAlt">When an object is freed, it is put back on the freelist</span>
+      * <span class="docEmphItalicAlt">The memory is only returned when the program exits</span>
+      */
+     template &lt;class T&gt; class CachedObj {
+     public:
+         void *operator new(std::size_t);
+         void operator delete(void *, std::size_t);
+         virtual ~CachedObj() { }
+     protected:
+         T *next;
+     private:
+         static void add_to_freelist(T*);
+         static std::allocator&lt;T&gt; alloc_mem;
+         static T *freeStore;
+         static const std::size_t chunk;
+     };
+</pre>
+
+<a name="idd1e147554"></a><a name="idd1e147560"></a><a name="idd1e147567"></a>
+        <p class="docText">The class is quite simple. It provides only three public members: <tt>operator new, operator delete</tt>, and a virtual destructor. The <tt>new</tt> and <tt>delete</tt> members take objects off and return objects to the freelist.</p>
+        <p class="docText">这个类相当简单，它只提供三个公用成员：<tt>operator new、operator delete</tt> 和虚析构函数。<tt>new</tt> 和 <tt>delete</tt> 成员分别从自由列表取走对象和将对象返回到自由列表。</p>
+
+        <p class="docText">The <tt>static</tt> members manage the freelist. These members are declared as <tt>static</tt> because there is only one freelist maintained for all the objects of a given type. The <tt>freeStore</tt> pointer points to the head of the freelist. The member named <tt>chunk</tt> specifies the number of objects that will be allocated each time the freelist is empty. Finally, <tt>add_to_freelist</tt> puts objects on the freelist. This function is used by <tt>operator new</tt> to put newly allocated objects onto the freelist. It is also used by <tt>operator delete</tt> to put an object back on the free list when an object is deleted.</p>
+        <p class="docText"><tt>static</tt> 成员管理自由列表。这些成员声明为 <tt>static</tt>，是因为只为所有给定类型的对象维持一个自由列表。<tt>freeStore</tt> 指针指向自由列表的表头。名为 <tt>chunk</tt> 的成员指定每当自由列表为空时将分配的对象的数目。最后，<tt>add_to_freelist</tt> 函数将对象放在自由列表，<tt>operator new</tt> 使用这个函数将新分配的对象放到自由列表，删除对象的时候，<tt>operator delete</tt> 也使用该函数将对象放回自由列表。</p>
+
+<a name="ch18lev3sec10"></a>
+        <h5 class="docSection3Title">Using <tt>CachedObj</tt></h5>
+        <h5 class="docSection3Title">使用 <tt>CachedObj</tt></h5>
+
+        <p class="docText">The only really tricky part in using <tt>CachedObj</tt> is understanding the template parameter: When we inherit from <tt>CachedObj</tt>, the template type we use to instantiate <tt>CachedObj</tt> will be the derived type itself. We inherit from <tt>CachedObj</tt> in order to reuse its freelist management. However, <tt>CachedObj</tt> holds a pointer to the object type it manages. The type of that pointer is pointer to a type derived from <tt>CachedObj</tt>.</p>
+	<p class="docText">使用 <tt>CachedObj</tt> 类，真正复杂的部分是理解模板形参：当继承 <tt>CachedObj</tt> 类的时候，用来实例化 <tt>CachedObj</tt> 类的模板类型将是派生类型本身。为了重用 <tt>CachedObj</tt> 类的自由列表管理而继承 <tt>CachedObj</tt> 类，但是，<tt>CachedObj</tt> 类保存了指向它管理的对象类型的一个指针，该指针的类型是指向 <tt>CachedObj</tt> 的派生类型的指针。</p>
+
+        <p class="docText">For example, to optimize memory management for our <tt>Screen</tt> class we would declare <tt>Screen</tt> as</p>
+        <p class="docText">例如，为了优化 <tt>Screen</tt> 类的内存管理，我们将 <tt>Screen</tt> 声明为：</p>
+        <pre>
+     class Screen: public CachedObj&lt;Screen&gt; {
+         // <span class="docEmphItalicAlt">interface and implementation members of class</span> <span class="docEmphasis">Screen</span> <span class="docEmphItalicAlt">are unchanged</span>
+     };
+</pre>
+
+        <p class="docText">This declaration gives <tt>Screen</tt> a new base class, the instance of <tt>CachedObj</tt> that is parameterized by type <tt>Screen</tt>. Each <tt>Screen</tt> now includes an additional inherited member named <tt>next</tt> in addition to its other members defined inside the <tt>Screen</tt> class.</p>
+        <p class="docText">这个声明给了 <tt>Screen</tt> 类一个新的基类：形参为 <tt>Screen</tt> 类型的 <tt>CachedObj</tt> 实例。现在除了 <tt>Screen</tt> 类内部定义的其他成员之外，每个 <tt>Screen</tt> 对象还包含附加的名为 <tt>next</tt> 的继承成员。</p>
+
+        <p class="docText">Because <tt>QueueItem</tt> is a template type, deriving it from <tt>CachedObj</tt> is a bit complicated:</p>
+        <p class="docText">因为 <tt>QueueItem</tt> 是一个模板类型，从 <tt>CachedObj</tt> 类派生它有点复杂：</p>
+        <pre>
+     template &lt;class Type&gt;
+     class QueueItem: public CachedObj&lt; QueueItem&lt;Type&gt; &gt; {
+          // <span class="docEmphItalicAlt">remainder of class declaration and all member definitions unchanged</span>
+     };
+</pre>
+
+        <p class="docText">This declaration says that <tt>QueueItem</tt> is a class template that is derived from the instantiation of <tt>CachedObj</tt> that holds objects of type <tt>QueueItem&lt;Type&gt;</tt>. For example, if we define a <tt>Queue</tt> of <tt>int</tt>s, then the <tt>QueueItem&lt;int&gt;</tt> class is derived from <tt>CachedObj&lt; QueueItem&lt;int&gt; &gt;</tt>.</p>
+        <p class="docText">这个声明是说，<tt>QueueItem</tt> 是从保存 <tt>QueueItem&lt;Type&gt;</tt> 类型对象的 <tt>CachedObj</tt> 实例派生而来的类模板。例如，如果定义 <tt>int</tt> 值的 <tt>Queue</tt>，就从 <tt>CachedObj&lt; QueueItem&lt;int&gt; &gt;</tt> 派生 <tt>QueueItem&lt;int&gt;</tt> 类。</p>
+
+<a name="ch18note12"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">No other changes are needed in our class. <tt>QueueItem</tt> now has automatic memory allocation that uses a freelist to reduce the number of allocations required when creating new <tt>Queue</tt> elements.</p>
+                <p class="docText">我们的类不需要其他改变。现在 <tt>QueueItem</tt> 类具有自动内存分配，这个内存分配使用自由列表减少创建新的 <tt>Queue</tt> 元素时需要的分配数目。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <a name="ch18lev3sec11"></a>
+
+        <h5 class="docSection3Title">How Allocation Works</h5>
+        <h5 class="docSection3Title">分配怎样工作</h5>
+
+<a name="idd1e147747"></a><a name="idd1e147754"></a><a name="idd1e147760"></a><a name="idd1e147767"></a><a name="idd1e147774"></a><a name="idd1e147782"></a><a name="idd1e147789"></a><a name="idd1e147796"></a><a name="idd1e147804"></a>
+        <p class="docText">Because we derived <tt>QueueItem</tt> from <tt>CachedObj</tt>, any allocation using a <tt>new</tt> expression, such as the call from <tt>Queue::push:</tt></p>
+        <p class="docText">因为我们从 <tt>CachedObj</tt> 类派生 <tt>QueueItem</tt> 类，任何使用 <tt>new</tt> 表达式的分配，如 <tt>Queue::push:</tt> 中的调用：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">allocate a new</span> <span class="docEmphasis">QueueItem</span> <span class="docEmphItalicAlt">object</span>
+     QueueItem&lt;Type&gt; *pt =
+         new QueueItem&lt;Type&gt;(val);
+</pre>
+
+        <p class="docText">allocates and constructs a new <tt>QueueItem</tt>. Each <tt>new</tt> expression:</p>
+        <p class="docText">分配并构造一个新的 <tt>QueueItem</tt> 对象。每个表达式</p>
+
+        <div style="font-weight:bold">
+          <ol class="docList" type="1">
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">Uses the <tt>QueueItem&lt;T&gt;::operator new</tt> function to allocate an object from the freelist</p>
+                <p class="docList">使用 <tt>QueueItem&lt;T&gt;::operator new</tt> 函数从自由列表分配一个对象。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">Uses the element type copy constructor for type <tt>T</tt> to construct an object in that storage</p>
+                <p class="docList">为类型 <tt>T</tt> 使用元素类型的复制构造函数，在该内存中构造一个对象。</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+
+        <p class="docText">Similarly, when we <tt>delete</tt> a <tt>QueueItem</tt> pointer such as</p>
+	<p class="docText">类似地，当像 <tt>delete</tt> pt；这样删除一个 <tt>QueueItem</tt> 指针的时候，运行 <tt>QueueItem</tt> 析构函数</p>
+        <pre>
+     delete pt;
+</pre>
+
+        <p class="docText">the <tt>QueueItem</tt> destructor is run to clean up the object to which <tt>pt</tt> points and the class <tt>operator delete</tt> is called. That operator puts the memory the element used back on the freelist.</p>
+        <p class="docText">指向的对象，并调用该类的 <tt>operator delete</tt>，将元素所用的内存放回自由列表。</p>
+
+<a name="ch18lev3sec12"></a>
+        <h5 class="docSection3Title">Defining <tt>operator new</tt></h5>
+        <h5 class="docSection3Title">定义 <tt>operator new</tt></h5>
+
+        <p class="docText">The <tt>operator new</tt> member returns an object from the freelist. If the freelist is empty, <tt>new</tt> must first allocate a new <tt>chunk</tt> of memory:</p>
+        <p class="docText"><tt>operator new</tt> 成员从自由列表返回一个对象，如果自由列表为空，<tt>new</tt> 必须首先分配 <tt>chunk</tt> 数目的新内存：</p>
+        <pre>
+         template &lt;class T&gt;
+         void *CachedObj&lt;T&gt;::operator new(size_t sz)
+         {
+              // <span class="docEmphasis">new</span> <span class="docEmphItalicAlt">should only be asked to build a</span> <span class="docEmphasis">T</span><span class="docEmphItalicAlt">, not an object</span>
+              // <span class="docEmphItalicAlt">derived from</span> <span class="docEmphasis">T</span><span class="docEmphItalicAlt">; check that right size is requested</span>
+              if (sz != sizeof(T))
+                  throw std::runtime_error
+                   ("CachedObj: wrong size object in operator new");
+              if (!freeStore) {
+                  // <span class="docEmphItalicAlt">the list is empty: grab a new chunk of memory</span>
+                  // <span class="docEmphasis">allocate</span> <span class="docEmphItalicAlt">allocates chunk number of objects of type</span> <span class="docEmphasis">T</span>
+                  T * array = alloc_mem.allocate(chunk);
+
+                  // <span class="docEmphItalicAlt">now set the</span> <span class="docEmphasis">next</span> <span class="docEmphItalicAlt">pointers in each object in the allocated memory</span>
+                  for (size_t i = 0; i != chunk; ++i)
+                        add_to_freelist(&amp;array[i]);
+              }
+              T *p = freeStore;
+              freeStore = freeStore-&gt;CachedObj&lt;T&gt;::next;
+              return p;   // <span class="docEmphItalicAlt">constructor of T will construct the T part of the object</span>
+         }
+</pre>
+
+        <p class="docText">The function begins by verifying that it is being asked to allocate the right amount of space.</p>
+        <p class="docText">函数首先验证要求它分配正确数量的空间。</p>
+
+<a name="idd1e147969"></a><a name="idd1e147976"></a><a name="idd1e147984"></a>
+        <p class="docText">This check enforces our design intent that <tt>CachedObj</tt> should be used only for classes that are not base classes. The fact that <tt>CachedObj</tt> allocates objects on its freelist that have a fixed size means that it cannot be used to handle memory allocation for classes in an inheritance hierarchy. Classes related by inheritance almost always define objects of different sizes. A single allocator would have to be much more sophisticated than the one we implement here to handle such classes.</p>
+        <p class="docText">这个检查强调了我们的设计意图：<tt>CachedObj</tt> 类应该只被不是基类的类使用。<tt>CachedObj</tt> 类在固定大小的自由列表上分配对象，这一事实意味着，继承层次中的类不能使用它来处理内存分配。因继承而相关的类几乎总是定义不同大小的对象，处理这些类的单个分配器，可能必须比这里所实现的这个复杂得多。</p>
+
+        <p class="docText">The <tt>operator new</tt> function next checks whether there are any objects on the freelist. If not, it asks the <tt>allocator</tt> member to allocate <tt>chunk</tt> new, unconstructed objects. It then iterates through the newly allocated objects, setting the <tt>next</tt> pointer. After the call to <tt>add_to_freelist</tt>, each object on the freelist will be unconstructed, except for its <tt>next</tt> pointer, which will hold the address of the next available object. The freelist looks something like the picture in <a class="docLink" href="ch18lev1sec1.html#ch18fig03">Figure 18.3</a>.</p>
+        <p class="docText"><tt>operator new</tt> 函数接着检查自由列表中是否有对象，如果没有，它就请求 <tt>allocator</tt> 成员分配 <tt>chunk</tt> 个新的未构造对象，然后，它通过新分配的对象进行迭代，设置 <tt>next</tt> 指针。调用了 <tt>add_to_freelist</tt> 函数之后，自由列表上的每个对象除了将保存下一个可用对象的地址 <tt>next</tt> 指针之外，将是未构造的。自由列表如<a class="docLink" href="ch18lev1sec1.html#ch18fig03">图 18.3</a> 所示。</p>
+
+<a name="ch18fig03"></a>
+        <center>
+          <h5 class="docFigureTitle">Figure 18.3. Illustration <tt>CachedObj</tt> Freelist</h5>
+          <h5 class="docFigureTitle">图 18.3. <tt>CachedObj</tt> 自由列表示例</h5>
+
+          <p class="docText"><img border="0" alt="" width="475" height="137" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/18fig03.gif;400478" ></p>
+        </center><br>
+
+        <p class="docText">Having ensured that there are available objects to allocate, <tt>operator new</tt> returns the address of the first object on the freelist, resetting the <tt>freeStore</tt> pointer to address the next element on the freelist. The object returned is unconstructed. Because <tt>operator new</tt> is called from a <tt>new</tt> expression, the <tt>new</tt> expression will take care of constructing the object.</p>
+        <p class="docText">在有可用对象可以分配的保证之下，<tt>operator new</tt> 返回自由列表上第一个对象的地址，将 <tt>freeStore</tt> 指针重置为指向自由列表上下一个元素。被返回的对象是未构造的。因为从 <tt>new</tt> 表达式调用 <tt>operator new</tt>，所以 <tt>new</tt> 表达式将负责构造对象。</p>
+
+<a name="ch18lev3sec13"></a>
+        <h5 class="docSection3Title">Defining <tt>operator delete</tt></h5>
+        <h5 class="docSection3Title">定义 <tt>operator delete</tt></h5>
+
+        <p class="docText">The member <tt>operator delete</tt> is responsible only for managing the memory. The object itself was already cleaned up in the destructor, which the <tt>delete</tt> expression calls before calling <tt>operator delete</tt>. The <tt>operator delete</tt> member is trivial:</p>
+        <p class="docText"><tt>operator delete</tt> 成员只负责管理内存，在析构函数中已经清除了对象本身，<tt>delete</tt> 表达式在调用 <tt>operator delete</tt> 之前调用析构函数。<tt>operator delete</tt> 成员很简单：</p>
+        <pre>
+     template &lt;class T&gt;
+     void CachedObj&lt;T&gt;::operator delete(void *p, size_t)
+     {
+        if (p != 0)
+            // <span class="docEmphItalicAlt">put the "deleted" object back at head of freelist</span>
+            add_to_freelist(static_cast&lt;T*&gt;(p));
+     }
+</pre>
+
+        <p class="docText">It calls <tt>add_to_freelist</tt> to put the deleted object back onto the freelist.</p>
+        <p class="docText">它调用 <tt>add_to_freelist</tt> 成员将被删除对象放回自由列表。</p>
+
+<a name="idd1e148098"></a><a name="idd1e148105"></a><a name="idd1e148114"></a><a name="idd1e148120"></a>
+        <p class="docText">The interesting part is the cast (<a class="docLink" href="ch05lev1sec12.html#ch05lev2sec28" >Section 5.12.4</a>, p. <a class="docLink" href="ch05lev1sec12.html#ch05lev2sec28" >183</a>). <tt>operator delete</tt> is called when a dynamically allocated object of the class type is <tt>delete</tt>d. The compiler passes the address of that object to <tt>operator delete</tt>. However, the parameter type for the pointer must be <tt>void*</tt>. Before calling <tt>add_to_freelist</tt>, we have to cast the pointer from <tt>void*</tt> back to its actual type. In this case, that type is pointer to <tt>T</tt>, which in turn is a pointer to an object of a type derived from <tt>CachedObj</tt>.</p>
+        <p class="docText">令人感兴趣的部分是强制类型转换（<a class="docLink" href="ch05lev1sec12.html#ch05lev2sec28" >第 5.12.4 节</a>）。在删除动态分配的类类型对象时调用 <tt>operator delete<tt>，编译器将该对象的地址传给 <tt>operator delete</tt>。但是，指针的形参类型必须是 <tt>void*</tt>，在调用 <tt>add_to_freelist</tt> 之前，必须将指针从 <tt>void*</tt> 强制转换为它的实际类型，本例中，那个类型是指向 <tt>T</tt> 的指针，它是 <tt>CachedObj</tt> 派生类型的对象的指针。</p>
+
+<a name="ch18lev3sec14"></a>
+        <h5 class="docSection3Title">The <tt>add_to_freelist</tt> Member</h5>
+        <h5 class="docSection3Title"><tt>add_to_freelist</tt> 成员</h5>
+
+        <p class="docText">The job of this member is to set the <tt>next</tt> pointer and update the <tt>freeStore</tt> pointer when an object is added to the freelist:</p>
+        <p class="docText">这个成员的任务是设置 <tt>next</tt> 指针，并且在将对象加到自由列表时更新 <tt>freeStore</tt> 指针：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">puts object at head of the freelist</span>
+     template &lt;class T&gt;
+     void CachedObj&lt;T&gt;::add_to_freelist(T *p)
+     {
+        p-&gt;CachedObj&lt;T&gt;::next = freeStore;
+        freeStore = p;
+     }
+</pre>
+
+        <p class="docText">The only tricky part is the use of the <tt>next</tt> member. Recall that <tt>CachedObj</tt> is intended to be used as a base class. The objects that are allocated aren't of type <tt>CachedObj</tt>. Instead, those objects are of a type derived from <tt>CachedObj</tt>. The type of <tt>T</tt>, therefore, will be the derived type. The pointer <tt>p</tt> is a pointer to <tt>T</tt>, not a pointer to <tt>CachedObj</tt>. If the derived class has its own member named <tt>next</tt>, then writing</p>
+        <p class="docText">唯一复杂的部分是 <tt>next</tt> 成员的使用。回忆一下，我们打算将 <tt>CachedObj</tt> 作为基类使用，被分配对象不是 <tt>CachedObj</tt> 类型的，相反，那些对象是 <tt>CachedObj</tt> 的派生类型的，因此，类型 <tt>T</tt> 将是派生类型，指针 <tt>p</tt> 是指向 <tt>T</tt> 的指针，不是指向 <tt>CachedObj</tt> 的指针。如果派生类型有自己的名为 <tt>next</tt> 的成员，则编写 </p>
+        <pre>
+     p-&gt;next
+</pre>
+
+        <p class="docText">would fetch the <tt>next</tt> member of the derived class! But we want to set the <tt>next</tt> in the base, <tt>CachedObj</tt> class.</p>
+        <p class="docText">将获得派生类的成员！但我们希望在基类——<tt>CachedObj</tt> 类中设置 <tt>next</tt>。</p>
+
+<a name="ch18note13"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">To avoid any possible collision with a member defined in the derived class, we explicitly specify that we are assigning to the base class member <tt>next</tt>.</p>
+                <p class="docText">为了避免任何与派生类中定义的成员可能的冲突，显式指定我们正在给基类成员 <tt>next</tt> 赋值。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <a name="ch18lev3sec15"></a>
+
+        <h5 class="docSection3Title">Defining the Static Data Members</h5>
+        <h5 class="docSection3Title">定义静态数据成员</h5>
+
+        <p class="docText">What remains is to define the static data members:</p>
+        <p class="docText">剩下的是定义静态数据成员：</p>
+        <pre>
+     template &lt;class T&gt; allocator&lt; T &gt; CachedObj&lt; T &gt;::alloc_mem;
+     template &lt;class T&gt; T *CachedObj&lt; T &gt;::freeStore = 0;
+     template &lt;class T&gt; const size_t CachedObj&lt; T &gt;::chunk = 24;
+</pre>
+
+        <p class="docText">As usual, with static members of a class template there is a different static member for each type used to instantiate <tt>CachedObj</tt>. We initialize <tt>chunk</tt> to an arbitrary valuein this case, 24. We initialize the <tt>freeStore</tt> pointer to 0, indicating that the freelist starts out empty. There is no initialization required for the <tt>alloc_mem</tt> member, but we do have to remember to define it.</p>
+        <p class="docText">照常，对于类模板的静态成员，每个类型使用不同的静态成员来实例化 <tt>CachedObj</tt> 类。将 <tt>chunk</tt> 初始化为任意值，本例中为 24。将 <tt>freeStore</tt> 指针初始化为 0，指出自由列表开始时为空。<tt>alloc_mem</tt> 成员不需要初始化，但必须记得定义它。</p>
+
+<a name="ch18sb06"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 18.1.7</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+<a name="ch18qa5q1"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 18.10:</b></td>
+
+                    <td>
+<a name="idd1e148291"></a><a name="idd1e148296"></a><a name="idd1e148299"></a><a name="idd1e148302"></a><a name="idd1e148307"></a><a name="idd1e148310"></a>
+                      <p class="docText">Explain each of the following initializations. Indicate if any are errors, and if so, why.</p>
+                      <p class="docText">解释下面每个初始化，指出是否有错误的，如果有，为什么错。</p>
+                      <pre>
+     class iStack {
+     public:
+         iStack(int capacity): stack(capacity), top(0) { }
+     private:
+         int top;
+         vector&lt;int&gt; stack;
+     };
+     (a) iStack *ps = new iStack(20);
+     (b) iStack *ps2 = new const iStack(15);
+     (c) iStack *ps3 = new iStack[ 100 ];
+</pre><br>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+<a name="ch18qa5q2"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 18.11:</b></td>
+
+                    <td>
+                      <p class="docText">Explain what happens in the following <tt>new</tt> and <tt>delete</tt> expressions:</p>
+                      <p class="docText">解释下面 <tt>new</tt> 和 <tt>delete</tt> 表达式中发生什么。</p>
+                      <pre>
+     struct Exercise {
+         Exercise();
+         ~Exercise();
+     };
+     Exercise *pe = new Exercise[20];
+     delete[] pe;
+</pre><br>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+<a name="ch18qa5q3"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 18.12:</b></td>
+
+                    <td>
+                      <p class="docText">Implement a class-specific memory allocator for <tt>Queue</tt> or another class of your choice. Measure the change in performace to see how much it helps, if at all.</p>
+                      <p class="docText">为 <tt>Queue</tt> 类或你选择的其他类实现一个类特定的内存分配器。测量性能的改变，看看到底有多大帮助。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch18.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch18lev1sec2.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

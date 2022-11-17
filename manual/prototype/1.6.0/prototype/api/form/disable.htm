@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Form.disable - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+	<script type='text/javascript' src="../../prototype-1.6.0.3.js" ></script>
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>
+			disable
+		</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">disable(formElement) -> HTMLFormElement</code></pre>
+			<p>禁用表单中的所有控件。禁用后表单控件仍然可见，但不能再进行编辑。</p>
+		</div>
+		<div id="abody">
+			<p>表单可以在禁用和启用间进行切换。</p>
+			<h3>我可以试试吗？</h3>
+			<p>当然，这里有一个样例：</p>
+			<form id="disable-example" class="example" action="disable.htm#" onsubmit="return false">
+			<fieldset>
+				<legend>用户信息</legend>
+				<div>
+					<label for="username">姓名：</label>
+					<input type="text" name="username" id="username" value="Sulien" />
+				</div>
+				<div>
+					<label for="age">年龄：</label>
+					<input type="text" name="age" id="age" value="23" size="3" />
+				</div>
+				<div>
+					<label for="hobbies">业余爱好：</label>
+					<select name="hobbies" id="hobbies" multiple="multiple">
+						<option>写作</option>
+						<option>游泳</option>
+						<option>旅行</option>
+						<option>绘画</option>
+					</select>
+				</div>
+				<div class="buttonrow">
+					<button onclick="var form = $('disable-example'); form[form.disabled ? 'enable' : 'disable'](); form.disabled = !form.disabled;">
+						状态切换
+					</button>
+				</div>				
+			</fieldset>
+			</form>
+			<p>按钮点击的相关代码如下：</p>
+			<pre><code class="javascript">var form = $('disable-example'); 
+// 调用 form.disable() 和 form.enable() 在启用和禁用间进行切换
+form[form.disabled ? 'enable' : 'disable'](); 
+form.disabled = !form.disabled;</code></pre>
+			<p>
+				<strong>译注：</strong>上面这段代码看起来有些奇怪。或许你会发现删除 <code>form[form.disabled ? 'enable' : 'disable']();</code>
+				这一句后，代码运行的结果似乎仍然是一样的。其实，这中间有一点不那么引人注目但却重要的区别：未删除那个语句之前，表单禁用后，
+				表单中控件的值无法再进行编辑。而删除语句后，表单禁用后，控件的值却仍然可以进行编辑，虽然它们都是灰色的——呵呵，
+				不要让那些表象干扰我们做出正确的判断。说了这么多，大家应该能够看出：<code>form.disable()</code> 与 <code>form.disabled = true</code>
+				并不是一回事，前者是禁用表单中的控件，而后者是禁用表单。其实，看一下源码，这中间的区别就非常清楚了。<br />
+				另外，<code>form[form.disabled ? 'enable' : 'disable']();</code> 这种写法并不常见，会造成一些迷惑，但是想一下在 JavaScript 中，
+				对象的属性可以用关键字索引来进行访问，而对象的方法其实也是对象的一个属性，那么这个语句就不难理解了：<br />
+				　　form['disable']() ==> form.disable() <br />
+				这两者是等价的。
+			</p>
+			<h3>注意</h3>
+			<p>
+				记住：在串行化时，<em>表单中被禁用的控件将会被忽略</em>！不能够串行化一个已禁用的表单。
+			</p>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

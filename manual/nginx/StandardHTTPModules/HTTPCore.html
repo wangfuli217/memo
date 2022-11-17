@@ -1,0 +1,601 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml">
+<HEAD><TITLE>HTTP核心模块（HTTP Core）</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=GB2312">
+<STYLE type=text/css>PRE {
+	BACKGROUND-COLOR: #cccccc
+}
+.STYLE1 {
+	COLOR: #ff0000
+}
+</STYLE>
+
+<META content="MSHTML 6.00.6000.16809" name=GENERATOR></HEAD>
+<BODY>
+<H2>HTTP核心模块（HTTP Core）</H2><BR>
+
+<H3>·摘要</H3>
+<H4>Nginx处理HTTP的核心功能模块</H4>
+<H3>·指令</H3>
+<H3>alias</H3>
+<H4>语法：alias file-path|directory-path; <BR>
+默认值：no<BR>
+使用字段：location<BR>
+这个指令指定一个路径使用某个某个，注意它可能类似于root，但是document root没有改变，请求只是使用了别名目录的文件。<BR>
+<PRE>location  /i/ {
+  alias  /spool/w3/images/;
+}
+</PRE>
+上个例子总，请求"/i/top.gif"将返回这个文件: "/spool/w3/images/top.gif"。<BR>
+Alias同样可以用于带正则表达式的location，如：<BR>
+<PRE>location ~ ^/download/(.*)$ {
+  alias /home/website/files/$1;
+}</PRE>
+请求"/download/book.pdf"将返回"/home/website/files/book.pdf"。<BR>
+同样，也可以在别名目录字段中使用变量。<BR></H4>
+<H3>client_body_in_file_only </H3>
+<H4>语法：client_body_in_file_only on|off <BR>
+默认值：off <BR>
+使用字段：http, server, location <BR>
+这个指令始终存储一个连接请求实体到一个文件即使它只有0字节。<BR>
+注意：如果这个指令打开，那么一个连接请求完成后，所存储的文件并不会删除。<BR>
+这个指令可以用于debug调试和<A href="http://wiki.nginx.org/NginxEmbeddedPerlModule/" >嵌入式Perl模块</A>中的$r->request_body_file。<BR></H4>
+<H3>client_body_in_single_buffer </H3>
+<H4>语法：client_body_in_single_buffer <BR>
+默认值：off <BR>
+使用字段：http, server, location <BR>
+这个指令(0.7.58版本)指定是否将客户端连接请求完整的放入一个缓冲区，当使用变量$request_body时推荐使用这个指令以减少复制操作。<BR>
+如果无法将一个请求放入单个缓冲区，将会被放入磁盘。</H4>
+<H3>client_body_buffer_size</H3>
+<H4>语法：client_body_buffer_size the_size <BR>
+默认值：8k/16k <BR>
+使用字段：http, server, location <BR>
+这个指令可以指定连接请求实体的缓冲区大小。<BR>
+如果连接请求超过缓存区指定的值，那么这些请求实体的整体或部分将尝试写入一个临时文件。<BR>
+默认值为两个内存分页大小值，根据平台的不同，可能是8k或16k。</H4>
+<H3>client_body_temp_path</H3>
+<H4>语法：client_body_temp_path dir-path [ level1 [ level2 [ level3 ] <BR>
+默认值：client_body_temp <BR>
+使用字段：http, server, location <BR>
+指令指定连接请求实体试图写入的临时文件路径。<BR>
+可以指定三级目录结构，如：<BR>
+<PRE>client_body_temp_path  /spool/nginx/client_temp 1 2;</PRE>
+那么它的目录结构可能是这样：<BR>
+<PRE>/spool/nginx/client_temp/7/45/00000123457</PRE></H4>
+<H3>client_body_timeout</H3>
+<H4>语法：client_body_timeout time<BR>
+默认值：60 <BR>
+使用字段：http, server, location <BR>
+指令指定读取请求实体的超时时间。<BR>
+这里的超时是指一个请求实体没有进入读取步骤，如果连接超过这个时间而客户端没有任何响应，Nginx将返回一个"Request time out" (408)错误<BR></H4>
+<H3> client_header_buffer_size</H3>
+<H4>语法：client_header_buffer_size size <BR>
+默认值：1k <BR>
+使用字段：http, server <BR>
+指令指定客户端请求头部的缓冲区大小<BR>
+绝大多数情况下一个请求头不会大于1k<BR>
+不过如果有来自于wap客户端的较大的cookie它可能会大于1k，Nginx将分配给它一个更大的缓冲区，这个值可以在large_client_header_buffers里面设置。<BR></H4>
+<H3> client_header_timeout </H3>
+<H4>语法：client_header_timeout time <BR>
+默认值：60 <BR>
+使用字段：http, server <BR>
+指令指定读取客户端请求头标题的超时时间。<BR>
+这里的超时是指一个请求头没有进入读取步骤，如果连接超过这个时间而客户端没有任何响应，Nginx将返回一个"Request time out" (408)错误。<BR></H4>
+<H3>client_max_body_size </H3>
+<H4>语法：client_max_body_size size <BR>
+默认值：client_max_body_size 1m <BR>
+使用字段：http, server, location <BR>
+指令指定允许客户端连接的最大请求实体大小，它出现在请求头部的Content-Length字段。<BR>
+如果请求大于指定的值，客户端将收到一个"Request Entity Too Large" (413)错误。<BR>
+记住，浏览器并不知道怎样显示这个错误。<BR></H4>
+<H3> default_type</H3>
+<H4>语法： default_type MIME-type <BR>
+默认值：default_type text/plain <BR>
+使用字段：http, server, location <BR>
+某个文件在标准MIME视图没有指定的情况下的默认MIME类型。<BR>
+参考types。<BR>
+<PRE>location = /proxy.pac {
+  default_type application/x-ns-proxy-autoconfig;
+}
+location = /wpad.dat {
+  rewrite . /proxy.pac;
+  default_type application/x-ns-proxy-autoconfig;
+}
+</PRE></H4>
+<H3>directio</H3>
+<H4>语法：directio [size|off] <BR>
+默认值：directio off <BR>
+使用字段：http, server, location <BR>
+这个参数指定在读取文件大小大于指定值的文件时使用O_DIRECT（FreeBSD, Linux），F_NOCACHE（Mac OS X）或者调用directio()函数（Solaris），当一个请求用到这个参数时会禁用sendfile，通常这个参数用于大文件。<BR>
+<PRE>directio  4m;</PRE></H4>
+<H3>error_page</H3>
+<H4>语法：error_page code [ code... ] [ = | =answer-code ] uri | @named_location <BR>
+默认值：no <BR>
+使用字段：http, server, location, location 中的if字段 <BR>
+这个参数可以为错误代码指定相应的错误页面<BR>
+<PRE>error_page   404          /404.html;
+error_page   502 503 504  /50x.html;
+error_page   403          http://example.com/forbidden.html;
+error_page   404          = @fetch;</PRE>
+同样，你也可以修改返回的错误代码：<BR>
+<PRE>error_page 404 =200 /.empty.gif;</PRE>
+如果一个错误的响应经过代理或者FastCGI服务器并且这个服务器可以返回不同的响应码，如200, 302, 401或404，那么可以指定响应码返回：<BR>
+<PRE>error_page   404  =  /404.php;</PRE>
+如果在重定向时不需要改变URI，可以将错误页面重定向到一个命名的location字段中：<BR>
+<PRE>location / (
+    error_page 404 = @fallback;
+)
+
+location @fallback (
+    proxy_pass http://backend;
+)</PRE></H4>
+<H3>if_modified_since </H3>
+<H4>语法：if_modified_since [off|exact|before]<BR>
+默认值：if_modified_since exact <BR>
+使用字段：http, server, location <BR>
+指令（0.7.24）定义如何将文件最后修改时间与请求头中的"If-Modified-Since"时间相比较。<BR></H4>
+<H5>·off ：不检查请求头中的"If-Modified-Since"（0.7.34）。<BR>
+·exact：精确匹配<BR>
+·before：文件修改时间应小于请求头中的"If-Modified-Since"时间<BR></H5>
+<H3> internal </H3>
+<H4>语法：internal <BR>
+默认值：no <BR>
+使用字段： location <BR>
+internal指令指定某个location只能被“内部的”请求调用，外部的调用请求会返回"Not found" (404)<BR>
+“内部的”是指下列类型：<BR></H4>
+<H5>·指令error_page重定向的请求。<BR>
+·ngx_http_ssi_module模块中使用include virtual指令创建的某些子请求。<BR>
+·ngx_http_rewrite_module模块中使用rewrite指令修改的请求。<BR></H5>
+<H4>一个防止错误页面被用户直接访问的例子：<BR>
+<PRE>error_page 404 /404.html;
+location  /404.html {
+  internal;
+}</PRE><BR>
+<H3> keepalive_timeout </H3>
+<H4>语法：keepalive_timeout [ time ] [ time ]<BR>
+默认值：keepalive_timeout 75 <BR>
+使用字段：http, server, location <BR>
+参数的第一个值指定了客户端与服务器长连接的超时时间，超过这个时间，服务器将关闭连接。<BR>
+参数的第二个值（可选）指定了应答头中Keep-Alive: timeout=time的time值，这个值可以使一些浏览器知道什么时候关闭连接，以便服务器不用重复关闭，如果不指定这个参数，nginx不会在应答头中发送Keep-Alive信息。（但这并不是指怎样将一个连接“Keep-Alive”）<BR>
+参数的这两个值可以不相同<BR>
+下面列出了一些服务器如何处理包含Keep-Alive的应答头：<BR></H4>
+<H5>·MSIE和Opera将Keep-Alive: timeout=N头忽略。<BR>
+·MSIE保持一个连接大约60-65秒，然后发送一个TCP RST。<BR>
+·Opera将一直保持一个连接处于活动状态。<BR>
+·Mozilla将一个连接在N的基础上增加大约1-10秒。<BR>
+·Konqueror保持一个连接大约N秒。<BR></H5>
+<H3> keepalive_requests </H3>
+<H4>语法：keepalive_requests n <BR>
+默认值：keepalive_requests 100 <BR>
+使用字段：http, server, location <BR>
+服务器保持长连接的请求数。<BR></H4>
+<H3> large_client_header_buffers </H3>
+<H4>语法：large_client_header_buffers number size <BR>
+默认值：large_client_header_buffers 4 4k/8k <BR>
+使用字段：http, server <BR>
+指定客户端一些比较大的请求头使用的缓冲区数量和大小。<BR>
+请求字段不能大于一个缓冲区大小，如果客户端发送一个比较大的头，nginx将返回"Request URI too large" (414)<BR>
+同样，请求的头部最长字段不能大于一个缓冲区，否则服务器将返回"Bad request" (400)。<BR>
+缓冲区只在需求时分开。<BR>
+默认一个缓冲区大小为操作系统中分页文件大小，通常是4k或8k，如果一个连接请求最终将状态转换为keep-alive，它所占用的缓冲区将被释放。<BR></H4>
+<H3> limit_except </H3>
+<H4>语法：limit_except methods {...} <BR>
+默认值：no <BR>
+使用字段：location <BR>
+指令可以在location字段中做一些http动作的限制。<BR>
+ngx_http_access_module和ngx_http_auth_basic_module模块有很强的访问控制功能。<BR></H4>
+<PRE>limit_except  GET {
+  allow  192.168.1.0/32;
+  deny   all;
+}</PRE>
+<H3> limit_rate </H3>
+<H4>语法：limit_rate speed <BR>
+默认值：no <BR>
+使用字段：http, server, location, location中的if字段 <BR>
+限制将应答传送到客户端的速度，单位为字节/秒，限制仅对一个连接有效，即如果一个客户端打开2个连接，则它的速度是这个值乘以二。<BR>
+由于一些不同的状况，可能要在server字段来限制部分连接的速度，那么这个参数并不适用，不过你可以选择设置$limit_rate变量的值来达到目的：<BR>
+<PRE>server {
+  if ($slow) {
+    set $limit_rate  4k;
+  }
+}</PRE>
+同样可以通过设置X-Accel-Limit-Rate头<A href="http://wiki.nginx.org/NginxXSendfile/" >（NginxXSendfile）</A>来控制proxy_pass返回的应答。并且不借助X-Accel-Redirect头来完成。<BR>
+<H3>limit_rate_after </H3>
+<H4>语法：limit_rate_after time <BR>
+默认值：limit_rate_after 1m <BR>
+使用字段：http, server, location, location中的if字段 <BR>
+在应答一部分被传递后限制速度：<BR>
+<PRE>limit_rate_after 1m;
+limit_rate 100k;</PRE></H4>
+<H3>listen</H3>
+<H4>语法(0.7.x)：listen address:port [ default [ backlog=num | rcvbuf=size | sndbuf=size | accept_filter=filter | deferred | bind | ssl ] ] <BR>
+语法(0.8.x)：listen address:port [ default_server [ backlog=num | rcvbuf=size | sndbuf=size | accept_filter=filter | deferred | bind | ssl ] ] <BR>
+默认值：listen 80 <BR>
+使用字段：server <BR>
+listen指令指定了server{...}字段中可以被访问到的ip地址及端口号，可以只指定一个ip，一个端口，或者一个可解析的服务器名。<BR>
+<PRE>listen 127.0.0.1:8000;
+listen 127.0.0.1;
+listen 8000;
+listen *:8000;
+listen localhost:8000;</PRE>
+ipv6地址格式（0.7.36）在一个方括号中指定：<BR>
+<PRE>listen [::]:8000;
+listen [fe80::1];</PRE>
+当linux（相对于FreeBSD）绑定IPv6[::]，那么它同样将绑定相应的IPv4地址，如果在一些非ipv6服务器上仍然这样设置，将会绑定失败，当然可以使用完整的地址来代替[::]以免发生问题，也可以使用"default ipv6only=on" 选项来制定这个listen字段仅绑定ipv6地址，注意这个选项仅对这行listen生效，不会影响server块中其他listen字段指定的ipv4地址。<BR>
+<PRE>listen [2a02:750:5::123]:80;
+listen [::]:80 default ipv6only=on;</PRE>
+如果只有ip地址指定，则默认端口为80。<BR>
+如果指令有default参数，那么这个server块将是通过“地址:端口”来进行访问的默认服务器，这对于你想为那些不匹配server_name指令中的主机名指定默认server块的虚拟主机（基于域名）非常有用，如果没有指令带有default参数，那么默认服务器将使用第一个server块。<BR>
+listen允许一些不同的参数，即系统调用listen(2)和bind(2)中指定的参数，这些参数必须用在default参数之后：<BR>
+backlog=num -- 指定调用listen(2)时backlog的值，默认为-1。<BR>
+rcvbuf=size -- 为正在监听的端口指定SO_RCVBUF。<BR>
+sndbuf=size -- 为正在监听的端口指定SO_SNDBUF。<BR>
+accept_filter=filter -- 指定accept-filter。<BR></H4>
+<H5>·仅用于FreeBSD，可以有两个过滤器，dataready与httpready，仅在最终版本的FreeBSD（FreeBSD: 6.0, 5.4-STABLE与4.11-STABLE）上，为他们发送-HUP信号可能会改变accept-filter。</H5>
+<H4>deferred -- 在linux系统上延迟accept(2)调用并使用一个辅助的参数： TCP_DEFER_ACCEPT。<BR>
+bind -- 将bind(2)分开调用。</H4>
+<H5>·主要指这里的“地址:端口”，实际上如果定义了不同的指令监听同一个端口，但是每个不同的地址和某条指令均监听为这个端口的所有地址（*:port），那么nginx只将bind(2)调用于*:port。这种情况下通过系统调用getsockname()确定哪个地址上有连接到达，但是如果使用了parameters backlog, rcvbuf, sndbuf, accept_filter或deferred这些参数，那么将总是将这个“地址:端口”分开调用。</H5>
+<H4>ssl -- 参数（0.7.14）不将listen(2)和bind(2)系统调用关联。</H4>
+<H5>·被指定这个参数的listen将被允许工作在SSL模式，这将允许服务器同时工作在HTTP和HTTPS两种协议下，例如：</H5>
+<H4><PRE>listen  80;
+listen  443 default ssl;</PRE>
+一个使用这些参数的完整例子：
+<PRE>listen  127.0.0.1 default accept_filter=dataready backlog=1024;</PRE>
+0.8.21版本以后nginx可以监听unix套接口：
+<PRE>listen unix:/tmp/nginx1.sock;</PRE></H4>
+<H3> location </H3>
+<H4>语法：location [=|~|~*|^~|@] /uri/ { ... } <BR>
+默认值：no <BR>
+使用字段：server <BR>
+这个参数根据URI的不同需求来进行配置，可以使用字符串与正则表达式匹配，如果要使用正则表达式，你必须指定下列前缀：<BR>
+1、~*  不区分大小写。<BR>
+2、~  区分大小写。<BR>
+要确定该指令匹配特定的查询，程序将首先对字符串进行匹配，字符串匹配将作为查询的开始，最确切的匹配将被使用。然后，正则表达式的匹配查询开始，匹配查询的第一个正则表达式找到后会停止搜索，如果没有找到正则表达式，将使用字符串的搜索结果。<BR>
+在一些操作系统，如Mac OS X和Cygwin，字符串将通过不区分大小写的方式完成匹配（0.7.7），但是，比较仅限于单字节的语言环境。<BR>
+正则表达式可以包含捕获（0.7.40），并用于其它指令中。<BR>
+可以使用“^~”标记禁止在字符串匹配后检查正则表达式，如果最确切的匹配location有这个标记，那么正则表达式不会被检查。<BR>
+使用“=”标记可以在URI和location之间定义精确的匹配，在精确匹配完成后并不进行额外的搜索，例如有请求“/”发生，则可以使用“location = /”来加速这个处理。<BR>
+即使没有“=”和“^~”标记，精确的匹配location在找到后同样会停止查询。<BR>
+下面是各种查询方式的总结：<BR>
+1、前缀“=”表示精确匹配查询，如果找到，立即停止查询。<BR>
+2、指令仍然使用标准字符串，如果匹配使用“^~”前缀，停止查询。<BR>
+3、正则表达式按照他们在配置文件中定义的顺序。<BR>
+4、如果第三条产生一个匹配，这个匹配将被使用，否则将使用第二条的匹配。<BR>
+例：<BR>
+<PRE>location  = / {
+  # 只匹配 / 的查询.
+  [ configuration A ]
+}
+location  / {
+  # 匹配任何以 / 开始的查询，但是正则表达式与一些较长的字符串将被首先匹配。
+  [ configuration B ]
+}
+location ^~ /images/ {
+  # 匹配任何以 /images/ 开始的查询并且停止搜索，不检查正则表达式。
+  [ configuration C ]
+}
+location ~* \.(gif|jpg|jpeg)$ {
+  # 匹配任何以gif, jpg, or jpeg结尾的文件，但是所有 /images/ 目录的请求将在Configuration C中处理。
+  [ configuration D ]
+}</PRE>
+各请求的处理如下例：<BR>
+·/ -> configuration A <BR>
+·/documents/document.html -> configuration B <BR>
+·/images/1.gif -> configuration C <BR>
+·/documents/1.jpg -> configuration D <BR>
+注意你可以以任何顺序定义这4个配置并且匹配结果是相同的，但当使用嵌套的location结构时可能会将配置文件变的复杂并且产生一些比较意外的结果。<BR>
+标记“@”指定一个命名的location，这种location并不会在正常请求中执行，它们仅使用在内部重定向请求中。（查看<A href="../NginxCoreModules/MainModule.html" >error_page</A>和<A href="../NginxCoreModules/MainModule.html" >try_files</A>）</H4>
+<H3>log_not_found </H3>
+<H4>语法：log_not_found [on|off] <BR>
+默认值：log_not_found on <BR>
+使用字段：http, server, location <BR>
+指令指定是否将一些文件没有找到的错误信息写入error_log指定的文件中。<BR></H4>
+<H3> log_subrequest </H3>
+<H4>语法：log_subrequest [on|off]<BR>
+默认值：log_subrequest off <BR>
+使用字段：http, server, location <BR>
+指令指定是否将一些经过rewrite rules和/或SSI requests的子请求日志写入access_log指定的文件中。<BR></H4>
+<H3> msie_padding </H3>
+<H4>语法：msie_padding [on|off] <BR>
+默认值：msie_padding on <BR>
+使用字段：http, server, location <BR>
+指令指定开启或关闭MSIE浏览器和chrome浏览器（0.8.25+）的msie_padding特征，当这个功能开启，nginx将为响应实体分配最小512字节，以便响应大于或等于400的状态代码。<BR>
+指令预防在MSIE和chrome浏览器中激活“友好的”HTTP错误页面，以便不在服务器端隐藏更多的错误信息。<BR></H4>
+<H3> msie_refresh </H3>
+<H4>语法： msie_refresh [on|off] <BR>
+默认值：msie_refresh off <BR>
+使用字段：http, server, location <BR>
+指令允许或拒绝为MSIE发布一个refresh而不是做一次redirect<BR></H4>
+<H3> open_file_cache </H3>
+<H4>语法：open_file_cache max = N [inactive = time] | off <BR>
+默认值：open_file_cache off <BR>
+使用字段：http, server, location <BR>
+这个指令指定缓存是否启用，如果启用，将记录文件以下信息：<BR>
+·打开的文件描述符，大小信息和修改时间。<BR>
+·存在的目录信息。<BR>
+·在搜索文件过程中的错误信息 -- 没有这个文件、无法正确读取，参考open_file_cache_errors<BR>
+指令选项：<BR></H4>
+<H5>·max - 指定缓存的最大数目，如果缓存溢出，最长使用过的文件（LRU）将被移除。<BR>
+·inactive - 指定缓存文件被移除的时间，如果在这段时间内文件没被下载，默认为60秒。<BR>
+·off - 禁止缓存。<BR></H5>
+<H4>例:
+<PRE> open_file_cache max=1000 inactive=20s;
+ open_file_cache_valid    30s;
+ open_file_cache_min_uses 2;
+ open_file_cache_errors   on;</PRE></H4>
+<H3>open_file_cache_errors  </H3>
+<H4>语法：open_file_cache_errors on | off <BR>
+默认值：open_file_cache_errors off <BR>
+使用字段：http, server, location <BR>
+这个指令指定是否在搜索一个文件是记录cache错误。</H4>
+<H3>open_file_cache_min_uses  </H3>
+<H4>语法：open_file_cache_min_uses number <BR>
+默认值：open_file_cache_min_uses 1 <BR>
+使用字段：http, server, location <BR>
+这个指令指定了在open_file_cache指令无效的参数中一定的时间范围内可以使用的最小文件数，如果使用更大的值，文件描述符在cache中总是打开状态。</H4>
+<H3>open_file_cache_valid </H3>
+<H4>语法：open_file_cache_valid time <BR>
+默认值：open_file_cache_valid 60 <BR>
+使用字段：http, server, location <BR>
+这个指令指定了何时需要检查open_file_cache中缓存项目的有效信息。</H4>
+<H3>optimize_server_names </H3>
+<H4>语法：optimize_server_names [ on|off ] <BR>
+默认值：optimize_server_names on <BR>
+使用字段：http, server <BR>
+这个指令指定是否在基于域名的虚拟主机中开启最优化的主机名检查。<BR>
+尤其是检查影响到使用主机名的重定向，如果开启最优化，那么所有基于域名的虚拟主机监听的一个“地址：端口对”具有相同的配置，这样在请求执行的时候并不进行再次检查，重定向会使用第一个server name。<BR>
+如果重定向必须使用主机名并且在客户端检查通过，那么这个参数必须设置为off。<BR>
+注意：这个参数不建议在nginx 0.7.x版本中使用，请使用server_name_in_redirect。</H4>
+<H3>port_in_redirect </H3>
+<H4>语法：port_in_redirect [ on|off ] <BR>
+默认值：port_in_redirect on <BR>
+使用字段：http, server, location <BR>
+这个指令指定是否在让nginx在重定向操作中对端口进行操作。<BR>
+如果这个指令设置为off，在重定向的请求中nginx不会在url中添加端口。</H4>
+<H3>recursive_error_pages </H3>
+<H4>语法：recursive_error_pages [on|off] <BR>
+默认值：recursive_error_pages off <BR>
+使用字段：http, server, location <BR>
+recursive_error_pages指定启用除第一条error_page指令以外其他的error_page。</H4>
+<H3>resolver </H3>
+<H4>语法：resolver address <BR>
+默认值：no <BR>
+使用字段：http, server, location <BR>
+指定DNS服务器地址，如：
+<PRE>resolver 127.0.0.1;</PRE></H4>
+<H3>resolver_timeout </H3>
+<H4>语法：resolver_timeout time <BR>
+默认值：30s <BR>
+使用字段：http, server, location <BR>
+解析超时时间。如：
+<PRE>resolver_timeout 5s;</PRE></H4>
+<H3>root</H3>
+<H4>语法：root path <BR>
+默认值：root html <BR>
+使用字段：http, server, location ,location中的if字段<BR>
+请求到达后的文件根目录。<BR>
+下例中：<BR>
+<PRE>location  /i/ {
+  root  /spool/w3;
+}</PRE>
+如果请求"/i/top.gif"文件，nginx将转到"/spool/w3/i/top.gif"文件。你可以在参数中使用变量。<BR>
+注意：在请求中root会添加这个location到它的值后面，即"/i/top.gif"并不会请求"/spool/w3/top.gif"文件，如果要实现上述类似于apache alias的功能，可以使用alias指令。</H4>
+<H3>satisfy_any</H3>
+<H4>语法：satisfy_any [ on|off ] <BR>
+默认值：satisfy_any off <BR>
+使用字段：location <BR>
+指令可以检查至少一个成功的密码效验，它在NginxHttpAccessModule或NginxHttpAuthBasicModule这两个模块中执行。<BR>
+<PRE>location / {
+  satisfy_any  on;
+  allow  192.168.1.0/32;
+  deny   all;
+  auth_basic            "closed site";
+  auth_basic_user_file  conf/htpasswd;
+}</PRE></H4>
+<H3>send_timeout </H3>
+<H4>语法：send_timeout the time <BR>
+默认值：send_timeout 60 <BR>
+使用字段：http, server, location <BR>
+指令指定了发送给客户端应答后的超时时间，Timeout是指没有进入完整established状态，只完成了两次握手，如果超过这个时间客户端没有任何响应，nginx将关闭连接。<BR></H4>
+<H3>sendfile </H3>
+<H4>语法：sendfile [ on|off ] <BR>
+默认值：sendfile off <BR>
+使用字段：http, server, location <BR>
+是否启用sendfile()函数。<BR></H4>
+<H3>server </H3>
+<H4>语法：server {...} <BR>
+默认值：no <BR>
+使用字段：http <BR>
+server字段包含虚拟主机的配置。<BR>
+没有明确的机制来分开基于域名（请求中的主机头）和基于IP的虚拟主机。<BR>
+可以通过listen指令来指定必须连接到这个server块的所有地址和端口，并且在server_name指令中可以指定所有的域名。<BR></H4>
+<H3>server_name</H3>
+<H4>语法：server_name name [... ] <BR>
+默认值：server_name hostname <BR>
+使用字段：server <BR>
+这个指令有两个作用：<BR>
+·将HTTP请求的主机头与在nginx配置文件中的server{...}字段中指定的参数进行匹配，并且找出第一个匹配结果。这就是如何定义虚拟主机的方法，域名遵循下述优先级规则：<BR>
+1、完整匹配的名称。<BR>
+2、名称开始于一个文件通配符：*.example.com。<BR>
+3、名称结束于一个文件通配符：www.example.*。<BR>
+4、使用正则表达式的名称。<BR>
+如果没有匹配的结果，nginx配置文件将安装以下优先级使用[#server server { ... }]字段：<BR>
+1、listen指令被标记为default的server字段。<BR>
+2、第一个出现listen（或者默认的listen 80）的server字段。<BR>
+·如果server_name_in_redirect被设置，这个指令将用于设置HTTP重定向的服务器名。<BR>
+例：<BR>
+<PRE>server {
+  server_name   example.com  www.example.com;
+}</PRE>
+第一个名称为服务器的基本名称，默认名称为机器的hostname。<BR>
+当然，可以使用文件通配符：<BR>
+<PRE>server {
+  server_name   example.com  *.example.com  www.example.*;
+}</PRE>
+上述例子中的前两个名称可以合并为一个：<BR>
+<PRE>server {
+  server_name  .example.com;
+}</PRE>
+同样可以使用正则表达式。名称前面加“~”：<BR>
+<PRE>server {
+  server_name   www.example.com   ~^www\d+\.example\.com$;
+}</PRE>
+如果客户端请求中没有主机头或者没有匹配server_name的主机头，服务器基本名称将被用于一个HTTP重定向，你可以只使用“*”来强制nginx在HTTP重定向中使用Host头（注意*不能用于第一个名称，不过你可以用一个很傻逼的名称代替，如“_”）<BR>
+<PRE>server {
+  server_name example.com *;
+}
+server {
+  server_name _ *;
+}</PRE>
+在nginx0.6.x中有稍许改变：<BR>
+<PRE>server {
+  server_name _;
+}</PRE>
+0.7.12版本以后已经可以支持空服务器名，以处理那些没有主机头的请求：<BR>
+<PRE>server {
+  server_name "";
+}</PRE></H4>
+<H3>server_name_in_redirect</H3>
+<H4>语法：server_name_in_redirect on|off <BR>
+默认值：server_name_in_redirect on <BR>
+使用字段：http, server, location <BR>
+如果这个指令打开，nginx将使用server_name指定的基本服务器名作为重定向地址，如果关闭，nginx将使用请求中的主机头。</H4>
+<H3>server_names_hash_max_size </H3>
+<H4>语法：server_names_hash_max_size number <BR>
+默认值：server_names_hash_max_size 512 <BR>
+使用字段：http <BR>
+服务器名称哈希表的最大值，更多信息请参考<A href="../Optimizations.html" >nginx Optimizations</A>。</H4>
+<H3>server_names_hash_bucket_size </H3>
+<H4>语法：server_names_hash_bucket_size number <BR>
+默认值：server_names_hash_bucket_size 32/64/128 <BR>
+使用字段：http <BR>
+服务器名称哈希表每个页框的大小，这个指令的默认值依赖于cpu缓存。更多信息请参考<A href="../Optimizations.html" >nginx Optimizations</A>。</H4>
+<H3>server_tokens </H3>
+<H4>语法：server_tokens on|off <BR>
+默认值：server_tokens on <BR>
+使用字段：http, server, location <BR>
+是否在错误页面和服务器头中输出nginx版本信息。</H4>
+<H3>tcp_nodelay </H3>
+<H4>语法：tcp_nodelay [on|off] <BR>
+默认值：tcp_nodelay on <BR>
+使用字段：http, server, location <BR>
+这个指令指定是否使用socket的TCP_NODELAY选项，这个选项只对keep-alive连接有效。<BR>
+点击<A href="http://wiki.nginx.org/ReadMoreAboutTcpNodelay/" >这里</A>了解更多关于TCP_NODELAY选项的信息。</H4>
+<H3>tcp_nopush </H3>
+<H4>语法：tcp_nopush [on|off] <BR>
+默认值：tcp_nopush off <BR>
+使用字段：http, server, location <BR>
+这个指令指定是否使用socket的TCP_NOPUSH（FreeBSD）或TCP_CORK（linux）选项，这个选项只在使用sendfile时有效。<BR>
+设置这个选项的将导致nginx试图将它的HTTP应答头封装到一个包中。<BR>
+点击<A href="http://wiki.nginx.org/ReadMoreAboutTcpNopush/" >这里</A>查看关于TCP_NOPUSH和TCP_CORK选项的更多信息。</H4>
+<H3>try_files </H3>
+<H4>语法：try_files file1 [file2 ... filen] fallback <BR>
+默认值：none <BR>
+使用字段：location<BR>
+这个指令告诉nginx将测试参数中每个文件的存在，并且URI将使用第一个找到的文件，如果没有找到文件，将请求名为fallback（可以使任何名称）的location字段，fallback是一个必须的参数，它可以是一个命名的location或者可靠的URI。<BR>
+例：<BR>
+<PRE>location / {
+  try_files index.html index.htm @fallback;
+}
+
+location @fallback {
+  root /var/www/error;
+  index index.html;
+}</PRE></H4>
+<H3> types </H3>
+<H4>语法：types {...}  <BR>
+使用字段：http, server, location <BR>
+这个字段指定一些扩展的文件对应方式与应答的MIME类型，一个MIME类型可以有一些与其类似的扩展。默认使用以下文件对应方式：<BR>
+<PRE>types {
+  text/html    html;
+  image/gif    gif;
+  image/jpeg   jpg;
+}</PRE>
+完整的对应视图文件为conf/mime.types，并且将被包含。<BR>
+如果你想让某些特定的location的处理方式使用MIME类型：application/octet-stream，可以使用以下配置：<BR>
+<PRE>location /download/ {
+  types         { }
+  default_type  application/octet-stream;
+}</PRE></H4>
+<H3>·变量</H3>
+<H4>core module 支持一些内置的变量，与apache使用的变量相一致。<BR>
+首先，一些变量代表了客户端请求头部的一些字段，如：$http_user_agent, $http_cookie等等。注意，由于这些变量会在请求中定义，所以可能无法保证他们是存在的或者说可以定义到一些别的地方（例如遵循一定的规范）。<BR>
+除此之外，下列是一些其他变量：</H4>
+<H3> $arg_PARAMETER </H3>
+<H4>这个变量包含在查询字符串时GET请求PARAMETER的值。</H4>
+<H3> $args</H3>
+<H4>这个变量等于请求行中的参数。</H4>
+<H3>$binary_remote_addr </H3>
+<H4>二进制码形式的客户端地址。</H4>
+<H3> $body_bytes_sent </H3>
+<H4>未知。</H4>
+<H3> $content_length </H3>
+<H4>请求头中的Content-length字段。</H4>
+<H3>$content_type</H3>
+<H4>请求头中的Content-Type字段。</H4>
+<H3>$cookie_COOKIE </H3>
+<H4>cookie COOKIE的值。</H4>
+<H3> $document_root </H3>
+<H4>当前请求在root指令中指定的值。</H4>
+<H3> $document_uri </H3>
+<H4>与$uri相同。</H4>
+<H3> $host</H3>
+<H4>请求中的主机头字段，如果请求中的主机头不可用，则为服务器处理请求的服务器名称。</H4>
+<H3> $is_args </H3>
+<H4>如果$args设置，值为"?"，否则为""。</H4>
+<H3> $limit_rate </H3>
+<H4>这个变量可以限制连接速率。</H4>
+<H3> $nginx_version </H3>
+<H4>当前运行的nginx版本号。</H4>
+<H3> $query_string </H3>
+<H4>与$args相同。</H4>
+<H3> $remote_addr </H3>
+<H4>客户端的IP地址。</H4>
+<H3> $remote_port </H3>
+<H4>客户端的端口。</H4>
+<H3> $remote_user </H3>
+<H4>已经经过Auth Basic Module验证的用户名。</H4>
+<H3> $request_filename </H3>
+<H4>当前连接请求的文件路径，由root或alias指令与URI请求生成。</H4>
+<H3> $request_body </H3>
+<H4>这个变量（0.7.58+）包含请求的主要信息。在使用proxy_pass或fastcgi_pass指令的location中比较有意义。</H4>
+<H3> $request_body_file </H3>
+<H4>客户端请求主体信息的临时文件名。</H4>
+<H3> $request_completion </H3>
+<H4>未知。</H4>
+<H3> $request_method </H3>
+<H4>这个变量是客户端请求的动作，通常为GET或POST。<BR>
+包括0.8.20及之前的版本中，这个变量总为main request中的动作，如果当前请求是一个子请求，并不使用这个当前请求的动作。</H4>
+<H3> $request_uri </H3>
+<H4>这个变量等于包含一些客户端请求参数的原始URI，它无法修改，请查看$uri更改或重写URI。</H4>
+<H3> $scheme </H3>
+<H4>HTTP方法（如http，https）。按需使用，例：<BR>
+<PRE>rewrite  ^(.+)$  $scheme://example.com$1  redirect;</PRE></H4>
+<H3> $server_addr </H3>
+<H4>服务器地址，在完成一次系统调用后可以确定这个值，如果要绕开系统调用，则必须在listen中指定地址并且使用bind参数。</H4>
+<H3> $server_name </H3>
+<H4>服务器名称。</H4>
+<H3> $server_port </H3>
+<H4>请求到达服务器的端口号。</H4>
+<H3> $server_protocol </H3>
+<H4>请求使用的协议，通常是HTTP/1.0或HTTP/1.1。</H4>
+<H3> $uri </H3>
+<H4>请求中的当前URI(不带请求参数，参数位于$args)，可以不同于浏览器传递的$request_uri的值，它可以通过内部重定向，或者使用index指令进行修改。</H4>
+<H3>·参考文档</H3>
+<H4><A href="http://sysoev.ru/nginx/docs/http/ngx_http_core_module.html" >Original Documentation</A><BR>
+<A href="http://wiki.nginx.org/NginxHttpCoreModule/" >Nginx Http Core Module</A></H4>
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://179401.cn/analytics/" : "http://179401.cn/analytics/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://shouce.jb51.net/179401.cn/analytics/piwik.php-idsite=1"  style="border:0" alt=""/></p></noscript>
+<!-- End Piwik Tag -->
+</BODY>
+</HTML>
+<H3><A href="HTTPUpstream.html" >前进->HTTP负载均衡模块（HTTP Upstream）</A></H3>

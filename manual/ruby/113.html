@@ -1,0 +1,177 @@
+<html><HEAD><TITLE>Programming Ruby: The Pragmatic Programmer's Guide</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=gb2312"><LINK media=screen href="113_files/pr_style[1].css"  type=text/css rel=StyleSheet></head>
+<BODY bgColor=white>
+<TABLE cellSpacing=0 cellPadding=3 width="100%" bgColor=#c09090 border=0>
+<TBODY>
+<TR>
+<TD colSpan=3>
+<TABLE cellPadding=20 width="100%" bgColor=#701a1a>
+<TBODY>
+<TR>
+<TD width="100%">
+<H1 class=header>Programming Ruby</H1>
+<H3 class=subheader>实用程序员指南</H3></TD></TR></TBODY></TABLE></TD></TR>
+<TR>
+<TD align=left width="33%"><A class=subheader href="112.html" >前一章&lt;</A> </TD>
+<TD vAlign=center align=middle width="33%"><A class=subheader href="95.html" >目录 ^</A> <BR></TD>
+<TD align=right width="33%"><A class=subheader href="114.html" >后一章&gt;</A> <BR></TD></TR></TBODY></TABLE><!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<H1>Ruby和微软的Windows</H1>
+<HR>
+<BR>
+<P></P>Ruby 的实现是基于 POSIX环境的，也就是说它可以利用unix程序员熟悉的所有的系统调用和系统库。 
+<P></P>同时，系统设计的时候扩展了对windows的支持，这章，我们将看看这方面的特性，并展示一些在windows下高效使用ruby的秘诀。<BR>
+<H2><A name=S1>Ruby Ports</A></H2>
+<P></P>Windows does not provide a POSIX environment by itself, so some sort of emulation library is required in order to provide the necessary functions. There are several ports of Ruby for Windows: the most commonly used one relies on the GNU Win32 environment, and is called the ``cygwin32'' port. The cygwin32 port works well with extension libraries, and is available on the Web as a precompiled binary. Another port, ``mswin32,'' does not rely on cygwin. It is currently available as source code only. The remainder of this chapter will refer to the cygwin32 port. 
+<H2><A name=S2>在 Windows</A>下运行Ruby</H2>
+<P>cygwin32版本的ruby发布包括两个可执行文件：<CODE>ruby.exe</CODE> <CODE>，rubyw.exe</CODE></P>
+<P></P><CODE>ruby.exe</CODE> 用在命令提示符下（dos shell），就像unix版本中的一样。对于需要从标准输入输出进行读写操作的应用来说比较适合，但是这样的话我们运行什么程序都需要额外多开了一个窗口，而不管我们需不需要这个窗口，有时候这样就显得不合适了，比如我们双击一个ruby脚本运行一个图形接口（比如Tk），或者作为后台程序运行，或者在别的程序中被调用。<BR>在这种情况下，我们可以用<CODE>rubyw.exe</CODE> ，他和 <CODE>ruby.exe</CODE> 一样，但是不提供标准输入和标准输出，或者标准错误，并且不会打开一个dos shell的窗口。 
+<P>可以对ruby脚本（.rb结尾的文件）设定文件关联<EM>[<CODE>在用菜单 查看/选项/文件类型</CODE>]</EM>，然后双击这个文件就可以调用<CODE>rubyw.exe</CODE>来执行这个程序了。</P>
+<H2><A name=S3>Win32API</A></H2>
+<P></P>如果你的ruby程序打算直接访问win32api，或者用一些DLL的入口点，你将会用到<CODE>Win32API</CODE>扩展。<BR>
+<P></P>你可以用要访问的DLL名字创建一个<CODE>Win32API</CODE>对象，表示对一个指定的DLL的入口点的调用，DLL的名字包括函数，函数签名（参数和返回值），建立的win32api对象就可以用来对指定的dll进行调用。 
+<P></P>DLL的很多参数都是一定形式的二进制结构，<CODE>Win32API</CODE>用ruby的字符串对象处理这些参数，进行来回的传递。你需要对这些字符串进行打包和解包（pack and unpack）<BR>
+<H2><A name=S4>Windows Automation</A></H2>
+<P></P>如果你对使用低层次的windows API调用不感兴趣，你可以使用windows utomation，ruby可以当成Windows Automation 的客户。感谢 Masaki Suketa写的 win32OLE扩展。下面例子是WIN32OLE发布包中提供的。 
+<P></P>Windows 自动化允许自动化控制器（客户端）向自动化服务器（Excel, Word, PowerPoint等）发送一个命令或者进行查询。 
+<P></P>你可以向<CODE>WIN32OLE</CODE>发送一个命令，从而可以执行自动化服务器上具有相同名字的方法。例如，你可以创建一个<CODE>WIN32OLE</CODE>客户，创建几个全新的IE浏览器，并且显示ie设置的主页：<BR>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>ie&nbsp;=&nbsp;WIN32OLE.new('InternetExplorer.Application')
+ie.visible&nbsp;=&nbsp;true
+ie.gohome
+</PRE></TD></TR></TBODY></TABLE>
+<P><CODE>WIN32OLE</CODE>并不知道这些方法（比如<CODE>visible</CODE>和<CODE>gohome</CODE>），它会把这些向它调用的方法传到<CODE>WIN32OLE#invoke</CODE>，在这个方法里向自动化服务器发送正确的命令。</P>
+<H3><A name=UA>读、写自动化服务器的属性</A></H3>
+<P></P>你可以用通常的哈希表示方法从自动化服务器读写服务器的属性。比如，可以如下面一样设定一个Excel chart的<CODE>Rotation</CODE>的值： 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>excel&nbsp;=&nbsp;WIN32OLE.new("excel.application")
+excelchart&nbsp;=&nbsp;excel.Charts.Add()
+...
+excelchart['Rotation']&nbsp;=&nbsp;45
+puts&nbsp;excelchart['Rotation']
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>OLE对象的参数自动都会被设成属性，也就是说你可以你可以通过给一个属性赋值而设定一个参数。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>excelchart.rotation&nbsp;=&nbsp;45
+r&nbsp;=&nbsp;excelchart.rotation
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>因为这些属性是常规的ruby访问方法，而属性名不能以大写字母开头，所以你要用<CODE>rotation</CODE>而不是<CODE>Rotation</CODE>。 
+<H3><A name=UB>命名参数（Named Arguments</A>）</H3>
+<P>其他的能实现自动化客户端的语言，比如VB，有一种叫做命名参数（<EM>named arguments</EM>）的概念，假设我们有这样的一个VB方法： </P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>Song(artist,&nbsp;title,&nbsp;length):&nbsp;&nbsp;&nbsp;&nbsp;rem&nbsp;Visual&nbsp;Basic
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>要想调用这个方法，除了按顺序写全这三个参数来调用之外，我们可以用命名参数的方法： 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>Song&nbsp;title&nbsp;:=&nbsp;'Get&nbsp;It&nbsp;On':&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rem&nbsp;Visual&nbsp;Basic
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>这等同于<CODE>调用 Song(nil, 'Get It On', nil)</CODE>。 <BR>在Ruby中，可以在调用的时候用哈希结构来指定参数名和它的值，比如： 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>Song.new(&nbsp;'title'&nbsp;=&gt;&nbsp;'Get&nbsp;It&nbsp;On'&nbsp;)
+</PRE></TD></TR></TBODY></TABLE>
+<H3><A name=UC>for each</A>方法</H3>
+<P></P>VB有一个方法 ``for each''语句，可以在服务端对一个集合进行迭代， <CODE>WIN32OLE</CODE>对象也有一个方法完成相同的作用。 
+<H3><A name=UD>一个例子</A></H3>
+<P>下面这个例子，用到了微软的Excel，覆盖了上面说的很多概念。首先，我们创建了一个新的基于Excel的<CODE>WIN32OLE</CODE>对象，并增加了一些单元格，并给这些单元格赋值。然后，我们选中了一个区域，并创建了图表（chart），我们通过给这个图表的type属性赋值，使它成为一个3D的图表。然后，</P>The following example, using Microsoft Excel, illustrates most of these concepts. First, we create a new object attached to Excel and set some cell values. Next we select a range of cells and create a . We set the <CODE>Type</CODE> property in the <CODE>excelchart</CODE> object to make it a 3D chart. Next we'll loop through and change the chart rotation, 10?at a time. We'll add a few charts, and we'll use <CODE>each</CODE> to step through and print them out. Finally, we'll close down the Excel application and exit. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>require&nbsp;'win32ole'
+<P></P>
+#&nbsp;-4100&nbsp;is&nbsp;the&nbsp;value&nbsp;for&nbsp;the&nbsp;Excel&nbsp;constant&nbsp;xl3DColumn.
+ChartTypeVal&nbsp;=&nbsp;-4100;
+<P></P>
+#&nbsp;Creates&nbsp;OLE&nbsp;object&nbsp;to&nbsp;Excel
+excel&nbsp;=&nbsp;WIN32OLE.new("excel.application")
+<P></P>
+#&nbsp;Create&nbsp;and&nbsp;rotate&nbsp;the&nbsp;chart
+<P></P>
+excel['Visible']&nbsp;=&nbsp;TRUE;
+workbook&nbsp;=&nbsp;excel.Workbooks.Add();
+excel.Range("a1")['Value']&nbsp;=&nbsp;3;
+excel.Range("a2")['Value']&nbsp;=&nbsp;2;
+excel.Range("a3")['Value']&nbsp;=&nbsp;1;
+excel.Range("a1:a3").Select();
+excelchart&nbsp;=&nbsp;workbook.Charts.Add();
+excelchart['Type']&nbsp;=&nbsp;ChartTypeVal;
+<P></P>
+30.step(180,&nbsp;10)&nbsp;do&nbsp;|rot|
+&nbsp;&nbsp;&nbsp;&nbsp;excelchart['Rotation']&nbsp;=&nbsp;rot
+end
+<P></P>
+excelchart2&nbsp;=&nbsp;workbook.Charts.Add();
+excelchart3&nbsp;=&nbsp;workbook.Charts.Add();
+<P></P>
+charts&nbsp;=&nbsp;workbook.Charts
+charts.each&nbsp;{&nbsp;|i|&nbsp;puts&nbsp;i&nbsp;}
+<P></P>
+excel.ActiveWorkbook.Close(0);
+excel.Quit();
+</PRE></TD></TR></TBODY></TABLE>
+<H3><A name=UE>优化</A></H3>
+<P></P>As with most (if not all) high-level languages, it can be all too easy to churn out code that is unbearably slow, but that can be easily fixed with a little thought. 
+<P></P>对<CODE>WIN32OLE</CODE>来说， 我们要避免不必要的动态查找（dynamic lookups）。如果可能，尽量把<CODE>WIN32OLE</CODE>对象 赋给一个变量，然后引用这个变量的元素，而不要使用一大串的"." 构成的表达式。 
+<P></P>比如，我们不应该写出这样的代码： 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>workbook.Worksheets(1).Range("A1").value&nbsp;=&nbsp;1
+workbook.Worksheets(1).Range("A2").value&nbsp;=&nbsp;2
+workbook.Worksheets(1).Range("A3").value&nbsp;=&nbsp;4
+workbook.Worksheets(1).Range("A4").value&nbsp;=&nbsp;8
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>我们可以通过把这些语句的前面部分放到一个临时变量里，而使用临时变量来执行方法。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>worksheet&nbsp;=&nbsp;workbook.Worksheets(1)
+<P></P>
+worksheet.Range("A1").value&nbsp;=&nbsp;1
+worksheet.Range("A2").value&nbsp;=&nbsp;2
+worksheet.Range("A3").value&nbsp;=&nbsp;4
+worksheet.Range("A4").value&nbsp;=&nbsp;8
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>
+<HR>
+
+<TABLE cellSpacing=0 cellPadding=10 bgColor=#a03030 border=0>
+<TBODY>
+<TR>
+<TD align=left width="33%"><A class=subheader href="112.html" >Previous &lt;</A> </TD>
+<TD vAlign=center align=middle width="33%"><A class=subheader href="95.html" >Contents ^</A> <BR></TD>
+<TD align=right width="33%"><A class=subheader href="114.html" >Next &gt;</A> <BR></TD></TR></TBODY></TABLE>
+<P></P><FONT size=-1>Extracted from the book "Programming Ruby - The Pragmatic Programmer's Guide"</FONT> <BR><FONT size=-3>Copyright &copy; 2001 by Addison Wesley Longman, Inc. This material may be distributed only subject to the terms and conditions set forth in the Open Publication License, v1.0 or later (the latest version is presently available at <A href="http://www.opencontent.org/openpub/" >http://www.opencontent.org/openpub/</A>)). 
+<P></P>Distribution of substantively modified versions of this document is prohibited without the explicit permission of the copyright holder. 
+<P></P>Distribution of the work or derivative of the work in any standard (paper) book form is prohibited unless prior permission is obtained from the copyright holder. <BR></FONT></BODY>

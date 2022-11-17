@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Object.toHTML - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>toHTML<div class="box">1.6</div></h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">toHTML(obj) -> String</code></pre>
+			<p>
+				如果 <code>obj</code> 具有 <code>toHTML</code> 方法，则调用 <code>obj</code> 的
+				<code>toHTML</code> 方法，否则将 <code>obj</code> 作为 <code>String.interpret</code>
+				的参数然后调用该方法。返回调用这些方法后的返回值。
+			</p>
+		</div>
+		<div id="abody">
+			<h3>样例</h3>
+			<pre><code class="javascript">var Bookmark = Class.create({
+	initialize: function(name, url) {
+		this.name = name; 
+		this.url = url; 
+	}, 
+	toHTML: function() {
+		return '&lt;a href="#{url}"&gt;#{name}&lt;/a&gt;'.interpolate(this);
+	} 
+}); 
+
+var api = new Bookmark('Prototype API', 'http://prototypejs.org/api');
+Object.toHTML(api);
+//-> '&lt;a href="http://prototypejs.org/api"&gt;Prototype API&lt;/a&gt;' 
+
+Object.toHTML("Hello world!"); 
+//-> "Hello world!"
+ 
+Object.toHTML(); 
+//-> "" 
+
+Object.toHTML(null); 
+//-> "" 
+
+Object.toHTML(undefined); 
+//-> "" 
+
+Object.toHTML(true); 
+//-> "true" 
+
+Object.toHTML(false);
+//-> "false" 
+
+Object.toHTML(123); 
+//-> "123" </code></pre>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

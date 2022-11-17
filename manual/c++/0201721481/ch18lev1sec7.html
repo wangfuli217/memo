@@ -1,0 +1,528 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 18.7.  Inherently Nonportable Features</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch18lev1sec6.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch18lev1sec8.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch18lev1sec7"></a>
+
+        <h3 class="docSection1Title">18.7. Inherently Nonportable Features</h3>
+        <h3 class="docSection1Title">18.7. 固有的不可移植的特征</h3>
+
+<a name="ch18term18"></a>
+        <p class="docText">One of the hallmarks of the C programming language is the ability to write low-level programs that can be readily moved from one machine to another. The process of moving a program to a new machine is referred to as "porting," so C programs are said to be <b><a class="docLink" href="ch18lev1sec9.html#gloss18_18" >portable</a></b>.</p>
+        <p class="docText">编写可以容易从一个机器移到其他机器的低级程序是 C 程序设计语言的一个特点。将程序移到新机器的过程称为“<b><a class="docLink" href="ch18lev1sec9.html#gloss18_18" >移植</a></b>”，所以说 C 程序是<b><a class="docLink" href="ch18lev1sec9.html#gloss18_18" >可移植的</a></b>。</p>
+
+<a name="idd1e152766"></a><a name="idd1e152776"></a><a name="idd1e152779"></a><a name="idd1e152784"></a><a name="idd1e152796"></a><a name="idd1e152801"></a>
+        <p class="docText">To support low-level programming, C defines some features that are inherently nonportable. The fact that the size of the arithmetic types vary across machines (<a class="docLink" href="ch02lev1sec1.html#ch02lev1sec1" >Section 2.1</a>, p. <a class="docLink" href="ch02lev1sec1.html#ch02lev1sec1" >34</a>) is one such nonportable feature that we have already encountered. In this section we'll cover two additional nonportable features that C++ inherits from C: bit-fields and the <tt>volatile</tt> qualifier. These features make it easier to interface directly to hardware.</p>
+        <p class="docText">为了支持低级编程，C 语言定义了一些固有不可移植的特征。算术类型的大小随机器不同而变化的事实（<a class="docLink" href="ch02lev1sec1.html#ch02lev1sec1" >第 2.1 节</a>），就是我们已经遇到过的一个这样的不可移植特征。本节将讨论 C++ 的另外两个从 C 语言继承来的不可移植特征：位域和 <tt>volatile</tt> 限定符。这些特征可使与硬件接口的直接通信更容易。</p>
+
+        <p class="docText">C++ adds another nonportable feature to those that it inherits from C: linkage directives, which make it possible to link to programs written in other languages.</p>
+        <p class="docText">C++ 还增加了另一个不可移植特征（从 C 语言继承来的）：链接指示，它使得可以链接到用其他语言编写的程序。</p>
+
+<a name="ch18lev2sec26"></a>
+        <h4 class="docSection2Title">18.7.1. Bit-fields</h4>
+        <h4 class="docSection2Title">18.7.1. 位域</h4>
+
+<a name="ch18term3"></a>
+        <p class="docText">A special class data member, referred to as a <b><a class="docLink" href="ch18lev1sec9.html#gloss18_03" >bit-field,</a></b> can be declared to hold a specified number of bits. Bit-fields are normally used when a program needs to pass binary data to another program or hardware device.</p>
+        <p class="docText">可以声明一种特殊的类数据成员，称为<b><a class="docLink" href="ch18lev1sec9.html#gloss18_03" >位域</a></b>，来保存特定的位数。当程序需要将二进制数据传递给另一程序或硬件设备的时候，通常使用位域。</p>
+
+<a name="ch18note30"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">The layout in memory of a bit-field is machine-dependent.</p>
+                <p class="docText">位域在内存中的布局是机器相关的。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">A bit-field must be an integral data type. It can be either <tt>signed</tt> or <tt>unsigned</tt>. We indicate that a member is a bit-field by following the member name with a colon and a constant expression specifying the number of bits:</p>
+        <p class="docText">位域必须是整型数据类型，可以是 <tt>signed</tt> 或 <tt>unsigned</tt>。通过在成员名后面接一个冒号以及指定位数的常量表达式，指出成员是一个位域：</p>
+        <pre>
+     typedef unsigned int Bit;
+
+     class File {
+         Bit mode: 2;
+         Bit modified: 1;
+         Bit prot_owner: 3;
+         Bit prot_group: 3;
+         Bit prot_world: 3;
+         // ...
+     };
+</pre><br>
+
+        <p class="docText">The <tt>mode</tt> bit-field has two bits, <tt>modified</tt> only one, and the other members each have three bits. Bit-fields defined in consecutive order within the class body are, if possible, packed within adjacent bits of the same integer, thereby providing for storage compaction. For example, in the preceding declaration, the five bit-fields will be stored in the single <tt>unsigned int</tt> first associated with the bit-field <tt>mode</tt>. Whether and how the bits are packed into the integer is machine-dependent.</p>
+	<p class="docText"><tt>mode</tt> 位域有两个位，<tt>modified</tt> 只有一位，其他每个成员有三个位。（如果可能）将类定义体中按相邻次序定义的位域压缩在同一整数的相邻位，从而提供存储压缩。例如，在前面的声明中，5 个位域将存储在一个首先与位域 <tt>mode</tt> 关联的 <tt>unsigned int</tt> 中。位是否压缩到整数以及如何压缩与机器有关。</p>
+
+<a name="ch18note31"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Ordinarily it is best to make a bit-field an <tt>unsigned</tt> type. The behavior of bit-fields stored in a <tt>signed</tt> type is implementation-defined.</p>
+                <p class="docText">通常最好将位域设为 <tt>unsigned</tt> 类型。存储在 <tt>signed</tt> 类型中的位域的行为由实现定义。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch18lev3sec39"></a>
+
+        <h5 class="docSection3Title">Using Bit-fields</h5>
+        <h5 class="docSection3Title">使用位域</h5>
+
+        <p class="docText">A bit-field is accessed in much the same manner as the other data members of a class. For example, a bit-field that is a <tt>private</tt> member of its class can be accessed only from within the definitions of the member functions and friends of its class:</p>
+        <p class="docText">用与类的其他数据成员相同的方式访问位域。例如，作为类的 <tt>private</tt> 成员的位域只能从成员函数的定义和类的友元访问：</p>
+        <pre>
+     void File::write()
+     {
+         modified = 1;
+         // ...
+     }
+
+     void File::close()
+     {
+         if (modified)
+             // ... <span class="docEmphItalicAlt">save contents</span>
+     }
+</pre><br>
+
+<a name="idd1e152907"></a>
+        <p class="docText">Bit-fields with more than one bit are usually manipulated using the built-in bitwise operators (<a class="docLink" href="ch05lev1sec3.html#ch05lev1sec3" >Section 5.3</a>, p. <a class="docLink" href="ch05lev1sec3.html#ch05lev1sec3" >154</a>):</p>
+        <p class="docText">通常使用内置按位操作符（<a class="docLink" href="ch05lev1sec3.html#ch05lev1sec3" >第 5.3 节</a>）操纵超过一位的位域：</p>
+        <pre>
+     enum { READ = 01, WRITE = 02 }; // <span class="docEmphItalicAlt">File modes</span>
+
+     int main() {
+         File myFile;
+
+         myFile.mode |= READ; // <span class="docEmphItalicAlt">set the</span> <span class="docEmphasis">READ</span> <span class="docEmphItalicAlt">bit</span>
+         if (myFile.mode &amp; READ) // <span class="docEmphItalicAlt">if the</span> <span class="docEmphasis">READ</span> <span class="docEmphItalicAlt">bit is on</span>
+             cout &lt;&lt; "myFile.mode READ is set\n";
+     }
+</pre><br>
+
+        <p class="docText">Classes that define bit-field members also usually define a set of inline member functions to test and set the value of the bit-field. For example, the class <tt>File</tt> might define the members <tt>isRead</tt> and <tt>isWrite</tt>:</p>
+        <p class="docText">定义了位域成员的类通常也定义一组内联成员函数来测试和设置位域的值。例如，<tt>File</tt> 类可以定义成员 <tt>isRead</tt> 和 <tt>isWrite</tt>：</p>
+        <pre>
+     inline int File::isRead() { return mode &amp; READ; }
+     inline int File::isWrite() { return mode &amp; WRITE; }
+
+     if (myFile.isRead()) /* ... */
+</pre><br>
+
+        <p class="docText">With these member functions, the bit-fields can now be declared as private members of class <tt>File</tt>.</p>
+        <p class="docText">有了这些成员函数，现在就可以将位域声明为 <tt>File</tt> 类的私有成员了。</p>
+
+        <p class="docText">The address-of operator (<tt>&amp;</tt>) cannot be applied to a bit-field, so there can be no pointers referring to class bit-fields. Nor can a bit-field be a static member of its class.</p>
+        <p class="docText">地址操作符（<tt>&amp;</tt>）不能应用于位域，所以不可能有引用类位域的指针，位域也不能是类的静态成员。</p>
+
+<a name="ch18lev2sec27"></a>
+        <h4 class="docSection2Title">18.7.2. <tt>volatile</tt> Qualifier</h4>
+        <h4 class="docSection2Title">18.7.2. <tt>volatile</tt> 限定符</h4>
+
+<a name="ch18note32"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">The precise meaning of <tt>volatile</tt> is inherently machine-dependent and can be understood only by reading the compiler documentation. Programs that use <tt>volatile</tt> usually must be changed when they are moved to new machines or compilers.</p>
+                <p class="docText"><tt>volatile</tt> 的确切含义与机器相关，只能通过阅读编译器文档来理解。使用 <tt>volatile</tt> 的程序在移到新的机器或编译器时通常必须改变。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+<a name="idd1e153004"></a><a name="idd1e153010"></a><a name="idd1e153015"></a><a name="idd1e153019"></a><a name="idd1e153025"></a>
+<a name="ch18term23"></a>
+        <p class="docText">Programs that deal directly with hardware often have data elements whose value is controlled by processes outside the direct control of the program itself. For example, a program might contain a variable updated by the system clock. An object should be declared <b><a class="docLink" href="ch18lev1sec9.html#gloss18_23" ><span class="docEmphStrong"><tt>volatile</tt></span></a></b> when its value might be changed in ways outside either the control or detection of the compiler. The <tt>volatile</tt> keyword is a directive to the compiler that it should not perform optimizations on such objects.</p>
+        <p class="docText">直接处理硬件的程序常具有这样的数据成员，它们的值由程序本身直接控制之外的过程所控制。例如，程序可以包含由系统时钟更新的变量。当可以用编译器的控制或检测之外的方式改变对象值的时候，应该将对象声明为 <b><a class="docLink" href="ch18lev1sec9.html#gloss18_23" ><span class="docEmphStrong"><tt>volatile</tt></span></a></b>。关键字 <tt>volatile</tt> 是给编译器的指示，指出对这样的对象不应该执行优化。</p>
+
+        <p class="docText">The <tt>volatile</tt> qualifier is used in much the same way as is the <tt>const</tt> qualifier. It is an additional modifier to a type:</p>
+        <p class="docText">用与 <tt>const</tt> 限定符相同的方式使用 <tt>volatile</tt> 限定符。<tt>volatile</tt> 限定符是一个对类型的附加修饰符：</p>
+        <pre>
+     volatile int display_register;
+     volatile Task *curr_task;
+     volatile int ixa[max_size];
+     volatile Screen bitmap_buf;
+</pre><br>
+
+        <p class="docText"><tt>display_register</tt> is a <tt>volatile</tt> object of type <tt>int</tt>. <tt>curr_task</tt> is a pointer to a <tt>volatile Task</tt> object. <tt>ixa</tt> is a <tt>volatile</tt> array of integers. Each element of the array is considered to be <tt>volatile</tt>. <tt>bitmap_buf</tt> is a <tt>volatile Screen</tt> object. Each of its data members is considered to be <tt>volatile</tt>.</p>
+        <p class="docText"><tt>display_register</tt> 是 <tt>int</tt> 类型的 <tt>volatile</tt> 对象；<tt>curr_task</tt> 是 <tt>volatile</tt> 对象的指针；<tt>ixa</tt> 是整数的 <tt>volatile</tt> 数组，该数组的每个元素都认为是 <tt>volatile</tt> 的；<tt>bitmap_buf</tt> 是 <tt>volatile Screen</tt> 对象，它的每个成员都认为是 <tt>volatile</tt> 的。</p>
+
+        <p class="docText">In the same way that a class may define <tt>const</tt> member functions, it can also define member functions as <tt>volatile</tt>. Only <tt>volatile</tt> member functions may be called on <tt>volatile</tt> objects.</p>
+        <p class="docText">用与定义 <tt>const</tt> 成员函数相同的方式，类也可以将成员函数定义为 <tt>volatile</tt>，<tt>volatile</tt> 对象只能调用 <tt>volatile</tt> 成员函数。</p>
+
+        <p class="docText"><a class="docLink" href="ch04lev1sec2.html#ch04lev2sec7" >Section 4.2.5</a> (p. <a class="docLink" href="ch04lev1sec2.html#ch04lev2sec7" >126</a>) described the interactions between the <tt>const</tt> qualifier and pointers. The same interactions exist between the <tt>volatile</tt> qualifier and pointers. We can declare pointers that are <tt>volatile</tt>, pointers to <tt>volatile</tt> objects, and pointers that are <tt>volatile</tt> that point to <tt>volatile</tt> objects:</p>
+        <p class="docText"><a class="docLink" href="ch04lev1sec2.html#ch04lev2sec7" >第 4.2.5 节</a>介绍了 <tt>const</tt> 限定符与指针的相互作用，<tt>volatile</tt> 限定符与指针之间也存在同样的相互作用。可以声明 <tt>volatile</tt> 指针、指向 <tt>volatile</tt> 对象的指针，以及指向 <tt>volatile</tt> 对象的 <tt>volatile</tt> 指针：</p>
+        <pre>
+     volatile int v;     // <span class="docEmphasis">v</span> <span class="docEmphItalicAlt">is a</span> <span class="docEmphasis">volatile int</span>
+     int *volatile vip;  // <span class="docEmphasis">vip</span> <span class="docEmphItalicAlt">is a</span> <span class="docEmphasis">volatile</span> <span class="docEmphItalicAlt">pointer to</span> <span class="docEmphasis">int</span>
+     volatile int *ivp;  // <span class="docEmphasis">ivp</span> <span class="docEmphItalicAlt">is a pointer to</span> <span class="docEmphasis">volatile int</span>
+     // <span class="docEmphasis">vivp</span> <span class="docEmphItalicAlt">is a</span> <span class="docEmphasis">volatile</span> <span class="docEmphItalicAlt">pointer to</span> <span class="docEmphasis">volatile int</span>
+     volatile int *volatile vivp;
+     int *ip = &amp;v; // <span class="docEmphItalicAlt">error: must use pointer to</span> <span class="docEmphasis">volatile</span>
+     *ivp = &amp;v;    // <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">ivp</span> <span class="docEmphItalicAlt">is pointer to</span> <span class="docEmphasis">volatile</span>
+     vivp = &amp;v;    // <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">vivp</span> <span class="docEmphItalicAlt">is volatile pointer to</span> <span class="docEmphasis">volatile</span>
+</pre><br>
+
+        <p class="docText">As with <tt>const</tt>, we may assign the address of a <tt>volatile</tt> object (or copy a pointer to a <tt>volatile</tt> type) only to a pointer to <tt>volatile</tt>. We may use a <tt>volatile</tt> object to initialize a reference only if the reference is <tt>volatile</tt>.</p>
+	<p class="docText">像用 <tt>const</tt> 一样，只能将 <tt>volatile</tt> 对象的地址赋给指向 <tt>volatile</tt> 的指针，或者将指向 <tt>volatile</tt> 类型的指针复制给指向 <tt>volatile</tt> 的指针。只有当引用为 <tt>volatile</tt> 时，我们才可以使用 <tt>volatile</tt> 对象对引用进行初始化。</p>
+
+	<a name="ch18lev3sec40"></a>
+        <h5 class="docSection3Title">Synthesized Copy Control Does Not Apply to Volatile Objects</h5>
+	<h5 class="docSection3Title">合成的复制控制不适用于 <tt>volatile</tt> 对象</h5>
+
+        <p class="docText">One important difference between the treatment of <tt>const</tt> and <tt>volatile</tt> is that the synthesized copy and assignment operators cannot be used to initialize or assign from a <tt>volatile</tt> object. The synthesized copy-control members take parameters that are <tt>const</tt> references to the class type. However, a <tt>volatile</tt> object cannot be passed to a plain or <tt>const</tt> reference.</p>
+        <p class="docText">对待 <tt>const</tt> 和 <tt>volatile</tt> 的一个重要区别是，不能使用合成的复制和赋值操作符从 <tt>volatile</tt> 对象进行初始化或赋值。合成的复制控制成员接受 <tt>const</tt> 形参，这些形参是对类类型的 <tt>const</tt> 引用，但是，不能将 <tt>volatile</tt> 对象传递给普通引用或 <tt>const</tt> 引用。</p>
+
+        <p class="docText">If a class wants to allow <tt>volatile</tt> objects to be copied or to allow assignment from or to a <tt>volatile</tt> operand, it must define its own versions of the copy constructor and/or assignment operator:</p>
+	<p class="docText">如果类希望允许复制 <tt>volatile</tt> 对象，或者，类希望允许从 <tt>volatile</tt> 操作数或对 <tt>volatile</tt> 操作数进行赋值，它必须定义自己的复制构造函数和／或赋值操作符版本：</p>
+        <pre>
+     class Foo {
+     public:
+         Foo(const volatile Foo&amp;);    // <span class="docEmphItalicAlt">copy from a</span> <span class="docEmphasis">volatile</span> <span class="docEmphItalicAlt">object</span>
+         // <span class="docEmphItalicAlt">assign from a</span> <span class="docEmphasis">volatile</span> <span class="docEmphItalicAlt">object to a non</span> <span class="docEmphasis">volatile</span> <span class="docEmphItalicAlt">objet</span>
+         Foo&amp; operator=(volatile const Foo&amp;);
+         // <span class="docEmphItalicAlt">assign from a</span> <span class="docEmphasis">volatile</span> <span class="docEmphItalicAlt">object to a</span> <span class="docEmphasis">volatile</span> <span class="docEmphItalicAlt">object</span>
+         Foo&amp; operator=(volatile const Foo&amp;) volatile;
+         // <span class="docEmphItalicAlt">remainder of</span> <span class="docEmphasis">class Foo</span>
+     };
+</pre><br>
+
+<a name="idd1e153325"></a><a name="idd1e153330"></a><a name="idd1e153333"></a><a name="idd1e153339"></a><a name="idd1e153342"></a>
+        <p class="docText">By defining the parameter to the copy-control members as a <tt>const volatile</tt> reference, we can copy or assign from any kind of <tt>Foo</tt>: a plain <tt>Foo</tt>, a <tt>const Foo</tt>, a <tt>volatile Foo</tt>, or a <tt>const volatile Foo</tt>.</p>
+        <p class="docText">通过将复制控制成员的形参定义为 <tt>const volatile</tt> 引用，我们可以从任何各类的 <tt>Foo</tt> 对象进行复制或赋值：普通 <tt>Foo</tt> 对象、<tt>const Foo</tt> 对象、<tt>volatile Foo</tt> 对象或 <tt>const volatile Foo</tt> 对象。</p>
+
+<a name="ch18note33"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Although we can define the copy-control members to handle <tt>volatile</tt> objects, a deeper question is whether it makes any sense to copy a <tt>volatile</tt> object. The answer to that question depends intimately on the reason for using <tt>volatile</tt> in any particular program.</p>
+                <p class="docText">虽然可以定义复制控制成员来处理 <tt>volatile</tt> 对象，但更深入的问题是复制 <tt>volatile</tt> 对象是否有意义，对该问题的回答与任意特定程序中使用 <tt>volatile</tt> 的原因密切相关。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch18lev2sec28"></a>
+
+        <h4 class="docSection2Title">18.7.3. Linkage Directives: <tt>extern "C"</tt></h4>
+        <h4 class="docSection2Title">18.7.3. 链接指示 <tt>extern "C"</tt></h4>
+
+<a name="ch18term8"></a>
+        <p class="docText">C++ programs sometimes need to call functions written in another programming language. Most often, that other language is C. Like any name, the name of a function written in another language must be declared. That declaration must specify the return type and parameter list. The compiler checks calls to external-language functions in the same way that it handles ordinary C++ functions. However, the compiler typically must generate different code to call functions written in other languages. C++ uses <b><a class="docLink" href="ch18lev1sec9.html#gloss18_08" >linkage directives</a></b> to indicate the language used for any non-C++ function.</p>
+        <p class="docText">C++ 程序有时需要调用用其他程序设计语言编写的函数，最常见的一语言是 C 语言。像任何名字一样，必须声明用其他语言编写的函数的名字，该声明必须指定返回类型和形参表。编译器按处理普通 C++ 函数一样的方式检查对外部语言函数的调用，但是，编译器一般必须产生不同的代码来调用用其他语言编写的函数。C++ 使用<b><a class="docLink" href="ch18lev1sec9.html#gloss18_08" >链接指示</a></b>指出任意非 C++ 函数所用的语言。</p>
+
+<a name="ch18lev3sec41"></a>
+        <h5 class="docSection3Title">Declaring a Non-C++ Function</h5>
+        <h5 class="docSection3Title">声明非 C++ 函数</h5>
+
+        <p class="docText">A linkage directive can have one of two forms: single or compound. Linkage directives may not appear inside a class or function definition. The linkage directive must appear on the first declaration of a function.</p>
+        <p class="docText">链接指示有两种形式：单个的或复合的。链接指示不能出现在类定义或函数定义的内部，它必须出现在函数的第一次声明上。</p>
+
+        <p class="docText">As an example, let's look at some of the C functions declared in the <tt>cstdlib</tt> header. Declarations in that header might look something like</p>
+        <p class="docText">作为例子，看看头文件 <tt>cstdlib</tt> 中声明的一些 C 函数。该头文件中声明形如：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">illustrative linkage directives that might appear in the C++ header &lt;cstring&gt;</span>
+     // <span class="docEmphItalicAlt">single statement linkage directive</span>
+     extern "C" size_t strlen(const char *);
+     // <span class="docEmphItalicAlt">compound statement linkage directive</span>
+     extern "C" {
+         int strcmp(const char*, const char*);
+         char *strcat(char*, const char*);
+     }
+</pre><br>
+
+        <p class="docText">The first form consists of the <tt>extern</tt> keyword followed by a string literal, followed by an "ordinary" function declaration. The string literal indicates the language in which the function is written.</p>
+        <p class="docText">第一种形式由关键字 <tt>extern</tt> 后接字符串字面值，再接“普通”函数声明构成。字符串字面值指出编写函数所用的语言。</p>
+
+<a name="idd1e153436"></a><a name="idd1e153441"></a><a name="idd1e153444"></a><a name="idd1e153449"></a><a name="idd1e153454"></a>
+        <p class="docText">We can give the same linkage to several functions at once by enclosing their declarations inside curly braces following the linkage directive. These braces serve to group the declarations to which the linkage directive applies. The braces are otherwise ignored, and the names of functions declared within the braces are visible as if the functions were declared outside the braces.</p>
+        <p class="docText">通过将几个函数的声明放在跟在链接指示之后的花括号内部，可以给它们设定相同的链接。花括号的作用是将应用链接指示的声明聚合起来，忽略了花括号，花括号中声明的函数名就是可见的，就像在花括号之外声明函数一样。</p>
+
+<a name="ch18lev3sec42"></a>
+        <h5 class="docSection3Title">Linkage Directives and Header Files</h5>
+        <h5 class="docSection3Title">链接指示与头文件</h5>
+
+        <p class="docText">The multiple-declaration form can be applied to an entire header file. For example, the C++ <tt>cstring</tt> header might look like</p>
+        <p class="docText">可以将多重声明形式应用于整个头文件。例如，C++ 的 <tt>cstring</tt> 头文件可以像这样：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">compound statement linkage directive</span>
+     extern "C" {
+     #include &lt;string.h&gt;     // <span class="docEmphItalicAlt">C functions that manipulate C-style strings</span>
+     }
+</pre><br>
+
+        <p class="docText">When a <tt>#include</tt> directive is enclosed in the braces of a compound linkage directive, all ordinary function declarations in the header file are assumed to be functions written in the language of the linkage directive. Linkage directives can be nested, so if the header contained a function with a linkage directive the linkage of that function is unaffected.</p>
+        <p class="docText">当将 <tt>#include</tt> 指示在复合链接指示的花括号中的时候，假定头文件中的所有普通函数声明都是用链接指示的语言编写的函数。链接指示可以嵌套，所以，如果头文件包含了带链接指示的函数，该函数的链接不受影响。</p>
+
+<a name="ch18note34"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">The functions that C++ inherits from the C library are permitted to be defined as C functions but are not required to be C functionsit's up to each C++ implementation to decide whether to implement the C library functions in C or C++.</p>
+                <p class="docText">允许将 C++ 从 C 函数库继承而来的函数定义为 C 函数，但不是必须定义为 C 函数——决定是用 C 还是用 C++ 实现 C 函数库，是每个 C++ 实现的事情。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch18lev3sec43"></a>
+
+        <h5 class="docSection3Title">Exporting Our C++ Functions to Other Langauges</h5>
+        <h5 class="docSection3Title">导出 C++ 函数到其他语言</h5>
+
+        <p class="docText">By using the linkage directive on a function definition, we can make a C++ function available to a program written in another language:</p>
+        <p class="docText">通过对函数定义使用链接指示，使得用其他语言编写的程序可以使用 C++ 函数：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">the</span> <span class="docEmphasis">calc</span> <span class="docEmphItalicAlt">function can be called from C programs</span>
+     extern "C" double calc(double dparm) { /* ... */ }
+</pre><br>
+
+        <p class="docText">When the compiler generates code for this function, it will generate code appropriate to the indicated language.</p>
+        <p class="docText">当编译器为该函数产生代码的时候，它将产生适合于指定语言的代码。</p>
+
+<a name="ch18note35"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Every declaration of a function defined with a linkage directive must use the same linkage directive.</p>
+                <p class="docText">用链接指示定义的函数的每个声明都必须使用相同的链接指示。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch18lev3sec44"></a>
+
+        <h5 class="docSection3Title">Languages Supported by Linkage Directives</h5>
+        <h5 class="docSection3Title">链接指示支持的语言</h5>
+
+        <p class="docText">A compiler is required to support linkage directives for C. A compiler may provide linkage specifications for other languages. For example, <tt>extern "Ada", extern "FORTRAN"</tt>, and so on.</p>
+	<p class="docText">要求编译器支持对 C 语言的链接指示。编译器可以为其他语言提供链接说明。例如，<tt>extern "Ada"</tt>、<tt>extern "FORTRAN"</tt> 等。</p>
+
+<a name="ch18note36"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">What languages are supported varies by compiler. You must consult the user's guide for further information on any non-C linkage specifications it may provide.</p>
+                <p class="docText">支持什么语言随编译器而变。你必须查阅用户指南，获得关于编译器可以提供的任意非 C 链接说明的进一步信息。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch18sb13"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Preprocessor Support for Linking to C</h2>
+              <h2 class="docSidebarTitle">对链接到 C 的预处理器支持</h2>
+
+<a name="idd1e153563"></a><a name="idd1e153567"></a><a name="idd1e153572"></a><a name="idd1e153575"></a><a name="idd1e153580"></a><a name="idd1e153585"></a><a name="idd1e153590"></a>
+              <p class="docText"><span class="docEmphStrong">It can be useful sometimes to compile the same source file in both C or C++. The preprocessor name <tt>__cplusplus</tt> (two underscores) is automatically defined when compiling C++, so we can conditionally include code based on whether we are compiling C++.</span></p>
+              <p class="docText">有时需要在 C 和 C++ 中编译同一源文件。当编译 C++ 时，自动定义预处理器名字 <span class="docEmphStrong"><tt>__cplusplus</tt></span>（两个下划线），所以，可以根据是否正在编译 C++ 有条件地包含代码。</p>
+              <pre>
+     #ifdef __cplusplus
+     // <span class="docEmphasis">ok: we're compiling C++</span>
+     extern "C"
+     #endif
+     int strcmp(const char*, const char*);
+</pre><br>
+            </td>
+          </tr>
+        </table><br>
+        <a name="ch18lev3sec45"></a>
+
+        <h5 class="docSection3Title">Overloaded Functions and Linkage Directives</h5>
+        <h5 class="docSection3Title">重载函数与链接指示</h5>
+
+        <p class="docText">The interaction between linkage directives and function overloading depends on the target language. If the language supports overloaded functions, then it is likely that a compiler that implements linkage directives for that language would also support overloading of these functions from C++.</p>
+        <p class="docText">链接指示与函数重载之间的相互作用依赖于目标语言。如果语言支持重载函数，则为该语言实现链接指示的编译器很可能也支持 C++ 的这些函数的重载。</p>
+
+        <p class="docText">The only language guaranteed to be supported by C++ is C. The C language does not support function overloading, so it should not be a surprise that a linkage directive can be specified only for one C function in a set of overloaded functions. It is an error to declare more than one function with C linakage with a given name:</p>
+        <p class="docText">C++ 保证支持的唯一语言是 C。C 语言不支持函数重载，所以，不应该对下面的情况感到惊讶：在一组重载函数中只能为一个 C 函数指定链接指示。用带给定名字的 C 链接声明多于一个函数是错误的：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">error: two</span> <span class="docEmphasis">extern "C"</span> <span class="docEmphItalicAlt">functions in set of overloaded functions</span>
+     extern "C" void print(const char*);
+     extern "C" void print(int);
+</pre><br>
+
+        <p class="docText">In C++ programs, it is fairly common to overload C functions. However, the other functions in the overload set must all be C++ functions:</p>
+        <p class="docText">在 C++ 程序中，重载 C 函数很常见，但是，重载集合中的其他函数必须都是 C++ 函数：</p>
+        <pre>
+     class SmallInt { /* ... */ };
+     class BigNum { /* ... */ };
+     // <span class="docEmphItalicAlt">the C function can be called from C and C++ programs</span>
+     // <span class="docEmphItalicAlt">the C++ functions overload that function and are callable from C++</span>
+     extern "C" double calc(double);
+     extern SmallInt calc(const SmallInt&amp;);
+     extern BigNum calc(const BigNum&amp;);
+</pre><br>
+
+        <p class="docText">The C version of <tt>calc</tt> can be called from C programs and from C++ programs. The additional functions are C++ functions with class parameters that can be called only from C++ programs. The order of the declarations is not significant.</p>
+        <p class="docText">可以从 C 程序和 C++ 程序调用 <tt>calc</tt> 的 C 版本。其余函数是带类型形参的 C++ 函数，只能从 C++ 程序调用。声明的次序不重要。</p>
+
+<a name="ch18lev3sec46"></a>
+        <h5 class="docSection3Title">Pointers to <tt>extern "C"</tt> Functions</h5>
+        <h5 class="docSection3Title"><tt>extern "C"</tt> 函数和指针</h5>
+
+        <p class="docText">The language in which a function is written is part of its type. To declare a pointer to a function written in another programming language, we must use a linkage directive:</p>
+        <p class="docText">编写函数所用的语言是函数类型的一部分。为了声明用其他程序设计语言编写的函数的指针，必须使用链接指示：</p>
+        <pre>
+     // <span class="docEmphasis">pf</span> <span class="docEmphItalicAlt">points to a C function returning</span> <span class="docEmphasis">void</span> <span class="docEmphItalicAlt">taking an</span> <span class="docEmphasis">int</span>
+     extern "C" void (*pf)(int);
+</pre><br>
+
+<a name="idd1e153693"></a><a name="idd1e153698"></a><a name="idd1e153705"></a><a name="idd1e153712"></a>
+        <p class="docText">When <tt>pf</tt> is used to call a function, the function call is compiled assuming that the call is to a C function.</p>
+        <p class="docText">使用 <tt>pf</tt> 调用函数的时候，假定该调用是一个 C 函数调用而编译该函数。</p>
+
+<a name="ch18note37"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">A pointer to a C function does not have the same type as a pointer to a C++ function. A pointer to a C function cannot be initialized or be assigned to point to a C++ function (and vice versa).</p>
+                <p class="docText">C 函数的指针与 C++ 函数的指针具有不同的类型，不能将 C 函数的指针初始化或赋值为 C++ 函数的指针（反之亦然）。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">When there is such a mismatch, a compile-time error message is issued:</p>
+        <p class="docText">存在这种不匹配的时候，会给出编译时错误：</p>
+        <pre>
+     void (*pf1)(int);            // <span class="docEmphItalicAlt">points to a C++ function</span>
+     extern "C" void (*pf2)(int); // <span class="docEmphItalicAlt">points to a C function</span>
+     pf1 = pf2; // <span class="docEmphItalicAlt">error:</span> <span class="docEmphasis">pf1</span> <span class="docEmphItalicAlt">and</span> <span class="docEmphasis">pf2</span> <span class="docEmphItalicAlt">have different types</span>
+</pre><br>
+        <a name="ch18note38"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Some C++ compilers may accept the preceding assignment as a language extension, even though, strictly speaking, it is illegal.</p>
+                <p class="docText">一些 C++ 编译器可以接受前面的赋值作为语言扩展，尽管严格说来它是非法的。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch18lev3sec47"></a>
+
+        <h5 class="docSection3Title">Linkage Directives Apply to the Entire Declaration</h5>
+        <h5 class="docSection3Title">应用于整个声明的链接指示</h5>
+
+        <p class="docText">When we use a linkage directive, it applies to the function and any function point-ers used as the return type or as a parameter type:</p>
+        <p class="docText">使用链接指示的时候，它应用于函数和任何函数指针，作为返回类型或形参类型使用：</p>
+        <pre>
+     // <span class="docEmphasis">f1</span> <span class="docEmphItalicAlt">is a C function; its parameter is a pointer to a C function</span>
+     extern "C" void f1(void(*)(int));
+</pre><br>
+
+        <p class="docText">This declaration says that <tt>f1</tt> is a C function that doesn't return a value. It has one parameter, which is a pointer to a function that returns nothing and takes a single <tt>int</tt> parameter. The linkage directive applies to the function pointer as well as to <tt>f1</tt>. When we call <tt>f1</tt>, we must pass it the name of a C function or a pointer to a C function.</p>
+        <p class="docText">这个声明是说，<tt>f1</tt> 是一个不返回值的 C 函数，它有一个形参，该形参是不返回值并接受单个形参的函数的指针。链接指示应用于该函数指针以及 <tt>f1</tt>。调用的时候，必须将 C 函数名字或 C 函数指针传递给它。</p>
+
+        <p class="docText">Because a linkage directive applies to all the functions in a declaration, we must use a typedef to pass a pointer to a C function to a C++ function:</p>
+        <p class="docText">因为链接指示应用于一个声明中的所有函数，所以必须使用类型别名，以便将 C 函数的指针传递给 C++ 函数：</p>
+        <pre>
+     // <span class="docEmphasis">FC</span> <span class="docEmphItalicAlt">is a pointer to C function</span>
+     extern "C" typedef void FC(int);
+     // <span class="docEmphasis">f2</span> <span class="docEmphItalicAlt">is a C++ function with a parameter that is a pointer to a C function</span>
+     void f2(FC *);
+</pre><br>
+        <a name="ch18sb14"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 18.7.3</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch18qa12q1"></a><b>Exercise 18.34:</b></td>
+
+                    <td>
+                      <p class="docText">Explain these declarations and indicate whether they are legal:</p>
+                      <p class="docText">解释下面这些声明，并指出它们是否合法：</p>
+                      <pre>
+     extern "C" int compute(int *, int);
+     extern "C" double compute(double *, double);
+</pre><br>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch18lev1sec6.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch18lev1sec8.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

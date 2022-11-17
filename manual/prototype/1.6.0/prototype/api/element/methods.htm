@@ -1,0 +1,686 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Element.Methods - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>Element.Methods</h2>
+		<div id="method-list">
+			<ul>
+				<li><a href="methods.htm#method-absolutize">absolutize</a></li>
+				<li><a href="methods.htm#method-addclassname">addClassName</a></li>
+				<li><a href="methods.htm#method-adjacent">adjacent</a></li>
+				<li><a href="methods.htm#method-ancestors">ancestors</a></li>
+				<li><a href="methods.htm#method-childelements">childElements</a></li>
+				<li><a href="methods.htm#method-classnames">classNames</a></li>
+				<li><a href="methods.htm#method-cleanwhitespace">cleanWhitespace</a></li>
+				<li><a href="methods.htm#method-cloneposition">clonePosition</a></li>
+				<li><a href="methods.htm#method-cumulativeoffset">cumulativeOffset</a></li>
+				<li><a href="methods.htm#method-cumulativescrolloffset">cumulativeScrollOffset</a></li>
+				<li><a href="methods.htm#method-descendantof">descendantOf</a></li>
+				<li><a href="methods.htm#method-descendants">descendants</a></li>
+				<li><a href="methods.htm#method-down">down</a></li>
+				<li><a href="methods.htm#method-empty">empty</a></li>
+				<li><a href="methods.htm#method-fire">fire</a></li>
+				<li><a href="methods.htm#method-firstdescendant">firstDescendant</a></li>
+				<li><a href="methods.htm#method-getdimensions">getDimensions</a></li>
+				<li><a href="methods.htm#method-getelementsbyclassname">getElementsByClassName</a></li>
+				<li><a href="methods.htm#method-getelementsbyselector">getElementsBySelector</a></li>
+				<li><a href="methods.htm#method-getheight">getHeight</a></li>
+				<li><a href="methods.htm#method-getoffsetparent">getOffsetParent</a></li>
+				<li><a href="methods.htm#method-getstyle">getStyle</a></li>
+				<li><a href="methods.htm#method-getwidth">getWidth</a></li>
+				<li><a href="methods.htm#method-hasclassname">hasClassName</a></li>
+				<li><a href="methods.htm#method-hide">hide</a></li>
+				<li><a href="methods.htm#method-identify">identify</a></li>
+				<li><a href="methods.htm#method-immediatedescendants">immediateDescendants</a></li>
+				<li><a href="methods.htm#method-insert">insert</a></li>
+				<li><a href="methods.htm#method-inspect">inspect</a></li>
+				<li><a href="methods.htm#method-makeclipping">makeClipping</a></li>
+				<li><a href="methods.htm#method-makepositioned">makePositioned</a></li>
+				<li><a href="methods.htm#method-match">match</a></li>
+				<li><a href="methods.htm#method-next">next</a></li>
+				<li><a href="methods.htm#method-nextsiblings">nextSiblings</a></li>
+				<li><a href="methods.htm#method-observe">observe</a></li>
+				<li><a href="methods.htm#method-positionedoffset">positionedOffset</a></li>
+				<li><a href="methods.htm#method-previous">previous</a></li>
+				<li><a href="methods.htm#method-previoussiblings">previousSiblings</a></li>
+				<li><a href="methods.htm#method-readattribute">readAttribute</a></li>
+				<li><a href="methods.htm#method-recursivelycollect">recursivelyCollect</a></li>
+				<li><a href="methods.htm#method-relativize">relativize</a></li>
+				<li><a href="methods.htm#method-remove">remove</a></li>
+				<li><a href="methods.htm#method-removeclassname">removeClassName</a></li>
+				<li><a href="methods.htm#method-replace">replace</a></li>
+				<li><a href="methods.htm#method-scrollto">scrollTo</a></li>
+				<li><a href="methods.htm#method-select">select</a></li>
+				<li><a href="methods.htm#method-setopacity">setOpacity</a></li>
+				<li><a href="methods.htm#method-setstyle">setStyle</a></li>
+				<li><a href="methods.htm#method-show">show</a></li>
+				<li><a href="methods.htm#method-siblings">siblings</a></li>
+				<li><a href="methods.htm#method-stopobserving">stopObserving</a></li>
+				<li><a href="methods.htm#method-toggle">toggle</a></li>
+				<li><a href="methods.htm#method-toggleclassname">toggleClassName</a></li>
+				<li><a href="methods.htm#method-undoclipping">undoClipping</a></li>
+				<li><a href="methods.htm#method-undopositioned">undoPositioned</a></li>
+				<li><a href="methods.htm#method-up">up</a></li>
+				<li><a href="methods.htm#method-update">update</a></li>
+				<li><a href="methods.htm#method-viewportoffset">viewportOffset</a></li>
+				<li><a href="methods.htm#method-visible">visible</a></li>
+				<li><a href="methods.htm#method-wrap">wrap</a></li>
+				<li><a href="methods.htm#method-writeattribute">writeAttribute</a></li>
+			</ul>
+		</div>
+		<div id="abody">
+			<p>
+				<code>Element.Methods</code> 是一个针对 DOM 元素的混入对象。这个对象所具有的方法不能直接访问，必须通过
+				<a href="../utility/dollar.htm" >$()</a>	工具函数或 <a href="../element.htm" >Element</a>
+				对象进行访问。
+			</p>
+			<h3>样例</h3>
+			<pre><code class="javascript">// 隐藏元素 
+$(element).hide(); 
+//返回一个 <code>Enumerable</code>：包含 ID 为 "article" 的元素的所有后代节点
+$('articles').descendants();</code></pre>
+		</div>
+		<div id="method-excerpts">
+			<h3>方法</h3>
+			<div id="method-absolutize" class="mexcerpt">
+				<h4>
+					<a href="absolutize.htm" >absolutize</a>
+					<div class="box">1.6</div>
+				</h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">absolutize(element) -> HTMLElement</code></pre>
+					<p>
+						转换元素的定位方式为绝对定位，并且不改变元素在页面中的位置。<br />
+						<strong>译注：</strong>该方法使用代码 <code>element.style.position = 'absolute'</code> 改变定位方式。在改变定位方式后，
+						元素左上角的坐标仍会保持原来的位置，如果元素未设置初始的 <code>width</code> 和 <code>height</code> 属性，则调用该方法后，
+						元素的宽度和高度会改变为系统预设值。
+					</p>
+				</div>
+			</div>
+			<div id="method-addclassname" class="mexcerpt">
+				<h4><a href="addClassName.htm" >addClassName</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">addClassName(element, className) -> HTMLElement </code></pre>
+					<p>增加一个 CSS 类到 <code>element</code> 中。</p>
+				</div>
+			</div>
+			<div id="method-adjacent" class="mexcerpt">
+				<h4>
+					<a href="adjacent.htm" >adjacent</a>
+					<div class="box">1.6</div>
+				</h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">Element.adjacent(element[, selectors...]) -> [HTMLElement...]
+someElement.adjacent([selectors...]) -> [HTMLElement...]</code></pre>
+					<p>
+						查找当前元素的所有兄弟节点，若指定选择器，则这些节点必须与给定的选择器（selectors）相匹配。<br />
+						<strong>译注：</strong>该方法可<em>同时</em>查询前导兄弟节点和后继兄弟节点。
+					</p>
+				</div>
+			</div>
+			<div id="method-ancestors" class="mexcerpt">
+				<h4><a href="ancestors.htm" >ancestors</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">ancestors(element) -> [HTMLElement...]</code></pre>
+					<p>
+						返回 <code>element</code> 的所有先代节点（父节点、父节点的父节点...一直到最顶层节点），结果为一个数组，数组元素已经过
+						<a href="extend.htm" >扩展</a>。
+					</p>
+				</div>
+			</div>
+			<div id="method-childelements" class="mexcerpt">
+				<h4>
+					<a href="childElements.htm" >childElements</a>
+					<div class="box">1.5.1</div>
+				</h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">childElements(element) -> [HTMLElement...]</code></pre>
+					<p>
+						返回元素的所有子元素，结果为一个数组，数组元素已经过 <a href="extend.htm" >扩展</a>。
+					</p>
+				</div>
+			</div>
+			<div id="method-classnames" class="mexcerpt">
+				<h4><a href="classNames.htm" >classNames</a><div class="box">不推荐</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">classNames(element) -> Enumerable</code></pre>
+					<p>
+						返回一个新的 <code>ClassNames</code> 的实例，该实例是一个 <code>Enumerable</code> 对象，用于读写元素的 CSS 类名称。
+					</p>
+				</div>
+			</div>
+			<div id="method-cleanwhitespace" class="mexcerpt">
+				<h4><a href="cleanwhitespace.htm" >cleanWhitespace</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">cleanWhitespace(element) -> HTMLElement</code></pre>
+					<p>
+						移除元素中所有仅包含空白的文本节点，返回移除空白文本节点后的元素。<br />
+						<strong>译注：</strong>所谓空白文本节点，是根据 XML 中的概念得来的，例如，有以下 HTML 代码：
+					</p>
+					<pre><code class='ebnf'>&lt;div&gt;
+	&lt;p&gt;第一段&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+					<p>
+						&lt;div&gt; 的子节点（element.childNodes）包括 &lt;p&gt; 和空白文本节点（对于空白文本节点，各种浏览器的处理方式不一样）,
+						这些空白文本节点有时对处理节点的顺序关系会造成影响，如上述 HTML 代码中我们通常认为 &lt;p&gt; 没有前导和后继兄弟节点，
+						但因为空白文本节点的干扰，程序可能会认为 &lt;p&gt; 有一个前导兄弟节点和一个后继兄弟节点。为消除这些干扰因素，Prototype
+						提供了 <code>cleanWhitespace</code> 方法，用于去除无用的空白文本节点。
+					</p>
+				</div>
+			</div>
+			<div id="method-cloneposition" class="mexcerpt">
+				<h4><a href="cloneposition.htm" >clonePosition</a><div class="box">1.6</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">clonePosition(element, source[, options]) -> HTMLElement</code></pre>
+					<p>
+						从 <code>source</code> 中复制参数 <code>options</code> 指定的位置和/或尺寸的相关信息到 <code>element</code>。
+					</p>
+				</div>
+			</div>
+			<div id="method-cumulativeoffset" class="mexcerpt">
+				<h4><a href="cumulativeoffset.htm" >cumulativeOffset</a><div class="box">1.6</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">cumulativeOffset(element) -> [Number, Number] 或 { left: Number, top: Number }</code></pre>
+					<p>
+						返回 <code>element</code> 相对于页面左上角的坐标。<br />
+						<strong>译注：</strong>假定返回值为 offset，则 X 轴坐标可通过 <code>offset[0]</code> 获取，也可以通过
+						<code>offset.left</code> 获取，Y 轴坐标可通过 <code>offset[1]</code> 获取，也可通过 <code>offset.top</code> 获取。
+					</p>
+				</div>
+			</div>
+			<div id="method-cumulativescrolloffset" class="mexcerpt">
+				<h4><a href="cumulativescrolloffset.htm" >cumulativeScrollOffset</a><div class="box">1.6</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">cumulativeScrollOffset(element) -> [Number, Number] 或 { left: Number, top: Number }</code></pre>
+					<p>
+						在内含滚动条的容器中计算元素的累积滚动偏移值。<br />
+						<strong>译注：</strong>假定返回值为 offset，则 X 轴坐标可通过 <code>offset[0]</code> 获取，也可以通过
+						<code>offset.left</code> 获取，Y 轴坐标可通过 <code>offset[1]</code> 获取，也可通过 <code>offset.top</code> 获取。
+					</p>
+				</div>
+			</div>
+			<div id="method-descendantof" class="mexcerpt">
+				<h4><a href="descendantOf.htm" >descendantOf</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">descendantOf(element, ancestor) -> Boolean </code></pre>
+					<p>判断 <code>element</code> 是否是参数 <code>ancestor</code> 指定元素的后代节点。</p>
+				</div>
+			</div>
+			<div id="method-descendants" class="mexcerpt">
+				<h4><a href="descendants.htm" >descendants</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">descendants(element) -> [HTMLElement...]</code></pre>
+					<p>
+						返回 <code>element</code> 的所有后代节点，结果为一个数组，数组元素已经过 <a href="extend.htm" >扩展</a>。
+					</p>
+				</div>
+			</div>
+			<div id="method-down" class="mexcerpt">
+				<h4><a href="down.htm" >down</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">down(element[, cssRule][, index = 0]) -> HTMLElement | undefined</code></pre>
+					<p>
+						返回 <code>element</code> 下与 <code>cssRule</code> 相匹配的第一个后代节点（如果指定 <code>index</code> 参数，则返回第
+						<em>index</em> 个）。如果未指定	<code>cssRule</code>，则默认匹配所有后代节点。如果没有符合条件的后代节点，返回
+						<code>undefined</code>。
+					</p>
+				</div>
+			</div>
+			<div id="method-empty" class="mexcerpt">
+				<h4><a href="empty.htm" >empty</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">empty(element) -> Boolean</code></pre>
+					<p>测试 <code>element</code> 是否为空（例如仅包含空白）。</p>
+				</div>
+			</div>
+			<div id="method-fire" class="mexcerpt">
+				<h4><a href="fire.htm" >fire</a><div class="box">1.6.0</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">fire(eventName[, memo]) -> Event</code></pre>
+					<p>在当前元素上触发一个自定义事件。</p>
+				</div>
+			</div>
+			<div id="method-firstdescendant" class="mexcerpt">
+				<h4><a href="firstDescendant.htm" >firstDescendant</a><div class="box">1.5.1</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">firstDescendant(element) -> HTMLElement</code></pre>
+					<p>
+						返回第一个子元素。与 DOM 属性 <code>firstChild</code> 不同，<code>firstChild</code> 返回任意类型的节点（在很多情形下，
+						经常是一个空白文本节点[<strong>译注：</strong>这种情况在 Firefox 中较为常见]）。
+					</p>
+				</div>
+			</div>
+			<div id="method-getdimensions" class="mexcerpt">
+				<h4><a href="getDimensions.htm" >getDimensions</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">getDimensions(element) -> {height: Number, width: Number}</code></pre>
+					<p>
+						获取 <code>element</code> 的 <code>width</code> 和 <code>height</code>，并返回一个对象，包括宽高的名值对。
+					</p>
+				</div>
+			</div>
+			<div id="method-getelementsbyclassname" class="mexcerpt">
+				<h4>
+					<a href="getElementsByClassName.htm" >getElementsByClassName</a><div class="box">不推荐</div>
+				</h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">getElementsByClassName(element, className) -> [HTMLElement...]</code></pre>
+					<p>
+						查询 <code>element</code> 下所有具有参数 <code>className</code> 指定的 CSS 类名称的后代节点，并返回一个数组，
+						数组中的元素已经过 <a href="extend.htm" >扩展</a>。
+					</p>
+				</div>
+			</div>
+			<div id="method-getelementsbyselector" class="mexcerpt">
+				<h4><a href="getelementsbyselector.htm" >getElementsBySelector</a><div class="box">不推荐</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">getElementsBySelector(element, selector...) -> [HTMLElement...]</code></pre>
+					<p>
+						根据一个或多个指定的 CSS 选择器（字符串），在 <code>element</code> 中查找匹配其中任何一个选择器的后代节点，
+						并返回一个数组，数组中的元素已经过 <a href="extend.htm" >扩展</a>。
+					</p>
+				</div>
+			</div>
+			<div id="method-getheight" class="mexcerpt">
+				<h4><a href="getheight.htm" >getHeight</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">getHeight(element) -> Number</code></pre>
+					<p>获取 <code>element</code> 的高度。</p>
+				</div>
+			</div>
+			<div id="method-getoffsetparent" class="mexcerpt">
+				<h4><a href="getoffsetparent.htm" >getOffsetParent</a><div class="box">1.6</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">getOffsetParent(element) -> HTMLElement</code></pre>
+					<p>
+						返回 <code>element</code> 的容器块（Containing Block）（<strong>译注：</strong>距离元素最近的 CSS
+						<code>position</code> 属性为 <code>relative</code> 或 <code>absolute</code>
+						的先代节点）节点，如果不存在这样一个节点，则返回 <code>body</code> 元素。
+					</p>
+				</div>
+			</div>
+			<div id="method-getstyle" class="mexcerpt">
+				<h4><a href="getStyle.htm" >getStyle</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">getStyle(element, property) -> String | null</code></pre>
+					<p>
+						返回 <code>element</code> 的指定 CSS 属性值。<code>property</code> 可以用标准的 CSS 名称指定，也可以使用
+						camelized 命名方式指定（<strong>译注：</strong>例如 CSS 属性 border-width 可以用 border-width 指代，也可用 borderWidth 指代）。
+					</p>
+				</div>
+			</div>
+			<div id="method-getwidth" class="mexcerpt">
+				<h4><a href="getWidth.htm" >getWidth</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">getWidth(element) -> Number</code></pre>
+					<p>获取 <code>element</code> 的宽度。</p>
+				</div>
+			</div>
+			<div id="method-hasclassname" class="mexcerpt">
+				<h4><a href="hasClassName.htm" >hasClassName</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">hasClassName(element, className) -> Boolean</code></pre>
+					<p>判断 <code>element</code> 是否包含参数 <code>className</code> 指定的 CSS 类名称。</p>
+				</div>
+			</div>
+			<div id="method-hide" class="mexcerpt">
+				<h4><a href="hide.htm" >hide</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">hide(element) -> HTMLElement</code></pre>
+					<p>将 <code>element</code> 隐藏，并返回该元素。</p>
+				</div>
+			</div>
+			<div id="method-identify" class="mexcerpt">
+				<h4><a href="identify.htm" >identify</a><div class="box">1.6</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">identify(element) -> id</code></pre>
+					<p>
+						如果 <code>element</code> 存在 <code>id</code> 属性，则返回 <code>id</code> 属性值，否则自动为元素生成一个唯一的
+						<code>id</code>，并返回该 <code>id</code> 值。
+					</p>
+				</div>
+			</div>
+			<div id="method-immediatedescendants" class="mexcerpt">
+				<h4><a href="immediateDescendants.htm" >immediateDescendants</a><div class="box">deprecated</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">immediateDescendants(element) -> [HTMLElement...]</code></pre>
+					<p>
+						获取元素的直接后代（即子元素），返回一个数组，数组中的元素已经过 <a href="extend.htm" >扩展</a>。
+					</p>
+				</div>
+			</div>
+			<div id="method-insert" class="mexcerpt">
+				<h4><a href="insert.htm" >insert</a><div class="box">1.6</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">insert(element, { position: content }) -> HTMLElement 
+insert(element, content) -> HTMLElement</code></pre>
+					<p>
+						根据第二个参数 <code>position</code> 属性指定的位置，插入 <code>content</code> 到元素的前面、后面、顶部或底部。
+						如果第二个参数仅包括 <code>content</code>，则将 <code>content</code> 追加到 <code>element</code> 中。<br />	
+						<strong>译注：</strong><code>position</code> 取值为：<code>before</code>、<code>after</code>、<code>top</code>
+						或 <code>bottom</code>。
+					</p>
+				</div>
+			</div>
+			<div id="method-inspect" class="mexcerpt">
+				<h4><a href="inspect.htm" >inspect</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">inspect(element) -> String</code></pre>
+					<p>返回 <code>element</code> 的字符描述形式，该方法主要用于调试。</p>
+				</div>
+			</div>
+			<div id="method-makeclipping" class="mexcerpt">
+				<h4><a href="makeClipping.htm" >makeClipping</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">makeClipping(element) -> HTMLElement</code></pre>
+					<p>
+						通过将超出元素边界的内容设置为 <code>'hidden'</code>，来虚拟仅有少数浏览器支持的 CSS <code>clip</code> 属性。返回
+						<code>element</code>。
+					</p>
+				</div>
+			</div>
+			<div id="method-makepositioned" class="mexcerpt">
+				<h4><a href="makePositioned.htm" >makePositioned</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">makePositioned(element) -> HTMLElement</code></pre>
+					<p>
+						该方法使你能够方便的创建 <a href="http://www.w3.org/TR/CSS21/visudet.html#containing-block-details" >CSS
+						容器块（block）</a>，如果 <code>element</code> 的 CSS position 属性初始值为 <code>'static'</code>
+						或 <code>undefined</code>，它将设置 position 属性为 <code>'relative'</code>。该方法返回元素本身。
+					</p>
+				</div>
+			</div>
+			<div id="method-match" class="mexcerpt">
+				<h4><a href="match.htm" >match</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">match(element, selector) -> Boolean</code></pre>
+					<p>判断 <code>element</code> 是否匹配参数 <code>selector</code> 指定的 CSS 选择器。</p>
+				</div>
+			</div>
+			<div id="method-next" class="mexcerpt">
+				<h4><a href="next.htm" >next</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">next(element[, cssRule][, index = 0]) -> HTMLElement | undefined</code></pre>
+					<p>
+						返回匹配 <code>cssRule</code> 指定规则的 <code>element</code> 的下一个兄弟节点（如果指定 <code>index</code>
+						参数，则返回第 <em>index</em> 个）。如果未指定 <code>cssRule</code> 参数，则默认匹配所有后继兄弟节点。
+						如果没有符合条件的节点，返回 <code>undefined</code>。
+					</p>
+				</div>
+			</div>
+			<div id="method-nextsiblings" class="mexcerpt">
+				<h4><a href="nextSiblings.htm" >nextSiblings</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">nextSiblings(element) -> [HTMLElement...]</code></pre>
+					<p>
+						返回 <code>element</code> 的所有后继兄弟节点，结果为一个数组，数组元素已经过
+						<a href="extend-1.htm" >扩展</a>。
+					</p>
+				</div>
+			</div>
+			<div id="method-observe" class="mexcerpt">
+				<h4><a href="observe.htm" >observe</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">observe(element, eventName, handler[, useCapture = false]) -> HTMLElement</code></pre>
+					<p>为 <code>element</code> 注册一个事件处理程序，返回元素本身。</p>
+				</div>
+			</div>
+			<div id="method-positionedoffset" class="mexcerpt">
+				<h4><a href="positionedoffset.htm" >positionedOffset</a><div class="box">1.6</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">positionedOffset(element) -> [Number, Number] 或 { left: Number, top: Number }</code></pre>
+					<p>
+						以 <code>element</code> 的容器块（Containing Block）节点（<strong>译注：</strong>距离元素最近的 CSS <code>position</code>
+						属性为 <code>relative</code> 或 <code>absolute</code> 的先代节点）为坐标原点，返回 <code>element</code> 
+						的坐标偏移值（元素的容器块节点可通过 <a href="getoffsetparent.htm" >Element#getOffsetParent</a> 方法获取）。<br />
+						<strong>译注：</strong>假定返回值为 offset，则 X 轴坐标可通过 <code>offset[0]</code> 获取，也可以通过
+						<code>offset.left</code> 获取，Y 轴坐标可通过 <code>offset[1]</code> 获取，也可通过 <code>offset.top</code> 获取。
+					</p>
+				</div>
+			</div>
+			<div id="method-previous" class="mexcerpt">
+				<h4><a href="previous.htm" >previous</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">previous(element[, cssRule][, index = 0]) -> HTMLElement | undefined</code></pre>
+					<p>
+						返回匹配 <code>cssRule</code> 指定规则的 <code>element</code> 的前一个兄弟节点（如果指定 <code>index</code>
+						参数，则返回第 <code>index</code> 个）。如果未指定 <code>cssRule</code> 参数，则默认匹配所有前导兄弟节点。
+						如果没有符合条件的节点，返回 <code>undefined</code>。
+					</p>
+				</div>
+			</div>
+			<div id="method-previoussiblings" class="mexcerpt">
+				<h4><a href="previousSiblings.htm" >previousSiblings</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">previousSiblings(element) -> [HTMLElement...]</code></pre>
+					<p>返回 <code>element</code> 的所有前导兄弟节点，结果为一个数组，数组元素已经过 <a href="extend.htm" >扩展</a>。</p>
+				</div>
+			</div>
+			<div id="method-readattribute" class="mexcerpt">
+				<h4><a href="readAttribute.htm" >readAttribute</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">readAttribute(element, attribute) -> String | null</code></pre>
+					<p>
+						返回 <code>elemnet</code> 由参数 <code>attribute</code> 指定的属性值，若不存在指定的属性值，返回 <code>null</code>。
+					</p>
+				</div>
+			</div>
+			<div id="method-recursivelycollect" class="mexcerpt">
+				<h4><a href="recursivelyCollect.htm" >recursivelyCollect</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">recursivelyCollect(element, property) -> [HTMLElement...]</code></pre>
+					<p>
+						通过递归获取和 <code>element</code> 相关的元素集合，元素的相关性由 <code>property</code> 参数指定，<code>property</code>
+						必须是 <code>element</code> 的一个<em>属性</em>（不能为方法！），指向<em>单个</em> DOM 节点。该方法返回一个数组，数组元素已经过
+						<a href="extend.htm" >扩展</a>。
+					</p>
+				</div>
+			</div>
+			<div id="method-relativize" class="mexcerpt">
+				<h4><a href="relativize.htm" >relativize</a><div class="box">1.6</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">relativize(element) -> HTMLElement</code></pre>
+					<p>
+						转换元素的定位方式为相对定位，并且不改变元素在页面中的位置。<br />
+						<strong>译注：</strong>该方法使用代码 <code>element.style.position = 'relative'</code> 改变定位方式。在改变定位方式后，
+						元素左上角的坐标仍会保持原来的位置，如果元素未设置初始的 <code>width</code> 和 <code>height</code> 属性，则调用该方法后，
+						元素的宽度和高度会改变为系统预设值。<br />
+						<strong>注意：在 1.6.0.3 版本中，该方法会引发异常，需要在第 2066 行后插入代码：</strong>
+						<pre><code>element._originalWidth  = element.style.width;
+element._originalHeight = element.style.height;</code></pre>
+						<strong>其它版本未知。</strong>
+					</p>
+				</div>
+			</div>
+			<div id="method-remove" class="mexcerpt">
+				<h4><a href="remove.htm" >remove</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">remove(element) -> HTMLElement</code></pre>
+					<p>从文档中彻底移除 <code>element</code>，返回移除的元素。</p>
+				</div>
+			</div>
+			<div id="method-removeclassname" class="mexcerpt">
+				<h4><a href="removeClassName.htm" >removeClassName</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">removeClassName(element, className) -> HTMLElement</code></pre>
+					<p>从 <code>element</code> 中移除参数 <code>className</code> 指定的 CSS 类，返回元素本身。</p>
+				</div>
+			</div>
+			<div id="method-replace" class="mexcerpt">
+				<h4><a href="replace.htm" >replace</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">replace(element[, html]) -> HTMLElement</code></pre>
+					<p>
+						使用 <code>html</code> 参数指定的内容替换 <code>element</code>，返回被替换的 <code>element</code>。<br />
+						<strong>译注：</strong>该方法类似于 IE 下的 <code>element.outerHTML = html</code>。
+					</p>
+				</div>
+			</div>
+			<div id="method-scrollto" class="mexcerpt">
+				<h4><a href="scrollto.htm" >scrollTo</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">scrollTo(element) -> HTMLElement</code></pre>
+					<p>滚动窗口以便 <code>elemnet</code> 显示在窗口可视区域的顶部，返回元素本身。</p>
+				</div>
+			</div>
+			<div id="method-select" class="mexcerpt">
+				<h4><a href="select.htm" >select</a><div class="box">1.6</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">select(element, selector...) -> [HTMLElement...]</code></pre>
+					<p>
+						根据一个或多个指定的 CSS 选择器（字符串），在 <code>element</code> 中查找匹配其中任何一个选择器的后代节点，
+						返回数组，数组元素已经过 <a href="extend.htm" >扩展</a>。
+					</p>
+				</div>
+			</div>
+			<div id="method-setopacity" class="mexcerpt">
+				<h4><a href="setOpacity.htm" >setOpacity</a><div class="box">1.5.1</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">Element.setOpacity(element, opacity) -> [HTMLElement...] 
+someElement.setOpacity(opacity) -> [HTMLElement...]</code></pre>
+					<p>
+						设置 <code>element</code> 的透明度，该方法可在多种浏览器中正常工作。参数 <code>opacity</code> 是一个介于 0 和 1
+						之间的浮点数，0	表示完全透明，1 表示完全不透明。
+					</p>
+				</div>
+			</div>
+			<div id="method-setstyle" class="mexcerpt">
+				<h4><a href="setStyle.htm" >setStyle</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">setStyle(element, styles) -> HTMLElement</code></pre>
+					<p>
+						修改 <code>element</code> 的 CSS 样式属性。参数 <code>styles</code> 是一个包含属性名/值对的 Hash 对象，
+						属性名必须使用 camelized 命名方式指定（<strong>译注：</strong>例如 CSS 属性 border-width 应写成
+						borderWidth，而不能写成 border-width）。
+					</p>
+				</div>
+			</div>
+			<div id="method-show" class="mexcerpt">
+				<h4><a href="show.htm" >show</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">show(element) -> HTMLElement</code></pre>
+					<p>显示 <code>element</code>，并返回元素本身。</p>
+				</div>
+			</div>
+			<div id="method-siblings" class="mexcerpt">
+				<h4><a href="siblings.htm" >siblings</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">siblings(element) -> [HTMLElement...]</code></pre>
+					<p>
+						获取 <code>element</code> 的所有兄弟节点，并返回一个数组，数组元素已经过 <a href="extend.htm" >扩展</a>。
+					</p>
+				</div>
+			</div>
+			<div id="method-stopobserving" class="mexcerpt">
+				<h4><a href="stopobserving.htm" >stopObserving</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">stopObserving(element, eventName, handler) -> HTMLElement</code></pre>
+					<p>
+						<p>为 <code>element</code> 注销指定的事件处理程序。</p>						
+					</p>
+				</div>
+			</div>
+			<div id="method-toggle" class="mexcerpt">
+				<h4><a href="toggle.htm" >toggle</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">toggle(element) -> HTMLElement</code></pre>
+					<p>切换 <code>element</code> 的可视性（在隐藏和显示间进行切换）。</p>
+				</div>
+			</div>
+			<div id="method-toggleclassname" class="mexcerpt">
+				<h4><a href="toggleClassName.htm" >toggleClassName</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">toggleClassName(element, className) -> HTMLElement</code></pre>
+					<p>切换 <code>element</code> 的 CSS <code>className</code>（在有和无该类名称间切换），并返回元素本身。</p>
+				</div>
+			</div>
+			<div id="method-undoclipping" class="mexcerpt">
+				<h4><a href="undoClipping.htm" >undoClipping</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">undoClipping(element) -> HTMLElement</code></pre>
+					<p>
+						设置 <code>element</code> 的 CSS <code>overflow</code> 属性，重置其值为应用 <a href="makeClipping.htm" >Element.makeClipping()</a>
+						之前的值，返回元素本身。
+					</p>
+				</div>
+			</div>
+			<div id="method-undopositioned" class="mexcerpt">
+				<h4><a href="undoPositioned.htm" >undoPositioned</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">undoPositioned(element) -> HTMLElement</code></pre>
+					<p>
+						设置 <code>element</code> 返回到在元素上应用 <a href="makePositioned.htm" >Element.makePositioned</a>
+						方法之前的状态，返回元素本身。
+					</p>
+				</div>
+			</div>
+			<div id="method-up" class="mexcerpt">
+				<h4><a href="up.htm" >up</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">up(element, [cssRule][, index = 0]) -> HTMLElement | undefined</code></pre>
+					<p>
+						返回 <code>element</code> 的与 <code>cssRule</code> 相匹配的第一个先代节点（如果指定 <code>index</code> 参数，则返回第
+						<em>index</em> 个）。如果未指定	<code>cssRule</code>，则默认匹配所有先代节点。如果没有符合条件的先代节点，返回
+						<code>undefined</code>。
+					</p>
+				</div>
+			</div>
+			<div id="method-update" class="mexcerpt">
+				<h4><a href="update.htm" >update</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">update(element[, newContent]) -> HTMLElement</code></pre>
+					<p>
+						替换 <code>element</code> 的内容为参数 <code>newContent</code> 指定的内容，返回元素本身。<br />
+						<strong>译注：</strong>该方法类似于 <code>element.innerHTML = newContent</code>。
+					</p>
+				</div>
+			</div>
+			<div id="method-viewportoffset" class="mexcerpt">
+				<h4><a href="viewportoffset.htm" >viewportOffset</a><div class="box">1.6</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">viewportOffset(element) -> [Number, Number] 或 { left: Number, top: Number }</code></pre>
+					<p>
+						返回 <code>element</code> 相对于浏览器可视区域左上角的坐标值。（<strong>译注：</strong>坐标原点以浏览器当前可见的部分为基准，
+						意即当滚动条滚动后，坐标原点也随之改变，坐标原点在当前窗口中永远可见。）<br />
+						<strong>译注：</strong>假定返回值为 offset，则 X 轴坐标可通过 <code>offset[0]</code> 获取，也可以通过
+						<code>offset.left</code> 获取，Y 轴坐标可通过 <code>offset[1]</code> 获取，也可通过 <code>offset.top</code> 获取。
+					</p>
+				</div>
+			</div>
+			<div id="method-visible" class="mexcerpt">
+				<h4><a href="visible.htm" >visible</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">visible(element) -> Boolean</code></pre>
+					<p>
+						返回 <code>Boolean</code> 值，指示 <code>element</code> 是否可见（即判断元素内联的 <code>style</code> 属性是否设置为
+						<code>"display:none;"</code>）。
+					</p>
+				</div>
+			</div>
+			<div id="method-wrap" class="mexcerpt">
+				<h4><a href="wrap.htm" >wrap</a><div class="box">1.6</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">Element.wrap(element, wrapper[, attributes]) -> HTMLElement
+someElement.wrap(wrapper[, attributes]) -> HTMLElement</code></pre>
+					<p>将 <code>element</code> 表示的元素放入到参数 <code>wrapper</code> 指定的元素内部，返回 <code>wrapper</code>。</p>
+				</div>
+			</div>
+			<div id="method-writeattribute" class="mexcerpt">
+				<h4><a href="writeAttribute.htm" >writeAttribute</a><div class="box">1.6</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">writeAttribute(element, attribute[, value = true]) -> HTMLElement
+writeAttribute(element, attributes) -> HTMLElement</code></pre>
+					<p>新增、修改或移除指定的 <code>element</code> 属性。属性参数可以是一个 hash 对象，也可以是一个名/值对。</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

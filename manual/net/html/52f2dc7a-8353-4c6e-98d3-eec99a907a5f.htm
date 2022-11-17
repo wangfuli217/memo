@@ -1,0 +1,194 @@
+﻿<html xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+    <META NAME="save" CONTENT="history" />
+    <title>如何：在运行时动态指定谓词筛选器（C# 编程指南）</title>
+    <link rel="stylesheet" type="text/css" href="../styles/presentation.css" />
+    <link rel="stylesheet" type="text/css" href="ms-help://Hx/HxRuntime/HxLink.css" />
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/EventUtilities.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/SplitScreen.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/Dropdown.js"> </script>
+    <script type="text/javascript" src="../scripts/script_manifold.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/script_feedBack.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CheckboxMenu.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CommonUtilities.js"> </script>
+    <xml>
+      <MSHelp:TOCTitle Title="如何：在运行时动态指定谓词筛选器" />
+      <MSHelp:Keyword Index="A" Term="52f2dc7a-8353-4c6e-98d3-eec99a907a5f" />
+      <MSHelp:Keyword Index="K" Term="动态查询 [C# 中的 LINQ]" />
+      <MSHelp:Keyword Index="K" Term="谓词筛选器 [C#]" />
+      <MSHelp:Keyword Index="K" Term="谓词 [C#]" />
+      <MSHelp:Keyword Index="K" Term="查询 [C# 中的 LINQ], 谓词筛选器" />
+      <MSHelp:Keyword Index="K" Term="查询表达式 [C# 中的 LINQ], 谓词筛选器" />
+      <MSHelp:Keyword Index="B" Term="LINQFilteringData" />
+      <MSHelp:Attr Name="RevisionNumber" Value="13" />
+      <MSHelp:Attr Name="AssetID" Value="52f2dc7a-8353-4c6e-98d3-eec99a907a5f" />
+      <MSHelp:Attr Name="Abstract" Value="在某些情况下，直到运行时才能知道必须将多少个谓词应用于 where 子句中的源元素。动态指定多个谓词筛选器的一种方法是使用 M:System.Linq.Enumerable.Contains``1(System.Collections.Generic.IEnumerable{``0},``0) 方法，如下面的示例所示：" />
+      <MSHelp:Attr Name="codelang" Value="CSharp" />
+      <MSHelp:Attr Name="CommunityContent" Value="1" />
+      <MSHelp:Attr Name="DevLang" Value="CSharp" />
+      <MSHelp:Attr Name="DevLangVers" Value="CSharp" />
+      <MSHelp:Attr Name="DocSet" Value="C#" />
+      <MSHelp:Attr Name="DocSet" Value="C# Lang" />
+      <MSHelp:Attr Name="DocSet" Value="ExpressLibVS" />
+      <MSHelp:Attr Name="ProgModel" Value="managed" />
+      <MSHelp:Attr Name="ShippedIn" Value="vs.90" />
+      <MSHelp:Attr Name="Technology" Value="ManagedCode" />
+      <MSHelp:Attr Name="TopicVersion" Value="09.00.08178.10000" />
+      <MSHelp:Attr Name="Catalog Container" Value="System_Default_Catalog" />
+      <MSHelp:Attr Name="Content Set Container" Value="System_Default_Content_Set" />
+      <MSHelp:Attr Name="TopicType" Value="kbHowTo" />
+      <MSHelp:Attr Name="Locale" Value="zh-chs" />
+    </xml>
+  </head>
+  <body>
+    <input type="hidden" id="userDataCache" class="userDataStyle" />
+    <input type="hidden" id="hiddenScrollOffset" />
+    <img id="collapseImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" title="“折叠”图像" />
+    <img id="expandImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" title="“展开”图像" />
+    <img id="collapseAllImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" />
+    <img id="expandAllImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" />
+    <img id="dropDownImage" style="display:none; height:0; width:0;" src="../icons/dropdown.gif" />
+    <img id="dropDownHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/dropdownHover.gif" />
+    <img id="copyImage" style="display:none; height:0; width:0;" src="../icons/copycode.gif" title="“复制”图像" />
+    <img id="copyHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/copycodeHighlight.gif" title="“复制悬停”图像" />
+    <div id="header">
+      <table id="topTable" cellspacing="0" cellpadding="0">
+        <tr>
+          <td>
+            <span onclick="ExpandCollapseAll(toggleAllImage)" style="cursor:default;" onkeypress="ExpandCollapseAll_CheckKey(toggleAllImage, event)" tabindex="0">
+              <img ID="toggleAllImage" class="toggleAll" src="../icons/collapse_all.gif" /> <label id="collapseAllLabel" for="toggleAllImage" style="display: none;">全部折叠</label><label id="expandAllLabel" for="toggleAllImage" style="display: none;">全部展开</label> </span>
+            <span>    </span>
+            <span id="devlangsDropdown" class="filter" tabindex="0">
+              <img id="devlangsDropdownImage" src="../icons/dropdown.gif" /> <label id="devlangsMenuAllLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：全部 </nobr></label><label id="devlangsMenuMultipleLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：多个 </nobr></label><label id="devlangsMenuVisualBasicLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual Basic </nobr></label><label id="devlangsMenuCSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：C# </nobr></label><label id="devlangsMenuManagedCPlusPlusLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual C++ </nobr></label><label id="devlangsMenuJSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：J# </nobr></label><label id="devlangsMenuJScriptLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：JScript </nobr></label></span>
+          </td>
+        </tr>
+      </table>
+      <div id="devlangsMenu">
+        <input id="VisualBasicCheckbox" type="checkbox" data="VisualBasic,vb,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="VisualBasicCheckbox">Visual Basic</label>
+        <br />
+        <input id="CSharpCheckbox" type="checkbox" data="CSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="CSharpCheckbox">C#</label>
+        <br />
+        <input id="ManagedCPlusPlusCheckbox" type="checkbox" data="ManagedCPlusPlus,cpp,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="ManagedCPlusPlusCheckbox">Visual C++</label>
+        <br />
+        <input id="JSharpCheckbox" type="checkbox" data="JSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JSharpCheckbox">J#</label>
+        <br />
+        <input id="JScriptCheckbox" type="checkbox" data="JScript,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JScriptCheckbox">JScript</label>
+        <br />
+      </div>
+      <table id="bottomTable" cellpadding="0" cellspacing="0">
+        <tr id="headerTableRow1">
+          <td align="left">
+            <span id="runningHeaderText">C# 编程指南</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow2">
+          <td align="left">
+            <span id="nsrTitle">如何：在运行时动态指定谓词筛选器（C# 编程指南）</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow3">
+          <td align="left">
+            <a href="52f2dc7a-8353-4c6e-98d3-eec99a907a5f.htm#exampleToggle" onclick="OpenSection(exampleToggle)">示例</a>  <a href="52f2dc7a-8353-4c6e-98d3-eec99a907a5f.htm#seeAlsoToggle" onclick="OpenSection(seeAlsoToggle)">另请参见</a>  
+<script type="text/javascript">
+var fbBody = '%b8%d0%d0%bb%c4%fa%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%bf%aa%b7%a2%b0%e6%b1%e0%d0%b4%cd%c5%b6%d3%bd%ab%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%d3%c3%d3%da%b8%c4%bd%f8%ce%c4%b5%b5%a1%a3%ce%d2%c3%c7%d4%da%c9%f3%d4%c4%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%ca%b1%a3%ac%bf%c9%c4%dc%bb%e1%b8%f8%c4%fa%b7%a2%cb%cd%b5%e7%d7%d3%d3%ca%bc%fe%a3%ac%d2%d4%c7%eb%c4%fa%cc%e1%b9%a9%bd%f8%d2%bb%b2%bd%b5%c4%bd%e2%ca%cd%cb%b5%c3%f7%bb%f2%d5%df%be%cd%bd%e2%be%f6%b7%bd%b0%b8%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%ce%d2%c3%c7%b2%bb%bb%e1%bd%ab%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%d3%c3%d3%da%c8%ce%ba%ce%c6%e4%cb%fb%d3%c3%cd%be%a3%ac%b2%a2%c7%d2%d4%da%c9%f3%d4%c4%cd%ea%d6%ae%ba%f3%a3%ac%ce%d2%c3%c7%b2%bb%bb%e1%d4%d9%b1%a3%c1%f4%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%a1%a3%0d%0a%d3%d0%b9%d8%20Microsoft%20%d2%fe%cb%bd%d5%fe%b2%df%b5%c4%bd%f8%d2%bb%b2%bd%d0%c5%cf%a2%a3%ac%c7%eb%b2%ce%bc%fb%20http%3a%2f%2fprivacy.microsoft.com%2fzh-cn%2fdefault.aspx%a1%a3';
+var fbSubject = 'Customer%20Feedback';
+</script>
+  <span id="headfeedbackarea" class="feedbackhead"><a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);"> 发送反馈意见</a></span>
+</td>
+        </tr>
+      </table>
+      <table id="gradientTable">
+        <tr>
+          <td class="nsrBottom" background="../icons/gradient.gif" />
+        </tr>
+      </table>
+    </div>
+    <div id="mainSection">
+      <div id="mainBody">
+        <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
+        <font color="DarkGray"></font>
+        <p /> <p><font color="DarkGray">更新：2007 年 11 月</font></p><div class="introduction"><p>在某些情况下，直到运行时才能知道必须将多少个谓词应用于 <span sdata="langKeyword" value="where"><span class="keyword">where</span></span> 子句中的源元素。动态指定多个谓词筛选器的一种方法是使用 <span sdata="cer" target="M:System.Linq.Enumerable.Contains``1(System.Collections.Generic.IEnumerable{``0},``0)"><mshelp:link keywords="Overload:System.Linq.Enumerable.Contains" tabindex="0">Contains</mshelp:link></span> 方法，如下面的示例所示：</p></div><h1 class="heading"><span onclick="ExpandCollapse(exampleToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(exampleToggle, event)" tabindex="0"><img id="exampleToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />示例</span></h1><div id="exampleSection" class="section" name="collapseableSection" style=""><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// To run this sample, first specify some integer values for the command line.</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// The numbers 111 through 122 are all valid student IDs.</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// In Visual Studio or C# Express, click on Project &gt; Properties &gt; Debug.</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Call the method: QueryByID(args);</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> QueryByID(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span>[] ids)
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> queryNames =
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">from</span> student <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> students
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">let</span> i = student.ID.ToString()
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">where</span> ids.Contains(i)
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">select</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> { student.LastName, student.ID };
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> name <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> queryNames)
+    {
+        Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"{0}: {1}"</span>, name.LastName, name.ID);
+    }
+}
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">/* 
+ Output (depends on args):
+   111 114 118
+
+   Garcia: 114
+   Garcia: 118
+   Omelchenko: 111
+*/</span>
+
+</pre></td></tr></table></span></div></div><p>如果必须在预先确定的备选查询中进行选择，可以使用 <span sdata="langKeyword" value="switch"><span class="keyword">switch</span></span> 语句。在下面的示例中，studentQuery 的 where 子句随着在命令行指定的年级或年份的不同而不同。</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// To run this sample, first specify an integer value of 1 to 4 for the command line.</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// This number will be converted to a GradeLevel value that specifies which set of students</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// to query. In Visual Studio or C# Express, click on Project &gt; Properties &gt; Debug to specify</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// command line arguments.</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Call the method: QueryByYear(args[0]);</span>
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> QueryByYear(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> level)
+{
+    GradeLevel year = (GradeLevel)Convert.ToInt32(level);
+    IEnumerable&lt;Student&gt; studentQuery = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">null</span>;
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">switch</span> (year)
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">case</span> GradeLevel.FirstYear:
+            studentQuery = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">from</span> student <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> students
+                           <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">where</span> student.Year == GradeLevel.FirstYear
+                           <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">select</span> student;
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">break</span>;
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">case</span> GradeLevel.SecondYear:
+            studentQuery = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">from</span> student <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> students
+                           <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">where</span> student.Year == GradeLevel.FirstYear
+                           <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">select</span> student;
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">break</span>;
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">case</span> GradeLevel.ThirdYear:
+            studentQuery = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">from</span> student <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> students
+                           <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">where</span> student.Year == GradeLevel.FirstYear
+                           <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">select</span> student;
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">break</span>;
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">case</span> GradeLevel.FourthYear:
+            studentQuery = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">from</span> student <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> students
+                           <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">where</span> student.Year == GradeLevel.FourthYear
+                           <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">select</span> student;
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">break</span>;
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">default</span>:
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">break</span>;
+    }
+    Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"The following students are at level {0}"</span>, year.ToString());
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (Student name <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> studentQuery)
+    {
+        Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"{0}: {1}"</span>, name.LastName, name.ID);
+    }
+}
+
+</pre></td></tr></table></span></div></div></div><h1 class="heading"><span onclick="ExpandCollapse(buildInstructionsToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(buildInstructionsToggle, event)" tabindex="0"><img id="buildInstructionsToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />编译代码</span></h1><div id="buildInstructionsSection" class="section" name="collapseableSection" style=""><p>这些示例包含对在<span sdata="link"><a href="122d1e3b-1604-4add-b6b4-b84530a77b6b.htm">如何：查询对象集合（C# 编程指南）</a></span>中的示例应用程序中定义的对象的引用。若要编译和运行示例，请将它们粘贴到该应用程序中的 <span class="code">StudentClass</span> 类中，并在 <span class="code">Main</span> 方法中添加对此方法的调用。</p><p>在改写此方法以适合您自己的应用程序时，请记住 LINQ 需要 .NET Framework 3.5 版，并且项目必须包含一个对 System.Core.dll 的引用和一条针对 System.Linq 的 using 指令。LINQ to SQL、LINQ to XML 和 LINQ to DataSet 类型需要其他 using 指令和引用。有关更多信息，请参见 <span sdata="link"><mshelp:link keywords="a929e653-09a3-44be-881f-68ca33f192b2" tabindex="0">如何：创建 LINQ 项目</mshelp:link></span>。</p><p><span sdata="link"><mshelp:link keywords="82ab2285-8732-483e-adbc-b2618f5f5279" tabindex="0">动态查询示例</mshelp:link></span>示例演示使用 LINQ 动态构造查询的另一种方法。</p></div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />请参见</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><h4 class="subHeading">概念</h4><div class="seeAlsoStyle"><span sdata="link"><a href="40638f19-fb46-4d26-a2d9-a383b48f5ed4.htm">LINQ 查询表达式（C# 编程指南）</a></span></div><h4 class="subHeading">参考</h4><div class="seeAlsoStyle"><span sdata="link"><a href="7f9bf952-7744-4f91-b676-cddb55d107c3.htm">where 子句（C# 参考）</a></span></div></div></div>
+      <div id="footer">
+        <div class="footerLine">
+          <img width="100%" height="3px" src="../icons/footer.gif" title="“页脚”图像" />
+        </div>
+<span id="feedbackarea">将有关本主题的<a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);">反馈意见</a>发送给 Microsoft。</span>
+</div>
+    </div>
+  </body>
+</html>

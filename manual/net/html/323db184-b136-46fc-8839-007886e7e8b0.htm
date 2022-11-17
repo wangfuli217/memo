@@ -1,0 +1,234 @@
+﻿<html xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+    <META NAME="save" CONTENT="history" />
+    <title>了解何时使用 Override 和 New 关键字（C# 编程指南）</title>
+    <link rel="stylesheet" type="text/css" href="../styles/presentation.css" />
+    <link rel="stylesheet" type="text/css" href="ms-help://Hx/HxRuntime/HxLink.css" />
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/EventUtilities.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/SplitScreen.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/Dropdown.js"> </script>
+    <script type="text/javascript" src="../scripts/script_manifold.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/script_feedBack.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CheckboxMenu.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CommonUtilities.js"> </script>
+    <xml>
+      <MSHelp:TOCTitle Title="了解何时使用 Override 和 New 关键字" />
+      <MSHelp:Keyword Index="A" Term="323db184-b136-46fc-8839-007886e7e8b0" />
+      <MSHelp:Keyword Index="K" Term="多态性 [C#], 使用 override 和 new [C#]" />
+      <MSHelp:Attr Name="RevisionNumber" Value="12" />
+      <MSHelp:Attr Name="AssetID" Value="323db184-b136-46fc-8839-007886e7e8b0" />
+      <MSHelp:Attr Name="Abstract" Value="&#xD;&#xA;                    C# 允许派生类中的方法与基类中的方法具有相同的名称，只要您非常明确应如何处理新方法。下面的示例演示 new 和 override 关键字的使用。&#xD;&#xA;                " />
+      <MSHelp:Attr Name="codelang" Value="CSharp" />
+      <MSHelp:Attr Name="CommunityContent" Value="1" />
+      <MSHelp:Attr Name="DevLang" Value="CSharp" />
+      <MSHelp:Attr Name="DevLangVers" Value="CSharp" />
+      <MSHelp:Attr Name="DocSet" Value="C#" />
+      <MSHelp:Attr Name="DocSet" Value="C# Lang" />
+      <MSHelp:Attr Name="DocSet" Value="ExpressLibVS" />
+      <MSHelp:Attr Name="ProgModel" Value="managed" />
+      <MSHelp:Attr Name="ShippedIn" Value="vs.90" />
+      <MSHelp:Attr Name="Technology" Value="ManagedCode" />
+      <MSHelp:Attr Name="TopicVersion" Value="09.00.08178.10000" />
+      <MSHelp:Attr Name="Catalog Container" Value="System_Default_Catalog" />
+      <MSHelp:Attr Name="Content Set Container" Value="System_Default_Content_Set" />
+      <MSHelp:Attr Name="TopicType" Value="kbRef" />
+      <MSHelp:Attr Name="Locale" Value="zh-chs" />
+    </xml>
+  </head>
+  <body>
+    <input type="hidden" id="userDataCache" class="userDataStyle" />
+    <input type="hidden" id="hiddenScrollOffset" />
+    <img id="collapseImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" title="“折叠”图像" />
+    <img id="expandImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" title="“展开”图像" />
+    <img id="collapseAllImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" />
+    <img id="expandAllImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" />
+    <img id="dropDownImage" style="display:none; height:0; width:0;" src="../icons/dropdown.gif" />
+    <img id="dropDownHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/dropdownHover.gif" />
+    <img id="copyImage" style="display:none; height:0; width:0;" src="../icons/copycode.gif" title="“复制”图像" />
+    <img id="copyHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/copycodeHighlight.gif" title="“复制悬停”图像" />
+    <div id="header">
+      <table id="topTable" cellspacing="0" cellpadding="0">
+        <tr>
+          <td>
+            <span onclick="ExpandCollapseAll(toggleAllImage)" style="cursor:default;" onkeypress="ExpandCollapseAll_CheckKey(toggleAllImage, event)" tabindex="0">
+              <img ID="toggleAllImage" class="toggleAll" src="../icons/collapse_all.gif" /> <label id="collapseAllLabel" for="toggleAllImage" style="display: none;">全部折叠</label><label id="expandAllLabel" for="toggleAllImage" style="display: none;">全部展开</label> </span>
+            <span>    </span>
+            <span id="devlangsDropdown" class="filter" tabindex="0">
+              <img id="devlangsDropdownImage" src="../icons/dropdown.gif" /> <label id="devlangsMenuAllLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：全部 </nobr></label><label id="devlangsMenuMultipleLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：多个 </nobr></label><label id="devlangsMenuVisualBasicLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual Basic </nobr></label><label id="devlangsMenuCSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：C# </nobr></label><label id="devlangsMenuManagedCPlusPlusLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual C++ </nobr></label><label id="devlangsMenuJSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：J# </nobr></label><label id="devlangsMenuJScriptLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：JScript </nobr></label></span>
+          </td>
+        </tr>
+      </table>
+      <div id="devlangsMenu">
+        <input id="VisualBasicCheckbox" type="checkbox" data="VisualBasic,vb,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="VisualBasicCheckbox">Visual Basic</label>
+        <br />
+        <input id="CSharpCheckbox" type="checkbox" data="CSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="CSharpCheckbox">C#</label>
+        <br />
+        <input id="ManagedCPlusPlusCheckbox" type="checkbox" data="ManagedCPlusPlus,cpp,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="ManagedCPlusPlusCheckbox">Visual C++</label>
+        <br />
+        <input id="JSharpCheckbox" type="checkbox" data="JSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JSharpCheckbox">J#</label>
+        <br />
+        <input id="JScriptCheckbox" type="checkbox" data="JScript,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JScriptCheckbox">JScript</label>
+        <br />
+      </div>
+      <table id="bottomTable" cellpadding="0" cellspacing="0">
+        <tr id="headerTableRow1">
+          <td align="left">
+            <span id="runningHeaderText">C# 编程指南</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow2">
+          <td align="left">
+            <span id="nsrTitle">了解何时使用 Override 和 New 关键字（C# 编程指南）</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow3">
+          <td align="left">
+            <a href="323db184-b136-46fc-8839-007886e7e8b0.htm#seeAlsoToggle" onclick="OpenSection(seeAlsoToggle)">另请参见</a>  
+<script type="text/javascript">
+var fbBody = '%b8%d0%d0%bb%c4%fa%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%bf%aa%b7%a2%b0%e6%b1%e0%d0%b4%cd%c5%b6%d3%bd%ab%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%d3%c3%d3%da%b8%c4%bd%f8%ce%c4%b5%b5%a1%a3%ce%d2%c3%c7%d4%da%c9%f3%d4%c4%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%ca%b1%a3%ac%bf%c9%c4%dc%bb%e1%b8%f8%c4%fa%b7%a2%cb%cd%b5%e7%d7%d3%d3%ca%bc%fe%a3%ac%d2%d4%c7%eb%c4%fa%cc%e1%b9%a9%bd%f8%d2%bb%b2%bd%b5%c4%bd%e2%ca%cd%cb%b5%c3%f7%bb%f2%d5%df%be%cd%bd%e2%be%f6%b7%bd%b0%b8%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%ce%d2%c3%c7%b2%bb%bb%e1%bd%ab%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%d3%c3%d3%da%c8%ce%ba%ce%c6%e4%cb%fb%d3%c3%cd%be%a3%ac%b2%a2%c7%d2%d4%da%c9%f3%d4%c4%cd%ea%d6%ae%ba%f3%a3%ac%ce%d2%c3%c7%b2%bb%bb%e1%d4%d9%b1%a3%c1%f4%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%a1%a3%0d%0a%d3%d0%b9%d8%20Microsoft%20%d2%fe%cb%bd%d5%fe%b2%df%b5%c4%bd%f8%d2%bb%b2%bd%d0%c5%cf%a2%a3%ac%c7%eb%b2%ce%bc%fb%20http%3a%2f%2fprivacy.microsoft.com%2fzh-cn%2fdefault.aspx%a1%a3';
+var fbSubject = 'Customer%20Feedback';
+</script>
+  <span id="headfeedbackarea" class="feedbackhead"><a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);"> 发送反馈意见</a></span>
+</td>
+        </tr>
+      </table>
+      <table id="gradientTable">
+        <tr>
+          <td class="nsrBottom" background="../icons/gradient.gif" />
+        </tr>
+      </table>
+    </div>
+    <div id="mainSection">
+      <div id="mainBody">
+        <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
+        <font color="DarkGray"></font>
+        <p /> <p><font color="DarkGray">更新：2007 年 11 月</font></p><div class="introduction"><p>
+                    C# 允许派生类中的方法与基类中的方法具有相同的名称，只要您非常明确应如何处理新方法。下面的示例演示 <mshelp:link keywords="e4136516-f058-45a8-84e5-da00a5cf9b6a" tabindex="0">new</mshelp:link> 和 <mshelp:link keywords="dd1907a8-acf8-46d3-80b9-c2ca4febada8" tabindex="0">override</mshelp:link> 关键字的使用。
+                </p><p>
+                    首先声明三个类：一个名为 <span class="code">Car</span> 的<mshelp:link keywords="8b645dbe-1a33-49b8-8716-1c401f9a5ea5" tabindex="0">基</mshelp:link>类以及从该基类派生的两个类 <span class="code">ConvertibleCar</span> 和 <span class="code">Minivan</span>。基类包含一个可将有关汽车的描述发送到控制台的方法 (<span class="code">DescribeCar</span>)。派生类方法也包含一个名为 <span class="code">DescribeCar</span> 的方法，该方法显示派生类的独特属性。这些方法还调用基类的 <span class="code">DescribeCar</span> 方法来演示从 <span class="code">Car</span> 类继承属性的方式。
+                </p><p>
+                    为了强调区别，<span class="code">ConvertibleCar</span> 类使用 <span sdata="langKeyword" value="new"><span class="keyword">new</span></span> 关键字来定义，而 <span class="code">Minivan</span> 类使用 <span sdata="langKeyword" value="override"><span class="keyword">override</span></span> 来定义。
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Define the base class</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Car
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">virtual</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> DescribeCar()
+    {
+        System.Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Four wheels and an engine."</span>);
+    }
+}
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Define the derived classes</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> ConvertibleCar : Car
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">virtual</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> DescribeCar()
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">base</span>.DescribeCar();
+        System.Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"A roof that opens up."</span>);
+    }
+}
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Minivan : Car
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">override</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> DescribeCar()
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">base</span>.DescribeCar();
+        System.Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Carries seven people."</span>);
+    }
+}
+
+</pre></td></tr></table></span></div></div><p>
+                    现在可以编写一些代码来声明这些类的实例，并调用它们的方法以便对象能够描述其自身：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> TestCars1()
+{
+    Car car1 = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Car();
+    car1.DescribeCar();
+    System.Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"----------"</span>);
+
+    ConvertibleCar car2 = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> ConvertibleCar();
+    car2.DescribeCar();
+    System.Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"----------"</span>);
+
+    Minivan car3 = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Minivan();
+    car3.DescribeCar();
+    System.Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"----------"</span>);
+}
+
+</pre></td></tr></table></span></div></div><p>
+                    正如预期的那样，输出类似如下所示：
+                </p><p>
+                    <span class="code">Four wheels and an engine. </span>
+                </p><p>
+                    <span class="code">---------- </span>
+                </p><p>
+                    <span class="code">Four wheels and an engine. </span>
+                </p><p>
+                    <span class="code">A roof that opens up. </span>
+                </p><p>
+                    <span class="code">---------- </span>
+                </p><p>
+                    <span class="code">Four wheels and an engine. </span>
+                </p><p>
+                    <span class="code">Carries seven people. </span>
+                </p><p>
+                    <span class="code">---------- </span>
+                </p><p>
+                    但是，在该代码接下来的一节中，我们声明了一个从 <span class="code">Car</span> 基类派生的对象的数组。此数组能够存储 <span class="code">Car</span>、<span class="code">ConvertibleCar</span> 和 <span class="code">Minivan</span> 对象。该数组的声明类似如下所示：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> TestCars2()
+{
+    Car[] cars = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Car[3];
+    cars[0] = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Car();
+    cars[1] = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> ConvertibleCar();
+    cars[2] = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Minivan();
+}
+
+</pre></td></tr></table></span></div></div><p>
+                    然后可以使用一个 <span sdata="langKeyword" value="foreach"><span class="keyword">foreach</span></span> 循环来访问该数组中包含的每个 <span class="code">Car</span> 对象，并调用 <span class="code">DescribeCar</span> 方法，如下所示：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (Car vehicle <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> cars)
+{
+    System.Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Car object: "</span> + vehicle.GetType());
+    vehicle.DescribeCar();
+    System.Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"----------"</span>);
+}
+
+</pre></td></tr></table></span></div></div><p>
+                    此循环的输出如下所示：
+                </p><p>
+                    <span class="code">Car object: YourApplication.Car </span>
+                </p><p>
+                    <span class="code">Four wheels and an engine. </span>
+                </p><p>
+                    <span class="code">---------- </span>
+                </p><p>
+                    <span class="code">Car object: YourApplication.ConvertibleCar </span>
+                </p><p>
+                    <span class="code">Four wheels and an engine. </span>
+                </p><p>
+                    <span class="code">---------- </span>
+                </p><p>
+                    <span class="code">Car object: YourApplication.Minivan </span>
+                </p><p>
+                    <span class="code">Four wheels and an engine. </span>
+                </p><p>
+                    <span class="code">Carries seven people. </span>
+                </p><p>
+                    <span class="code">---------- </span>
+                </p><p>
+                    注意，<span class="code">ConvertibleCar</span> 说明与您的预期不同。由于使用了 <span sdata="langKeyword" value="new"><span class="keyword">new</span></span> 关键字来定义此方法，所调用的不是派生类方法，而是基类方法。<span class="code">Minivan</span> 对象正确地调用重写方法，并产生预期的结果。
+                </p><p>
+                    若要强制一个规则，要求从 <span class="code">Car</span> 派生的所有类都必须实现 <span class="code">DescribeCar</span> 方法，则应创建一个新的基类，将方法 <span class="code">DescribeCar</span> 定义为 <span sdata="langKeyword" value="abstract"><span class="keyword">abstract</span></span>。抽象方法不包含任何代码，仅包含方法签名。从此基类派生的任何类都必须提供 <span class="code">DescribeCar</span> 的实现。有关更多信息，请参见<mshelp:link keywords="b0797770-c1f3-4b4d-9441-b9122602a6bb" tabindex="0">抽象</mshelp:link>。
+                </p></div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />请参见</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><h4 class="subHeading">概念</h4><div class="seeAlsoStyle"><span sdata="link"><a href="ac0f23a2-6bf3-4077-be99-538ae5fd3bc5.htm">C# 编程指南</a></span></div><h4 class="subHeading">参考</h4><div class="seeAlsoStyle"><span sdata="link"><a href="cc39dbda-8754-423e-b5b1-16a1db0734c0.htm">类和结构（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="88247d07-bd0d-49e9-a619-45ccbbfdf0c5.htm">使用 Override 和 New 关键字进行版本控制（C# 编程指南）</a></span></div></div></div>
+      <div id="footer">
+        <div class="footerLine">
+          <img width="100%" height="3px" src="../icons/footer.gif" title="“页脚”图像" />
+        </div>
+<span id="feedbackarea">将有关本主题的<a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);">反馈意见</a>发送给 Microsoft。</span>
+</div>
+    </div>
+  </body>
+</html>

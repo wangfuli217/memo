@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Function.wrap - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>wrap<div class="box">1.6.0</div></h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">wrap(wrapperFunction[, arg...]) -> Function</code></pre>
+			<p>
+				将原始函数封装到参数 <code>wrapperFunction</code> 表示的函数中，返回一个新的函数。调用新函数时，
+				实质是将 <code>wrapperFunction</code> 函数的第一个参数设置为绑定了当前 <code>this</code>
+				对象的原始函数，然后再调用 <code>wrapperFunction</code> 函数。
+			</p>
+		</div>
+		<div id="abody">
+			<p>
+				<code>Function#wrap</code> 体现了<a href="http://en.wikipedia.org/wiki/Aspect-oriented_programming Aspect-oriented programming - Wikipedia, the free encyclopedia" >
+				面向方面的程序设计</a> 的本质，让你能够轻松的为已有的函数指定调用前和调用后的行为，改变返回的结果，
+				甚至还可以阻止对原始函数的调用。
+			</p>
+			<h3>样例</h3>
+			<pre><code class="javascript">String.prototype.capitalize = String.prototype.capitalize.wrap(
+	function(proceed, eachWord) { 
+		if (eachWord && this.include(" ")) { 
+			// 将字符串中每一个单词的首字母大写
+			return this.split(" ").invoke("capitalize").join(" "); 
+		}
+		else { 
+			// 使用原始函数处理 
+			return proceed(); 
+		} 
+	}
+); 
+
+"hello world".capitalize()
+// "Hello world" 
+"hello world".capitalize(true) 
+// "Hello World" </code></pre>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

@@ -1,0 +1,107 @@
+<html><HEAD><TITLE>23、局部变量 - RUBY文档中心</TITLE>
+<STYLE type=text/css>
+<!--
+.code2 {font-size:14.7px;font-family:arial;color:#00009a;line-height:150%;background-color:#EFEFEF;height=25px;vertical-align=middle;margin-left: 20px;}
+.code {font-size:14.7px;font-family:arial;color:#00009a;background-color:#EFEFEF;line-height: 150%}
+.quote {font-size:14.7px;font-family:arial;color:#666666;line-height:150%;}
+-->
+</STYLE>
+
+<META http-equiv=Content-Type content="text/html; charset=gb2312"><LINK href="34_files/news[1].css"  rel=stylesheet></head>
+<BODY topMargin=0>
+<STYLE type=text/css>
+<!--
+body {
+	margin-top: 50px;
+}
+.style12 {font-size: 33px}
+.style15 {
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-weight: bold;
+}
+.style17 {font-family: "黑体", "楷体_GB2312", "新宋体"}
+.style18 {font-size: 12px}
+-->
+</STYLE>
+
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #929292 1px groove" cellSpacing=0 cellPadding=3 width=772 align=center bgColor=#ffffff border=0>
+<TBODY>
+<TR>
+<TD height=20></TD></TR>
+<TR>
+<TD bgColor=#8acd38 height=30>&nbsp;</TD></TR>
+<TR>
+<TD height=50></TD></TR></TBODY></TABLE>
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #ffffff 1px groove" borderColor=#ffffff cellSpacing=0 cellPadding=3 width=772 align=center bgColor=#ffffff border=0>
+<TBODY>
+<TR>
+<TD align=middle>
+<DIV class=moer-title><IMG src="51_files/logo_read[1].gif" > 23、局部变量</DIV>
+<P>转帖：oasis_me　　发表时间：2005-6-15 21:31:33　　点击次数：254 </P></TD></TR>
+<TR>
+<TD height=50></TD></TR></TBODY></TABLE>
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #ffffff 1px groove" borderColor=#ffffff cellSpacing=0 cellPadding=3 width=772 align=center bgColor=#ffffff border=0>
+<TBODY>
+<TR>
+<TD width="10%" bgColor=#ffffff>&nbsp;</TD>
+<TD class=moer-ask vAlign=top align=left width="5%" bgColor=#ffffff>&nbsp;</TD>
+<TD vAlign=top align=left width="75%">
+<TABLE cellSpacing=0 cellPadding=0>
+<TBODY>
+<TR>
+<TD class=moer-content vAlign=top align=left>局部变量由小写字母或下划线(_)开头.局部变量不像全局和实变量一样在初始化前含nil值.<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;$foo<BR>&nbsp;&nbsp;&nbsp;nil<BR>ruby&gt;&nbsp;@foo<BR>&nbsp;&nbsp;&nbsp;nil<BR>ruby&gt;&nbsp;foo<BR>ERR:&nbsp;(eval):1:&nbsp;undefined&nbsp;local&nbsp;variable&nbsp;or&nbsp;method&nbsp;`foo'&nbsp;for&nbsp;main(Object)&nbsp;</TD></TR></TBODY></TABLE><BR><BR>对局部变量的第一次赋值做的很像一次声明.如果你指向一个未初始化的局部变量,Ruby解释器会认为那是一个方法的名字;正如上面所见错误<BR><BR>信息的.<BR><BR>一般的,局部变量的范围会是<BR>
+<UL><BR>
+<LI>proc{...}&nbsp;<BR>
+<LI>loop{...}&nbsp;<BR>
+<LI>def...end&nbsp;<BR>
+<LI>class...end&nbsp;<BR>
+<LI>module...end&nbsp;<BR>
+<LI>整个程序(除非符合上面某个条件)<BR></LI></UL><BR><BR>下面的例子,define?是一个检查标识符是否已定义的操作符.如果已定义它将返回标识符的描述,否则返回nil.正如你所见的,bar的范围是<BR><BR>loop的局部变量;当loop退出时,bar无定义.<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;foo&nbsp;=&nbsp;44;&nbsp;print&nbsp;foo,&nbsp;"\n";&nbsp;defined?&nbsp;foo<BR>44<BR>&nbsp;&nbsp;&nbsp;"local-variable"<BR>ruby&gt;&nbsp;loop{bar=45;&nbsp;print&nbsp;bar,&nbsp;"\n";&nbsp;break};&nbsp;defined?&nbsp;bar<BR>45<BR>&nbsp;&nbsp;&nbsp;nil&nbsp;</TD></TR></TBODY></TABLE><BR><BR>一个范围内的过程对象共享这个范围内的局部变量.这里,局部变量&nbsp;bar&nbsp;由&nbsp;main&nbsp;和过程对象&nbsp;p1,&nbsp;p2共享:<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;bar=0<BR>&nbsp;&nbsp;&nbsp;0<BR>ruby&gt;&nbsp;p1&nbsp;=&nbsp;proc{|n|&nbsp;bar=n}<BR>&nbsp;&nbsp;&nbsp;#&lt;Proc:0x8deb0&gt;<BR>ruby&gt;&nbsp;p2&nbsp;=&nbsp;proc{bar}<BR>&nbsp;&nbsp;&nbsp;#&lt;Proc:0x8dce8&gt;<BR>ruby&gt;&nbsp;p1.call(5)<BR>&nbsp;&nbsp;&nbsp;5<BR>ruby&gt;&nbsp;bar<BR>&nbsp;&nbsp;&nbsp;5<BR>ruby&gt;&nbsp;p2.call<BR>&nbsp;&nbsp;&nbsp;5&nbsp;</TD></TR></TBODY></TABLE><BR><BR>注意开始的"bar=0"不能省略;此赋值允许bar的范围被&nbsp;p1和&nbsp;p2共享.不然&nbsp;p1,&nbsp;p2&nbsp;将会分别生成并处理它们自己的局部变量&nbsp;bar,&nbsp;调用&nbsp;p2&nbsp;<BR><BR>也将导致"未定义局部变量或方法"错误.<BR><BR>过程对象的强大在于它们能被作为参数传递:共享的局部变量即使传递出原范围也仍然有效.<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;def&nbsp;box<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;contents&nbsp;=&nbsp;15<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;get&nbsp;=&nbsp;proc{contents}<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;set&nbsp;=&nbsp;proc{|n|&nbsp;contents&nbsp;=&nbsp;n}<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;return&nbsp;get,&nbsp;set<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;end<BR>&nbsp;&nbsp;&nbsp;nil<BR>ruby&gt;&nbsp;reader,&nbsp;writer&nbsp;=&nbsp;box<BR>&nbsp;&nbsp;&nbsp;[#&lt;Proc:0x40170fc0&gt;,&nbsp;#&lt;Proc:0x40170fac&gt;]&nbsp;<BR>ruby&gt;&nbsp;reader.call<BR>&nbsp;&nbsp;&nbsp;15<BR>ruby&gt;&nbsp;writer.call(2)<BR>&nbsp;&nbsp;&nbsp;2<BR>ruby&gt;&nbsp;reader.call<BR>&nbsp;&nbsp;&nbsp;2&nbsp;</TD></TR></TBODY></TABLE><BR><BR>Ruby对待范围的办法相当聪明.显然,上面例子里&nbsp;contents&nbsp;变量是由&nbsp;reader&nbsp;和&nbsp;writer&nbsp;共享的.我们也可以像上面那样创造多对使用box的<BR><BR>reader-writer;每一对共享一个&nbsp;contents&nbsp;变量,对之间不相干扰.<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;reader_1,&nbsp;writer_1&nbsp;=&nbsp;box<BR>&nbsp;&nbsp;&nbsp;[#&lt;Proc:0x40172820&gt;,&nbsp;#&lt;Proc:0x4017280c&gt;]<BR>ruby&gt;&nbsp;reader_2,&nbsp;writer_2&nbsp;=&nbsp;box<BR>&nbsp;&nbsp;&nbsp;[#&lt;Proc:0x40172668&gt;,&nbsp;#&lt;Proc:0x40172654&gt;]<BR>ruby&gt;&nbsp;writer_1.call(99)<BR>&nbsp;&nbsp;&nbsp;99<BR>ruby&gt;&nbsp;reader_1.call<BR>&nbsp;&nbsp;&nbsp;99<BR>ruby&gt;&nbsp;reader_2.call<BR>&nbsp;&nbsp;&nbsp;15&nbsp;</TD></TR></TBODY></TABLE></TD></TR>
+<TR>
+<TD class=moer-content vAlign=top align=left height=30></TD></TR>
+<TR>
+<TD vAlign=top align=left><SPAN style="FONT-WEIGHT: bold; FONT-SIZE: 12px">版权声明：</SPAN>RUBY文档中心的所有文章标明[<B>原创</B>]的均为本站作品，版权属RUBY中文化计划，若转载请注明；标明[<B>翻译</B>]的其外文版权归原作者，译文版权属RUBY中文化计划；标明[<B>转贴</B>]的，若原作者感到侵犯了他的著作权，那么请及时跟主持人联系，我们会尽快更正。</TD></TR></TBODY></TABLE></TD>
+<TD width="10%" bgColor=#ffffff>&nbsp;</TD></TR></TBODY></TABLE>
+<STYLE type=text/css>
+<!--
+body {
+	margin-bottom: 20px;
+}
+-->
+</STYLE>
+
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #929292 1px groove; BORDER-BOTTOM: #929292 1px groove" cellSpacing=0 cellPadding=0 width=772 align=center>
+<TBODY>
+<TR>
+<TD bgColor=#ffffff>
+<DIV align=center>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P><IMG height=11 src="55_files/logo_small[1].gif"  width=8> 版权所有(C) <A href="http://www.moer.net/ruby/index.asp" >RUBY中文化计划</A></P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></DIV></TD></TR></TBODY></TABLE>
+<DIV align=center></DIV>
+<div style="display:none;">
+<script type="text/javascript" src="http://shouce.jb51.net/js/stat.js" ></script>
+</div>
+</BODY>

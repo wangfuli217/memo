@@ -1,0 +1,842 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section A.2.  A Brief Tour of the Algorithms</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="app01lev1sec1.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="app01lev1sec3.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="app01lev1sec2"></a>
+
+        <h3 class="docSection1Title">A.2. A Brief Tour of the Algorithms</h3>
+        <h3 class="docSection1Title">A.2. 算法简介</h3>
+
+        <p class="docText"><a class="docLink" href="ch11.html#ch11" >Chapter 11</a> introduced the generic algorithms and outlined their underlying architecture. The library defines more than 100 algorithms. Learning to use them requires understanding their structure rather than memorizing the details of each algorithm. In this section we describe each of the algorithms. In it, we organize the algorithms by the type of action the algorithm performs.</p>
+        <p class="docText"><a class="docLink" href="ch11.html#ch11" >第十一章</a>介绍一般算法并列出了它们的底层体系结构。标准库定义了 100 多个算法，学习如何使用它们需要理解它们的结构，而不是记住每个算法的细节。本节描述每个算法，其中，按算法执行行为的类型组织这些算法。</p>
+
+<a name="app01lev2sec1"></a>
+        <h4 class="docSection2Title">A.2.1. Algorithms to Find an Object</h4>
+        <h4 class="docSection2Title">A.2.1. 查找对象的算法</h4>
+
+        <p class="docText">The <tt>find</tt> and <tt>count</tt> algorithms search the input range for a specific value. <tt>find</tt> returns an iterator to an element; <tt>count</tt> returns the number of matching elements.</p>
+        <p class="docText"><tt>find</tt> 和 <tt>count</tt> 算法在输入范围中查找指定值。<tt>find</tt> 返回元素的迭代器，<tt>count</tt> 返回匹配元素的数目。</p>
+
+<a name="app01lev3sec1"></a>
+        <h5 class="docSection3Title">Simple Find Algorithms</h5>
+        <h5 class="docSection3Title">简单查找算法</h5>
+
+        <p class="docText">These algorithms require input iterators. The <tt>find</tt> and <tt>count</tt> algorithms look for specific elements. The <tt>find</tt> algorithms return an iterator referring to the first matching element. The <tt>count</tt> algorithms return a count of how many times the element occurs in the input sequence.</p>
+        <p class="docText">这些算法要求输入迭代器。<tt>find</tt> 和 <tt>count</tt> 算法查找特定元素，<tt>find</tt> 算法返回引用第一个匹配元素的迭代器，<tt>count</tt> 算法返回元素在输入序列中出现次数的计数。</p>
+
+        <pre>
+<span class="docEmphStrong">find(beg, end, val)</span>
+<span class="docEmphStrong">count(beg, end, val)</span>
+</pre>
+
+<a name="idd1e156047"></a><a name="idd1e156051"></a><a name="idd1e156055"></a><a name="idd1e156059"></a><a name="idd1e156063"></a><a name="idd1e156067"></a><a name="idd1e156071"></a>
+        <p class="docText">Looks for element(s) in input range equal to <tt>val</tt>. Uses the equality (<tt>==</tt>) operator of the underlying type. <tt>find</tt> returns an iterator to the first matching element or <tt>end</tt> if no such element exists. <tt>count</tt> returns a count of how many times <tt>val</tt> occurs.</p>
+        <p class="docText">在输入范围中查找等于 <tt>val</tt> 的元素，使用基础类型的相等（<tt>==</tt>）操作符。<tt>find</tt> 返回第一个匹配元素的迭代器，如果不存在在匹配元素就返回 <tt>end</tt>。<tt>count</tt> 返回 <tt>val</tt> 出现次数的计数。</p>
+
+        <pre>
+<span class="docEmphStrong">find_if(beg, end, unaryPred)</span>
+<span class="docEmphStrong">count_if(beg, end, unaryPred)</span>
+</pre>
+
+        <p class="docText">Looks for element(s) in input range for which <tt>unaryPred</tt> is true. The predicate must take a single parameter of the <tt>value_type</tt> of the input range and return a type that can be used as a condition.</p>
+        <p class="docText">在 <tt>unaryPred</tt> 为真的输入范围中查找。谓词必须接受一个形参，形参类型为输入范围的 <tt>value_type</tt>，并且返回可以用作条件的类型。</p>
+
+        <p class="docText"><tt>find_if</tt> returns an iterator to first element for which <tt>unaryPred</tt> is true, or <tt>end</tt> if no such element exists. <tt>count_if</tt> applies <tt>unaryPred</tt> to each element and returns the number of elements for which <tt>unaryPred</tt> was true.</p>
+        <p class="docText"><tt>find_if</tt> 返回第一个使 <tt>unaryPred</tt> 为真的元素的迭代器，如果不存在这样的元素就返回 <tt>end</tt>。<tt>count_if</tt> 对每个元素应用 <tt>unaryPred</tt>。并返回使 <tt>unaryPred</tt> 为真的元素的数目。</p>
+
+<a name="app01lev3sec2"></a>
+        <h5 class="docSection3Title">Algorithms to Find One of Many Values</h5>
+        <h5 class="docSection3Title">查找许多值中的一个的算法</h5>
+
+        <p class="docText">These algorithms require two pairs of forward iterators. They search for the first (or last) element in the first range that is equal to any element in the second range. The types of <tt>beg1</tt> and <tt>end1</tt> must match exactly, as must the types of <tt>beg2</tt> and <tt>end2</tt>.</p>
+        <p class="docText">这些算法要求两对前向迭代器。它们在第一个范围中查找与第二个范围中任意元素相等的第一个（或最后一个）元素。<tt>beg1</tt> 和 <tt>end1</tt> 的类型必须完全匹配，<tt>beg2</tt> 和 <tt>end2</tt> 的类型也必须完全匹配。</p>
+
+        <p class="docText">There is no requirement that the types of <tt>beg1</tt> and <tt>beg2</tt> match exactly. However, it must be possible to compare the element types of the two sequences. So, for example, if the first sequence is a <tt>list&lt;string&gt;</tt>, then the second could be a <tt>vector&lt;char*&gt;</tt>.</p>
+        <p class="docText">不要求 <tt>beg1</tt> 和 <tt>beg2</tt> 的类型完全匹配，但是，必须有可能对这两个序列的元素类型进行比较。例如，如果第一个序列是 <tt>list&lt;string&gt;</tt>，则第二个可以是 <tt>vector&lt;char*&gt;</tt>。</p>
+
+        <p class="docText">Each algorithm is overloaded. By default, elements are tested using the <tt>==</tt> operator for the element type. Alternatively, we can specify a predicate that takes two parameters and returns a <tt>bool</tt> indicating whether the test between these two elements succeeds or fails.</p>
+        <p class="docText">每个算法都是重载的。默认情况下，使用元素类型的 <tt>==</tt> 操作符测试元素，或者，可以指定一个谓词，该谓词接受两个形参，并返回表示这两个元素间的测试成功或失败的 <tt>bool</tt> 值。</p>
+
+        <pre>
+<span class="docEmphStrong">find_first_of(beg1, end1, beg2, end2)</span>
+</pre>
+
+        <p class="docText">Returns an iterator to the first occurrence in the first range of any element from the second range. Returns <tt>end1</tt> if no match found.</p>
+        <p class="docText">返回第二个范围的任意元素在第一个范围的首次出现的迭代器，如果找不到匹配就返回 <tt>end1</tt>。</p>
+
+        <pre>
+<span class="docEmphStrong">find_first_of(beg1, end1, beg2, end2, binaryPred)</span>
+</pre><br>
+
+        <p class="docText">Uses <tt>binaryPred</tt> to compare elements from each sequence. Returns an iterator to the first element in the first range for which the <tt>binaryPred</tt> is true when applied to that element and an element from the second sequence. Returns <tt>end1</tt> if no such element exits.</p>
+	<p class="docText">使用 <tt>binaryPred</tt> 比较来自两个序列的元素，返回第一个范围中第一个这种元素的迭代器：当对该元素和来自第二个范围的一个元素应用 <tt>binaryPred</tt> 的时候，<tt>binaryPred</tt> 为真。如果不存在这样的元素，就返回 <tt>end1</tt>。</p>
+
+        <pre>
+<span class="docEmphStrong">find_end(beg1, end1, beg2, end2)</span>
+<span class="docEmphStrong">find_end(beg1, end1, beg2, end2, binaryPred)</span>
+</pre>
+
+        <p class="docText">Operates like <tt>find_first_of</tt>, except that it searches for the last occurrence of any element from the second sequence.</p>
+        <p class="docText">与 <tt>find_first_of</tt> 想像的操作符，只不过它查找来自第二个序列的任意元素的最后一次出现。</p>
+
+        <p class="docText">As an example, if the first sequence is 0,1,1,2,2,4,0,1 and the second sequence is 1,3,5,7,9, then <tt>find_end</tt> would return an iterator denoting the last element in the input range, and <tt>find_first_of</tt> would return an iterator to the second elementin this example, it returns the first 1 in the input sequence.</p>
+        <p class="docText">作为例子，如果第一个序列是 0, 1, 1, 2, 2, 4, 0, 1 而第二个序列是 1, 3, 5, 7, 9，则 <tt>find_end</tt> 返回表示输入范围中最后一个元素的迭代器，而 <tt>find_first_of</tt> 将返回第二个元素的迭代器——本例中，它返回输入序列中的第一个 1。</p>
+
+<a name="app01lev3sec3"></a>
+        <h5 class="docSection3Title">Algorithms to Find a Subsequence</h5>
+        <h5 class="docSection3Title">查找子序列的算法</h5>
+
+<a name="idd1e156251"></a><a name="idd1e156255"></a><a name="idd1e156259"></a><a name="idd1e156263"></a>
+        <p class="docText">These algorithms require forward iterators. They look for a subsequence rather than a single element. If the subsequence is found, an iterator is returned to the first element in the subsequence. If no subsequence is found, the <tt>end</tt> iterator from the input range is returned.</p>
+        <p class="docText">这些算法要求前向迭代器。它们查找子序列而不是单个元素。如果找到了子序列，就返回子序列中第一个元素的迭代器；如果找不到子序列，就返回输入范围的 <tt>end</tt> 迭代器。</p>
+
+        <p class="docText">Each function is overloaded. By default, the equality (<tt>==</tt>) operator is used to compare elements; the second version allows the programmer to supply a predicate to test instead.</p>
+	<p class="docText">每个函数都是重载的。默认情况下，使用相等操作符（<tt>==</tt>）比较元素；第二个版本允许程序员提供一个谓词代替（<tt>==</tt>）进行测试。</p>
+
+        <pre>
+<span class="docEmphStrong">adjacent_find(beg, end)</span>
+<span class="docEmphStrong">adjacent_find(beg, end, binaryPred)</span>
+</pre>
+
+        <p class="docText">Returns an iterator to the first adjacent pair of duplicate elements. Returns <tt>end</tt> if there are no adjacent duplicate elements. In the first case, duplicates are found by using <tt>==</tt>. In the second, duplicates are those for which the <tt>binaryPred</tt> is true.</p>
+        <p class="docText">返回重复元素的第一个相邻对。如果没有相邻的重复元素。就返回 <tt>end</tt>。在第一种情况下，使用 <tt>==</tt> 找到重复元素，第二种情况下，重复元素是使 <tt>binaryPred</tt> 为真的那些元素。</p>
+
+        <pre>
+<span class="docEmphStrong">search(beg1, end1, beg2, end2)</span>
+<span class="docEmphStrong">search(beg1, end1, beg2, end2, binaryPred)</span>
+</pre>
+
+        <p class="docText">Returns an iterator to the first position in the input range at which the second range occurs as a subsequence. Returns <tt>end1</tt> if the subsequence is not found. The types of <tt>beg1</tt> and <tt>beg2</tt> may differ but must be compatible: It must be possible to compare elements in the two sequences.</p>
+        <p class="docText">返回输入范围中第二个范围作为子序列出现的第一个位置。如果找不到子序列，就返回 <tt>end1</tt>。<tt>beg1</tt> 和 <tt>beg2</tt> 的类型可以不同，但必须是兼容的：必须能够比较两个序列中的元素。</p>
+
+        <pre>
+<span class="docEmphStrong">search_n(beg, end, count, val)</span>
+<span class="docEmphStrong">search_n(beg, end, count, val, binaryPred)</span>
+</pre>
+
+        <p class="docText">Returns an iterator to the beginning of a subsequence of <tt>count</tt> equal elements. Returns <tt>end</tt> if no such subsequence exists. The first version looks for <tt>count</tt> occurrences of the given <tt>value</tt>; the second version <tt>count</tt> occurrences for which the <tt>binaryPred</tt> is true.</p>
+        <p class="docText">返回 <tt>count</tt> 个相等元素的子串的开关迭代器。如果不存在这样的子串，就返回 <tt>end</tt>。第一个版本查找给定 <tt>val</tt> 的 <tt>count</tt> 次出现，第二个版本查找使 <tt>binaryPred</tt> 为真的 <tt>count</tt> 次出现。</p>
+
+<a name="app01lev2sec2"></a>
+        <h4 class="docSection2Title">A.2.2. Other Read-Only Algorithms</h4>
+        <h4 class="docSection2Title">A.2.2. 其他只读算法</h4>
+
+        <p class="docText">These algorithms require input iterators for their first two arguments. The <tt>equal</tt> and <tt>mismatch</tt> algorithms also take an additional input iterator that denotes a second range. There must be at least as many elements in the second sequence as there are in the first. If there are more elements in the second, they are ignored. If there are fewer, it is an error and results in undefined run-time behavior.</p>
+        <p class="docText">这些算法要求用于前两个实参的输入迭代器。<tt>equal</tt> 和 <tt>mismatch</tt> 算法还接受一个附加输入迭代器，该迭代器表示第二个范围。第二个序列中的元素至少与第一个序列一样多，如果第二个序列元素较多，就忽略多余元素；如果第二个序列元素较少，就会出错并导致未定义的运行时行为。</p>
+
+        <p class="docText">As usual, the types of the iterators denoting the input range must match exactly. The type of <tt>beg2</tt> must be compatible with the type of <tt>beg1</tt>. That is, it must be possible to compare elements in both sequences.</p>
+        <p class="docText">照常，表示输入范围的迭代器的类型必须完全匹配。<tt>beg2</tt> 的类型必须与 <tt>beg1</tt> 的类型兼容，即必须能够比较两个序列中的元素。</p>
+
+        <p class="docText">The <tt>equal</tt> and <tt>mismatch</tt> functions are overloaded: One version uses the element equality operator (<tt>==</tt>) to test pairs of elements; the other uses a predicate.</p>
+        <p class="docText"><tt>equal</tt> 和 <tt>mismatch</tt> 函数是重载的：一个版本使用元素相等操作符（<tt>==</tt>）测试元素对，另一个使用谓词。</p>
+
+        <pre>
+<span class="docEmphStrong">for_each(beg, end, f)</span>
+</pre>
+
+        <p class="docText">Applies the function (or function object (<a class="docLink" href="ch14lev1sec8.html#ch14lev1sec8" >Section 14.8</a>, p. <a class="docLink" href="ch14lev1sec8.html#ch14lev1sec8" >530</a>)) <tt>f</tt> to each element in its input range. The return value, if any, from <tt>f</tt> is ignored. The iterators are input iterators, so the elements may not be written by <tt>f</tt>. Typically, <tt>for_each</tt> is used with a function that has side effects. For example, <tt>f</tt> might print the values in the range.</p>
+        <p class="docText">对其输入范围中的每个元素应用函数（或函数对象（<a class="docLink" href="ch14lev1sec8.html#ch14lev1sec8" >第 14.8 节</a>））<tt>f</tt>。如果 <tt>f</tt> 有返回值，就忽略该返回值。迭代器是输入迭代器，所以 <tt>f</tt> 不能写元素。通常，用有副作用的函数使用 <tt>for_each</tt>。例如，<tt>f</tt> 可以显示范围中的值。</p>
+
+        <pre>
+<span class="docEmphStrong">mismatch(beg1, end1, beg2)</span>
+<span class="docEmphStrong">mismatch(beg1, end1, beg2, binaryPred)</span>
+</pre>
+
+<a name="idd1e156443"></a><a name="idd1e156447"></a><a name="idd1e156451"></a><a name="idd1e156455"></a><a name="idd1e156459"></a><a name="idd1e156463"></a>
+        <p class="docText">Compares the elements in two sequences. Returns a pair of iterators denoting the first elements that do not match. If all the elements match, then the <tt>pair</tt> returned is <tt>end1</tt>, and an iterator into <tt>beg2</tt> offset by the size of the first sequence.</p>
+        <p class="docText">比较两个序列中的元素，返回一对表示第一个不匹配元素的迭代器。如果所有元素都匹配，则返回的 <tt>pair</tt> 是 <tt>end1</tt>，以及 <tt>beg2</tt> 中偏移量为第一个序列长度的迭代器。</p>
+
+        <pre>
+<span class="docEmphStrong">equal(beg1, end1, beg2)</span>
+<span class="docEmphStrong">equal(beg1, end1, beg2, binaryPred)</span>
+</pre>
+
+        <p class="docText">Determines whether two sequences are equal. Returns <tt>true</tt> if each element in the input range equals the corresponding element in the sequence that begins at <tt>beg2</tt>.</p>
+        <p class="docText">确定两个序列是否相等。如果输入范围中的每个元素都与从 <tt>beg2</tt> 开始的序列中的对应元素相等，就返回 <tt>true</tt>。</p>
+
+        <p class="docText">For example, given the sequences <tt>meet</tt> and <tt>meat</tt>, a call to <tt>mismatch</tt> would return a <tt>pair</tt> containing iterators referring to the second <tt>e</tt> in the first sequence and to the element <tt>a</tt> in the second sequence. If, instead, the second sequence were <tt>meeting</tt>, and we called <tt>equal</tt>, then the <tt>pair</tt> returned would be <tt>end1</tt> and an iterator denoting the element <tt>i</tt> in the second range.</p>
+        <p class="docText">例如，给定序列 <tt>meet</tt> 和 <tt>meat</tt>，对 <tt>mismatch</tt> 的调用将返回一个 <tt>pair</tt> 对象，其中包含指向第一个序列中第二个 <tt>e</tt> 的迭代器，以及指向第二个序列中元素 <tt>a</tt> 的迭代器。如果，第二个序列是 <tt>meeting</tt>，并调用 <tt>equal</tt>，则返回的将是 <tt>end1</tt> 和表示第二个范围中元素 <tt>i</tt> 的迭代器。</p>
+
+<a name="app01lev2sec3"></a>
+        <h4 class="docSection2Title">A.2.3. Binary-Search Algorithms</h4>
+        <h4 class="docSection2Title">A.2.3. 二分查找算法</h4>
+
+        <p class="docText">Although these algorithms may be used with forward iterators, they offer specialized versions that are much faster when used with random-access iterators.</p>
+        <p class="docText">虽然可以与前向迭代器一起使用这些算法，它们还是提供了随机访问迭代器一起使用的特殊版本，它们的速度更快。</p>
+
+        <p class="docText">These algorithms perform a binary search, which means that the input sequence must be sorted. These algorithms behave similarly to the associative container members of the same name (<a class="docLink" href="ch10lev1sec5.html#ch10lev2sec17" >Section 10.5.2</a>, p. <a class="docLink" href="ch10lev1sec5.html#ch10lev2sec17" >377</a>). The <tt>equal_range, lower_bound</tt>, and <tt>upper_bound</tt> algorithms return an iterator that refers to the positions in the container at which the given element could be inserted while still preserving the container's ordering. If the element is larger than any other in the container, then the iterator that is returned might be the off-the-end iterator.</p>
+	<p class="docText">这些算法执行二分查找，这意味着输入序列必须是已排列的。这些算法的表现类似于同名的关联容器成员（<a class="docLink" href="ch10lev1sec5.html#ch10lev2sec17" >第 10.5.2 节</a>）。<tt>equal_range</tt>、<tt>lower_bound</tt> 和 <tt>upper_bound</tt> 算法返回一个迭代器，该迭代器指向容器中的位置，可以将给定元素插入到这个位置而仍然保持容器的排序。如果元素比容器中任意其他元素都大，则返回的迭代器会是超出末端迭代器。</p>
+
+        <p class="docText">Each algorithm provides two versions: The first uses the element type's less-than operator (<tt>&lt;</tt>) to test elements; the second uses the specified comparison.</p>
+        <p class="docText">每个算法提供两个版本：第一个使用元素类型的小于操作符（<tt>&lt;</tt>）测试元素，第二个使用指定的比较关系。</p>
+
+        <pre>
+<span class="docEmphStrong">lower_bound(beg, end, val)</span>
+<span class="docEmphStrong">lower_bound(beg, end, val, comp)</span>
+</pre>
+
+        <p class="docText">Returns an iterator to the first position in which val can be inserted while preserving the ordering.</p>
+        <p class="docText">返回第一个这种位置的迭代器：可以将 val 插入到该位置而仍然保持顺序。</p>
+
+        <pre>
+<span class="docEmphStrong">upper_bound(beg, end, val)</span>
+<span class="docEmphStrong">upper_bound(beg, end, val, comp)</span>
+</pre>
+
+        <p class="docText">Returns an iterator to the last position in which val can be inserted while preserving the ordering.</p>
+        <p class="docText">返回最后一个这种位置的迭代器：可以将 val 插入到该位置而仍然保持顺序。</p>
+
+        <pre>
+<span class="docEmphStrong">equal_range(beg, end, val)</span>
+<span class="docEmphStrong">equal_range(beg, end, val, comp)</span>
+</pre>
+
+        <p class="docText">Returns an iterator pair indicating the subrange in which val could be inserted while preserving the ordering.</p>
+        <p class="docText">返回一个表示子范围的迭代器对，可以将 val 插入到该子范围而仍然保持顺序。</p>
+
+        <pre>
+<span class="docEmphStrong">binary_search(beg, end, val)</span>
+<span class="docEmphStrong">binary_search(beg, end, val, comp)</span>
+</pre>
+
+        <p class="docText">Returns a <tt>bool</tt> indicating whether the sequence contains an element that is equal to <tt>val</tt>. Two values <tt>x</tt> and <tt>y</tt> are considered equal if <tt>x &lt; y</tt> and <tt>y &lt;x</tt> both yield false.</p>
+        <p class="docText">返回一个 <tt>bool</tt> 值，表示序列是否包含与 <tt>val</tt> 相等的元素。如果 <tt>x &lt; y</tt> 和 <tt>y &lt;x</tt> 都获得假值，就认为两个值 <tt>x</tt> 和 <tt>y</tt>相等。</p>
+
+<a name="app01lev2sec4"></a>
+        <h4 class="docSection2Title">A.2.4. Algorithms that Write Container Elements</h4>
+        <h4 class="docSection2Title">A.2.4. 写容器元素的算法</h4>
+
+<a name="idd1e156651"></a><a name="idd1e156655"></a><a name="idd1e156659"></a><a name="idd1e156663"></a><a name="idd1e156668"></a><a name="idd1e156673"></a>
+        <p class="docText">Many algorithms write container elements. These algorithms can be distinguished both by the kinds of iterators on which they operate and by whether they write elements in the input range or write to a specified destination.</p>
+        <p class="docText">许多算法写容器元素。可以根据所操作的迭代器种类，以及是写输入范围的元素还是写到特定目的地，来区分这些算法。</p>
+
+        <p class="docText">The simplest algorithms read elements in sequence, requiring only input iterators. Those that write back to the input sequence require forward iterators. Some read the sequence backward, thus requiring bidirectional iterators. Algorithms that write to a separate destination, as usual, assume the destination is large enough to hold the output.</p>
+        <p class="docText">最简单的算法读序列中的元素，只要求输入迭代器。那些写回输入序列的算法要求前向迭代器。一些算法反向读取序列，所以要求双向迭代器。写至单独目的地的算法，照常假定目的地足以保存输入。</p>
+
+<a name="app01lev3sec4"></a>
+        <h5 class="docSection3Title">Algorithms that Write but do Not Read Elements</h5>
+        <h5 class="docSection3Title">只写元素不读元素的算法</h5>
+
+        <p class="docText">These algorithms require an output iterator that denotes a destination. They take a second argument that specifies a count and write that number of elements to the destination.</p>
+        <p class="docText">这些算法要求表示目的地的输出迭代器。它们接受指定数量的第二个实参并将该数目的元素写到目的地。</p>
+
+        <pre>
+<span class="docEmphStrong">fill_n(dest, cnt, val)</span>
+<span class="docEmphStrong">generate_n(dest, cnt, Gen)</span>
+</pre>
+
+        <p class="docText">Write <tt>cnt</tt> values to <tt>dest</tt>. The <tt>fill_n</tt> function writes <tt>cnt</tt> copies of the value <tt>val</tt>; <tt>generate_n</tt> evaluates the generator <tt>Gen() cnt</tt> times. A generator is a function (or function object (<a class="docLink" href="ch14lev1sec8.html#ch14lev1sec8" >Section 14.8</a>, p. <a class="docLink" href="ch14lev1sec8.html#ch14lev1sec8" >530</a>)) that is expected to produce a different return value each time it is called.</p>
+	<p class="docText">将 <tt>cnt</tt> 个值写到 <tt>dest</tt>。<tt>fill_n</tt> 函数写 <tt>val</tt> 值的 <tt>cnt</tt> 个副本，<tt>generate_n</tt> 对发生器 <tt>Gen()</tt> 进行 <tt>cnt</tt> 次计算。发生器是一个函数（或函数对象（<a class="docLink" href="ch14lev1sec8.html#ch14lev1sec8" >第 14.8 节</a>）），每次调用它都期待产生一个不同的返回值。</p>
+
+<a name="app01lev3sec5"></a>
+        <h5 class="docSection3Title">Algorithms that Write Elements Using Input Iterators</h5>
+        <h5 class="docSection3Title">使用输入迭代器写元素的算法</h5>
+
+        <p class="docText">Each of these operations reads an input sequence and writes to an output sequence denoted by <tt>dest</tt>. They require <tt>dest</tt> to be an output iterator, and the iterators denoting the input range must be input iterators. The caller is responsible for ensuring that <tt>dest</tt> can hold as many elements as necessary given the input sequence. These algorithms return <tt>dest</tt> incremented to denote one past the last element written.</p>
+	<p class="docText">这些操作每一个读一个输入序列，并写到由 <tt>dest</tt> 表示的输出序列。它们要求 <tt>dest</tt> 是一个输出迭代器，而表示输入范围的迭代器必须是输入迭代器。调用者负责保证 <tt>dest</tt> 可以保存给定输入序列所需数量的元素。这些算法返回 <tt>dest</tt>，<tt>dest</tt> 增量至指向所写最后元素的下一位置。</p>
+
+        <pre>
+<span class="docEmphStrong">copy(beg, end, dest)</span>
+</pre>
+
+        <p class="docText">Copies the input range to the sequence beginning at iterator <tt>dest</tt>.</p>
+        <p class="docText">将输入范围复制到从迭代器 <tt>dest</tt> 开始的序列。</p>
+
+        <pre>
+<span class="docEmphStrong">transform(beg, end, dest, unaryOp)</span>
+<span class="docEmphStrong">transform(beg, end, beg2, dest, binaryOp)</span>
+</pre>
+
+        <p class="docText">Applies the specified operation to each element in the input range, writing the result to <tt>dest</tt>. The first version applies a unary operation to each element in the input range. The second applies a binary operation to pairs of elements. It takes the first argument to the binary operation from the sequence denoted by <tt>beg</tt> and <tt>end</tt> and takes the second argument from the sequence beginning at <tt>beg2</tt>. The programmer must ensure that the sequence beginning at <tt>beg2</tt> has at least as many elements as are in the first sequence.</p>
+        <p class="docText">对输入范围中每个元素应用指定操作。将结果写到 <tt>dest</tt>。第一个版本对输入范围中每个元素应用一元操作。第二个版本对元素对应用二元操作，它从由 <tt>beg</tt> 和 <tt>end</tt> 表示的序列接受二元操作的第一个实参，从开始于 <tt>beg2</tt> 的第二个序列接受第二个实参。程序员必须保证开始于 <tt>beg2</tt> 的序列具有至少与第一个序列一样多的元素。</p>
+
+        <pre>
+<span class="docEmphStrong">replace_copy(beg, end, dest, old_val, new_val)</span>
+<span class="docEmphStrong">replace_copy_if(beg, end, dest, unaryPred, new_val)</span>
+</pre>
+
+        <p class="docText">Copies each element to <tt>dest</tt>, replacing specified elements by the <tt>new_val</tt>. The first version replaces those elements that are <tt>==</tt> to <tt>old_val</tt>. The second version replaces those elements for which <tt>unaryPred</tt> is true.</p>
+        <p class="docText">将每个元素复制到 <tt>dest</tt>，用 <tt>new_val</tt> 代替指定元素。第一个版本代替那些 <tt>==</tt><tt>old_val</tt> 的元素，第二个版本代替那些使 <tt>unaryPred</tt> 为真的元素。</p>
+
+        <pre>
+<span class="docEmphStrong">merge(beg1, end1, beg2, end2, dest)</span>
+<span class="docEmphStrong">merge(beg1, end1, beg2, end2, dest, comp)</span>
+</pre>
+
+<a name="idd1e156842"></a><a name="idd1e156846"></a><a name="idd1e156850"></a><a name="idd1e156854"></a><a name="idd1e156858"></a><a name="idd1e156862"></a><a name="idd1e156866"></a><a name="idd1e156870"></a><a name="idd1e156875"></a><a name="idd1e156879"></a>
+        <p class="docText">Both input sequences must be sorted. Writes a merged sequence to <tt>dest</tt>. The first version compares elements using the <tt>&lt;</tt> operator; the second version uses the given comparison.</p>
+        <p class="docText">两个输入序列都必须是已排序的。将合并后的序列写至 <tt>dest</tt>。第一个版本 <tt>&lt;</tt> 操作符比较元素，第二个版本使用给定的比较关系。</p>
+
+<a name="app01lev3sec6"></a>
+        <h5 class="docSection3Title">Algorithms that Write Elements Using Forward Iterators</h5>
+        <h5 class="docSection3Title">使用前向迭代器写元素的算法</h5>
+
+        <p class="docText">These algorithms require forward iterators because they write elements in their input sequence.</p>
+        <p class="docText">这些算法要求前向迭代器，因为它们修改输入序列中的元素。</p>
+
+        <pre>
+<span class="docEmphStrong">swap(elem1, elem2)</span>
+<span class="docEmphStrong">iter_swap(iter1, iter2)</span>
+</pre>
+
+        <p class="docText">Parameters to these functions are references, so the arguments must be writable. Swaps the specified element or elements denoted by the given iterators.</p>
+        <p class="docText">这些函数的形参是引用，所以实参必须是可写的。交换指定元素或由给定迭代器表示的元素。</p>
+
+        <pre>
+<span class="docEmphStrong">swap_ranges(beg1, end1, beg2)</span>
+</pre>
+
+        <p class="docText">Swaps the elements in the input range with those in the second sequence beginning at <tt>beg2</tt>. The ranges must not overlap. The programmer must ensure that the sequence starting at <tt>beg2</tt> is at least as large as the input sequence. Returns <tt>beg2</tt> incremented to denote the element just after the last one swapped.</p>
+	<p class="docText">用开始于 <tt>beg2</tt> 的第二个序列中的元素交换输入范围中的元素。范围必须不重叠。程序员必须保证开始于 <tt>beg2</tt> 的序列至少与输入序列一样大。返回 <tt>beg2</tt>，<tt>beg2</tt> 增量到指向被交换的最后一个元素之后的元素。</p>
+
+        <pre>
+<span class="docEmphStrong">fill(beg, end, val)</span>
+<span class="docEmphStrong">generate(beg, end, Gen)</span>
+</pre>
+
+        <p class="docText">Assigns a new value to each element in the input sequence. <tt>fill</tt> assigns the value <tt>val</tt>; <tt>generate</tt> executes <tt>Gen()</tt> to create new values.</p>
+        <p class="docText">将新值赋给输入序列中的每个元素。<tt>fill</tt> 赋 <tt>val</tt> 值，<tt>generate</tt> 执行 <tt>Gen()</tt> 来创建新值。</p>
+
+        <pre>
+<span class="docEmphStrong">replace(beg, end, old_val, new_val)</span>
+<span class="docEmphStrong">replace_if(beg, end, unaryPred, new_val)</span>
+</pre>
+
+        <p class="docText">Replace each matching element by <tt>new_val</tt>. The first version uses <tt>==</tt> to compare elements with <tt>old_val;</tt> the second version executes <tt>unaryPred</tt> on each element, replacing those for which <tt>unaryPred</tt> is true.</p>
+        <p class="docText">用 <tt>new_val</tt> 代替每个匹配元素。第一个版本使用 <tt>==</tt> 将元素和 <tt>old_val</tt> 比较，第二个版本对每个元素执行 <tt>unaryPred</tt>，代替使 <tt>unaryPred</tt> 为真的那些元素。</p>
+
+<a name="app01lev3sec7"></a>
+        <h5 class="docSection3Title">Algorithms that Write Elements Using Bidirectional Iterators</h5>
+        <h5 class="docSection3Title">使用双向迭代器写元素的算法</h5>
+
+        <p class="docText">These algorithms require the ability to go backward in the sequence, and so they require bidirectional iterators.</p>
+        <p class="docText">这些算法要求在序列中往回走的能力，所以它们要求双向迭代器。</p>
+
+        <pre>
+<span class="docEmphStrong">copy_backward(beg, end, dest)</span>
+</pre>
+
+        <p class="docText">Copies elements in reverse order to the output iterator <tt>dest</tt>. Returns <tt>dest</tt> incremented to denote one past the last element copied.</p>
+	<p class="docText">按逆序将元素复制到输出迭代器 <tt>dest</tt>。返回 <tt>dest</tt>，<tt>dest</tt> 增量至指向被复制的最后一个元素的下一位置。</p>
+
+        <pre>
+<span class="docEmphStrong">inplace_merge(beg, mid, end)</span>
+<span class="docEmphStrong">inplace_merge(beg, mid, end, comp)</span>
+</pre>
+
+        <p class="docText">Merges two adjacent subsequences from the same sequence into a single, ordered sequence: The subsequences from <tt>beg</tt> to <tt>mid</tt> and from <tt>mid</tt> to <tt>end</tt> are merged into <tt>beg</tt> to <tt>end</tt>. First version uses <tt>&lt;</tt> to compare elements; second version uses a specified comparison. Returns <tt>void</tt>.</p>
+        <p class="docText">将同一序列中的两个相邻子序列合并为一个有序序列：将从 <tt>beg</tt> 到 <tt>mid</tt> 和从 <tt>mid</tt> 到 <tt>end</tt> 的子序列合并为从 <tt>beg</tt> 到 <tt>end</tt> 的序列。第一个版本使用 <tt>&lt;</tt> 比较元素，第二个版本使用指定的比较关系。返回 <tt>void</tt>。</p>
+
+<a name="app01lev2sec5"></a>
+        <h4 class="docSection2Title">A.2.5. Partitioning and Sorting Algorithms</h4>
+        <h4 class="docSection2Title">A.2.5. 划分与排序算法</h4>
+
+<a name="idd1e157067"></a><a name="idd1e157071"></a><a name="idd1e157075"></a><a name="idd1e157079"></a>
+        <p class="docText">The sorting and partitioning algorithms provide various strategies for ordering the elements of a container.</p>
+        <p class="docText">排序和划分算法为容器元素排序提供不同的策略。</p>
+
+        <p class="docText">A <tt>partition</tt> divides elements in the input range into two groups. The first group consists of those elements that satisfy the specified predicate; the second, those that do not. For example, we can partition elements in a container based on whether the elements are odd, or on whether a word begins with a capital letter, and so forth.</p>
+        <p class="docText"><tt>partition</tt> 将输入范围中的元素划分为两组，第一组由满足给定谓词的元素构成，第二组由不满足谓词的元素构成。例如，可以根据元素是否为奇数划分容器中的元素，或者，根据单词是否以大写字母开头，诸如此类。</p>
+
+        <p class="docText">Each of the sorting and partitioning algorithms provides stable and unstable versions. A stable algorithm maintains the relative order of equal elements. For example, given the sequence</p>
+        <p class="docText">每个排序和划分算法都提供稳定和不稳定版本，稳定算法维持相等元素的相对次序。例如，给定序列</p>
+
+        <pre>
+      { "pshew", "Honey", "tigger", "Pooh" }
+</pre>
+
+        <p class="docText">a stable partition based on whether a word begins with a capital letter generates the sequence in which the relative order of the two word categories is maintained:</p>
+        <p class="docText">基于单词是否以大写字母开头的稳定算法，产生维持两个单词类的相对次序的序列：</p>
+
+        <pre>
+     { "Honey", "Pooh", "pshew", "tigger" }
+</pre>
+
+        <p class="docText">The stable algorithms do more work and so may run more slowly and use more memory than the unstable counterparts.</p>
+        <p class="docText">稳定算法完成更多工作，因此相比于不稳定算法，可能运行慢且使用更多内存。</p>
+
+<a name="app01lev3sec8"></a>
+        <h5 class="docSection3Title">Partitioning Algorithms</h5>
+        <h5 class="docSection3Title">划分算法</h5>
+
+        <p class="docText">These algorithms require bidirectional iterators.</p>
+        <p class="docText">这些算法要求双向迭代器。</p>
+
+        <pre>
+<span class="docEmphStrong">stable_partition(beg, end, unaryPred)</span>
+<span class="docEmphStrong">partition(beg, end, unaryPred)</span>
+</pre>
+
+        <p class="docText">Uses <tt>unaryPred</tt> to partition the input sequence. Elements for which <tt>unaryPred</tt> is true are put at the beginning of the sequence; those for which the predicate is false are at the end. Returns an iterator just past the last element for which <tt>unaryPred</tt> is true.</p>
+	<p class="docText">使用 <tt>unaryPred</tt> 划分输入序列。使 <tt>unaryPred</tt> 为真的元素放在序列开头，使 <tt>unaryPred</tt> 为假的元素放在序列末尾。返回一个迭代器，该迭代器指向使 <tt>unaryPred</tt> 为真的最后元素的下一位置。</p>
+
+<a name="app01lev3sec9"></a>
+        <h5 class="docSection3Title">Sorting Algorithms</h5>
+        <h5 class="docSection3Title">排序算法</h5>
+
+        <p class="docText">These algorithms require random-access iterators. Each of the sorting algorithms provides two overloaded versions. One version uses element operator <tt>&lt;</tt> to compare elements; the other takes an extra parameter that specifies the comparison. These algorithms require random-access iterators. With one exception, these algorithms return <tt>void</tt>; <tt>partial_sort_copy</tt> returns an itertor into the destination.</p>
+        <p class="docText">这些算法要求随机访问迭代器。每个排序算法都提供两个重载版本，一个版本使用元素操作符 <tt>&lt;</tt> 比较元素，另一个版本接受一个指定比较关系的额外形参。这些算法返回 <tt>void</tt>，除了一个例外，<tt>partial_sort_copy</tt> 返回目的地迭代器。</p>
+
+        <p class="docText">The <tt>partial_sort</tt> and <tt>nth_element</tt> algorithms do only part of the job of sorting the sequence. They are often used to solve problems that might otherwise be handled by sorting the entire sequence. Because these operations do less work, they typically are faster than sorting the entire input range.</p>
+        <p class="docText"><tt>partial_sort</tt> 和 <tt>nth_element</tt> 算法只完成序列排序的部分工作，经常用它们解决通过对整个序列排序来处理的问题。因为这些操作做的工作较少，所以它们一般比排序整个输入范围要快一些。</p>
+
+        <pre>
+<span class="docEmphStrong">sort(beg, end)</span>
+<span class="docEmphStrong">stable_sort(beg, end)</span>
+<span class="docEmphStrong">sort(beg, end, comp)</span>
+<span class="docEmphStrong">stable_sort(beg, end, comp)</span>
+</pre>
+
+        <p class="docText">Sorts the entire range.</p>
+        <p class="docText">对整个范围进行排序。</p>
+
+        <pre>
+<span class="docEmphStrong">partial_sort(beg, mid, end)</span>
+<span class="docEmphStrong">partial_sort(beg, mid, end, comp)</span>
+</pre>
+
+<a name="idd1e157205"></a><a name="idd1e157210"></a><a name="idd1e157215"></a>
+        <p class="docText">Sorts a number of elements equal to <tt>mid</tt> <tt>beg</tt>. That is, if <tt>mid</tt> <tt>beg</tt> is equal to 42, then this function puts the lowest-valued elements in sorted order in the first 42 positions in the sequence. After <tt>partial_sort</tt> completes, the elements in the range from <tt>beg</tt> up to but not including <tt>mid</tt> are sorted. No element in the sorted range is larger than any element in the range after <tt>mid</tt>. The order among the unsorted elements is unspecified.</p>
+	<p class="docText">对 <tt>mid</tt> <tt>beg</tt> 个元素进行排序，也就是说，如果 <tt>mid</tt> <tt>beg</tt> 等于 42，则该函数将有序次序中的最小值元素放在序列中前 42 个位置。<tt>partial_sort</tt> 完成之后，从 <tt>beg</tt> 到 <tt>mid</tt>（但不包括 <tt>mid</tt>）范围内的元素是有序的。已排序范围内没有元素大于 <tt>mid</tt> 之后的元素。未排序元素之间的次序是未指定的。</p>
+
+        <p class="docText">As an example, we might have a collection of race scores and want to know what the first-, second- and third-place scores are but don't care about the order of the other times. We might sort such a sequence as follows:</p>
+        <p class="docText">例如，有一个赛跑成绩的集合，我们想要知道前三名的成绩但并不关心其他名次的次序，可以这样对这个序列进行排序：</p>
+
+        <pre>
+     partial_sort(scores.begin(),
+                 scores.begin() + 3, scores.end());
+</pre>
+
+        <pre>
+<span class="docEmphStrong">partial_sort_copy(beg, end, destBeg, destEnd)</span>
+<span class="docEmphStrong">partial_sort_copy(beg, end, destBeg, destEnd, comp)</span>
+</pre>
+
+        <p class="docText">Sorts elements from the input range and puts as much of the sorted sequence as fits into the sequence denoted by the iterators <tt>destBeg</tt> and <tt>destEnd</tt>. If the destination range is the same size or has more elements than the input range, then the entire input range is sorted and stored starting at <tt>destBeg</tt>. If the destination size is smaller, then only as many sorted elements as will fit are copied.</p>
+        <p class="docText">对输入序列中的元素进行排序，将已排序序列中适当数目的元素放入由迭代器 <tt>destBeg</tt> 和 <tt>destEnd</tt> 表示的序列。如果目的地范围与输入范围一样大，或者比输入范围大，则将整个输入范围排序且有序序列从 <tt>destBeg</tt> 开始。如果目的地较小，则只复制适当数目的有序元素。</p>
+
+        <p class="docText">Returns an iterator into the destination that refers just after the last element that was sorted. The returned iterator will be <tt>destEnd</tt> if that destination sequence is smaller or equal in size to the input range.</p>
+        <p class="docText">返回目的地中的迭代器，指向已排序的最后一个元素之后。如果目的地序列比输入范围小或者与输入范围大小相等，返回的迭代器将是 <tt>destEnd</tt>。</p>
+
+        <pre>
+<span class="docEmphStrong">nth_element(beg, nth, end)</span>
+<span class="docEmphStrong">nth_element(beg, nth, end, comp)</span>
+</pre>
+
+        <p class="docText">The argument <tt>nth</tt> must be an iterator positioned on an element in the input sequence. After <tt>nth_element</tt>, the element denoted by that iterator has the value that would be there if the entire sequence were sorted. The elements in the container are also partitioned around <tt>nth</tt>: Those before <tt>nth</tt> are all smaller than or equal to the value denoted by <tt>nth</tt>, and the ones after it are greater than or equal to it. We might use <tt>nth_element</tt> to find the value closest to the median:</p>
+	<p class="docText">实参 <tt>nth</tt> 必须是一个迭代器，定位输入序列中的一个元素。运行 <tt>nth_element</tt> 之后，该迭代器表示的元素的值就是：如果整个序列是已排序的，这个位置上应放置的值。容器中的元素也围绕 <tt>nth</tt> 划分：<tt>nth</tt> 之前的元素都小于或等于 <tt>nth</tt> 所表示的值，<tt>nth</tt> 之后的元素都大于或等于它。可以使用 <tt>nth_element</tt> 查找与中值最接近的值：</p>
+
+        <pre>
+     nth_element(scores.begin(), scores.begin() +
+              scores.size()/2, scores.end());
+</pre>
+
+        <a name="app01lev2sec6"></a>
+
+        <h4 class="docSection2Title">A.2.6. General Reordering Operations</h4>
+        <h4 class="docSection2Title">A.2.6. 通用重新排序操作</h4>
+
+        <p class="docText">Several algorithms reorder the elements in a specified way. The first two, <tt>remove</tt> and <tt>unique</tt>, reorder the container so that the elements in the first part of the sequence meet some criteria. They return an iterator marking the end of this subsequence. Others, such as <tt>reverse, rotate</tt>, and <tt>random_shuffle</tt> rearrange the entire sequence.</p>
+	<p class="docText">有几个算法用指定方法对元素进行重新排序。最前面的两个 <tt>remove</tt> 和 <tt>unique</tt> 对容器重新排序，以便序列中的第一部分满足一些标准，它们返回标志这个子序列的末尾的迭代器。其他算法，如 <tt>reverse</tt>、<tt>rotate</tt> 和 <tt>random_shuffle</tt>，重新安排整个序列。</p>
+
+        <p class="docText">These algorithms operate "in place;" they rearrange the elements in the input sequence itself. Three of the reordering algorithms offer "copying" versions. These algorithms, <tt>remove_copy, rotate_copy</tt>, and <tt>unique_copy</tt>, write the reordered sequence to a destination rather than rearranging elements directly.</p>
+	<p class="docText">这些算法“就地”操作，它们在输入序列本身中重新安排元素。三个重新排序算法提供“复制”版本。算法 <tt>remove_copy</tt>、<tt>rotate_copy</tt> 和 <tt>unique_copy</tt>，将重新排序之后的序列写至目的地，而不是直接重新安排元素。</p>
+
+<a name="app01lev3sec10"></a>
+        <h5 class="docSection3Title">Reordering Algorithms Using Forward Iterators</h5>
+        <h5 class="docSection3Title">使用前向迭代器的重新排序算法</h5>
+
+<a name="idd1e157361"></a><a name="idd1e157365"></a><a name="idd1e157370"></a><a name="idd1e157374"></a><a name="idd1e157379"></a><a name="idd1e157383"></a>
+        <p class="docText">These algorithms reorder the input sequence. They require that the iterators be at least forward iterators.</p>
+        <p class="docText">这些算法对输入序列进行重新排序。它们要求迭代器至少是前向迭代器。</p>
+
+        <pre>
+<span class="docEmphStrong">remove(beg, end, val)</span>
+<span class="docEmphStrong">remove_if(beg, end, unaryPred)</span>
+</pre>
+
+        <p class="docText">"Removes" elements from the sequence by overwriting them with elements that are to be kept. The removed elements are those that are <tt>==</tt> to <tt>val</tt> or for which <tt>unaryPred</tt> is true. Returns an iterator just past the last element that was not removed.</p>
+	<p class="docText">通过用要保存的元素覆盖元素而从序列中“移去”元素。被移支的元素是 <tt>==</tt><tt>val</tt> 或使 <tt>unaryPred</tt> 为真的那些元素。返回一个迭代器，该迭代器指向未移去的最后一个元素的下一位置。</p>
+
+        <p class="docText">For example, if the input sequence is <tt>hello world</tt> and <tt>val</tt> is <tt>o</tt>, then a call to <tt>remove</tt> will overwrite the two elements that are the letter <tt>'o'</tt> by shifting the sequence to the left twice. The new sequence will be <tt>hell wrldld</tt>. The returned iterator will denote the element after the first <tt>d</tt>.</p>
+        <p class="docText">例如，如果输入序列是 <tt>hello world</tt> 而 <tt>val</tt> 是 <tt>o</tt>，则 <tt>remove</tt> 调用将序列左移两次覆盖两个元素，即字母 <tt>'o'</tt>。新序列将是 <tt>hell wrldld</tt>，返回的迭代器将指向第一个 <tt>d</tt> 之后的元素。</p>
+
+        <pre>
+<span class="docEmphStrong">unique(beg, end)</span>
+<span class="docEmphStrong">unique(beg, end, binaryPred)</span>
+</pre>
+
+        <p class="docText">"Removes" all but the first of each consecutive group of matching elements. Returns an iterator just past the last unique element. First version uses <tt>==</tt> to determine whether two elements are the same; second version uses the predicate to test adjacent elements.</p>
+        <p class="docText">“移去”匹配元素的每个连续组，除了第一个之外。返回一个迭代器，该迭代器指向最后一个单一元素的下一位置。第一个版本使用 <tt>==</tt> 确定两个元素是否相同，第二个版本使用谓词测试相邻元素。</p>
+
+        <p class="docText">For example, if the input sequence is <tt>boohiss</tt>, then after the call to <tt>unique</tt>, the first sequence will contain <tt>bohisss</tt>. The iterator returned will point to the element after the first <tt>s</tt>. The value of the remaining two elements in the sequence is unspecified.</p>
+        <p class="docText">例如，如果输入序列是 <tt>boohiss</tt>，则调用 <tt>unique</tt> 之后，第一个序列将包含 <tt>bohisss</tt>。返回的迭代器指向第一个 <tt>s</tt> 之后的元素，序列中剩余的两个元素的值是未指定的。</p>
+
+        <pre>
+<span class="docEmphStrong">rotate(beg, mid, end)</span>
+</pre>
+
+        <p class="docText">Rotates the elements around the element denoted by <tt>mid</tt>. The element at <tt>mid</tt> becomes the first element; those from <tt>mid + 1</tt> through <tt>end</tt> come next, followed by the range from <tt>beg</tt> to <tt>mid</tt>. Returns <tt>void</tt>.</p>
+        <p class="docText">围绕由 <tt>mid</tt> 表示的元素旋转元素。<tt>mid</tt> 处的元素成为第一个元素，从 <tt>mid + 1</tt> 到 <tt>end</tt> 的元素其次，后面是从 <tt>beg</tt> 到 <tt>mid</tt> 的范围。返回 <tt>void</tt>。</p>
+
+        <p class="docText">For example, given the input sequence <tt>hissboo</tt>, if <tt>mid</tt> denotes the character <tt>b</tt>, then rotate would reorder the sequence as <tt>boohiss</tt>.</p>
+        <p class="docText">例如，给定输入序列 <tt>hissboo</tt>，如果 <tt>mid</tt> 表示字符 <tt>b</tt>，则旋转将序列重新排序为 <tt>boohiss</tt>。</p>
+
+<a name="app01lev3sec11"></a>
+        <h5 class="docSection3Title">Reordering Algorithms Using Bidirectional Iterators</h5>
+        <h5 class="docSection3Title">使用双向迭代器的重新排序算法</h5>
+
+        <p class="docText">Because these algorithms process the input sequence backward, they requre bidirectional iterators.</p>
+        <p class="docText">因为这些算法向后处理输入序列，所以它们要求双向迭代器。</p>
+
+        <pre>
+<span class="docEmphStrong">reverse(beg, end)</span>
+<span class="docEmphStrong">reverse_copy(beg, end, dest)</span>
+</pre>
+
+        <p class="docText">Reverses the elements in the sequence. <tt>reverse</tt> operates in place; it writes the rearranged elements back into the input sequence. <tt>reverse_copy</tt> copies the elements in reverse order to the output iterator <tt>dest</tt>. As usual, the programmer must ensure that <tt>dest</tt> can be used safely. <tt>reverse</tt> returns <tt>void</tt>; <tt>reverse_copy</tt> returns an iterator just past the last element copied into the destination.</p>
+        <p class="docText">颠倒序列中的元素。<tt>reverse</tt> 就地操作，它将重新安排的元素写回输入序列。<tt>reverse_copy</tt> 将元素按逆序复制到输出迭代器 <tt>dest</tt>。照常，程序员必须保证可以安全块使用 <tt>dest</tt>。<tt>reverse</tt> 返回 <tt>void</tt>，<tt>reverse_copy</tt> 返回一个迭代器，该迭代器指向复制到目的地的最后一个元素的下一位置。</p>
+
+<a name="app01lev3sec12"></a>
+        <h5 class="docSection3Title">Reordering Algorithms Writing to Output Iterators</h5>
+        <h5 class="docSection3Title">写至输出迭代器的重新排序算法</h5>
+
+        <p class="docText">These algorithms require forward iterators for the input sequence and an output iterator for the destination.</p>
+        <p class="docText">这些算法要求输入序列的前向迭代器以及目的地的输出迭代器。</p>
+
+<a name="idd1e157573"></a><a name="idd1e157578"></a><a name="idd1e157583"></a><a name="idd1e157588"></a><a name="idd1e157592"></a>
+        <p class="docText">Each of the preceding general reordering algorithms has an <tt>_copy</tt> version. These <tt>_copy</tt> versions perform the same reordering but write the reordered elements to a specified destination sequence rather than changing the input sequence. Except for <tt>rotate_copy</tt>, which requires forward iterators, the input range is specified by input iterators. The <tt>dest</tt> iterator must be an output iterator and, as usual, the programmer must guarantee that the destination can be written safely. The algorithms return the <tt>dest</tt> iterator incremented to denote one past the last element copied.</p>
+	<p class="docText">前面的每个通用重新排序算法都有一个 <tt>_copy</tt> 版本，这些 <tt>_copy</tt> 版本执行相同的重新排序，但是将重新排序之后的元素写至指定目的地序列，而不是改变输入序列。除 <tt>rotate_copy</tt>（它要求前向迭代器）之外，其他的都由迭代器指定输入范围。<tt>dest</tt> 迭代器必须是输出迭代器，而且，程序员也必须保证可以安全地写目的地。这些算法返回 <tt>dest</tt> 迭代器，<tt>dest</tt> 迭代器增量至指向被复制的最后元素的下一位置。</p>
+
+        <pre>
+<span class="docEmphStrong">remove_copy(beg, end, dest, val)</span>
+<span class="docEmphStrong">remove_copy_if(beg, end, dest, unaryPred)</span>
+</pre>
+
+        <p class="docText">Copies elements except those matching <tt>val</tt> or for which <tt>unaryPred</tt> return true into <tt>dest</tt>.</p>
+        <p class="docText">除了与 <tt>val</tt> 匹配或使 <tt>unaryPred</tt> 返回真的元素之外，其他元素都复制到 <tt>dest</tt>。</p>
+
+        <pre>
+<span class="docEmphStrong">unique_copy(beg, end, dest)</span>
+<span class="docEmphStrong">unique_copy(beg, end, dest, binaryPred)</span>
+</pre>
+
+        <p class="docText">Copies unique elements to <tt>dest</tt>.</p>
+        <p class="docText">将唯一元素复制到 <tt>dest</tt>。</p>
+
+        <pre>
+<span class="docEmphStrong">rotate_copy(beg, mid, end, dest)</span>
+</pre>
+
+        <p class="docText">Like rotate except that it leaves its input sequence unchanged and writes the rotated sequence to <tt>dest</tt>. Returns <tt>void</tt>.</p>
+	<p class="docText">除了保持输入序列不变并将旋转后的序列写至 <tt>dest</tt> 之外，与 <tt>rotated</tt> 很像。返回 <tt>void</tt>。</p>
+
+<a name="app01lev3sec13"></a>
+        <h5 class="docSection3Title">Reordering Algorithms Using Random-Access Iterators</h5>
+        <h5 class="docSection3Title">使用随机访问迭代器的重新排序算法</h5>
+
+        <p class="docText">Because these algorithms rearrange the elements in a random order, they require random-access iterators.</p>
+        <p class="docText">因为这些算法按随机次序重新安排元素，所以它们要求随机访问迭代器。</p>
+
+        <pre>
+<span class="docEmphStrong">random_shuffle(beg, end)</span>
+<span class="docEmphStrong">random_shuffle(beg, end, rand)</span>
+</pre>
+
+        <p class="docText">Shuffles the elements in the input sequence. The second version takes a random-number generator. That function must take and return a value of the iterator's <tt>difference_type</tt>. Both versions return <tt>void</tt>.</p>
+        <p class="docText">打乱输入序列中的元素。第二个版本接受随机数发生器，该函数必须接受并返回迭代器的 <tt>difference_type</tt> 值。两个版本都返回 <tt>void</tt>。</p>
+
+<a name="app01lev2sec7"></a>
+        <h4 class="docSection2Title">A.2.7. Permutation Algorithms</h4>
+        <h4 class="docSection2Title">A.2.7. 排列算法</h4>
+
+        <p class="docText">Consider the following sequence of three characters: <tt>abc</tt>. There are six possible permutations on this sequence: <tt>abc, acb, bac, bca, cab</tt>, and <tt>cba</tt>. These permutations are listed in lexicographical order based on the less-than operator. That is, <tt>abc</tt> is the first permutation because its first element is less than or equal to the first element in every other permutation, and its second element is smaller than any permutation sharing the same first element. Similarly, <tt>acb</tt> is the next permutation because it begins with <tt>a</tt>, which is smaller than the first element in any remaining permutation. Those permutations that begin with <tt>b</tt> come before those that begin with <tt>c</tt>.</p>
+        <p class="docText">考虑下面的三个字符的序列：<tt>abc</tt>。这个序列有 6 种可能的排列：<tt>abc, acb, bac, bca, cab</tt> 和 <tt>cba</tt>。基于小于操作符按字典序列出这些排列，即，<tt>abc</tt> 是第一排列，因为它的第一个元素小于或等于其他每个排列中的首元素，而且，它的第二个元素小于首元素的任意排列中的第二个元素。类似地，<tt>acb</tt> 是下一个排列，因为它以 <tt>a</tt> 开头，<tt>a</tt> 小于其余任意排列中的首元素。以 <tt>b</tt> 开关的那些排列出现在以 <tt>c</tt> 开头的那些之前。</p>
+
+        <p class="docText">For any given permutation, we can say which permutation comes before it and which after it. Given the permutation <tt>bca</tt>, we can say that its previous permutation is <tt>bac</tt> and that its next permutation is <tt>cab</tt>. There is no previous permutation of the sequence <tt>abc</tt>, nor is there a next permutation of <tt>cba</tt>.</p>
+        <p class="docText">对于任意给定排列而言，可以指出哪个排列出现在它之前以及哪个出现在它之后。给定排列 <tt>bca</tt>，可以指出它的前一排列是 <tt>bac</tt>，它的下一排列是 <tt>cab</tt>。序列 <tt>abc</tt> 之前没有排列，<tt>cba</tt> 之后也没有下一排列。</p>
+
+<a name="idd1e157756"></a><a name="idd1e157761"></a>
+        <p class="docText">The library provides two permutation algorithms that generate the permutations of a sequence in lexicographical order. These algorithms reorder the sequence to hold the (lexicographically) next or previous permutation of the given sequence. They return a <tt>bool</tt> that indicates whether there was a next or previous permutation.</p>
+        <p class="docText">标准库提供两个排列算法，按字典序产生序列的排列。这些算法重新排列序列，以便（按字典序）保存给定序列的下一个或前一个排列。它们返回指出是否存在下一个或前一个排列的 <tt>bool</tt> 值。</p>
+
+        <p class="docText">The algorithms each have two versions: One uses the element type <tt>&lt;</tt> operator, and the other takes an extra argument that specifies a comparison to use to compare the elements. These algorithms assume that the elements in the sequence are unique. That is, the algorithms assume that no two elements in the sequence have the same value.</p>
+        <p class="docText">每个算法有两个版本：一个使用元素类型的 <tt>&lt;</tt> 操作符，另一个接受指定用于比较元素的比较关系的实参。这些算法假定序列中的元素是唯一的，也就是说，算法假定序列中没有两个元素具有相同值。</p>
+
+<a name="app01lev3sec14"></a>
+        <h5 class="docSection3Title">Permutation Algorithms Require Bidirectional Iterators</h5>
+        <h5 class="docSection3Title">要求双向迭代器的排列算法</h5>
+
+        <p class="docText">To produce the permutation, the sequence must be processed both forward and backward, thus requiring bidirectional iterators.</p>
+        <p class="docText">为了产生排列，必须对序列进行前向和后向处理，因此要求双向迭代器。</p>
+
+        <pre>
+<span class="docEmphStrong">next_permutation(beg, end)</span>
+<span class="docEmphStrong">next_permutation(beg, end, comp)</span>
+</pre>
+
+        <p class="docText">If the sequence is already in the last permutation, then <tt>next_permutation</tt> reorders the sequence to be the lowest permutation and returns <tt>false</tt>. Otherwise, it transforms the input sequence into the next permutation, which is the lexicographically next ordered sequence and returns <tt>true</tt>. The first version uses the element <tt>&lt;</tt> operator to compare elements; the second version uses specified comparison.</p>
+        <p class="docText">如果序列已经是在最后一个排列中，则 <tt>next_permutation</tt> 将序列重新排列为最低排列并返回 <tt>false</tt>；否则，它将输入序列变换为下一个排列，即字典序的下一个排列，并返回 <tt>true</tt>。第一个版本使用元素的 <tt>&lt;</tt> 操作符比较元素，第二个版本使用指定的比较关系。</p>
+
+        <pre>
+<span class="docEmphStrong">prev_permutation(beg, end)</span>
+<span class="docEmphStrong">prev_permutation(beg, end, comp)</span>
+</pre>
+
+        <p class="docText">Like <tt>next_permutation</tt>, but transforms the sequence to form the previous permutation. If this is the smallest permutation, then it reorders the sequence to be the largest permutation and returns <tt>false</tt>.</p>
+        <p class="docText">与 <tt>next_permutation</tt> 很像，但变换序列以形成前一个排列。如果这是最小的排列，则它将序列重新排列为最大排列，并返回 <tt>false</tt>。</p>
+
+<a name="app01lev2sec8"></a>
+        <h4 class="docSection2Title">A.2.8. Set Algorithms for Sorted Sequences</h4>
+        <h4 class="docSection2Title">A.2.8. 有序序列的集合算法</h4>
+
+        <p class="docText">The set algorithms implement general set operations on a sequence that is in sorted order.</p>
+        <p class="docText">集合算法实现有序列的通用集合运算。</p>
+
+<a name="app01note01"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">These algorithms are distinct from the library <tt>set</tt> container and should not be confused with operations on <tt>set</tt>s. Instead, these algorithms provide setlike behavior on an ordinary sequential container (<tt>vector, list</tt>, etc.) or other sequence, such as an input stream.</p>
+		<p class="docText">这些算法不同于标准库中的 <tt>set</tt> 容器，不应该与 <tt>set</tt> 的操作相混淆，相反，这些算法提供普通顺序容器（<tt>vector</tt>、<tt>list</tt>，等等）或其他序列（如输入流）上的集合式行为。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <p class="docText">With the exception of <tt>includes</tt>, they also take an output iterator. As usual, the programmer must ensure that the destination is large enough to hold the generated sequence. These algorithms return their <tt>dest</tt> iterator incremented to denote the element just after the last one that was written to <tt>dest</tt>.</p>
+	<p class="docText">除了 <tt>include</tt> 之外，它们也接受输出迭代器。程序员照常必须保证目的地足以保存生成的序列。这些算法返回它们的 <tt>dest</tt> 迭代器，<tt>dest</tt> 迭代器增量至指向紧接在写至 <tt>dest</tt> 的最后一个元素之后的元素。</p>
+
+        <p class="docText">Each algorithm provides two forms: The first uses the <tt>&lt;</tt> operator for the element type to compare elements in the two input sequences. The second takes a comparison, which is used to compare the elements.</p>
+        <p class="docText">每个算法都提供两种形式：第一种形式使用元素类型的 <tt>&lt;</tt> 操作符比较两个输入序列中的元素，第二种形式接受一个用于比较元素的比较关系。</p>
+
+<a name="app01lev3sec15"></a>
+        <h5 class="docSection3Title">Set Algorithms Require Input Iterators</h5>
+        <h5 class="docSection3Title">要求输入迭代器集合算法</h5>
+
+<a name="idd1e157885"></a><a name="idd1e157889"></a><a name="idd1e157893"></a><a name="idd1e157897"></a><a name="idd1e157901"></a><a name="idd1e157905"></a><a name="idd1e157909"></a><a name="idd1e157913"></a>
+        <p class="docText">These algorithms process elements sequentially, requiring input iterators.</p>
+        <p class="docText">这些算法顺序处理元素，要求输入迭代器。</p>
+
+        <pre>
+<span class="docEmphStrong">includes(beg, end, beg2, end2)</span>
+<span class="docEmphStrong">includes(beg, end, beg2, end2, comp)</span>
+</pre>
+
+        <p class="docText">Returns <tt>true</tt> if every element in the second sequence is contained in the input sequence. Returns <tt>false</tt> otherwise.</p>
+        <p class="docText">如果输入序列包含第二个序列中的每个元素，就返回 <tt>true</tt>；否则，返回 <tt>false</tt>。</p>
+
+        <pre>
+<span class="docEmphStrong">set_union(beg, end, beg2, end2, dest)</span>
+<span class="docEmphStrong">set_union(beg, end, beg2, end2, dest, comp)</span>
+</pre>
+
+        <p class="docText">Creates a sorted sequence of the elements that are in either sequence. Elements that are in both sequences occur in the output sequence only once. Stores the sequence in <tt>dest</tt>.</p>
+        <p class="docText">创建在任一序列中存在的元素的有序序列。两个序列中都存在的元素在输出序列中只出现一次。将序列存储在 <tt>dest</tt> 中。</p>
+
+        <pre>
+<span class="docEmphStrong">set_intersection(beg, end, beg2, end2, dest)</span>
+<span class="docEmphStrong">set_intersection(beg, end, beg2, end2, dest, comp)</span>
+</pre>
+
+        <p class="docText">Creates a sorted sequence of elements present in both sequences. Stores the sequence in <tt>dest</tt>.</p>
+        <p class="docText">创建在两个序列中都存在的元素的有序序列。将序列存储在 <tt>dest</tt> 中。</p>
+
+        <pre>
+<span class="docEmphStrong">set_difference(beg, end, beg2, end2, dest)</span>
+<span class="docEmphStrong">set_difference(beg, end, beg2, end2, dest, comp)</span>
+</pre>
+
+        <p class="docText">Creates a sorted sequence of elements present in the first container but not in the second.</p>
+        <p class="docText">创建在第一个容器中但不在第二个容器中的元素的有序序列。</p>
+
+        <pre>
+<span class="docEmphStrong">set_symmetric_difference(beg, end, beg2, end2, dest)</span>
+<span class="docEmphStrong">set_symmetric_difference(beg, end, beg2, end2, dest, comp)</span>
+</pre>
+
+        <p class="docText">Creates a sorted sequence of elements present in either container but not in both.</p>
+        <p class="docText">创建在任一容器中存在但不在两个容器中同时存在的元素的有序序列。</p>
+
+<a name="app01lev2sec9"></a>
+        <h4 class="docSection2Title">A.2.9. Minimum and Maximum Values</h4>
+        <h4 class="docSection2Title">A.2.9. 最大值和最小值</h4>
+
+        <p class="docText">The first group of these algorithms are unique in the library in that they operate on values rather than sequences. The second set takes a sequence that is denoted by input iterators.</p>
+        <p class="docText">这些算法的第一组在标准库中是独特的，它们操作值而不是序列。第二组接受一个由输入迭代器表示的序列。</p>
+
+        <pre>
+<span class="docEmphStrong">min(val1, val2)</span>
+<span class="docEmphStrong">min(val1, val2, comp)</span>
+<span class="docEmphStrong">max(val1, val2)</span>
+<span class="docEmphStrong">max(val1, val2, comp)</span>
+</pre>
+
+        <p class="docText">Returns the minimum/maximum of <tt>val1</tt> and <tt>val2</tt>. The arguments must have exactly the same type as each other. Uses either <tt>&lt;</tt> operator for the element type or the specified comparison. Arguments and the return type are both <tt>const</tt> references, meaning that objects are not copied.</p>
+        <p class="docText">返回 <tt>val1</tt> 和 <tt>val2</tt> 的最大值／最小值。实参必须是完全相同的类型。使用元素类型的 <tt>&lt;</tt> 操作符或指定的比较关系。实参和返回类型都是 <tt>const</tt> 引用，表示对象不是复制的。</p>
+
+        <pre>
+<span class="docEmphStrong">min_element(beg, end)</span>
+<span class="docEmphStrong">min_element(beg, end, comp)</span>
+<span class="docEmphStrong">max_element(beg, end)</span>
+<span class="docEmphStrong">max_element(beg, end, comp)</span>
+</pre>
+
+        <p class="docText">Returns an iterator referring to the smallest/largest element in the input sequence. Uses either <tt>&lt;</tt> operator for the element type or the specified comparison.</p>
+        <p class="docText">返回指向输入序列中最小／最大元素的迭代器。使用元素类型的 <tt>&lt;</tt> 操作符或指定的比较关系。</p>
+
+<a name="app01lev3sec16"></a>
+        <h5 class="docSection3Title">Lexicographical Comparison</h5>
+        <h5 class="docSection3Title">字典序比较关系</h5>
+
+<a name="idd1e158079"></a><a name="idd1e158083"></a><a name="idd1e158087"></a>
+        <p class="docText">Lexicographical comparison examines corresponding elements in two sequences and determines the comparison based on the first unequal pair of elements. Because the algorithms process elements sequentially, they require input iterators. If one sequence is shorter than the other and all its elements match the corresponding elements in the longer sequence, then the shorter sequence is lexicographically smaller. If the sequences are the same size and the corresponding elements match, then neither is lexicographically less than the other.</p>
+        <p class="docText">字典序比较关系检查两个序列中的对应元素，并基于第一个不相等的元素对确定比较关系。因为算法顺序地处理元素，所以它们要求输入迭代器。如果一个序列比另一个短，并且它的元素与较长序列中对应元素相匹配，则较短的序列在字典序上较小。如果序列长短相同且对应元素匹配，则在字典序上两者都不小于另一个。</p>
+
+        <pre>
+<span class="docEmphStrong">lexicographical_compare(beg1, end1, beg2, end2)</span>
+<span class="docEmphStrong">lexicographical_compare(beg1, end1, beg2, end2, comp)</span>
+</pre>
+
+        <p class="docText">Does an element by element comparison of the elements in the two sequences. Returns <tt>true</tt> if the first sequence is lexicographically less than the second sequence. Otherwise, returns <tt>false</tt>. Uses either <tt>&lt;</tt> operator for the element type or the specified comparison.</p>
+        <p class="docText">对两个序列中的元素进行逐个比较。如果第一个序列在字典序上小于第二个序列，就返回 <tt>true</tt>；否则，返回 <tt>false</tt>。使用元素类型的 <tt>&lt;</tt> 操作符或指定的比较关系。</p>
+
+<a name="app01lev2sec10"></a>
+        <h4 class="docSection2Title">A.2.10. Numeric Algorithms</h4>
+        <h4 class="docSection2Title">A.2.10. 算术算法</h4>
+
+        <p class="docText">Numeric algorithms require input iterators; if the algorithm writes output, it uses an output iterator for the destination</p>
+        <p class="docText">算术算法要求输入迭代器，如果算法修改输出，它就使用目的地输出迭代器。</p>
+
+        <p class="docText">These functions perform simple arithmetic manipulations of their input sequence. To use the numeric algorithms, the <tt>numeric</tt> header must be included.</p>
+        <p class="docText">这些算法执行它们的输入序列的简单算术操纵。要使用算术算法必须包含头文件 <tt>numeric</tt>。</p>
+
+        <pre>
+<span class="docEmphStrong">accumulate(beg, end, init)</span>
+<span class="docEmphStrong">accumulate(beg, end, init, BinaryOp)</span>
+</pre>
+
+        <p class="docText">Returns the sum of all the values in the input range. The summation starts with the initial value specified by <tt>init</tt>. The return type is the same type as the type of <tt>init</tt>.</p>
+        <p class="docText">返回输入范围中所有值的总和。求和从指定的初始值 <tt>init</tt> 开始。返回类型是与 <tt>init</tt> 相同的类型。</p>
+
+        <p class="docText">Given the sequence <tt>1,1,2,3,5,8</tt> and an initial value of 0, the result is 20. The first version applies the <tt>+</tt> operator for the element type; second version applies the specified binary operation.</p>
+        <p class="docText">给定序列 <tt>1,1,2,3,5,8</tt> 以及初始值 0，结果是 20。ø第一个版本应用元素类型的 <tt>+</tt> 操作符，第二个版本应用指定的二元操作符。</p>
+
+        <pre>
+<span class="docEmphStrong">inner_product(beg1, end1, beg2, init)</span>
+<span class="docEmphStrong">inner_product(beg1, end1, beg2, init, BinOp1, BinOp2)</span>
+</pre>
+
+        <p class="docText">Returns the sum of the elements generated as the product of two sequences. The two sequences are examined in step, and the elements from each sequence are multiplied. The product of that multiplication is summed. The initial value of the sum is specified by <tt>init</tt>. The second sequence beginning at <tt>beg2</tt> is assumed to have at least as many elements as are in the first sequence; any elements in the second sequence beyond the size of the first sequence are ignored. The type of <tt>init</tt> determines the return type.</p>
+        <p class="docText">返回作为两个序列乘积而生成的元素的总和。步调一致地检查两个序列，将来自两个序列的元素相乘，将相乘的结果求和。由 <tt>init</tt> 指定和的初值。假定从 <tt>beg2</tt> 开始的第二个序列具有至少与第一个序列一样多的元素，忽略第二个序列中超出第一个序列长度的任何元素。<tt>init</tt> 的类型决定返回类型。</p>
+
+        <p class="docText">The first version uses the element's multiplication (<tt>*</tt>) and addition (<tt>+</tt>) operators: Given the two sequences <tt>2,3,5,8</tt> and <tt>1,2,3,4,5,6,7</tt>, the result is the sum of the initial value plus the following product pairs:</p>
+        <p class="docText">第一个版本使用元素的乘操作符（<tt>*</tt>）和加操作符（<tt>+</tt>）：给定两个序列 <tt>2,3,5,8</tt> 和 <tt>1,2,3,4,5,6,7</tt>，结果是初值加上下面的乘积对：</p>
+
+        <pre>
+     initial_value + (2 * 1) + (3 * 2) + (5 * 3) + (8 * 4)
+</pre>
+
+        <p class="docText">If we provide an initial value of 0, then the result is 55.</p>
+        <p class="docText">如果提供初值 0，则结果是 55。</p>
+
+<a name="idd1e158212"></a><a name="idd1e158216"></a>
+        <p class="docText">The second version applies the specified binary operations, using the first operation in place of addition and the second in place of multiplication. As an example, we might use <tt>inner_product</tt> to produce a list of parenthesized namevalue pairs of elements, where the name is taken from the first input sequence and the corresponding value is in the second:</p>
+        <p class="docText">第二个版本应用指定的二元操作，使用第一个操作代替加而第二个操作代替乘。作为例子，可以使用 <tt>inner_product</tt> 来产生以括号括住的元素的名－值对的列表，这里从第一个输入序列获得名字，从第二个序列中获得对应的值：</p>
+
+        <pre>
+     // <span class="docEmphItalicAlt">combine elements into a parenthesized, comma-separated pair</span>
+     string combine(string x, string y)
+     {
+         return "(" + x + ", " + y + ")";
+     }
+     // <span class="docEmphItalicAlt">add two strings, each separated by a comma</span>
+     string concatenate(string x, string y)
+     {
+         if (x.empty())
+             return y;
+         return x + ", " + y;
+     }
+         cout &lt;&lt; inner_product(names.begin(), names.end(),
+                                     values.begin(), string(),
+                                     concatenate, combine);
+</pre>
+
+        <p class="docText">If the first sequence contains <tt>if, string</tt>, and <tt>sort</tt>, and the second contains <tt>keyword, library type</tt>, and <tt>algorithm</tt>, then the output would be</p>
+	<p class="docText">如果第一个序列包含 <tt>if</tt>、<tt>string</tt> 和 <tt>sort</tt>，且第二个序列包含 <tt>keyword</tt>、<tt>library type</tt> 和 <tt>algorithm</tt>，则输出将是</p>
+
+        <pre>
+   <span class="docEmphStrong">(if, keyword), (string, library type), (sort, algorithm)</span>
+
+   <span class="docEmphStrong">partial_sum(beg, end, dest)</span>
+   <span class="docEmphStrong">partial_sum(beg, end, dest, BinaryOp)</span>
+</pre>
+
+        <p class="docText">Writes a new sequence to <tt>dest</tt> in which the value of each new element represents the sum of all the previous elements up to and including its position within the input range. The first version uses the <tt>+</tt> operator for the element type; the second version applies the specified binary operation. The programmer must ensure that <tt>dest</tt> is at least as large as the input sequence. Returns the <tt>dest</tt> iterator incremented to refer just after the last element written.</p>
+        <p class="docText">将新序列写至 <tt>dest</tt>，其中每个新元素的值表示输入范围中在它的位置之前（不包括它的位置）的所有元素的总和。第一个版本使用元素类型 <tt>+</tt> 操作符，第二个版本应用指定的二元操作符。程序员必须保证 <tt>dest</tt> 至少与输入序列一样大。返回 <tt>dest</tt>，<tt>dest</tt> 增量到指向被写入的最后元素的下一位置。</p>
+
+        <p class="docText">Given the input sequence <tt>0,1,1,2,3,5,8</tt>, the destination sequence will be <tt>0,1,2,4,7,12,20</tt>. The fourth element, for example, is the partial sum of the three previous values (<tt>0,1,1</tt>) plus its own( <tt>2</tt>), yielding a value of 4.</p>
+        <p class="docText">给定输入序列 <tt>0,1,1,2,3,5,8</tt>，目的序列将是 <tt>0,1,2,4,7,12,20</tt>。例如，第四个元素是前三值（<tt>0,1,1</tt>）的部分和加上它自己的值（<tt>2</tt>），获得值 4。</p>
+
+        <pre>
+<span class="docEmphStrong">adjacent_difference(beg, end, dest)</span>
+<span class="docEmphStrong">adjacent_difference(beg, end, dest, BinaryOp)</span>
+</pre>
+
+        <p class="docText">Writes a new sequence to <tt>dest</tt> in which the value of each new element other than the first represents the difference of the current and previous element. The first version uses the element type's <tt>-</tt> operation; the second version applies the specified binary operation. The programmer must ensure that <tt>dest</tt> is at least as large as the input sequence.</p>
+        <p class="docText">将新序列写至 <tt>dest</tt>，其中除了第一个元素之外每个新元素表示当前元素和前一元素的差。第一个版本使用元素类型的 <tt>-</tt> 操作符，第二个版本应用指定的二元操作。程序员必须保证 <tt>dest</tt> 至少与输入序列一样大。</p>
+
+        <p class="docText">Given the sequence <tt>0,1,1,2,3,5,8</tt>, the first element of the new sequence is a copy of the first element of the original sequence: 0. The second element is the difference between the first two elements: 1. The third element is the difference between the second and third element, which is 0, and so on. The new sequence is <tt>0,1,0,1,1,2,3</tt>.</p>
+        <p class="docText">给定序列 <tt>0,1,1,2,3,5,8</tt>，新序列的第一个元素是原序列第一个元素的副本：0，第二个元素是前两个元素的差：1，第三个元素是原序列第三个元素和第二个元素的差，为 0，以此类推，新序列是 <tt>0,1,0,1,1,2,3</tt>。</p>
+
+<a href="21001535.html" ><img src="images/pixel.gif"  alt="" width="1" height="1" border="0"></a>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="app01lev1sec1.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="app01lev1sec3.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

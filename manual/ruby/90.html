@@ -1,0 +1,482 @@
+<html><HEAD><TITLE>Ruby参考手册 - pack模板字符串</TITLE>
+<META http-equiv=Content-type content="text/html; charset=gb2312">
+<META http-equiv=Content-Style-Type content=text/css><LINK href="90_files/style[1].css"  type=text/css rel=stylesheet></head>
+<BODY>
+<DIV class=navi><A id=header-navi name=head-navi></A><SPAN class=navi>[<A href="61.html" >Ruby首页</A>]</SPAN>  </DIV>
+<DIV class=body>
+<H1><A id=pack.a5.c6.a5.f3.a5.d7.a5.ec.a1.bc.a5.c8.ca.b8.bb.fa.ce.f3 name=pack.a5.c6.a5.f3.a5.d7.a5.ec.a1.bc.a5.c8.ca.b8.bb.fa.ce.f3>pack模板字符串</A><!-- RDLabel: "pack模板字符串" --></H1>
+<P>下面就是<A class=modified-year title="Array (113d)" href="http://rubycn.ce-lab.net/man/built-in-class/class_object_array.html" >Array#pack</A>、<A class=modified-year title="String (68d)" href="http://rubycn.ce-lab.net/man/built-in-class/class_object_string.html" >String#unpack</A>中所用到的模板字符的一览表。模板字符后面可以跟上表示"长度"的数字。若使用'*'来取代"长度"的话, 则表示"剩下的所有字符"之意。</P>
+<P>长度的定义因模板字符的不同而有所差异, 大体上像</P><PRE>"iiii"
+</PRE>
+<P>这样的连续字符可以写成</P><PRE>"i4"
+</PRE>
+<P>这个样子。</P>
+<P>在下面的说明中, short和long分别表示长度为2和4字节的数值(也就是通常32位机器所指的short和long的大小), 这与具体的系统无关。 若`s', `S', `l', `L'后面出现`_'或`!'(如"s!")的话, 则表示这个short或long的大小取决于具体的系统。</P>
+<P>请注意: `i', `I' (int)的大小总是取决于系统的, 而`n', `N', `v', `V'的大小则是系统无关的(不能添加`!')。</P>
+<P>模板字符串中的空格会被忽略。 <FONT color=blue>ruby 1.7 特性</FONT>: 另外,从`#'开始到换行处或者到模板字符串结尾之间的部分会被看做是注释。</P>
+<P>在下面的说明中, 若针对某问题Array#pack和String#unpack有不同的解释时, 就使用/将两者分开, 即采用 "Array#pack的说明部分/String#unpack的说明部分" 的形式加以说明. </P>
+<UL>
+<LI>
+<P><CODE>a</CODE></P>
+<P>ASCII字符串(塞入null字符/保留后续的null字符或空格)</P><PRE>["abc"].pack("a") =&gt; "a"
+["abc"].pack("a*") =&gt; "abc"
+["abc"].pack("a4") =&gt; "abc\0"
+
+"abc\0".unpack("a4") =&gt; ["abc\0"]
+"abc ".unpack("a4") =&gt; ["abc "]
+</PRE>
+<LI>
+<P><CODE>A</CODE></P>
+<P>ASCII字符串(塞入空格/删除后续的null字符和空格)</P><PRE>["abc"].pack("A") =&gt; "a"
+["abc"].pack("A*") =&gt; "abc"
+["abc"].pack("A4") =&gt; "abc "
+
+"abc ".unpack("A4") =&gt; ["abc"]
+"abc\0".unpack("A4") =&gt; ["abc"]
+</PRE>
+<LI>
+<P><CODE>Z</CODE></P>
+<P>null终点字符串(与<CODE>a</CODE>相同 / 删除后续的null字符)</P><PRE>["abc"].pack("Z") =&gt; "a"
+["abc"].pack("Z*") =&gt; "abc"
+["abc"].pack("Z4") =&gt; "abc\0"
+
+"abc\0".unpack("Z4") =&gt; ["abc"]
+"abc ".unpack("Z4") =&gt; ["abc "]
+</PRE>
+<LI>
+<P><CODE>b</CODE></P>
+<P>位串(从下级位到上级位)</P><PRE>"\001\002".unpack("b*") =&gt; ["1000000001000000"]
+"\001\002".unpack("b3") =&gt; ["100"]
+
+
+["1000000001000000"].pack("b*") =&gt; "\001\002"
+</PRE>
+<LI>
+<P><CODE>B</CODE></P>
+<P>位串(从上级位到下级位)</P><PRE>"\001\002".unpack("B*") =&gt; ["0000000100000010"]
+"\001\002".unpack("B9") =&gt; ["000000010"]
+
+["0000000100000010"].pack("B*") =&gt; "\001\002"
+</PRE>
+<LI>
+<P><CODE>h</CODE></P>
+<P>16进制字符串(下级半字节(nibble)在先)</P><PRE>"\x01\xfe".unpack("h*") =&gt; ["10ef"]
+"\x01\xfe".unpack("h3") =&gt; ["10e"]
+
+["10ef"].pack("h*") =&gt; "\001\376"
+</PRE>
+<LI>
+<P><CODE>H</CODE></P>
+<P>16进制字符串(上级半字节在先)</P><PRE>"\x01\xfe".unpack("H*") =&gt; ["01fe"]
+"\x01\xfe".unpack("H3") =&gt; ["01f"]
+
+["01fe"].pack("H*") =&gt; "\001\376"
+</PRE>
+<LI>
+<P><CODE>c</CODE></P>
+<P>char (8bit 有符号整数)</P><PRE>"\001\376".unpack("c*") =&gt; [1, -2]
+
+[1, -2].pack("c*") =&gt; "\001\376"
+[1, 254].pack("c*") =&gt; "\001\376"
+</PRE>
+<LI>
+<P><CODE>C</CODE></P>
+<P>unsigned char (8bit 无符号整数)</P><PRE>"\001\376".unpack("C*") =&gt; [1, 254]
+
+[1, -2].pack("C*") =&gt; "\001\376"
+[1, 254].pack("C*") =&gt; "\001\376"
+</PRE>
+<LI>
+<P><CODE>s</CODE></P>
+<P>short (16bit 有符号整数, 取决于Endian) (s! 并非16bit, 它取决于short的大小)</P>
+<P>小Endian:</P><PRE>"\001\002\376\375".unpack("s*") =&gt; [513, -514]
+
+[513, 65022].pack("s*") =&gt; "\001\002\376\375"
+[513, -514].pack("s*") =&gt; "\001\002\376\375"
+</PRE>
+<P>大Endian:</P><PRE>"\001\002\376\375".unpack("s*") =&gt; [258, -259]
+
+[258, 65277].pack("s*") =&gt; "\001\002\376\375"
+[258, -259].pack("s*") =&gt; "\001\002\376\375"
+</PRE>
+<LI>
+<P><CODE>S</CODE></P>
+<P>unsigned short (16bit 无符号整数, 取决于Endian) (S!并非16bit,它取决于short 的大小)</P>
+<P>小Endian:</P><PRE>"\001\002\376\375".unpack("S*") =&gt; [513, 65022]
+
+[513, 65022].pack("s*") =&gt; "\001\002\376\375"
+[513, -514].pack("s*") =&gt; "\001\002\376\375"
+</PRE>
+<P>大Endian:</P><PRE>"\001\002\376\375".unpack("S*") =&gt; [258, 65277]
+
+[258, 65277].pack("S*") =&gt; "\001\002\376\375"
+[258, -259].pack("S*") =&gt; "\001\002\376\375"
+</PRE>
+<LI>
+<P><CODE>i</CODE></P>
+<P>int (有符号整数, 取决于Endian和int的大小)</P>
+<P>小Endian, 32bit int:</P><PRE>"\001\002\003\004\377\376\375\374".unpack("i*") =&gt; [67305985, -50462977]
+
+[67305985, 4244504319].pack("i*") =&gt; RangeError
+[67305985, -50462977].pack("i*") =&gt; "\001\002\003\004\377\376\375\374"
+</PRE>
+<P>大Endian, 32bit int:</P><PRE>"\001\002\003\004\377\376\375\374".unpack("i*") =&gt; [16909060, -66052]
+
+[16909060, 4294901244].pack("i*") =&gt; RangeError
+[16909060, -66052].pack("i*") =&gt; "\001\002\003\004\377\376\375\374"
+</PRE>
+<LI>
+<P><CODE>I</CODE></P>
+<P>unsigned int (无符号整数, 取决于Endian和int的大小)</P>
+<P>小Endian, 32bit int:</P><PRE>"\001\002\003\004\377\376\375\374".unpack("I*") =&gt; [67305985, 4244504319]
+
+[67305985, 4244504319].pack("I*") =&gt; "\001\002\003\004\377\376\375\374"
+[67305985, -50462977].pack("I*") =&gt; "\001\002\003\004\377\376\375\374"
+</PRE>
+<P>大Endian, 32bit int:</P><PRE>"\001\002\003\004\377\376\375\374".unpack("I*") =&gt; [16909060, 4294901244]
+
+[16909060, 4294901244].pack("I*") =&gt; "\001\002\003\004\377\376\375\374"
+[16909060, -66052].pack("I*") =&gt; "\001\002\003\004\377\376\375\374"
+</PRE>
+<LI>
+<P><CODE>l</CODE></P>
+<P>long (32bit 有符号整数, 取决于Endian) (l! 并非32bit, 它取决于long的大小)</P>
+<P>小Endian, 32bit long:</P><PRE>"\001\002\003\004\377\376\375\374".unpack("l*") =&gt; [67305985, -50462977]
+
+[67305985, 4244504319].pack("l*") =&gt; RangeError
+[67305985, -50462977].pack("l*") =&gt; "\001\002\003\004\377\376\375\374"
+</PRE>
+<LI>
+<P><CODE>L</CODE></P>
+<P>unsigned long (32bit 无符号整数, 取决于Endian) (L! 并非32bit, 它取决于long的大小)</P>
+<P>小Endian, 32bit long:</P><PRE>"\001\002\003\004\377\376\375\374".unpack("L*") =&gt; [67305985, 4244504319]
+
+[67305985, 4244504319].pack("L*") =&gt; "\001\002\003\004\377\376\375\374"
+[67305985, -50462977].pack("L*") =&gt; "\001\002\003\004\377\376\375\374"
+</PRE>
+<LI>
+<P><CODE>q</CODE></P>
+<P><FONT color=blue>ruby 1.7 特性</FONT>: long long (有符号整数, 取决于Endian和long long 的大小) (在C中无法处理long long时, 就是64bit)</P>
+<P>小Endian, 64bit long long:</P><PRE>"\001\002\003\004\005\006\007\010\377\376\375\374\373\372\371\370".unpack("q*")
+=&gt; [578437695752307201, -506097522914230529]
+
+[578437695752307201, -506097522914230529].pack("q*")
+=&gt; "\001\002\003\004\005\006\a\010\377\376\375\374\373\372\371\370"
+[578437695752307201, 17940646550795321087].pack("q*")
+=&gt; "\001\002\003\004\005\006\a\010\377\376\375\374\373\372\371\370"
+</PRE>
+<LI>
+<P><CODE>Q</CODE></P>
+<P><FONT color=blue>ruby 1.7 特性</FONT>: unsigned long long (无符号整数, 取决于Endian和 long long 的大小) (在C中无法处理long long时, 就是64bit)</P>
+<P>小Endian, 64bit long long:</P><PRE>"\001\002\003\004\005\006\007\010\377\376\375\374\373\372\371\370".unpack("Q*")
+=&gt; [578437695752307201, 17940646550795321087]
+
+[578437695752307201, 17940646550795321087].pack("Q*")
+=&gt; "\001\002\003\004\005\006\a\010\377\376\375\374\373\372\371\370"
+[578437695752307201, -506097522914230529].pack("Q*")
+=&gt; "\001\002\003\004\005\006\a\010\377\376\375\374\373\372\371\370"
+</PRE>
+<LI>
+<P><CODE>m</CODE></P>
+<P>被base64编码过的字符串。每隔60个八位组(或在结尾)添加一个换行代码。</P>
+<P>Base64是一种编码方法, 它只使用ASCII码中的65个字符(包括[A-Za-z0-9+/]这64字符和用来padding的'='),将3个八位组(8bits * 3 = 24bits)中的二进制代码转为4个(6bits * 4 = 24bits)可印刷的字符。具体细节请参考RFC2045。</P><PRE>[""].pack("m") =&gt; ""
+["\0"].pack("m") =&gt; "AA==\n"
+["\0\0"].pack("m") =&gt; "AAA=\n"
+["\0\0\0"].pack("m") =&gt; "AAAA\n"
+["\377"].pack("m") =&gt; "/w==\n"
+["\377\377"].pack("m") =&gt; "//8=\n"
+["\377\377\377"].pack("m") =&gt; "////\n"
+
+["abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"].pack("m")
+=&gt; "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXpBQkNERUZHSElKS0xNTk9QUVJT\nVFVWV1hZWg==\n"
+["abcdefghijklmnopqrstuvwxyz"].pack("m3")
+=&gt; "YWJj\nZGVm\nZ2hp\namts\nbW5v\ncHFy\nc3R1\ndnd4\neXo=\n"
+
+"".unpack("m") =&gt; [""]
+"AA==\n".unpack("m") =&gt; ["\000"]
+"AA==".unpack("m") =&gt; ["\000"]
+
+"YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXpBQkNERUZHSElKS0xNTk9QUVJT\nVFVWV1hZWg==\n".unpack("m")
+=&gt; ["abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"]
+"YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXpBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWg==\n".unpack("m")
+=&gt; ["abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"]
+</PRE>
+<LI>
+<P><CODE>M</CODE></P>
+<P>经过quoted-printable encoding编码的字符串</P><PRE>["a b c\td \ne"].pack("M") =&gt; "a b c\td =\n\ne=\n"
+
+"a b c\td =\n\ne=\n".unpack("M") =&gt; ["a b c\td \ne"]
+</PRE>
+<LI>
+<P><CODE>n</CODE></P>
+<P>网络字节顺序(大Endian)的unsigned short (16bit 无符号整数)</P><PRE>[0,1,-1,32767,-32768,65535].pack("n*")
+=&gt; "\000\000\000\001\377\377\177\377\200\000\377\377"
+
+"\000\000\000\001\377\377\177\377\200\000\377\377".unpack("n*")
+=&gt; [0, 1, 65535, 32767, 32768, 65535]
+</PRE>
+<LI>
+<P><CODE>N</CODE></P>
+<P>网络字节顺序(大Endian)的unsigned long (32bit 无符号整数)</P><PRE>[0,1,-1].pack("N*") =&gt; "\000\000\000\000\000\000\000\001\377\377\377\377"
+
+"\000\000\000\000\000\000\000\001\377\377\377\377".unpack("N*") =&gt; [0, 1, 4294967295]
+</PRE>
+<LI>
+<P><CODE>v</CODE></P>
+<P>"VAX"字节顺序(小Endian)的unsigned short (16bit 无符号整数)</P><PRE>[0,1,-1,32767,-32768,65535].pack("v*")
+=&gt; "\000\000\001\000\377\377\377\177\000\200\377\377"
+
+"\000\000\001\000\377\377\377\177\000\200\377\377".unpack("v*")
+=&gt; [0, 1, 65535, 32767, 32768, 65535]
+</PRE>
+<LI>
+<P><CODE>V</CODE></P>
+<P>"VAX"字节顺序(小Endian)的unsigned long (32bit 无符号整数)</P><PRE>[0,1,-1].pack("V*") =&gt; "\000\000\000\000\001\000\000\000\377\377\377\377"
+
+"\000\000\000\000\001\000\000\000\377\377\377\377".unpack("V*") =&gt; [0, 1, 4294967295]
+</PRE>
+<LI>
+<P><CODE>f</CODE></P>
+<P>单精度浮点数(取决于系统)</P>
+<P>IA-32 (x86) (IEEE754 单精度 小Endian):</P><PRE>[1.0].pack("f") =&gt; "\000\000\200?"
+</PRE>
+<P>sparc (IEEE754 单精度 大Endian):</P><PRE>[1.0].pack("f") =&gt; "?\200\000\000"
+</PRE>
+<LI>
+<P><CODE>d</CODE></P>
+<P>双精度浮点数(取决于系统)</P>
+<P>IA-32 (IEEE754 双精度 小Endian):</P><PRE>[1.0].pack("d") =&gt; "\000\000\000\000\000\000\360?"
+</PRE>
+<P>sparc (IEEE754 双精度 大Endian):</P><PRE>[1.0].pack("d") =&gt; "?\360\000\000\000\000\000\000"
+</PRE>
+<LI>
+<P><CODE>e</CODE></P>
+<P>小Endian的单精度浮点数(取决于系统)</P>
+<P>IA-32:</P><PRE>[1.0].pack("e") =&gt; "\000\000\200?"
+</PRE>
+<P>sparc:</P><PRE>[1.0].pack("e") =&gt; "\000\000\200?"
+</PRE>
+<LI>
+<P><CODE>E</CODE></P>
+<P>小Endian的双精度浮点数(取决于系统)</P>
+<P>IA-32:</P><PRE>[1.0].pack("E") =&gt; "\000\000\000\000\000\000\360?"
+</PRE>
+<P>sparc:</P><PRE>[1.0].pack("E") =&gt; "\000\000\000\000\000\000\360?"
+</PRE>
+<LI>
+<P><CODE>g</CODE></P>
+<P>大Endian的单精度浮点数(取决于系统)</P>
+<P>IA-32:</P><PRE>[1.0].pack("g") =&gt; "?\200\000\000"
+</PRE>
+<P>sparc:</P><PRE>[1.0].pack("g") =&gt; "?\200\000\000"
+</PRE>
+<LI>
+<P><CODE>G</CODE></P>
+<P>大Endian的双精度浮点数(取决于系统)</P>
+<P>IA-32:</P><PRE>[1.0].pack("G") =&gt; "?\360\000\000\000\000\000\000"
+</PRE>
+<P>sparc:</P><PRE>[1.0].pack("G") =&gt; "?\360\000\000\000\000\000\000"
+</PRE>
+<LI>
+<P><CODE>p</CODE></P>
+<P>指向null终点字符串的指针</P><PRE>[""].pack("p") =&gt; "\310\037\034\010"
+["a", "b", "c"].pack("p3") =&gt; " =\030\010\340^\030\010\360^\030\010"
+[nil].pack("p") =&gt; "\000\000\000\000"
+</PRE>
+<LI>
+<P><CODE>P</CODE></P>
+<P>指向结构体(定长字符串)的指针</P><PRE>[nil].pack("P") =&gt; "\000\000\000\000"
+["abc"].pack("P3") =&gt; "x*\024\010"
+
+["abc"].pack("P4") =&gt; ArgumentError: too short buffer for P(3 for 4)
+[""].pack("P") =&gt; ArgumentError: too short buffer for P(0 for 1)
+</PRE>
+<LI>
+<P><CODE>u</CODE></P>
+<P>被uuencode编码的字符串</P><PRE>[""].pack("u") =&gt; ""
+["a"].pack("u") =&gt; "!80``\n"
+["abc"].pack("u") =&gt; "#86)C\n"
+["abcd"].pack("u") =&gt; "$86)C9```\n"
+["a"*45].pack("u") =&gt; "M86%A86%A86%A86%A86%A86%A86%A86%A86%A86%A86%A86%A86%A86%A86%A\n"
+["a"*46].pack("u") =&gt; "M86%A86%A86%A86%A86%A86%A86%A86%A86%A86%A86%A86%A86%A86%A86%A\n!80``\n"
+["abcdefghi"].pack("u6") =&gt; "&amp;86)C9&amp;5F\n#9VAI\n"
+</PRE>
+<LI>
+<P><CODE>U</CODE></P>
+<P>utf-8</P><PRE>[0].pack("U") =&gt; "\000"
+[1].pack("U") =&gt; "\001"
+[0x7f].pack("U") =&gt; "\177"
+[0x80].pack("U") =&gt; "\302\200"
+[0x7fffffff].pack("U") =&gt; "\375\277\277\277\277\277"
+[0x80000000].pack("U") =&gt; ArgumentError
+[0,256,65536].pack("U3") =&gt; "\000\304\200\360\220\200\200"
+
+"\000\304\200\360\220\200\200".unpack("U3") =&gt; [0, 256, 65536]
+"\000\304\200\360\220\200\200".unpack("U") =&gt; [0]
+"\000\304\200\360\220\200\200".unpack("U*") =&gt; [0, 256, 65536]
+</PRE>
+<LI>
+<P><CODE>w</CODE></P>
+<P>BER压缩整数</P>
+<P>用7位来表现1字节, 这样就能以最少的字节数来表现任意大小的0以上的整数。各字节的最高位中除了数据的末尾以外,肯定还有个1(也就是说, 最高位可以表示数据伸展到的位置)。</P>
+<P>BER是Basic Encoding Rules的缩略语(BER并非只能处理整数。ASN.1的编码中也用到了它)</P>
+<LI>
+<P><CODE>x</CODE></P>
+<P>读入null字节/1字节</P>
+<LI>
+<P><CODE>X</CODE></P>
+<P>后退1字节</P>
+<LI>
+<P><CODE>@</CODE></P>
+<P>向绝对位置移动</P></LI></UL>
+<H2><A id=a.bb.c8.cd.d1.ce.e3 name=a.bb.c8.cd.d1.ce.e3>用例</A><!-- RDLabel: "用例" --></H2>
+<P>下面是一些pack/unpack的用例。</P>
+<P>其实有的问题并不需要使用pack, 但我们还是给了出它的例子。主要是因为pack很容易进行加密, 我们想向不愿使用pack的人提供一点新思路。</P>
+<UL>
+<LI>
+<P>将数值(字符代码)的数组变为字符串的例子</P><PRE>p [82, 117, 98, 121].pack("cccc")
+=&gt; "Ruby"
+
+p [82, 117, 98, 121].pack("c4")
+=&gt; "Ruby"
+
+p [82, 117, 98, 121].pack("c*")
+=&gt; "Ruby"
+
+s = ""
+[82, 117, 98, 121].each {|c| s &lt;&lt; c}
+p s
+=&gt; "Ruby"
+
+p [82, 117, 98, 121].collect {|c| sprintf "%c", c}.join
+=&gt; "Ruby"
+
+p [82, 117, 98, 121].inject("") {|s, c| s &lt;&lt; c}
+=&gt; "Ruby"
+</PRE>
+<LI>
+<P>将字符串变为数值(字符代码)的数组的例子</P><PRE>p "Ruby".unpack('C*')
+=&gt; [82, 117, 98, 121]
+
+a = []
+"Ruby".each_byte {|c| a &lt;&lt; c}
+p a
+=&gt; [82, 117, 98, 121]
+</PRE>
+<LI>
+<P>可以用"x"来处理null字节</P><PRE>p [82, 117, 98, 121].pack("ccxxcc")
+=&gt; "Ru\000\000by"
+</PRE>
+<LI>
+<P>可以用"x"来读取字符</P><PRE>p "Ru\0\0by".unpack('ccxxcc')
+=&gt; [82, 117, 98, 121]
+</PRE>
+<LI>
+<P>将Hex dump变为数值数组的例子</P><PRE>p "61 62 63 64 65 66".delete(' ').to_a.pack('H*').unpack('C*')
+=&gt; [97, 98, 99, 100, 101, 102]
+
+p "61 62 63 64 65 66".split.collect {|c| c.hex}
+=&gt; [97, 98, 99, 100, 101, 102]
+</PRE>
+<LI>
+<P>在二进制和16进制数的pack中, 指定的长度并不是指生成的字节数, 而是指位或半字节的个数</P><PRE>p [0b01010010, 0b01110101, 0b01100010, 0b01111001].pack("C4")
+=&gt; "Ruby"
+p ["01010010011101010110001001111001"].pack("B32") # 8 bits * 4
+=&gt; "Ruby"
+
+p [0x52, 0x75, 0x62, 0x79].pack("C4")
+=&gt; "Ruby"
+p ["52756279"].pack("H8")  # 2 nybbles * 4
+=&gt; "Ruby"
+</PRE>
+<LI>
+<P>模板字符'a'的长度指定 只适用于一个字符串</P><PRE>p  ["RUBY", "u", "b", "y"].pack("a4")
+=&gt; "RUBY"
+
+p ["RUBY", "u", "b", "y"].pack("aaaa")
+=&gt; "Ruby"
+
+p ["RUBY", "u", "b", "y"].pack("a*aaa")
+=&gt; "RUBYuby"
+</PRE>
+<LI>
+<P>在模板字符"a"中, 若长度不够时, 就用null字符进行填充</P><PRE>p ["Ruby"].pack("a8")
+=&gt; "Ruby\000\000\000\000"
+</PRE>
+<LI>
+<P>小Endian和大Endian</P><PRE>p [1,2].pack("s2")
+=&gt; "\000\001\000\002" # 在大Endian的系统中的输出
+=&gt; "\001\000\002\000" # 在小Endian的系统中的输出
+
+p [1,2].pack("n2")
+=&gt; "\000\001\000\002" # 系统无关的大Endian
+
+p [1,2].pack("v2")
+=&gt; "\001\000\002\000" # 系统无关的小Endian
+</PRE>
+<LI>
+<P>网络字节顺序的 signed long</P><PRE>s = "\xff\xff\xff\xfe"
+n = s.unpack("N")[0]
+if n[31] == 1
+  n = -((n ^ 0xffff_ffff) + 1)
+end
+p n
+=&gt; -2
+</PRE>
+<LI>
+<P>网络字节顺序的 signed long(第2个)</P><PRE>s = "\xff\xff\xff\xfe"
+p n = s.unpack("N").pack("l").unpack("l")[0]
+=&gt; -2
+</PRE>
+<LI>
+<P>IP地址</P><PRE>require 'socket'
+p Socket.gethostbyname("localhost")[3].unpack("C4").join(".")
+=&gt; "127.0.0.1"
+
+p "127.0.0.1".split(".").collect {|c| c.to_i}.pack("C4")
+=&gt; "\177\000\000\001"
+</PRE>
+<LI>
+<P>sockaddr_in 结构体</P><PRE>require 'socket'
+p [Socket::AF_INET,
+   Socket.getservbyname('echo'),
+   127, 0, 0, 1].pack("s n C4 x8")
+=&gt; "\002\000\000\a\177\000\000\001\000\000\000\000\000\000\000\000"
+</PRE>
+<P><FONT color=blue>ruby 1.7 特性</FONT>: 除了pack/unpack以外, 您还可以使用<A class=modified-year title="Socket (334d)" href="http://rubycn.ce-lab.net/man/addlib/Socket.html" >Socket.pack_sockaddr_in</A> 和 <A class=modified-year title="Socket (334d)" href="http://rubycn.ce-lab.net/man/addlib/Socket.html" >Socket.unpack_sockaddr_in</A>方法。</P>
+<LI>
+<P>'\0'终点字符串的地址</P>
+<P>模板字符 "p" 和 "P"是为了处理C语言层的接口而存在的(例如<A class=modified-year title="IO (109d)" href="http://rubycn.ce-lab.net/man/built-in-class/class_object_io.html#ioctl" >ioctl</A>)。</P><PRE>p ["foo"].pack("p")
+=&gt; "8\266\021\010"
+</PRE>
+<P>结果字符串看起来乱七八糟, 实际上它表示的是字符串"foo\0"的地址(二进制形式)。您可以像下面这样,把它变成您熟悉的形式</P><PRE>printf "%#010x\n", "8\266\021\010".unpack("L")[0]
+=&gt; 0x0811b638
+</PRE>
+<P>在pack的结果被GC回收之前, 地址所指的对象(在本例中是"foo\0")保证不会被GC所回收. </P>
+<P>您只能使用pack的结果来unpack("p")和unpack("P")。</P><PRE>p ["foo"].pack("p").unpack("p")
+=&gt; ["foo"]
+p "8\266\021\010".unpack("p")
+=&gt; -:1:in `unpack': no associated pointer (ArgumentError)
+        from -:1
+</PRE>
+<P><FONT color=blue>ruby 1.7 特性</FONT>: "p"和"P"被解释为NULL指针, 它负责对nil进行特殊的处理。(下面是在普通的32bit机器上的结果)</P><PRE>p [nil].pack("p")        #=&gt; "\000\000\000\000"
+p "\0\0\0\0".unpack("p") #=&gt; [nil]
+</PRE>
+<LI>
+<P>结构体的地址</P>
+<P>例如, 表示</P><PRE>struct {
+  int   a;
+  short b;
+  long  c;
+} v = {1,2,3};
+</PRE>
+<P>的字符串是</P><PRE>v = [1,2,3].pack("i!s!l!")
+</PRE>
+<P>(考虑到byte alignment的问题, 可能需要进行适当的padding才行)</P>
+<P>您可以使用</P><PRE>p [v].pack("P")
+=&gt; "\300\265\021\010"
+</PRE>
+<P>来获得指向该结构体的地址。</P></LI></UL>
+<HR>
+</DIV>
+<DIV class=footer>Originally Written by webmaster@ruby-lang.org<BR>Translated by <A href="http://cn.ce-lab.net/" >Community Engine China</A> (<A href="mailto:rubycn@ce-lab.net">Mail</A>)<BR>Last update on 2004-12-22 </DIV></BODY>

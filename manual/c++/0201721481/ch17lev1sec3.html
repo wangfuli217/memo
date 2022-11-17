@@ -1,0 +1,1285 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 17.3.  Multiple and Virtual Inheritance</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch17lev1sec2.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch17lev1sec4.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch17lev1sec3"></a>
+
+        <h3 class="docSection1Title">17.3. Multiple and Virtual Inheritance</h3>
+        <h3 class="docSection1Title">17.3. 多重继承与虚继承</h3>
+
+<a name="idd1e141005"></a><a name="idd1e141009"></a><a name="idd1e141014"></a><a name="idd1e141019"></a><a name="idd1e141023"></a><a name="idd1e141030"></a><a name="idd1e141035"></a><a name="idd1e141040"></a><a name="idd1e141044"></a><a name="idd1e141051"></a>
+        <p class="docText">Most C++ applications use <tt>public</tt> inheritance from a single base class. In some cases, however, single inheritance is inadequate, either because it fails to model the problem domain or the model it imposes is unnecessarily complex.</p>
+        <p class="docText">大多数应用程序使用单个基类的公用继承，但是，在某些情况下，单继承是不够用的，因为可能无法为问题域建模，或者会对模型带来不必要的复杂性。</p>
+
+<a name="ch17term16"></a>
+        <p class="docText">In these cases, <b><a class="docLink" href="ch17lev1sec5.html#gloss17_16" >multiple inheritance</a></b> may model the application more directly. Multiple inheritance is the ability to derive a class from more than one immediate base class. A multiply derived class inherits the properties of all its parents. Although simple in concept, the details of intertwining multiple base classes can present tricky design-level and implementation-level problems.</p>
+        <p class="docText">在这些情况下，<b><a class="docLink" href="ch17lev1sec5.html#gloss17_16" >多重继承</a></b>可以更直接地为应用程序建模。多重继承是从多于一个直接基类派生类的能力，多重继承的派生类继承其所有父类的属性。尽管概念简单，缠绕多个基类的细节可能会带来错综复杂的设计问题或实现问题。</p>
+
+<a name="ch17lev2sec19"></a>
+        <h4 class="docSection2Title">17.3.1. Multiple Inheritance</h4>
+        <h4 class="docSection2Title">17.3.1. 多重继承</h4>
+
+        <p class="docText">This section uses a pedagogical example of a zoo animal hierarchy. Our zoo animals exist at different levels of abstraction. There are the individual animals, distinguished by their names, such as <tt>Ling-ling, Mowgli</tt>, and <tt>Balou</tt>. Each animal belongs to a species; Ling-Ling, for example, is a giant panda. Species, in turn, are members of families. A giant panda is a member of the bear family. Each family, in turn, is a member of the animal kingdomin this case, the more limited kingdom of a particular zoo.</p>
+	<p class="docText">本节使用动物园动物层次的一个教学例子。动物园动物在不同抽象级别存在，有个体的动物，由名字区分，如 <tt>Ling-line</tt>、<tt>Mowgli</tt> 和 <tt>Balou</tt>；每个动物属于一个特种，例如，<tt>Ling-Ling</tt> 是一个大熊猫；物种又是科的成员，大熊猫是熊科的成员；每个科又是动物界的成员——在这个例子中，比较受限的是一个特定的动物园。</p>
+
+        <p class="docText">Each level of abstraction contains data and operations that support a wider category of users. We'll define an abstract <tt>ZooAnimal</tt> class to hold information that is common to all the zoo animals and provides the public interface. The <tt>Bear</tt> class will contain information that is unique to the <tt>Bear</tt> family, and so on.</p>
+	<p class="docText">每个抽象级别包含支持广泛用户的数据和操作。我们将定义一个抽象 <tt>ZooAnimal</tt> 类保存所有动物园动物公共信息并提供公用接口，<tt>Bear</tt> 类将包含 <tt>Bear</tt> 科的独特信息，以此类推。</p>
+
+        <p class="docText">In addition to the actual zoo-animal classes, there are auxiliary classes that encapsulate various abstractions such as endangered animals. In our implementation of a <tt>Panda</tt> class, for example, a <tt>Panda</tt> is multiply derived from <tt>Bear</tt> and <tt>Endangered</tt>.</p>
+	<p class="docText">除了实际的动物园动物类的之外，还有一些辅助类封装不同的抽象，如濒临灭绝的动物。玿，在 <tt>Panda</tt> 类的实现中，<tt>Panda</tt> 同时从 <tt>Bear</tt> 和 <tt>Endangered</tt> 派生。</p>
+
+<a name="ch17lev3sec50"></a>
+        <h5 class="docSection3Title">Defining Multiple Classes</h5>
+        <h5 class="docSection3Title">定义多个类</h5>
+
+        <p class="docText">To support multiple inheritance, the derivation list</p>
+        <p class="docText">为了支持多重继承，扩充派生列表</p>
+        <pre>
+    class Bear : public ZooAnimal {
+    };
+</pre><br>
+
+        <p class="docText">is extended to support a comma-separated list of base classes:</p>
+        <p class="docText">以支持由逗号分隔的基类列表：</p>
+        <pre>
+    class Panda : public Bear, public Endangered {
+    };
+</pre><br>
+
+        <p class="docText">The derived class specifies (either explicitly or implicitly) the access level <tt>public, protected</tt>, or <tt>private</tt> for each of its base classes. As with single inheritance, a class may be used as a base class under multiple inheritance only after it has been defined. There is no language-imposed limit on the number of base classes from which a class can be derived. A base class may appear only once in a given derivation list.</p>
+	<p class="docText">派生类为每个基类（显式或隐式地）指定了访问级别——<tt>public</tt>、<tt>protected</tt> 或 <tt>private</tt>。像单继承一样，只有在定义之后，类才可以用作多重继承的基类。对于类可以继承的基类的数目，没有语言强加强加的限制，但在一个给定派生列表中，一个基类只能出现一次。</p>
+
+<a name="ch17lev3sec51"></a>
+        <h5 class="docSection3Title">Multiply Derived Classes Inherit State from Each Base Class</h5>
+        <h5 class="docSection3Title">多重继承的派生类从每个基类中继承状态</h5>
+
+<a name="idd1e141147"></a><a name="idd1e141152"></a><a name="idd1e141159"></a><a name="idd1e141164"></a><a name="idd1e141169"></a><a name="idd1e141174"></a><a name="idd1e141181"></a>
+        <p class="docText">Under multiple inheritance, objects of a derived class contain a base-class subobject (<a class="docLink" href="ch15lev1sec2.html#ch15lev2sec5" >Section 15.2.3</a>, p. <a class="docLink" href="ch15lev1sec2.html#ch15lev2sec5" >565</a>) for each of its base classes. When we write</p>
+        <p class="docText">在多重继承下，派生类的对象包含每个基类的基类子对象（<a class="docLink" href="ch15lev1sec2.html#ch15lev2sec5" >第 15.2.3 节</a>）。当我们编写</p>
+        <pre>
+Panda ying_yang("ying_yang");
+</pre><br>
+
+        <p class="docText">the object <tt>ying_yang</tt> is composed of a <tt>Bear</tt> class subobject (which itself contains a <tt>ZooAnimal</tt> base-class subobject), an <tt>Endangered</tt> class subobject, and the non<tt>static</tt> data members, if any, declared within the <tt>Panda</tt> class (see <a class="docLink" href="ch17lev1sec3.html#ch17fig02">Figure 17.2</a>).</p>
+	<p class="docText">的时候，对象 <tt>ying_yang</tt> 包含一个 <tt>Bear</tt> 类子对象（<tt>Bear</tt> 类子对象本身包含一个 <tt>ZooAnimal</tt> 基类子对象）、一个 <tt>Endangered</tt> 类子对象以及 <tt>Panda</tt> 类中声明的非 <tt>static</tt> 数据成员（如果有的话），见<a class="docLink" href="ch17lev1sec3.html#ch17fig02">图 17.2</a>。</p>
+
+<a name="ch17fig02"></a>
+        <center>
+          <h5 class="docFigureTitle">Figure 17.2. Multiple Inheritance <tt>Panda</tt> Hierarchy</h5>
+          <h5 class="docFigureTitle">17.2. 多重继承的 <tt>Panda</tt> 层次</h5>
+
+          <p class="docText"><img border="0" alt="" width="420" height="264" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/17fig02.gif;400478" ></p>
+        </center><br>
+        <a name="ch17lev3sec52"></a>
+
+        <h5 class="docSection3Title">Derived Constructors Initialize All Base Classes</h5>
+        <h5 class="docSection3Title">派生类构造函数初始化所有基类</h5>
+
+        <p class="docText">Constructing an object of derived type involves constructing and initializing all its base subobjects. As is the case for inheriting from a single base class (<a class="docLink" href="ch15lev1sec4.html#ch15lev2sec12" >Section 15.4.1</a>, p. <a class="docLink" href="ch15lev1sec4.html#ch15lev2sec12" >580</a>), derived constructors may pass values to zero or more of their base classes in the constructor initializer:</p>
+        <p class="docText">构造派生类型的对象包括构造和初始化宾所有基类子对象。像继承单个基类（<a class="docLink" href="ch15lev1sec4.html#ch15lev2sec12" >第 15.4.1 节</a>）的情况一样，派生类的构造函数可以在构造函数初始化式中给零个或多个基类传递值：</p>
+        <pre>
+    // <span class="docEmphItalicAlt">explicitly initialize both base classes</span>
+    Panda::Panda(std::string name, bool onExhibit)
+          : Bear(name, onExhibit, "Panda"),
+            Endangered(Endangered::critical) { }
+    // <span class="docEmphItalicAlt">implicitly use</span> <span class="docEmphasis">Bear</span> <span class="docEmphItalicAlt">default constructor to initialize the</span> <span class="docEmphasis">Bear</span> <span class="docEmphItalicAlt">subobject</span>
+    Panda::Panda()
+          : Endangered(Endangered::critical) { }
+</pre><br>
+        <a name="ch17lev3sec53"></a>
+
+        <h5 class="docSection3Title">Order of Construction</h5>
+        <h5 class="docSection3Title">构造的次序</h5>
+
+<a name="idd1e141287"></a><a name="idd1e141292"></a><a name="idd1e141297"></a><a name="idd1e141304"></a><a name="idd1e141311"></a>
+        <p class="docText">The constructor initializer controls only the values that are used to initialize the base classes, not the order in which the base classes are constructed. The base-class constructors are invoked in the order in which they appear in the class derivation list. For <tt>Panda</tt>, the order of base-class initialization is:</p>
+        <p class="docText">构造函数初始化式只能控制用于初始化基类的值，不能控制基类的构造次序。基类构造函数按照基类构造函数在类派生列表中的出现次序调用。对 <tt>Panda</tt> 而言，基类初始化的次序是：</p>
+
+        <div style="font-weight:bold">
+          <ol class="docList" type="1">
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList"><tt>ZooAnimal</tt>, the ultimate base class up the hierarchy from <tt>Panda</tt>'s immediate base class <tt>Bear</tt></p>
+                <p class="docList"><tt>ZooAnimal</tt>，从 <tt>Panda</tt> 的直接基类 <tt>Bear</tt> 沿层次向上的最终基类。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList"><tt>Bear</tt>, the first immediate base class</p>
+                <p class="docList"><tt>Bear</tt>，第一个直接基类。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList"><tt>Endangered</tt>, the second immediate base, which itself has no base class</p>
+                <p class="docList"><tt>Endangered</tt>，第二个直接基类，它本身没有基类。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList"><tt>Panda</tt>; the members of <tt>Panda</tt> itself are initialized, and then the body of its constructor is run.</p>
+                <p class="docList"><tt>Panda</tt>，初始化 <tt>Panda</tt> 本身的成员，然后运行它的构造函数的函数体。</p>
+              </div>
+            </li>
+          </ol>
+        </div><a name="ch17note32"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">The order of constructor invocation is not affected by whether the base class appears in the constructor initializer list or the order in which base classes appear within that list.</p>
+                <p class="docText">构造函数调用次序既不受构造函数初始化列表中出现的基类的影响，也不受基类在构造函数初始化列表中的出现次序的影响。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">For example, in <tt>Panda</tt>'s default constructor, the <tt>Bear</tt> default constructor is invoked implicitly; it does not appear in the constructor initializer list. Even so, <tt>Bear</tt>'s default constructor is invoked prior to the explicitly listed constructor of <tt>Endangered</tt>.</p>
+        <p class="docText">例如，在 <tt>Panda</tt> 类的默认构造函数中，隐式调用 <tt>Bear</tt> 类的默认构造函数，它不出现在构造函数初始化列表中，虽然如此，仍在显式列出的 <tt>Endangered</tt> 类构造函数之前调用 <tt>Bear</tt> 类的默认构造函数。</p>
+
+<a name="ch17lev3sec54"></a>
+        <h5 class="docSection3Title">Order of Destruction</h5>
+        <h5 class="docSection3Title">析构的次序</h5>
+
+        <p class="docText">Destructors are always invoked in the reverse order from which the constructors are run. In our example, the order in which the destructors are called is <tt>~Panda, ~Endangered, ~Bear, ~ZooAnimal</tt>.</p>
+        <p class="docText">总是按构造函数运行的逆序调用析构函数。在我们的例子中，调用析构函数的次序是 <tt>~Panda, ~Endangered, ~Bear, ~ZooAnimal</tt>。</p>
+
+<a name="ch17sb15"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 17.3.1</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch17qa12q1"></a><b>Exercise 17.23:</b></td>
+
+                    <td>
+                      <p class="docText">Which, if any, of the following declarations are in error. Explain why.</p>
+                      <p class="docText">如果有，下面哪些声明是错误的。解释为什么。</p>
+                      <pre>
+    (a) class CADVehicle : public CAD, Vehicle { ... };
+    (b) class DoublyLinkedList:
+              public List, public List { ... };
+    (c) class iostream: public istream, public ostream { ... };
+</pre><br>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch17qa12q2"></a><b>Exercise 17.24:</b></td>
+
+                    <td>
+                      <p class="docText">Given the following class hierarchy, in which each class defines a default constructor,</p>
+                      <p class="docText">给定下面的类层次，其中，每个类定义了一个默认构造函数。</p>
+                      <pre>
+    class A { ... };
+    class B : public A { ... };
+    class C : public B { ... };
+    class X { ... };
+    class Y { ... };
+    class Z : public X, public Y { ... };
+    class MI : public C, public Z { ... };
+</pre><br>
+
+                      <p class="docText">what is the order of constructor execution for the following definition?</p>
+                      <p class="docText">对于下面的定义，构造函数的执行次序是什么？</p>
+                      <pre>
+    MI mi;
+</pre><br>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a name="ch17lev2sec20"></a>
+
+        <h4 class="docSection2Title">17.3.2. Conversions and Multiple Base Classes</h4>
+        <h4 class="docSection2Title">17.3.2. 转换与多个基类</h4>
+
+<a name="idd1e141461"></a><a name="idd1e141468"></a><a name="idd1e141473"></a><a name="idd1e141478"></a><a name="idd1e141483"></a><a name="idd1e141488"></a>
+        <p class="docText">Under single inheritance, a pointer or a reference to a derived class can be converted automatically to a pointer or a reference to a base class. The same holds true with multiple inheritance. A pointer or reference to a derived class can be converted to a pointer or reference to any of its base classes. For example, a <tt>Panda</tt> pointer or reference could be converted to a pointer or a reference to <tt>ZooAnimal, Bear</tt>, or <tt>Endangered:</tt></p>
+	<p class="docText">在单个基类情况下，派生类的指针或引用可以自动转换为基类的指针或引用，对于多重继承也是如此，派生类的指针或引用可以转换为其任意其类的指针或引用。例如，<tt>Panda</tt> 指针或引用可以转换为 <tt>ZooAnimal</tt>、<tt>Bear</tt> 或 <tt>Endangered</tt> 的指针或引用。</p>
+        <pre>
+    // <span class="docEmphItalicAlt">operations that take references to base classes of type</span> <span class="docEmphasis">Panda</span>
+    void print(const Bear&amp;);
+    void highlight(const Endangered&amp;);
+    ostream&amp; operator&lt;&lt;(ostream&amp;, const ZooAnimal&amp;);
+    Panda ying_yang("ying_yang");    // <span class="docEmphItalicAlt">create a</span> <span class="docEmphasis">Panda</span> <span class="docEmphItalicAlt">object</span>
+    print(ying_yang);      // <span class="docEmphItalicAlt">passes</span> <span class="docEmphasis">Panda</span> <span class="docEmphItalicAlt">as reference to</span> <span class="docEmphasis">Bear</span>
+    highlight(ying_yang);  // <span class="docEmphItalicAlt">passes</span> <span class="docEmphasis">Panda</span> <span class="docEmphItalicAlt">as reference to</span> <span class="docEmphasis">Endangered</span>
+    cout &lt;&lt; ying_yang &lt;&lt; endl;  // <span class="docEmphItalicAlt">passes</span> <span class="docEmphasis">Panda</span> <span class="docEmphItalicAlt">as reference to</span> <span class="docEmphasis">ZooAnimal</span>
+</pre><br>
+
+        <p class="docText">Under multiple inheritance, there is a greater possibility of encountering an ambiguous conversion. The compiler makes no attempt to distinguish between base classes in terms of a derived-class conversion. Converting to each base class is equally good. For example, if there was an overloaded version of <tt>print</tt></p>
+        <p class="docText">在多重继承情况下，遇到二义性转换的可能性更大。编译器不会试图根据派生类转换来区别基类间的转换，转换到每个基类都一样好。例如，如果有 <tt>print</tt> 函数的重载版本：</p>
+        <pre>
+    void print(const Bear&amp;);
+    void print(const Endangered&amp;);
+</pre><br>
+
+        <p class="docText">an unqualified invocation of print with a Panda object</p>
+        <p class="docText">通过 Panda 对象对 print 函数的未限定调用</p>
+        <pre>
+    Panda ying_yang("ying_yang");
+    print(ying_yang);              // <span class="docEmphItalicAlt">error: ambiguous</span>
+</pre><br>
+
+        <p class="docText">results in a compile-time error that the call is ambiguous.</p>
+        <p class="docText">导致一个编译时错误，指出该调用是二义性的。</p>
+
+<a name="ch17sb16"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 17.3.2</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch17qa13q1"></a><b>Exercise 17.25:</b></td>
+
+                    <td>
+                      <p class="docText">Given the following class hierarchy, in which each class defines a default constructor,</p>
+                      <p class="docText">给定下面的类层次，其中每个类定义了一个默认构造函数，</p>
+                      <pre>
+    class X { ... };
+    class A { ... };
+    class B : public A { ... };
+    class C : private B { ... };
+    class D : public X, public C { ... };
+</pre><br>
+
+                      <p class="docText">which, if any, of the following conversions are not permitted?</p>
+                      <p class="docText">如果有，下面转换中哪些是不允许的？</p>
+                      <pre>
+    D *pd = new D;
+    (a) X *px = pd; (c) B *pb = pd;
+    (b) A *pa = pd; (d) C *pc = pd;
+</pre><br>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a name="ch17lev3sec55"></a>
+
+        <h5 class="docSection3Title">Virtual Functions under Multiple Inheritance</h5>
+        <h5 class="docSection3Title">多重继承下的虚函数</h5>
+
+<a name="idd1e141629"></a><a name="idd1e141634"></a><a name="idd1e141641"></a><a name="idd1e141646"></a><a name="idd1e141653"></a><a name="idd1e141660"></a><a name="idd1e141667"></a>
+        <p class="docText">To see how the virtual function mechanism is affected by multiple inheritance, let's assume that our classes define the virtual members listed in <a class="docLink" href="ch17lev1sec3.html#ch17table02">Table 17.2</a>.</p>
+        <p class="docText">为了看看多重继承怎样影响虚函数机制，假定我们的类定义<a class="docLink" href="ch17lev1sec3.html#ch17table02">表 17.2</a> 中列出的虚成员。</p>
+
+<a name="ch17table02"></a>
+        <h5 class="docTableTitle">Table 17.2. Virtual Function in the ZooAnimal/Endangered Classes</h5>
+        <h5 class="docTableTitle">17.2. ZooAnimal／Endangered 类中的虚函数</h5>
+
+        <table cellspacing="0" class="allBorders" border="1" rules="groups" cellpadding="5">
+          <colgroup>
+            <col width="100">
+            <col width="400">
+          </colgroup>
+
+          <thead>
+            <tr>
+              <th class="bottomBorder thead" scope="col" align="left" valign="top">
+                <p class="docText">Function</p>
+                <p class="docText">函数</p>
+              </th>
+
+              <th class="bottomBorder thead" scope="col" align="left" valign="top">
+                <p class="docText">Class Defining Own Version</p>
+                <p class="docText">定义自己版本的类</p>
+              </th>
+            </tr>
+          </thead>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>print</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>ZooAnimal::ZooAnimal</tt></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top"> </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>Bear::Bear</tt></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top"> </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>Endangered::Endangered</tt></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top"> </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>Panda::Panda</tt></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>highlight</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>Endangered::Endangered</tt></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top"> </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>Panda::Panda</tt></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>toes</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>Bear::Bear</tt></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top"> </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>Panda::Panda</tt></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>cuddle</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>Panda::Panda</tt></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">destructor</p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>ZooAnimal::ZooAnimal</tt></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top"> </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>Endangered::Endangered</tt></p>
+            </td>
+          </tr>
+        </table><br>
+
+        <a name="ch17lev3sec56"></a>
+        <h5 class="docSection3Title">Lookup Based on Type of Pointer or Reference</h5>
+        <h5 class="docSection3Title">基于指针类型或引用类型的查找</h5>
+
+        <p class="docText">As with single inheritance, a pointer or reference to a base class can be used to access only members defined (or inherited) in the base. It cannot access members introduced in the derived class.</p>
+        <p class="docText">像单继承一样，用基类的指针或引用只能访问基类中定义（或继承）的成员，不能访问派生类中引入的成员。</p>
+
+        <p class="docText">When a class inherits from multiple base classes, there is no implied relationship between those base classes. Using a pointer to one base does not allow access to members of another base.</p>
+        <p class="docText">当一个类继承于多个基类的时候，那些基类之间没有隐含的关系，不允许使用一个基类的指针访问其他基类的成员。</p>
+
+        <p class="docText">As an example, we could use a pointer or reference to a <tt>Bear, ZooAnimal, Endangered</tt>, or <tt>Panda</tt> to access a <tt>Panda</tt> object. The type of the pointer we use determines which operations are accessible. If we use a <tt>ZooAnimal</tt> pointer, only the operations defined in that class are usable. The <tt>Bear</tt>-specific, <tt>Panda</tt>-specific, and <tt>Endangered</tt> portions of the <tt>Panda</tt> interface are inaccessible. Similarly, a <tt>Bear</tt> pointer or reference knows only about the <tt>Bear</tt> and <tt>ZooAnimal</tt> members; an <tt>Endangered</tt> pointer or reference is limited to the <tt>Endangered</tt> members:</p>
+	<p class="docText">作为例子，我们可以使用 <tt>Bear、ZooAnimal、Endangered</tt> 或 <tt>Panda</tt> 的指针或引用来访问 <tt>Panda</tt> 对象。所用指针的类型决定了可以访问哪些操作。如果使用 <tt>ZooAnimal</tt> 指针，只能使用 <tt>ZooAnimal</tt> 类中定义的操作，不能访问 <tt>Panda</tt> 接口的 <tt>Bear</tt> 特定、<tt>Panda</tt> 特定和 <tt>Endangered</tt> 部分。类似地，<tt>Bear</tt> 指针或引用只知道 <tt>Bear</tt> 和 <tt>ZooAnimal</tt> 成员，<tt>Endangered</tt> 指针或引用局限于 <tt>Endangered</tt> 成员：</p>
+        <pre>
+    Bear *pb = new Panda("ying_yang");
+    pb-&gt;print(cout); // <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">Panda::print(ostream&amp;)</span>
+    pb-&gt;cuddle();    // <span class="docEmphItalicAlt">error: not part of</span> <span class="docEmphasis">Bear</span> <span class="docEmphItalicAlt">interface</span>
+    pb-&gt;highlight(); // <span class="docEmphItalicAlt">error: not part</span> <span class="docEmphItalicAlt">of</span> <span class="docEmphasis">Bear</span> <span class="docEmphItalicAlt">interface</span>
+    delete pb;       // <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">Panda::~Panda()</span>
+</pre><br>
+
+        <p class="docText">If the <tt>Panda</tt> object had been assigned to a <tt>ZooAnimal</tt> pointer, this set of calls would resolve exactly the same way.</p>
+        <p class="docText">如果将 <tt>Panda</tt> 对象赋给 <tt>ZooAnimal</tt> 指针，这个调用集合将完全相同的方式确定。</p>
+
+<a name="idd1e141935"></a><a name="idd1e141940"></a><a name="idd1e141945"></a><a name="idd1e141950"></a>
+        <p class="docText">When a <tt>Panda</tt> is used via an <tt>Endangered</tt> pointer or reference, the Panda-specific and <tt>Bear</tt> portions of the <tt>Panda</tt> interface are inaccessible:</p>
+        <p class="docText">在通过 <tt>Endangered</tt> 指针或引用使用 <tt>Panda</tt> 对象的时候，不能访问 <tt>Panda</tt> 接口的 <tt>Panda</tt> 特定的部分和 <tt>Bear</tt> 部分：</p>
+        <pre>
+    Endangered *pe = new Panda("ying_yang");
+    pe-&gt;print(cout);  // <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">Panda::print(ostream&amp;)</span>
+    pe-&gt;toes();       // <span class="docEmphItalicAlt">error: not part of</span> <span class="docEmphasis">Endangered</span> <span class="docEmphItalicAlt">interface</span>
+    pe-&gt;cuddle();     // <span class="docEmphItalicAlt">error: not part of</span> <span class="docEmphasis">Endangered</span> <span class="docEmphItalicAlt">interface</span>
+    pe-&gt;highlight();  // <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">Endangered::highlight()</span>
+    delete pe;        // <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">Panda::~Panda()</span>
+</pre><br>
+
+        <a name="ch17lev3sec57"></a>
+        <h5 class="docSection3Title">Determining Which Virtual Destructor to Use</h5>
+        <h5 class="docSection3Title">确定使用哪个虚析构函数</h5>
+
+        <p class="docText">Assuming all the root base classes properly define their destructors as virtual, then the handling of the virtual destructor is consistent regardless of the pointer type through which we delete the object:</p>
+        <p class="docText">假定所有根基类都将它们的析构函数适当定义为虚函数，那么，无论通过哪种指针类型删除对象，虚析构函数的处理都是一致的：</p>
+        <pre>
+    // <span class="docEmphItalicAlt">each pointer points to a</span> <span class="docEmphasis">Panda</span>
+    delete pz; // <span class="docEmphasis">pz</span> <span class="docEmphItalicAlt">is a</span> <span class="docEmphasis">ZooAnimal*</span>
+    delete pb; // <span class="docEmphasis">pb</span> <span class="docEmphItalicAlt">is a</span> <span class="docEmphasis">Bear*</span>
+    delete pp; // <span class="docEmphasis">pp</span> <span class="docEmphItalicAlt">is a</span> <span class="docEmphasis">Panda*</span>
+    delete pe; // <span class="docEmphasis">pe</span> <span class="docEmphItalicAlt">is a</span> <span class="docEmphasis">Endangered*</span>
+</pre><br>
+
+        <p class="docText">Assuming each of these pointers points to a <tt>Panda</tt> object, the exact same order of destructor invocations occurs in each case. The order of destructor invocations is the reverse of the constructor order: The <tt>Panda</tt> destructor is invoked through the virtual mechanism. Following execution of the <tt>Panda</tt> destructor, the <tt>Endangered, Bear</tt>, then <tt>ZooAnimal</tt> destructors are invoked in turn.</p>
+	<p class="docText">假定这些指针每个都向 <tt>Panda</tt> 对象，则每种情况下发生完全相同的析构函数调用次序。析构函数调用的次序是构造函数次序的逆序：通过虚机制调用 <tt>Panda</tt> 析构函数。随着 <tt>Panda</tt> 析构函数的执行，依次调用 <tt>Endangered</tt>、<tt>Bear</tt> 和 <tt>ZooAnimal</tt> 的析构函数。</p>
+
+	<a name="ch17sb17"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 17.3.2</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch17qa14q1"></a><b>Exercise 17.26:</b></td>
+
+                    <td>
+                      <p class="docText">On page <a class="docLink" href="ch17lev1sec3.html#ch17lev3sec55">735</a> we presented a series of calls made through a <tt>Bear</tt> pointer that pointed to a <tt>Panda</tt> object. We noted that if the pointer had been a <tt>ZooAnimal</tt> pointer the calls would resolve the same way. Explain why.</p>
+                      <p class="docText">本节给出了一系列通过指向 <tt>Panda</tt> 对象的 <tt>Bear</tt> 指针所进行的调用。我们指出，如果指针是 <tt>ZooAnimal</tt> 指针，将以同样方式确定函数调用。解释为什么。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch17qa14q2"></a><b>Exercise 17.27:</b></td>
+
+                    <td>
+                      <p class="docText">Assume we have two base classes, <tt>Base1</tt> and <tt>Base2</tt>, each of which defines a virtual member named <tt>print</tt> and a virtual destructor. From these base classes we derive the following classes each of which redefines the <tt>print</tt> function:</p>
+                      <p class="docText">假定有两个基类 <tt>Base1</tt> 和 <tt>Base2</tt>，其中每一个定义了一个名为 <tt>print</tt> 的虚成员和一个虚析构函数。从这些基类派生下面的类，其中每一个类都重定义了 <tt>print</tt> 函数：</p>
+                      <pre>
+    class D1 : public Base1 { /* ... */ };
+    class D2 : public Base2 { /* ... */ };
+    class MI : public D1, public D2 { /* ... */ };
+</pre><br>
+
+                      <p class="docText">Using the following pointers determine which function is used in each call:</p>
+                      <p class="docText">使用下面的指针确定在每个调用中使用哪个函数：</p>
+                      <pre>
+    Base1 *pb1 = new MI; Base2 *pb2 = new MI;
+    D1 *pd1 = new MI; D2 *pd2 = new MI;
+
+    (a) pb1-&gt;print(); (b) pd1-&gt;print(); (c) pd2-&gt;print();
+    (d) delete pb2;   (e) delete pd1;   (f) delete pd2;
+</pre><br>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch17qa14q3"></a><b>Exercise 17.28:</b></td>
+
+                    <td>
+                      <p class="docText">Write the class definitions that correspond to <a class="docLink" href="ch17lev1sec3.html#ch17table02">Table 17.2</a> (p. <a class="docLink" href="ch17lev1sec3.html#ch17table02">735</a>).</p>
+                      <p class="docText">编写与<a class="docLink" href="ch17lev1sec3.html#ch17table02">图 17.2</a> 对应的类定义。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a name="ch17lev2sec21"></a>
+
+        <h4 class="docSection2Title">17.3.3. Copy Control for Multiply Derived Classes</h4>
+        <h4 class="docSection2Title">17.3.3. 多重继承派生类的复制控制</h4>
+
+<a name="idd1e142182"></a><a name="idd1e142191"></a><a name="idd1e142199"></a><a name="idd1e142206"></a><a name="idd1e142211"></a><a name="idd1e142216"></a><a name="idd1e142221"></a><a name="idd1e142226"></a><a name="idd1e142231"></a><a name="idd1e142236"></a><a name="idd1e142246"></a><a name="idd1e142251"></a><a name="idd1e142259"></a><a name="idd1e142264"></a>
+        <p class="docText">The memberwise initialization, assignment and destruction (<a class="docLink" href="ch13.html#ch13" >Chapter 13</a>) of a multiply derived class behaves in the same way as under single inheritance. Each base class is implicitly constructed, assigned or destroyed, using that base class' own copy constructor, assignment operator or destructor.</p>
+        <p class="docText">多重继承的派生类的逐个成员初始化、赋值和析构（<a class="docLink" href="ch13.html#ch13" >第十三章</a>），表现得与单继承下的一样，使用基类自己的复制构造函数、赋值操作符或析构函数隐式构造、赋值或撤销每个基类。</p>
+
+        <p class="docText">Let's assume that <tt>Panda</tt> uses the default copy control members. Using the default copy constructor, the initialization of <tt>ling_ling</tt></p>
+        <p class="docText">假定 <tt>Panda</tt> 类使用默认复制控制成员。<tt>ling_ling</tt> 的初始化</p>
+        <pre>
+    Panda ying_yang("ying_yang");  // <span class="docEmphItalicAlt">create a</span> <span class="docEmphasis">Panda</span> <span class="docEmphItalicAlt">object</span>
+    Panda ling_ling = ying_yang;   // <span class="docEmphItalicAlt">uses copy constructor</span>
+</pre><br>
+
+        <p class="docText">invokes the <tt>Bear</tt> copy constructor, which in turn runs the <tt>ZooAnimal</tt> copy constructor prior to executing the <tt>Bear</tt> copy constructor. Once the <tt>Bear</tt> portion of <tt>ling_ling</tt> is constructed, the <tt>Endangered</tt> copy constructor is run to create that part of the object. Finally, the <tt>Panda</tt> copy constructor is run.</p>
+	<p class="docText">使用默认复制构造函数调用 <tt>Bear</tt> 复制构造函数，<tt>Bear</tt> 复制构造函数依次在执行 <tt>Bear</tt> 复制构造函数之前运行 <tt>ZooAnimal</tt> 复制构造函数。一旦构造了 <tt>ling_ling</tt> 的 <tt>Bear</tt> 部分，就运行 <tt>Endangered</tt> 复制构造函数来创建对象的那个部分。最后，运行 <tt>Panda</tt> 复制构造函数。</p>
+
+        <p class="docText">The synthesized assignment operator behaves similarly to the copy constructor. It assigns the <tt>Bear</tt> (and through <tt>Bear</tt>, the <tt>ZooAnimal</tt>) parts of the object first. Next, it assigns the <tt>Endangered</tt> part, and finally the <tt>Panda</tt> part.</p>
+        <p class="docText">合成的赋值操作符的行为类似于复制构造函数，它首先对对象的 <tt>Bear</tt> 部分进行赋值，并通过 <tt>Bear</tt> 对对象的 <tt>ZooAnimal</tt> 部分进行赋值，然后，对 <tt>Endangered</tt> 部分进行赋值，最后对 <tt>Panda</tt> 部分进行赋值。</p>
+
+        <p class="docText">The synthesized destructor destroys each member of the <tt>Panda</tt> object and calls the destructors for the base class parts, in reverse order from construction.</p>
+        <p class="docText">合成的析构函数撤销 <tt>Panda</tt> 对象的每个成员，并且按构造次序的逆序为基类部分调用析构函数。</p>
+
+<a name="ch17note33"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="84" height="51" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/tip.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">As is the case for single inheritance (<a class="docLink" href="ch15lev1sec4.html#ch15lev2sec14" >Section 15.4.3</a>, p. <a class="docLink" href="ch15lev1sec4.html#ch15lev2sec14" >584</a>), if a class with multiple bases defines its own destructor, that destructor is responsible only for cleaning up the derived class. If the derived class defines its own copy constructor or assignment operator, then the class is responsible for copying (assigning) all the base class subparts. The base parts are automatically copied or assigned only if the derived class uses the synthesized versions of these members.</p>
+                <p class="docText">像单继承（<a class="docLink" href="ch15lev1sec4.html#ch15lev2sec14" >第 15.4.3 节</a>）的情况一样，如果具有多个基类的类定义了自己的析构函数，该析构函数只负责清除派生类。如果派生类定义了自己的复制构造函数或赋值操作符，则类负责复制（赋值）所有的基类子部分。只有派生类使用复制构造函数或赋值操作符的合成版本，才自动复制或赋值基类部分。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <a name="ch17lev2sec22"></a>
+        <h4 class="docSection2Title">17.3.4. Class Scope under Multiple Inheritance</h4>
+        <h4 class="docSection2Title">17.3.4. 多重继承下的类作用域</h4>
+
+        <p class="docText">Class scope (<a class="docLink" href="ch15lev1sec5.html#ch15lev1sec5" >Section 15.5</a>, p. <a class="docLink" href="ch15lev1sec5.html#ch15lev1sec5" >590</a>) is more complicated in multiple inheritance because a derived scope may be enclosed by multiple base class scopes. As usual, name lookup for a name used in a member function starts in the function itself. If the name is not found locally, then lookup continues in the member's class and then searches each base class in turn. Under multiple inheritance, the search simultaneously examines all the base-class inheritance subtreesin our example, both the <tt>Endangered</tt> and the <tt>Bear</tt>/<tt>ZooAnimal</tt> subtrees are examined in parallel. If the name is found in more than one subtree, then the use of that name must explicitly specify which base class to use. Otherwise, the use of the name is ambiguous.</p>
+        <p class="docText">在多重继承下，类作用域（<a class="docLink" href="ch15lev1sec5.html#ch15lev1sec5" >第 15.5 节</a>）更加复杂，因为多个基类作用域可以包围派生类作用域。通常，成员函数中使用的名字和查找首先在函数本身进行，如果不能在本地找到名字，就继续在成员的类中查找，然后依次查找每个基类。在多重继承下，查找同时检察所有的基类继承子树——在我们的例子中，并行查找 <tt>Endangered</tt> 子树和 <tt>Bear</tt>/<tt>ZooAnimal</tt> 子树。如果在多个子树中找到该名字，则那个名字的使用必须显式指定使用哪个基类；否则，该名字的使用是二义性的。</p>
+
+<a name="ch17note34"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">When a class has multiple base classes, name lookup happens simultaneously through all the immediate base classes. It is possible for a multiply derived class to inherit a member with the same name from two or more base classes. Unqualified uses of that name are ambiguous.</p>
+                <p class="docText">当一个类有多个基类的时候，通过所有直接基类同时进行名字查找。多重继承的派生类有可能从两个或多个基类继承同名成员，对该成员不加限定的使用是二义性的。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <a name="ch17lev3sec58"></a>
+        <h5 class="docSection3Title">Multiple Base Classes Can Lead to Ambiguities</h5>
+        <h5 class="docSection3Title">多个基类可能导致二义性</h5>
+
+<a name="idd1e142405"></a><a name="idd1e142412"></a><a name="idd1e142419"></a><a name="idd1e142426"></a><a name="idd1e142431"></a><a name="idd1e142436"></a><a name="idd1e142443"></a>
+        <p class="docText">Assume both <tt>Bear</tt> and <tt>Endangered</tt> define a member named <tt>print</tt>. If <tt>Panda</tt> does not define that member, then a statement such as the following</p>
+        <p class="docText">假定 <tt>Bear</tt> 类和 <tt>Endangered</tt> 类都定义了名为 <tt>print</tt> 的成员，如果 <tt>Panda</tt> 类没有定义该成员，则</p>
+        <pre>
+    ying_yang.print(cout);
+</pre><br>
+
+        <p class="docText">results in a compile-time error.</p>
+        <p class="docText">这样的语句将导致编译时错误。</p>
+
+        <p class="docText">The derivation of <tt>Panda</tt>, which results in Panda having two members named <tt>print</tt>, is perfectly legal. The derivation results in only a <span class="docEmphasis">potential</span> ambiguity. That ambiguity is avoided if no <tt>Panda</tt> object ever calls <tt>print</tt>. The error would also be avoided if each call to <tt>print</tt> specifically indicated which version of <tt>print</tt> was wanted<tt>Bear::print</tt> or <tt>Endangered::print</tt>. An error is issued only if there is an ambiguous attempt to use the member.</p>
+        <p class="docText"><tt>Panda</tt> 类的派生（它导致有两个名为 <tt>print</tt> 的成员）是完全合法的。派生只是导致<span class="docEmphasis">潜在</span>的二义性，如果没有 <tt>Panda</tt> 对象调用 <tt>print</tt>，就可以避免这个二义性。如果每个 <tt>print</tt> 调用明确指出想要哪个版本——<tt>Bear::print</tt> 还是 <tt>Endangered::print</tt>，也可以避免错误。只有在存在使用该成员的二义性尝试的时候，才会出错。</p>
+
+        <p class="docText">If a declaration is found only in one base-class subtree, then the identifier is resolved and the lookup algorithm concludes. For example, class <tt>Endangered</tt> might have an operation to return the given estimated population of its object. If so, the following call</p>
+        <p class="docText">如果只在一个基类子树中找到声明，则标识符得以确定而查找算法结束。例如，<tt>Endangered</tt> 类可能有一个操作返回给定其对象的估计数目，如果是这样，下面的调用</p>
+        <pre>
+    ying_yang.population();
+</pre><br>
+
+        <p class="docText">would compile without complaint. The name <tt>population</tt> would be found in the <tt>Endangered</tt> base class and does not appear in <tt>Bear</tt> or any of its base classes.</p>
+        <p class="docText">可以顺得编译，名字 <tt>population</tt> 将在基类 <tt>Endangered</tt> 中找到，并且在 <tt>Bear</tt> 类或其任意基类中都不会出现。</p>
+
+<a name="ch17lev3sec59"></a>
+        <h5 class="docSection3Title">Name Lookup Happens First</h5>
+        <h5 class="docSection3Title">首先发生名字查找</h5>
+
+        <p class="docText">Although the ambiguity of the two inherited <tt>print</tt> members is reasonably obvious, it might be more surprising to learn that an error would be generated even if the two inherited functions had different parameter lists. Similarly, it would be an error even if the <tt>print</tt> function were private in one class and public or protected in the other. Finally, if <tt>print</tt> were defined in <tt>ZooAnimal</tt> and not <tt>Bear</tt>, the call would still be in error.</p>
+        <p class="docText">虽然两个继承的 <tt>print</tt> 成员的二义性相当明显，但是也许更令人惊讶的是，即使两个继承的函数有不同的形参表，也会产生错误。类似地，即使函数在一个类中是私有的而在另一个类中是公用或受保护的，也是错误的。最后，如果在 <tt>ZooAnimal</tt> 类中定义了 <tt>print</tt> 而<tt>Bear</tt> 类中没有定义，调用仍是错误的。</p>
+
+        <p class="docText">As always, name lookup happens in two steps (<a class="docLink" href="ch07lev1sec8.html#ch07lev2sec27" >Section 7.8.1</a>, p. <a class="docLink" href="ch07lev1sec8.html#ch07lev2sec27" >268</a>): First the compiler finds a matching declaration (or, in this case, two matching declarations, which causes the ambiguity). Only then does the compiler decide whether the declaration it found is legal.</p>
+        <p class="docText">名字查找总是以两个步骤发生（<a class="docLink" href="ch07lev1sec8.html#ch07lev2sec27" >第 7.8.1 节</a>）：首先编译器找到一个匹配的声明（或者，在这个例子中，找到两个匹配的声明，这导致二义性），然后，编译器才确定所找到的声明是否合法。</p>
+
+<a name="ch17lev3sec60"></a>
+        <h5 class="docSection3Title">Avoiding User-Level Ambiguities</h5>
+        <h5 class="docSection3Title">避免用户二义性</h5>
+
+        <p class="docText">We could resolve the <tt>print</tt> ambiguity by specifying which class to use:</p>
+        <p class="docText">可以通过指定使用哪个类解决二义性：</p>
+        <pre>
+    ying_yang.Endangered::print(cout);
+</pre><br>
+
+        <p class="docText">The best way to avoid potential ambiguities is to define a version of the function in the derived class that resolves the ambiguity. For example, we should give our <tt>Panda</tt> class a <tt>print</tt> function that chooses which version of <tt>print</tt> to use:</p>
+        <p class="docText">避免潜在二义性最好的方法是，在解决二义性的派生类中定义函数的一个版本。例如，应该给选择使用哪个 <tt>print</tt> 版本的 <tt>Panda</tt> 类一个 <tt>print</tt> 函数：</p>
+        <pre>
+    std::ostream&amp; Panda::print(std::ostream &amp;os) const
+
+    {
+        Bear::print(os);        // <span class="docEmphItalicAlt">print the</span> <span class="docEmphasis">Bear</span> <span class="docEmphItalicAlt">part</span>
+        Endangered::print(os);  // <span class="docEmphItalicAlt">print the</span> <span class="docEmphasis">Endangered</span> <span class="docEmphItalicAlt">part</span>
+        return os;
+    }
+</pre><br>
+        <a name="ch17sb18"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Code for Exercises to Section 17.3.4</h2>
+              <h2 class="docSidebarTitle">本节习题的代码</h2>
+              <pre>
+   struct Base1 {
+       void print(int) const;
+    protected:
+       int    ival;
+       double dval;
+       char   cval;
+    private:
+        int   *id;
+    };
+    struct Base2 {
+        void print(double) const;
+    protected:
+        double fval;
+    private:
+        double dval;
+    };
+    struct Derived : public Base1 {
+        void print(std::string) const;
+    protected:
+        std::string sval;
+        double      dval;
+    };
+    struct MI : public Derived, public Base2 {
+        void print(std::vector&lt;double&gt;);
+    protected:
+        int                  *ival;
+        std::vector&lt;double&gt;  dvec;
+    };
+</pre><br>
+            </td>
+          </tr>
+        </table><br>
+        <a name="ch17sb19"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 17.3.4</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch17qa15q1"></a><b>Exercise 17.29:</b></td>
+
+                    <td>
+                      <p class="docText">Given the class hierarchy in the box on this page and the following <tt>MI::foo</tt> member function skeleton,</p>
+                      <p class="docText">给定前面给出的类层次以及下面的 <tt>MI::foo</tt> 成员函数框架，</p>
+                      <pre>
+    int ival;
+    double dval;
+
+    void MI::foo(double dval) { int id; /* ... */ }
+</pre><br>
+
+                      <div style="font-weight:bold">
+                        <ol class="docList" type="a">
+                          <li>
+                            <div style="font-weight:normal">
+                              <p class="docList">identify the member names visible from within <tt>MI</tt>. Are there any names visible from more than one base class?</p>
+                              <p class="docList">识别从 <tt>MI</tt> 中可见的成员名字。有从多个基类中都可见的名字吗？</p>
+                            </div>
+                          </li>
+
+                          <li>
+                            <div style="font-weight:normal">
+                              <p class="docList">identify the set of members visible from within <tt>MI::foo</tt>.</p>
+                              <p class="docList">识别从 <tt>MI::foo</tt> 中可见的成员的集合。</p>
+                            </div>
+                          </li>
+                        </ol>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch17qa15q2"></a><b>Exercise 17.30:</b></td>
+
+                    <td>
+                      <p class="docText">Given the hierarchy in the box on page <a class="docLink" href="ch17lev1sec3.html#ch17sb18">739</a>, why is this call to <tt>print</tt> an error?</p>
+                      <p class="docText">给定前面给出的类层次，为什么下面的这个 <tt>print</tt> 调用是错误的？</p>
+                      <pre>
+    MI mi;
+    mi.print(42);
+</pre><br>
+
+                      <p class="docText">Revise <tt>MI</tt> to allow this call to <tt>print</tt> to compile and execute correctly.</p>
+                      <p class="docText">修改 <tt>MI</tt>，使得这个 <tt>print</tt> 调用可以正确编译和执行。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch17qa15q3"></a><b>Exercise 17.31:</b></td>
+
+                    <td>
+                      <p class="docText">Using the class hierarchy in the box on page <a class="docLink" href="ch17lev1sec3.html#ch17sb18">739</a>, identify which of the following assignments, if any, are in error:</p>
+                      <p class="docText">使用前面给出的类层次，如果下面赋值中有错误的，识别哪些是错误的：</p>
+                      <pre>
+    void MI::bar() {
+        int sval;
+        // <span class="docEmphItalicAlt">exercise questions occur here ...</span>
+    }
+    (a) dval = 3.14159;   (d) fval = 0;
+    (b) cval = 'a';       (e) sval = *ival; (c) id = 1;
+</pre><br>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch17qa15q4"></a><b>Exercise 17.32:</b></td>
+
+                    <td>
+                      <p class="docText">Using the class hierarchy defined in the box on page <a class="docLink" href="ch17lev1sec3.html#ch17sb18">739</a> and the following skeleton of the <tt>MI::foobar</tt> member function</p>
+                      <p class="docText">使用前面给出的类层次以及下面的 <tt>MI::foobar</tt> 成员函数框架</p>
+                      <pre>
+    void MI::foobar(double cval)
+    {
+        int dval;
+        // <span class="docEmphItalicAlt">exercise questions occur here ...</span>
+    }
+</pre><br>
+
+                      <div style="font-weight:bold">
+                        <ol class="docList" type="a">
+                          <li>
+                            <div style="font-weight:normal">
+                              <p class="docList">assign to the local instance of <tt>dval</tt> the sum of the <tt>dval</tt> member of <tt>Base1</tt> and the <tt>dval</tt> member of <tt>Derived</tt>.</p>
+                              <p class="docList">将 <tt>Base1</tt> 的 <tt>dval</tt> 成员和 <tt>Derived</tt> 的 <tt>dval</tt> 成员的和赋给 <tt>dval</tt> 的局部实例。</p>
+                            </div>
+                          </li>
+
+                          <li>
+                            <div style="font-weight:normal">
+                              <p class="docList">assign the value of the last element in <tt>MI::dvec</tt> to <tt>Base2::fval</tt>.</p>
+                              <p class="docList">将 <tt>MI::dvec</tt> 中最后一个元素赋给 <tt>Base2::fval</tt>。</p>
+                            </div>
+                          </li>
+
+                          <li>
+                            <div style="font-weight:normal">
+                              <p class="docList">assign <tt>cval</tt> from <tt>Base1</tt> to the first character in <tt>sval</tt> from <tt>Derived</tt>.</p>
+                              <p class="docList">将 <tt>Base1</tt> 的 <tt>cval</tt> 赋给 <tt>Derived</tt> 中 <tt>sval</tt> 的第一个字符。</p>
+                            </div>
+                          </li>
+                        </ol>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+
+        <a name="ch17lev2sec23"></a>
+        <h4 class="docSection2Title">17.3.5. Virtual Inheritance</h4>
+        <h4 class="docSection2Title">17.3.5. 虚继承</h4>
+
+<a name="idd1e142812"></a><a name="idd1e142818"></a><a name="idd1e142824"></a>
+        <p class="docText">Under multiple inheritance, a base class can occur multiple times in the derivation hierarchy. In fact, our programs have already used a class that inherits from the same base class more than once through its inheritance hierarchy.</p>
+        <p class="docText">在多重继承下，一个基类可以在派生层次中出现多次。实际上，我们的程序已经使用过通过继承层次多次继承同一基类的类。</p>
+
+        <p class="docText">Each of the IO library classes inherits from a common abstract base class. That abstract class manages the condition state of the stream and holds the buffer that the stream reads or writes. The <tt>istream</tt> and <tt>ostream</tt> classes inherit directly from this common base class. The library defines another class, named <tt>iostream</tt>, that inherits from both <tt>istream</tt> and <tt>ostream</tt>. The <tt>iostream</tt> class can both read and write a stream. A simplified version of the IO inheritance hierarchy is illustrated in <a class="docLink" href="ch17lev1sec3.html#ch17fig03">Figure 17.3</a> on the facing page.</p>
+        <p class="docText">每个 IO 库类都继承了一个共同的抽象基类，那个抽象基类管理流的条件状态并保存流所读写的缓冲区。<tt>istream</tt> 和 <tt>ostream</tt> 类直接继承这个公共基类，库定义了另一个名为 <tt>iostream</tt> 的类，它同时继承 <tt>istream</tt> 和 <tt>ostream</tt>，<tt>iostream</tt> 类既可以对流进行读又可以对流进行写。IO 继承层次的简化版本如<a class="docLink" href="ch17lev1sec3.html#ch17fig03">图 17.3</a> 所示。</p>
+
+<a name="ch17fig03"></a>
+        <center>
+          <h5 class="docFigureTitle">Figure 17.3. Virtual Inheritance <tt>iostream</tt> Hierarchy (Simplified)</h5>
+          <h5 class="docFigureTitle">17.3. 虚继承 <tt>iostream</tt> 层次（简化的）</h5>
+
+          <p class="docText"><img border="0" alt="" width="425" height="228" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/17fig03.gif;400478" ></p>
+        </center><br>
+
+<a name="idd1e142890"></a><a name="idd1e142896"></a><a name="idd1e142901"></a><a name="idd1e142907"></a><a name="idd1e142912"></a><a name="idd1e142915"></a><a name="idd1e142920"></a><a name="idd1e142923"></a>
+        <p class="docText">As we know, a multiply inherited class inherits state and action from each of its parents. If the IO types used normal inheritance, then each <tt>iostream</tt> object would contain two <tt>ios</tt> subobjects: one instance contained within its <tt>istream</tt> subobject and the other within its <tt>ostream</tt> subobject. From a design perspective, this implementation is just wrong: The <tt>iostream</tt> class wants to read to and write from a single buffer; it wants the condition state to be shared across input and output operations. If there are two separate <tt>ios</tt> objects, this sharing is not possible.</p>
+        <p class="docText">像我们知道的那个，多重继承的类从它的每个父类继承状态和动作，如果 IO 类型使用常规继承，则每个 <tt>iostream</tt> 对象可能包含两个 <tt>ios</tt> 子对象：一个包含在它的 <tt>istream</tt> 子对象中，另一个包含在它的 <tt>ostream</tt> 子对象中，从设计角度讲，这个实现正是错误的：<tt>iostream</tt> 类想要对单个缓冲区进行读和写，它希望跨越输入和输出操作符共享条件状态。如果有两个单独的 <tt>ios</tt> 对象，这种共享是不可能的。</p>
+
+<a name="ch17term32"></a><a name="ch17term31"></a>
+        <p class="docText">In C++ we solve this kind of problem by using <b><a class="docLink" href="ch17lev1sec5.html#gloss17_32" >virtual inheritance</a></b>. Virtual inheritance is a mechanism whereby a class specifies that it is willing to share the state of its virtual base class. Under virtual inheritance, only one, shared base-class subobject is inherited for a given virtual base regardless of how many times the class occurs as a virtual base within the derivation hierarchy. The shared base-class subobject is called a <b><a class="docLink" href="ch17lev1sec5.html#gloss17_31" >virtual base class</a></b>.</p>
+        <p class="docText">在 C++ 中，通过使用<b><a class="docLink" href="ch17lev1sec5.html#gloss17_32" >虚继承</a></b>解决这类问题。虚继承是一种机制，类通过虚继承指出它希望共享其虚基类的状态。在虚继承下，对给定虚基类，无论该类在派生层次中作为虚基类出现多少次，只继承一个共享的基类子对象。共享的基类子对象称为<b><a class="docLink" href="ch17lev1sec5.html#gloss17_31" >虚基类</a></b>。</p>
+
+        <p class="docText">The <tt>istream</tt> and <tt>ostream</tt> classes inherit virtually from their base class. By making their base class virtual, <tt>istream</tt> and <tt>ostream</tt> specify that if some other class, such as <tt>iostream</tt>, inherits from both of them, then only one copy of their common base class will be present in the derived class. We make a base class virtual by including the keyword <tt>virtual</tt> in the derivation list:</p>
+        <p class="docText"><tt>istream</tt> 和 <tt>ostream</tt> 类对它们的基类进行虚继承。通过使基类成为虚基类，<tt>istream</tt> 和 <tt>ostream</tt> 指定，如果其他类（如 <tt>iostream</tt> 同时继承它们两个，则派生类中只出现它们的公共基类的一个副本。通过在派生列表中包含关键字 <tt>virtual</tt> 设置虚基类：</p>
+        <pre>
+    class istream : public virtual ios { ... };
+    class ostream : virtual public ios { ... };
+
+    // <span class="docEmphasis">iostream</span> <span class="docEmphItalicAlt">inherits only one copy of its</span> <span class="docEmphasis">ios</span> <span class="docEmphItalicAlt">base class</span>
+    class iostream: public istream, public ostream { ... };
+</pre><br>
+
+        <a name="ch17lev3sec61"></a>
+        <h5 class="docSection3Title">A Different Panda Class</h5>
+        <h5 class="docSection3Title">一个不同的 Panda 类</h5>
+
+        <p class="docText">For the purposes of illustrating virtual inheritance, we'll continue to use the <tt>Panda</tt> class as a pedagogical example. Within zoological circles, for more than 100 years there has been an occasionally fierce debate as to whether the <tt>Panda</tt> belongs to the <tt>Raccoon</tt> or the <tt>Bear</tt> family. Because software design is primarily a service industry, our most practical solution is to derive <tt>Panda</tt> from both:</p>
+        <p class="docText">为了举例说明虚继承，我们将继续使用 <tt>Panda</tt> 类作为教学例子。在动物学圈子中，对于 <tt>Panda</tt> 是属于 <tt>Raccoon</tt> 科还是 <tt>Bear</tt> 科已经争论了 100 年以上。因为软件设计主要是一种服务行业，所以最现实的解决方案是从二者派生 <tt>Panda</tt>：</p>
+        <pre>
+    class Panda : public Bear,
+                  public Raccoon, public Endangered {
+    };
+</pre><br>
+
+<a name="idd1e143011"></a><a name="idd1e143016"></a><a name="idd1e143021"></a>
+        <p class="docText">Our virtual inheritance <tt>Panda</tt> hierarchy is pictured in <a class="docLink" href="ch17lev1sec3.html#ch17fig04">Figure 17.4</a>. If we examine that hierarchy, we notice a nonintuitive aspect of virtual inheritance: The virtual derivation (in our case, of <tt>Bear</tt> and <tt>Raccoon</tt>) has to be made prior to any actual need for it to be present. Virtual inheritance becomes necessary only with the declaration of <tt>Panda</tt>, but if <tt>Bear</tt> and <tt>Raccoon</tt> are not already virtually derived, the designer of the <tt>Panda</tt> class is out of luck.</p>
+        <p class="docText">虚继承 <tt>Panda</tt> 层次如<a class="docLink" href="ch17lev1sec3.html#ch17fig04">图 17.4</a> 所示。如果检查该层次，我们注意到虚继承一个不直观的特征：必须在提出虚派生的任意实际需要之前进行虚派生（在例中，<tt>Bear</tt> 类和 <tt>Raccoon</tt> 类的虚派生）。只有在使用 <tt>Panda</tt> 的声明时，虚继承才是必要的，但如果 <tt>Bear</tt> 类和 <tt>Raccoon</tt> 类不是虚派生的，<tt>Panda</tt> 类的设计者就没有好运气了。</p>
+
+<a name="ch17fig04"></a>
+        <center>
+          <h5 class="docFigureTitle">Figure 17.4. Virtual Inheritance <tt>Panda</tt> Hierarchy</h5>
+          <h5 class="docFigureTitle">17.4. 虚继承 <tt>Panda</tt> 层次</h5>
+
+          <p class="docText"><img border="0" alt="" width="435" height="222" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/17fig04.gif;400478" ></p>
+        </center><br>
+
+        <p class="docText">In practice, the requirement that an intermediate base class specify its inheritance as virtual rarely causes any problems. Ordinarily, a class hierarachy that uses virtual inheritance is designed at one time by either one individual or a project design group. It is exceedingly rare for a class to be developed independently that needs a virtual base in one of its base classes and in which the developer of the new base class cannot change the existing hierarchy.</p>
+        <p class="docText">实际上，中间基类指定其继承为虚继承的要求很少引起任何问题。通常，使用虚继承的类层次是一次性由一个人或一个项目设计组设计的，独立开发的类很少需要其基类中的一个是虚基类，而且新基类的开发者不能改变已经存在的层次。</p>
+
+<a name="ch17lev2sec24"></a>
+        <h4 class="docSection2Title">17.3.6. Virtual Base Class Declaration</h4>
+        <h4 class="docSection2Title">17.3.6. 虚基类的声明</h4>
+
+        <p class="docText">A base class is specified as being derived through virtual inheritance by modifying its declaration with the keyword <tt>virtual</tt>. For example, the following declarations make <tt>ZooAnimal</tt> a virtual base class of both <tt>Bear</tt> and <tt>Raccoon</tt>:</p>
+        <p class="docText">通过用关键字 <tt>virtual</tt> 修改声明，将基类指定为通过虚继承派生。例如，下面的声明使 <tt>ZooAnimal</tt> 类成为 <tt>Bear</tt> 类和 <tt>Raccoon</tt> 类的虚基类：</p>
+        <pre>
+    // <span class="docEmphItalicAlt">the order of the keywords public and virtual is not significant</span>
+    class Raccoon : public virtual ZooAnimal { /* ... */ };
+    class Bear : virtual public ZooAnimal { /* ... */ };
+</pre><br>
+        <a name="ch17note35"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Specifying virtual derivation has an impact only in classes derived from the class that specifies a virtual base. Rather than affecting objects of the derived class' own type, it is a statement about the derived class' relationship to its own, future derived class.</p>
+                <p class="docText">指定虚派生只影响从指定了虚基类的类派生的类。除了影响派生类自己的对象之外，它也是关于派生类与自己的未来派生类的关系的一个陈述。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+<a name="idd1e143117"></a><a name="idd1e143122"></a><a name="idd1e143127"></a><a name="idd1e143132"></a><a name="idd1e143137"></a><a name="idd1e143142"></a>
+        <p class="docText">The <tt>virtual</tt> specifier states a willingness to share a single instance of the named base class within a subsequently derived class.</p>
+        <p class="docText"><tt>virtual</tt> 说明符陈述了在后代派生类中共享指定基类的单个实例的愿望。</p>
+
+        <p class="docText">Any class that can be specified as a base class also could be specified as a virtual base class. A virtual base may contain any class element normally supported by a nonvirtual base class.</p>
+        <p class="docText">任何可被指定为基类的类也可以被指定为虚基类，虚基类可以包含通常由非虚基类支持的任意类元素。</p>
+
+<a name="ch17lev3sec62"></a>
+        <h5 class="docSection3Title">Normal Conversions to Base Are Supported</h5>
+        <h5 class="docSection3Title">支持到基类的常规转换</h5>
+
+        <p class="docText">An object of the derived class can be manipulated as usual through a pointer or a reference to a base-class type even though the base class is virtual. For example, all of the following <tt>Panda</tt> base class conversions execute correctly even though <tt>Panda</tt> inherits its <tt>ZooAnimal</tt> part as a virtual base:</p>
+        <p class="docText">即使基类是虚基类，也照常可以通过基类类型的指针或引用操纵派生类的对象。例如，即使 <tt>Panda</tt> 类将它的 <tt>ZooAnimal</tt> 部分作为虚基类继承，下面所有 <tt>Panda</tt> 的基类转换也能正确执行：</p>
+        <pre>
+    void dance(const Bear*);
+    void rummage(const Raccoon*);
+    ostream&amp; operator&lt;&lt;(ostream&amp;, const ZooAnimal&amp;);
+    Panda ying_yang;
+    dance(&amp;ying_yang);   // <span class="docEmphItalicAlt">ok: converts address to pointer to</span> <span class="docEmphasis">Bear</span>
+    rummage(&amp;ying_yang); // <span class="docEmphItalicAlt">ok: converts address to pointer to</span> <span class="docEmphasis">Raccoon</span>
+    cout &lt;&lt; ying_yang;   // <span class="docEmphItalicAlt">ok: passes</span> <span class="docEmphasis">ying_yang</span> <span class="docEmphItalicAlt">as a</span> <span class="docEmphasis">ZooAnimal</span>
+</pre><br>
+        <a name="ch17lev3sec63"></a>
+
+        <h5 class="docSection3Title">Visibility of Virtual Base-Class Members</h5>
+        <h5 class="docSection3Title">虚基类成员的可见性</h5>
+
+        <p class="docText">Multiple-inheritance hierarchies using virtual bases pose fewer ambiguity problems than do those without virtual inheritance.</p>
+        <p class="docText">使用虚基类的多重继承层次比没有虚继承的引起更少的二义性问题。</p>
+
+<a name="ch17note36"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Members in the shared virtual base can be accessed unambiguously and directly. Similarly, if a member from the virtual base is redefined along only one derivation path, then that redefined member can be accessed directly. Under a nonvirtual derivation, both kinds of access would be ambiguous.</p>
+                <p class="docText">可以无二义性地直接访问共享虚基类中的成员。同样，如果只沿一个派生路径重定义来自虚基类的成员，则可以直接访问该重定义成员。在非虚派生情况下，两种访问都可能是二义性的。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">Assume a member named <tt>X</tt> is inherited through more than one derivation path. There are three possibilities:</p>
+        <p class="docText">假定通过多个派生路径继承名为 <tt>X</tt> 的成员，有下面三种可能性：</p>
+
+        <div style="font-weight:bold">
+          <ol class="docList" type="1">
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">If in each path <tt>X</tt> represents the same virtual base class member, then there is no ambiguity because a single instance of the member is shared.</p>
+                <p class="docList">如果在每个路径中 <tt>X</tt> 表示同一虚基类成员，则没有二义性，因为共享该成员的单个实例。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">If in one path <tt>X</tt> is a member of the virtual base class member and in another path <tt>X</tt> is a member of a subsequently derived class, there is also no ambiguitythe specialized derived class instance is given precedence over the shared virtual base class instance.</p>
+                <p class="docList">如果在某个路径中 <tt>X</tt> 是虚基类的成员，而在另一路径中 <tt>X</tt> 是后代派生类的成员，也没有二义性——特定派生类实例的优先级高于共享虚基类实例。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">If along each inheritance path <tt>X</tt> represents a different member of a subsequently derived class, then the direct access of the member is ambiguous.</p>
+                <p class="docList">如果沿每个继承路径 <tt>X</tt> 表示后代派生类的不同成员，则该成员的直接访问是二义性的。</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+
+        <p class="docText">As in a nonvirtual multiple inheritance hierarchy, ambiguities of this sort are best resolved by the class providing an overriding instance in the derived class.</p>
+        <p class="docText">像非虚多重继承层次一样，这种二义性最好用在派生类中提供覆盖实例的类来解决。</p>
+
+<a name="ch17sb20"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 17.3.6</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch17qa17q1"></a><b>Exercise 17.33:</b></td>
+
+                    <td>
+<a name="idd1e143271"></a><a name="idd1e143278"></a><a name="idd1e143283"></a><a name="idd1e143290"></a>
+                      <p class="docText">Given the following class hierarchy, which inherited members can be accessed without qualification from within the <tt>VMI</tt> class? Which require qualification? Explain your reasoning.</p>
+                      <p class="docText">给定下面的类层次，从 <tt>VMI</tt> 类内部可以限定地访问哪些继承成员？哪些继承成员需要限定？解释你的推理。</p>
+                      <pre>
+    class Base {
+    public:
+        bar(int);
+    protected:
+        int ival;
+    };
+    class Derived1 : virtual public Base {
+    public:
+        bar(char);
+        foo(char);
+    protected:
+        char cval;
+    };
+    class Derived2 : virtual public Base {
+    public:
+        foo(int);
+    protected:
+        int ival;
+        char cval;
+    };
+    class VMI : public Derived1, public Derived2 { };
+</pre><br>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a name="ch17lev2sec25"></a>
+
+        <h4 class="docSection2Title">17.3.7. Special Initialization Semantics</h4>
+        <h4 class="docSection2Title">17.3.7. 特殊的初始化语义</h4>
+
+        <p class="docText">Ordinarily each class initializes only its own direct base class(es). This initialization strategy fails when applied to a virtual base class. If the normal rules were used, then the virtual base might be initialized multiple times. The class would be initialized along each inheritance path that contains the virtual base. In our <tt>ZooAnimal</tt> example, using normal initialization rules would result in both <tt>Bear</tt> and <tt>Raccoon</tt> attempting to initialize the <tt>ZooAnimal</tt> part of a <tt>Panda</tt> object.</p>
+        <p class="docText">通常，每个类只初始化自己的直接基类。在应用于虚基类的进修，这个初始化策略会失败。如果使用常规规则，就可能会多次初始化虚基类。类将沿着包含该虚基类的每个继承路径初始化。在 <tt>ZooAnimal</tt> 示例中，使用常规规则将导致 <tt>Bear</tt> 类和 <tt>Raccoon</tt> 类都试图初始化 <tt>Panda</tt> 对象的 <tt>ZooAnimal</tt> 类部分。</p>
+
+        <p class="docText">To solve this duplicate-initialization problem, classes that inherit from a class that has a virtual base have special handling for initialization. In a virtual derivation, the virtual base is initialized by the <span class="docEmphasis">most derived constructor</span>. In our example, when we create a <tt>Panda</tt> object, the <tt>Panda</tt> constructor alone controls how the <tt>ZooAnimal</tt> base class is initialized.</p>
+        <p class="docText">为了解决这个重复初始化问题，从具有虚基类的类继承的类对初始化进行特殊处理。在虚派生中，由<span class="docEmphasis">最低层派生类的构造函数</span>初始化虚基类。在我们的例子中，当创建 <tt>Panda</tt> 对象的时候，只有 <tt>Panda</tt> 构造函数控制怎样初始化 <tt>ZooAnimal</tt> 基类。</p>
+
+        <p class="docText">Although the virtual base is initialized by the most derived class, any classes that inherit immediately or indirectly from the virtual base usually also have to provide their own initializers for that base. As long as we can create independent objects of a type derived from a virtual base, that class must initialize its virtual base. These initializers are used only when we create objects of the intermediate type.</p>
+        <p class="docText">虽然由最低层派生类初始化虚基类，但是任何直接或间接继承虚基类的类一般也必须为该基类提供自己的初始化式。只要可以创建虚基类派生类类型的独立对象，该类就必须初始化自己的虚基类，这些初始化式只有创建中间类型的对象时使用。</p>
+
+<a name="idd1e143355"></a><a name="idd1e143360"></a>
+        <p class="docText">In our hierarchy, we could have objects of type <tt>Bear, Raccoon</tt>, or <tt>Panda</tt>. When a <tt>Panda</tt> is created, it is the most derived type and controls initialization of the shared <tt>ZooAnimal</tt> base. When a <tt>Bear</tt> (or a <tt>Raccoon</tt>) is created, there is no further derived type involved. In this case, the <tt>Bear</tt> (or <tt>Raccoon</tt>) constructors directly initialize their <tt>ZooAnimal</tt> base as usual:</p>
+	<p class="docText">在我们的层次中，可以有 <tt>Bear</tt>、<tt>Raccoon</tt> 或 <tt>Panda</tt> 类型的对象。创建 <tt>Panda</tt> 对象的时候，它是最低层派生类型并控制共享的 <tt>ZooAnimal</tt> 基类的初始化：创建 <tt>Bear</tt> 对象（或 <tt>Raccoon</tt> 对象）的进修，不涉及更低层的派生类型。在这种情况下，<tt>Bear</tt>（或 <tt>Raccoon</tt>）构造函数像平常一样直接初始化它们的 <tt>ZooAnimal</tt> 基类：</p>
+        <pre>
+    Bear::Bear(std::string name, bool onExhibit):
+             ZooAnimal(name, onExhibit, "Bear") { }
+    Raccoon::Raccoon(std::string name, bool onExhibit)
+           : ZooAnimal(name, onExhibit, "Raccoon") { }
+</pre><br>
+
+        <p class="docText">The <tt>Panda</tt> constructor also initializes the <tt>ZooAnimal</tt> base, even though it is not an immediate base class:</p>
+	<p class="docText">虽然 <tt>ZooAnimal</tt> 不是 <tt>Panda</tt> 的直接基类，但是 <tt>Panda</tt> 构造函数也初始化 <tt>ZooAnimal</tt> 基类：</p>
+        <pre>
+    Panda::Panda(std::string name, bool onExhibit)
+          : ZooAnimal(name, onExhibit, "Panda"),
+            Bear(name, onExhibit),
+            Raccoon(name, onExhibit),
+            Endangered(Endangered::critical),
+            sleeping_flag(false) { }
+</pre><br>
+
+        <p class="docText">When a <tt>Panda</tt> is created, it is this constructor that initializes the <tt>ZooAnimal</tt> part of the <tt>Panda</tt> object.</p>
+        <p class="docText">创建 <tt>Panda</tt> 对象的时候，这个构造函数初始化 <tt>Panda</tt> 对象的 <tt>ZooAnimal</tt> 部分。</p>
+
+<a name="ch17lev3sec64"></a>
+        <h5 class="docSection3Title">How a Virtually Inherited Object Is Constructed</h5>
+        <h5 class="docSection3Title">怎样构造虚继承的对象</h5>
+
+        <p class="docText">Let's look at how objects under virtual inheritance are constructed.</p>
+        <p class="docText">让我们看看虚继承情况下怎样构造对象。</p>
+        <pre>
+Bear winnie("pooh");    // <span class="docEmphasis">Bear</span> <span class="docEmphItalicAlt">constructor initializes</span> <span class="docEmphasis">ZooAnimal</span>
+Raccoon meeko("meeko"); // <span class="docEmphasis">Raccoon</span> <span class="docEmphItalicAlt">constructor initializes</span> <span class="docEmphasis">ZooAnimal</span>
+Panda yolo("yolo");     // <span class="docEmphasis">Panda</span> <span class="docEmphItalicAlt">constructor initializes</span> <span class="docEmphasis">ZooAnimal</span>
+</pre><br>
+
+        <p class="docText">When a <tt>Panda</tt> object is created,</p>
+        <p class="docText">当创建 <tt>Panda</tt> 对象的时候，</p>
+
+        <div style="font-weight:bold">
+          <ol class="docList" type="1">
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">The <tt>ZooAnimal</tt> part is constructed first, using the initializers specified in the <tt>Panda</tt> constructor initializer list.</p>
+                <p class="docList">首先使用构造函数初始化列表中指定的初始化式构造 <tt>ZooAnimal</tt> 部分。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">Next, the <tt>Bear</tt> part is constructed. The initializers for <tt>ZooAnimal Bear</tt>'s constructor initializer list are ignored.</p>
+		<p class="docList">接下来，构造 <tt>Bear</tt> 部分。忽略 <tt>Bear</tt> 的用于 <tt>ZooAnimal</tt> 构造函数初始化列表的初始化式。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">Then the <tt>Raccoon</tt> part is constructed, again ignoring the <tt>ZooAnimal</tt>.</p>
+                <p class="docList">然后，构造 <tt>Raccoon</tt> 部分，再次忽略 <tt>ZooAnimal</tt> 初始化式。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">Finally, the <tt>Panda</tt> part is constructed.</p>
+                <p class="docList">最后，构造 <tt>Panda</tt> 部分。</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+
+        <p class="docText">If the <tt>Panda</tt> constructor does not explicitly initialize the <tt>ZooAnimal</tt> base class, then the <tt>ZooAnimal</tt> default constructor is used. If <tt>ZooAnimal</tt> doesn't have a default constructor, then the code is in error. The compiler will issue an error message when the definition of <tt>Panda</tt>'s constructor is compiled.</p>
+        <p class="docText">如果 <tt>Panda</tt> 构造函数不显式初始化 <tt>ZooAnimal</tt> 基类，就使用 <tt>ZooAnimal</tt> 默认构造函数；如果 <tt>ZooAnimal</tt> 没有默认构造函数，则代码出错。当编译 <tt>Panda</tt> 构造函数的定义时，编译器将给出一个错误信息。</p>
+	
+<a name="ch17lev3sec65"></a>
+        <h5 class="docSection3Title">Constructor and Destructor Order</h5>
+        <h5 class="docSection3Title">构造函数与析构函数次序</h5>
+
+<a name="ch17note37"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+<a name="idd1e143547"></a><a name="idd1e143552"></a><a name="idd1e143559"></a><a name="idd1e143564"></a>
+                <p class="docText"> Virtual base classes are always constructed prior to nonvirtual base classes regardless of where they appear in the inheritance hierarchy.</p>
+                <p class="docText">无论虚基类出现在继承层次中任何地方，总是在构造非虚基类之前构造虚基类。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">For example, in the following whimsical <tt>TeddyBear</tt> derivation, there are two virtual base classes: the <tt>ToyAnimal</tt> base class and the indirect <tt>ZooAnimal</tt> base class from which <tt>Bear</tt> is derived:</p>
+        <p class="docText">例如，下面毫无规律的 <tt>TeddyBear</tt>（图 17.5）派生中，有两个虚基类：<tt>ToyAnimal</tt> 基类和派生 <tt>Bear</tt> 的间接基类 <tt>ZooAnimal</tt>：</p>
+        <pre>
+   class Character { /* ... */ };
+   class BookCharacter : public Character { /* ... */ };
+   class ToyAnimal { /* ... */ };
+   class TeddyBear : public BookCharacter,
+                     public Bear, public virtual ToyAnimal
+                     { /* ... */ };
+</pre><br>
+        <a name="ch17fig05"></a>
+
+        <center>
+          <h5 class="docFigureTitle">Figure 17.5. Virtual Inheritance <tt>TeddyBear</tt> Hierarchy</h5>
+          <h5 class="docFigureTitle">图 17.5. 虚继承 <tt>TeddyBear</tt> 层次</h5>
+
+          <p class="docText"><img border="0" alt="" width="425" height="213" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/17fig05.gif;400478" ></p>
+        </center><br>
+
+        <p class="docText">The immediate base classes are examined in declaration order to determine whether there are any virtual base classes. In our example, the inheritance subtree of <tt>BookCharacter</tt> is examined first, then that of <tt>Bear</tt>, and finally that of <tt>ToyAnimal</tt>. Each subtree is examined starting at the root class down to the most derived class.</p>
+        <p class="docText">按声明次序检查直接基类，确定是否存在虚基类。例中，首先检查 <tt>BookCharacter</tt> 的继承子树，然后检查 <tt>Bear</tt> 的继承子树，最后检查 <tt>ToyAnimal</tt> 的继承子树。按从根类开始向下到最低层派生类的次序检查每个子树。</p>
+
+        <p class="docText">The order in which the virtual base classes are constructed for <tt>TeddyBear</tt> is <tt>ZooAnimal</tt> followed by <tt>ToyAnimal</tt>. Once the virtual base classes are constructed, the nonvirtual base-class constructors are invoked in declaration order: <tt>BookCharacter</tt>, which causes the <tt>Character</tt> constructor to be invoked, and then <tt>Bear</tt>. Thus, to create a <tt>TeddyBear</tt>, the constructors are invoked in the following order:</p>
+        <p class="docText"><tt>TeddyBear</tt> 的虚基类的构造次序是先 <tt>ZooAnimal</tt> 再 <tt>ToyAnimal</tt>。一旦构造了虚基类，就按声明次序调用非虚基类的构造函数：首先是 <tt>BookCharacter</tt>，它导致调用 <tt>Character</tt> 构造函数，然后是 <tt>Bear</tt>。因此，为了创建 <tt>TeddyBear</tt> 对象，按下面次序调用构造函数：</p>
+        <pre>
+    ZooAnimal();           // <span class="docEmphasis">Bear</span><span class="docEmphItalicAlt">'s virtual base class</span>
+    ToyAnimal();           // <span class="docEmphItalicAlt">immediate virtual base class</span>
+    Character();           // <span class="docEmphasis">BookCharacter</span><span class="docEmphItalicAlt">'s nonvirtual base class</span>
+    BookCharacter();       // <span class="docEmphItalicAlt">immediate nonvirtual base class</span>
+    Bear();                // <span class="docEmphItalicAlt">immediate nonvirtual base class</span>
+    TeddyBear();           // <span class="docEmphItalicAlt">most derived class</span>
+</pre><br>
+
+<a name="idd1e143677"></a><a name="idd1e143682"></a><a name="idd1e143689"></a><a name="idd1e143696"></a><a name="idd1e143701"></a>
+        <p class="docText">where the initializers used for <tt>ZooAnimal</tt> and <tt>ToyAnimal</tt> are specified by the most derived class <tt>TeddyBear</tt>.</p>
+        <p class="docText">在这里，由最低层派生类 <tt>TeddyBear</tt> 指定用于 <tt>ZooAnimal</tt> 和 <tt>ToyAnimal</tt> 的初始化式。</p>
+
+        <p class="docText">The same construction order is used in the synthesized copy constructor; the base classes also are assigned in this order in the synthesized assignment operator. The order of base-class destructor calls is guaranteed to be the reverse order of constructor invocation.</p>
+        <p class="docText">在合成复制构造函数中使用同样的构造次序，在合成赋值操作符中也是按这个次序给基类赋值。保证调用基类析构函数的次序与构造函数的调用次序相反。</p>
+
+<a name="ch17sb21"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 17.3.7</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch17qa18q1"></a><b>Exercise 17.34:</b></td>
+
+                    <td>
+                      <p class="docText">There is one case in which a derived class need not supply initializers for its virtual base class(es). What is this case?</p>
+                      <p class="docText">有一种情况下派生类不必为虚基类提供初始化式，这种情况是什么？</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch17qa18q2"></a><b>Exercise 17.35:</b></td>
+
+                    <td>
+                      <p class="docText">Given the following class hierarchy,</p>
+                      <p class="docText">给定下面类层次，</p>
+                      <pre>
+    class Class { ... };
+    class Base : public Class { ... };
+    class Derived1 : virtual public Base { ... };
+    class Derived2 : virtual public Base { ... };
+    class MI : public Derived1,
+               public Derived2 { ... };
+    class Final : public MI, public Class { ... };
+</pre><br>
+
+                      <div style="font-weight:bold">
+                        <ol class="docList" type="a">
+                          <li>
+                            <div style="font-weight:normal">
+                              <p class="docList">What is the order of constructor and destructor for the definition of a <tt>Final</tt> object?</p>
+			      <p class="docList">一个 <tt>Final</tt> 对象中有几个 <tt>Base</tt> 子对象？</p>
+                            </div>
+                          </li>
+
+                          <li>
+                            <div style="font-weight:normal">
+                              <p class="docList">How many <tt>Base</tt> subobjects are in a <tt>Final</tt> object? How many <tt>Class</tt> subobjects?</p>
+                              <p class="docList">有几个 <tt>class</tt> 子对象？</p>
+                            </div>
+                          </li>
+
+                          <li>
+                            <div style="font-weight:normal">
+                              <p class="docList">Which of the following assignments is a compile-time error?</p>
+                              <p class="docList">下面哪个赋值在编译时有错？</p>
+                            </div>
+                          </li>
+                        </ol>
+                      </div>
+                      <pre>
+    Base     *pb;      Class     *pc;
+    MI       *pmi;     Derived2  *pd2;
+
+    (a) pb = new Class;           (c) pmi = pb;
+    (b) pc = new Final;           (d) pd2 = pmi;
+</pre><br>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+<a name="ch17qa18q3"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 17.36:</b></td>
+
+                    <td>
+                      <p class="docText">Given the previous hierarchy, and assuming that <tt>Base</tt> defines the following three constructors, define the classes that inherit from <tt>Base</tt>, giving each class the same three constructors. Each constructor should use its argument to initialize its <tt>Base</tt> part.</p>
+                      <p class="docText">给定前面的层次，并假定 <tt>Base</tt> 定义了下面三个构造函数，定义从 <tt>Base</tt> 派生的类，给每个类同样的三个构造函数，每个构造函数使用实参初始化其 <tt>Base</tt> 部分。</p>
+                      <pre>
+    struct Base {
+        Base();
+        Base(std::string);
+        Base(const Base&amp;);
+    protected:
+        std::string name;
+    };
+</pre><br>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch17lev1sec2.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch17lev1sec4.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

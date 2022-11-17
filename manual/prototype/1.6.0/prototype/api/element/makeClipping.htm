@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Element.makeClipping - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+	<script type='text/javascript' src="../../prototype-1.6.0.3.js" ></script>
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>makeClipping</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">makeClipping(element) -> HTMLElement</code></pre>
+			<p>
+				通过将超出元素边界的内容设置为 <code>'hidden'</code>，来虚拟仅有少数浏览器支持的 CSS <code>clip</code> 属性。返回
+				<code>element</code>。
+			</p>
+		</div>
+		<div id="abody">
+			<p>为撤消剪切，请使用 <a href="undoClipping.htm" >Element.undoClipping</a>。</p>
+			<p>可见区域视 <code>element</code> 的宽和高而定。</p>
+			<h3>样例</h3>
+			<pre><code class="html">&lt;div id="framer"&gt;
+	&lt;img src="/assets/2007/1/14/chairs.jpg" alt="example" /&gt;
+&lt;/div&gt; </code></pre>
+			<pre><code class="javascript">$('framer').makeClipping().setStyle({width: '100px', height: '100px'}); 
+// -> HTMLElement </code></pre>
+			<p><a id="clipper" href="makeClipping.htm#">点我测试一下</a></p>
+			<div id="framer">
+				<img src="../../images/chairs.jpg"  alt="example" />
+			</div>
+
+			<script type="text/javascript" charset=utf-8"utf-8">
+				var Example = {};
+				Example.clip = function(){
+					$('clipper').update('撤消！');
+					$('framer').makeClipping().setStyle({width: '100px', height: '100px'});
+				};
+				Example.unClip = function(){
+					$('clipper').update('剪切！');
+					$('framer').undoClipping();
+				};
+				Example.toggleClip = function(event){
+					if($('clipper').innerHTML == '撤消！') Example.unClip();
+					else Example.clip();
+					Event.stop(event);
+				};
+				Event.observe('clipper', 'click', Example.toggleClip);
+			</script>
+
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Ajax Ajax.Request - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />	
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>Ajax.Request</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">new Ajax.Request(url[, options])</code></pre>
+			<p>初始化并处理一个 AJAX 请求.</p>
+		</div>
+		<div id="abody">
+			<p>
+				该对象是一个具有多种用途的 AJAX 请求：它管理请求的生命周期，处理“样板文件”代码（boilerplate），
+				让你能够按照你的需要在指定的阶段插入所需的回调函数。
+			</p>
+			<p>
+				<code>options</code> 是一个可选的 hash 参数，除非你获取一个将会被 <code>eval</code> 自动执行的 Javascript
+				类型的响应，否则通常需要提供 <code>onComplete</code> 和/或 <code>onSuccess</code> 回调函数。
+			</p>
+			<p>
+				公用选项和回调函数的完整列表，请参见 <a href="options.htm" >Ajax 选项</a>。
+			</p>
+			<p>
+				创建一个请求唯一恰当的方法是通过 <strong><code>new</code></strong> 操作符。在对象被创建后，就开始了请求过程，
+				对该对象的处理贯穿了请求的整个生命周期。				
+			</p>
+			<h3>一个基本的样例</h3>
+			<pre><code class="javascript">var url = '/proxy?url=' + encodeURIComponent('http://www.google.com/search?q=Prototype');
+// 注意：使用 proxy 是为了避开 SOP（参见：<a href="../../Reference/SOP.htm"  >SOP</a>)
+new Ajax.Request(url, { 
+	method: 'get',
+	onSuccess: function(transport) {
+		var notice = $('notice');
+		if (transport.responseText.match(/href="http:\/\/prototypejs.org/))
+			notice.update('Yeah! You are in the Top 10!').setStyle({ background: '#dfd' });
+		else
+			notice.update('Damn! You are beyond #10...').setStyle({ background: '#fdd' });
+		}
+	}
+); </code></pre>
+			<h3>请求生命周期</h3>
+			<p>
+				在我们完美的请求对象下面，当然是 <code>XMLHttpRequest</code>。请求定义的生命周期如下：
+			</p>
+			<ol>
+				<li>创建（Created）</li>
+				<li>初始化（Initialized）</li>
+				<li>请求发送（Request sent）</li>
+				<li>响应接收（Response being received）（可能发生多次，根据返回包的数目而定）</li>
+				<li>响应接收完成，请求结束（Response received）</li>
+			</ol>
+			<p>
+				你也可以参阅 <a href="options.htm" >Ajax 选项</a>，Prototype 的 AJAX 对象定义了完整的回调系列，它们按照下述的顺序被触发：
+			</p>
+			<ol>
+				<li><code>onCreate</code>（实际上这是被 <code><a href="responders.htm" >AJAX 全局响应器</a></code></li> 保留的回调）。
+				<li><code>onUninitialized</code>（对应于“创建”[Created]）</li>
+				<li><code>onLoading</code>（对应于“初始化”[Initialized]）</li>
+				<li><code>onLoaded</code>（对应于“请求发送”[Request sent]）</li>
+				<li><code>onInteractive</code>（对应于“响应接收”[Response being received]）</li>
+				<li><code>on</code><em>XYZ</em>（<em>XYZ</em> 表示响应的状态代码，参见<a href="../../Reference/Status.htm" >状态代码</a>）对应于指定的响应状态代码回调、onSuccess 或 onFailure（见下文）</li>
+				<li><code>onComplete</code></li>
+			</ol>
+			<p>
+				最后两步对应于<em>响应接收完成（Response received）</em>。如果定义了一个与指定状态代码相关的回调函数，它将会被调用。否则，如果
+				<code>onSuccess</code> 被定义并且响应被认为是成功的（见下文），<code>onSuccess</code> 就会被调用，如果响应不成功并且定义了
+				<code>onFailure</code>，则调用 <code>onFailure</code>。<code>onComplete</code> 在上述回调结束后才会被调用。
+			</p>
+			<h4>一个关于可移植性的提示</h4>
+			<p>
+				依赖于浏览器对 <code>XMLHttpRequest</code> 的不同实现，一个或多个回调可能永远都不会被调用。尤其是 <code>onLoaded</code> 和
+				<code>onInteractive</code>，迄今为止仍不是一个稳赢的赌注。然而，全局的 <code>onCreate</code>、<code>onUninitialized</code>
+				以及最后的两个步骤还是可以保障的。
+			</p>
+			<h3><code>onSuccess</code> 和 <code>onFailure</code>, 未充分利用的回调</h3>
+			<p>
+				很多人使用 <code>Ajax.Request</code> 的方式在一定程度上仍然类似于使用原始的 XHR：即使他们只关心“成功”的响应，
+				仍定义一个 <code>onComplete</code> 回调，然后手动测试：
+			</p>
+			<pre><code class="javascript">// 太糟糕了，有更好的做法！
+new Ajax.Request('/your/url', {
+	onComplete: function(transport) {
+		if (200 == transport.status)
+			// yada yada yada
+		}
+	}
+); </code></pre>
+			<p>
+				首先，就像下面所描述的那样，你可以使用更好的“成功”检测：成功通常被定义为没有响应状态代码或者响应状态代码为 "2xy"
+				系列（如 201 也被认为是成功的）。参见下面的样例。
+			</p>
+			<p>
+				其次，你完全可以省略状态代码测试！Prototype 增加了指明成功或失败的回调函数，我们在上面已经列出。如果你仅对成功感兴趣，
+				可以采用如下方式：
+			</p>
+			<pre><code class="javascript">new Ajax.Request('/your/url',{
+	onSuccess: function(transport){
+		// yada yada yada 
+		}
+	}
+); </code></pre>
+			<h3>自动执行 Javascript 响应</h3>
+			<p>
+				如果一个 AJAX 请求遵循 <a href="http://en.wikipedia.org/wiki/Same_origin_policy" ><abbr title="Same Origin Policy">SOP</abbr></a>
+				（译注：<a href="../../Reference/SOP.htm" >中文说明</a>），并且它的响应的 content-type 与 Javascript 相关，<code>responseText</code>
+				属性的内容将会自动传递给 <code>eval</code>。
+			</p>
+			<p>
+				这意味着若 AJAX 响应的内容是纯粹的 Javascript，你甚至不需要提供一个回调来处理它。这非常酷，不是吗？下面列出了 Prototype
+				能够处理的与 Javascript 相关的 MIME 类型：
+			</p>
+			<ul>
+				<li><code>application/ecmascript</code></li>
+				<li><code>application/javascript</code></li>
+				<li><code>application/x-ecmascript</code></li>
+				<li><code>application/x-javascript</code></li>
+				<li><code>text/ecmascript</code></li>
+				<li><code>text/javascript</code></li>
+				<li><code>text/x-ecmascript</code></li>
+				<li><code>text/x-javascript</code></li>
+			</ul>
+			<p>MIME 类型字符串的检测不区分大小写。</p>
+			<h3>可能常用的方法</h3>
+			<p>
+				请求对象的实例提供了一些方法，在回调函数中，你迟早会用到它们，尤其是当请求完成时。				
+			</p>
+			<h4>1、是否是一个成功的响应？</h4>
+			<p>
+				<code>success()</code> 方法检测 XHR 的 <code>staus</code> 属性，它遵循以下的规则：未知的状态被认为是成功的，
+				2xy 系列状态代码也认为是成功的。通常这比你使用 <code>200 == transport.status</code> 测试响应更为有效。
+			</p>				
+			<h4>2、获取 HTTP 响应头</h4>
+			<p>
+				如果你使用 XHR 对象的 <code>getResponseHeader</code> 方法从 XHR 对象中获取响应头，会导致代码变得冗长，
+				并且有些实现在找不到指定头时，会引发异常。为简化这个处理过程，可以使用 <code>Ajax.Response#getHeader</code>
+				方法，那些冗长的代码将由它来内置处理，并且发生异常时，它将返回一个 <code>null</code> 值。
+			</p>
+			<pre><code class="javascript">new Ajax.Request('/your/url', {
+	onSuccess: function(response){ 
+		// 注意对 null 值的处理
+		if ((response.getHeader('Server') || '').match(/Apache/))
+			++gApacheCount; 
+			// 其余的代码
+		}
+	}
+); </code></pre>
+			<h4>3、执行 JSON 头</h4>
+			<p>
+				有时后端返回 JSON 文本不是通过响应内容，而是通过 <code>X-JSON</code> 头。在这种情况下，你甚至不需要自己执行返回的 JSON
+				文本，Prototype 自动完成了这项工作并将结果传递给 <code>Ajax.Response</code> 对象的 <code>headerJSON</code> 属性。
+				注意：如果指定的头不存在或者头的内容是非法的，这个属性将被设置为 <code>null</code>。
+			</p>
+			<pre><code class="javascript">new Ajax.Request('/your/url', { 
+	onSuccess: function(transport) {
+		transport.headerJSON
+		}
+	}
+); </code></pre>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

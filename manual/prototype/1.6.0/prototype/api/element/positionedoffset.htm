@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Element.positionedOffset - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>positionedOffset<div class="box">1.6</div></h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">positionedOffset(element) -> [Number, Number] 或 { left: Number, top: Number }</code></pre>
+			<p>
+				以 <code>element</code> 的容器块（Containing Block）节点（<strong>译注：</strong>距离元素最近的 CSS <code>position</code>
+				属性为 <code>relative</code> 或 <code>absolute</code> 的先代节点）为坐标原点，返回 <code>element</code> 
+				的坐标偏移值（元素的容器块节点可通过 <a href="getoffsetparent.htm" >Element#getOffsetParent</a> 方法获取）。<br />
+				<strong>译注：</strong>假定返回值为 offset，则 X 轴坐标可通过 <code>offset[0]</code> 获取，也可以通过
+				<code>offset.left</code> 获取，Y 轴坐标可通过 <code>offset[1]</code> 获取，也可通过 <code>offset.top</code> 获取。
+			</p>
+		</div>
+		<div id="abody">
+			<p>
+				这个方法其实是累加元素及其所有父元素的 <code>offsetLeft</code> 和 <code>offsetTop</code>，直到其中一个元素的 CSS
+				<code>position</code> 属性不等于 <code>static</code>（<strong>译注：</strong><code>static</code> 是 <code>position</code>
+				的默认值）为止。
+			</p>
+			<p>
+				<strong>译注：</strong>上一段的描述和代码有些矛盾，原文是这样的：<br /><br />
+				<q style="border:solid 1px #666; padding:5px;">
+					Calculates the cumulative offsetLeft and offsetTop of an element and all its parents until it reaches an element with a position of static.
+				</q><br /><br />
+				但是源代码却是：
+			</p>
+			<pre><code>positionedOffset: function(element) {
+	var valueT = 0, valueL = 0;
+	do {
+		valueT += element.offsetTop  || 0;
+		valueL += element.offsetLeft || 0;
+		element = element.offsetParent;
+		if (element) {
+			if (element.tagName.toUpperCase() == 'BODY') break;
+			var p = Element.getStyle(element, 'position');
+			if (p !== 'static') break;	//注意这里，若 position 属性不等于 static，则跳出循环。
+		}
+	} while (element);
+	return Element._returnOffset(valueL, valueT);
+}</code></pre>
+			<p>注意：所有返回值都仅有<em>数字</em>，单位为像素。</p>			
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

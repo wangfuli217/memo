@@ -1,0 +1,234 @@
+﻿<html xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+    <META NAME="save" CONTENT="history" />
+    <title>隐式类型的局部变量（C# 编程指南）</title>
+    <link rel="stylesheet" type="text/css" href="../styles/presentation.css" />
+    <link rel="stylesheet" type="text/css" href="ms-help://Hx/HxRuntime/HxLink.css" />
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/EventUtilities.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/SplitScreen.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/Dropdown.js"> </script>
+    <script type="text/javascript" src="../scripts/script_manifold.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/script_feedBack.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CheckboxMenu.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CommonUtilities.js"> </script>
+    <xml>
+      <MSHelp:TOCTitle Title="隐式类型的局部变量" />
+      <MSHelp:Keyword Index="A" Term="b9218fb2-ef5d-4814-8a8e-2bc29b0bbc9b" />
+      <MSHelp:Keyword Index="K" Term="隐式类型的局部变量 [C#]" />
+      <MSHelp:Keyword Index="K" Term="var [C#]" />
+      <MSHelp:Attr Name="RevisionNumber" Value="15" />
+      <MSHelp:Attr Name="AssetID" Value="b9218fb2-ef5d-4814-8a8e-2bc29b0bbc9b" />
+      <MSHelp:Attr Name="Abstract" Value="&#xD;&#xA;                    可以赋予局部变量推断“类型”var 而不是显式类型。var 关键字指示编译器根据初始化语句右侧的表达式推断变量的类型。推断类型可以是内置类型、匿名类型、用户定义类型或 .NET Framework 类库中定义的类型。有关如何使用 var 初始化数组的更多信息，请参见Implicitly Typed Arrays (C# Programming Guide)。&#xD;&#xA;                " />
+      <MSHelp:Attr Name="codelang" Value="CSharp" />
+      <MSHelp:Attr Name="CommunityContent" Value="1" />
+      <MSHelp:Attr Name="DevLang" Value="CSharp" />
+      <MSHelp:Attr Name="DevLangVers" Value="CSharp" />
+      <MSHelp:Attr Name="DocSet" Value="C#" />
+      <MSHelp:Attr Name="DocSet" Value="C# Lang" />
+      <MSHelp:Attr Name="DocSet" Value="ExpressLibVS" />
+      <MSHelp:Attr Name="ProgModel" Value="managed" />
+      <MSHelp:Attr Name="ShippedIn" Value="vs.90" />
+      <MSHelp:Attr Name="Technology" Value="ManagedCode" />
+      <MSHelp:Attr Name="TopicVersion" Value="09.00.08178.10000" />
+      <MSHelp:Attr Name="Catalog Container" Value="System_Default_Catalog" />
+      <MSHelp:Attr Name="Content Set Container" Value="System_Default_Content_Set" />
+      <MSHelp:Attr Name="TopicType" Value="kbRef" />
+      <MSHelp:Attr Name="Locale" Value="zh-chs" />
+    </xml>
+  </head>
+  <body>
+    <input type="hidden" id="userDataCache" class="userDataStyle" />
+    <input type="hidden" id="hiddenScrollOffset" />
+    <img id="collapseImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" title="“折叠”图像" />
+    <img id="expandImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" title="“展开”图像" />
+    <img id="collapseAllImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" />
+    <img id="expandAllImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" />
+    <img id="dropDownImage" style="display:none; height:0; width:0;" src="../icons/dropdown.gif" />
+    <img id="dropDownHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/dropdownHover.gif" />
+    <img id="copyImage" style="display:none; height:0; width:0;" src="../icons/copycode.gif" title="“复制”图像" />
+    <img id="copyHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/copycodeHighlight.gif" title="“复制悬停”图像" />
+    <div id="header">
+      <table id="topTable" cellspacing="0" cellpadding="0">
+        <tr>
+          <td>
+            <span onclick="ExpandCollapseAll(toggleAllImage)" style="cursor:default;" onkeypress="ExpandCollapseAll_CheckKey(toggleAllImage, event)" tabindex="0">
+              <img ID="toggleAllImage" class="toggleAll" src="../icons/collapse_all.gif" /> <label id="collapseAllLabel" for="toggleAllImage" style="display: none;">全部折叠</label><label id="expandAllLabel" for="toggleAllImage" style="display: none;">全部展开</label> </span>
+            <span>    </span>
+            <span id="devlangsDropdown" class="filter" tabindex="0">
+              <img id="devlangsDropdownImage" src="../icons/dropdown.gif" /> <label id="devlangsMenuAllLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：全部 </nobr></label><label id="devlangsMenuMultipleLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：多个 </nobr></label><label id="devlangsMenuVisualBasicLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual Basic </nobr></label><label id="devlangsMenuCSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：C# </nobr></label><label id="devlangsMenuManagedCPlusPlusLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual C++ </nobr></label><label id="devlangsMenuJSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：J# </nobr></label><label id="devlangsMenuJScriptLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：JScript </nobr></label></span>
+          </td>
+        </tr>
+      </table>
+      <div id="devlangsMenu">
+        <input id="VisualBasicCheckbox" type="checkbox" data="VisualBasic,vb,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="VisualBasicCheckbox">Visual Basic</label>
+        <br />
+        <input id="CSharpCheckbox" type="checkbox" data="CSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="CSharpCheckbox">C#</label>
+        <br />
+        <input id="ManagedCPlusPlusCheckbox" type="checkbox" data="ManagedCPlusPlus,cpp,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="ManagedCPlusPlusCheckbox">Visual C++</label>
+        <br />
+        <input id="JSharpCheckbox" type="checkbox" data="JSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JSharpCheckbox">J#</label>
+        <br />
+        <input id="JScriptCheckbox" type="checkbox" data="JScript,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JScriptCheckbox">JScript</label>
+        <br />
+      </div>
+      <table id="bottomTable" cellpadding="0" cellspacing="0">
+        <tr id="headerTableRow1">
+          <td align="left">
+            <span id="runningHeaderText">C# 编程指南</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow2">
+          <td align="left">
+            <span id="nsrTitle">隐式类型的局部变量（C# 编程指南）</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow3">
+          <td align="left">
+            <a href="b9218fb2-ef5d-4814-8a8e-2bc29b0bbc9b.htm#seeAlsoToggle" onclick="OpenSection(seeAlsoToggle)">另请参见</a>  
+<script type="text/javascript">
+var fbBody = '%b8%d0%d0%bb%c4%fa%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%bf%aa%b7%a2%b0%e6%b1%e0%d0%b4%cd%c5%b6%d3%bd%ab%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%d3%c3%d3%da%b8%c4%bd%f8%ce%c4%b5%b5%a1%a3%ce%d2%c3%c7%d4%da%c9%f3%d4%c4%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%ca%b1%a3%ac%bf%c9%c4%dc%bb%e1%b8%f8%c4%fa%b7%a2%cb%cd%b5%e7%d7%d3%d3%ca%bc%fe%a3%ac%d2%d4%c7%eb%c4%fa%cc%e1%b9%a9%bd%f8%d2%bb%b2%bd%b5%c4%bd%e2%ca%cd%cb%b5%c3%f7%bb%f2%d5%df%be%cd%bd%e2%be%f6%b7%bd%b0%b8%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%ce%d2%c3%c7%b2%bb%bb%e1%bd%ab%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%d3%c3%d3%da%c8%ce%ba%ce%c6%e4%cb%fb%d3%c3%cd%be%a3%ac%b2%a2%c7%d2%d4%da%c9%f3%d4%c4%cd%ea%d6%ae%ba%f3%a3%ac%ce%d2%c3%c7%b2%bb%bb%e1%d4%d9%b1%a3%c1%f4%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%a1%a3%0d%0a%d3%d0%b9%d8%20Microsoft%20%d2%fe%cb%bd%d5%fe%b2%df%b5%c4%bd%f8%d2%bb%b2%bd%d0%c5%cf%a2%a3%ac%c7%eb%b2%ce%bc%fb%20http%3a%2f%2fprivacy.microsoft.com%2fzh-cn%2fdefault.aspx%a1%a3';
+var fbSubject = 'Customer%20Feedback';
+</script>
+  <span id="headfeedbackarea" class="feedbackhead"><a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);"> 发送反馈意见</a></span>
+</td>
+        </tr>
+      </table>
+      <table id="gradientTable">
+        <tr>
+          <td class="nsrBottom" background="../icons/gradient.gif" />
+        </tr>
+      </table>
+    </div>
+    <div id="mainSection">
+      <div id="mainBody">
+        <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
+        <font color="DarkGray"></font>
+        <p /> <p><font color="DarkGray">更新：
+                    
+    2008 年 7 月
+  
+                </font></p><div class="introduction"><p>
+                    可以赋予局部变量推断“类型”<span sdata="langKeyword" value="var"><span class="keyword">var</span></span> 而不是显式类型。<span sdata="langKeyword" value="var"><span class="keyword">var</span></span> 关键字指示编译器根据初始化语句右侧的表达式推断变量的类型。推断类型可以是内置类型、匿名类型、用户定义类型或 .NET Framework 类库中定义的类型。有关如何使用 <span sdata="langKeyword" value="var"><span class="keyword">var</span></span> 初始化数组的更多信息，请参见<span sdata="link"><a href="e05be95c-6732-403d-ae42-b35f057cbbea.htm">隐式类型的数组（C# 编程指南）</a></span>。
+                </p><p>
+                    下面的示例演示了使用 <span sdata="langKeyword" value="var"><span class="keyword">var</span></span> 声明局部变量的各种方式：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// i is compiled as an int</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> i = 5;
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// s is compiled as a string</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> s = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Hello"</span>;
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// a is compiled as int[]</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> a = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span>[] { 0, 1, 2 };
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// expr is compiled as IEnumerable&lt;Customer&gt;</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// or perhaps IQueryable&lt;Customer&gt;</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> expr =
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">from</span> c <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> customers
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">where</span> c.City == <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"London"</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">select</span> c;
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// anon is compiled as an anonymous type</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> anon = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> { Name = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Terry"</span>, Age = 34 };
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// list is compiled as List&lt;int&gt;                             </span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> list = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> List&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt;();
+
+</pre></td></tr></table></span></div></div><p>
+                    需要了解的一点是，<span sdata="langKeyword" value="var"><span class="keyword">var</span></span> 关键字并不意味着“变体”，也不表示该变量是松散类型化变量或后期绑定变量。它只是表示由编译器确定和分配最适当的类型。
+                </p><p>
+                    <span sdata="langKeyword" value="var"><span class="keyword">var</span></span> 关键字可在下面的上下文中使用：
+                </p><ul><li><p>
+                    在如上示例所示的局部变量（在方法范围中声明的变量）上。
+                </p></li><li><p>
+                    在 <mshelp:link keywords="34041a40-2c87-467a-9ffb-a0417d8f67a8" tabindex="0">for</mshelp:link> 初始化语句中。
+                </p><div class="code"><span codeLanguage="other"><table width="100%" cellspacing="0" cellpadding="0"><tr><th> </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>for(var x = 1; x &lt; 10; x++)</pre></td></tr></table></span></div></li><li><p>
+                    在 <mshelp:link keywords="5a9c5ddc-5fd3-457a-9bb6-9abffcd874ec" tabindex="0">foreach</mshelp:link> 初始化语句中。
+                </p><div class="code"><span codeLanguage="other"><table width="100%" cellspacing="0" cellpadding="0"><tr><th> </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>foreach(var item in list){...}</pre></td></tr></table></span></div></li><li><p>
+                    在 <mshelp:link keywords="afc355e6-f0b9-4240-94dd-0d93f17d9fc3" tabindex="0">using 语句</mshelp:link>中
+                </p><div class="code"><span codeLanguage="other"><table width="100%" cellspacing="0" cellpadding="0"><tr><th> </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>using (var file = new StreamReader("C:\\myfile.txt")) {...}</pre></td></tr></table></span></div></li></ul><p>
+                    有关更多信息，请参见<span sdata="link"><a href="6b7354d2-af79-427a-b6a8-f74eb8fd0b91.htm">如何：在查询表达式中使用隐式类型的局部变量和数组（C# 编程指南）</a></span>。
+                </p></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle0)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle0, event)" tabindex="0"><img id="sectionToggle0" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />var 和匿名类型</span></h1><div id="sectionSection0" class="section" name="collapseableSection" style=""><p>
+                    在很多情况下，<span sdata="langKeyword" value="var"><span class="keyword">var</span></span> 是可选的，它只是提供了语法上的便利。但是，在使用匿名类型初始化变量时，如果需要在以后访问对象的属性，则必须将该变量声明为 <span sdata="langKeyword" value="var"><span class="keyword">var</span></span>。这在 LINQ 查询表达式中很常见。有关更多信息，请参见<span sdata="link"><a href="59c9d7a4-3b0e-475e-b620-0ab86c088e9b.htm">匿名类型（C# 编程指南）</a></span>。
+                </p><p>
+                    从源代码的角度来说，匿名类型没有名称。因此，如果已使用 <span sdata="langKeyword" value="var"><span class="keyword">var</span></span> 初始化查询变量，则只有一种方法可以访问返回的对象序列中的属性，那就是使用 <span sdata="langKeyword" value="var"><span class="keyword">var</span></span> 作为 <span sdata="langKeyword" value="foreach"><span class="keyword">foreach</span></span> 语句中的迭代变量的类型。
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> ImplicitlyTypedLocals2
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Main()
+    {            
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span>[] words = { <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"aPPLE"</span>, <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"BlUeBeRrY"</span>, <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"cHeRry"</span> };
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// If a query produces a sequence of anonymous types, </span>
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// then use var in the foreach statement to access the properties.</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> upperLowerWords =
+             <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">from</span> w <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> words
+             <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">select</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> { Upper = w.ToUpper(), Lower = w.ToLower() };
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Execute the query</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> ul <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> upperLowerWords)
+        {
+            Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Uppercase: {0}, Lowercase: {1}"</span>, ul.Upper, ul.Lower);
+        }
+    }        
+}
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">/* Outputs:
+    Uppercase: APPLE, Lowercase: apple
+    Uppercase: BLUEBERRY, Lowercase: blueberry
+    Uppercase: CHERRY, Lowercase: cherry        
+ */</span>
+
+</pre></td></tr></table></span></div></div></div><h1 class="heading"><span onclick="ExpandCollapse(languageReferenceRemarksToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(languageReferenceRemarksToggle, event)" tabindex="0"><img id="languageReferenceRemarksToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />备注</span></h1><div id="languageReferenceRemarksSection" class="section" name="collapseableSection" style=""><p>
+                    下列限制适用于隐式类型的变量声明：
+                </p><ul><li><p>
+                    只有在同一语句中声明和初始化局部变量时，才能使用 <span sdata="langKeyword" value="var"><span class="keyword">var</span></span>；不能将该变量初始化为 null、方法组或匿名函数。
+                </p></li><li><p>
+                    不能将 <span sdata="langKeyword" value="var"><span class="keyword">var</span></span> 用于类范围的域。
+                </p></li><li><p>
+                    由 <span sdata="langKeyword" value="var"><span class="keyword">var</span></span> 声明的变量不能用在初始化表达式中。换句话说，表达式 <span class="code">int i = (i = 20)</span> 是合法的；但表达式 <span class="code">var i = (i = 20)</span> 则会产生编译时错误。
+                </p></li><li><p>
+                    不能在同一语句中初始化多个隐式类型的变量。
+                </p></li><li><p>
+                    如果范围中有一个名为 <span class="code">var</span> 的类型，则 <span sdata="langKeyword" value="var"><span class="keyword">var</span></span> 关键字将解析为该类型名称，而不作为隐式类型局部变量声明的一部分进行处理。
+                </p></li></ul><p>
+                    在查询表达式中，当难以确定查询变量的确切构造类型时，您会发现 <span sdata="langKeyword" value="var"><span class="keyword">var</span></span> 也很有用。这种情况可能发生在分组和排序操作中。
+                </p><p>
+                    当在键盘上键入变量的具体类型单调乏味时，或者当该类型显而易见或对提高代码可读性没有作用时，<span sdata="langKeyword" value="var"><span class="keyword">var</span></span> 关键字也可能有用。<span sdata="langKeyword" value="var"><span class="keyword">var</span></span> 以这种方式发挥作用的一个示例是嵌套的泛型类型，例如在分组操作中使用的那些类型。在下面的查询中，查询变量的类型是 <span class="code">IEnumerable&lt;IGrouping&lt;string, Student&gt;&gt;</span>。只要您和其他必须维护您代码的人员了解到这一点，就可以毫无问题地使用隐式类型化，以达到方便和简洁的效果。
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Same as previous example except we use the entire last name as a key.</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Query variable is an IEnumerable&lt;IGrouping&lt;string, Student&gt;&gt;</span>
+ <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> studentQuery3 =
+     <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">from</span> student <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> students
+     <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">group</span> student <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">by</span> student.Last;
+
+</pre></td></tr></table></span></div></div><p>
+                    不过，使用 <span sdata="langKeyword" value="var"><span class="keyword">var</span></span> 确实可能使其他开发人员更加难以理解您的代码。因此，C# 文档通常仅在需要时才使用 <span sdata="langKeyword" value="var"><span class="keyword">var</span></span>。
+                </p></div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />请参见</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><h4 class="subHeading">任务</h4><div class="seeAlsoStyle"><span sdata="link"><a href="6b7354d2-af79-427a-b6a8-f74eb8fd0b91.htm">如何：在查询表达式中使用隐式类型的局部变量和数组（C# 编程指南）</a></span></div><h4 class="subHeading">概念</h4><div class="seeAlsoStyle"><span sdata="link"><a href="40638f19-fb46-4d26-a2d9-a383b48f5ed4.htm">LINQ 查询表达式（C# 编程指南）</a></span></div><h4 class="subHeading">参考</h4><div class="seeAlsoStyle"><span sdata="link"><a href="e05be95c-6732-403d-ae42-b35f057cbbea.htm">隐式类型的数组（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="59c9d7a4-3b0e-475e-b620-0ab86c088e9b.htm">匿名类型（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="c58f3db5-d7d4-4651-bd2d-5a3a97357f61.htm">对象和集合初始值设定项（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="0777850a-2691-4e3e-927f-0c850f5efe15.htm">var（C# 参考）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="34041a40-2c87-467a-9ffb-a0417d8f67a8.htm">for（C# 参考）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="5a9c5ddc-5fd3-457a-9bb6-9abffcd874ec.htm">foreach，in（C# 参考）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="afc355e6-f0b9-4240-94dd-0d93f17d9fc3.htm">using 语句（C# 参考）</a></span></div><h4 class="subHeading">其他资源</h4><div class="seeAlsoStyle"><span sdata="link"><a href="06de3167-c16c-4e1a-b3c5-c27841d4569a.htm">C# 参考</a></span></div><div class="seeAlsoStyle"><span sdata="link"><mshelp:link keywords="a73c4aec-5d15-4e98-b962-1274021ea93d" tabindex="0">语言集成查询 (LINQ)</mshelp:link></span></div></div><h1 class="heading"><span onclick="ExpandCollapse(changeHistoryToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(changeHistoryToggle, event)" tabindex="0"><img id="changeHistoryToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />修订记录</span></h1><div id="changeHistorySection" class="section" name="collapseableSection" style=""><div class="caption"></div><div class="tableSection"><table width="50%" cellspacing="2" cellpadding="5" frame="lhs"><tr><th><p>
+                    日期
+                </p></th><th><p>
+                    修订记录
+                </p></th><th><p>
+                    原因
+                </p></th></tr><tr><td><p>
+                    
+    <p>2008 年 7 月</p>
+  
+                </p></td><td><p>
+                    纠正了有关初始化匿名类型时要求使用 <span sdata="langKeyword" value="var"><span class="keyword">var</span></span> 的陈述内容。实际上，只有在以后希望访问这些对象的属性时才需要使用该关键字。
+                </p></td><td><p>
+                    
+    <p>内容 Bug 修复</p>
+  
+                </p></td></tr></table></div></div></div>
+      <div id="footer">
+        <div class="footerLine">
+          <img width="100%" height="3px" src="../icons/footer.gif" title="“页脚”图像" />
+        </div>
+<span id="feedbackarea">将有关本主题的<a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);">反馈意见</a>发送给 Microsoft。</span>
+</div>
+    </div>
+  </body>
+</html>

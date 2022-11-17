@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>TimedObserver.Form.Observer - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+	<script src="../../prototype-1.6.0.3.js"   type="text/javascript"></script>
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>Form.Observer</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">new Form.Observer(element, frequency, callback)</code></pre>
+			<p>
+				一个定时观察器，当表单中任意一个控件的值发生变化时，将触发回调。<br />
+				<strong>译注：</strong>注意，若要使用表单观察器，则表单中<strong>需要检测的控件必须添加
+				<code>name</code> 属性</strong>。
+			</p>
+		</div>
+		<div id="abody">
+			<p>
+				<code>Form.Observer</code> 使用 <a href="../form/serialize.htm" >Form.serialize()</a> 实现
+				<code>getValue</code> 方法。关于定时观察器的描述见
+				<a href="../timedObserver.htm" >Abstract.TimedObserver</a>。
+			</p>
+			<h3>样例</h3>
+			<p>
+				在下面的样例中，如果表单中任意控件的值发生变化，则改变表单的外观显示。当数据提交后（储存），
+				表单重置为初始时的外观。
+			</p>
+			<form id="example" class="example" action="form-observer.htm#">
+				<fieldset>
+					<legend>Login Preferences</legend>
+					<p id="msg" class="message">Current settings:</p>
+					<div>
+						<label for="greeting">Greeting message</label>
+						<input id="greeting" type="text" name="greeting" value="Hello world!" />
+					</div>
+					<div>
+						<span class="label">Login options</span>
+						<ul>
+							<li>
+								<input id="login-visible" type="checkbox" name="login-visible" checked="checked" />
+								<label for="login-visible">allow others to see my last login date</label>
+							</li>
+							<li>
+								<input id="land-recent" type="checkbox" name="land-recent" />
+								<label for="land-recent">land on recent changes overview instead of the Dashboard</label>
+							</li>
+						</ul>
+					</div>
+					<div class="buttonrow"><input type="submit" value="save" /></div>
+				</fieldset>
+				<script type="text/javascript">
+					new Form.Observer('example', 0.3, function(form, value){
+						$('msg').update('Your preferences have changed. Resubmit to save').style.color = 'red'						
+						form.down().setStyle({ background:'lemonchiffon', borderColor:'red' })
+					})
+
+					$('example').onsubmit = function() {						
+						$('msg').update('Preferences saved!').style.color = 'green';
+						this.down().setStyle({ background:'', borderColor:''});						
+						return false;
+					}
+				</script>
+			</form>
+			<p>上面样例的完整 JavaScript 代码如下：</p>
+			<pre><code class="javascript">new Form.Observer('example', 0.3, function(form, value){
+	$('msg').update('Your preferences have changed. Resubmit to save').style.color = 'red' 
+	form.down().setStyle({ background:'lemonchiffon', borderColor:'red' }) 
+})
+
+$('example').onsubmit = function() { 
+	$('msg').update('Preferences saved!').style.color = 'green' 
+	this.down().setStyle({ background:'', borderColor:'' }) 
+	return false
+} </code></pre>
+			<p>
+				<strong>译注：</strong>注意上面代码中：<br />
+				　　<code>this.down().setStyle({ background:'', borderColor:'' });</code><br />
+				这一行，原文为：<br />
+				　　<code>this.down().setStyle({ background:null, borderColor:null });</code><br />
+				在 IE 中会出现错误，因为 IE 不允许给 <code>style</code> 的相关属性赋 <code>null</code> 值。
+				FireFox 中正常。但考虑到跨浏览器因素，请尽量使用空字符串 <code>''</code>。
+			</p>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

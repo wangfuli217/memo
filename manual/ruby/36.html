@@ -1,0 +1,104 @@
+<html><HEAD><TITLE>25、异常处理:rescue - RUBY文档中心</TITLE>
+<STYLE type=text/css>
+<!--
+.code2 {font-size:14.7px;font-family:arial;color:#00009a;line-height:150%;background-color:#EFEFEF;height=25px;vertical-align=middle;margin-left: 20px;}
+.code {font-size:14.7px;font-family:arial;color:#00009a;background-color:#EFEFEF;line-height: 150%}
+.quote {font-size:14.7px;font-family:arial;color:#666666;line-height:150%;}
+-->
+</STYLE>
+
+<META http-equiv=Content-Type content="text/html; charset=gb2312"><LINK href="36_files/news[1].css"  rel=stylesheet></head>
+<BODY topMargin=0>
+<STYLE type=text/css>
+<!--
+body {
+	margin-top: 50px;
+}
+.style12 {font-size: 33px}
+.style15 {
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-weight: bold;
+}
+.style17 {font-family: "黑体", "楷体_GB2312", "新宋体"}
+.style18 {font-size: 12px}
+-->
+</STYLE>
+
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #929292 1px groove" cellSpacing=0 cellPadding=3 width=772 align=center bgColor=#ffffff border=0>
+<TBODY>
+<TR>
+<TD height=20></TD></TR>
+<TR>
+<TD bgColor=#8acd38 height=30>&nbsp;</TD></TR>
+<TR>
+<TD height=50></TD></TR></TBODY></TABLE>
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #ffffff 1px groove" borderColor=#ffffff cellSpacing=0 cellPadding=3 width=772 align=center bgColor=#ffffff border=0>
+<TBODY>
+<TR>
+<TD align=middle>
+<DIV class=moer-title><IMG src="51_files/logo_read[1].gif" > 25、异常处理:rescue</DIV>
+<P>转帖：oasis_me　　发表时间：2005-6-15 21:36:10　　点击次数：294 </P></TD></TR>
+<TR>
+<TD height=50></TD></TR></TBODY></TABLE>
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #ffffff 1px groove" borderColor=#ffffff cellSpacing=0 cellPadding=3 width=772 align=center bgColor=#ffffff border=0>
+<TBODY>
+<TR>
+<TD width="10%" bgColor=#ffffff>&nbsp;</TD>
+<TD class=moer-ask vAlign=top align=left width="5%" bgColor=#ffffff>&nbsp;</TD>
+<TD vAlign=top align=left width="75%">
+<TABLE cellSpacing=0 cellPadding=0>
+<TBODY>
+<TR>
+<TD class=moer-content vAlign=top align=left>一个运行着的程序常会遇到意外的问题.一个要读取的文件不存在;当希望存入一些数据时磁盘满了;用户可能输入不恰当的数据.<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;file&nbsp;=&nbsp;open("some_file")<BR>ERR:&nbsp;(eval):1:in&nbsp;`open':&nbsp;No&nbsp;such&nbsp;file&nbsp;or&nbsp;directory&nbsp;-&nbsp;some_file&nbsp;</TD></TR></TBODY></TABLE><BR><BR>一个健壮的程序会合理并漂亮的处理这些问题.面对那些异常是一件讨人厌的工作.C程序员被要求做到检查每一个可能导致错误发生的系统调用的返回值并立刻做出决定.<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>FILE&nbsp;*file&nbsp;=&nbsp;fopen("some_file",&nbsp;"r");<BR>if&nbsp;(file&nbsp;==&nbsp;NULL)&nbsp;{&nbsp;&nbsp;<BR>fprintf(&nbsp;stderr,&nbsp;"File&nbsp;doesn't&nbsp;exist.\n"&nbsp;);&nbsp;&nbsp;<BR>exit(1);<BR>}<BR>bytes_read&nbsp;=&nbsp;fread(&nbsp;buf,&nbsp;1,&nbsp;bytes_desired,&nbsp;file&nbsp;);<BR>if&nbsp;(bytes_read&nbsp;!=&nbsp;bytes_desired&nbsp;)&nbsp;{&nbsp;&nbsp;<BR>/*&nbsp;do&nbsp;more&nbsp;error&nbsp;handling&nbsp;here&nbsp;...&nbsp;*/<BR>}<BR>...&nbsp;</TD></TR></TBODY></TABLE><BR><BR>这项无聊的工作会使程序员最终变得马虎并忽略掉它,结果是程序无法应对异常.令一方面,这样也会降低程序的可读性.因为过多的错误处理使有意义的代码也变得杂乱了.<BR><BR>在Ruby里,就像其它的现代语言,我们可以通过隔离的办法处理代码域里的异常,因此,这有着惊人的效果却又不会为程序员或以后希望读它的其它人造成过度的负担.代码域由begin开始直到遇到一个异常,这将导致转向一个由rescue标记的错误处理代码域.如果异常没发生,rescue代码就不会使用.下面的代码返回文本文件的第一行,如果有异常则返回&nbsp;nil.<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>def&nbsp;first_line(&nbsp;filename&nbsp;)<BR>&nbsp;&nbsp;begin<BR>&nbsp;&nbsp;&nbsp;&nbsp;file&nbsp;=&nbsp;open("some_file")<BR>&nbsp;&nbsp;&nbsp;&nbsp;info&nbsp;=&nbsp;file.gets<BR>&nbsp;&nbsp;&nbsp;&nbsp;file.close<BR>&nbsp;&nbsp;&nbsp;&nbsp;info&nbsp;&nbsp;#&nbsp;Last&nbsp;thing&nbsp;evaluated&nbsp;is&nbsp;the&nbsp;return&nbsp;value<BR>&nbsp;&nbsp;rescue<BR>&nbsp;&nbsp;&nbsp;&nbsp;nil&nbsp;&nbsp;&nbsp;#&nbsp;Can't&nbsp;read&nbsp;the&nbsp;file?&nbsp;then&nbsp;don't&nbsp;return&nbsp;a&nbsp;string<BR>&nbsp;&nbsp;end<BR>end&nbsp;</TD></TR></TBODY></TABLE><BR><BR>有时我们会希望围绕问题展开创造性工作.这里,如果文件不存在,我们用标准输入代替:<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>begin<BR>&nbsp;&nbsp;file&nbsp;=&nbsp;open("some_file")<BR>rescue<BR>&nbsp;&nbsp;file&nbsp;=&nbsp;STDIN<BR>end<BR>begin<BR>&nbsp;&nbsp;#&nbsp;...&nbsp;process&nbsp;the&nbsp;input&nbsp;...<BR>rescue<BR>&nbsp;&nbsp;#&nbsp;...&nbsp;and&nbsp;deal&nbsp;with&nbsp;any&nbsp;other&nbsp;exceptions&nbsp;here.<BR>end&nbsp;</TD></TR></TBODY></TABLE><BR><BR>retry&nbsp;用于&nbsp;rescue&nbsp;代码表示又重新执行&nbsp;begin&nbsp;代码.这让我们可以压缩前面的例子:<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>fname&nbsp;=&nbsp;"some_file"<BR>begin<BR>&nbsp;&nbsp;file&nbsp;=&nbsp;open(fname)<BR>&nbsp;&nbsp;#&nbsp;...&nbsp;process&nbsp;the&nbsp;input&nbsp;...<BR>rescue<BR>&nbsp;&nbsp;fname&nbsp;=&nbsp;"STDIN"<BR>&nbsp;&nbsp;retry<BR>end&nbsp;</TD></TR></TBODY></TABLE><BR><BR>但这仍有一点瑕疵.一个不存在的文件将导致不停止地&nbsp;retry.你在使用&nbsp;retry&nbsp;做异常处理时应注意到这一点.<BR><BR>每个Ruby库在遇到错误时都会提交一个异常,你可以在自己的代码里明确地提交异常.用&nbsp;raise&nbsp;来提交异常.它带一个参数,也就是描述异常的一个字符串.参数是可选的但不应被省略.之后它可以通过一个特殊的全局变量&nbsp;$!&nbsp;访问.<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;raise&nbsp;"test&nbsp;error"<BR>&nbsp;&nbsp;&nbsp;test&nbsp;error<BR>ruby&gt;&nbsp;begin<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;raise&nbsp;"test2"<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;rescue<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;print&nbsp;"An&nbsp;error&nbsp;occurred:&nbsp;",$!,&nbsp;"\n"<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;end<BR>An&nbsp;error&nbsp;occurred:&nbsp;test2<BR>&nbsp;&nbsp;&nbsp;nil&nbsp;</TD></TR></TBODY></TABLE></TD></TR>
+<TR>
+<TD class=moer-content vAlign=top align=left height=30></TD></TR>
+<TR>
+<TD vAlign=top align=left><SPAN style="FONT-WEIGHT: bold; FONT-SIZE: 12px">版权声明：</SPAN>RUBY文档中心的所有文章标明[<B>原创</B>]的均为本站作品，版权属RUBY中文化计划，若转载请注明；标明[<B>翻译</B>]的其外文版权归原作者，译文版权属RUBY中文化计划；标明[<B>转贴</B>]的，若原作者感到侵犯了他的著作权，那么请及时跟主持人联系，我们会尽快更正。</TD></TR></TBODY></TABLE></TD>
+<TD width="10%" bgColor=#ffffff>&nbsp;</TD></TR></TBODY></TABLE>
+<STYLE type=text/css>
+<!--
+body {
+	margin-bottom: 20px;
+}
+-->
+</STYLE>
+
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #929292 1px groove; BORDER-BOTTOM: #929292 1px groove" cellSpacing=0 cellPadding=0 width=772 align=center>
+<TBODY>
+<TR>
+<TD bgColor=#ffffff>
+<DIV align=center>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P><IMG height=11 src="55_files/logo_small[1].gif"  width=8> 版权所有(C) <A href="http://www.moer.net/ruby/index.asp" >RUBY中文化计划</A></P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></DIV></TD></TR></TBODY></TABLE>
+<DIV align=center></DIV>
+<div style="display:none;">
+<script type="text/javascript" src="http://shouce.jb51.net/js/stat.js" ></script>
+</div>
+</BODY>

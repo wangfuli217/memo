@@ -1,0 +1,229 @@
+﻿<html xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+    <META NAME="save" CONTENT="history" />
+    <title>如何：发布符合 .NET Framework 准则的事件（C# 编程指南）</title>
+    <link rel="stylesheet" type="text/css" href="../styles/presentation.css" />
+    <link rel="stylesheet" type="text/css" href="ms-help://Hx/HxRuntime/HxLink.css" />
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/EventUtilities.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/SplitScreen.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/Dropdown.js"> </script>
+    <script type="text/javascript" src="../scripts/script_manifold.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/script_feedBack.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CheckboxMenu.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CommonUtilities.js"> </script>
+    <xml>
+      <MSHelp:TOCTitle Title="如何：发布符合 .NET Framework 准则的事件" />
+      <MSHelp:Keyword Index="A" Term="9310ae16-8627-44a2-b08c-05e5976202b1" />
+      <MSHelp:Keyword Index="K" Term="事件 [C#], 实现准则" />
+      <MSHelp:Attr Name="RevisionNumber" Value="26" />
+      <MSHelp:Attr Name="AssetID" Value="9310ae16-8627-44a2-b08c-05e5976202b1" />
+      <MSHelp:Attr Name="Abstract" Value="下面的过程演示了如何将符合标准 .NET Framework 模式的事件添加到您自己的类和结构中。.NET Framework 类库中的所有事件均基于 T:System.EventHandler 委托，定义如下：" />
+      <MSHelp:Attr Name="codelang" Value="CSharp" />
+      <MSHelp:Attr Name="CommunityContent" Value="1" />
+      <MSHelp:Attr Name="DevLang" Value="CSharp" />
+      <MSHelp:Attr Name="DevLangVers" Value="CSharp" />
+      <MSHelp:Attr Name="DocSet" Value="C#" />
+      <MSHelp:Attr Name="DocSet" Value="C# Lang" />
+      <MSHelp:Attr Name="DocSet" Value="ExpressLibVS" />
+      <MSHelp:Attr Name="ProgModel" Value="managed" />
+      <MSHelp:Attr Name="ShippedIn" Value="vs.90" />
+      <MSHelp:Attr Name="Technology" Value="ManagedCode" />
+      <MSHelp:Attr Name="TopicVersion" Value="09.00.08178.10000" />
+      <MSHelp:Attr Name="Catalog Container" Value="System_Default_Catalog" />
+      <MSHelp:Attr Name="Content Set Container" Value="System_Default_Content_Set" />
+      <MSHelp:Attr Name="TopicType" Value="kbHowTo" />
+      <MSHelp:Attr Name="Locale" Value="zh-chs" />
+    </xml>
+  </head>
+  <body>
+    <input type="hidden" id="userDataCache" class="userDataStyle" />
+    <input type="hidden" id="hiddenScrollOffset" />
+    <img id="collapseImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" title="“折叠”图像" />
+    <img id="expandImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" title="“展开”图像" />
+    <img id="collapseAllImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" />
+    <img id="expandAllImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" />
+    <img id="dropDownImage" style="display:none; height:0; width:0;" src="../icons/dropdown.gif" />
+    <img id="dropDownHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/dropdownHover.gif" />
+    <img id="copyImage" style="display:none; height:0; width:0;" src="../icons/copycode.gif" title="“复制”图像" />
+    <img id="copyHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/copycodeHighlight.gif" title="“复制悬停”图像" />
+    <div id="header">
+      <table id="topTable" cellspacing="0" cellpadding="0">
+        <tr>
+          <td>
+            <span onclick="ExpandCollapseAll(toggleAllImage)" style="cursor:default;" onkeypress="ExpandCollapseAll_CheckKey(toggleAllImage, event)" tabindex="0">
+              <img ID="toggleAllImage" class="toggleAll" src="../icons/collapse_all.gif" /> <label id="collapseAllLabel" for="toggleAllImage" style="display: none;">全部折叠</label><label id="expandAllLabel" for="toggleAllImage" style="display: none;">全部展开</label> </span>
+            <span>    </span>
+            <span id="devlangsDropdown" class="filter" tabindex="0">
+              <img id="devlangsDropdownImage" src="../icons/dropdown.gif" /> <label id="devlangsMenuAllLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：全部 </nobr></label><label id="devlangsMenuMultipleLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：多个 </nobr></label><label id="devlangsMenuVisualBasicLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual Basic </nobr></label><label id="devlangsMenuCSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：C# </nobr></label><label id="devlangsMenuManagedCPlusPlusLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual C++ </nobr></label><label id="devlangsMenuJSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：J# </nobr></label><label id="devlangsMenuJScriptLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：JScript </nobr></label></span>
+          </td>
+        </tr>
+      </table>
+      <div id="devlangsMenu">
+        <input id="VisualBasicCheckbox" type="checkbox" data="VisualBasic,vb,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="VisualBasicCheckbox">Visual Basic</label>
+        <br />
+        <input id="CSharpCheckbox" type="checkbox" data="CSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="CSharpCheckbox">C#</label>
+        <br />
+        <input id="ManagedCPlusPlusCheckbox" type="checkbox" data="ManagedCPlusPlus,cpp,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="ManagedCPlusPlusCheckbox">Visual C++</label>
+        <br />
+        <input id="JSharpCheckbox" type="checkbox" data="JSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JSharpCheckbox">J#</label>
+        <br />
+        <input id="JScriptCheckbox" type="checkbox" data="JScript,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JScriptCheckbox">JScript</label>
+        <br />
+      </div>
+      <table id="bottomTable" cellpadding="0" cellspacing="0">
+        <tr id="headerTableRow1">
+          <td align="left">
+            <span id="runningHeaderText">C# 编程指南</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow2">
+          <td align="left">
+            <span id="nsrTitle">如何：发布符合 .NET Framework 准则的事件（C# 编程指南）</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow3">
+          <td align="left">
+            <a href="9310ae16-8627-44a2-b08c-05e5976202b1.htm#exampleToggle" onclick="OpenSection(exampleToggle)">示例</a>  <a href="9310ae16-8627-44a2-b08c-05e5976202b1.htm#seeAlsoToggle" onclick="OpenSection(seeAlsoToggle)">另请参见</a>  
+<script type="text/javascript">
+var fbBody = '%b8%d0%d0%bb%c4%fa%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%bf%aa%b7%a2%b0%e6%b1%e0%d0%b4%cd%c5%b6%d3%bd%ab%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%d3%c3%d3%da%b8%c4%bd%f8%ce%c4%b5%b5%a1%a3%ce%d2%c3%c7%d4%da%c9%f3%d4%c4%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%ca%b1%a3%ac%bf%c9%c4%dc%bb%e1%b8%f8%c4%fa%b7%a2%cb%cd%b5%e7%d7%d3%d3%ca%bc%fe%a3%ac%d2%d4%c7%eb%c4%fa%cc%e1%b9%a9%bd%f8%d2%bb%b2%bd%b5%c4%bd%e2%ca%cd%cb%b5%c3%f7%bb%f2%d5%df%be%cd%bd%e2%be%f6%b7%bd%b0%b8%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%ce%d2%c3%c7%b2%bb%bb%e1%bd%ab%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%d3%c3%d3%da%c8%ce%ba%ce%c6%e4%cb%fb%d3%c3%cd%be%a3%ac%b2%a2%c7%d2%d4%da%c9%f3%d4%c4%cd%ea%d6%ae%ba%f3%a3%ac%ce%d2%c3%c7%b2%bb%bb%e1%d4%d9%b1%a3%c1%f4%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%a1%a3%0d%0a%d3%d0%b9%d8%20Microsoft%20%d2%fe%cb%bd%d5%fe%b2%df%b5%c4%bd%f8%d2%bb%b2%bd%d0%c5%cf%a2%a3%ac%c7%eb%b2%ce%bc%fb%20http%3a%2f%2fprivacy.microsoft.com%2fzh-cn%2fdefault.aspx%a1%a3';
+var fbSubject = 'Customer%20Feedback';
+</script>
+  <span id="headfeedbackarea" class="feedbackhead"><a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);"> 发送反馈意见</a></span>
+</td>
+        </tr>
+      </table>
+      <table id="gradientTable">
+        <tr>
+          <td class="nsrBottom" background="../icons/gradient.gif" />
+        </tr>
+      </table>
+    </div>
+    <div id="mainSection">
+      <div id="mainBody">
+        <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
+        <font color="DarkGray"></font>
+        <p /> <p><font color="DarkGray">更新：2007 年 11 月</font></p><div class="introduction"><p>下面的过程演示了如何将符合标准 .NET Framework 模式的事件添加到您自己的类和结构中。.NET Framework 类库中的所有事件均基于 <span sdata="cer" target="T:System.EventHandler"><mshelp:link keywords="T:System.EventHandler" tabindex="0">EventHandler</mshelp:link></span> 委托，定义如下：</p><div class="code"><span codeLanguage="other"><table width="100%" cellspacing="0" cellpadding="0"><tr><th> </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>public delegate void EventHandler(object sender, EventArgs e);</pre></td></tr></table></span></div><div class="alert"><table width="100%" cellspacing="0" cellpadding="0"><tr><th align="left"><img class="note" title="说明" src="../icons/alert_note.gif" /><b>说明：</b></th></tr><tr><td><p>.NET Framework 2.0 引入了此委托的一个泛型版本，即 <span sdata="cer" target="T:System.EventHandler`1"><mshelp:link keywords="T:System.EventHandler`1" tabindex="0">EventHandler<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span></span>TEventArgs<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span></span></mshelp:link></span>。下面的示例显示如何使用这两种版本。</p></td></tr></table></div><p>虽然您定义的类中的事件可基于任何有效委托类型（甚至是可返回值的委托），但是，通常建议您使用 <span sdata="cer" target="T:System.EventHandler"><mshelp:link keywords="T:System.EventHandler" tabindex="0">EventHandler</mshelp:link></span> 让事件基于 .NET Framework 模式，如下面的示例所示。</p></div><h3 class="procedureSubHeading">采用 EventHandler 模式发布事件</h3><div class="subSection"><ol><li><p>（如果不需要与事件一起发送自定义数据，请跳过此步骤，进入步骤 3a。）在发行者类和订户类均可看见的范围中声明类，并添加保存自定义事件数据所需的成员。在此示例中，会返回一个简单字符串。</p><div class="code"><span codeLanguage="other"><table width="100%" cellspacing="0" cellpadding="0"><tr><th> </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>public class CustomEventArgs : EventArgs
+{
+    public CustomEventArgs(string s)
+    {
+        msg = s;
+    }
+    private string msg;
+    public string Message
+    {
+        get { return msg; }
+    } 
+}</pre></td></tr></table></span></div></li><li><p>（如果您使用的是 <span sdata="cer" target="T:System.EventHandler`1"><mshelp:link keywords="T:System.EventHandler`1" tabindex="0">EventHandler<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span></span>TEventArgs<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span></span></mshelp:link></span> 的泛型版本，请跳过此步骤。）在发布类中声明一个委托。为它指定以 EventHandler 结尾的名称。第二个参数指定自定义 EventArgs 类型。</p><div class="code"><span codeLanguage="other"><table width="100%" cellspacing="0" cellpadding="0"><tr><th> </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>public delegate void CustomEventHandler(object sender, CustomEventArgs a);</pre></td></tr></table></span></div></li><li><p>使用以下任一步骤，在发布类中声明事件。</p><ol><li><p>如果没有自定义 EventArgs 类，事件类型就是非泛型 EventHandler 委托。它无需声明，因为它已在创建 C# 项目时包含的 <span sdata="cer" target="N:System"><mshelp:link keywords="N:System" tabindex="0">System</mshelp:link></span> 命名空间中进行了声明：</p><div class="code"><span codeLanguage="other"><table width="100%" cellspacing="0" cellpadding="0"><tr><th> </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>public event EventHandler RaiseCustomEvent;</pre></td></tr></table></span></div></li><li><p>如果使用的是 <span sdata="cer" target="T:System.EventHandler"><mshelp:link keywords="T:System.EventHandler" tabindex="0">EventHandler</mshelp:link></span> 的非泛型版本，并且您有一个由 <span sdata="cer" target="T:System.EventArgs"><mshelp:link keywords="T:System.EventArgs" tabindex="0">EventArgs</mshelp:link></span> 派生的自定义类，请在发布类中声明您的事件，并且将您的委托用作类型：</p><div class="code"><span codeLanguage="other"><table width="100%" cellspacing="0" cellpadding="0"><tr><th> </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>class Publisher
+{
+    public event CustomEventHandler RaiseCustomEvent;
+}</pre></td></tr></table></span></div></li><li><p>如果使用的是泛型版本，则不需要自定义委托。相反，应将事件类型指定为 <span class="code">EventHandler&lt;CustomEventArgs&gt;</span>，在尖括号内放置您自己的类的名称。</p><div class="code"><span codeLanguage="other"><table width="100%" cellspacing="0" cellpadding="0"><tr><th> </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>public event EventHandler&lt;CustomEventArgs&gt; RaiseCustomEvent;</pre></td></tr></table></span></div></li></ol></li></ol></div><h1 class="heading"><span onclick="ExpandCollapse(exampleToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(exampleToggle, event)" tabindex="0"><img id="exampleToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />示例</span></h1><div id="exampleSection" class="section" name="collapseableSection" style=""><p>下面的示例通过将自定义 EventArgs 类和 <span sdata="cer" target="T:System.EventHandler`1"><mshelp:link keywords="T:System.EventHandler`1" tabindex="0">EventHandler<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span></span>TEventArgs<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span></span></mshelp:link></span> 用作事件类型来演示上述步骤。</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">namespace</span> DotNetEvents
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">using</span> System;
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">using</span> System.Collections.Generic;
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Define a class to hold custom event info</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> CustomEventArgs : EventArgs
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> CustomEventArgs(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> s)
+        {
+            message = s;
+        }
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> message;
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> Message
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span> { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> message; }
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span> { message = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">value</span>; }
+        }
+    }
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Class that publishes an event</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Publisher
+    {
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Declare the event using EventHandler&lt;T&gt;</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">event</span> EventHandler&lt;CustomEventArgs&gt; RaiseCustomEvent;
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> DoSomething()
+        {
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Write some code that does something useful here</span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// then raise the event. You can also raise an event</span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// before you execute a block of code.</span>
+            OnRaiseCustomEvent(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> CustomEventArgs(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Did something"</span>));
+
+        }
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Wrap event invocations inside a protected virtual method</span>
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// to allow derived classes to override the event invocation behavior</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">protected</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">virtual</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> OnRaiseCustomEvent(CustomEventArgs e)
+        {
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Make a temporary copy of the event to avoid possibility of</span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// a race condition if the last subscriber unsubscribes</span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// immediately after the null check and before the event is raised.</span>
+            EventHandler&lt;CustomEventArgs&gt; handler = RaiseCustomEvent;
+
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Event will be null if there are no subscribers</span>
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> (handler != <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">null</span>)
+            {
+                <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Format the string to send inside the CustomEventArgs parameter</span>
+                e.Message += String.Format(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">" at {0}"</span>, DateTime.Now.ToString());
+
+                <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Use the () operator to raise the event.</span>
+                handler(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span>, e);
+            }
+        }
+    }
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//Class that subscribes to an event</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Subscriber
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> id;
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> Subscriber(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> ID, Publisher pub)
+        {
+            id = ID;
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Subscribe to the event using C# 2.0 syntax</span>
+            pub.RaiseCustomEvent += HandleCustomEvent;
+        }
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Define what actions to take when the event is raised.</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> HandleCustomEvent(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">object</span> sender, CustomEventArgs e)
+        {
+            Console.WriteLine(id + <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">" received this message: {0}"</span>, e.Message);
+        }
+    }
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Program
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Main(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span>[] args)
+        {
+            Publisher pub = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Publisher();
+            Subscriber sub1 = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Subscriber(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"sub1"</span>, pub);
+            Subscriber sub2 = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Subscriber(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"sub2"</span>, pub);
+
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Call the method that raises the event.</span>
+            pub.DoSomething();
+
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Keep the console window open</span>
+            Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Press Enter to close this window."</span>);
+            Console.ReadLine();
+
+        }
+    }
+}
+
+</pre></td></tr></table></span></div></div></div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />请参见</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><h4 class="subHeading">概念</h4><div class="seeAlsoStyle"><span sdata="link"><a href="ac0f23a2-6bf3-4077-be99-538ae5fd3bc5.htm">C# 编程指南</a></span></div><div class="seeAlsoStyle"><span sdata="link"><mshelp:link keywords="67b3c6e2-6a8f-480d-a78f-ebeeaca1b95a" tabindex="0">事件设计</mshelp:link></span></div><h4 class="subHeading">参考</h4><div class="seeAlsoStyle"><span sdata="link"><a href="a8e51b22-d294-44fb-9539-0072f06c4cb3.htm">事件（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="97de039b-c76b-4b9c-a27d-8c1e1c8d93da.htm">委托（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="cer" target="T:System.Delegate"><mshelp:link keywords="T:System.Delegate" tabindex="0">Delegate</mshelp:link></span></div></div></div>
+      <div id="footer">
+        <div class="footerLine">
+          <img width="100%" height="3px" src="../icons/footer.gif" title="“页脚”图像" />
+        </div>
+<span id="feedbackarea">将有关本主题的<a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);">反馈意见</a>发送给 Microsoft。</span>
+</div>
+    </div>
+  </body>
+</html>

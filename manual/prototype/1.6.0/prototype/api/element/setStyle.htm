@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Element.setStyle - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>setStyle</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">setStyle(element, styles) -> HTMLElement</code></pre>
+			<p>
+				修改 <code>element</code> 的 CSS 样式属性。参数 <code>styles</code> 是一个包含属性名/值对的 Hash 对象，
+				属性名必须使用 camelized 命名方式指定（<strong>译注：</strong>例如 CSS 属性 border-width 应写成
+				borderWidth，而不能写成 border-width）。
+			</p>
+		</div>
+		<div id="abody">
+			<h3>样例</h3>
+			<pre><code class="javascript">$(element).setStyle({ backgroundColor: '#900', fontSize: '12px' }); 
+// -> HTMLElement </code></pre>
+			<h3>注意</h3>
+			<p>
+				该方法在处理 <code>float</code> 和 <code>opacity</code> 时，对不同的浏览器而言是透明的。然而，<code>float</code>
+				是一个保留的关键字，所以必须进行转义，或使用 <code>cssFloat</code> 来代替。另外，<code>opacity</code> 的取值界于 0（完全透明）和
+				1（完全不透明）之间。在不同的浏览器上，以下的代码都是安全可靠的：
+			</p>
+			<pre><code class="javascript">$(element).setStyle({ cssFloat: 'left', opacity: 0.5 });
+// -> HTMLElement 
+$(element).setStyle({ 
+	'float': 'left', // 注意 float 周围的单引号 
+	opacity: 0.5 
+}); 
+// -> HTMLElement </code></pre>
+			<p>
+				该方法并不支持所有的 CSS 属性，或许你仅能够使用在<a href="http://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-ElementCSSInlineStyle" >
+				文档对象模型（DOM）级别 2 样式规范</a> 中描述的 CSS 属性。
+			</p>
+			<p>
+				<strong>译注：</strong>注意，如果要将某个 CSS 样式属性置空，不能直接使用 <code>null</code>，如
+				<code>$(element).setStyle({ backgroundColor: null })</code>，这在 IE 下会抛出一个异常，在
+				Firefox 中可正常执行。如果要跨浏览器执行，最好将之设置为空字符串，如
+				<code>$(element).setStyle({ backgroundColor: '' })</code>，这在 IE 和 Firefox 下都能很好的执行。
+			</p>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

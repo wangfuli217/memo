@@ -1,0 +1,288 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 5.4.  Assignment Operators</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch05lev1sec3.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch05lev1sec5.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch05lev1sec4"></a>
+
+        <h3 class="docSection1Title" id="432172-997">5.4. Assignment Operators</h3>
+        <h3 class="docSection1Title" id="432172-997">5.4. 赋值操作符</h3>
+
+        <p class="docText">The left-hand operand of an assignment operator must be a non<tt>const</tt> lvalue. Each of these assignments is illegal:</p>
+	<p class="docText">赋值操作符的左操作数必须是非 <tt>const</tt> 的左值。下面的赋值语句是不合法的：</p>
+        <pre>
+     int i, j, ival;
+     const int ci = i;  // <span class="docEmphItalicAlt">ok: initialization not assignment</span>
+     1024 = ival;       // <span class="docEmphItalicAlt">error: literals are rvalues</span>
+     i + j = ival;      // <span class="docEmphItalicAlt">error: arithmetic expressions are rvalues</span>
+     ci = ival;         // <span class="docEmphItalicAlt">error: can't write to</span> <span class="docEmphasis">ci</span>
+</pre>
+
+        <p class="docText">Array names are nonmodifiable lvalues: An array cannot be the target of an assignment. Both the subscript and dereference operators return lvalues. The result of dereference or subscript, when applied to a non<tt>const</tt> array, can be the left-hand operand of an assignment:</p>
+	<p class="docText">数组名是不可修改的左值：因此数组不可用作赋值操作的目标。而下标和解引用操作符都返回左值，因此当将这两种操作用于非 <tt>const</tt> 数组时，其结果可作为赋值操作的左操作数：</p>
+        <pre>
+     int ia[10];
+     ia[0] = 0;    // <span class="docEmphItalicAlt">ok: subscript is an lvalue</span>
+     *ia = 0;      // <span class="docEmphItalicAlt">ok: dereference also is an lvalue</span>
+</pre>
+
+        <p class="docText">The result of an assignment is the left-hand operand; the type of the result is the type of the left-hand operand.</p>
+        <p class="docText">赋值表达式的值是其左操作数的值，其结果的类型为左操作数的类型。</p>
+
+        <p class="docText">The value assigned to the left-hand operand ordinarily is the value that is in the right-hand operand. However, assignments where the types of the left and right operands differ may require conversions that might change the value being assigned. In such cases, the value stored in the left-hand operand might differ from the value of the right-hand operand:</p>
+        <p class="docText">通常，赋值操作将其右操作数的值赋给左操作数。然而，当左、右操作数的类型不同时，该操作实现的类型转换可能会修改被赋的值。此时，存放在左、右操作数里的值并不相同：</p>
+        <pre>
+     ival = 0;        // <span class="docEmphItalicAlt">result: type</span> <span class="docEmphasis">int</span> <span class="docEmphItalicAlt">value 0</span>
+     ival = 3.14159;  // <span class="docEmphItalicAlt">result: type</span> <span class="docEmphasis">int</span> <span class="docEmphItalicAlt">value 3</span>
+</pre>
+
+        <p class="docText">Both these assignments yield values of type <tt>int</tt>. In the first case the value stored in <tt>ival</tt> is the same value as in its right-hand operand. In the second case the value stored in <tt>ival</tt> is different from the right-hand operand.</p>
+	<p class="docText">上述两个赋值语句都产生int类型的值，第一个语句中 <tt>ival</tt> 的值与右操作数的值相同；但是在第二个语句中，<tt>ival</tt> 的值则与右操作数的值不相同。</p>
+
+	<a name="ch05lev2sec7"></a>
+        <h4 class="docSection2Title">5.4.1. Assignment Is Right Associative</h4>
+        <h4 class="docSection2Title">5.4.1. 赋值操作的右结合性</h4>
+
+	<a name="idd1e33760"></a><a name="idd1e33767"></a><a name="idd1e33775"></a><a name="idd1e33780"></a><a name="idd1e33790"></a>
+        <p class="docText">Like the subscript and dereference operators, assignment returns an lvalue. As such, we can perform multiple assignments in a single expression, provided that each of the operands being assigned is of the same general type:</p>
+        <p class="docText">与下标和解引用操作符一样，赋值操作也返回左值。同理，只要被赋值的每个操作数都具有相同的通用类型，C++语言允许将这多个赋值操作写在一个表达式中：</p>
+        <pre>
+     int ival, jval;
+     ival = jval = 0; // <span class="docEmphItalicAlt">ok: each assigned 0</span>
+</pre>
+
+        <p class="docText">Unlike the other binary operators, the assignment operators are right associative. We group an expression with multiple assignment operators from right to left. In this expression, the result of the rightmost assignment (i.e., <tt>jval</tt>) is assigned to <tt>ival</tt>. The types of the objects in a multiple assignment either must be the same type or of types that can be converted (<a class="docLink" href="ch05lev1sec12.html#ch05lev1sec12" >Section 5.12</a>, p. <a class="docLink" href="ch05lev1sec12.html#ch05lev1sec12" >178</a>) to one another:</p>
+	<p class="docText">与其他二元操作符不同，赋值操作具有右结合特性。当表达式含有多个赋值操作符时，从右向左结合。上述表达式，将右边赋值操作的结果（也就是 <tt>jval</tt>）赋给 <tt>ival</tt>。多个赋值操作中，各对象必须具有相同的数据类型，或者具有可转换（<a class="docLink" href="ch05lev1sec12.html#ch05lev1sec12" >第 5.12 节</a>）为同一类型的数据类型：</p>
+        <pre>
+     int ival; int *pval;
+     ival = pval = 0; // <span class="docEmphItalicAlt">error: cannot assign the value of a pointer to an</span> <span class="docEmphasis">int</span>
+     string s1, s2;
+     s1 = s2 = "OK";  // <span class="docEmphItalicAlt">ok: "OK" converted to</span> <span class="docEmphasis">string</span>
+</pre>
+
+        <p class="docText">The first assignment is illegal because <tt>ival</tt> and <tt>pval</tt> are objects of different types. It is illegal even though zero happens to be a value that could be assigned to either object. The problem is that the result of the assignment to <tt>pval</tt> is a value of type <tt>int*</tt>, which cannot be assigned to an object of type <tt>int</tt>. On the other hand, the second assignment is fine. The string literal is converted to <tt>string</tt>, and that <tt>string</tt> is assigned to <tt>s2</tt>. The result of that assignment is <tt>s2</tt>, which is then assigned to <tt>s1</tt>.</p>
+	<p class="docText">第一个赋值语句是不合法的，因为 <tt>ival</tt> 和 <tt>pval</tt> 是不同类型的对象。虽然0值恰好都可以赋给这两个对象，但该语句仍然错误。因为问题在于给 <tt>pval</tt> 赋值的结果是一个 <tt>int*</tt> 类型的值，不能将此值赋给 <tt>int</tt> 类型的对象。另一方面，第二个赋值语句则是正确的。字符串字面值可以转换为 <tt>string</tt> 类型，<tt>string</tt> 类型的值可赋给 <tt>s2</tt> 变量。右边赋值操作的结果为 <tt>s2</tt>，再将此结果值赋给 <tt>s1</tt>。</p>
+
+	<a name="ch05lev2sec8"></a>
+        <h4 class="docSection2Title">5.4.2. Assignment Has Low Precedence</h4>
+        <h4 class="docSection2Title">5.4.2. 赋值操作具有低优先级</h4>
+
+        <p class="docText">Inside a condition is another common place where assignment is used as a part of a larger expression. Writing an assignment in a condition can shorten programs and clarify the programmer's intent. For example, the following loop uses a function named <tt>get_value</tt>, which we assume returns <tt>int</tt> values. We can test those values until we obtain some desired valuesay, 42:</p>
+	<p class="docText">另一种通常的用法，是将赋值操作写在条件表达式中，把赋值操作用作长表达式的一部分。这种做法可缩短程序代码并阐明程序员的意图。例如，下面的循环调用函数 <tt>get_value</tt>，假设该函数返回 <tt>int</tt> 数值，通过循环检查这些返回值，直到获得需要的值为止——这里是 42：</p>
+        <pre>
+     int i = get_value();  // <span class="docEmphItalicAlt">get_value returns an</span> <span class="docEmphasis">int</span>
+     while (i != 42) {
+         // <span class="docEmphItalicAlt">do something ...</span>
+         i = get_value(); }
+</pre>
+
+	<p class="docText">The program begins by getting the first value and storing it in <tt>i</tt>. Then it establishes the loop, which tests whether <tt>i</tt> is 42, and if not, does some processing. The last statement in the loop gets a value from <tt>get_value()</tt>, and the loop repeats. We can write this loop more succinctly as</p>
+	<p class="docText">首先，程序将所获得的第一个值存储在 <tt>i</tt> 中，然后建立循环检查i的值是否为 42，如果不是，则做某些处理。循环中的最后一条语句调用 <tt>get_value()</tt> 返回一个值，然后继续循环。该循环可更简洁地写为：</p>
+        <pre>
+     int i;
+     while ((i = get_value()) != 42) {
+         // <span class="docEmphItalicAlt">do something ...</span>
+     }
+</pre>
+
+	<a name="idd1e33925"></a><a name="idd1e33932"></a><a name="idd1e33937"></a><a name="idd1e33940"></a><a name="idd1e33945"></a><a name="idd1e33953"></a><a name="idd1e33963"></a>
+        <p class="docText">The condition now more clearly expresses our intent: We want to continue until <tt>get_value</tt> returns 42. The condition executes by assigning the result returned by <tt>get_value</tt> to <tt>i</tt> and then comparing the result of that assignment with 42.</p>
+	<p class="docText">现在，循环条件更清晰地表达了程序员的意图：持续循环直到 <tt>get_value</tt> 返回 42 为止。在循环条件中，将 <tt>get_value</tt> 返回的值赋给 <tt>i</tt>，然后判断赋值的结果是否为 42。</p>
+
+	<a name="ch05note07"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">The additional parentheses around the assignment are necessary because assignment has lower precedence than inequality.</p>
+                <p class="docText">在赋值操作上加圆括号是必需的，因为赋值操作符的优先级低于不等操作符。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">Without the parentheses, the operands to <tt>!=</tt> would be the value returned from calling <tt>get_value</tt> and <tt>42</tt>. The <tt>true</tt> or <tt>false</tt> result of that test would be assigned to <tt>i</tt>clearly not what we intended!</p>
+	<p class="docText">如果没有圆括号，操作符 <tt>!=</tt> 的操作数则是调用 <tt>get_value</tt> 返回的值和 <tt>42</tt>，然后将该操作的结果 <tt>true</tt> 或 <tt>false</tt> 赋给 <tt>i</tt>—— 显然这并不是我们想要的。</p>
+
+	<a name="ch05lev3sec2"></a>
+        <h5 class="docSection3Title">Beware of Confusing Equality and Assignment Operators</h5>
+        <h5 class="docSection3Title">谨防混淆相等操作符和赋值操作符</h5>
+
+        <p class="docText">The fact that we can use assignment in a condition can have surprising effects:</p>
+        <p class="docText">可在条件表达式中使用赋值操作，这个事实往往会带来意外的效果：</p>
+        <pre>
+     if (i = 42)
+</pre>
+
+        <p class="docText">This code is legal: What happens is that 42 is assigned to <tt>i</tt> and then the result of the assignment is tested. In this case, 42 is nonzero, which is interpreted as a <tt>true</tt> value. The author of this code almost surely intended to test whether <tt>i</tt> was 42:</p>
+	<p class="docText">此代码是合法的：将 42 赋给 <tt>i</tt>，然后检验赋值的结果。此时，42 为非零值，因此解释为 <tt>true</tt>。其实，程序员的目的显然是想判断i的值是否为 42：</p>
+        <pre>
+     if (i == 42)
+</pre>
+
+        <p class="docText">Bugs of this sort are notoriously difficult to find. Some, but not all, compilers are kind enough to warn about code such as this example.</p>
+        <p class="docText">这种类型的程序错误很难发现。有些（并非全部）编译器会为类似于上述例子的代码提出警告。</p>
+
+	<a name="ch05sb05"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 5.4.2</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch05qa4q1"></a><b>Exercise 5.11:</b></td>
+
+                    <td>
+                      <p class="docText">What are the values of <tt>i</tt> and <tt>d</tt> after the each assignment:</p>
+		      <p class="docText">请问每次赋值操作完成后，<tt>i</tt> 和 <tt>d</tt> 的值分别是多少？</p>
+                      <pre>
+     int i;   double d;
+     d = i = 3.5;
+     i = d = 3.5;
+</pre>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch05qa4q2"></a><b>Exercise 5.12:</b></td>
+
+                    <td>
+                      <p class="docText">Explain what happens in each of the <tt>if</tt> tests:</p>
+		      <p class="docText">解释每个 <tt>if</tt> 条件判断产生什么结果？</p>
+                      <pre>
+     if (42 = i)   // . . .
+     if (i = 42)   // . . .
+</pre>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table>
+
+        <a name="ch05lev2sec9"></a>
+        <h4 class="docSection2Title">5.4.3. Compound Assignment Operators</h4>
+        <h4 class="docSection2Title">5.4.3. 复合赋值操作符</h4>
+
+        <p class="docText">We often apply an operator to an object and then reassign the result to that same object. As an example, consider the sum program from page <a class="docLink" href="ch01lev1sec4.html#ch01sb06" >14</a>:</p>
+        <p class="docText">我们常常在对某个对象做某种操作后，再将操作结果重新赋给该对象。例如，考虑<a class="docLink" href="ch01lev1sec4.html#ch01sb06" >第 1.4.2 节</a>的求和程序：</p>
+        <pre>
+     int sum = 0;
+     // <span class="docEmphItalicAlt">sum values from 1 up to 10 inclusive</span>
+     for (int val = 1; val &lt;= 10; ++val)
+         sum += val; // <span class="docEmphItalicAlt">equivalent to</span> <span class="docEmphasis">sum = sum + val</span>
+</pre>
+
+	<a name="idd1e34129"></a><a name="idd1e34136"></a><a name="idd1e34143"></a><a name="idd1e34148"></a><a name="idd1e34153"></a><a name="idd1e34161"></a><a name="idd1e34169"></a><a name="idd1e34174"></a><a name="idd1e34179"></a><a name="idd1e34189"></a><a name="idd1e34199"></a><a name="idd1e34209"></a><a name="idd1e34217"></a><a name="idd1e34225"></a>
+        <p class="docText">This kind of operation is common not just for addition but for the other arithmetic operators and the bitwise operators. There are compound assignments for each of these operators. The general syntactic form of a compound assignment operator is</p>
+        <p class="docText">C++ 语言不仅对加法，而且还对其他算术操作符和位操作符提供了这种用法，称为复合赋值操作。复合赋值操作符的一般语法格式为：</p>
+        <pre>
+     a <span class="docEmphasis">op</span>= b;
+</pre>
+
+	<p class="docText">where <span class="docEmphasis">op</span>= may be one of the following ten operators:</p>
+	<p class="docText">其中，op= 可以是下列十个操作符之一：</p>
+        <pre>
+     +=   -=   *=   /=   %=   // <span class="docEmphItalicAlt">arithmetic operators</span>
+     &lt;&lt;= &gt;&gt;=   &amp;=   ^=   |=   // <span class="docEmphItalicAlt">bitwise operators</span>
+</pre>
+
+        <p class="docText">Each compound operator is essentially equivalent to</p>
+        <p class="docText">这两种语法形式存在一个显著的差别：使用复合赋值操作时，左操作数只计算了一次；而使用相似的长表达式时，该操作数则计算了两次，第一次作为右操作数，而第二次则用做左操作数。除非考虑可能的性能价值，在很多（可能是大部分的）上下文环境里这个差别不是本质性的。</p>
+        <pre>
+     a = a <span class="docEmphasis">op</span> b;
+</pre>
+
+        <p class="docText">There is one important difference: When we use the compound assignment, the left-hand operand is evaluated only once. If we write the similar longer version, that operand is evaluated twice: once as the right-hand operand and again as the left. In many, perhaps most, contexts this difference is immaterial aside from possible performance consequences.</p>
+        <p class="docText">这两种语法形式存在一个显著的差别：使用复合赋值操作时，左操作数只计算了一次；而使用相似的长表达式时，该操作数则计算了两次，第一次作为右操作数，而第二次则用做左操作数。除非考虑可能的性能价值，在很多（可能是大部分的）上下文环境里这个差别不是本质性的。</p>
+
+	<a name="ch05sb06"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 5.4.3</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch05qa5q1"></a><b>Exercise 5.13:</b></td>
+
+                    <td>
+                      <p class="docText">The following assignment is illegal. Why? How would you correct it?</p>
+                      <p class="docText">下列赋值操作是不合法的，为什么？怎样改正？</p>
+                      <pre>
+     double dval; int ival; int *pi;
+     dval = ival = pi = 0;
+</pre>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch05qa5q2"></a><b>Exercise 5.14:</b></td>
+
+                    <td>
+                      <p class="docText">Although the following are legal, they probably do not behave as the programmer expects. Why? Rewrite the expressions as you think they should be.</p>
+                      <p class="docText">虽然下列表达式都是合法的，但并不是程序员期望的操作，为什么？怎样修改这些表达式以使其能反映程序员的意图？</p>
+                      <pre>
+     (a) if (ptr = retrieve_pointer() != 0)
+     (b) if (ival = 1024)
+     (c) ival += ival + 1;
+</pre>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch05lev1sec3.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch05lev1sec5.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

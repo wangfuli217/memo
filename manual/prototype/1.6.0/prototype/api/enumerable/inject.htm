@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Enumerable.inject - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>inject</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">inject(accumulator, iterator[, context]) -> accumulatedValue</code></pre>
+			<p>
+				根据参数 <code>iterator</code> 中定义的规则来累计值。首次迭代时，参数 <code>accumulator</code>
+				为初始值，迭代过程中，<code>iterator</code> 将处理过的值存放在 <code>accumulator</code>
+				中，并作为下次迭代的起始值，迭代完成后，返回处理过的 <code>accumulator</code>。
+				该方法常用于构建数组、计数数值总和或平均值等。<br />
+				<strong>译注：</strong>参数 <code>iterator</code> 是一个函数对象，Prototype 会传递三个参数给该对象，
+				第一个参数是需要累计的对象，即 <code>accumulator</code>，第二个参数是 <code>Enumerable</code>
+				中的元素，第三个参数是元素的数字索引。
+			</p>
+		</div>
+		<div id="abody">
+			<p>
+				可选的 <code>context</code> 参数是 <code>iterator</code> 要绑定的对象，若设定该参数，<code>iterator</code>
+				中的 <code>this</code> 关键字将指向 <code>context</code> 对象。
+			</p>
+			<h3>样例</h3>
+			<pre><code class="javascript">$R(1,10).inject(0, function(acc, n) { 
+	return acc + n;
+}) 
+// -> 55 (1 到 10 的总和) 
+
+$R(2,5).inject(1, function(acc, n) { 
+	return acc * n;
+}) 
+// -> 120 (5 的阶乘) 
+
+['hello', 'world', 'this', 'is', 'nice'].inject(
+	[], 
+	function(array, value, index) { 
+		if (0 == index % 2) 
+			array.push(value); 
+		return array; 
+	}
+) 
+// -> ['hello', 'this', 'nice'] 
+
+// 注意下面的代码对结果集的引用： 
+var array1 = []; 
+var array2 = [1, 2, 3].inject(array1, function(array, value) { 
+	array.push(value * value); 
+	return array; 
+}); 
+array2 // -> [1, 4, 9] 
+array1 // -> [1, 4, 9] 
+array2.push(16);
+array1 // -> [1, 4, 9, 16] </code></pre>
+			<h3>性能参考</h3>
+			<p>
+				在包含多个数组的集合上进行 <code>inject</code> 操作时，可以通过 JavaScript 的引用机制来避免数组复制时的巨大性能消耗（与
+				JavaScript 原生的 <code>concat</code> 方法相反，后者总是返回一个新的数组）。
+			</p>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

@@ -1,0 +1,358 @@
+﻿<html xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+    <META NAME="save" CONTENT="history" />
+    <title>如何：对制造者线程和使用者线程进行同步（C# 编程指南）</title>
+    <link rel="stylesheet" type="text/css" href="../styles/presentation.css" />
+    <link rel="stylesheet" type="text/css" href="ms-help://Hx/HxRuntime/HxLink.css" />
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/EventUtilities.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/SplitScreen.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/Dropdown.js"> </script>
+    <script type="text/javascript" src="../scripts/script_manifold.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/script_feedBack.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CheckboxMenu.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CommonUtilities.js"> </script>
+    <xml>
+      <MSHelp:TOCTitle Title="如何：对制造者线程和使用者线程进行同步" />
+      <MSHelp:Keyword Index="A" Term="3c7b02f9-4b0e-4b19-a6da-e2585f4fce85" />
+      <MSHelp:Keyword Index="K" Term="使用者线程 [C#]" />
+      <MSHelp:Keyword Index="K" Term="制造者线程 [C#]" />
+      <MSHelp:Keyword Index="K" Term="同步 [C#]" />
+      <MSHelp:Keyword Index="K" Term="线程处理 [C#], 同步" />
+      <MSHelp:Attr Name="RevisionNumber" Value="21" />
+      <MSHelp:Attr Name="AssetID" Value="3c7b02f9-4b0e-4b19-a6da-e2585f4fce85" />
+      <MSHelp:Attr Name="Abstract" Value="下面的示例演示使用 lock 关键字以及 T:System.Threading.AutoResetEvent 和 T:System.Threading.ManualResetEvent 类对主线程和两个辅助线程进行线程同步。有关更多信息，请参见 lock Statement (C# Programming Guide)。" />
+      <MSHelp:Attr Name="codelang" Value="CSharp" />
+      <MSHelp:Attr Name="CommunityContent" Value="1" />
+      <MSHelp:Attr Name="DevLang" Value="CSharp" />
+      <MSHelp:Attr Name="DevLangVers" Value="CSharp" />
+      <MSHelp:Attr Name="DocSet" Value="C#" />
+      <MSHelp:Attr Name="DocSet" Value="C# Lang" />
+      <MSHelp:Attr Name="DocSet" Value="ExpressLibVS" />
+      <MSHelp:Attr Name="ProgModel" Value="managed" />
+      <MSHelp:Attr Name="ShippedIn" Value="vs.90" />
+      <MSHelp:Attr Name="Technology" Value="ManagedCode" />
+      <MSHelp:Attr Name="TopicVersion" Value="09.00.08178.10000" />
+      <MSHelp:Attr Name="Catalog Container" Value="System_Default_Catalog" />
+      <MSHelp:Attr Name="Content Set Container" Value="System_Default_Content_Set" />
+      <MSHelp:Attr Name="TopicType" Value="kbHowTo" />
+      <MSHelp:Attr Name="Locale" Value="zh-chs" />
+    </xml>
+  </head>
+  <body>
+    <input type="hidden" id="userDataCache" class="userDataStyle" />
+    <input type="hidden" id="hiddenScrollOffset" />
+    <img id="collapseImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" title="“折叠”图像" />
+    <img id="expandImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" title="“展开”图像" />
+    <img id="collapseAllImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" />
+    <img id="expandAllImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" />
+    <img id="dropDownImage" style="display:none; height:0; width:0;" src="../icons/dropdown.gif" />
+    <img id="dropDownHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/dropdownHover.gif" />
+    <img id="copyImage" style="display:none; height:0; width:0;" src="../icons/copycode.gif" title="“复制”图像" />
+    <img id="copyHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/copycodeHighlight.gif" title="“复制悬停”图像" />
+    <div id="header">
+      <table id="topTable" cellspacing="0" cellpadding="0">
+        <tr>
+          <td>
+            <span onclick="ExpandCollapseAll(toggleAllImage)" style="cursor:default;" onkeypress="ExpandCollapseAll_CheckKey(toggleAllImage, event)" tabindex="0">
+              <img ID="toggleAllImage" class="toggleAll" src="../icons/collapse_all.gif" /> <label id="collapseAllLabel" for="toggleAllImage" style="display: none;">全部折叠</label><label id="expandAllLabel" for="toggleAllImage" style="display: none;">全部展开</label> </span>
+            <span>    </span>
+            <span id="devlangsDropdown" class="filter" tabindex="0">
+              <img id="devlangsDropdownImage" src="../icons/dropdown.gif" /> <label id="devlangsMenuAllLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：全部 </nobr></label><label id="devlangsMenuMultipleLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：多个 </nobr></label><label id="devlangsMenuVisualBasicLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual Basic </nobr></label><label id="devlangsMenuCSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：C# </nobr></label><label id="devlangsMenuManagedCPlusPlusLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual C++ </nobr></label><label id="devlangsMenuJSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：J# </nobr></label><label id="devlangsMenuJScriptLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：JScript </nobr></label></span>
+          </td>
+        </tr>
+      </table>
+      <div id="devlangsMenu">
+        <input id="VisualBasicCheckbox" type="checkbox" data="VisualBasic,vb,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="VisualBasicCheckbox">Visual Basic</label>
+        <br />
+        <input id="CSharpCheckbox" type="checkbox" data="CSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="CSharpCheckbox">C#</label>
+        <br />
+        <input id="ManagedCPlusPlusCheckbox" type="checkbox" data="ManagedCPlusPlus,cpp,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="ManagedCPlusPlusCheckbox">Visual C++</label>
+        <br />
+        <input id="JSharpCheckbox" type="checkbox" data="JSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JSharpCheckbox">J#</label>
+        <br />
+        <input id="JScriptCheckbox" type="checkbox" data="JScript,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JScriptCheckbox">JScript</label>
+        <br />
+      </div>
+      <table id="bottomTable" cellpadding="0" cellspacing="0">
+        <tr id="headerTableRow1">
+          <td align="left">
+            <span id="runningHeaderText">C# 编程指南</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow2">
+          <td align="left">
+            <span id="nsrTitle">如何：对制造者线程和使用者线程进行同步（C# 编程指南）</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow3">
+          <td align="left">
+            <a href="3c7b02f9-4b0e-4b19-a6da-e2585f4fce85.htm#exampleToggle" onclick="OpenSection(exampleToggle)">示例</a>  <a href="3c7b02f9-4b0e-4b19-a6da-e2585f4fce85.htm#seeAlsoToggle" onclick="OpenSection(seeAlsoToggle)">另请参见</a>  
+<script type="text/javascript">
+var fbBody = '%b8%d0%d0%bb%c4%fa%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%bf%aa%b7%a2%b0%e6%b1%e0%d0%b4%cd%c5%b6%d3%bd%ab%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%d3%c3%d3%da%b8%c4%bd%f8%ce%c4%b5%b5%a1%a3%ce%d2%c3%c7%d4%da%c9%f3%d4%c4%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%ca%b1%a3%ac%bf%c9%c4%dc%bb%e1%b8%f8%c4%fa%b7%a2%cb%cd%b5%e7%d7%d3%d3%ca%bc%fe%a3%ac%d2%d4%c7%eb%c4%fa%cc%e1%b9%a9%bd%f8%d2%bb%b2%bd%b5%c4%bd%e2%ca%cd%cb%b5%c3%f7%bb%f2%d5%df%be%cd%bd%e2%be%f6%b7%bd%b0%b8%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%ce%d2%c3%c7%b2%bb%bb%e1%bd%ab%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%d3%c3%d3%da%c8%ce%ba%ce%c6%e4%cb%fb%d3%c3%cd%be%a3%ac%b2%a2%c7%d2%d4%da%c9%f3%d4%c4%cd%ea%d6%ae%ba%f3%a3%ac%ce%d2%c3%c7%b2%bb%bb%e1%d4%d9%b1%a3%c1%f4%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%a1%a3%0d%0a%d3%d0%b9%d8%20Microsoft%20%d2%fe%cb%bd%d5%fe%b2%df%b5%c4%bd%f8%d2%bb%b2%bd%d0%c5%cf%a2%a3%ac%c7%eb%b2%ce%bc%fb%20http%3a%2f%2fprivacy.microsoft.com%2fzh-cn%2fdefault.aspx%a1%a3';
+var fbSubject = 'Customer%20Feedback';
+</script>
+  <span id="headfeedbackarea" class="feedbackhead"><a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);"> 发送反馈意见</a></span>
+</td>
+        </tr>
+      </table>
+      <table id="gradientTable">
+        <tr>
+          <td class="nsrBottom" background="../icons/gradient.gif" />
+        </tr>
+      </table>
+    </div>
+    <div id="mainSection">
+      <div id="mainBody">
+        <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
+        <font color="DarkGray"></font>
+        <p /> <p><font color="DarkGray">更新：2007 年 11 月</font></p><div class="introduction"><p>下面的示例演示使用 <span sdata="langKeyword" value="lock"><span class="keyword">lock</span></span> 关键字以及 <span sdata="cer" target="T:System.Threading.AutoResetEvent"><mshelp:link keywords="T:System.Threading.AutoResetEvent" tabindex="0">AutoResetEvent</mshelp:link></span> 和 <span sdata="cer" target="T:System.Threading.ManualResetEvent"><mshelp:link keywords="T:System.Threading.ManualResetEvent" tabindex="0">ManualResetEvent</mshelp:link></span> 类对主线程和两个辅助线程进行线程同步。有关更多信息，请参见 <span sdata="link"><a href="656da1a4-707e-4ef6-9c6e-6d13b646af42.htm">lock 语句（C# 参考）</a></span>。</p><p>该示例创建两个辅助线程。一个线程生成元素并将它们存储在非线程安全的泛型队列中。有关更多信息，请参见 <span sdata="cer" target="T:System.Collections.Generic.Queue`1"><mshelp:link keywords="T:System.Collections.Generic.Queue`1" tabindex="0">Queue<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span></span>T<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span></span></mshelp:link></span>。另一个线程使用此队列中的项。另外，主线程定期显示队列的内容，以便该队列可由三个线程进行访问。<span sdata="langKeyword" value="lock"><span class="keyword">lock</span></span> 关键字用于同步对队列的访问，以确保队列的状态不会被破坏。</p><p>除了只是使用 <span sdata="langKeyword" value="lock"><span class="keyword">lock</span></span> 关键字来防止同时访问以外，还可以用两个事件对象提供进一步的同步。一个事件对象用来通知辅助线程终止，另一个事件对象由制造者线程用来在有新项添加到队列中时通知使用者线程。这两个事件对象封装在一个名为 <span class="code">SyncEvents</span> 的类中。这使事件可以轻松传递给表示制造者线程和使用者线程的对象。<span class="code">SyncEvents</span> 类按如下方式定义：</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> SyncEvents
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> SyncEvents()
+    {
+
+        _newItemEvent = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> AutoResetEvent(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">false</span>);
+        _exitThreadEvent = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> ManualResetEvent(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">false</span>);
+        _eventArray = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> WaitHandle[2];
+        _eventArray[0] = _newItemEvent;
+        _eventArray[1] = _exitThreadEvent;
+    }
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> EventWaitHandle ExitThreadEvent
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span> { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> _exitThreadEvent; }
+    }
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> EventWaitHandle NewItemEvent
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span> { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> _newItemEvent; }
+    }
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> WaitHandle[] EventArray
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span> { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> _eventArray; }
+    }
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> EventWaitHandle _newItemEvent;
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> EventWaitHandle _exitThreadEvent;
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> WaitHandle[] _eventArray;
+}
+
+</pre></td></tr></table></span></div></div><p>对“新项”事件使用 <span sdata="cer" target="T:System.Threading.AutoResetEvent"><mshelp:link keywords="T:System.Threading.AutoResetEvent" tabindex="0">AutoResetEvent</mshelp:link></span> 类，因为您希望每当使用者线程响应此事件后，此事件都能自动重置。或者，将 <span sdata="cer" target="T:System.Threading.ManualResetEvent"><mshelp:link keywords="T:System.Threading.ManualResetEvent" tabindex="0">ManualResetEvent</mshelp:link></span> 类用于“退出”事件，因为您希望当此事件终止时有多个线程响应。如果您改为使用 <span sdata="cer" target="T:System.Threading.AutoResetEvent"><mshelp:link keywords="T:System.Threading.AutoResetEvent" tabindex="0">AutoResetEvent</mshelp:link></span>，则仅在一个线程响应该事件以后，该事件就还原到非终止状态。另一个线程不会响应，因此在这种情况下，将无法终止。</p><p><span class="code">SyncEvents</span> 类创建两个事件，并将它们以两种不同的形式存储：一种是作为 <span sdata="cer" target="T:System.Threading.EventWaitHandle"><mshelp:link keywords="T:System.Threading.EventWaitHandle" tabindex="0">EventWaitHandle</mshelp:link></span>（它是 <span sdata="cer" target="T:System.Threading.AutoResetEvent"><mshelp:link keywords="T:System.Threading.AutoResetEvent" tabindex="0">AutoResetEvent</mshelp:link></span> 和 <span sdata="cer" target="T:System.Threading.ManualResetEvent"><mshelp:link keywords="T:System.Threading.ManualResetEvent" tabindex="0">ManualResetEvent</mshelp:link></span> 的基类），一种是作为基于 <span sdata="cer" target="T:System.Threading.WaitHandle"><mshelp:link keywords="T:System.Threading.WaitHandle" tabindex="0">WaitHandle</mshelp:link></span> 的数组。如关于使用者线程的讨论中所述，此数组是必需的，因为它使使用者线程可以响应两个事件中的任何一个。</p><p>使用者线程和制造者线程分别由名为 <span class="code">Consumer</span> 和 <span class="code">Producer</span> 的类表示。这两个类都定义了一个名为 <span class="code">ThreadRun</span> 的方法。这些方法用作 <span class="code">Main</span> 方法创建的辅助线程的入口点。</p><p><span class="code">Producer</span> 类定义的 <span class="code">ThreadRun</span> 方法如下所示：</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Producer.ThreadRun</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> ThreadRun()
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> count = 0;
+    Random r = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Random();
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">while</span> (!_syncEvents.ExitThreadEvent.WaitOne(0, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">false</span>))
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">lock</span> (((ICollection)_queue).SyncRoot)
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">while</span> (_queue.Count &lt; 20)
+            {
+                _queue.Enqueue(r.Next(0,100));
+                _syncEvents.NewItemEvent.Set();
+                count++;
+            }
+        }
+    }
+    Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Producer thread: produced {0} items"</span>, count);
+}
+
+</pre></td></tr></table></span></div></div><p>此方法一直循环，直到“退出线程”事件变为终止状态。此事件的状态由 <span sdata="cer" target="M:System.Threading.WaitHandle.WaitOne(System.Int32,System.Boolean)"><mshelp:link keywords="Overload:System.Threading.WaitHandle.WaitOne" tabindex="0">WaitOne</mshelp:link></span> 方法使用 <span class="code">SyncEvents</span> 类定义的 <span class="code">ExitThreadEvent</span> 属性进行测试。在这种情况下，检查该事件的状态不会阻止当前线程，因为 <span sdata="cer" target="M:System.Threading.WaitHandle.WaitOne(System.Int32,System.Boolean)"><mshelp:link keywords="Overload:System.Threading.WaitHandle.WaitOne" tabindex="0">WaitOne</mshelp:link></span> 使用的第一个参数为零，这表示该方法应立即返回。如果 <span sdata="cer" target="M:System.Threading.WaitHandle.WaitOne(System.Int32,System.Boolean)"><mshelp:link keywords="Overload:System.Threading.WaitHandle.WaitOne" tabindex="0">WaitOne</mshelp:link></span> 返回 <span sdata="langKeyword" value="true"><span class="keyword">true</span></span>，则说明该事件当前处于终止状态。如果是这样，<span class="code">ThreadRun</span> 方法将返回，其效果相当于终止执行此方法的辅助线程。</p><p>在“退出线程”事件终止前，<span class="code">Producer.ThreadStart</span> 方法将尝试在队列中保留 20 项。项只是 0 到 100 之间的一个整数。在添加新项前，必须锁定该集合，以防止使用者线程和主线程同时访问该集合。这一点是使用 <span sdata="langKeyword" value="lock"><span class="keyword">lock</span></span> 关键字完成的。传递给 <span sdata="langKeyword" value="lock"><span class="keyword">lock</span></span> 的参数是通过 <span sdata="cer" target="T:System.Collections.ICollection"><mshelp:link keywords="T:System.Collections.ICollection" tabindex="0">ICollection</mshelp:link></span> 接口公开的 <span sdata="cer" target="P:System.Collections.ICollection.SyncRoot"><mshelp:link keywords="P:System.Collections.ICollection.SyncRoot" tabindex="0">SyncRoot</mshelp:link></span> 字段。此字段专门为同步线程访问而提供。对该集合的独占访问权限被授予 <span sdata="langKeyword" value="lock"><span class="keyword">lock</span></span> 后面的代码块中包含的所有指令。对于制造者添加到队列中的每个新项，都将调用“新项”事件的 <span sdata="cer" target="M:System.Threading.EventWaitHandle.Set"><mshelp:link keywords="M:System.Threading.EventWaitHandle.Set" tabindex="0">Set</mshelp:link></span> 方法。这将通知使用者线程离开挂起状态并开始处理新项。</p><p><span class="code">Consumer</span> 对象还定义名为 <span class="code">ThreadRun</span> 的方法。与制造者的 <span class="code">ThreadRun</span> 类似，此方法由 <span class="code">Main</span> 方法创建的辅助线程执行。然而，使用者的 <span class="code">ThreadStart</span> 必须响应两个事件。<span class="code">Consumer.ThreadRun</span> 方法如下所示：</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Consumer.ThreadRun</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> ThreadRun()
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> count = 0;
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">while</span> (WaitHandle.WaitAny(_syncEvents.EventArray) != 1)
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">lock</span> (((ICollection)_queue).SyncRoot)
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> item = _queue.Dequeue();
+        }
+        count++;
+    } 
+    Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Consumer Thread: consumed {0} items"</span>, count);
+}
+
+</pre></td></tr></table></span></div></div><p>此方法使用 <span sdata="cer" target="M:System.Threading.WaitHandle.WaitAny(System.Threading.WaitHandle[])"><mshelp:link keywords="Overload:System.Threading.WaitHandle.WaitAny" tabindex="0">WaitAny</mshelp:link></span> 来阻止使用者线程，直到所提供的数组中的任意一个等待句柄变为终止状态。在这种情况下，数组中有两个句柄，一个用来终止辅助线程，另一个用来指示有新项添加到集合中。<span sdata="cer" target="M:System.Threading.WaitHandle.WaitAny(System.Threading.WaitHandle[])"><mshelp:link keywords="Overload:System.Threading.WaitHandle.WaitAny" tabindex="0">WaitAny</mshelp:link></span> 返回变为终止状态的事件的索引。“新项”事件是数组中的第一个事件，因此索引零表示新项。在这种情况下，检查索引 1（它指示“退出线程”事件），并使用它来确定此方法是否继续使用项。如果“新项”事件处于终止状态，您将通过 <span sdata="langKeyword" value="lock"><span class="keyword">lock</span></span> 获得对集合的独占访问权限并使用新项。因为此示例生成并使用数千个项，所以不显示使用的每个项，而是使用 <span class="code">Main</span> 定期显示队列中的内容，如下面所演示的那样。</p><p><span class="code">Main</span> 方法首先创建一个队列（该队列的内容将被生成和使用）和 <span class="code">SyncEvents</span> 的一个实例（已在前面演示）：</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>Queue&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt; queue = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Queue&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt;();
+SyncEvents syncEvents = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> SyncEvents();
+
+</pre></td></tr></table></span></div></div><p>然后，<span class="code">Main</span> 配置 <span class="code">Producer</span> 和 <span class="code">Consumer</span> 对象以供辅助线程使用。然而，此步骤并不创建或启动实际的辅助线程：</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>Producer producer = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Producer(queue, syncEvents);
+Consumer consumer = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Consumer(queue, syncEvents);
+Thread producerThread = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Thread(producer.ThreadRun);
+Thread consumerThread = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Thread(consumer.ThreadRun);
+
+</pre></td></tr></table></span></div></div><p>请注意，队列和同步事件对象作为构造函数参数同时传递给 <span class="code">Consumer</span> 和 <span class="code">Producer</span> 线程。这提供了两个对象，它们具有执行各自任务所需的共享资源。然后创建两个新的 <span sdata="cer" target="T:System.Threading.Thread"><mshelp:link keywords="T:System.Threading.Thread" tabindex="0">Thread</mshelp:link></span> 对象，并使用每个对象的 <span class="code">ThreadRun</span> 方法作为参数。每个辅助线程在启动时都将此参数用作线程的入口点。</p><p>接着，<span class="code">Main</span> 通过调用 <span sdata="cer" target="M:System.Threading.Thread.Start"><mshelp:link keywords="Overload:System.Threading.Thread.Start" tabindex="0">Start</mshelp:link></span> 方法来启动两个辅助线程，如下所示：</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>producerThread.Start();
+consumerThread.Start();
+
+</pre></td></tr></table></span></div></div><p>此时，创建了两个新的辅助线程，它们独立于当前正在执行 <span class="code">Main</span> 方法的主线程开始异步执行过程。事实上，<span class="code">Main</span> 接下来要做的事情是通过调用 <span sdata="cer" target="M:System.Threading.Thread.Sleep(System.Int32)"><mshelp:link keywords="Overload:System.Threading.Thread.Sleep" tabindex="0">Sleep</mshelp:link></span> 方法将主线程挂起。该方法将当前正在执行的线程挂起指定的时间（毫秒）。在此时间间隔过后，<span class="code">Main</span> 将重新激活，这时它将显示队列的内容。<span class="code">Main</span> 重复此过程四次，如下所示：</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">for</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> i=0; i&lt;4; i++)
+{
+    Thread.Sleep(2500);
+    ShowQueueContents(queue);
+}
+
+</pre></td></tr></table></span></div></div><p>最后，<span class="code">Main</span> 通过调用“退出线程”事件的 <span sdata="cer" target="M:System.Threading.EventWaitHandle.Set"><mshelp:link keywords="M:System.Threading.EventWaitHandle.Set" tabindex="0">Set</mshelp:link></span> 方法通知辅助线程终止，然后对每个辅助线程调用 <span sdata="cer" target="M:System.Threading.Thread.Join"><mshelp:link keywords="Overload:System.Threading.Thread.Join" tabindex="0">Join</mshelp:link></span> 方法以阻止主线程，直到每个辅助线程都响应该事件并终止。</p><p>有一个线程同步的最终示例：<span class="code">ShowQueueContents</span> 方法。与制造者线程和使用者线程类似，此方法使用 <span sdata="langKeyword" value="lock"><span class="keyword">lock</span></span> 获得对队列的独占访问权限。然而在这种情况下，独占访问非常重要，因为 <span class="code">ShowQueueContents</span> 对整个集合进行枚举。对集合进行枚举是一个特别容易由于异步操作而造成数据损坏的操作，因为它需要遍历整个集合的内容。</p><p>请注意，<span class="code">ShowQueueContents</span> 是由主线程执行的，因为它被 <span class="code">Main</span> 调用。这意味着，当此方法获得对项队列的独占访问权限时，既阻止了制造者线程访问队列，也阻止了使用者线程访问队列。<span class="code">ShowQueueContents</span> 锁定队列并枚举其内容：</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> ShowQueueContents(Queue&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt; q)
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">lock</span> (((ICollection)q).SyncRoot)
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> item <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> q)
+        {
+            Console.Write(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"{0} "</span>, item);
+        }
+    }
+    Console.WriteLine();
+}
+
+</pre></td></tr></table></span></div></div><p>下面是完整的示例。</p></div><h1 class="heading"><span onclick="ExpandCollapse(exampleToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(exampleToggle, event)" tabindex="0"><img id="exampleToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />示例</span></h1><div id="exampleSection" class="section" name="collapseableSection" style=""><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">using</span> System;
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">using</span> System.Threading;
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">using</span> System.Collections;
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">using</span> System.Collections.Generic;
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> SyncEvents
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> SyncEvents()
+    {
+
+        _newItemEvent = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> AutoResetEvent(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">false</span>);
+        _exitThreadEvent = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> ManualResetEvent(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">false</span>);
+        _eventArray = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> WaitHandle[2];
+        _eventArray[0] = _newItemEvent;
+        _eventArray[1] = _exitThreadEvent;
+    }
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> EventWaitHandle ExitThreadEvent
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span> { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> _exitThreadEvent; }
+    }
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> EventWaitHandle NewItemEvent
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span> { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> _newItemEvent; }
+    }
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> WaitHandle[] EventArray
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span> { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> _eventArray; }
+    }
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> EventWaitHandle _newItemEvent;
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> EventWaitHandle _exitThreadEvent;
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> WaitHandle[] _eventArray;
+}
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Producer 
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> Producer(Queue&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt; q, SyncEvents e)
+    {
+        _queue = q;
+        _syncEvents = e;
+    }
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Producer.ThreadRun</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> ThreadRun()
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> count = 0;
+        Random r = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Random();
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">while</span> (!_syncEvents.ExitThreadEvent.WaitOne(0, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">false</span>))
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">lock</span> (((ICollection)_queue).SyncRoot)
+            {
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">while</span> (_queue.Count &lt; 20)
+                {
+                    _queue.Enqueue(r.Next(0,100));
+                    _syncEvents.NewItemEvent.Set();
+                    count++;
+                }
+            }
+        }
+        Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Producer thread: produced {0} items"</span>, count);
+    }
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> Queue&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt; _queue;
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> SyncEvents _syncEvents;
+}
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Consumer
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> Consumer(Queue&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt; q, SyncEvents e)
+    {
+        _queue = q;
+        _syncEvents = e;
+    }
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Consumer.ThreadRun</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> ThreadRun()
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> count = 0;
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">while</span> (WaitHandle.WaitAny(_syncEvents.EventArray) != 1)
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">lock</span> (((ICollection)_queue).SyncRoot)
+            {
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> item = _queue.Dequeue();
+            }
+            count++;
+        } 
+        Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Consumer Thread: consumed {0} items"</span>, count);
+    }
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> Queue&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt; _queue;
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> SyncEvents _syncEvents;
+}
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> ThreadSyncSample
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> ShowQueueContents(Queue&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt; q)
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">lock</span> (((ICollection)q).SyncRoot)
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> item <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> q)
+            {
+                Console.Write(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"{0} "</span>, item);
+            }
+        }
+        Console.WriteLine();
+    }
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Main()
+    {
+        Queue&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt; queue = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Queue&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt;();
+        SyncEvents syncEvents = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> SyncEvents();
+
+        Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Configuring worker threads..."</span>);
+        Producer producer = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Producer(queue, syncEvents);
+        Consumer consumer = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Consumer(queue, syncEvents);
+        Thread producerThread = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Thread(producer.ThreadRun);
+        Thread consumerThread = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Thread(consumer.ThreadRun);
+
+        Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Launching producer and consumer threads..."</span>);        
+        producerThread.Start();
+        consumerThread.Start();
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">for</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> i=0; i&lt;4; i++)
+        {
+            Thread.Sleep(2500);
+            ShowQueueContents(queue);
+        }
+
+        Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Signaling threads to terminate..."</span>);
+        syncEvents.ExitThreadEvent.Set();
+
+        producerThread.Join();
+        consumerThread.Join();
+    }
+
+}
+
+</pre></td></tr></table></span></div></div><div class="code"><span codeLanguage="other"><table width="100%" cellspacing="0" cellpadding="0"><tr><th> </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>Configuring worker threads...
+Launching producer and consumer threads...
+22 92 64 70 13 59 9 2 43 52 91 98 50 96 46 22 40 94 24 87
+79 54 5 39 21 29 77 77 1 68 69 81 4 75 43 70 87 72 59
+0 69 98 54 92 16 84 61 30 45 50 17 86 16 59 20 73 43 21
+38 46 84 59 11 87 77 5 53 65 7 16 66 26 79 74 26 37 56 92
+Signalling threads to terminate...
+Consumer Thread: consumed 1053771 items
+Producer thread: produced 1053791 items</pre></td></tr></table></span></div></div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />请参见</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><h4 class="subHeading">任务</h4><div class="seeAlsoStyle"><span sdata="link"><mshelp:link keywords="e3536e49-254b-48cc-953e-7b5da4e13f73" tabindex="0">监视器同步技术示例</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="link"><mshelp:link keywords="3284fc60-de63-4262-ba92-ee730a873e3a" tabindex="0">等待同步技术示例</mshelp:link></span></div><h4 class="subHeading">概念</h4><div class="seeAlsoStyle"><span sdata="link"><a href="ac0f23a2-6bf3-4077-be99-538ae5fd3bc5.htm">C# 编程指南</a></span></div><h4 class="subHeading">参考</h4><div class="seeAlsoStyle"><span sdata="link"><a href="413e1f28-a2c5-4eec-8338-aa43e7982ff4.htm">线程同步（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="cer" target="T:System.Threading.Thread"><mshelp:link keywords="T:System.Threading.Thread" tabindex="0">Thread</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="656da1a4-707e-4ef6-9c6e-6d13b646af42.htm">lock 语句（C# 参考）</a></span></div><div class="seeAlsoStyle"><span sdata="cer" target="T:System.Threading.AutoResetEvent"><mshelp:link keywords="T:System.Threading.AutoResetEvent" tabindex="0">AutoResetEvent</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="cer" target="T:System.Threading.ManualResetEvent"><mshelp:link keywords="T:System.Threading.ManualResetEvent" tabindex="0">ManualResetEvent</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="cer" target="M:System.Threading.EventWaitHandle.Set"><mshelp:link keywords="M:System.Threading.EventWaitHandle.Set" tabindex="0">Set</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="cer" target="Overload:System.Threading.Thread.Join"><mshelp:link keywords="Overload:System.Threading.Thread.Join" tabindex="0">Join</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="cer" target="Overload:System.Threading.WaitHandle.WaitOne"><mshelp:link keywords="Overload:System.Threading.WaitHandle.WaitOne" tabindex="0">WaitOne</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="cer" target="Overload:System.Threading.WaitHandle.WaitAll"><mshelp:link keywords="Overload:System.Threading.WaitHandle.WaitAll" tabindex="0">WaitAll</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="cer" target="T:System.Collections.Queue"><mshelp:link keywords="T:System.Collections.Queue" tabindex="0">Queue</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="cer" target="T:System.Collections.ICollection"><mshelp:link keywords="T:System.Collections.ICollection" tabindex="0">ICollection</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="cer" target="Overload:System.Threading.Thread.Start"><mshelp:link keywords="Overload:System.Threading.Thread.Start" tabindex="0">Start</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="cer" target="Overload:System.Threading.Thread.Sleep"><mshelp:link keywords="Overload:System.Threading.Thread.Sleep" tabindex="0">Sleep</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="cer" target="T:System.Threading.WaitHandle"><mshelp:link keywords="T:System.Threading.WaitHandle" tabindex="0">WaitHandle</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="cer" target="T:System.Threading.EventWaitHandle"><mshelp:link keywords="T:System.Threading.EventWaitHandle" tabindex="0">EventWaitHandle</mshelp:link></span></div></div></div>
+      <div id="footer">
+        <div class="footerLine">
+          <img width="100%" height="3px" src="../icons/footer.gif" title="“页脚”图像" />
+        </div>
+<span id="feedbackarea">将有关本主题的<a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);">反馈意见</a>发送给 Microsoft。</span>
+</div>
+    </div>
+  </body>
+</html>

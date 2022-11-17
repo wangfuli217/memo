@@ -1,0 +1,354 @@
+<html><HEAD><TITLE>Programming Ruby: The Pragmatic Programmer's Guide</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=iso-8859-1"><LINK media=screen href="121_files/pr_style[1].css"  type=text/css rel=StyleSheet></head>
+<BODY bgColor=white>
+<TABLE cellSpacing=0 cellPadding=3 width="100%" bgColor=#c09090 border=0>
+<TBODY>
+<TR>
+<TD colSpan=3>
+<TABLE cellPadding=20 width="100%" bgColor=#701a1a>
+<TBODY>
+<TR>
+<TD width=6>
+<H1 class=header>Programming Ruby</H1>
+<H3 class=subheader>The Pragmatic Programmer's Guide</H3></TD></TR></TBODY></TABLE></TD></TR>
+<TR>
+<TD align=left width="33%"><A class=subheader href="120.html" >Previous &lt;</A> </TD>
+<TD vAlign=center align=middle width="33%"><A class=subheader href="95.html" >Contents ^</A> <BR></TD>
+<TD align=right width="33%"><A class=subheader href="122.html" >Next &gt;</A> <BR></TD></TR></TBODY></TABLE><!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<H1>Object-Oriented Design Libraries</H1>
+<HR>
+<BR>
+<P></P>One of the interesting things about Ruby is the way it blurs the distinction between design and implementation. Ideas that have to be expressed at the design level in other languages can be implemented directly in Ruby. 
+<P></P>To help in this process, Ruby has support for some design-level strategies. 
+<P></P>
+<UL>
+<LI><B>The Visitor pattern</B> (Design Patterns, ) is a way of traversing a collection without having to know the internal organization of that collection. 
+<LI><B>Delegation</B> is a way of composing classes more flexibly and dynamically than can be done using standard inheritance. 
+<LI><B>The Singleton pattern</B> is a way of ensuring that only one instantiation of a particular class exists at a time. 
+<LI><B>The Observer pattern</B> implements a protocol allowing one object to notify a set of interested objects when certain changes have occurred. </LI></UL>
+<P></P>Normally, all four of these strategies require explicit code each time they're implemented. With Ruby, they can be abstracted into a library and reused freely and transparently. 
+<P></P>Before we get into the proper library descriptions, let's get the simplest strategy out of the way. 
+<P></P>
+<H2><A name=S1>The Visitor Pattern</A></H2>
+<P></P>It's the method <CODE>each</CODE>. 
+<P></P>
+<TABLE cellPadding=10 width="100%" bgColor=#660066 border=0>
+<TBODY>
+<TR>
+<TD vAlign=center><FONT color=white size=7>Library: delegate</FONT> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>Object delegation is a way of <EM>composing</EM> objects---extending an object with the capabilities of another---at runtime. This promotes writing flexible, decoupled code, as there are no compile-time dependencies between the users of the overall class and the delegates. 
+<P></P>The Ruby <CODE>Delegator</CODE> class implements a simple but powerful delegation scheme, where requests are automatically forwarded from a master class to delegates or their ancestors, and where the delegate can be changed at runtime with a single method call. 
+<P></P>The <CODE>delegate.rb</CODE> library provides two mechanisms for allowing an object to forward messages to a delegate. 
+<P></P>
+<OL>
+<P></P>
+<LI>For simple cases where the class of the delegate is fixed, arrange for the master class to be a subclass of <CODE>DelegateClass</CODE>, passing the name of the class to be delegated as a parameter (Example 1). Then, in your class's <CODE>initialize</CODE> method, you'd call the superclass, passing in the object to be delegated. For example, to declare a class <CODE>Fred</CODE> that also supports all the methods in <CODE>Flintstone</CODE>, you'd write 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>class&nbsp;Fred&nbsp;&lt;&nbsp;DelegateClass(Flintstone)
+&nbsp;&nbsp;def&nbsp;initialize
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;...
+&nbsp;&nbsp;&nbsp;&nbsp;super(Flintstone.new(...))
+&nbsp;&nbsp;end
+&nbsp;&nbsp;#&nbsp;...
+&nbsp;end
+</PRE></TD></TR></TBODY></TABLE>This is subtly different from using subclassing. With subclassing, there is only one object, which has the methods and the defined class, its parent, and their ancestors. With delegation there are two objects, linked so that calls to one may be delegated to the other. 
+<P></P>
+<LI>For cases where the delegate needs to be dynamic, make the master class a subclass of <CODE>SimpleDelegator</CODE> (Example 2). You can also add delegation capabilities to an existing object using <CODE>SimpleDelegator</CODE> (Example 3). In these cases, you can call the <CODE>__setobj__</CODE> method in <CODE>SimpleDelegator</CODE> to change the object being delegated at runtime. 
+<P></P></LI></OL>
+<P></P><B>Example 1.</B> Use the <CODE>DelegateClass</CODE> method and subclass the result when you need a class with its own behavior that also delegates to an object of another class. In this example, we assume that the <CODE>@sizeInInches</CODE> array is large, so we want only one copy of it. We then define a class that accesses it, converting the values to feet. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>require&nbsp;'delegate'
+<P></P>
+sizeInInches&nbsp;=&nbsp;[&nbsp;10,&nbsp;15,&nbsp;22,&nbsp;120&nbsp;]
+<P></P>
+class&nbsp;Feet&nbsp;&lt;&nbsp;DelegateClass(Array)
+&nbsp;&nbsp;def&nbsp;initialize(arr)
+&nbsp;&nbsp;&nbsp;&nbsp;super(arr)
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;[](*n)
+&nbsp;&nbsp;&nbsp;&nbsp;val&nbsp;=&nbsp;super(*n)
+&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;val.type
+&nbsp;&nbsp;&nbsp;&nbsp;when&nbsp;Numeric;&nbsp;val/12.0
+&nbsp;&nbsp;&nbsp;&nbsp;else;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;val.collect&nbsp;{|i|&nbsp;i/12.0}
+&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;end
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>sizeInFeet&nbsp;=&nbsp;Feet.new(sizeInInches)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>sizeInInches[0..3]</CODE> </TD>
+<TD vAlign=top>»</TD>
+<TD vAlign=top><CODE>[10,&nbsp;15,&nbsp;22,&nbsp;120]</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>sizeInFeet[0..3]</CODE> </TD>
+<TD vAlign=top>»</TD>
+<TD vAlign=top><CODE>[0.8333333333,&nbsp;1.25,&nbsp;1.833333333,&nbsp;10.0]</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P><B>Example 2.</B> Use subclass <CODE>SimpleDelegator</CODE> when you want an object that both has its own behavior <EM>and</EM> delegates to different objects during its lifetime. This is an example of the State pattern. Objects of class <CODE>TicketOffice</CODE> sell tickets if a seller is available, or tell you to come back tomorrow if there is no seller. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>require&nbsp;'delegate'
+<P></P>
+class&nbsp;TicketSeller
+&nbsp;&nbsp;def&nbsp;sellTicket()
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;'Here&nbsp;is&nbsp;a&nbsp;ticket'
+&nbsp;&nbsp;end
+end
+<P></P>
+class&nbsp;NoTicketSeller
+&nbsp;&nbsp;def&nbsp;sellTicket()
+&nbsp;&nbsp;&nbsp;&nbsp;"Sorry-come&nbsp;back&nbsp;tomorrow"
+&nbsp;&nbsp;&nbsp;end
+end
+<P></P>
+class&nbsp;TicketOffice&nbsp;&lt;&nbsp;SimpleDelegator
+&nbsp;&nbsp;def&nbsp;initialize
+&nbsp;&nbsp;&nbsp;&nbsp;@seller&nbsp;=&nbsp;TicketSeller.new
+&nbsp;&nbsp;&nbsp;&nbsp;@noseller&nbsp;=&nbsp;NoTicketSeller.new
+&nbsp;&nbsp;&nbsp;&nbsp;super(@seller)
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;allowSales(allow&nbsp;=&nbsp;true)
+&nbsp;&nbsp;&nbsp;&nbsp;__setobj__(allow&nbsp;?&nbsp;@seller&nbsp;:&nbsp;@noseller)
+&nbsp;&nbsp;&nbsp;&nbsp;allow
+&nbsp;&nbsp;end
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>to&nbsp;=&nbsp;TicketOffice.new</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>to.sellTicket</CODE> </TD>
+<TD vAlign=top>»</TD>
+<TD vAlign=top><CODE>"Here&nbsp;is&nbsp;a&nbsp;ticket"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>to.allowSales(false)</CODE> </TD>
+<TD vAlign=top>»</TD>
+<TD vAlign=top><CODE>false</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>to.sellTicket</CODE> </TD>
+<TD vAlign=top>»</TD>
+<TD vAlign=top><CODE>"Sorry-come&nbsp;back&nbsp;tomorrow"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>to.allowSales(true)</CODE> </TD>
+<TD vAlign=top>»</TD>
+<TD vAlign=top><CODE>true</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>to.sellTicket</CODE> </TD>
+<TD vAlign=top>»</TD>
+<TD vAlign=top><CODE>"Here&nbsp;is&nbsp;a&nbsp;ticket"</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P><B>Example 3.</B> Create <CODE>SimpleDelegator</CODE> objects when you want a single object to delegate all its methods to two or more other objects. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>#&nbsp;Example&nbsp;3&nbsp;-&nbsp;delegate&nbsp;from&nbsp;existing&nbsp;object</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>seller&nbsp;&nbsp;&nbsp;=&nbsp;TicketSeller.new</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>noseller&nbsp;=&nbsp;NoTicketSeller.new</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>to&nbsp;=&nbsp;SimpleDelegator.new(seller)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>to.sellTicket</CODE> </TD>
+<TD vAlign=top>»</TD>
+<TD vAlign=top><CODE>"Here's&nbsp;a&nbsp;ticket"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>to.sellTicket</CODE> </TD>
+<TD vAlign=top>»</TD>
+<TD vAlign=top><CODE>"Here's&nbsp;a&nbsp;ticket"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>to.__setobj__(noseller)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>to.sellTicket</CODE> </TD>
+<TD vAlign=top>»</TD>
+<TD vAlign=top><CODE>"Sorry-come&nbsp;back&nbsp;tomorrow"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>to.__setobj__(seller)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>to.sellTicket</CODE> </TD>
+<TD vAlign=top>»</TD>
+<TD vAlign=top><CODE>"Here's&nbsp;a&nbsp;ticket"</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>
+<P></P>
+<TABLE cellPadding=10 width="100%" bgColor=#660066 border=0>
+<TBODY>
+<TR>
+<TD vAlign=center><FONT color=white size=7>Library: observer</FONT> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>The Observer pattern, also known as Publish/Subscribe, provides a simple mechanism for one object to inform a set of interested third-party objects when its state changes. 
+<P></P>In the Ruby implementation, the notifying class mixes in the <CODE>Observable</CODE> module, which provides the methods for managing the associated observer objects. 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<P></P>
+<TBODY>
+<TR>
+<TD bgColor=#ff9999 colSpan=9 height=3><IMG height=1 src="120_files/dot[1].gif"  width=1></TD></TR>
+<TR>
+<TD vAlign=top>add_observer(<I>obj</I>)</TD>
+<TD vAlign=top>Add <I>obj</I> as an observer on this object. <I>obj</I> will now receive notifications.</TD></TR>
+<TR>
+<TD vAlign=top>delete_observer(<I>obj</I>)</TD>
+<TD vAlign=top>Delete <I>obj</I> as an observer on this object. It will no longer receive notifications.</TD></TR>
+<TR>
+<TD vAlign=top>delete_observers</TD>
+<TD vAlign=top>Delete all observers associated with this object.</TD></TR>
+<TR>
+<TD vAlign=top>count_observers</TD>
+<TD vAlign=top>Return the count of observers associated with this object.</TD></TR>
+<TR>
+<TD vAlign=top>changed(<I>newState</I>=<CODE>true</CODE>)</TD>
+<TD vAlign=top>Set the changed state of this object. Notifications will be sent only if the changed state is <CODE>true</CODE>.</TD></TR>
+<TR>
+<TD vAlign=top>changed?</TD>
+<TD vAlign=top>Query the changed state of this object.</TD></TR>
+<TR>
+<TD vAlign=top>notify_observers(<I>*args</I>)</TD>
+<TD vAlign=top>If this object's changed state is true, invoke the <CODE>update</CODE> method in each currently associated observer in turn, passing it the given arguments. The changed state is then set to <CODE>false</CODE>.</TD></TR>
+<TR>
+<TD bgColor=#ff9999 colSpan=9 height=2><IMG height=1 src="120_files/dot[1].gif"  width=1></TD></TR></TBODY></TABLE>
+<P></P>The observers must implement the <CODE>update</CODE> method to receive notifications. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>require&nbsp;"observer"
+<P></P>
+&nbsp;&nbsp;class&nbsp;Ticker&nbsp;#&nbsp;Periodically&nbsp;fetch&nbsp;a&nbsp;stock&nbsp;price
+&nbsp;&nbsp;&nbsp;&nbsp;include&nbsp;Observable
+<P></P>
+&nbsp;&nbsp;&nbsp;&nbsp;def&nbsp;initialize(symbol)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@symbol&nbsp;=&nbsp;symbol
+&nbsp;&nbsp;&nbsp;&nbsp;end
+<P></P>
+&nbsp;&nbsp;&nbsp;&nbsp;def&nbsp;run
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lastPrice&nbsp;=&nbsp;nil
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;loop&nbsp;do
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;price&nbsp;=&nbsp;Price.fetch(@symbol)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;"Current&nbsp;price:&nbsp;#{price}\n"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;price&nbsp;!=&nbsp;lastPrice
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;changed&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;notify&nbsp;observers
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lastPrice&nbsp;=&nbsp;price
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;notify_observers(Time.now,&nbsp;price)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;end
+<P></P>
+&nbsp;&nbsp;class&nbsp;Warner
+&nbsp;&nbsp;&nbsp;&nbsp;def&nbsp;initialize(ticker,&nbsp;limit)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@limit&nbsp;=&nbsp;limit
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ticker.add_observer(self)&nbsp;&nbsp;&nbsp;#&nbsp;all&nbsp;warners&nbsp;are&nbsp;observers
+&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;end
+<P></P>
+&nbsp;&nbsp;class&nbsp;WarnLow&nbsp;&lt;&nbsp;Warner
+&nbsp;&nbsp;&nbsp;&nbsp;def&nbsp;update(time,&nbsp;price)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;callback&nbsp;for&nbsp;observer
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;price&nbsp;&lt;&nbsp;@limit
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;"---&nbsp;#{time.to_s}:&nbsp;Price&nbsp;below&nbsp;#@limit:&nbsp;#{price}\n"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;end
+<P></P>
+&nbsp;&nbsp;class&nbsp;WarnHigh&nbsp;&lt;&nbsp;Warner
+&nbsp;&nbsp;&nbsp;&nbsp;def&nbsp;update(time,&nbsp;price)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;callback&nbsp;for&nbsp;observer
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;price&nbsp;&gt;&nbsp;@limit
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;"+++&nbsp;#{time.to_s}:&nbsp;Price&nbsp;above&nbsp;#@limit:&nbsp;#{price}\n"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;end
+<P></P>
+ticker&nbsp;=&nbsp;Ticker.new("MSFT")
+WarnLow.new(ticker,&nbsp;80)
+WarnHigh.new(ticker,&nbsp;120)
+ticker.run
+</PRE></TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>Current&nbsp;price:&nbsp;83
+Current&nbsp;price:&nbsp;75
+---&nbsp;Sun&nbsp;Jun&nbsp;09&nbsp;00:10:25&nbsp;CDT&nbsp;2002:&nbsp;Price&nbsp;below&nbsp;80:&nbsp;75
+Current&nbsp;price:&nbsp;90
+Current&nbsp;price:&nbsp;134
++++&nbsp;Sun&nbsp;Jun&nbsp;09&nbsp;00:10:25&nbsp;CDT&nbsp;2002:&nbsp;Price&nbsp;above&nbsp;120:&nbsp;134
+Current&nbsp;price:&nbsp;134
+Current&nbsp;price:&nbsp;112
+Current&nbsp;price:&nbsp;79
+---&nbsp;Sun&nbsp;Jun&nbsp;09&nbsp;00:10:25&nbsp;CDT&nbsp;2002:&nbsp;Price&nbsp;below&nbsp;80:&nbsp;79
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>
+<TABLE cellPadding=10 width="100%" bgColor=#660066 border=0>
+<TBODY>
+<TR>
+<TD vAlign=center><FONT color=white size=7>Library: singleton</FONT> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>The Singleton design pattern ensures that only one instance of a particular class may be created. 
+<P></P>The <CODE>singleton</CODE> library makes this simple to implement. Mix the <CODE>Singleton</CODE> module into each class that is to be a singleton, and that class's <CODE>new</CODE> method will be made private. In its place, users of the class call the method <CODE>instance</CODE>, which returns a singleton instance of that class. 
+<P></P>In this example, the two instances of <CODE>MyClass</CODE> are the same object. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>require&nbsp;'singleton'</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE></CODE></TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>class&nbsp;MyClass</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;include&nbsp;Singleton</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE></CODE></TD></TR>
+<TR>
+<TD vAlign=top><CODE>a&nbsp;=&nbsp;MyClass.instance</CODE> </TD>
+<TD vAlign=top>»</TD>
+<TD vAlign=top><CODE>#&lt;MyClass:0x401b4ca8&gt;</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>b&nbsp;=&nbsp;MyClass.instance</CODE> </TD>
+<TD vAlign=top>»</TD>
+<TD vAlign=top><CODE>#&lt;MyClass:0x401b4ca8&gt;</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>
+<P></P>
+<P></P>
+<HR>
+
+<TABLE cellSpacing=0 cellPadding=10 bgColor=#a03030 border=0>
+<TBODY>
+<TR>
+<TD align=left width="33%"><A class=subheader href="120.html" >Previous &lt;</A> </TD>
+<TD vAlign=center align=middle width="33%"><A class=subheader href="95.html" >Contents ^</A> <BR></TD>
+<TD align=right width="33%"><A class=subheader href="122.html" >Next &gt;</A> <BR></TD></TR></TBODY></TABLE>
+<P></P><FONT size=-1>Extracted from the book "Programming Ruby - The Pragmatic Programmer's Guide"</FONT> <BR><FONT size=-3>Copyright © 2001 by Addison Wesley Longman, Inc. This material may be distributed only subject to the terms and conditions set forth in the Open Publication License, v1.0 or later (the latest version is presently available at <A href="http://www.opencontent.org/openpub/" >http://www.opencontent.org/openpub/</A>)). 
+<P></P>Distribution of substantively modified versions of this document is prohibited without the explicit permission of the copyright holder. 
+<P></P>Distribution of the work or derivative of the work in any standard (paper) book form is prohibited unless prior permission is obtained from the copyright holder. <BR></FONT></BODY>

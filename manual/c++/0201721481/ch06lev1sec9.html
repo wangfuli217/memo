@@ -1,0 +1,173 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 6.9.  The do while Statement</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch06lev1sec8.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch06lev1sec10.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch06lev1sec9"></a>
+
+        <h3 class="docSection1Title">6.9. The <tt>do while</tt> Statement</h3>
+        <h3 class="docSection1Title">6.9. <tt>do while</tt> 语句</h3>
+
+<a name="idd1e44692"></a><a name="idd1e44700"></a>
+        <p class="docText">We might want to write a program that interactively performs some calculation for its user. As a simple example, we might want to do sums for the user: Our program prompts the user for a pair of numbers and produces their sum. Having generated one sum, we'd like the program to give the user the option to repeat the process and generate another.</p>
+        <p class="docText">在实际应用中，可能会要求程序员编写一个交互程序，为用户实现某种计算。一个简单的例子是：程序提示用户输入两个数，然后输出读入数之和。在输出和值后，程序可以让用户选择是否重复这个过程计算下一个和。</p>
+
+        <p class="docText">The body of this program is pretty easy. We'll need to write a prompt, then read a pair of values and print the sum of the values we read. After we print the sum, we'll ask the user whether to continue.</p>
+	<p class="docText">程序的实现相当简单。只需输出一个提示，接着读入两个数，然后输出读入数之和。输出结果后，询问用户是否继续。</p>
+
+        <p class="docText">The hard part is deciding on a control structure. The problem is that we want to execute the loop until the user asks to exit. In particular, we want to do a sum even on the first iteration. The <tt>do while</tt> loop does exactly what we need. It guarantees that its body is always executed at least once. The syntactic form is as follows:</p>
+        <p class="docText">关键在于控制结构的选择。问题是要到用户要求退出时，才中止循环的执行。尤其是，在第一次循环时就要求一次和。<tt>do while</tt> 循环正好满足这样的需要。它保证循环体至少执行一次。</p>
+        <pre>
+     do
+             <span class="docEmphasis">statement</span>
+     while   <span class="docEmphasis">(condition);</span>
+</pre><br>
+        <a name="ch06note18"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Unlike a <tt>while</tt> statement, a <tt>do</tt>-<tt>while</tt> statement always ends with a semicolon.</p>
+                <p class="docText">与 <tt>while</tt> 语句不同。<tt>do</tt>-<tt>while</tt> 语句总是以分号结束。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">The <span class="docEmphasis">statement</span> in a <tt>do</tt> is executed before <span class="docEmphasis">condition</span> is evaluated. The <span class="docEmphasis">condition</span> cannot be empty. If <span class="docEmphasis">condition</span> evaluates as <tt>false</tt>, then the loop terminates; otherwise, the loop is repeated. Using a <tt>do while</tt>, we can write our program:</p>
+        <p class="docText">在求解 <span class="docEmphasis">condition</span> 之前，先执行了 <tt>do</tt> 里面的 <span class="docEmphasis">statement</span>。<span class="docEmphasis">condition</span> 不能为空。如果 <span class="docEmphasis">condition</span> 的值为假，则循环结束，否则循环重复执行。使用 <tt>do while</tt> 循环，可以编写程序如下：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">repeatedly ask user for pair of numbers to sum</span>
+     string rsp; // <span class="docEmphItalicAlt">used in the condition; can't be defined inside the</span> <span class="docEmphasis">do</span>
+     do {
+        cout &lt;&lt; "please enter two values: ";
+        int val1, val2;
+        cin  &gt;&gt; val1 &gt;&gt; val2;
+        cout &lt;&lt; "The sum of " &lt;&lt; val1 &lt;&lt; " and " &lt;&lt; val2
+             &lt;&lt; " = " &lt;&lt; val1 + val2 &lt;&lt; "\n\n"
+             &lt;&lt; "More? [yes][no] ";
+        cin  &gt;&gt; rsp;
+     } while (!rsp.empty() &amp;&amp; rsp[0] != 'n');
+</pre><br>
+
+        <p class="docText">The body of this loop is similar to others we've written and so should be easy to follow. What might be a bit surprising is that we defined <tt>rsp</tt> before the <tt>do</tt> rather than defining it inside the loop. Had we defined <tt>rsp</tt> inside the <tt>do</tt>, then <tt>rsp</tt> would go out of scope at the close curly brace before the <tt>while</tt>. Any variable referenced inside the condition must exist before the <tt>do</tt> statement itself.</p>
+        <p class="docText">循环体与之前编写的其他循环语句相似，因此很容易理解。奇怪的是此代码把 <tt>rsp</tt> 定义在 <tt>do</tt> 之前而不是在循环体内部。如果把 <tt>rsp</tt> 定义在 <tt>do</tt> 内部，那么 <tt>rsp</tt> 的作用域就被限制在 <tt>while</tt> 前的右花括号之前了。任何在循环条件中引用变量都必须在 <tt>do</tt> 语句之前就已经存在。</p>
+
+        <p class="docText">Because the condition is not evaluated until after the statement or block is executed, the <tt>do while</tt> loop does not allow variable definitions:</p>
+        <p class="docText">因为要到循环语句或者语句块执行之后，才求解循环条件，因此 <tt>do while</tt> 循环不可以采用如下方式定义变量：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">error: declaration statement within</span> <span class="docEmphasis">do</span> <span class="docEmphItalicAlt">condition is not supported</span>
+     do {
+         // ...
+         mumble(foo);
+     } while (int foo = get_foo()); // <span class="docEmphItalicAlt">error: declaration in</span> <span class="docEmphasis">do</span> <span class="docEmphItalicAlt">condition</span>
+</pre><br>
+
+        <p class="docText">If we could define variables in the condition, then any use of the variable would happen <span class="docEmphasis">before</span> the variable was defined!</p>
+        <p class="docText">如果可以在循环条件中定义变量的话，则对变量的任何使用都将发生在变量定义之前！</p>
+
+<a name="ch06sb07"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 6.9</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+			  <a name="ch06qa6q1"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 6.17:</b></td>
+
+                    <td>
+<a name="idd1e44862"></a><a name="idd1e44867"></a>
+                      <p class="docText">Explain each of the following loops. Correct any problems you detect.</p>
+                      <p class="docText">解释下列的循环。更正你发现的问题。</p>
+                      <pre>
+     (a) do
+              int v1, v2;
+              cout &lt;&lt; "Please enter two numbers to sum:" ;
+              cin &gt;&gt; v1 &gt;&gt; v2;
+              if (cin)
+                  cout &lt;&lt; "Sum is: "
+                       &lt;&lt; v1 + v2 &lt;&lt; endl;
+         while (cin);
+
+     (b) do {
+             // ...
+         } while (int ival = get_response());
+
+     (c) do {
+             int ival = get_response();
+             if (ival == some_value())
+                  break;
+         } while (ival);
+          if (!ival)
+              // ...
+</pre><br>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+<a name="ch06qa6q2"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 6.18:</b></td>
+
+                    <td>
+                      <p class="docText">Write a small program that requests two <tt>string</tt>s from the user and reports which <tt>string</tt> is lexicographically less than the other (that is, comes before the other alphabetically). Continue to solicit the user until the user requests to quit. Use the <tt>string</tt> type, the <tt>string</tt> less-than operator, and a <tt>do while</tt> loop.</p>
+                      <p class="docText">编写一个小程序，由用户输入两个 <tt>string</tt> 对象，然后报告哪个 <tt>string</tt> 对象按字母排列次序而言比较小（也就是说，哪个的字典序靠前）。继续要求用户输入，直到用户请求退出为止。请使用 <tt>string</tt> 类型、<tt>string</tt> 类型的小于操作符以及 <tt>do while</tt> 循环实现。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a href="21001535.html" ><img src="images/pixel.gif"  alt="" width="1" height="1" border="0"></a>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch06lev1sec8.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch06lev1sec10.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

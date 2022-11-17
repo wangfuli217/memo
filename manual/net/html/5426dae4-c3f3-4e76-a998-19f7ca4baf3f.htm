@@ -1,0 +1,217 @@
+﻿<html xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+    <META NAME="save" CONTENT="history" />
+    <title>如何：使用线程池（C# 编程指南）</title>
+    <link rel="stylesheet" type="text/css" href="../styles/presentation.css" />
+    <link rel="stylesheet" type="text/css" href="ms-help://Hx/HxRuntime/HxLink.css" />
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/EventUtilities.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/SplitScreen.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/Dropdown.js"> </script>
+    <script type="text/javascript" src="../scripts/script_manifold.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/script_feedBack.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CheckboxMenu.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CommonUtilities.js"> </script>
+    <xml>
+      <MSHelp:TOCTitle Title="如何：使用线程池" />
+      <MSHelp:Keyword Index="A" Term="5426dae4-c3f3-4e76-a998-19f7ca4baf3f" />
+      <MSHelp:Keyword Index="K" Term="线程池" />
+      <MSHelp:Keyword Index="K" Term="线程处理 [C#], 线程池" />
+      <MSHelp:Attr Name="RevisionNumber" Value="25" />
+      <MSHelp:Attr Name="AssetID" Value="5426dae4-c3f3-4e76-a998-19f7ca4baf3f" />
+      <MSHelp:Attr Name="Abstract" Value="“线程池”是可以用来在后台执行多个任务的线程集合。（有关背景信息，请参见Using Threading。）这使主线程可以自由地异步执行其他任务。" />
+      <MSHelp:Attr Name="codelang" Value="CSharp" />
+      <MSHelp:Attr Name="CommunityContent" Value="1" />
+      <MSHelp:Attr Name="DevLang" Value="CSharp" />
+      <MSHelp:Attr Name="DevLangVers" Value="CSharp" />
+      <MSHelp:Attr Name="DocSet" Value="C#" />
+      <MSHelp:Attr Name="DocSet" Value="C# Lang" />
+      <MSHelp:Attr Name="DocSet" Value="ExpressLibVS" />
+      <MSHelp:Attr Name="ProgModel" Value="managed" />
+      <MSHelp:Attr Name="ShippedIn" Value="vs.90" />
+      <MSHelp:Attr Name="Technology" Value="ManagedCode" />
+      <MSHelp:Attr Name="TopicVersion" Value="09.00.08178.10000" />
+      <MSHelp:Attr Name="Catalog Container" Value="System_Default_Catalog" />
+      <MSHelp:Attr Name="Content Set Container" Value="System_Default_Content_Set" />
+      <MSHelp:Attr Name="TopicType" Value="kbHowTo" />
+      <MSHelp:Attr Name="Locale" Value="zh-chs" />
+    </xml>
+  </head>
+  <body>
+    <input type="hidden" id="userDataCache" class="userDataStyle" />
+    <input type="hidden" id="hiddenScrollOffset" />
+    <img id="collapseImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" title="“折叠”图像" />
+    <img id="expandImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" title="“展开”图像" />
+    <img id="collapseAllImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" />
+    <img id="expandAllImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" />
+    <img id="dropDownImage" style="display:none; height:0; width:0;" src="../icons/dropdown.gif" />
+    <img id="dropDownHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/dropdownHover.gif" />
+    <img id="copyImage" style="display:none; height:0; width:0;" src="../icons/copycode.gif" title="“复制”图像" />
+    <img id="copyHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/copycodeHighlight.gif" title="“复制悬停”图像" />
+    <div id="header">
+      <table id="topTable" cellspacing="0" cellpadding="0">
+        <tr>
+          <td>
+            <span onclick="ExpandCollapseAll(toggleAllImage)" style="cursor:default;" onkeypress="ExpandCollapseAll_CheckKey(toggleAllImage, event)" tabindex="0">
+              <img ID="toggleAllImage" class="toggleAll" src="../icons/collapse_all.gif" /> <label id="collapseAllLabel" for="toggleAllImage" style="display: none;">全部折叠</label><label id="expandAllLabel" for="toggleAllImage" style="display: none;">全部展开</label> </span>
+            <span>    </span>
+            <span id="devlangsDropdown" class="filter" tabindex="0">
+              <img id="devlangsDropdownImage" src="../icons/dropdown.gif" /> <label id="devlangsMenuAllLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：全部 </nobr></label><label id="devlangsMenuMultipleLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：多个 </nobr></label><label id="devlangsMenuVisualBasicLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual Basic </nobr></label><label id="devlangsMenuCSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：C# </nobr></label><label id="devlangsMenuManagedCPlusPlusLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual C++ </nobr></label><label id="devlangsMenuJSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：J# </nobr></label><label id="devlangsMenuJScriptLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：JScript </nobr></label></span>
+          </td>
+        </tr>
+      </table>
+      <div id="devlangsMenu">
+        <input id="VisualBasicCheckbox" type="checkbox" data="VisualBasic,vb,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="VisualBasicCheckbox">Visual Basic</label>
+        <br />
+        <input id="CSharpCheckbox" type="checkbox" data="CSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="CSharpCheckbox">C#</label>
+        <br />
+        <input id="ManagedCPlusPlusCheckbox" type="checkbox" data="ManagedCPlusPlus,cpp,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="ManagedCPlusPlusCheckbox">Visual C++</label>
+        <br />
+        <input id="JSharpCheckbox" type="checkbox" data="JSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JSharpCheckbox">J#</label>
+        <br />
+        <input id="JScriptCheckbox" type="checkbox" data="JScript,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JScriptCheckbox">JScript</label>
+        <br />
+      </div>
+      <table id="bottomTable" cellpadding="0" cellspacing="0">
+        <tr id="headerTableRow1">
+          <td align="left">
+            <span id="runningHeaderText">C# 编程指南</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow2">
+          <td align="left">
+            <span id="nsrTitle">如何：使用线程池（C# 编程指南）</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow3">
+          <td align="left">
+            <a href="5426dae4-c3f3-4e76-a998-19f7ca4baf3f.htm#exampleToggle" onclick="OpenSection(exampleToggle)">示例</a>  <a href="5426dae4-c3f3-4e76-a998-19f7ca4baf3f.htm#seeAlsoToggle" onclick="OpenSection(seeAlsoToggle)">另请参见</a>  
+<script type="text/javascript">
+var fbBody = '%b8%d0%d0%bb%c4%fa%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%bf%aa%b7%a2%b0%e6%b1%e0%d0%b4%cd%c5%b6%d3%bd%ab%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%d3%c3%d3%da%b8%c4%bd%f8%ce%c4%b5%b5%a1%a3%ce%d2%c3%c7%d4%da%c9%f3%d4%c4%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%ca%b1%a3%ac%bf%c9%c4%dc%bb%e1%b8%f8%c4%fa%b7%a2%cb%cd%b5%e7%d7%d3%d3%ca%bc%fe%a3%ac%d2%d4%c7%eb%c4%fa%cc%e1%b9%a9%bd%f8%d2%bb%b2%bd%b5%c4%bd%e2%ca%cd%cb%b5%c3%f7%bb%f2%d5%df%be%cd%bd%e2%be%f6%b7%bd%b0%b8%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%ce%d2%c3%c7%b2%bb%bb%e1%bd%ab%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%d3%c3%d3%da%c8%ce%ba%ce%c6%e4%cb%fb%d3%c3%cd%be%a3%ac%b2%a2%c7%d2%d4%da%c9%f3%d4%c4%cd%ea%d6%ae%ba%f3%a3%ac%ce%d2%c3%c7%b2%bb%bb%e1%d4%d9%b1%a3%c1%f4%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%a1%a3%0d%0a%d3%d0%b9%d8%20Microsoft%20%d2%fe%cb%bd%d5%fe%b2%df%b5%c4%bd%f8%d2%bb%b2%bd%d0%c5%cf%a2%a3%ac%c7%eb%b2%ce%bc%fb%20http%3a%2f%2fprivacy.microsoft.com%2fzh-cn%2fdefault.aspx%a1%a3';
+var fbSubject = 'Customer%20Feedback';
+</script>
+  <span id="headfeedbackarea" class="feedbackhead"><a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);"> 发送反馈意见</a></span>
+</td>
+        </tr>
+      </table>
+      <table id="gradientTable">
+        <tr>
+          <td class="nsrBottom" background="../icons/gradient.gif" />
+        </tr>
+      </table>
+    </div>
+    <div id="mainSection">
+      <div id="mainBody">
+        <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
+        <font color="DarkGray"></font>
+        <p /> <p><font color="DarkGray">更新：2007 年 11 月</font></p><div class="introduction"><p>“线程池”是可以用来在后台执行多个任务的线程集合。（有关背景信息，请参见<span sdata="link"><a href="8587c5e7-7d6b-4a1c-918c-5b62b16be8a8.htm">使用线程处理（C# 编程指南）</a></span>。）这使主线程可以自由地异步执行其他任务。</p><p>线程池通常用于服务器应用程序。每个传入请求都将分配给线程池中的一个线程，因此可以异步处理请求，而不会占用主线程，也不会延迟后续请求的处理。</p><p>一旦池中的某个线程完成任务，它将返回到等待线程队列中，等待被再次使用。这种重用使应用程序可以避免为每个任务创建新线程的开销。</p><p>线程池通常具有最大线程数限制。如果所有线程都繁忙，则额外的任务将放入队列中，直到有线程可用时才能够得到处理。</p><p>您可以实现自己的线程池，但是通过 <span sdata="cer" target="T:System.Threading.ThreadPool"><mshelp:link keywords="T:System.Threading.ThreadPool" tabindex="0">ThreadPool</mshelp:link></span> 类使用 .NET Framework 提供的线程池更容易一些。</p><p>下面的示例使用 .NET Framework 线程池计算 20 和 40 之间的十个数的 <span class="code">Fibonacci</span> 结果。每个 <span class="code">Fibonacci</span> 结果都由 <span class="code">Fibonacci</span> 类表示，该类提供一种名为 <span class="code">ThreadPoolCallback</span> 的方法来执行此计算。将创建表示每个 <span class="code">Fibonacci</span> 值的对象，<span class="code">ThreadPoolCallback</span> 方法将传递给 <span sdata="cer" target="Overload:System.Threading.ThreadPool.QueueUserWorkItem"><mshelp:link keywords="Overload:System.Threading.ThreadPool.QueueUserWorkItem" tabindex="0">QueueUserWorkItem</mshelp:link></span>，它分配池中的一个可用线程来执行此方法。</p><p>由于为每个 <span class="code">Fibonacci</span> 对象都提供了一个半随机值来进行计算，而且每个线程都将争用处理器时间，因此无法提前知道十个结果全部计算出来所需的时间。这就是为何会在构造期间为每个 <span class="code">Fibonacci</span> 对象传递 <span sdata="cer" target="T:System.Threading.ManualResetEvent"><mshelp:link keywords="T:System.Threading.ManualResetEvent" tabindex="0">ManualResetEvent</mshelp:link></span> 类的一个实例的原因。当计算完成时，每个对象都通知提供的事件对象，使主线程用 <span sdata="cer" target="M:System.Threading.WaitHandle.WaitAll(System.Threading.WaitHandle[])"><mshelp:link keywords="Overload:System.Threading.WaitHandle.WaitAll" tabindex="0">WaitAll</mshelp:link></span> 阻止执行，直到十个 <span class="code">Fibonacci</span> 对象全部计算出了结果。然后 <span class="code">Main</span> 方法将显示每个 <span class="code">Fibonacci</span> 结果。</p></div><h1 class="heading"><span onclick="ExpandCollapse(exampleToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(exampleToggle, event)" tabindex="0"><img id="exampleToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />示例</span></h1><div id="exampleSection" class="section" name="collapseableSection" style=""><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">using</span> System;
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">using</span> System.Threading;
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Fibonacci
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> Fibonacci(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> n, ManualResetEvent doneEvent)
+    {
+        _n = n;
+        _doneEvent = doneEvent;
+    }
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Wrapper method for use with thread pool.</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> ThreadPoolCallback(Object threadContext)
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> threadIndex = (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>)threadContext;
+        Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"thread {0} started..."</span>, threadIndex);
+        _fibOfN = Calculate(_n);
+        Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"thread {0} result calculated..."</span>, threadIndex);
+        _doneEvent.Set();
+    }
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Recursive method that calculates the Nth Fibonacci number.</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> Calculate(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> n)
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> (n &lt;= 1)
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> n;
+        }
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> Calculate(n - 1) + Calculate(n - 2);
+    }
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> N { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span> { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> _n; } }
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> _n;
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> FibOfN { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span> { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> _fibOfN; } }
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> _fibOfN;
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> ManualResetEvent _doneEvent;
+}
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> ThreadPoolExample
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Main()
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">const</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> FibonacciCalculations = 10;
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// One event is used for each Fibonacci object</span>
+        ManualResetEvent[] doneEvents = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> ManualResetEvent[FibonacciCalculations];
+        Fibonacci[] fibArray = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Fibonacci[FibonacciCalculations];
+        Random r = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Random();
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Configure and launch threads using ThreadPool:</span>
+        Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"launching {0} tasks..."</span>, FibonacciCalculations);
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">for</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> i = 0; i &lt; FibonacciCalculations; i++)
+        {
+            doneEvents[i] = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> ManualResetEvent(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">false</span>);
+            Fibonacci f = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Fibonacci(r.Next(20,40), doneEvents[i]);
+            fibArray[i] = f;
+            ThreadPool.QueueUserWorkItem(f.ThreadPoolCallback, i);
+        }
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Wait for all threads in pool to calculation...</span>
+        WaitHandle.WaitAll(doneEvents);
+        Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"All calculations are complete."</span>);
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Display the results...</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">for</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> i= 0; i&lt;FibonacciCalculations; i++)
+        {
+            Fibonacci f = fibArray[i];
+            Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Fibonacci({0}) = {1}"</span>, f.N, f.FibOfN);
+        }
+    }
+}
+
+</pre></td></tr></table></span></div></div><p>输出如下：</p><div class="code"><span codeLanguage="other"><table width="100%" cellspacing="0" cellpadding="0"><tr><th> </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>launching 10 tasks...
+result calculated...
+result calculated...
+result calculated...
+result calculated...
+result calculated...
+result calculated...
+result calculated...
+result calculated...
+result calculated...
+result calculated...
+all calculations complete
+Fibonacci(22) = 17711
+Fibonacci(25) = 75025
+Fibonacci(32) = 2178309
+Fibonacci(36) = 14930352
+Fibonacci(32) = 2178309
+Fibonacci(26) = 121393
+Fibonacci(35) = 9227465
+Fibonacci(23) = 28657
+Fibonacci(39) = 63245986
+Fibonacci(22) = 17711</pre></td></tr></table></span></div></div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />请参见</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><h4 class="subHeading">任务</h4><div class="seeAlsoStyle"><span sdata="link"><mshelp:link keywords="e3536e49-254b-48cc-953e-7b5da4e13f73" tabindex="0">监视器同步技术示例</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="link"><mshelp:link keywords="3284fc60-de63-4262-ba92-ee730a873e3a" tabindex="0">等待同步技术示例</mshelp:link></span></div><h4 class="subHeading">概念</h4><div class="seeAlsoStyle"><span sdata="link"><a href="ac0f23a2-6bf3-4077-be99-538ae5fd3bc5.htm">C# 编程指南</a></span></div><div class="seeAlsoStyle"><span sdata="link"><mshelp:link keywords="33fe4aef-b44b-42fd-9e72-c908e39e75db" tabindex="0">监视器</mshelp:link></span></div><h4 class="subHeading">参考</h4><div class="seeAlsoStyle"><span sdata="link"><a href="552f6c68-dbdb-4327-ae36-32cf9063d88c.htm">线程处理（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="8587c5e7-7d6b-4a1c-918c-5b62b16be8a8.htm">使用线程处理（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="cer" target="T:System.Threading.Mutex"><mshelp:link keywords="T:System.Threading.Mutex" tabindex="0">Mutex</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="cer" target="Overload:System.Threading.WaitHandle.WaitAll"><mshelp:link keywords="Overload:System.Threading.WaitHandle.WaitAll" tabindex="0">WaitAll</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="cer" target="T:System.Threading.ManualResetEvent"><mshelp:link keywords="T:System.Threading.ManualResetEvent" tabindex="0">ManualResetEvent</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="cer" target="M:System.Threading.EventWaitHandle.Set"><mshelp:link keywords="M:System.Threading.EventWaitHandle.Set" tabindex="0">Set</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="cer" target="T:System.Threading.ThreadPool"><mshelp:link keywords="T:System.Threading.ThreadPool" tabindex="0">ThreadPool</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="cer" target="Overload:System.Threading.ThreadPool.QueueUserWorkItem"><mshelp:link keywords="Overload:System.Threading.ThreadPool.QueueUserWorkItem" tabindex="0">QueueUserWorkItem</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="cer" target="T:System.Threading.ManualResetEvent"><mshelp:link keywords="T:System.Threading.ManualResetEvent" tabindex="0">ManualResetEvent</mshelp:link></span></div><h4 class="subHeading">其他资源</h4><div class="seeAlsoStyle"><a href="http://go.microsoft.com/fwlink/?linkid=70362">如何：通过使用 Visual C# .NET 在多线程处理环境中同步对共享资源的访问</a></div><div class="seeAlsoStyle"><span sdata="link"><mshelp:link keywords="9a9621d7-8883-4a4f-a874-65e8e09e20a6" tabindex="0">.NET Framework 中的安全性</mshelp:link></span></div></div></div>
+      <div id="footer">
+        <div class="footerLine">
+          <img width="100%" height="3px" src="../icons/footer.gif" title="“页脚”图像" />
+        </div>
+<span id="feedbackarea">将有关本主题的<a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);">反馈意见</a>发送给 Microsoft。</span>
+</div>
+    </div>
+  </body>
+</html>

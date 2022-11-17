@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Form.serialize - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+	<script type='text/javascript' src="../../prototype-1.6.0.3.js" ></script>
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>serialize</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">serialize(formElement[, getHash = false]) -> String | object</code></pre>
+			<p>
+				串行化表单数据为字符串，以适用于 Ajax 请求（默认行为）。若指定可选的参数 <code>getHash</code> 值为
+				<code>true</code>，则返回一个 Hash 对象，以表单控件的名称（name 属性）为“键”，控件所代表的数据为“值”。
+			</p>
+		</div>
+		<div id="abody">
+			<p>
+				根据可选参数 <code>getHash</code> 的值是否等价于 <code>true</code>，返回的结果为一个形如 <code>{name: "johnny",
+				color: "blue"}</code> 的对象或是一个形如 <code>"name=johnny&amp;color=blue"</code> 的字符串。返回值常用于作为
+				Ajax 请求的参数。该方法模拟浏览器原生的串行化表单方式，以便在不刷新页面的情况下发送表单数据到服务器。
+			</p>
+			<p class="deprecated">
+				从 Prototype 1.5 开始，Ajax 请求的参数推荐使用 <em>Hash 对象</em>。这意味着你需要将参数 <code>getHash</code>
+				设置为 <code>true</code>。保留过去的做法（串行化为字符串）是为了保持后向兼容性。
+			</p>
+			<h3>样例</h3>
+			<pre><code class="javascript">$('person-example').serialize() 
+// -> 'username=sulien&age=22&hobbies=coding&hobbies=hiking'
+$('person-example').serialize(true) 
+// -> {username: 'sulien', age: '22', hobbies: ['coding', 'hiking']}</code></pre>
+			<p>试一下！</p>
+			<form id="person-example" class="example" action="serialize.htm#" onsubmit="alert($(this).serialize()); return false">
+			<fieldset>
+				<legend>User info</legend>
+				<div>
+					<label for="username">Username:</label>
+					<input type="text" name="username" id="username" value="" />
+				</div>
+				<div>
+					<label for="age">Age:</label>
+					<input type="text" name="age" id="age" value="" size="3" />
+				</div>
+				<div>
+					<label for="hobbies">Your hobbies are:</label>
+					<select name="hobbies" id="hobbies" multiple="multiple">
+						<option>coding</option>
+						<option>swimming</option>
+						<option>hiking</option>
+						<option>drawing</option>
+					</select>
+				</div>
+				<div class="buttonrow">
+					<input type="submit" value="serialize!" />
+				</div>
+			</fieldset>
+			</form>
+			<h3>注意</h3>
+			<p class="notice">
+				表单中被禁用的元素不会被串行化（遵循 W3C HTML 建议）。另外，文件上传控件也会被忽略，因为它们不是仅通过 JavaScript
+				就可以进行串行化和发送的。
+			</p>
+			<p>
+				注意："hobbies" 是一个多选的 <code>SELECT</code> 控件，如果我们要把这个控件的值传递到一个 PHP 或 ROR（Ruby on
+				Rails）后端，该控件必须命名为 "hobbies[]"，因为我们希望发送的是一个 <em>array</em>，而不是单个值。这与 JavaScript
+				没有关系——Prototype 也不会对你的控件名称做任何处理，该怎么做完全取决于你。
+			</p>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

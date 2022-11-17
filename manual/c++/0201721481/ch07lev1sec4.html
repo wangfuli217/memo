@@ -1,0 +1,337 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 7.4.  Function Declarations</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch07lev1sec3.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch07lev1sec5.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch07lev1sec4"></a>
+
+        <h3 class="docSection1Title" id="432172-871">7.4. Function Declarations</h3>
+        <h3 class="docSection1Title" id="432172-871">7.4. 函数声明</h3>
+
+        <p class="docText">Just as variables must be declared before they are used, a function must be declared before it is called. As with a variable definition (<a class="docLink" href="ch02lev1sec3.html#ch02lev2sec14" >Section 2.3.5</a>, p. <a class="docLink" href="ch02lev1sec3.html#ch02lev2sec14" >52</a>), we can declare a function separately from its definition; a function may be defined only once but may be declared multiple times.</p>
+        <p class="docText">正如变量必须先声明后使用一样，函数也必须在被调用之前先声明。与变量的定义（<a class="docLink" href="ch02lev1sec3.html#ch02lev2sec14" >第 2.3.5 节</a>）类似，函数的声明也可以和函数的定义分离；一个函数只能定义一次，但是可声明多次。</p>
+
+<a name="ch07term14"></a>
+        <p class="docText">A function declaration consists of a return type, the function name, and parameter list. The parameter list must contain the types of the parameters but need not name them. These three elements are referred to as the <b><a class="docLink" href="ch07lev1sec11.html#gloss07_14" >function prototype</a></b>. A function prototype describes the interface of the function.</p>
+        <p class="docText">函数声明由函数返回类型、函数名和形参列表组成。形参列表必须包括形参类型，但是不必对形参命名。这三个元素被称为<b><a class="docLink" href="ch07lev1sec11.html#gloss07_14" >函数原型</a></b>，函数原型描述了函数的接口。</p>
+
+<a name="ch07note20"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Function prototypes provide the interface between the programmer who defines the function and programmers who use it. When we use a function, we program to the function's prototype.</p>
+                <p class="docText">函数原型为定义函数的程序员和使用函数的程序员之间提供了接口。在使用函数时，程序员只对函数原型编程即可。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+<a name="idd1e52499"></a><a name="idd1e52504"></a>
+        <p class="docText">Parameter names in a function declaration are ignored. If a name is given in a declaration, it should serve as a documentation aid:</p>
+        <p class="docText">函数声明中的形参名会被忽略，如果在声明中给出了形参的名字，它应该用作辅助文档：</p>
+        <pre>
+     void print(int *array, int size);
+</pre><br>
+        <a name="ch07lev2sec16"></a>
+
+        <h4 class="docSection2Title">Function Declarations Go in Header Files</h4>
+        <h4 class="docSection2Title">在头文件中提供函数声明</h4>
+
+        <p class="docText">Recall that variables are declared in header files (<a class="docLink" href="ch02lev1sec9.html#ch02lev1sec9" >Section 2.9</a>, p. <a class="docLink" href="ch02lev1sec9.html#ch02lev1sec9" >67</a>) and defined in source files. For the same reasons, functions should be declared in header files and defined in source files.</p>
+        <p class="docText">回顾前面章节，变量可在头文件中声明（<a class="docLink" href="ch02lev1sec9.html#ch02lev1sec9" >第 2.9 节</a>），而在源文件中定义。同理，函数也应当在头文件中声明，并在源文件中定义。</p>
+
+        <p class="docText">It may be temptingand would be legalto put a function declaration directly in each source file that uses the function. The problem with this approach is that it is tedious and error-prone. By putting function declarations into header files, we can ensure that all the declarations for a given function agree. If the interface to the function changes, only one declaration must be changed.</p>
+        <p class="docText">把函数声明直接放到每个使用该函数的源文件中，这可能是大家希望的方式，而且也是合法的。但问题在于这种用法比较呆板而且容易出错。解决的方法是把函数声明放在头文件中，这样可以确保对于指定函数其所有声明保持一致。如果函数接口发生变化，则只要修改其唯一的声明即可。</p>
+
+<a name="ch07note21"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="116" height="74" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/bestpractices.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">The source file that <span class="docEmphasis">defines</span> the function should include the header that <span class="docEmphasis">declares</span> the function.</p>
+                <p class="docText"><span class="docEmphasis">定义</span>函数的源文件应包含<span class="docEmphasis">声明</span>该函数的头文件。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">Including the header that contains a function's declaration in the same file that defines the function lets the compiler check that the definition and declaration are the same. In particular, if the definition and declaration agree as to parameter list but differ as to return type, the compiler will issue a warning or error message indicating the discrepancy.</p>
+        <p class="docText">将提供函数声明头文件包含在定义该函数的源文件中，可使编译器能检查该函数的定义和声明时是否一致。特别地，如果函数定义和函数声明的形参列表一致，但返回类型不一致，编译器会发出警告或出错信息来指出这种差异。</p>
+
+<a name="ch07sb08"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 7.4</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch07qa8q1"></a><b>Exercise 7.22:</b></td>
+
+                    <td>
+                      <p class="docText">Write the prototypes for each of the following functions:</p>
+                      <p class="docText">编写下面函数的原型：</p>
+
+                      <div style="font-weight:bold">
+                        <ol class="docList" type="a">
+                          <li>
+                            <div style="font-weight:normal">
+                              <p class="docList">A function named <tt>compare</tt> with two parameters that are references to a class named <tt>matrix</tt> and with a return value of type <tt>bool</tt>.</p>
+                              <p class="docList">函数名为 <tt>compare</tt>，有两个形参，都是名为 <tt>matrix</tt> 的类的引用，返回 <tt>bool</tt> 类型的值。</p>
+                            </div>
+                          </li>
+
+                          <li>
+                            <div style="font-weight:normal">
+                              <p class="docList">A function named <tt>change_val</tt> that returns a <tt>vector&lt;int&gt;</tt> iterator and takes two parameters: one is an <tt>int</tt> and the other is an iterator for a <tt>vector&lt;int&gt;</tt>.</p>
+                              <p class="docList">函数名为 <tt>change_val</tt>，返回 <tt>vector&lt;int&gt;</tt> 类型的迭代器，有两个形参：一个是 <tt>int</tt> 型形参，另一个是 <tt>vector&lt;int&gt;</tt> 类型的迭代器。</p>
+                            </div>
+                          </li>
+                        </ol>
+                      </div>
+
+                      <p class="docText">Hint: When you write these prototypes, use the name of the function as an indicator as to what the function does. How does this hint affect the types you use?</p>
+                      <p class="docText">提示：写函数原型时，函数名应当暗示函数的功能。考虑这个提示会如何影响你用的类型？</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+<a name="ch07qa8q2"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 7.23:</b></td>
+
+                    <td>
+                      <p class="docText">Given the following declarations, determine which calls are legal and which are illegal. For those that are illegal, explain why.</p>
+                      <p class="docText">给出下面函数，判断哪些调用是合法的，哪些是不合法的。对于那些不合法的调用，解释原因。</p>
+                      <pre>
+     double calc(double);
+     int count(const string &amp;, char);
+     int sum(vector&lt;int&gt;::iterator, vector&lt;int&gt;::iterator, int);
+     vector&lt;int&gt; vec(10);
+
+     (a) calc(23.4, 55.1);
+     (b) count("abcda", 'a');
+     (c) calc(66);
+     (d) sum(vec.begin(), vec.end(), 3.8);
+</pre><br>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a name="ch07lev2sec17"></a>
+
+        <h4 class="docSection2Title">7.4.1. Default Arguments</h4>
+        <h4 class="docSection2Title">7.4.1. 默认实参</h4>
+
+<a name="idd1e52633"></a><a name="idd1e52638"></a><a name="idd1e52641"></a>
+        <p class="docText">A default argument is a value that, although not universally applicable, is the argument value that is expected to be used most of the time. When we call the function, we may omit any argument that has a default. The compiler will supply the default value for any argument we omit.</p>
+        <p class="docText">默认实参是一种虽然并不普遍、但在多数情况下仍然适用的实参值。调用函数时，可以省略有默认值的实参。编译器会为我们省略的实参提供默认值。</p>
+
+        <p class="docText">A default argument is specified by providing an explicit initializer for the parameter in the parameter list. We may define defaults for one or more parameters. However, if a parameter has a default argument, all the parameters that follow it must also have default arguments.</p>
+        <p class="docText">默认实参是通过给形参表中的形参提供明确的初始值来指定的。程序员可为一个或多个形参定义默认值。但是，如果有一个形参具有默认实参，那么，它后面所有的形参都必须有默认实参。</p>
+
+        <p class="docText">For example, a function to create and initialize a <tt>string</tt> intended to simulate a window can provide default arguments for the height, width, and background character of the screen:</p>
+        <p class="docText">例如，下面的函数创建并初始化了一个 <tt>string</tt> 对象，用于模拟窗口屏幕。此函数为窗口屏幕的高、宽和背景字符提供了默认实参：</p>
+        <pre>
+     string screenInit(string::size_type height = 24,
+                       string::size_type width = 80,
+                       char background = ' ' );
+</pre><br>
+
+        <p class="docText">A function that provides a default argument for a parameter can be invoked with or without an argument for this parameter. If an argument is provided, it overrides the default argument value; otherwise, the default argument is used. Each of the following calls of <tt>screenInit</tt> is correct:</p>
+        <p class="docText">调用包含默认实参的函数时，可以为该形参提供实参，也可以不提供。如果提供了实参，则它将覆盖默认的实参值；否则，函数将使用默认实参值。下面的函数 <tt>screenInit</tt> 的调用都是正确的：</p>
+        <pre>
+     string screen;
+     screen = screenInit();       // <span class="docEmphItalicAlt">equivalent to</span> <span class="docEmphasis">screenInit (24,80,' ')</span>
+     screen = screenInit(66);     // <span class="docEmphItalicAlt">equivalent to</span> <span class="docEmphasis">screenInit (66,80,' ')</span>
+     screen = screenInit(66, 256);       // <span class="docEmphasis">screenInit(66,256,' ')</span>
+     screen = screenInit(66, 256, '#');
+</pre><br>
+
+        <p class="docText">Arguments to the call are resolved by position, and default arguments are used to substitute for the <span class="docEmphasis">trailing</span> arguments of a call. If we want to specify an argument for <tt>background</tt>, we must also supply arguments for <tt>height</tt> and <tt>width</tt>:</p>
+        <p class="docText">函数调用的实参按位置解析，默认实参只能用来替换函数调用缺少的<span class="docEmphasis">尾部</span>实参。例如，如果要给 <tt>background</tt> 提供实参，那么也必须给 <tt>height</tt> 和 <tt>width</tt> 提供实参：</p>
+        <pre>
+     screen = screenInit(, , '?'); // <span class="docEmphItalicAlt">error, can omit only trailing arguments</span>
+     screen = screenInit( '?');    // <span class="docEmphItalicAlt">calls</span> <span class="docEmphasis">screenInit('?',80,' ')</span>
+</pre><br>
+
+        <p class="docText">Note that the second call, which passes a single character value, is legal. Although legal, it is unlikely to be what the programmer intended. The call is legal because <tt>'?'</tt> is a <tt>char</tt>, and a <tt>char</tt> can be promoted to the type of the leftmost parameter. That parameter is <tt>string::size_type</tt>, which is an <tt>unsigned</tt> integral type. In this call, the <tt>char</tt> argument is implicitly promoted to <tt>string::size_type</tt>, and passed as the argument to <tt>height</tt>.</p>
+        <p class="docText">注意第二个调用，只传递了一个字符值，虽然这是合法的，但是却并不是程序员的原意。因为 <tt>'?'</tt> 是一个 <tt>char</tt>，<tt>char</tt> 可提升为最左边形参的类型，所以这个调用是合法的。最左边的形参具有 <tt>string::size_type</tt> 类型，这是 <tt>unsigned</tt> 整型。在这个调用中，<tt>char</tt> 实参隐式地提升为 <tt>string::size_type</tt> 类型，并作为实参传递给形参 <tt>height</tt>。</p>
+
+<a name="ch07note22"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Because <tt>char</tt> is an integral type (<a class="docLink" href="ch02lev1sec1.html#ch02lev2sec1" >Section 2.1.1</a>, p. <a class="docLink" href="ch02lev1sec1.html#ch02lev2sec1" >34</a>), it is legal to pass a <tt>char</tt> to an <tt>int</tt> parameter and vice versa. This fact can lead to various kinds of confusion, one of which arises in functions that take both <tt>char</tt> and <tt>int</tt> parametersit can be easy for callers to pass the arguments in the wrong order. Using default arguments can compound this problem.</p>
+                <p class="docText">因为 <tt>char</tt> 是整型（<a class="docLink" href="ch02lev1sec1.html#ch02lev2sec1" >第 2.1.1 节</a>），因此把一个 <tt>char</tt> 值传递给 <tt>int</tt> 型形参是合法的，反之亦然。这个事实会导致很多误解。例如，如果函数同时含有 <tt>char</tt> 型和 <tt>int</tt> 型形参，则调用者很容易以错误的顺序传递实参。如果使用默认实参，则这个问题会变得更加复杂。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">Part of the work of designing a function with default arguments is ordering the parameters so that those least likely to use a default value appear first and those most likely to use a default appear last.</p>
+        <p class="docText">设计带有默认实参的函数，其中部分工作就是排列形参，使最少使用默认实参的形参排在最前，最可能使用默认实参的形参排在最后。</p>
+
+<a name="ch07lev3sec23"></a>
+        <h5 class="docSection3Title">Default Argument Initializers</h5>
+        <h5 class="docSection3Title">默认实参的初始化式</h5>
+
+<a name="idd1e52787"></a><a name="idd1e52792"></a><a name="idd1e52797"></a><a name="idd1e52800"></a><a name="idd1e52805"></a><a name="idd1e52808"></a><a name="idd1e52813"></a><a name="idd1e52816"></a><a name="idd1e52821"></a>
+        <p class="docText">A default argument can be any expression of an appropriate type:</p>
+        <p class="docText">默认实参可以是任何适当类型的表达式：</p>
+        <pre>
+     string::size_type screenHeight();
+     string::size_type screenWidth(string::size_type);
+     char screenDefault(char = ' ');
+     string screenInit(
+         string::size_type height = screenHeight(),
+         string::size_type width = screenWidth(screenHeight()),
+         char background = screenDefault());
+</pre><br>
+
+        <p class="docText">When the default argument is an expression, and the default is used as the argument, then the expression is evaluated at the time the function is called. For example, <tt>screenDefault</tt> is called to obtain a value for <tt>background</tt> every time <tt>screenInit</tt> is called without a third argument.</p>
+	<p class="docText">如果默认实参是一个表达式，而且默认值用作实参，则在调用函数时求解该表达式。例如，每次不带第三个实参调用函数 <tt>screenInit</tt> 时，编译器都会调用函数 <tt>screenDefault</tt> 为 <tt>background</tt> 获得一个值。</p>
+
+<a name="ch07lev3sec24"></a>
+        <h5 class="docSection3Title">Constraints on Specifying Default Arguments</h5>
+        <h5 class="docSection3Title">指定默认实参的约束</h5>
+
+        <p class="docText">We can specify default argument(s) in either the function definition or declaration. However, a parameter can have its default argument specified only once in a file. The following is an error:</p>
+        <p class="docText">既可以在函数声明也可以在函数定义中指定默认实参。但是，在一个文件中，只能为一个形参指定默认实参一次。下面的例子是错误的：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">ff.h</span>
+     int ff(int = 0);
+
+     // <span class="docEmphItalicAlt">ff.cc</span>
+     #include "ff.h"
+     int ff(int i = 0) { /* ... */ } // <span class="docEmphItalicAlt">error</span>
+</pre><br>
+        <a name="ch07note23"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Default arguments ordinarily should be specified with the declaration for the function and placed in an appropriate header.</p>
+                <p class="docText">通常，应在函数声明中指定默认实参，并将该声明放在合适的头文件中。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">If a default argument is provided in the parameter list of a function definition, the default argument is available only for function calls in the source file that contains the function definition.</p>
+        <p class="docText">如果在函数定义的形参表中提供默认实参，那么只有在包含该函数定义的源文件中调用该函数时，默认实参才是有效的。</p>
+      </td>
+    </tr>
+  </table>
+
+<a name="ch07sb09"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 7.4.1</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch07qa9q1"></a><b>Exercise 7.24:</b></td>
+
+                    <td>
+			    <a name="idd1e52914"></a><a name="idd1e52919"></a><a name="idd1e52925"></a><a name="idd1e52930"></a><a name="idd1e52937"></a><a name="idd1e52942"></a>
+                      <p class="docText">Which, if any, of the following declarations are errors? Why?</p>
+                      <p class="docText">如果有的话，指出下面哪些函数声明是错误的？为什么？</p>
+                      <pre>
+     (a) int ff(int a, int b = 0, int c = 0);
+     (b) char *init(int ht = 24, int wd, char bckgrnd);
+</pre><br>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+<a name="ch07qa9q2"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 7.25:</b></td>
+
+                    <td>
+                      <p class="docText">Given the following function declarations and calls, which, if any, of the calls are illegal? Why? Which, if any, are legal but unlikely to match the programmer's intent? Why?</p>
+                      <p class="docText">假设有如下函数声明和调用，指出哪些调用是不合法的？为什么？哪些是合法的但可能不符合程序员的原意？为什么？</p>
+                      <pre>
+     // <span class="docEmphItalicAlt">declarations</span>
+     char *init(int ht, int wd = 80, char bckgrnd = ' ');
+
+     (a) init();
+     (b) init(24,10);
+     (c) init(14, '*');
+</pre><br>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+<a name="ch07qa9q3"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 7.26:</b></td>
+
+                    <td>
+                      <p class="docText">Write a version of <tt>make_plural</tt> with a default argument of <tt>'s'</tt>. Use that version to print singular and plural versions of the words "success" and "failure".</p>
+                      <p class="docText">用字符 <tt>'s'</tt> 作为默认实参重写函数 <tt>make_plural</tt>。利用这个版本的函数输出单词“success”和“failure”的单数和复数形式。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch07lev1sec3.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch07lev1sec5.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

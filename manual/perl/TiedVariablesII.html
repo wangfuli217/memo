@@ -1,0 +1,1173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>捆绑(tie)变量 &lt; Perl &lt; PostgreSQL 中文网 中国</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="http://www.pgsqldb.org/twiki/bin/view/Perl/WebRss?skin=rss&amp;contenttype=text/xml" />
+
+<style type="text/css" media="all">
+	/* Default TWiki layout */
+	@import url("http://shouce.jb51.net/perl/layout.css"/*tpa=http://www.jb51.net/manual/perl/layout.css*/);
+	/* Default TWiki style */
+	@import url("http://shouce.jb51.net/perl/style.css"/*tpa=http://www.jb51.net/manual/perl/style.css*/);
+	/* Custom overriding layout per web or per topic */
+	
+	/* Custom overriding style per web or per topic */
+	
+	.twikiToc li {
+		list-style-image:url("http://shouce.jb51.net/perl/i_arrow_down.gif"/*tpa=http://www.jb51.net/manual/perl/i_arrow_down.gif*/);
+	}	        
+	.twikiWebIndicator {
+		background-color:#0066FF;
+	}
+</style>
+<style type="text/css" media="all"></style>
+<script type="text/javascript">
+<!-- HIDE
+	function initPage() { }
+-->
+</script>
+</head>
+<body class="twikiViewPage" onload="initPage()"><a name="PageTop"></a>
+</div>
+
+<p />
+</div>
+</form></div></div></div>
+<a name="Content"> </a>
+<div class="twikiTopic" style="padding:0 1.5em"><br>
+<h1><a name="tie"> </a><a name="_tie_"> </a> 第十四章 捆绑(tie)变量(下) </h1>
+<div class="twikiToc">
+<ul>
+<li> <a href="TiedVariablesII.html#tie">第十四章 捆绑(tie)变量(下)</a>
+<ul>
+<li> <a href="TiedVariablesII.html#14_3">14.3 捆绑散列</a>
+<ul>
+<li> <a href="TiedVariablesII.html#14_3_1">14.3.1散列捆绑方法</a>
+</li>
+</ul>
+</li>
+<li> <a href="TiedVariablesII.html#14_4">14.4捆绑文件句柄</a>
+<ul>
+<li> <a href="TiedVariablesII.html#14_4_1">14.4.1 文件句柄捆绑方法</a>
+</li>
+<li> <a href="TiedVariablesII.html#14_4_2">14.4.2创建文件句柄</a>
+</li>
+</ul>
+</li>
+<li> <a href="TiedVariablesII.html#14_5">14.5 一个精细的松绑陷阱</a>
+</li>
+<li> <a href="TiedVariablesII.html#14_6_CPAN">14.6 CPAN 里的模块</a>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<p />
+<h2><a name="14_3"> </a><a name="14_3_"> </a> 14.3 捆绑散列 </h2>
+<p />
+<p />
+一个实现捆绑散列的类应该定义八个方法。TIEHASH 构造一个新对象。FETCH 和 STORE 
+访问键字/数值对。EXISTS 报告某键字是否存在于散列中，而 DELETE 删除一个键字和它
+关联的数值（注：请注意在 Perl 里，散列里不存在一个键字与存在一个键字但是其对应
+数值为 undef 是不同的两种情况。这两种情况可以分别用 exists 和 defined 测试。）
+CLEAR 通过删除所有键字/数值对清空散列。FIRSTKEY 和 NEXTKEY 在你调用 keys，
+values，或 each 的时候逐一遍历键字/数值对。还有就是和往常一样，如果你想在对象
+删除的时候执行某种特定的动作，那么你可能还要定义 DESTORY 方法。（如果你觉得方法
+太多，那么你肯定没有认真阅读上一节关于数组的内容。不管怎样，你都可以自由地从
+标准的 Tie::Hash 模块继承缺省的方法，只用重新定义你感兴趣的方法。同样，
+Tie::StdHash 假设此实现同样也是一个散列。）
+<p />
+比如，假定你想创建这么一个散列：每次你给一个键字赋值的时候，它不是覆盖掉原来的
+内容，而是把新数值附加到一个数值数组上。这样当你说：
+<p />
+<pre>
+   $h{$k} = "one";
+   $h{$k} = "two";
+</pre>
+<p />
+<p />
+它实际上干的是：
+<p />
+<pre>
+   push @{ $h{$k} }, "one";
+   push @{ $h{$k} }, "two";
+</pre>
+<p />
+<p />
+这个玩叶儿不算什么复杂的主意，所以你应该能用一个挺简单的模块实现。把
+Tie::StdHash 用做基类，下面就是干这事的 Tie::AppendHash：
+<p />
+<div class="fragment"><pre>
+<font color="brown">package</font> Tie::AppendHash;
+<font color="brown">use</font> Tie::Hash;
+our @ISA = ("Tie::StdHash");
+<font color="brown">sub</font> STORE {
+        <font color="brown">my</font> ($self, $key, $value) = @_;
+        <font color="maroon">push</font> @{$self-&gt;{key}}, $value;
+}
+1;</pre></pre></div>
+<p />
+<h3><a name="14_3_1"> </a><a name="14_3_1_"> </a> 14.3.1散列捆绑方法 </h3>
+<p />
+这儿是一个很有趣的捆绑散列类的例子：它给你一个散列，这个散列代表用户特定的点文件
+（也就是说，文件名开头是一个句点的文件，这样的文件是 Unix 初始化文件的命名传统。）
+你用文件名做索引（除去开头的句点）把文件名放进散列，而拿出来的时候是点文件的内容。
+比如：
+<p />
+<div class="fragment"><pre>
+<font color="brown">use</font> DotFiles;
+<font color="maroon">tie</font> %dot, "DotFiles";
+<font color="brown">if</font> ( $dot{profile}  =~ /MANPATH/ <font color="navy">or</font>
+$dot{login}   =~ /MANPATH/ <font color="navy">or</font>
+$dot{cshrc}  =~ /MANPATH/ ) {
+        <font color="maroon">print</font> "you seem to set your MANPATH\n";
+}</pre></pre></div>
+<p />
+下面是使用我们捆绑类的另外一个方法：
+<p />
+<div class="fragment"><pre>
+<font color="green"># 第三个参数是用户名，我们准备把他的点文件捆绑上去。</font>
+<font color="maroon">tie</font> %him,  "DotFiels", "daemon";
+<font color="brown">foreach</font> $f (<font color="maroon">keys</font> %him) {
+        <font color="maroon">printf</font> "daemon dot file %<font color="navy">s</font> is size %d\n", $f, <font color="maroon">length</font> $him{$f};
+}</pre></pre></div>
+<p />
+在我们的 <span class="twikiNewLink" style='background : #FFFFCE;'><font color="#0000FF">DotFiles</font><a href="http://www.jb51.net/twiki/bin/edit/Perl/DotFiles?topicparent=Perl.TiedVariablesII" ><sup>?</sup></a></span> 例子里，我们把这个对象当作一个包含几个重要数据域的普通散列来
+实现，这几个数据域里只有 {CONTENTS} 域会保存一般用户当作散列的东西。下面是此对象
+的实际数据域：
+<p />
+<table border="1" cellspacing="1" cellpadding="0">
+<tr><td class="twikiFirstCol" bgcolor="#FFFFCC"> 数据域 </td><td align="right" bgcolor="#FFFFCC"> 内容 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#FFFFFF"> USER </td><td bgcolor="#FFFFFF"> 这个对象代表谁的点文件 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#FFFFCC"> HOME </td><td bgcolor="#FFFFCC"> 那些点文件在哪里 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#FFFFFF"> CLOBBER </td><td bgcolor="#FFFFFF"> 我们是否允许修改或者删除这些点文件 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#FFFFCC"> CONTENTS </td><td bgcolor="#FFFFCC"> 点文件名字和内容映射的散列 </td></tr>
+</table>
+<p />
+下面是 <span class="twikiNewLink" style='background : #FFFFCE;'><font color="#0000FF">DotFiles</font><a href="http://www.jb51.net/twiki/bin/edit/Perl/DotFiles?topicparent=Perl.TiedVariablesII" ><sup>?</sup></a></span>.pm 的开头：
+<p />
+<div class="fragment"><pre>
+<font color="brown">package</font> DotFiles;
+<font color="brown">use</font> Carp;
+<font color="brown">sub</font> whowasi   { (<font color="maroon">caller</font>(1))[3]. "()" }
+<font color="brown">my</font> $DEBUG = 0;
+<font color="brown">sub</font> debug { $DEBUGA = @_ ? <font color="maroon">shift</font>: 1}</pre></pre></div>
+<p />
+对于我们的例子而言，我们希望打开调试输出以便于在开发中的跟踪，因此我们为此设置了
+$DEBUG。我们还写了一个便利函数放在内部以便于打印警告：whowasi 返回调用了当前函数
+的那个函数的名字（whowasi 是“祖父辈”的函数）。
+<p />
+下面就是 <span class="twikiNewLink" style='background : #FFFFCE;'><font color="#0000FF">DotFiles</font><a href="http://www.jb51.net/twiki/bin/edit/Perl/DotFiles?topicparent=Perl.TiedVariablesII" ><sup>?</sup></a></span> 捆绑散列的方法：
+<p />
+<strong><em>CLASSNAME-&gt;TIEHASH(LIST)</em></strong>
+<p />
+   这里是 <span class="twikiNewLink" style='background : #FFFFCE;'><font color="#0000FF">DotFiles</font><a href="http://www.jb51.net/twiki/bin/edit/Perl/DotFiles?topicparent=Perl.TiedVariablesII" ><sup>?</sup></a></span> 构造器：
+<p />
+<div class="fragment"><pre>
+<font color="brown">sub</font> TIEHASH {
+        <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+        <font color="brown">my</font> $user = <font color="maroon">shift</font> || $&gt;;
+        <font color="brown">my</font> $dotdir = <font color="maroon">shift</font> || "";
+        
+        croak "usage: @{[ &amp;whowasi ] }  [ USER [DOTDIR]]" <font color="brown">if</font> @_;
+        
+        $user = <font color="maroon">getpwuid</font>($user) <font color="brown">if</font> $user =~ /^\d+$/;
+        <font color="brown">my</font> $dir = (getpwname($user))[7]
+        <font color="navy">or</font> corak "@{ [&amp;whowasi] }: <font color="brown">no</font> user $user";
+        $dir  .= "/$dotdir" <font color="brown">if</font> $dotdir;
+        
+        <font color="brown">my</font> $node = {
+                USER =&gt; $user,
+                HOME =&gt; $dir,
+                CONTENTS =&gt; {},
+                CLOBBER =&gt; 0,
+        };
+        
+        <font color="maroon">opendir</font> DIR, $dir
+        <font color="navy">or</font> croak "@{[&amp;whowasi]}: can't <font color="maroon">opendir</font> $dir: $!";
+        <font color="brown">for</font> <font color="brown">my</font> $dot ( <font color="maroon">grep</font> /^\./ &amp;&amp; <font color="brown">-f</font> "$dir/$_", <font color="maroon">readdir</font>(DIR)) {
+                $dot =~ <font color="navy">s</font>/^\.//;
+                $node-&gt;{CONTENTS}{$dot} = <font color="maroon">undef</font>;
+        }
+        <font color="maroon">closedir</font> DIR;
+        
+        <font color="brown">return</font> <font color="maroon">bless</font> $node, $self;
+}</pre></pre></div>
+<p />
+   值得一提的是，如果你准备用文件来测试上面的 readdir 的返回值，你最好预先
+   准备好有问题的目录（象我们一样）。否则，因为我们没有用 chdir，所以你很
+   有可能测试的是错误的文件。
+<p />
+<strong><em>SELF-&gt;FETCH(KEY)</em></strong>
+<p />
+   这个方法实现的是从这个捆绑的散列里读取元素。它在对象后面还有一个参数：
+   你想抓取的散列元素的键字。这个键字是一个字串，因而你可以对它做你想做的
+   任何处理（和字串一致）。下面是我们 <span class="twikiNewLink" style='background : #FFFFCE;'><font color="#0000FF">DotFiles</font><a href="http://www.jb51.net/twiki/bin/edit/Perl/DotFiles?topicparent=Perl.TiedVariablesII" ><sup>?</sup></a></span> 例子的抓取：
+<p />
+<div class="fragment"><pre>
+<font color="brown">sub</font> FETCH {
+        carp &amp;whowasi <font color="brown">if</font> $DEBUG;
+        <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+        <font color="brown">my</font> $dot = <font color="maroon">shift</font>;
+        <font color="brown">my</font> $dir = $self-&gt;{HOME};
+        <font color="brown">my</font> $file = "$dir/.$dot";
+        
+        <font color="brown">unless</font> (<font color="maroon">exists</font> $self-&gt;{CONTENTS}-&gt;{$dot} || <font color="brown">-f</font> $file ) {
+                carp "@{[&amp;whowasi]}: <font color="brown">no</font> $dot file"  <font color="brown">if</font> $DEBUG;
+                <font color="brown">return</font> <font color="maroon">undef</font>;
+        }
+        
+        <font color="green"># 实现一个缓冲</font>
+        <font color="brown">if</font> (<font color="maroon">defined</font> $self-&gt;{CONTENTS}-&gt;{$dot} ) {
+                <font color="brown">return</font> $self-&gt;{CONTENTS}-&gt;{$dot};
+        } <font color="brown">else</font> {
+                <font color="brown">return</font> $self-&gt;{CONTENTS}-&gt;{$dot} = `cat $dir/.$dot`;
+        }
+}</pre></pre></div>
+<p />
+   我们在这里做了一些手脚：我们用的是 Unix 的 cat (1) 命令，不过这样打开
+   文件的移植性更好（而且更高效）。而且，因为点文件是一个 Unix 式的概念，
+   所以我们不用太担心。或者是不应该太担心。或者...
+<p />
+<strong><em>SELF-&gt;STORE(KEY, VALUE)</em></strong>
+<p />
+   当捆绑散列里的元素被设置（或者写入）的时候，这个方法做那些脏活累活。
+   它在对象后面还有两个参数：我们存贮新值的键字，以及新值本身。
+<p />
+   就我们的 <span class="twikiNewLink" style='background : #FFFFCE;'><font color="#0000FF">DotFiles</font><a href="http://www.jb51.net/twiki/bin/edit/Perl/DotFiles?topicparent=Perl.TiedVariablesII" ><sup>?</sup></a></span> 例子而言，我们首先要在 tie 返回的最初的对象上调用方法
+    clobber 以后才能允许拥护覆盖一个文件：
+<p />
+<div class="fragment"><pre>
+<font color="brown">sub</font> STORE {
+        carp &amp;whowasi <font color="brown">if</font> $DEBUG;
+        <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+        <font color="brown">my</font> $dot = <font color="maroon">shift</font>;
+        <font color="brown">my</font> $value = <font color="maroon">shift</font>;
+        <font color="brown">my</font> $file = $self-&gt;{HOME} . "/.$dot";
+        
+        croak "@{[&amp;whowasi]}: $file <font color="navy">not</font> clobberable"
+        <font color="brown">unless</font> $self-&gt;{CLOBBER};
+        
+        <font color="maroon">open</font>(F, "&gt; $file") <font color="navy">or</font> croak "cna't <font color="maroon">open</font> $file: $!";
+        <font color="maroon">print</font> F $vale;
+        <font color="maroon">close</font>(F);
+}</pre></pre></div>
+<p />
+   如果有谁想删除什么东西，他们可以说：
+<p />
+<div class="fragment"><pre>
+$ob = <font color="maroon">tie</font> %daemon_dots, "daemon";
+$ob-&gt;clobber(1);
+$daemon_dot{signature} = "A true daemon\n";
+
+不过，它们可以用 <font color="maroon">tied</font> 设置 {CLOBBER}：
+
+<font color="maroon">tie</font> %daemon_dots, "Dotfiles", "daemon";
+<font color="maroon">tied</font>(%daemon_dots)-&gt;clobber(1);
+
+或者用一条语句：
+
+(<font color="maroon">tie</font> %daemon_dots, "DotFiles", "daemon")-&gt;clobber(1);
+
+clobber 方法只是简单的几行：
+
+<font color="brown">sub</font> clobber{
+        <font color="brown">my</font> $self  = <font color="maroon">shift</font>;
+        $self-&gt;{CLOBBER} = @_ ? <font color="maroon">shift</font> : 1;
+}</pre></pre></div>
+<p />
+<strong><em>SELF-&gt;DELETE(KEY)</em></strong>
+<p />
+   这个方法处理从散列中删除一个元素的请求。如果你模拟的散列在某些地方用了
+   真的 散列，那么你可以只调用真的 delete。同样，我们将仔细检查用户是否
+   真的想删除文件：
+<p />
+<div class="fragment"><pre>
+<font color="brown">sub</font> DELETE {
+        carp &amp;whowasi <font color="brown">if</font> $DEBUG;
+        <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+        <font color="brown">my</font> $dot = <font color="maroon">shift</font>;
+        <font color="brown">my</font> $file = $self-&gt;{HOME} . "./$dot";
+        croak "@{[&amp;whowasi]}: won't remove file $file"
+        <font color="brown">unless</font> $self-&gt;{CLOBBER};
+        <font color="maroon">delete</font> $self-&gt;{CONTENTS}-&gt;{$dot};
+        <font color="maroon">unlink</font> $file <font color="navy">or</font> carp "@{[&amp;whowasi]}: can't <font color="maroon">unlink</font> $file: $!";
+}</pre></pre></div>
+<p />
+<strong><em>SELF-&gt;CLEAR</em></strong>
+<p />
+   当需要清理整个散列的时候运行这个方法，通常是给散列赋一个空列表。在我们的
+   例子里，这可以要删除用户的所有点文件的！这可真是一个危险的方法，所以我们
+   要求在进行清理之前要把 CLOBBER 设置为大于 1：
+<p />
+<div class="fragment"><pre>
+<font color="brown">sub</font> CLEAR {
+        carp &amp;whowasi <font color="brown">if</font> $DEBUG;
+        <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+        croak "@{[&amp;whowasi]}: won't remove all dotfiles <font color="brown">for</font> $self-&gt;{USER}"
+        <font color="brown">unless</font> $self-&gt;{CLOBBER} &gt; 1;
+        <font color="brown">for</font> <font color="brown">my</font> $dot (key % {$self-&gt;{COTENTS}}) {
+                $self-&gt;DELETE($dot);
+        }
+}</pre></pre></div>
+<p />
+<strong><em>SELF-&gt;EXISTS(KEY)</em></strong>
+<p />
+   当用户在某个散列上调用 exists 函数的时候运行这个方法。在我们的例子里，
+   我们会查找 {CONTENTS} 散列元素来找出结果：
+<p />
+<div class="fragment"><pre>
+<font color="brown">sub</font> EXISTS {
+        carp &amp;whowasi <font color="brown">if</font> $DEBUG;
+        <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+        <font color="brown">my</font> $dot = sfhit;
+        <font color="brown">return</font> <font color="maroon">exists</font> $self-&gt;{CONTENTS}-&gt;{$dot};
+} </pre></pre></div>
+<p />
+<strong><em>SELF-&gt;FIRSTKEY</em></strong> 
+<p />
+   当用户开始遍历散列，比如说用一个 keys，或者 values，或者一个 each 调用的
+   时候需要这个方法。我们通过在标量环境中调用 keys，重置其（keys 的）内部
+   状态以确保后面 retrun 语句里的 each 将拿到第一个键字。
+<p />
+<div class="fragment"><pre>
+<font color="brown">sub</font> FIRSTKEY {
+        
+        carp &amp;whowasi <font color="brown">if</font> $DEBUG;
+        <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+        <font color="brown">my</font> $temp = <font color="maroon">keys</font> %{$self-&gt;{CONTENTS}};
+        <font color="brown">return</font> <font color="maroon">scalar</font> <font color="maroon">each</font> %{$self-&gt;{CONTENTS}};
+}</pre></pre></div>
+<p />
+<strong><em>SELF-&gt;NEXTKEY(PREVKEY)</em></strong>
+<p />
+   这个方法是 keys，values 或者 each 函数的叙述器。PREVKEY 是上次访问的
+   键字，Perl 知道该提供什么。如果 NEXTKEY 方法需要知道它的前面的状态来
+   计算下一个状态时这个变量很有用。
+<p />
+   就我们的例子，我们正在使用一个真正的散列来代表捆绑了的散列的数据，不同的
+   只是这个散列保存在散列的 CONTENTS 数据域而不是在散列本身。因此我们只需要
+   依赖 Perl 的 each 叙述器就行了：
+<p />
+<div class="fragment"><pre>
+<font color="brown">sub</font> NEXTKEY {
+        carp &amp;whowasi <font color="brown">if</font> $DEBUG;
+        <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+        <font color="brown">return</font> <font color="maroon">scalar</font> <font color="maroon">each</font> %{ $self-&gt;{CONTENTS}}
+}</pre></pre></div>
+<p />
+<strong><em>SELF-&gt;DESTORY</em></strong>
+<p />
+   当你准备删除这个捆绑的散列对象的时候触发这个方法。你实际上并不需要这个
+   东西，除非是用做调试和额外的清理。下面是一个非常简单的版本：
+<p />
+<div class="fragment"><pre>
+<font color="brown">sub</font> <font color="navy">DESTROY</font>{
+        carp &amp;whowasi <font color="brown">if</font> $DEBUG;
+}</pre></pre></div>
+<p />
+   请注意我们已经给出了所有的方法，你的作业就是退回去把我们代换
+   @{[&amp;whowasi]} 的地方找出来然后把他们替换成名字为 $whowasi 的简单捆绑
+   标量，并且要实现相同的功能。
+<p />
+<h2><a name="14_4"> </a><a name="14_4_"> </a> 14.4捆绑文件句柄 </h2>
+<p />
+一个实现捆绑文件句柄的类应该定义下面的方法：TIEHANDLE 和至少 PRINT，PRINTF，
+WRITE，READLINE，GETC 和 READ 之一。该类还可以提供一个 DESTROY 方法，以及
+BINMODE，OPEN，CLOSE，EOF，FILENO，SEEK，TELL，READ 和 WRITE 方法以便于相应的
+Perl 内建函数用这个捆绑的文件句柄。（当然，这也不是绝对正确：WRITE 对应 syswrite
+而与 Perl 内建的 write 函数没有任何关系，write 是和 format 声明一起用于打印的。）
+<p />
+当 Perl 内嵌于其他程序中（比如 Apache 和 vi ）时以及当向 STDOUT 和 STDERR 的输出
+需要以某种特殊的方式重新定向的时候捆绑的文件句柄就特别有用了。
+<p />
+不过捆绑的文件句柄实际上完全不必与文件捆绑。你可以用输出语句制作一个存在于内存的
+数据结构以及用输入语句把它们读取回来。下面是一个反转 print 和 printf 语句的打印
+顺序但却不用颠倒相关行顺序的简单方法：
+<p />
+<div class="fragment"><pre>
+<font color="brown">package</font> ReversePrint;
+<font color="brown">use</font> strict;
+<font color="brown">sub</font> TIEHANDLE {
+        <font color="brown">my</font> $class = <font color="maroon">shift</font>;
+        <font color="maroon">bless</font> [], $class;
+}
+<font color="brown">sub</font> PRINT {
+        <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+        <font color="maroon">push</font> @$self, <font color="maroon">join</font> ' ', @_
+}
+<font color="brown">sub</font> PRINTF {
+        <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+        <font color="brown">my</font> $fmt = <font color="maroon">shift</font>;
+        <font color="maroon">push</font> @$self, <font color="maroon">sprintf</font> $fmt, @_;
+}
+<font color="brown">sub</font> READLINE {
+        <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+        <font color="maroon">pop</font> @$self;
+}
+
+<font color="brown">package</font> main;
+<font color="brown">my</font> $<font color="navy">m</font> = "--MORE--\n";
+<font color="maroon">tie</font> *REV, "ReversePrint";
+
+<font color="green"># 做一些 print 和 printf。</font>
+<font color="maroon">print</font> REV "The fox is now dead. $<font color="navy">m</font>";
+<font color="maroon">printf</font> REV &lt;&lt;"<font color="navy">END</font>", <font color="maroon">int</font> <font color="maroon">rand</font> 10000000;
+The quick brown fox jumps over
+over the lazy dog %d <font color="maroon">times</font>!
+<font color="navy">END</font>
+
+<font color="maroon">print</font> REV &lt;&lt;"<font color="navy">END</font>";
+The quick brown fox jumps
+over the lazy dog.
+<font color="navy">END</font>
+
+<font color="green"># 现在从同一个句柄中读回来</font>
+<font color="maroon">print</font> <font color="brown">while</font> &lt;REV&gt;;</pre></pre></div>
+<p />
+打印出：
+<p />
+<pre>
+The quick brown fox jumps 
+over the lazy dog.
+The quick brown fox jumps over
+over the lazy dog 3179357 times!
+The fox is now dead.--MORE--
+</pre>
+<p />
+<h3><a name="14_4_1"> </a><a name="14_4_1_"> </a> 14.4.1 文件句柄捆绑方法 </h3>
+<p />
+对于我们扩展的例子而言，我们将创建一个文件句柄，并且向之打印大写字串。为了明确，
+我们会在把这个文件句柄打开的时候向它打印 <SHOUT>，而当结束关闭的时候打印
+</SHOUT>。这个方法是我们从格式优良的 XML 中借来的。
+<p />
+下面是我们将实现这个类的 shout.pm 文件的开头：
+<p />
+<pre>
+   package Shout;
+   use Carp;      # 这样我们就可以把我们的错误汇报出来
+</pre>
+<p />
+然后我们把在 shout.pm 里定义的方法列出来：
+<p />
+<strong><em>CLASSNAME-&gt;TIEHANDLE(LIST)</em></strong>
+<p />
+   这是该类的构造器，和往常一样，应该返回一个赐福了的引用。
+<p />
+<div class="fragment"><pre>
+<font color="brown">sub</font> TIEHANDLE {
+        <font color="brown">my</font> $class = <font color="maroon">shift</font>;
+        <font color="brown">my</font> $form = <font color="maroon">shift</font>;
+        <font color="maroon">open</font> <font color="brown">my</font> $self, $form, @_ <font color="navy">or</font> croak "can't <font color="maroon">open</font> $form@_: $!";
+        <font color="brown">if</font> ($form =~ /&gt;/) {
+                <font color="maroon">print</font> $self "&lt;SHOUT&gt;\n";
+                $$self-&gt;{WRITING} = 1;   <font color="green"># 记得写结束标记</font>
+        }
+        <font color="brown">return</font>  <font color="maroon">bless</font> $self, $class;   <font color="green"># $self 是一个全局引用</font>
+}</pre></pre></div>
+<p />
+   在这里，我们根据传递给 tie 操作符的模式和文件名打开一个新的文件句柄，
+   向文件中写入 <SHOUT>，然后返回一个指向它的赐福了的引用。在 open 语句里
+   有一大堆东西，不过我们将只会指出一点，除了通常的 "open or die" 惯用法
+   以外，my $self 给 open 提供了一个未定义的标量，open 知道自动把那个标量
+   转成一个类型团。这个变量是类型团这一点非常重要，因为这个类型团不仅包含
+   文件真实的 I/O 对象，而且还包含各种各样其他可以自由获取的数据结构，比如
+   一个标量（$$$self），一个数组（@$$self），和一个散列（%$$self）。（我们
+   不会提到子过程，&amp;$$self。）
+<p />
+   $form 是文件名或者模式参数。如果它是一个文件名，@_ 就是空的，所以它的
+   性质就象一个两个参数的 open。否则，$form 就是剩余参数的模式。
+<p />
+   open 之后，我们检测一下看看我们是否应该写入表示开始的标记。如果是，我们
+   就写。然后我们马上使用那些我们谈到的团数据结构。那个 @@self-&gt;{WRITING} 
+   是一个使用团存储有趣信息的一个例子。在这个例子里，我们记住是否写过起始
+   标记，这样我们才知道我们是否应该做相应的结束标记。我们正在使用 %$$self 
+   散列，所以我们可以给那个数据域一个象样的名字。我们本可以用象 $$$self 
+   这样的标量，但是那样不能自说明。（或者它只能自说明——取决于你如何看它。）
+<p />
+<strong><em>SELF-&gt;PRINT(LIST)</em></strong>
+<p />
+   这个方法实现了一个向捆绑的句柄 print。LIST 是传递给 print 的东西。我们
+   下面的方法把 LIST 的每个元素都转换成大写：
+<p />
+<pre>
+      sub PRINT {
+         my $self = shift;
+         print $self map {uc} @_;
+      }
+</pre>
+<p />
+<p />
+<strong><em>SELF-&gt;READLINE</em></strong>
+<p />
+   当用尖角操作符（<FH>）或者 readline 读句柄的时候，用这个方法提供数据。
+   当没有更多数据可读的时候，这个方法应该返回 undef。
+<p />
+<pre>
+      sub READLINE {
+         my $self = shift;
+         return <$self>;
+      }
+</pre>
+<p />
+<p />
+   在这里，我们只是简单地 return <$self>，这样，根据标量环境还是列表环境，
+   这个方法就能做出正确的反映。
+<p />
+<strong><em>SELF-&gt;GETC</em></strong>
+<p />
+   当在捆绑的文件句柄上使用 getc 的时候就会运行这个方法。
+<p />
+<pre>
+      sub GETC {
+         my $self = shift;
+         return getc($self);
+      }
+</pre>
+<p />
+<p />
+   和我们 Shout 类的几个方法类似，GETC 只是简单地调用相应的 Perl 内建的函数
+   然后返回结果。
+<p />
+<strong><em>SELF-&gt;OPEN(LIST)</em></strong>
+<p />
+   我们的 TIEHANDLE 方法本身就打开一个文件，但是一个使用 Shout 类的程序在
+   那之后调用 open 将触发这个方法。
+<p />
+<div class="fragment"><pre>
+<font color="brown">sub</font> OPEN {
+        <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+        <font color="brown">my</font> $form = <font color="maroon">shift</font>;
+        <font color="brown">my</font> $name = "$form@_";
+        $self-&gt;CLOSE;
+        <font color="maroon">open</font>($self, $form, @_)   <font color="navy">or</font> croak "can't reopen $name: $!";
+        <font color="brown">if</font> ($form =~ /&gt;/) {
+                <font color="maroon">print</font> $self "&lt;SHOU&gt;\n" <font color="navy">or</font> croak "can't start <font color="maroon">print</font>: $!";
+                $$self-&gt;{WRITING} = 1;      <font color="green"># 记得写结束标记</font>
+        }
+        <font color="brown">else</font> {
+                $$self-&gt;{WRITING} = 0;      <font color="green"># 记得不要写结束标记</font>
+        }
+        <font color="brown">return</font> 1;
+}</pre></pre></div>
+<p />
+   我们激活了我们自己的 CLOSE 方法明确地关闭文件，以免用户不愿意自己做。
+   然后我们打开一个新文件，文件名是在 open 里声明的，然后再向里面写东西。
+<p />
+<strong><em>SELF-&gt;CLOSE</em></strong>
+<p />
+   这个方法处理关闭句柄的请求。在这里，我们搜索到文件的结尾，如果成功，
+   则打印 </SHOUT>，然后调用 Perl 内建的 close。
+<p />
+<div class="fragment"><pre>
+<font color="brown">sub</font> CLOSE {
+        <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+        <font color="brown">if</font> ($$self-&gt;{WRITING}) {
+                $self-&gt;SEEK(0,2)   <font color="navy">or</font> <font color="brown">return</font>;
+                $self-&gt;PRINT("&lt;/SHOUT&gt;\n")   <font color="navy">or</font> <font color="brown">return</font>;
+        }
+        <font color="brown">return</font> <font color="maroon">close</font> $self;
+}</pre></pre></div>
+<p />
+<strong><em>SELF-&gt;SEEK(LIST)</em></strong>
+<p />
+   当你对一个捆绑的文件句柄进行 seek 的时候调用 SEEK 方法。
+<p />
+<div class="fragment"><pre>
+<font color="brown">sub</font> SEEK {
+        <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+        <font color="brown">my</font> ($offset, $whence) = @_;
+        <font color="brown">return</font> <font color="maroon">seek</font>($self, $offset, $whence);
+}</pre></pre></div>
+<p />
+<strong><em>SELF-&gt;TELL</em></strong>
+<p />
+   当你对一个捆绑的文件句柄调用 tell 的时候调用这个方法。
+<p />
+<div class="fragment"><pre>
+<font color="brown">sub</font> TELL {
+        <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+        <font color="brown">return</font> <font color="maroon">tell</font> $self;
+}</pre></pre></div>
+<p />
+<strong><em>SELF-&gt;PRINTF(LIST)</em></strong>
+<p />
+   当在捆绑的句柄上面使用 printf 的时候运行这个方法。LIST 将包含格式和需要
+   打印的条目。
+<p />
+<div class="fragment"><pre>
+<font color="brown">sub</font> PRINTF {
+        <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+        <font color="brown">my</font> $template = <font color="maroon">shift</font>;
+        <font color="brown">return</font> $self-&gt;PRINT(<font color="maroon">sprintf</font> $template, @_);
+}</pre></pre></div>
+<p />
+   在这里，我们用 sprintf 生成格式化字串然后把它传递给 PRINT 转成大写。
+   不过这里也没有让你一定要用内建的 sprintf 函数的原因。你可以截获百分号
+   逃逸以满足你自己的目的。
+<p />
+<strong><em>SELF-&gt;READ(LIST)</em></strong>
+<p />
+   当用 read 或者 sysread 对句柄做读操作时，该这个方法会做出响应。请注意
+   我们“现场”修改 LIST 的第一个参数，模拟 read 的能力：它填充作为它的
+   第二个参数传递进来的标量。
+<p />
+<div class="fragment"><pre>
+<font color="brown">sub</font> READ {
+        <font color="brown">my</font> ($self, <font color="maroon">undef</font>, $<font color="maroon">length</font>, $offset) = @_;
+        <font color="brown">my</font> $bufref = \$_[1];
+        <font color="brown">return</font> <font color="maroon">read</font>($self, $$bufref, $<font color="maroon">length</font>, $offset);
+}</pre></pre></div>
+<p />
+<strong><em>SELF-&gt;WRITE(LIST)</em></strong>
+<p />
+   当用 syswrite 对该句柄写入的时候调用这个方法。在这里，我们把待写字串变成
+   大写。
+<p />
+<div class="fragment"><pre>
+<font color="brown">sub</font> WRITE {
+        <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+        <font color="brown">my</font> $string = <font color="maroon">uc</font>(<font color="maroon">shift</font>);
+        <font color="brown">my</font> $<font color="maroon">length</font> = <font color="maroon">shift</font> || <font color="maroon">length</font> $string;
+        <font color="brown">my</font> $offset = <font color="maroon">shift</font> || 0;
+        <font color="brown">return</font> <font color="maroon">syswrite</font> $self, $string, $<font color="maroon">length</font>, $offset;
+}</pre></pre></div>
+<p />
+<strong><em>SELF-&gt;EOF</em></strong>
+<p />
+   如果用 eof 对一个与 Shout 类捆绑的文件句柄进行测试的时候，这个方法返回
+   一个布尔值。
+<div class="fragment"><pre>
+<font color="brown">sub</font> EOF {
+        <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+        <font color="brown">return</font> <font color="maroon">eof</font> $self;
+}</pre></pre></div>
+<p />
+<p />
+<strong><em>SELF-&gt;BINMODE(DISC)</em></strong>
+<p />
+   这个方法声明将要用于这个文件句柄的 I/O 规则。如果没有声明，它把这个捆绑
+   了的文件句柄置于二进制模式（:raw 规则），用于那些区分文本和二进制文件的
+   文件系统。
+<p />
+<div class="fragment"><pre>
+<font color="brown">sub</font> BINMODE {
+        <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+        <font color="brown">my</font> $disc = <font color="maroon">shift</font> || ":raw";
+        <font color="brown">return</font> <font color="maroon">binmode</font> $self, $disc;
+}</pre></pre></div>
+<p />
+   就这么写，但实际上这个方法在我们的类中没有什么用，因为 open 已经向句柄
+   中写入数据了。所以在我们的例子里我们可能可以做的更简单些：
+<p />
+<pre>
+      sub BINMODE { croak("Too late to use binmode") }
+</pre>
+<p />
+<p />
+<strong><em>SELF-&gt;FILENO</em></strong>
+<p />
+   这个方法应该返回与捆绑的文件句柄相关联的操作系统文件描述符（fileno）。
+<p />
+<div class="fragment"><pre>
+<font color="brown">sub</font> FILENO {
+        <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+        <font color="brown">return</font> <font color="maroon">fileno</font> $self;
+}</pre></pre></div>
+<p />
+<strong><em>SELF-&gt;DESTROY</em></strong>
+<p />
+   和其他类型的捆绑一样，当对象将要删除的时候触发这个方法。对象清理自己的
+   时候很有用。在这里，我们确保文件关闭了，以免程序忘记调用 close。我们可以
+   只说 close $self，不过更好的方法是调用该类的 CLOSE 方法。这样的话，如果
+   类的设计者决定修改文件关闭的方法的话，这个 DESTROY 方法就不用改了。
+<p />
+<div class="fragment"><pre>
+<font color="brown">sub</font> <font color="navy">DESTROY</font> {
+        <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+        $self-&gt;CLOSE;      <font color="green"># 用 Shout 的 CLOSE 方法关闭文件</font>
+}</pre></pre></div>
+<p />
+下面是我们的 Shout 类的一个演示：
+<p />
+<div class="fragment"><pre>
+<font color="green">#! /usr/bin/perl</font>
+<font color="brown">use</font> Shout;
+<font color="maroon">tie</font>(*FOO, Shout::, "&gt;filename");
+<font color="maroon">print</font> FOO "hello\n";      <font color="green"># 打印 HELLO。</font>
+<font color="maroon">seek</font> FOO, 0, 0;         <font color="green"># 退回到开头</font>
+@lines = &lt;FOO&gt;;         <font color="green"># 调用 READLINE 方法。</font>
+<font color="maroon">close</font> FOO;         <font color="green"># 明确关闭文件。</font>
+<font color="maroon">open</font>(FOO, "+&lt;", "filename");   <font color="green"># 重新打开 FOO，调用 OPEN。</font>
+<font color="maroon">seek</font>(FOO, 8, 0);      <font color="green"># 忽略 "&lt;SHOUT&gt;\n"。</font>
+<font color="maroon">sysread</font>(FOO, $inbuf, 5)      <font color="green"># 从 FOO 读取 5 个字节到 $inbuf。</font>
+<font color="maroon">print</font> "found $inbuf\n";      <font color="green"># 应该打印 "hello"。</font>
+<font color="maroon">seek</font>(FOO, -5, 1);      <font color="green"># 退回 "hello"之前。</font>
+<font color="maroon">syswrite</font>(FOO, "ciao!\n", 6);   <font color="green"># 写 6 个字节到 FOO。</font>
+<font color="maroon">untie</font>(*FOO);         <font color="green"># 明确调用 CLOSE 方法</font></font></pre></pre></div>
+<p />
+在运行完这些以后，这个文件包含：
+<p />
+<pre>
+   <SHOUT>
+   CIAO!
+   </SHOUT>
+</pre>
+<p />
+<p />
+下面是对付那个内部团的一些更怪异而又神奇的东西。我们和往常一样使用相同的散列，
+但是有新的键字 PATHNAME 和 DEBUG。首先我们安装一个字串化的重载，这样，如果打印
+我们的一个对象的时候就会打印出路径名（参阅第十三章，重载）：
+<p />
+<div class="fragment"><pre>
+<font color="green"># 这就是所有酷玩叶儿</font>
+<font color="brown">use</font> overload <font color="navy">q</font>(" ") =&gt; <font color="brown">sub</font> {$_[0]-&gt;pathname };
+
+<font color="green"># 这里是放你想跟踪的函数的存根。</font>
+<font color="brown">sub</font> trace {
+        <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+        <font color="brown">local</font> $Carp::CarpLevel = 1;
+        Carp::cluck("\ntrace magical method") <font color="brown">if</font> $self-&gt;debug;
+}
+
+<font color="green"># 重载句柄以打印出我们的路径</font>
+<font color="brown">sub</font> pathname {
+        <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+        confess "i am <font color="navy">not</font> a class method" <font color="brown">unless</font> <font color="maroon">ref</font> $self;
+        $$self-&gt;{PATHNAME} = <font color="maroon">shift</font> <font color="brown">if</font> @_;
+        <font color="brown">return</font> $$self-&gt;{PATHNAME};
+}
+
+<font color="green"># 双重模式</font>
+<font color="brown">sub</font> debug {
+        <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+        <font color="brown">my</font> $var = <font color="maroon">ref</font> $self ? \$$self-&gt;{DEBUG} : \our $Debug;
+        $$var = <font color="maroon">shift</font> <font color="brown">if</font> @_;
+        <font color="brown">return</font> <font color="maroon">ref</font> $self ? $$self-&gt;{DEBUG} || $Debug : $Debug;
+}</pre></pre></div>
+<p />
+然后象下面这样在所有你的普通方法的入口处调用 trace：
+<p />
+<div class="fragment"><pre>
+<font color="brown">sub</font> GETC { $_[0]-&gt;trace;   <font color="green"># 新的</font>
+        <font color="brown">my</font>($self) = @_;
+        <font color="maroon">getc</font>($self);
+}</pre></pre></div>
+<p />
+并且在 TIEHANDLE  和 OPEN 里设置路径名：
+<p />
+<div class="fragment"><pre>
+<font color="brown">sub</font> TIEHANDLE {
+        <font color="brown">my</font> $class    = <font color="maroon">shift</font>;
+        <font color="brown">my</font> $form = <font color="maroon">shift</font>;
+        <font color="brown">my</font> $name = "$form@_";          <font color="green"># NEW</font>
+        <font color="maroon">open</font> <font color="brown">my</font> $self, $form, @_   <font color="navy">or</font> croak "can't <font color="maroon">open</font> $name: $!";
+        <font color="brown">if</font> ($form =~ /&gt;/) {
+                <font color="maroon">print</font> $self  "&lt;SHOUT&gt;\n";
+                $$self-&gt;{WRITING} = 1;     <font color="green"># Remember to do end tag</font>
+        }
+        <font color="maroon">bless</font> $self, $class;           <font color="green"># $fh is a glob ref</font>
+        $self-&gt;pathname($name);        <font color="green"># NEW</font>
+        <font color="brown">return</font> $self;
+}
+
+<font color="brown">sub</font> OPEN { $_[0]-&gt;trace;           <font color="green"># NEW</font>
+        <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+        <font color="brown">my</font> $form = <font color="maroon">shift</font>;
+        <font color="brown">my</font> $name = "$form@_";          
+        $self-&gt;CLOSE;
+        <font color="maroon">open</font>($self, $form, @_)      <font color="navy">or</font> croak "can't reopen $name: $!";
+        $self-&gt;pathname($name);        <font color="green"># NEW</font>
+        <font color="brown">if</font> ($form =~ /&gt;/) {
+                <font color="maroon">print</font> $self "&lt;SHOUT&gt;\n" <font color="navy">or</font> croak "can't start <font color="maroon">print</font>: $!";
+                $$self-&gt;{WRITING} = 1;     <font color="green"># Remember to do end tag</font>
+        }
+        <font color="brown">else</font> {
+                $$self-&gt;{WRITING} = 0;     <font color="green"># Remember not to do end tag</font>
+        }
+        <font color="brown">return</font> 1;
+}</pre></pre></div>
+<p />
+有些地方你还需要调用 $self-&gt;debug(1) 打开调试。如果你这么做，那么你的所有
+Carp::cluck 调用都将会生成有意义的信息。下面是我们做上面的 reopen 的时候得到的
+信息。它给我们显示了三个深藏的方法，当时我们正在关闭旧文件并且准备打开新文件：
+<p />
+<pre>
+trace magical method at foo line 87
+    Shout::SEEK('>filename', '>filename', 0, 2) called at foo line 81
+    Shout::CLOSE('>filename') called at foo line 65
+    Shout::OPEN('>filename', '+<', 'filename') called at foo line 141
+</pre>
+<p />
+<p />
+<h3><a name="14_4_2"> </a><a name="14_4_2_"> </a> 14.4.2创建文件句柄 </h3>
+<p />
+你可以把同一个文件句柄同时 tie （捆绑）到一个两头的管道的输入和输出端。
+假设你想象下面这样运行 bc （一个任意精度的计算器）程序：
+<p />
+<div class="fragment"><pre>
+<font color="brown">use</font> Tie::Open2;
+
+<font color="maroon">tie</font> *CALC, 'Tie::Open2', "bc <font color="brown">-l</font>";
+$sum = 2;
+<font color="brown">for</font> (1 .. 7) {
+        <font color="maroon">print</font> CALC "$sum * $sum\n";
+        $sum = &lt;CALC&gt;;
+        <font color="maroon">print</font> "$_: $sum";
+        <font color="maroon">chomp</font> $sum;
+}
+<font color="maroon">close</font> CALC;</pre></pre></div>
+<p />
+我们可以看到打印出下面的东西：
+<p />
+<pre>
+1: 4
+2: 16
+3: 256
+4: 65536
+5: 4294967296
+6: 18446744073709551616
+7: 340282366920938463463374607431768211456
+</pre>
+<p />
+如果你的机器里有 bc 而且还有象下面这样定义的 Tie::Open2，那么你就能看到上面
+预期的输出。这次我们给我们的内部对象用了一个赐福了的数组。它包含我们的两个
+真正的文件句柄用于读和写。（打开一个双头管道的脏活由IPC::Open2干；我们只
+做有意思的部分。）
+<p />
+<div class="fragment"><pre>
+<font color="brown">package</font> Tie::Open2;
+<font color="brown">use</font> strict;
+<font color="brown">use</font> Carp;
+<font color="brown">use</font> Tie::Handle;      <font color="green"># 不要从这里继承</font>
+<font color="brown">use</font> IPC::Open2;
+
+<font color="brown">sub</font> TIEHANDLE {
+        <font color="brown">my</font> ($class, @cmd) = @_;
+        <font color="brown">no</font> warnings 'once';
+        <font color="brown">my</font> @fhpair = \<font color="brown">do</font> { <font color="brown">local</font>(*RDR, *WTR) };
+        <font color="maroon">bless</font> $_, 'Tie::StdHandle' <font color="brown">for</font> @fhpair;
+        <font color="maroon">bless</font>(\@fhpair =&gt; $class)-&gt;OPEN(@cmd) || <font color="maroon">die</font>;
+        <font color="brown">return</font> \@fhpair;
+}
+
+<font color="brown">sub</font> OPEN {
+        <font color="brown">my</font> ($self, @cmd) = @_;
+        $self-&gt;CLOSE <font color="brown">if</font> <font color="maroon">grep</font> {<font color="maroon">defined</font>} @{ $self-&gt;FILENO };
+        open2(@$self, @cmd);
+}
+
+<font color="brown">sub</font> FILENO {
+        <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+        [ <font color="maroon">map</font> { <font color="maroon">fileno</font> $self-&gt;[$_] } 0, 1];
+}
+
+<font color="brown">for</font> <font color="brown">my</font> $outmeth (<font color="navy">qw</font>(PRINT PRINTF WRITE) ) {
+        <font color="brown">no</font> strict 'refs';
+        *$outmeth = <font color="brown">sub</font> {
+                <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+                $self-&gt;[1]-&gt;$outmeth(@_);
+        };
+}
+
+<font color="brown">for</font> <font color="brown">my</font> $inmeth (<font color="navy">qw</font>(READ READLINE GETC) ) {
+        <font color="brown">no</font> strict 'refs';
+        *$inmeth = <font color="brown">sub</font> {
+                <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+                $self-&gt;[0]-&gt;$inmeth(@_);
+        };
+}
+
+<font color="brown">for</font> <font color="brown">my</font> $doppelmeth (<font color="navy">qw</font>(BINMODE CLOSE EOF)) {
+        <font color="brown">no</font> strict 'refs';
+        *$doppelmeth = <font color="brown">sub</font> {
+                <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+                $self-&gt;[0]-&gt;$doppelmeth(@_)  &amp;&amp; $self-&gt;[1]-&gt;$doppelmeth(@_);
+        };
+}
+
+<font color="brown">for</font> <font color="brown">my</font> $deadmeth (<font color="navy">qw</font>(SEEK TELL)) {
+        <font color="brown">no</font> strict 'refs';
+        *$deadmeth = <font color="brown">sub</font> {
+                craok("can't $deadmeth a <font color="maroon">pipe</font>");
+        };
+}
+1;</pre></pre></div>
+<p />
+最后四行以我们的观点来说是非常时髦的。为了解释这里在做什么，请回过头看一眼
+第八章，引用，里面的“作为函数模板的闭合”。
+<p />
+下面是一套更怪异的类。它的包名字应该给你一些关于它是干什么的线索。
+<p />
+<div class="fragment"><pre>
+<font color="brown">use</font> strict;
+<font color="brown">package</font> Tie::DevNull
+
+<font color="brown">sub</font> TIEHANDLE {
+        <font color="brown">my</font> $class = <font color="maroon">shift</font>;
+        <font color="brown">my</font> $fh = <font color="brown">local</font> *FH;
+        <font color="maroon">bless</font> \$fh, $class;
+}
+<font color="brown">for</font> (<font color="navy">qw</font>(READ READLINE GETC PRINT PRINTF WRITE)) {
+        <font color="brown">no</font> strict 'refs';
+        *$_ = <font color="brown">sub</font> { <font color="brown">return</font> };
+}
+
+<font color="brown">package</font> Tie::DevRandom;
+
+<font color="brown">sub</font> READLINE { <font color="maroon">rand</font>() . "\n"; }
+<font color="brown">sub</font> TIEHANDLE {
+        <font color="brown">my</font> $class = <font color="maroon">shift</font>;
+        <font color="brown">my</font> $fh = <font color="brown">local</font> *FH;
+        <font color="maroon">bless</font> \$fh, $class;
+}
+<font color="brown">sub</font> FETCH { <font color="maroon">rand</font>() }
+<font color="brown">sub</font> TIESCALAR {
+        <font color="brown">my</font> $class = <font color="maroon">shift</font>;
+        <font color="maroon">bless</font> \<font color="brown">my</font> $self, $class;
+}
+
+<font color="brown">package</font> Tie::Tee;
+
+<font color="brown">sub</font> TIEHANDLE {
+        <font color="brown">my</font> $class = <font color="maroon">shift</font>;
+        <font color="brown">my</font> @handles;
+        <font color="brown">for</font> <font color="brown">my</font> $path (@_) {
+                <font color="maroon">open</font>(<font color="brown">my</font> $fh, "&gt;$path") || <font color="maroon">die</font> "can't <font color="maroon">write</font> $path";
+                <font color="maroon">push</font> @handles, $fh;
+        }
+        <font color="maroon">bless</font> \@handles, $class;
+}
+
+<font color="brown">sub</font> PRINT {
+        <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+        <font color="brown">my</font> $ok = 0;
+        <font color="brown">for</font> <font color="brown">my</font> $fh (@$self) {
+                $ok += <font color="maroon">print</font> $fh @_;
+        }
+        <font color="brown">return</font> $ok = @$self;
+}</pre></pre></div>
+<p />
+Tie::Tee 类模拟标准的 Unix tee (1) 程序，它把一个输出流发送到多个不同的目的。
+Tie::DevNull 类模拟空设备，Unix 系统里的 /dev/null 。而 Tie::DevRandom 类生成
+可以用做句柄或标量的随机数，具体做什么取决于你调用的是 TIEHANDLE 还是
+TIESCALAR！下面是你调用它们的方法：
+<p />
+<div class="fragment"><pre>
+<font color="brown">package</font> main;
+
+<font color="maroon">tie</font> *SCATTER,    "Tie::Tee", <font color="navy">qw</font>(tmp1 - tmp2 &gt;tmp3 tmp4);
+<font color="maroon">tie</font> *RANDOM,   "Tie::DevRandom";
+<font color="maroon">tie</font> *NULL,   "Tie::DevNull";
+<font color="maroon">tie</font>  <font color="brown">my</font> $randy, "Tie::DevRandom";
+
+<font color="brown">for</font> <font color="brown">my</font> $i (1..10) {
+        <font color="brown">my</font> $line = &lt;RANDOM&gt;;
+        <font color="maroon">chomp</font> $line;
+        <font color="brown">for</font> <font color="brown">my</font> $fh ( *NULL, *SCATTER) {
+                <font color="maroon">print</font> $fh "$i: $line $randy\n";
+        }
+}</pre></pre></div>
+<p />
+这个程序在你的屏幕上输出类似下面的东西：
+<p />
+<pre>
+1: 0.124115571686165 0.20872819474074
+2: 0.156618299751194 0.678171662366353
+3: 0.799749050426126 0.300184963960792
+4: 0.599474551447884 0.213935286029916
+5: 0.700232143543861 0.800773751296671
+6: 0.201203608274334 0.0654303290639575
+7: 0.605381294683365 0.718162304090487
+8: 0.452976481105495 0.574026269121667
+9: 0.736819876983848 0.391737610662044
+10: 0.518606540417331 0.381805078272308
+</pre>
+<p />
+<p />
+不过事还没完！它向你的屏幕输出是因为上面的 *SCATTER tie 里的 -。而且那一行还命令
+它创建文件 tmp1，tmp2，和tmp4，同时还附加到文件 tmp3上。（我们在循环里还向 *NULL
+输出了，当然那不会在任何有趣的地方显示任何东西，除非你对黑洞感兴趣。）
+<p />
+<h2><a name="14_5"> </a><a name="14_5_"> </a> 14.5 一个精细的松绑陷阱 </h2>
+<p />
+如果你试图使用从 tie 或者 tied 返回的对象，而且该类定义了一个析构器，那么你就得
+小心一个精细的陷阱。看看下面这个（故意设计的）例子类，它使用一个文件来记录赋予
+一个标量的所有值：
+<p />
+<div class="fragment"><pre>
+<font color="brown">package</font> Remember;
+
+<font color="brown">sub</font> TIESCALAR {
+        <font color="brown">my</font> $class = <font color="maroon">shift</font>;
+        <font color="brown">my</font> $filename = <font color="maroon">shift</font>;
+        <font color="maroon">open</font> (<font color="brown">my</font> $handle, "&gt;", $filename)
+        <font color="navy">or</font> <font color="maroon">die</font> "Cannot <font color="maroon">open</font> $filename: $!\n";
+        <font color="maroon">print</font> $handle "The Start\n";
+        <font color="maroon">bless</font> {FH =&gt; $handle, VALUE  =&gt; 0}, $class;
+}
+
+<font color="brown">sub</font> FETCH {
+        <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+        <font color="brown">return</font> $self-&gt;{VALUE};
+}
+
+<font color="brown">sub</font> STORE{
+        <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+        <font color="brown">my</font> $value = <font color="maroon">shift</font>;
+        <font color="brown">my</font> $handle = $self-&gt;{FH};
+        <font color="maroon">print</font> $handle "$value\n";
+        $self-&gt;{VALUE} = $value;
+}
+
+<font color="brown">sub</font> <font color="navy">DESTROY</font> {
+        <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+        <font color="brown">my</font> $handle = $self-&gt;{FH};
+        <font color="maroon">print</font> $handle "The End\n";
+        <font color="maroon">close</font> $handle;
+}
+
+1;</pre></pre></div>
+<p />
+然后是一个利用我们 Remember 类的例子：
+<p />
+<div class="fragment"><pre>
+<font color="brown">use</font> strict;
+<font color="brown">use</font> Remember;
+
+<font color="brown">my</font> $fred;
+$<font color="navy">x</font> = <font color="maroon">tie</font> $fred, "Remember", "camel.<font color="maroon">log</font>";
+$fred = 1;
+$fred = 4;
+$fred = 5;
+<font color="maroon">untie</font> $fred;
+<font color="maroon">system</font> "cat camel.<font color="maroon">log</font>";</pre></pre></div>
+<p />
+执行的输出是：
+<p />
+<pre>
+The Start
+1
+4
+5
+The End
+</pre>
+<p />
+到目前为止还不错。现在让我们增加一个额外的方法到 Remember 类，这样允许在文件中
+有注释，也就是象下面这样的东西：
+<p />
+<div class="fragment"><pre>
+<font color="brown">sub</font> comment {
+        <font color="brown">my</font> $self = <font color="maroon">shift</font>;
+        <font color="brown">my</font> $message = <font color="maroon">shift</font>;
+        <font color="maroon">print</font> {$self-&gt;{FH}} $handle $message, "\n";
+}</pre></pre></div>
+<p />
+下面是前面那个例子，修改以后利用 comment 方法：
+<p />
+<div class="fragment"><pre>
+<font color="brown">use</font> strict;
+<font color="brown">use</font> Remember;
+
+<font color="brown">my</font> ($fred, $<font color="navy">x</font>);
+$<font color="navy">x</font> = <font color="maroon">tie</font> $fred, "Remember", "camel.<font color="maroon">log</font>";
+$fred = 1;
+$fred = 4;
+comment $<font color="navy">x</font> "changing...";
+$fred = 5;
+<font color="maroon">untie</font> $fred;
+<font color="maroon">system</font> "cat camel.<font color="maroon">log</font>";</pre></pre></div>
+<p />
+现在这个文件会是空的，而这样的结果可能不是你想要的。让我们解释一下为什么。
+捆绑一个变量实际上是把它和构造器返回的对象关联起来。这个对象通常只有一个引用：
+那个藏在捆绑变量身后的。调用 “untie”打破了这个关联并且消除了该引用。
+因为没有余下什么指向该对象的引用，那么就会出发 DESTROY 方法。
+<p />
+不过，在上面的例子中，我们存贮了第二个指向捆绑到 $x 上的对象。那就意味着
+在 untie 之后，我们还有一个有效的指向该对象的引用。因此 DESTROY 就不会
+触发，于是该文件就得不到输出冲刷并且关闭。这就是没有输出的原因：文件句柄
+的缓冲区仍然在内存里。它在程序退出之前不会存储到磁盘上。
+<p />
+要想侦测到这些东西，你可以用 -w 命令行标志，或者在当前的词法范围里包含
+use warnings "untie" 用法。这两种技巧都等效于在仍然存在有捆绑的对象的一个
+ untie 调用。如果这么处理，Perl 打印下面的警告：
+<p />
+<pre>
+   untie attempted while 1 inner references still exist
+</pre>
+<p />
+要想让程序能够运行而且看不见这些警告，那么就要在调用 untie 之前删除任何多余
+的指向捆绑对象的引用。你可以用下面的方法明确地处理：
+<p />
+<pre>
+   undef $x;
+   untie $fred;
+</pre>
+<p />
+<p />
+不过，通常你可以通过让变量在合适的时刻跑出范围来解决问题。
+<p />
+<h2><a name="14_6_CPAN"> </a><a name="14_6_CPAN_"> </a> 14.6 CPAN 里的模块 </h2>
+<p />
+在你开始鼓足干劲写你自己的捆绑模块之前，你应该检查一下是不是已经有人做出来了。
+在 CPAN 里面有许多捆绑模块，而且每天都在增加。（哦，应该是每个月。）表 14-1
+列出了其中的一部分。
+<p />
+<strong><em>表14-1。 CPAN 的捆绑模块</em></strong>
+<p />
+<table border="1" cellspacing="1" cellpadding="0">
+<tr><td class="twikiFirstCol" bgcolor="#FFFFCC"> 模块 </td><td align="right" bgcolor="#FFFFCC"> 描述 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#FFFFFF"> <span class="twikiNewLink" style='background : #FFFFCE;'><font color="#0000FF">GnuPG</font><a href="http://www.jb51.net/twiki/bin/edit/Perl/GnuPG?topicparent=Perl.TiedVariablesII" ><sup>?</sup></a></span>::Tie::Encrypt </td><td bgcolor="#FFFFFF"> 把一个文件句柄和 GNU Privacy Guard 加密捆绑在一起 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#FFFFCC"> IO::WrapTie </td><td bgcolor="#FFFFCC"> 把捆绑对象和一个 IO:Handle  接口封装在一起。 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#FFFFFF"> MLDBM </td><td align="right" bgcolor="#FFFFFF"> 在一个DBM文件里透明地存储复杂的数据值，而不仅仅是简单的字串。 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#FFFFCC"> Net::NISplusTied </td><td bgcolor="#FFFFCC"> 把散列和 NIS+ 表捆绑在一起 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#FFFFFF"> Tie::Cache::LRU </td><td bgcolor="#FFFFFF"> 实现一个最近最少使用缓冲 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#FFFFCC"> Tie::Const </td><td bgcolor="#FFFFCC"> 提供常数标量和散列 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#FFFFFF"> Tie::Counter </td><td bgcolor="#FFFFFF"> 让一个标量变量每接受一次访问就加一 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#FFFFCC"> Tie::CPHash </td><td bgcolor="#FFFFCC"> 实现一个保留大小写但是又大小写无关的散列 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#FFFFFF"> Tie::DB_FileLock </td><td bgcolor="#FFFFFF"> 提供对 Berkeley DB 1.x 的锁定访问 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#FFFFCC"> Tie::DBI </td><td bgcolor="#FFFFCC"> 把散列和 DBI 关系数据库捆绑在一起 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#FFFFFF"> Tie::DB_Lock </td><td bgcolor="#FFFFFF"> 用共享和排它锁把散列和数据库捆绑在一起 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#FFFFCC"> Tie::Dict </td><td bgcolor="#FFFFCC"> 把一个散列和一个 RPC 字典服务器捆绑在一起 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#FFFFFF"> Tie::Dir </td><td bgcolor="#FFFFFF"> 把一个散列捆绑为读取目录 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#FFFFCC"> Tie::DirHandle </td><td bgcolor="#FFFFCC"> 捆绑目录句柄 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#FFFFFF"> Tie::FileLURCache </td><td bgcolor="#FFFFFF"> 实现一个轻量级的，基于文件系统的永久的 LRU 缓冲 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#FFFFCC"> Tie::FlipFlop </td><td bgcolor="#FFFFCC"> 实现一个在两个值之间接换的捆绑 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#FFFFFF"> Tie::HashDefaults </td><td bgcolor="#FFFFFF"> 令散列有缺省值 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#FFFFCC"> Tie::HashHistory </td><td bgcolor="#FFFFCC"> 跟踪对散列修改的所有历史 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#FFFFFF"> Tie::IxHash </td><td bgcolor="#FFFFFF"> 为 Perl 提供有序的关联数组 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#FFFFCC"> Tie::LDAP </td><td bgcolor="#FFFFCC"> 实现一个 LDAP 数据库的接口 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#FFFFFF"> Tie::Persistent </td><td bgcolor="#FFFFFF"> 通过 tie 实现一个永久数据结构 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#FFFFCC"> Tie::Pick </td><td bgcolor="#FFFFCC"> 从一个集合中随机选取（和删除）一个元素 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#FFFFFF"> Tie::RDBM </td><td bgcolor="#FFFFFF"> 把散列和关系数据库捆绑 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#FFFFCC"> Tie::SecureHash </td><td bgcolor="#FFFFCC"> 支持基于名字空间的封装 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#FFFFFF"> Tie::STDERR </td><td bgcolor="#FFFFFF"> 把你的 STDERR 的输出发给另外一个进程，比如一个邮件服务器 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#FFFFCC"> Tie::Syslog </td><td bgcolor="#FFFFCC"> 把一个文件句柄自动捆绑到 syslog 作为其输出 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#FFFFFF"> Tie::TextDir </td><td bgcolor="#FFFFFF"> 捆绑一个文件目录 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#FFFFCC"> Tie::TransactHash </td><td bgcolor="#FFFFCC"> 在事务中编辑一个散列，而又不改变事务的顺序 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#FFFFFF"> Tie::VecArray </td><td bgcolor="#FFFFFF"> 给一个位矢量提供一个数组接口 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#FFFFCC"> Tie::Watch </td><td bgcolor="#FFFFCC"> 在 Perl 变量中提供观察点 </td></tr>
+<tr><td class="twikiFirstCol" bgcolor="#FFFFFF"> Win32::TieRegistry </td><td bgcolor="#FFFFFF"> 提供有效且简单的操作 Microsoft Windows 注册表的方法。 </td></tr>
+</table>
+<p />
+<p />
+<hr />
+<!--
+<ul>
+<li> Set MYTITLE = 捆绑(tie)变量
+</li>
+</ul>
+-->
+<br class="twikiClear" />
+<a name="TopicEnd"></a>
+<span class="twikiRight twikiPageNav twikiGrayText"><a href="TiedVariablesII.html#PageTop">to&nbsp;top</a></span><br class="twikiClear" />
+<!---->
+<!---->
+<a name="Actions"> </a><span class="twikiHidden"><br /></span>
+
+
+<a name="PageBottom"></a> </div></div></div>
+</body></html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Element.getElementsBySelector - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>getElementsBySelector<div class="box">不推荐</div></h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">getElementsBySelector(element, selector...) -> [HTMLElement...]</code></pre>
+			<p>
+				根据一个或多个指定的 CSS 选择器（字符串），在 <code>element</code> 中查找匹配其中任何一个选择器的后代节点，
+				并返回一个数组，数组中的元素已经过 <a href="extend.htm" >扩展</a>。
+			</p>
+		</div>
+		<div id="abody">
+			<p class="deprecated">
+				在 Prototype 1.6 中，不推荐使用 <code>Element#getElementsBySelector</code> 方法，建议使用更简洁的
+				<a href="select.htm" >Element#select</a>。
+			</p>
+			<p>
+				这个方法类似于 <a href="../utility/dollar-dollar.htm" >$$()</a>，但是它可以在一个元素的上下文中使用，而不是针对整篇文档。
+				它们支持的 CSS 语法相同，具体的细节请参考 <a href="../utility/dollar-dollar.htm" >$$() 的文档</a>。
+			</p>
+			<h3>样例</h3>
+			<pre><code class="html">&lt;ul id="fruits"&gt;
+	&lt;li id="apples"&gt;
+		&lt;h3 title="yummy!"&gt;Apples&lt;/h3&gt;
+		&lt;ul id="list-of-apples"&gt;
+			&lt;li id="golden-delicious" title="yummy!"&gt;Golden Delicious&lt;/li&gt;
+			&lt;li id="mutsu" title="yummy!"&gt;Mutsu&lt;/li&gt;
+			&lt;li id="mcintosh"&gt;McIntosh&lt;/li&gt;
+			&lt;li id="ida-red"&gt;Ida Red&lt;/li&gt;
+		&lt;/ul&gt;
+		&lt;p id="saying"&gt;An apple a day keeps the doctor away.&lt;/p&gt;
+	&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+			<pre><code class="javascript">$('apples').getElementsBySelector('[title="yummy!"]');
+// -> [h3, li#golden-delicious, li#mutsu]
+$('apples').getElementsBySelector('p#saying', 'li[title="yummy!"]');
+// -> [li#golden-delicious, li#mutsu, p#saying]
+$('apples').getElementsBySelector('[title="disgusting!"]');
+// -> []</code></pre>
+			<h3>小提示</h3>
+			<p><code>Element#getElementsBySelector</code> 可以作为 <code>getElementsByTagName</code> 的一个友好的替代版本：</p>
+			<pre><code class="javascript">var nodes = $A(someUL.getElementsByTagName('li')).map(Element.extend);
+var nodes2 = someUL.getElementsBySelector('li');</code></pre>
+			<p>
+				在第一行代码中，必须显式地转换结果集为 <code>Array</code>（以便于 Prototype <a href="../enumerable.htm" >Enumerable</a>
+				的方法使用），并且需要在每个节点上手动调用 <a href="extend.htm" >Element.extend</a>（以便于节点可以使用扩展的
+				DOM 方法）。<code>Element#getElementsBySelector</code> 则不用担心这些问题。
+			</p>
+			<p>
+				如果你使用 1.5.1 或以上的版本（在这些版本中优化了执行效率），上述两行代码运行时的速度差别可以忽略不计。
+			</p>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

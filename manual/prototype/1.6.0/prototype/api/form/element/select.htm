@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Form.Element.select - Prototype JavaScript 框架</title>
+	<link href="../../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>select</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">select(element) -> HTMLElement</code></pre>
+			<p>选取文本输入框中包含的文本。</p>
+		</div>
+		<div id="abody">
+			<p>
+				<strong>译注：</strong>该方法其实并未添加到已扩展的表单控件中，所以 <code>$('inputElement').select()</code>
+				调用的并不是这个方法，而是 JavaScript 原生的 <code>select()</code> 方法。<a href="focus.htm" >Form.Element.focus()</a>
+				方法也存在同样的问题。
+			</p>
+			<h3>样例</h3>
+			<p>设置一些搜索框，当它们获得焦点时，自动选择它们的内容。</p>
+			<pre><code class="javascript">$('searchbox').onfocus = function() { 
+	Form.Element.select(this)
+	// 你也可以使用原生的方法，但是那样的话将不会返回元素！如下：
+	this.select() 
+} </code></pre>
+			<h3>获取焦点 + 选择内容：使用 <code>activate</code>!</h3>
+			<p>
+				如果表单控件需要获取焦点并选择当前的文本内容，那么使用 <a href="activate.htm" >activate</a>
+				方法是一个很棒的选择——只需要一次简单的 JavaScript 调用就可以了。
+			</p>
+			<p>
+				<strong>译注：</strong><code>在 Prototype 1.6.0.3 的源码中，Form.Element</code> 的 <code>focus</code> 和
+				<code>select</code> 方法将传入的参数 <code>element</code> 直接返回，并未做任何处理，所以若传入的
+				<code>element</code> 是一个字符串，则返回值也是一个字符串。<br />
+				为修正这个问题，请修改 Prototype 的源码，将<strong>第 3562 行和第 3567 行（如果你曾经修正过<a href="../../Element/relativize-1.htm" >
+				Element.relativize</a> 的问题，则为第 3564 行和第 3569 行）</strong>的代码：
+			</p>
+			<pre><code class="ebnf">	$(element).focus();</code></pre>
+			替换为：
+			<pre><code class="ebnf">	element = $(element);
+	element.focus();</code></pre>
+			<p><strong>注意：仅针对 Prototype 1.6.0.3，其它版本未知。</strong></p>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

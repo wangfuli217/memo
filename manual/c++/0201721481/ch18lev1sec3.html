@@ -1,0 +1,544 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 18.3.  Pointer to Class Member</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch18lev1sec2.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch18lev1sec4.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch18lev1sec3"></a>
+
+        <h3 class="docSection1Title">18.3. Pointer to Class Member</h3>
+        <h3 class="docSection1Title">18.3. 类成员的指针</h3>
+
+        <p class="docText">We know that, given a pointer to an object, we can fetch a given member from that object using the arrow (<tt>-&gt;</tt>) operator. Sometimes it is useful to start from the member. That is, we may want to obtain a pointer to a specific member and then fetch that member from one or another object.</p>
+        <p class="docText">我们知道，给定对象的指针，可以使用箭头（<tt>-&gt;</tt>）操作符从该对象获得给定成员。有时从成员开始是有用的，也就是说，我们也许希望获得特定成员的指针，然后从一个对象或别的对象获得该成员。</p>
+
+<a name="ch18term17"></a>
+        <p class="docText">We can do so by using a special kind of pointer known as a <b><a class="docLink" href="ch18lev1sec9.html#gloss18_17" >pointer to member</a></b>. A pointer to member embodies the type of the class as well as the type of the member. This fact impacts how pointers to member are defined, how they are bound to a function or data member, and how they are used.</p>
+        <p class="docText">可以通过使用称为<b><a class="docLink" href="ch18lev1sec9.html#gloss18_17" >成员指针</a></b>的特殊各类的指针做到这一点。成员指针包含类的类型以及成员的类型。这一事实影响着怎样定义成员指针，怎样将成员指针绑定到函数或数据成员，以及怎样使用它们。</p>
+
+        <p class="docText">Pointers to member apply only to non<tt>static</tt> members of a class. <tt>static</tt> class members are not part of any object, so no special syntax is needed to point to a <tt>static</tt> member. Pointers to <tt>static</tt> members are ordinary pointers.</p>
+        <p class="docText">成员指针只应用于类的非 <tt>static</tt> 成员。<tt>static</tt> 类成员不是任何对象的组成部分，所以不需要特殊语法来指向 <tt>static</tt> 成员，<tt>static</tt> 成员指针是普通指针。</p>
+
+        <a name="ch18lev2sec12"></a>
+        <h4 class="docSection2Title">18.3.1. Declaring a Pointer to Member</h4>
+        <h4 class="docSection2Title">18.3.1. 声明成员指针</h4>
+
+        <p class="docText">In exploring pointers to members, we'll use a simplified version of the <tt>Screen</tt> class from <a class="docLink" href="ch12.html#ch12" >Chapter 12</a>.</p>
+        <p class="docText">在研究成员指针时，将使用<a class="docLink" href="ch12.html#ch12" >第十二章</a>的 <tt>Screen</tt> 类的简化版本。</p>
+        <pre>
+     class Screen {
+     public:
+         typedef std::string::size_type index;
+         char get() const;
+         char get(index ht, index wd) const;
+     private:
+         std::string contents;
+         index cursor;
+         index height, width;
+     };
+</pre><br>
+        <a name="ch18lev3sec23"></a>
+
+        <h5 class="docSection3Title">Defining a Pointer to Data Member</h5>
+        <h5 class="docSection3Title">定义数据成员的指针</h5>
+
+        <p class="docText">The <tt>contents</tt> member of <tt>Screen</tt> has type <tt>std::string</tt>. The complete type of <tt>contents</tt> is "member of class <tt>Screen</tt>, whose type is <tt>std::string."</tt> Consequently, the complete type of a pointer that could point to <tt>contents</tt> is "pointer to member of class <tt>Screen</tt> of type <tt>std::string."</tt> This type is written as</p>
+        <p class="docText"><tt>Screen</tt> 类的 <tt>contents</tt> 成员的类型为 <tt>std::string</tt>。<tt>contents</tt> 的完全类型是“<tt>Screen</tt> 类的成员，其类型是 <tt>std::string</tt>”。因此，可以指向 <tt>contents</tt> 的指针的完全类型是“指向 <tt>std::string</tt> 类型的 <tt>Screen</tt> 类成员的指针”，这个类型可写为</p>
+        <pre>
+     string Screen::*
+</pre><br>
+
+        <p class="docText">We can define a pointer to a <tt>string</tt> member of class <tt>Screen</tt> as</p>
+        <p class="docText">可以将指向 <tt>Screen</tt> 类的 <tt>string</tt> 成员的指针定义为</p>
+        <pre>
+     string Screen::*ps_Screen;
+</pre><br>
+
+        <p class="docText"><tt>ps_Screen</tt> could be initialized with the address of <tt>contents</tt> by writing</p>
+        <p class="docText">可以用 <tt>contents</tt> 的地址初始化 <tt>ps_Screen</tt>，代码为</p>
+        <pre>
+     string Screen::*ps_Screen = &amp;Screen::contents;
+</pre><br>
+
+<a name="idd1e150038"></a><a name="idd1e150043"></a><a name="idd1e150048"></a><a name="idd1e150053"></a>
+        <p class="docText">We could also define a pointer that might address the <tt>height, width</tt>, or <tt>cursor</tt> members as</p>
+	<p class="docText">还可以将指向 <tt>height</tt>、<tt>width</tt> 或 <tt>cursor</tt> 成员的指针定义为</p>
+        <pre>
+     Screen::index Screen::*pindex;
+</pre><br>
+
+        <p class="docText">which says that <tt>pindex</tt> is a pointer to a member of class <tt>Screen</tt> with type <tt>Screen::index</tt>. We could assign the address of <tt>width</tt> to this pointer as follows:</p>
+        <p class="docText">这是说，<tt>pindex</tt> 是具有 <tt>Screen::index</tt> 类型的 <tt>Screen</tt> 类成员的指针。可以将 <tt>width</tt> 的地址赋给这个指针：</p>
+        <pre>
+     pindex = &amp;Screen::width;
+</pre><br>
+
+        <p class="docText">The pointer <tt>pindex</tt> can be set to any of <tt>width, height</tt>, or <tt>cursor</tt> because all three are <tt>Screen</tt> class data members of type <tt>index</tt>.</p>
+	<p class="docText">可以用指针 <tt>pindex</tt> 指向 <tt>width</tt>、<tt>height</tt> 或 <tt>cursor</tt> 中任意一个，因为这三个都是 <tt>index</tt> 类型的 <tt>Screen</tt> 类成员。</p>
+
+<a name="ch18lev3sec24"></a>
+        <h5 class="docSection3Title">Defining a Pointer to Member Function</h5>
+        <h5 class="docSection3Title">定义成员函数的指针</h5>
+
+        <p class="docText">A pointer to a member function must match the type of the function to which it points, in three ways:</p>
+        <p class="docText">成员函数的指针必须在三个方面与它所指函数的类型相匹配：</p>
+
+        <div style="font-weight:bold">
+          <ol class="docList" type="1">
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">The type and number of the function parameters, including whether the member is <tt>const</tt></p>
+                <p class="docList">函数形参的类型和数目，包括成员是否为 <tt>const</tt>。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">The return type</p>
+                <p class="docList">返回类型。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">The class type of which it is a member</p>
+                <p class="docList">所属类的类型。</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+
+        <p class="docText">A pointer to member function is defined by specifying the function return type, parameter list, and a class. For example, a pointer to a <tt>Screen</tt> member function capable of referring to the version of <tt>get</tt> that takes no parameters has the following type:</p>
+        <p class="docText">通过指定函数返回类型、形参表和类来定义成员函数的指针。例如，可引用不接受形参的 <tt>get</tt> 版本的 <tt>Screen</tt> 成员函数的指针具有如下类型：</p>
+        <pre>
+     char (Screen::*)() const
+</pre><br>
+
+        <p class="docText">This type specifies a pointer to a <tt>const</tt> member function of class <tt>Screen</tt>, taking no parameters and returning a value of type <tt>char</tt>. A pointer to this version of <tt>get</tt> can be defined and initialized as follows:</p>
+        <p class="docText">这个类型指定 <tt>Screen</tt> 类的 <tt>const</tt> 成员函数的指针，不接受形参并返回 <tt>char</tt> 类型的值。这个 <tt>get</tt> 函数版本的指针可以像下面这样定义和初始化：</p>
+        <pre>
+     // <span class="docEmphasis">pmf</span> <span class="docEmphItalicAlt">points to the</span> <span class="docEmphasis">Screen get</span> <span class="docEmphItalicAlt">member that takes no arguments</span>
+     char (Screen::*pmf)() const = &amp;Screen::get;
+</pre><br>
+
+        <p class="docText">We might also define a pointer to the two-parameter version of <tt>get</tt> as</p>
+        <p class="docText">也可以将带两个形参的 <tt>get</tt> 函数版本的指针定义为</p>
+        <pre>
+     char (Screen::*pmf2)(Screen::index, Screen::index) const;
+     pmf2 = &amp;Screen::get;
+</pre><br>
+        <a name="ch18note20"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">The precedence of the call operator is higher than that of the pointer-to-member operators. Therefore, the parentheses around <tt>Screen::*</tt> are essential. Without them, the compiler treats the following as an (invalid) function declaration:</p>
+                <p class="docText">调用操作符的优先级高于成员指针操作符，因此，包围 <tt>Screen::*</tt> 的括号是必要的，没有这个括号，编译器就将下面代码当作（无效的）函数声明：</p>
+              </td>
+            </tr>
+          </table><br>
+          <pre>
+     // <span class="docEmphItalicAlt">error: non-member function</span> <span class="docEmphasis">p</span> <span class="docEmphItalicAlt">cannot have</span> <span class="docEmphasis">const</span> <span class="docEmphItalicAlt">qualifier</span>
+     char Screen::*p() const;
+</pre><br>
+        </div><br>
+        <a name="ch18lev3sec25"></a>
+
+        <h5 class="docSection3Title">Using Typedefs for Member Pointers</h5>
+        <h5 class="docSection3Title">为成员指针使用类型别名</h5>
+
+<a name="idd1e150240"></a><a name="idd1e150245"></a><a name="idd1e150249"></a><a name="idd1e150257"></a><a name="idd1e150265"></a><a name="idd1e150270"></a><a name="idd1e150278"></a><a name="idd1e150286"></a>
+        <p class="docText">Typedefs can make pointers to members easier to read. For example, the following typedef defines <tt>Action</tt> to be an alternative name for the type of the two-parameter version of <tt>get</tt>:</p>
+        <p class="docText">类型别名可以使成员指针更容易阅读。例如，下面的类型别名将 <tt>Action</tt> 定义为带两个形参的 <tt>get</tt> 函数版本的类型的另一名字：</p>
+        <pre>
+     // <span class="docEmphasis">Action</span> <span class="docEmphItalicAlt">is a type name</span>
+     typedef
+     char (Screen::*Action)(Screen::index, Screen::index) const;
+</pre><br>
+
+        <p class="docText"><tt>Action</tt> is the name of the type "pointer to a <tt>const</tt> member function of class <tt>Screen</tt> taking two parameters of type <tt>index</tt> and returning <tt>char</tt>." Using the typedef, we can simplify the definition of a pointer to <tt>get</tt> as follows:</p>
+        <p class="docText"><tt>Action</tt> 是类型“<tt>Screen</tt> 类的接受两个 <tt>index</tt> 类型形参并返回 <tt>char</tt> 的成员函数的指针”的名字。使用类型别名，可以将 <tt>get</tt> 指针的定义简化为</p>
+        <pre>
+Action get = &amp;Screen::get;
+</pre><br>
+
+        <p class="docText">A pointer-to-member function type may be used to declare function parameters and function return types:</p>
+        <p class="docText">可以使用成员指针函数类型来声明函数形参和函数返回类型：</p>
+        <pre>
+     // <span class="docEmphasis">action</span> <span class="docEmphItalicAlt">takes a reference to a</span> <span class="docEmphasis">Screen</span> <span class="docEmphItalicAlt">and a pointer to</span> <span class="docEmphasis">Screen</span> <span class="docEmphItalicAlt">member function</span>
+     Screen&amp; action(Screen&amp;, Action = &amp;Screen::get);
+</pre><br>
+
+        <p class="docText">This function is declared as taking two parameters: a reference to a <tt>Screen</tt> object and a pointer to a member function of class <tt>Screen</tt> taking two <tt>index</tt> parameters and returning a <tt>char</tt>. We could call <tt>action</tt> either by passing it a pointer or the address of an appropriate member function in <tt>Screen</tt>:</p>
+        <p class="docText">这个函数声明为接受两个形参：<tt>Screen</tt> 对象的引用，以及 <tt>Screen</tt> 类的接受两个 <tt>index</tt> 类型形参并返回 <tt>char</tt> 的成员函数的指针。可以通过传递 <tt>Screen</tt> 类中适当成员函数的指针或地址调用 <tt>action</tt> 函数：</p>
+        <pre>
+     Screen myScreen;
+     // <span class="docEmphItalicAlt">equivalent calls:</span>
+     action(myScreen);       // <span class="docEmphItalicAlt">uses the default argument</span>
+     action(myScreen, get);  // <span class="docEmphItalicAlt">uses the variable</span> <span class="docEmphasis">get</span> <span class="docEmphItalicAlt">that we previously defined</span>
+     action(myScreen, &amp;Screen::get);     // <span class="docEmphItalicAlt">pass address explicitly</span>
+</pre><br>
+        <a name="ch18sb10"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 18.3.1</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+<a name="ch18qa9q1"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 18.21:</b></td>
+
+                    <td>
+                      <p class="docText">What is the difference between an ordinary data or function pointer and a pointer to data or function member?</p>
+                      <p class="docText">普通数据指针或函数指针与数据成员指针或函数成员指针之间的区别是什么？</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+<a name="ch18qa9q2"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 18.22:</b></td>
+
+                    <td>
+                      <p class="docText">Define the type that could represent a pointer to the <tt>isbn</tt> member of the <tt>Sales_item</tt> class.</p>
+                      <p class="docText">定义可以表示 <tt>Sales_item</tt> 类的 <tt>isbn</tt> 成员的指针的类型。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+<a name="ch18qa9q3"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 18.23:</b></td>
+
+                    <td>
+                      <p class="docText">Define a pointer that could point to the <tt>same_isbn</tt> member.</p>
+                      <p class="docText">定义可以指向 <tt>same_isbn</tt> 成员的指针。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+<a name="ch18qa9q4"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 18.24:</b></td>
+
+                    <td>
+                      <p class="docText">Write a typedef that is a synonym for a pointer that could point to the <tt>avg_price</tt> member of <tt>Sales_item</tt>.</p>
+                      <p class="docText">编写类型别名，作为可指向 <tt>Sales_item</tt> 的 <tt>avg_price</tt> 成员的指针的同义词。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a name="ch18lev2sec13"></a>
+
+        <h4 class="docSection2Title">18.3.2. Using a Pointer to Class Member</h4>
+        <h4 class="docSection2Title">18.3.2. 使用类成员指针</h4>
+
+<a name="idd1e150490"></a>
+        <p class="docText">Analogous to the member access operators, operators. and <tt>-&gt;</tt>, are two new operators, <tt>.*</tt> and <tt>.-&gt;</tt>, that let us bind a pointer to member to an actual object. The left-hand operand of these operators must be an object of or pointer to the class type, respectively. The right-hand operand is a pointer to a member of that type:</p>
+	<p class="docText">类似于成员访问操作符 <tt>.</tt> 和 <tt>-&gt;</tt>，<tt>.*</tt> 和 <tt>-&gt;</tt> 是两个新的操作符，它们使我们能够将成员指针绑定到实际对象。这两个操作符的左操作数必须是类类型的对象或类类型的指针，右操作数是该类型的成员指针。</p>
+
+        <ul>
+          <li>
+            <p class="docList">The pointer-to-member dereference operator (<tt>.*</tt>) fetches the member from an object or reference.</p>
+            <p class="docList">成员指针解引用操作符（<tt>.*</tt>）从对象或引用获取成员。</p>
+          </li>
+
+          <li>
+            <p class="docList">The pointer-to-member arrow operator (<tt>-&gt;*</tt>) fetches the member through a pointer to an object.</p>
+            <p class="docList">成员指针箭头操作符（<tt>-&gt;*</tt>）通过对象的指针获取成员。</p>
+          </li>
+        </ul><a name="ch18lev3sec26"></a>
+
+        <h5 class="docSection3Title">Using a Pointer to Member Function</h5>
+        <h5 class="docSection3Title">使用成员函数的指针</h5>
+
+        <p class="docText">Using a pointer to member, we could call the version of <tt>get</tt> that takes no parameters as follows:</p>
+        <p class="docText">使用成员指针，可以这样调用不带形参的 <tt>get</tt> 函数版本：</p>
+        <pre>
+     // <span class="docEmphasis">pmf</span> <span class="docEmphItalicAlt">points to the</span> <span class="docEmphasis">Screen get</span> <span class="docEmphItalicAlt">member that takes no arguments</span>
+     char (Screen::*pmf)() const = &amp;Screen::get;
+     Screen myScreen;
+     char c1 = myScreen.get();      // <span class="docEmphItalicAlt">call get on</span> <span class="docEmphasis">myScreen</span>
+     char c2 = (myScreen.*pmf)();   // <span class="docEmphItalicAlt">equivalent call to</span> <span class="docEmphasis">get</span>
+     Screen *pScreen = &amp;myScreen;
+     c1 = pScreen-&gt;get();     // <span class="docEmphItalicAlt">call get on object to which</span> <span class="docEmphasis">pScreen</span> <span class="docEmphItalicAlt">points</span>
+     c2 = (pScreen-&gt;*pmf)();  // <span class="docEmphItalicAlt">equivalent call to</span> <span class="docEmphasis">get</span>
+</pre><br>
+        <a name="ch18note21"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">The calls <tt>(myScreen.*pmf)()</tt> and <tt>(pScreen-&gt;*pmf)()</tt> require the parentheses because the precedence of the call operator<tt>()</tt> is higher than the precedence of the pointer to member operators.</p>
+                <p class="docText">因为调用操作符（<tt>()</tt>）比成员指针操作符优先级高，所以调用 <tt>(myScreen.*pmf)()</tt> 和 <tt>(pScreen-&gt;*pmf)()</tt> 需要括号。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">Without the parentheses,</p>
+        <p class="docText">没有括号，就会将</p>
+        <pre>
+     myScreen.*pmf()
+</pre><br>
+
+        <p class="docText">would be interpreted to mean</p>
+        <p class="docText">解释为</p>
+        <pre>
+     myScreen.*(pmf())
+</pre><br>
+
+        <p class="docText">This code says to call the function named <tt>pmf</tt> and bind its return value to the pointer to member object operator (<tt>.*</tt>). Of course, the type of <tt>pmf</tt> does not support such a use, and a compile-time error would be generated.</p>
+        <p class="docText">这个代码是说，调用名为 <tt>pmf</tt> 的函数，并将它的返回值绑定到成员对象操作符（<tt>.*</tt>）的指针。当然，<tt>pmf</tt> 的类型不支持这样的使用，且会产生编译时错误。</p>
+
+        <p class="docText">As with any other function call, we can also pass arguments in a call made through a pointer to member function:</p>
+        <p class="docText">像任何其他函数一样，也可以在通过成员函数指针进行的调用中传递实参：</p>
+        <pre>
+     char (Screen::*pmf2)(Screen::index, Screen::index) const;
+     pmf2 = &amp;Screen::get;
+     Screen myScreen;
+     char c1 = myScreen.get(0,0);     // <span class="docEmphItalicAlt">call two-parameter version of</span> <span class="docEmphasis">get</span>
+     char c2 = (myScreen.*pmf2)(0,0); // <span class="docEmphItalicAlt">equivalent call to</span> <span class="docEmphasis">get</span>
+</pre><br>
+        <a name="ch18lev3sec27"></a>
+
+        <h5 class="docSection3Title">Using a Pointer to Data Member</h5>
+        <h5 class="docSection3Title">使用数据成员的指针</h5>
+
+        <p class="docText">The same pointer-to-member operators are used to access data members:</p>
+        <p class="docText">相同的成员指针操作符用于访问数据成员：</p>
+        <pre>
+     Screen::index Screen::*pindex = &amp;Screen::width;
+     Screen myScreen;
+     // <span class="docEmphItalicAlt">equivalent ways to fetch</span> <span class="docEmphasis">width</span> <span class="docEmphItalicAlt">member of</span> <span class="docEmphasis">myScreen</span>
+     Screen::index ind1 = myScreen.width;      // <span class="docEmphItalicAlt">directly</span>
+     Screen::index ind2 = myScreen.*pindex;    // <span class="docEmphItalicAlt">dereference to get</span> <span class="docEmphasis">width</span>
+     Screen *pScreen;
+     // <span class="docEmphItalicAlt">equivalent ways to fetch</span> <span class="docEmphasis">width</span> <span class="docEmphItalicAlt">member of</span> <span class="docEmphasis">*pScreen</span>
+     ind1 = pScreen-&gt;width;        // <span class="docEmphItalicAlt">directly</span>
+     ind2 = pScreen-&gt;*pindex;      // <span class="docEmphItalicAlt">dereference</span> <span class="docEmphasis">pindex</span> <span class="docEmphItalicAlt">to get</span> <span class="docEmphasis">width</span>
+</pre><br>
+        <a name="ch18lev3sec28"></a>
+
+        <h5 class="docSection3Title">Pointer-to-Member Function Tables</h5>
+        <h5 class="docSection3Title">成员指针函数表</h5>
+
+<a name="idd1e150711"></a><a name="idd1e150714"></a><a name="idd1e150719"></a><a name="idd1e150724"></a>
+        <p class="docText">One common use for function pointers and for pointers to member functions is to store them in a function table. A function table is a collection of function pointers from which a given call is selected at run time.</p>
+        <p class="docText">函数指针和成员函数指针的一个公共用途是，将它们存储在函数表中，函数表是函数指针的集合，在运行时从中选择给定调用。</p>
+
+        <p class="docText">For a class that has several members of the same type, such a table can be used to select one from the set of these members. Let's assume that our <tt>Screen</tt> class is extended to contain several member functions, each of which moves the cursor in a particular direction:</p>
+        <p class="docText">对具有几个相同类型成员的类而言，可以使用这样的表来从这些成员的集合中选择一个。假定扩展 <tt>Screen</tt> 类以包含几个成员函数，其中每一个在特定方向移动光标：</p>
+        <pre>
+     class Screen {
+     public:
+         // <span class="docEmphItalicAlt">other interface and implementation members as before</span>
+         Screen&amp; home();         // <span class="docEmphItalicAlt">cursor movement functions</span>
+         Screen&amp; forward();
+         Screen&amp; back();
+         Screen&amp; up();
+         Screen&amp; down();
+     };
+</pre><br>
+
+        <p class="docText">Each of these new functions takes no parameters and returns a reference to the <tt>Screen</tt> on which it was invoked.</p>
+        <p class="docText">这些新函数的每一个都不接受形参，并返回调用它的对象的引用。</p>
+
+<a name="ch18lev3sec29"></a>
+        <h5 class="docSection3Title">Using the Function-Pointer Table</h5>
+        <h5 class="docSection3Title">使用函数指针表</h5>
+
+        <p class="docText">We might want to define a <tt>move</tt> function that could call any one of these functions and perform the indicated action. To support this new function, we'll add a <tt>static</tt> member to <tt>Screen</tt> that will be an array of pointers to the cursor movement functions:</p>
+        <p class="docText">我们可能希望定义一个 <tt>move</tt> 函数，它可以调用这些函数中的任意一个并执行指定动作。为了支持这个新函数，我们将在 <tt>Screen</tt> 中增加一个 <tt>static</tt> 成员，该成员是光标移动函数的指针的数组：</p>
+        <pre>
+     class Screen {
+     public:
+         // <span class="docEmphItalicAlt">other interface and implementation members as before</span>
+         // <span class="docEmphasis">Action</span> <span class="docEmphItalicAlt">is pointer that can be assigned any of the cursor movement members</span>
+         typedef Screen&amp; (Screen::*Action)();
+         static Action Menu[];        // <span class="docEmphItalicAlt">function table</span>
+     public:
+         // <span class="docEmphItalicAlt">specify which direction to move</span>
+         enum Directions { HOME, FORWARD, BACK, UP, DOWN };
+         Screen&amp; move(Directions);
+     };
+</pre><br>
+
+<a name="idd1e150798"></a><a name="idd1e150801"></a><a name="idd1e150806"></a><a name="idd1e150811"></a>
+        <p class="docText">The array named <tt>Menu</tt> will hold pointers to each of the cursor movement functions. Those functions will be stored at the offsets corresponding to the enumerators in <tt>Directions</tt>. The <tt>move</tt> function takes an enumerator and calls the appropriate function:</p>
+        <p class="docText">名为 <tt>Menu</tt> 的数组将保存指向每个光标移动函数的指针，将在对应于 <tt>Directions</tt> 中枚举成员的偏移位置保存那些函数，<tt>move</tt> 函数接受枚举成员并调用适当函数：</p>
+        <pre>
+     Screen&amp; Screen::move(Directions cm)
+     {
+          // <span class="docEmphItalicAlt">fetch the element in</span> <span class="docEmphasis">Menu</span> <span class="docEmphItalicAlt">indexed by</span> <span class="docEmphasis">cm</span>
+          // <span class="docEmphItalicAlt">run that member on behalf of</span> <span class="docEmphasis">this</span> <span class="docEmphItalicAlt">object</span>
+          (this-&gt;*Menu[cm])();
+          return *this;
+     }
+</pre><br>
+
+        <p class="docText">The call inside <tt>move</tt> is evaluated as follows: The <tt>Menu</tt> element indexed by <tt>cm</tt> is fetched. That element is a pointer to a member function of the <tt>Screen</tt> class. We call the member function to which that element points on behalf of the object to which <tt>this</tt> points.</p>
+        <p class="docText">这样计算 <tt>move</tt> 内部的调用：获取由 <tt>cm</tt> 索引的 <tt>Menu</tt> 元素（该元素是 <tt>Screen</tt> 类成员函数的指针），代表 <tt>this</tt> 指向的对象调用该元素指向的成员函数。</p>
+
+        <p class="docText">When we call <tt>move</tt>, we pass it an enumerator that indicates which direction to move the cursor:</p>
+        <p class="docText">调用 <tt>move</tt> 时，传给它一个枚举成员，指出向哪个方向移动光标：</p>
+        <pre>
+     Screen myScreen;
+
+     myScreen.move(Screen::HOME);    // <span class="docEmphItalicAlt">invokes</span> <span class="docEmphasis">myScreen.home</span>
+     myScreen.move(Screen::DOWN);    // <span class="docEmphItalicAlt">invokes</span> <span class="docEmphasis">myScreen.down</span>
+</pre><br>
+        <a name="ch18lev3sec30"></a>
+
+        <h5 class="docSection3Title">Defining a Table of Member Function Pointers</h5>
+        <h5 class="docSection3Title">定义成员函数指针表</h5>
+
+        <p class="docText">What's left is to define and initialize the table itself:</p>
+        <p class="docText">剩下的是定义和初始化表本身：</p>
+        <pre>
+     Screen::Action Screen::Menu[] = { &amp;Screen::home,
+                                       &amp;Screen::forward,
+                                       &amp;Screen::back,
+                                       &amp;Screen::up,
+                                       &amp;Screen::down,
+                                     };
+</pre><br>
+        <a href="21001535.html" ><img src="images/pixel.gif"  alt="" width="1" height="1" border="0"></a>
+      </td>
+    </tr>
+  </table>
+
+<a name="ch18sb11"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 18.3.2</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+<a name="ch18qa10q1"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 18.25:</b></td>
+
+                    <td>
+<a name="idd1e150958"></a><a name="idd1e150963"></a><a name="idd1e150968"></a><a name="idd1e150975"></a><a name="idd1e150980"></a>
+                      <p class="docText">What is the type of the <tt>Screen</tt> class members <tt>screen</tt> and <tt>cursor</tt>?</p>
+                      <p class="docText"><tt>Screen</tt> 类的成员 <tt>screen</tt> 和 <tt>cursor</tt> 的类型是什么？</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+<a name="ch18qa10q2"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 18.26:</b></td>
+
+                    <td>
+                      <p class="docText">Define a pointer to member that could point to the <tt>cursor</tt> member of class <tt>Screen</tt>. Fetch the value of <tt>Screen::cursor</tt> through that pointer.</p>
+                      <p class="docText">定义一个可以指向 <tt>Screen</tt> 类 <tt>cursor</tt> 成员的成员指针，通过该指针获取 <tt>Screen::cursor</tt> 的值。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+<a name="ch18qa10q3"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 18.27:</b></td>
+
+                    <td>
+                      <p class="docText">Define a typedef for each distinct type of <tt>Screen</tt> member function.</p>
+                      <p class="docText">为 <tt>Screen</tt> 类成员函数的每个可区分类型定义类型别名。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+<a name="ch18qa10q4"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 18.28:</b></td>
+
+                    <td>
+                      <p class="docText">Pointers to members may also be declared as class data members. Modify the <tt>Screen</tt> class definition to contain a pointer to a <tt>Screen</tt> member function of the same type as <tt>home</tt> and <tt>end</tt>.</p>
+                      <p class="docText">也可以将成员指针声明为类的数据成员。修改 <tt>Screen</tt> 类的定义，以便包含与 <tt>home</tt> 和 <tt>end</tt> 类型相同的 <tt>Screen</tt> 成员函数的指针。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+<a name="ch18qa10q5"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 18.29:</b></td>
+
+                    <td>
+                      <p class="docText">Write a <tt>Screen</tt> constructor that takes a parameter of type pointer to <tt>Screen</tt> member function whose parameter list and return type are the same as those for the member functions <tt>home</tt> and <tt>end</tt>.</p>
+                      <p class="docText">编写一个 <tt>Screen</tt> 构造函数，该构造函数接受指向 <tt>Screen</tt> 成员函数的指针类型形参，成员函数的形参表和返回类型与成员函数 <tt>home</tt> 和 <tt>end</tt> 的相同。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+<a name="ch18qa10q6"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 18.30:</b></td>
+
+                    <td>
+                      <p class="docText">Provide a default argument for this parameter. Use this parameter to initialize the data member introduced in the previous exercise.</p>
+                      <p class="docText">为该形参提供默认实参，使用该形参对上题中引入的数据成员进行初始化。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+<a name="ch18qa10q7"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 18.31:</b></td>
+
+                    <td>
+                      <p class="docText">Provide a <tt>Screen</tt> member function to set this member.</p>
+                      <p class="docText">提供一个 <tt>Screen</tt> 成员函数来设置这个成员。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch18lev1sec2.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch18lev1sec4.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

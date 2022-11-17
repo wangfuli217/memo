@@ -1,0 +1,109 @@
+<html><HEAD><TITLE>4、简单的例子 - RUBY文档中心</TITLE>
+<STYLE type=text/css>
+<!--
+.code2 {font-size:14.7px;font-family:arial;color:#00009a;line-height:150%;background-color:#EFEFEF;height=25px;vertical-align=middle;margin-left: 20px;}
+.code {font-size:14.7px;font-family:arial;color:#00009a;background-color:#EFEFEF;line-height: 150%}
+.quote {font-size:14.7px;font-family:arial;color:#666666;line-height:150%;}
+-->
+</STYLE>
+
+<META http-equiv=Content-Type content="text/html; charset=gb2312"><LINK href="15_files/news[1].css"  rel=stylesheet></head>
+<BODY topMargin=0>
+<STYLE type=text/css>
+<!--
+body {
+	margin-top: 50px;
+}
+.style12 {font-size: 33px}
+.style15 {
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-weight: bold;
+}
+.style17 {font-family: "黑体", "楷体_GB2312", "新宋体"}
+.style18 {font-size: 12px}
+-->
+</STYLE>
+
+
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #929292 1px groove" cellSpacing=0 cellPadding=3 width=772 align=center bgColor=#ffffff border=0>
+<TBODY>
+<TR>
+<TD height=20></TD></TR>
+<TR>
+<TD bgColor=#8acd38 height=30>&nbsp;</TD></TR>
+<TR>
+<TD height=50></TD></TR></TBODY></TABLE>
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #ffffff 1px groove" borderColor=#ffffff cellSpacing=0 cellPadding=3 width=772 align=center bgColor=#ffffff border=0>
+<TBODY>
+<TR>
+<TD align=middle>
+<DIV class=moer-title><IMG src="51_files/logo_read[1].gif" > 4、简单的例子</DIV>
+<P>转帖：oasis_me　　发表时间：2005-6-15 3:57:52　　点击次数：546 </P></TD></TR>
+<TR>
+<TD height=50></TD></TR></TBODY></TABLE>
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #ffffff 1px groove" borderColor=#ffffff cellSpacing=0 cellPadding=3 width=772 align=center bgColor=#ffffff border=0>
+<TBODY>
+<TR>
+<TD width="10%" bgColor=#ffffff>&nbsp;</TD>
+<TD class=moer-ask vAlign=top align=left width="5%" bgColor=#ffffff>&nbsp;</TD>
+<TD vAlign=top align=left width="75%">
+<TABLE cellSpacing=0 cellPadding=0>
+<TBODY>
+<TR>
+<TD class=moer-content vAlign=top align=left>让我们写一个计算阶乘的函数.对于阶乘的数学定义如下:<BR><BR>n!&nbsp;=&nbsp;1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(当&nbsp;n==0&nbsp;时)&nbsp;&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;=&nbsp;n&nbsp;*&nbsp;(n-1)!&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(其它情况)<BR><BR>在Ruby里,可以这样来写:<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>def&nbsp;fact(n)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;n&nbsp;==&nbsp;0<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;n&nbsp;*&nbsp;fact(n-1)&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end</TD></TR></TBODY></TABLE><BR><BR>你可能会发现&nbsp;end&nbsp;的反复出现,正因为如此,Ruby被叫做"类Algol"语言.(实际上,Ruby的语法更像Eiffel).同时,你也可能会发现这段函数缺少return语句.在这里是可以用return的,但却不是必须的,因为一个Ruby的函数会自动返回它所最后赋值的元素.<BR><BR>让我们来试试我们的阶乘函数.加入一行代码会使它成为一个可工作的程序:<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>#&nbsp;Program&nbsp;to&nbsp;find&nbsp;the&nbsp;factorial&nbsp;of&nbsp;a&nbsp;number<BR>#&nbsp;Save&nbsp;this&nbsp;as&nbsp;fact.rb<BR>def&nbsp;fact(n)&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;if&nbsp;n&nbsp;==&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;else&nbsp;&nbsp;&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;n&nbsp;*&nbsp;fact(n-1)&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;end<BR>end<BR><BR>print&nbsp;fact(ARGV[0].to_i),&nbsp;"\n"</TD></TR></TBODY></TABLE><BR><BR>这里,ARGV是一个包含命令行参数的数组,to_i将字符串转化为整数.<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>%&nbsp;ruby&nbsp;fact.rb&nbsp;1<BR>1<BR>%&nbsp;ruby&nbsp;fact.rb&nbsp;5<BR>120&nbsp;</TD></TR></TBODY></TABLE><BR><BR>当参数为40时它可以工作吗?它将使你的计算器产生溢出(overflow)...<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>%&nbsp;ruby&nbsp;fact.rb&nbsp;40<BR>815915283247897734345611269596115894272000000000</TD></TR></TBODY></TABLE><BR><BR>它确实算出来了.实际上,Ruby能处理任何你机器的内存所允许的整数.实际上400!也可以:<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>%&nbsp;ruby&nbsp;fact.rb&nbsp;400<BR>64034522846623895262347970319503005850702583026002959458684<BR>44594280239716918683143627847864746326467629435057503585681<BR>08482981628835174352289619886468029979373416541508381624264<BR>61942352307046244325015114448670890662773914918117331955996<BR>44070954967134529047702032243491121079759328079510154537266<BR>72516278778900093497637657103263503315339653498683868313393<BR>52024373788157786791506311858702618270169819740062983025308<BR>59129834616227230455833952075961150530223608681043329725519<BR>48526744322324386699484224042325998055516106359423769613992<BR>31917134063858996537970147827206606320217379472010321356624<BR>61380907794230459736069956759583609615871512991382228657857<BR>95493616176544804532220078258184008484364155912294542753848<BR>03558374518022675900061399560145595206127211192918105032491<BR>00800000000000000000000000000000000000000000000000000000000<BR>0000000000000000000000000000000000000000000</TD></TR></TBODY></TABLE><BR><BR>我们不能一眼看出是否算对了,但我想应该是对的吧.&nbsp;:-)<BR><BR><BR><B>输入/求值循环</B><BR><BR>当你不带参数启动Ruby的时候,Ruby会从标准输入读入命令并在输入结束后再执行:<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>%&nbsp;ruby<BR>print&nbsp;"hello&nbsp;world\n"<BR>print&nbsp;"good-bye&nbsp;world\n"<BR>^D<BR>hello&nbsp;world<BR>good-bye&nbsp;world</TD></TR></TBODY></TABLE><BR><BR>Ruby还包含了一个名为eval.rb的程序,它可以令到你在一个交互式的循环中输入Ruby代码并随之显示结果.在后面的教程里将广泛使用这个程序.<BR><BR>如果你有一个ANSI兼容(ANSI-compliant)的终端(如果你正运行着一个UNIX变种,一般都是的);在DOS下,你需要安装ANSI.SYS和ANSI.COM;然后就可以使用这个支持可视化缩排,警告提示,彩色高亮度显示的增强eval.rb了.不行的话,试试Ruby发行版里sample目录下的那个非ANSI版本,它可以运行于所有的控制台.这是一个简短的eval.rb对话:<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>%&nbsp;ruby&nbsp;eval.rb<BR>ruby&gt;&nbsp;print&nbsp;"Hello,&nbsp;world.\n"<BR>Hello,&nbsp;world.<BR>&nbsp;&nbsp;&nbsp;nil<BR>ruby&gt;&nbsp;exit</TD></TR></TBODY></TABLE><BR><BR>hello&nbsp;world&nbsp;由&nbsp;print&nbsp;打印出来.下一行&nbsp;nil&nbsp;报告最后计算出来的值;Ruby并不区分语法和表达式,因此计算一段代码从根本上说和执行它是一回事.在这里,nil的意思是print并未返回一个有意义的值.注意:可以用exit或^D离开这个循环的解释器.<BR><BR>在整个教程里,'ruby&gt;'表示我们这个非常有用却很小的eval.rb程序的命令提示符.</TD></TR>
+<TR>
+<TD class=moer-content vAlign=top align=left height=30></TD></TR>
+<TR>
+<TD vAlign=top align=left><SPAN style="FONT-WEIGHT: bold; FONT-SIZE: 12px">版权声明：</SPAN>RUBY文档中心的所有文章标明[<B>原创</B>]的均为本站作品，版权属RUBY中文化计划，若转载请注明；标明[<B>翻译</B>]的其外文版权归原作者，译文版权属RUBY中文化计划；标明[<B>转贴</B>]的，若原作者感到侵犯了他的著作权，那么请及时跟主持人联系，我们会尽快更正。</TD></TR></TBODY></TABLE></TD>
+<TD width="10%" bgColor=#ffffff>&nbsp;</TD></TR></TBODY></TABLE>
+<STYLE type=text/css>
+<!--
+body {
+	margin-bottom: 20px;
+}
+-->
+</STYLE>
+
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #929292 1px groove; BORDER-BOTTOM: #929292 1px groove" cellSpacing=0 cellPadding=0 width=772 align=center>
+<TBODY>
+<TR>
+<TD bgColor=#ffffff>
+<DIV align=center>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P><IMG height=11 src="55_files/logo_small[1].gif"  width=8> 版权所有(C) <A href="http://www.moer.net/ruby/index.asp" >RUBY中文化计划</A></P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></DIV></TD></TR></TBODY></TABLE>
+<DIV align=center></DIV>
+<div style="display:none;">
+<script type="text/javascript" src="http://shouce.jb51.net/js/stat.js" ></script>
+</div>
+</BODY>

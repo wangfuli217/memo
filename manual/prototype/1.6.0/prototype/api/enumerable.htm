@@ -1,0 +1,410 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Enumerable - Prototype JavaScript 框架</title>
+	<link href="../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>Enumerable</h2>
+		<div id="method-list">
+			<ul>
+				<li><a href="enumerable.htm#method-all">all</a></li>
+				<li><a href="enumerable.htm#method-any">any</a></li>
+				<li><a href="enumerable.htm#method-collect">collect</a></li>
+				<li><a href="enumerable.htm#method-detect">detect</a></li>
+				<li><a href="enumerable.htm#method-each">each</a></li>
+				<li><a href="enumerable.htm#method-eachslice">eachSlice</a></li>
+				<li><a href="enumerable.htm#method-entries">entries</a></li>
+				<li><a href="enumerable.htm#method-find">find</a></li>
+				<li><a href="enumerable.htm#method-findall">findAll</a></li>
+				<li><a href="enumerable.htm#method-grep">grep</a></li>
+				<li><a href="enumerable.htm#method-ingroupsof">inGroupsOf</a></li>
+				<li><a href="enumerable.htm#method-include">include</a></li>
+				<li><a href="enumerable.htm#method-inject">inject</a></li>
+				<li><a href="enumerable.htm#method-invoke">invoke</a></li>
+				<li><a href="enumerable.htm#method-map">map</a></li>
+				<li><a href="enumerable.htm#method-max">max</a></li>
+				<li><a href="enumerable.htm#method-member">member</a></li>
+				<li><a href="enumerable.htm#method-min">min</a></li>
+				<li><a href="enumerable.htm#method-partition">partition</a></li>
+				<li><a href="enumerable.htm#method-pluck">pluck</a></li>
+				<li><a href="enumerable.htm#method-reject">reject</a></li>
+				<li><a href="enumerable.htm#method-select">select</a></li>
+				<li><a href="enumerable.htm#method-size">size</a></li>
+				<li><a href="enumerable.htm#method-sortby">sortBy</a></li>
+				<li><a href="enumerable.htm#method-toarray">toArray</a></li>
+				<li><a href="enumerable.htm#method-zip">zip</a></li>
+			</ul>
+		</div>
+		<div id="abody">
+			<p>
+				<code>Enumerable</code> 为枚举提供了大量有用的方法，从而让枚举对象可以像值的集合一样使用。它是 Prototype 的奠基石。
+			</p>
+			<p>
+				我们喜欢把 <code>Enumerable</code> 称之为一个 <em>module</em>：它具有一系列相关的方法，创建它的目的并不是为了独立使用，而是为了
+				<em>混入（mixin）</em>：组合到其它对象中。术语“module”是从 Ruby 中借用过来的，用在这里非常贴切，因为 <code>Enumerable</code>
+				试图模仿 Ruby 中 Enumerable 模块的部分功能。
+			</p>
+			<p>
+				Prototype 中的许多对象都混入了 <code>Enumerable</code>。<a href="array.htm" >Array</a> 和
+				<a href="hash.htm" >Hash</a> 是最明显的例子，但不仅于此，在一些不引人注目的地方，你也能找到它，比如
+				<a href="objectRange.htm" >ObjectRange</a> 以及部分与 DOM 或 Ajax 相关的对象中。
+			</p>
+			<h3><code>context</code> 参数</h3>
+			<p>
+				<code>Enumerable</code> 中任意一个具有 <code>iterator</code> 参数的方法，在 <code>iterator</code> 参数后都可以附加一个可选的
+				<code>context</code> 参数。<code>context</code> 参数是 <code>iterator</code> 要绑定的对象，若设定该参数，<code>iterator</code>
+				中的 <code>this</code> 关键字将指向 <code>context</code> 对象。
+			</p>
+			<pre><code class="javascript">var myObject = {}; 
+['foo', 'bar', 'baz'].each(function(name, index) { 
+	this[name] = index;
+}, myObject); // 指定 context，this 绑定到 myObject
+myObject
+//-> { foo: 0, bar: 1, baz: 2} </code></pre>
+			<p>如果未指定 context 参数，迭代函数将会维持原有的作用域。</p>
+			<h3>别名：这取决于你的意愿</h3>
+			<p>
+				与 Ruby 类似，<code>Enumerable</code> 同样关注你的感受，它为一些行为提供了多个名称。这主要是为了降低学习难度：
+				你可以根据你的技术背景选择熟悉的名称。然而，这篇文档也会尽量描述优先选择某一名称的缘由（可能是因为可读性、大众认知度、
+				直观性等等）。
+			</p>
+			<p>这里是你能够在 <code>Enumerable</code> 中找到的别名：</p>
+			<ul>
+				<li><code>map</code> 和 <a href="enumerable/collect.htm" >collect</a> 是相同的。</li>
+				<li><a href="enumerable/find.htm" >find</a> 是首选的，也可以使用 <code>detect</code>。</li>
+				<li><a href="enumerable/findAll.htm" >findAll</a> 和 <code>select</code> 是相同的。</li>
+				<li><a href="enumerable/include.htm" >include</a> 和 <code>member</code> 是相同的。</li>
+				<li><code>entries</code> 和 <a href="enumerable/toArray.htm" >toArray</a> 是相同的。</li>
+			</ul>
+			<h3>如何有效的使用？</h3>
+			<p>
+				在使用 <code>Enumerable</code> 的过程中，因不熟悉相应的 API，初学者经常会写出一些执行效率低下的代码。在一些常见的情形中，
+				使用其中一种方式其执行效率明显优于其它方式（通常代码也更具有可读性），这主要表现在以下两个方面：
+			</p>
+			<h4><code>collect</code>、<code>invoke</code>、<code>pluck</code> 和 <code>each</code>，认真考虑一下这种情形：</h4>
+			<p>
+				在操作 <code>Enumerable</code> 中的所有元素时，初学者往往趋向于使用 <a href="enumerable/each.htm" >each</a>，
+				而针对 <code>Enumerable</code> 中的每个元素进行相同的处理并获取一个值的集合时，则使用<a href="enumerable/collect.htm" >
+				<code>collect</code></a>。通常情况下，这无可非议，但是，在一些特殊的情形下，使用下述方式将会使程序变得更为简捷、优雅和有效：
+			</p>
+			<ul>
+				<li>当需要对所有元素调用相同的方法时，请使用 <a href="enumerable/invoke.htm" >invoke</a>。</li>
+				<li>当需要对所有元素获取同一个属性值时，请使用 <a href="enumerable/pluck.htm" >pluck</a>。</li>
+			</ul>
+			<h4><code>reject</code> 和 <code>findAll</code> vs. <code>partition</code></h4>
+			<p>
+				<a href="enumerable/findAll.htm" >findAll</a>/<code>select</code> 方法查找与指定谓词匹配的所有元素。与之相对应的是
+				<a href="enumerable/reject.htm" >reject</a> 方法查找与指定谓词 <em>不匹配</em> 的所有元素。
+				假如你需要分别返回匹配和不匹配的元素，请使用 <a href="enumerable/partition.htm" >partition</a>
+				方法，可以避免使用两次循环。
+			</p>
+			<h3>在自定义对象中混入 <code>Enumerable</code></h3>
+			<p>
+				现在假设你已经创建了你自己的类似于集合的对象（比如说某种类型的序列或者是一些从服务器动态获取的数据范围），
+				你希望它能够混入 <code>Enumerable</code>（这也是我们推荐的），要怎么做呢？
+			</p>
+			<p>
+				<code>Enumerable</code> 模块对你的对象基本上只有一个要求：必须提供一个名为 <code>_each</code>（注意下划线）的方法，
+				该方法接收一个函数作为它唯一的参数，并且该方法还必须包含一个实际的“原生迭代”算法，然后在轮询每个元素时调用参数指定的函数，
+				并将当前元素传递给这个函数作为第一个参数。<br />
+				<strong>译注：</strong>这里提供一个简单的样例，来源于 Prototype 内部的代码：
+			</p>
+			<pre><code class="javascript">_each: function(iterator) {
+	for (var i = 0, length = this.length; i < length; i++)
+		iterator(this[i]);  //注意这一句
+}</code></pre>
+			<p>
+				就像 <a href="enumerable/each.htm" >each</a> 文档所描述的那样，<code>Enumerable</code> 提供了所有额外层面上的处理
+				（如短路迭代、数字索引等等）。你只需要实现与自定义对象内部数据结构相符的迭代算法即可。
+			</p>
+			<p>
+				如果你仍然感到困惑，那么可以看一下 Prototype 中 <code>Array</code>、<code>Hash</code> 或 <code>ObjectRange</code>
+				对象的源代码。它们都包含了一个 <code>_each</code> 方法，它可以帮助你理解这个问题。
+			</p>
+			<p>
+				如果理解了上述概念，剩下的就是混入 <code>Enumerable</code>，这一步通常发生在定义自己的方法之前。这样才能够确保当需要重写
+				<code>Enumerable</code> 的方法时，重写的方法能够被实际调用。简而言之，最终的代码可能会类似于下面的结构：
+			</p>
+			<pre><code class="javascript">var YourObject = Class.create(); 
+Object.extend(YourObject.prototype, Enumerable); 
+Object.extend(YourObject.prototype, { 
+	initialize: function() { 
+		// 构造函数
+	}, 
+	_each: function(iterator) { 
+		// 迭代代码，每次循环时调用 iterator 
+	}, 
+	// 其它自定义方法，包括需要重写的 Enumerable 方法 
+}); </code></pre>
+			<p>显然，自定义对象可以像下面这样使用：</p>
+			<pre><code class="javascript">var obj = new YourObject(); 
+[...]
+obj.pluck('somePropName'); 
+obj.invoke('someMethodName'); 
+obj.size();
+</code></pre>
+		</div>
+		<div id="method-excerpts">
+			<h3>方法</h3>
+			<div id="method-all" class="mexcerpt">
+				<h4><a href="enumerable/all.htm" >all</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">all([iterator = Prototype.K[, context]]) -> Boolean</code></pre>
+					<p>
+						若 <code>Enumerable</code> 中的元素全部等价于 <code>true</code>，则返回 <code>true</code>，否则返回 
+						<code>false</code>。参数 <code>iterator</code> 是一个函数对象，该参数可选，若指定该参数，
+						则根据参数所定义的规则判断元素等价的 bool 值。
+					</p>
+				</div>
+			</div>
+			<div id="method-any" class="mexcerpt">
+				<h4><a href="enumerable/any.htm" >any</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">any([iterator = Prototype.K[, context]]) -> Boolean</code></pre>
+					<p>
+						若 <code>Enumerable</code> 中的元素有一个或多个等价于 <code>true</code>，则返回 <code>true</code>，否则返回
+						<code>false</code>。参数 <code>iterator</code> 是一个函数对象，该参数可选，若指定该参数，
+						则根据参数所定义的规则判断元素等价的 bool 值。
+					</p>
+				</div>
+			</div>
+			<div id="method-collect" class="mexcerpt">
+				<h4><a href="enumerable/collect.htm" >collect</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">collect(iterator[, context]) -> Array</code></pre>
+					<p>
+						通过 <code>iterator</code> 对 <code>Enumerable</code> 中的元素进行变换，返回变换后的结果集。该方法有一个别名
+						<a href="enumerable/map.htm" >map</a>。参数	<code>iterator</code> 是一个函数对象。
+					</p>
+				</div>
+			</div>
+			<div id="method-detect" class="mexcerpt">
+				<h4><a href="enumerable/detect.htm" >detect</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">detect(iterator[, context]) -> firstElement | undefined</code></pre>
+					<p>
+						查找第一个使 <code>iterator</code> 返回 <code>true</code> 的元素。该方法有一个别名
+						<a href="enumerable/find.htm" >find</a>。参数 <code>iterator</code> 是一个函数对象。
+					</p>
+				</div>
+			</div>
+			<div id="method-each" class="mexcerpt">
+				<h4><a href="enumerable/each.htm" >each</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">each(iterator[, context]) -> Enumerable</code></pre>
+					<p>
+						该方法是 <code>Enumerable</code> 的基础。它使我们能够用一种通用的方式来遍历处理所有的元素，并返回
+						<code>Enumerable</code> 以支持链式调用的编程方式。参数 <code>iterator</code> 是一个函数对象，用于处理
+						<code>Enumerable</code>	中的每一个元素。
+					</p>
+				</div>
+			</div>
+			<div id="method-eachslice" class="mexcerpt">
+				<h4><a href="enumerable/eachSlice.htm" >eachSlice</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">eachSlice(size[, iterator = Prototype.K[, context]]) -> [slice...]</code></pre>
+					<p>根据指定的大小对 <code>Enumerable</code> 中的元素进行分组，最后一组元素的个数可能小于指定的个数。</p>
+				</div>
+			</div>
+			<div id="method-entries" class="mexcerpt">
+				<h4><a href="enumerable/entries.htm" >entries</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">entries() -> Array</code></pre>
+					<p>常见的 <a href="enumerable/toArray.htm" >toArray</a> 方法的别名。</p>
+				</div>
+			</div>
+			<div id="method-find" class="mexcerpt">
+				<h4><a href="enumerable/find.htm" >find</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">find(iterator) -> firstElement | undefined</code></pre>
+					<p>
+						查找第一个使 <code>iterator</code> 返回 <code>true</code> 的元素。<a href="enumerable/detect.htm" >detect</a>
+						方法的简称，应优先使用 <code>find</code>，因为 <code>find</code> 更具有可读性。参数 <code>iterator</code> 是一个函数对象。
+					</p>
+				</div>
+			</div>
+			<div id="method-findall" class="mexcerpt">
+				<h4><a href="enumerable/findAll.htm" >findAll</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">findAll(iterator[, context]) -> Array</code></pre>
+					<p>
+						获取所有使 <code>iterator</code> 返回 <code>true</code> 的元素。别名为
+						<a href="enumerable/select.htm" >select</a>。
+					</p>
+				</div>
+			</div>
+			<div id="method-grep" class="mexcerpt">
+				<h4><a href="enumerable/grep.htm" >grep</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">grep(regex[, iterator = Prototype.K[, context]]) -> Array</code></pre>
+					<p>
+						返回所有和指定的正则表达式匹配的元素。如果指定参数 <code>iterator</code>，则可以对匹配的元素进行相应处理。
+					</p>
+				</div>
+			</div>
+			<div id="method-ingroupsof" class="mexcerpt">
+				<h4><a href="enumerable/inGroupsOf.htm" >inGroupsOf</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">inGroupsOf(size[, filler = null]) -> [group...]</code></pre>
+					<p>
+						按照固定的大小对元素进行分组，如果最后一组包含的元素个数小于指定的大小，则使用参数 <code>filler</code>
+						指定的值填充。
+					</p>
+				</div>
+			</div>
+			<div id="method-include" class="mexcerpt">
+				<h4><a href="enumerable/include.htm" >include</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">include(object) -> Boolean</code></pre>
+					<p>
+						判断 <code>Enumerable</code> 中是否存在指定的对象，基于 <code>==</code> 操作符进行比较。别名
+						<a href="enumerable/member.htm" >member</a>。
+					</p>
+				</div>
+			</div>
+			<div id="method-inject" class="mexcerpt">
+				<h4><a href="enumerable/inject.htm" >inject</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">inject(accumulator, iterator[, context]) -> accumulatedValue</code></pre>
+					<p>
+						根据参数 <code>iterator</code> 中定义的规则来累计值。首次迭代时，参数 <code>accumulator</code>
+						为初始值，迭代过程中，<code>iterator</code> 将处理过的值存放在 <code>accumulator</code>
+						中，并作为下次迭代的起始值，迭代完成后，返回处理过的 <code>accumulator</code>。
+						该方法常用于构建数组、计数数值总和或平均值等。<br />
+						<strong>译注：</strong>参数 <code>iterator</code> 是一个函数对象，Prototype 会传递三个参数给该对象，
+						第一个参数是需要累计的对象，即 <code>accumulator</code>，第二个参数是 <code>Enumerable</code>
+						中的元素，第三个参数是元素的数字索引。
+					</p>
+				</div>
+			</div>
+			<div id="method-invoke" class="mexcerpt">
+				<h4><a href="enumerable/invoke.htm" >invoke</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">invoke(methodName[, arg...]) -> Array</code></pre>
+					<p>
+						对 <a href="enumerable/each.htm" >each</a> 或 <a href="enumerable/collect.htm" >collect</a>
+						的一种常见应用情形进行优化：需要使用同一个方法并具有一致的参数来处理 <code>Enumerable</code> 中的每一个元素。
+						返回调用指定方法后的结果集。
+					</p>
+				</div>
+			</div>
+			<div id="method-map" class="mexcerpt">
+				<h4><a href="enumerable/map.htm" >map</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">map(iterator) -> Array</code></pre>
+					<p>
+						通过 <code>iterator</code> 对 <code>Enumerable</code> 中的元素进行变换，返回变换后的结果。
+						<a href="enumerable/collect.htm" >collect</a> 方法的一个别称。
+					</p>
+				</div>
+			</div>
+			<div id="method-max" class="mexcerpt">
+				<h4><a href="enumerable/max.htm" >max</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">max([iterator = Prototype.K[, context]]) -> maxValue</code></pre>
+					<p>
+						返回 <code>Enumerable</code> 中元素的最大值，若指定 <code>iterator</code>，则使用 <code>iterator</code>
+						对元素进行处理，并返回处理后的最大值。如果 <code>Enumerable</code> 为空，返回 <code>undefined</code>。
+					</p>
+				</div>
+			</div>
+			<div id="method-member" class="mexcerpt">
+				<h4><a href="enumerable/member.htm" >member</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">member(object) -> Boolean</code></pre>
+					<p>
+						判断 <code>Enumerable</code> 中是否存在指定的对象，基于 <code>==</code> 操作符进行比较。别名
+						<a href="enumerable/include.htm" >include</a>。
+					</p>
+				</div>
+			</div>
+			<div id="method-min" class="mexcerpt">
+				<h4><a href="enumerable/min.htm" >min</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">min([iterator = Prototype.K[, context]]) -> minValue</code></pre>
+					<p>					
+						返回 <code>Enumerable</code> 中元素的最小值，若指定 <code>iterator</code>，则使用 <code>iterator</code>
+						对元素进行处理，并返回处理后的最小值。如果 <code>Enumerable</code> 为空，返回 <code>undefined</code>。
+					</p>
+				</div>
+			</div>
+			<div id="method-partition" class="mexcerpt">
+				<h4><a href="enumerable/partition.htm" >partition</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">partition([iterator = Prototype.K[, context]]) -> [TrueArray, FalseArray]</code></pre>
+					<p>
+						把元素分为两组：一组为 <code>true</code>，一组为 <code>false</code>。默认情形下使用 Javascript 标准规范判断元素等价的
+						bool 值，如果指定了 <code>iterator</code> 参数，根据 <code>iterator</code> 定义的函数判断元素等价的 bool 值。
+					</p>
+				</div>
+			</div>
+			<div id="method-pluck" class="mexcerpt">
+				<h4><a href="enumerable/pluck.htm" >pluck</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">pluck(propertyName) -> Array</code></pre>
+					<p>
+						<a href="enumerable/collect.htm" >collect</a> 方法的一种常见使用情形的优化：
+						获取所有元素的同一个属性的值，并返回相应的数组。
+					</p>
+				</div>
+			</div>
+			<div id="method-reject" class="mexcerpt">
+				<h4><a href="enumerable/reject.htm" >reject</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">reject(iterator[, context]) -> Array</code></pre>
+					<p>获取所有使 <code>iterator</code> 返回 <code>false</code> 的元素。</p>
+				</div>
+			</div>
+			<div id="method-select" class="mexcerpt">
+				<h4><a href="enumerable/select.htm" >select</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">select(iterator) -> Array</code></pre>					
+					<p>
+						获取所有使 <code>iterator</code> 返回 <code>true</code> 的元素。<a href="enumerable/findAll.htm" >findAll</a>
+						方法的别名。
+					</p>
+				</div>
+			</div>
+			<div id="method-size" class="mexcerpt">
+				<h4><a href="enumerable/size.htm" >size</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">size() -> Number</code></pre>
+					<p>返回 <code>Enumerable</code> 中元素的数目。</p>
+				</div>
+			</div>
+			<div id="method-sortby" class="mexcerpt">
+				<h4><a href="enumerable/sortBy.htm" >sortBy</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">sortBy(iterator[, context]) -> Array</code></pre>
+					<p>遍历元素，根据 <code>iterator</code> 返回的值，对 <code>Enumerable</code> 中的元素进行排序。</p>
+				</div>
+			</div>
+			<div id="method-toarray" class="mexcerpt">
+				<h4><a href="enumerable/toArray.htm" >toArray</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">toArray() -> Array</code></pre>
+					<p>
+						将 <code>Enumerable</code> 表示为 <code>Array</code>。别名 <a href="enumerable/entries.htm" >entries</a>。
+					</p>
+				</div>
+			</div>
+			<div id="method-zip" class="mexcerpt">
+				<h4><a href="enumerable/zip.htm" >zip</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">zip(Sequence...[, iterator = Prototype.K]) -> Array</code></pre>
+					<p>
+						将多个（两个及以上）序列按照顺序配对合并（想像一下拉链拉上的情形）为一个包含一序列元组的数组。
+						元组由每个原始序列的具有相同索引的元素组合而成。如果指定了可选的 <code>iterator</code> 参数，则元组由
+						<code>iterator</code> 指定的函数生成。
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

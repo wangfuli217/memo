@@ -1,0 +1,892 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 4.3.  C-Style Character Strings</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch04lev1sec2.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch04lev1sec4.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch04lev1sec3"></a>
+
+        <h3 class="docSection1Title">4.3. C-Style Character Strings</h3>
+        <h3 class="docSection1Title">4.3. C 风格字符串</h3>
+
+<a name="ch04note16"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Although C++ supports C-style strings, they should not be used by C++ programs. C-style strings are a surprisingly rich source of bugs and are the root cause of many, many security problems.</p>
+                <p class="docText">尽管 C++ 支持 C 风格字符串，但不应该在 C++ 程序中使用这个类型。C 风格字符串常常带来许多错误，是导致大量安全问题的根源。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <p class="docText">In <a class="docLink" href="ch02lev1sec2.html#ch02lev1sec2" >Section 2.2</a> (p. <a class="docLink" href="ch02lev1sec2.html#ch02lev1sec2" >40</a>) we first used string literals and learned that the type of a string literal is array of constant characters. We can now be more explicit and note that the type of a string literal is an array of <tt>const char</tt>. A string literal is an instance of a more general construct that C++ inherits from C: <span class="docEmphStrong">C-style character strings</span>. C-style strings are not actually a type in either C or C++. Instead, C-style strings are null-terminated arrays of characters:</p>
+	<p class="docText">在<a class="docLink" href="ch02lev1sec2.html#ch02lev1sec2" >第 2.2 节</a>中我们第一次使用了字符串字面值，并了解字符串字面值的类型是字符常量的数组，现在可以更明确地认识到：字符串字面值的类型就是 <tt>const char</tt> 类型的数组。C++ 从 C 语言继承下来的一种通用结构是<span class="docEmphStrong">C 风格字符串</span>，而字符串字面值就是该类型的实例。实际上，C 风格字符串既不能确切地归结为 C 语言的类型，也不能归结为 C++ 语言的类型，而是以空字符 null 结束的字符数组：</p>
+        <pre>
+          char ca1[] = {'C', '+', '+'};        // <span class="docEmphItalicAlt">no null, not C-style string</span>
+          char ca2[] = {'C', '+', '+', '\0'};  // <span class="docEmphItalicAlt">explicit null</span>
+          char ca3[] = "C++";     // <span class="docEmphItalicAlt">null terminator added automatically</span>
+          const char *cp = "C++"; // <span class="docEmphItalicAlt">null terminator added automatically</span>
+          char *cp1 = ca1;   // <span class="docEmphItalicAlt">points to first element of a array, but not C-style string</span>
+          char *cp2 = ca2;   // <span class="docEmphItalicAlt">points to first element of a null-terminated</span> <span class="docEmphasis">char</span> <span class="docEmphItalicAlt">array</span>
+</pre>
+
+        <p class="docText">Neither <tt>ca1</tt> nor <tt>cp1</tt> are C-style strings: <tt>ca1</tt> is a character array, but the array is not null-terminated. <tt>cp1</tt>, which points to <tt>ca1</tt>, therefore, does not point to a null-terminated array. The other declarations are all C-style strings, remembering that the name of an array is treated as a pointer to the first element of the array. Thus, <tt>ca2</tt> and <tt>ca3</tt> are pointers to the first elements of their respective arrays.</p>
+	<p class="docText"><tt>ca1</tt> 和 <tt>cp1</tt> 都不是 C 风格字符串：<tt>ca1</tt> 是一个不带结束符 <tt>null</tt> 的字符数组，而指针 <tt>cp1</tt> 指向 <tt>ca1</tt>，因此，它指向的并不是以 <tt>null</tt> 结束的数组。其他的声明则都是 C 风格字符串，数组的名字即是指向该数组第一个元素的指针。于是，<tt>ca2</tt> 和 <tt>ca3</tt> 分别是指向各自数组第一个元素的指针。</p>
+
+        <a name="ch04lev2sec8"></a>
+
+        <h4 class="docSection2Title">Using C-style Strings</h4>
+        <h4 class="docSection2Title">C 风格字符串的使用</h4>
+
+        <p class="docText">C-style strings are manipulated through (<tt>const</tt>) <tt>char*</tt> pointers. One frequent usage pattern uses pointer arithmetic to traverse the C-style string. The traversal tests and increments the pointer until we reach the terminating null character:</p>
+	<p class="docText">C++ 语言通过(<tt>const</tt>)<tt>char*</tt>类型的指针来操纵 C 风格字符串。一般来说，我们使用指针的算术操作来遍历 C 风格字符串，每次对指针进行测试并递增 1，直到到达结束符 null 为止：</p>
+        <pre>
+          const char *cp = "some value";
+          while (*cp) {
+              // <span class="docEmphItalicAlt">do something to</span> <span class="docEmphasis">*cp</span>
+              ++cp;
+          }
+</pre>
+
+        <p class="docText">The condition in the <tt>while</tt> dereferences the <tt>const char*</tt> pointer <tt>cp</tt> and the resulting character is tested for its <tt>true</tt> or <tt>false</tt> value. A true value is any character other than the null. So, the loop continues until it encounters the null character that terminates the array to which <tt>cp</tt> points. The body of the <tt>while</tt> does whatever processing is needed and concludes by incrementing <tt>cp</tt> to advance the pointer to address the next character in the array.</p>
+	<p class="docText"><tt>while</tt> 语句的循环条件是对 <tt>const char*</tt> 类型的指针 <tt>cp</tt> 进行解引用，并判断 <tt>cp</tt> 当前指向的字符是 <tt>true</tt> 值还是 <tt>false</tt> 值。真值表明这是除 <tt>null</tt> 外的任意字符，则继续循环直到 <tt>cp</tt> 指向结束字符数组的 <tt>null</tt> 时，循环结束。<tt>while</tt> 循环体做完必要的处理后，<tt>cp</tt> 加1，向下移动指针指向数组中的下一个字符。</p>
+
+<a name="ch04note17"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">This loop will fail if the array that <tt>cp</tt> addresses is not null-terminated. If this case, the loop is apt to read characters starting at <tt>cp</tt> until it encounters a null character somewhere in memory.</p>
+		<p class="docText">如果 <tt>cp</tt> 所指向的字符数组没有 <tt>null</tt> 结束符，则此循环将会失败。这时，循环会从 <tt>cp</tt> 指向的位置开始读数，直到遇到内存中某处 <tt>null</tt> 结束符为止。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <a name="ch04lev2sec9"></a>
+
+        <h4 class="docSection2Title">C Library String Functions</h4>
+        <h4 class="docSection2Title">C 风格字符串的标准库函数</h4>
+
+<a name="idd1e27696"></a><a name="idd1e27701"></a><a name="idd1e27706"></a><a name="idd1e27712"></a><a name="idd1e27717"></a>
+        <p class="docText">The Standard C library provides a set of functions, listed in <a class="docLink" href="ch04lev1sec3.html#ch04table01">Table 4.1</a>, that operate on C-style strings. To use these functions, we must include the associated C header file</p>
+        <p class="docText">表4-1列出了 C 语言标准库提供的一系列处理 C 风格字符串的库函数。要使用这些标准库函数，必须包含相应的 C 头文件：</p>
+
+        <p class="docText">which is the C++ version of the <tt>string.h</tt> header from the C library.</p>
+	<p class="docText"><tt>cstring</tt> 是 <tt>string.h</tt> 头文件的 C++ 版本，而 <tt>string.h</tt> 则是 C 语言提供的标准库。</p>
+
+<a name="ch04note18"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">These functions do no checking on their string parameters.</p>
+                <p class="docText">这些标准库函数不会检查其字符串参数。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+<a name="ch04table01"></a>
+        <h5 class="docTableTitle">Table 4.1. C-Style Character String Functions</h5>
+        <h5 class="docTableTitle">表 4.1. 操纵 C 风格字符串的标准库函数</h5>
+
+        <table cellspacing="0" class="allBorders" border="1" rules="none" cellpadding="5">
+          <colgroup>
+            <col width="200">
+            <col width="300">
+          </colgroup>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>strlen(s)</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Returns the length of <tt>s</tt>, not counting the null.</p>
+	      <p class="docText">返回 <tt>s</tt> 的长度，不包括字符串结束符 null</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>strcmp(s1, s2)</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Compares <tt>s1</tt> and <tt>s2</tt> for equality. Returns 0 if <tt>s1 == s2</tt>, positive value if <tt>s1 &gt; s2</tt>, negative value if <tt>s1 &lt; s2</tt>.</p>
+	      <p class="docText">比较两个字符串 <tt>s1</tt> 和 <tt>s2</tt> 是否相同。若 <tt>s1</tt> 与 <tt>s2</tt> 相等，返回 0；若 <tt>s1</tt> 大于 <tt>s2</tt>，返回正数；若 <tt>s1</tt> 小于 <tt>s2</tt>，则返回负数</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>strcat(s1, s2)</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Appends <tt>s2</tt> to <tt>s1</tt>. Returns <tt>s1</tt>.</p>
+	      <p class="docText">将字符串 <tt>s2</tt> 连接到 <tt>s1</tt> 后，并返回 <tt>s1</tt></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>strcpy(s1, s2)</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Copies <tt>s2</tt> into <tt>s1</tt>. Returns <tt>s1</tt>.</p>
+	      <p class="docText">将 <tt>s2</tt> 复制给 <tt>s1</tt>，并返回 <tt>s1</tt></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>strncat(s1, s2,n)</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Appends <tt>n</tt> characters from <tt>s2</tt> onto <tt>s1</tt>. Returns <tt>s1</tt>.</p>
+	      <p class="docText">将 <tt>s2</tt> 的前 <tt>n</tt> 个字符连接到 <tt>s1</tt> 后面，并返回 <tt>s1</tt></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>strncpy(s1, s2, n)</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Copies <tt>n</tt> characters from <tt>s2</tt> into <tt>s1</tt>. Returns <tt>s1</tt>.</p>
+	      <p class="docText">将 <tt>s2</tt> 的前 <tt>n</tt> 个字符复制给 <tt>s1</tt>，并返回 <tt>s1</tt></p>
+            </td>
+          </tr>
+        </table><br>
+        <pre>
+          #include &lt;cstring&gt;
+</pre><br>
+
+        <p class="docText">The pointer(s) passed to these routines must be nonzero and each pointer must point to the initial character in a null-terminated array. Some of these functions write to a string they are passed. These functions assume that the array to which they write is large enough to hold whatever characters the function generates. It is up to the programmer to ensure that the target string is big enough.</p>
+        <p class="docText">传递给这些标准库函数例程的指针必须具有非零值，并且指向以 null 结束的字符数组中的第一个元素。其中一些标准库函数会修改传递给它的字符串，这些函数将假定它们所修改的字符串具有足够大的空间接收本函数新生成的字符，程序员必须确保目标字符串必须足够大。</p>
+
+        <p class="docText">When we compare library <tt>string</tt>s, we do so using the normal relational operators. We can use these operators to compare pointers to C-style strings, but the effect is quite different; what we're actually comparing is the pointer values, not the strings to which they point:</p>
+	<p class="docText">C++ 语言提供普通的关系操作符实现标准库类型 <tt>string</tt> 的对象的比较。这些操作符也可用于比较指向C风格字符串的指针，但效果却很不相同：实际上，此时比较的是指针上存放的地址值，而并非它们所指向的字符串：</p>
+
+        <pre>
+          if (cp1 &lt; cp2) // <span class="docEmphItalicAlt">compares addresses, not the values pointed to</span>
+</pre>
+
+        <p class="docText">Assuming <tt>cp1</tt> and <tt>cp2</tt> point to elements in the same array (or one past that array), then the effect of this comparison is to compare the address in <tt>cp1</tt> with the address in <tt>cp2</tt>. If the pointers do not address the same array, then the comparison is undefined.</p>
+	<p class="docText">如果 <tt>cp1</tt> 和 <tt>cp2</tt> 指向同一数组中的元素（或该数组的溢出位置），上述表达式等效于比较在 <tt>cp1</tt> 和 <tt>cp2</tt> 中存放的地址；如果这两个指针指向不同的数组，则该表达式实现的比较没有定义。</p>
+
+        <p class="docText">To compare the strings, we must use <tt>strcmp</tt> and interpret the result:</p>
+	<p class="docText">字符串的比较和比较结果的解释都须使用标准库函数 <tt>strcmp</tt> 进行：</p>
+
+        <pre>
+          const char *cp1 = "A string example";
+          const char *cp2 = "A different string";
+          int i = strcmp(cp1, cp2);    // <span class="docEmphasis">i</span> <span class="docEmphItalicAlt">is positive</span>
+          i = strcmp(cp2, cp1);        // <span class="docEmphasis">i</span> <span class="docEmphItalicAlt">is negative</span>
+          i = strcmp(cp1, cp1);        // <span class="docEmphasis">i</span> <span class="docEmphItalicAlt">is zero</span>
+</pre>
+
+<a name="idd1e27961"></a><a name="idd1e27965"></a><a name="idd1e27969"></a><a name="idd1e27973"></a><a name="idd1e27977"></a><a name="idd1e27981"></a>
+        <p class="docText">The <tt>strcmp</tt> function returns three possible values: 0 if the strings are equal; or a positive or negative value, depending on whether the first string is larger or smaller than the second.</p>
+	<p class="docText">标准库函数 <tt>strcmp</tt> 有 3 种可能的返回值：若两个字符串相等，则返回 0 值；若第一个字符串大于第二个字符串，则返回正数，否则返回负数。</p>
+
+<a name="ch04lev2sec10"></a>
+        <h4 class="docSection2Title">Never Forget About the Null-Terminator</h4>
+        <h4 class="docSection2Title">永远不要忘记字符串结束符 null</h4>
+
+        <p class="docText">When using the C library string functions it is essential to remember the strings must be null-terminated:</p>
+        <p class="docText">在使用处理 C 风格字符串的标准库函数时，牢记字符串必须以结束符 null 结束：</p>
+        <pre>
+          char ca[] = {'C', '+', '+'}; // <span class="docEmphItalicAlt">not null-terminated</span>
+          cout &lt;&lt; strlen(ca) &lt;&lt; endl; // <span class="docEmphItalicAlt">disaster:</span> <span class="docEmphasis">ca</span> <span class="docEmphItalicAlt">isn't null-terminated</span>
+</pre>
+
+        <p class="docText">In this case, <tt>ca</tt> is an array of characters but is not null-terminated. What happens is undefined. The <tt>strlen</tt> function assumes that it can rely on finding a null character at the end of its argument. The most likely effect of this call is that <tt>strlen</tt> will keep looking through the memory that follows wherever <tt>ca</tt> happens to reside until it encounters a null character. In any event, the return from <tt>strlen</tt> will not be the correct value.</p>
+	<p class="docText">在这个例题中，<tt>ca</tt> 是一个没有 null 结束符的字符数组，则计算的结果不可预料。标准库函数 <tt>strlen</tt> 总是假定其参数字符串以 null 字符结束，当调用该标准库函数时，系统将会从实参 <tt>ca</tt> 指向的内存空间开始一直搜索结束符，直到恰好遇到 null 为止。<tt>strlen</tt> 返回这一段内存空间中总共有多少个字符，无论如何这个数值不可能是正确的。</p>
+
+<a name="ch04lev2sec11"></a>
+        <h4 class="docSection2Title">Caller Is Responsible for Size of a Destination String</h4>
+        <h4 class="docSection2Title">调用者必须确保目标字符串具有足够的大小</h4>
+
+        <p class="docText">The array that we pass as the first argument to <tt>strcat</tt> and <tt>strcpy</tt> <span class="docEmphasis">must</span> be large enough to hold the generated string. The code we show here, although a common usage pattern, is frought with the potential for serious error:</p>
+	<p class="docText">传递给标准库函数 <tt>strcat</tt> 和 <tt>strcpy</tt> 的第一个实参数组必须具有足够大的空间存放新生成的字符串。以下代码虽然演示了一种通常的用法，但是却有潜在的严重错误：</p>
+        <pre>
+          // <span class="docEmphItalicAlt">Dangerous: What happens if we miscalculate the size of</span> <span class="docEmphasis">largeStr?</span>
+          char largeStr[16 + 18 + 2];         // <span class="docEmphItalicAlt">will hold</span> <span class="docEmphasis">cp1</span> <span class="docEmphItalicAlt">a space and</span> <span class="docEmphasis">cp2</span>
+          strcpy(largeStr, cp1);              // <span class="docEmphItalicAlt">copies</span> <span class="docEmphasis">cp1</span> <span class="docEmphItalicAlt">into</span> <span class="docEmphasis">largeStr</span>
+          strcat(largeStr, " ");              // <span class="docEmphItalicAlt">adds a space at end of</span> <span class="docEmphasis">largeStr</span>
+          strcat(largeStr, cp2);              // <span class="docEmphItalicAlt">concatenates</span> <span class="docEmphasis">cp2</span> <span class="docEmphItalicAlt">to</span> <span class="docEmphasis">largeStr</span>
+          // <span class="docEmphasis">prints A string example A different string</span>
+          cout &lt;&lt; largeStr &lt;&lt; endl;
+</pre><br>
+
+        <p class="docText">The problem is that we could easily miscalculate the size needed in <tt>largeStr</tt>. Similarly, if we later change the sizes of the strings to which either <tt>cp1</tt> or <tt>cp2</tt> point, then the calculated size of <tt>largeStr</tt> will be wrong. Unfortunately, programs similar to this code are widely distributed. Programs with such code are error-prone and often lead to serious security leaks.</p>
+	<p class="docText">问题在于我们经常会算错 <tt>largeStr</tt> 需要的大小。同样地，如果 <tt>cp1</tt> 或 <tt>cp2</tt> 所指向的字符串大小发生了变化，<tt>largeStr</tt> 所需要的大小则会计算错误。不幸的是，类似于上述代码的程序应用非常广泛，这类程序往往容易出错，并导致严重的安全漏洞。</p>
+
+<a name="ch04lev2sec12"></a>
+        <h4 class="docSection2Title">When Using C-Style Strings, Use the <tt>strn</tt> Functions</h4>
+	<h4 class="docSection2Title">使用 <tt>strn</tt> 函数处理C风格字符串</h4>
+
+        <p class="docText">If you must use C-style strings, it is usually safer to use the <tt>strncat</tt> and <tt>strncpy</tt> functions instead of <tt>strcat</tt> and <tt>strcpy</tt>:</p>
+	<p class="docText">如果必须使用 C 风格字符串，则使用标准库函数 <tt>strncat</tt> 和 <tt>strncpy</tt> 比 <tt>strcat</tt> 和 <tt>strcpy</tt> 函数更安全：</p>
+        <pre>
+          char largeStr[16 + 18 + 2]; // <span class="docEmphItalicAlt">to hold</span> <span class="docEmphasis">cp1</span> <span class="docEmphItalicAlt">a space and</span> <span class="docEmphasis">cp2</span>
+          strncpy(largeStr, cp1, 17); // <span class="docEmphItalicAlt">size to copy includes the null</span>
+          strncat(largeStr, " ", 2);  // <span class="docEmphItalicAlt">pedantic, but a good habit</span>
+          strncat(largeStr, cp2, 19); // <span class="docEmphItalicAlt">adds at most 18 characters, plus a null</span>
+</pre>
+
+<a name="idd1e28181"></a><a name="idd1e28188"></a><a name="idd1e28193"></a><a name="idd1e28198"></a>
+        <p class="docText">The trick to using these versions is to properly calculate the value to control how many characters get copied. In particular, we must <span class="docEmphasis">always</span> remember to account for the null when copying or concatenating characters. We must allocate space for the null because that is the character that terminates <tt>largeStr</tt> after each call. Let's walk through these calls in detail:</p>
+	<p class="docText">使用标准库函数 <tt>strncat</tt> 和 <tt>strncpy</tt> 的诀窍在于可以适当地控制复制字符的个数。特别是在复制和串连字符串时，一定要时刻记住算上结束符 null。在定义字符串时要切记预留存放 null字符的空间，因为每次调用标准库函数后都必须以此结束字符串 <tt>largeStr</tt>。让我们详细分析一下这些标准库函数的调用：</p>
+
+        <ul>
+          <li>
+            <p class="docList">On the call to <tt>strncpy</tt>, we ask to copy 17 characters: all the characters in <tt>cp1</tt> plus the null. Leaving room for the null is necessary so that <tt>largeStr</tt> is properly terminated. After the <tt>strncpy</tt> call, <tt>largeStr</tt> has a <tt>strlen</tt> value of 16. Remember, <tt>strlen</tt> counts the characters in a C-style string, not including the null.</p>
+	    <p class="docList">调用 <tt>strncpy</tt> 时，要求复制 17 个字符：字符串 <tt>cp1</tt> 中所有字符，加上结束符 null。留下存储结束符 null 的空间是必要的，这样 <tt>largeStr</tt> 才可以正确地结束。调用 <tt>strncpy</tt> 后，字符串 <tt>largeStr</tt> 的长度 <tt>strlen</tt> 值是 16。记住：标准库函数 <tt>strlen</tt> 用于计算 C 风格字符串中的字符个数，不包括 null结束符。</p>
+          </li>
+
+          <li>
+            <p class="docList">When we call <tt>strncat</tt>, we ask to copy two characters: the space and the null that terminates the string literal. After this call, <tt>largeStr</tt> has a <tt>strlen</tt> of 17. The null that had ended <tt>largeStr</tt> is overwritten by the space that we appended. A new null is written after that space.</p>
+	    <p class="docList">调用 <tt>strncat</tt> 时，要求复制 2 个字符：一个空格和结束该字符串字面值的 null。调用结束后，字符串 <tt>largeStr</tt> 的长度是 17，原来用于结束 <tt>largeStr</tt> 的 null 被新添加的空格覆盖了，然后在空格后面写入新的结束符 null。</p>
+          </li>
+
+          <li>
+            <p class="docList">When we append <tt>cp2</tt> in the second call, we again ask to copy all the characters from <tt>cp2</tt>, <span class="docEmphasis">including</span> the null. After this call, the <tt>strlen</tt> of <tt>largeStr</tt> would be 35: 16 characters from <tt>cp1</tt>, 18 from <tt>cp2</tt>, and 1 for the space that separates the two strings.</p>
+	    <p class="docList">第二次调用 <tt>strncat</tt> 串接 <tt>cp2</tt> 时，要求复制 <tt>cp2</tt> 中所有字符，包括字符串结束符 null。调用结束后，字符串 <tt>largeStr</tt> 的长度是 35：<tt>cp1</tt> 的 16 个字符和 <tt>cp2</tt> 的 18 个字符，再加上分隔这两个字符串的一个空格。</p>
+          </li>
+        </ul>
+
+        <p class="docText">The array size of <tt>largeStr</tt> remains 36 throughout.</p>
+	<p class="docText">整个过程中，存储 <tt>largeStr</tt> 的数组大小始终保持为 36（包括结束符）。</p>
+
+        <p class="docText">These operations are safer than the simpler versions that do not take a size argument as long as we calculate the size argument correctly. If we ask to copy or concatenate more characters than the size of the target array, we will still overrun that array. If the string we're copying from or concatenating is bigger than the requested size, then we'll inadvertently truncate the new version. Truncating is safer than overrunning the array, but it is still an error.</p>
+	<p class="docText">只要可以正确计算出 <tt>size</tt> 实参的值，使用 <tt>strn</tt> 版本要比没有 <tt>size</tt> 参数的简化版本更安全。但是，如果要向目标数组复制或串接比其 <tt>size</tt> 更多的字符，数组溢出的现象仍然会发生。如果要复制或串接的字符串比实际要复制或串接的 <tt>size</tt> 大，我们会不经意地把新生成的字符串截短了。截短字符串比数组溢出要安全，但这仍是错误的。</p>
+
+<a name="ch04lev2sec13"></a>
+        <h4 class="docSection2Title">Whenever Possible, Use Library <tt>string</tt>s</h4>
+	<h4 class="docSection2Title">尽可能使用标准库类型 <tt>string</tt></h4>
+
+        <p class="docText">None of these issues matter if we use C++ library <tt>string</tt>s:</p>
+	<p class="docText">如果使用 C++ 标准库类型 <tt>string</tt>，则不存在上述问题：</p>
+        <pre>
+          string largeStr = cp1; // <span class="docEmphItalicAlt">initialize</span> <span class="docEmphasis">large Str</span> <span class="docEmphItalicAlt">as a copy of</span> <span class="docEmphasis">cp1</span>
+          largeStr += " ";       // <span class="docEmphItalicAlt">add space at end of</span> <span class="docEmphasis">largeStr</span>
+          largeStr += cp2;       // <span class="docEmphItalicAlt">concatenate</span> <span class="docEmphasis">cp2</span> <span class="docEmphItalicAlt">onto end of</span> <span class="docEmphasis">largeStr</span>
+</pre>
+
+        <p class="docText">Now the library handles all memory management, and we need no longer worry if the size of either string changes.</p>
+        <p class="docText">此时，标准库负责处理所有的内存管理问题，我们不必再担心每一次修改字符串时涉及到的大小问题。</p>
+
+<a name="ch04note19"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">For most applications, in addition to being safer, it is also more efficient to use library <tt>string</tt>s rather than C-style strings.</p>
+		<p class="docText">对大部分的应用而言，使用标准库类型 <tt>string</tt>，除了增强安全性外，效率也提高了，因此应该尽量避免使用 C 风格字符串。</p>
+              </td>
+            </tr>
+          </table>
+        </div><br>
+
+<a name="ch04sb11"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 4.3</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch04qa7q1"></a><b>Exercise 4.22:</b></td>
+
+                    <td>
+                      <p class="docText">Explain the difference between the following two <tt>while</tt> loops:</p>
+		      <p class="docText">解释下列两个 <tt>while</tt> 循环的差别：</p>
+                      <pre>
+          const char *cp = "hello";
+          int cnt;
+          while (cp) { ++cnt; ++cp; }
+          while (*cp) { ++cnt; ++cp; }
+</pre><br>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch04qa7q2"></a><b>Exercise 4.23:</b></td>
+
+                    <td>
+                      <p class="docText">What does the following program do?</p>
+                      <p class="docText">下列程序实现什么功能？</p>
+                      <pre>
+          const char ca[] = {'h', 'e', 'l', 'l', 'o'};
+          const char *cp = ca;
+          while (*cp) {
+              cout &lt;&lt; *cp &lt;&lt; endl;
+              ++cp;
+          }
+</pre><br>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch04qa7q3"></a><b>Exercise 4.24:</b></td>
+
+                    <td>
+                      <p class="docText">Explain the differences between <tt>strcpy</tt> and <tt>strncpy</tt>. What are the advantages of each? The disadvantages?</p>
+		      <p class="docText">解释 <tt>strcpy</tt> 和 <tt>strncpy</tt> 的差别在哪里，各自的优缺点是什么？</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch04qa7q4"></a><b>Exercise 4.25:</b></td>
+
+                    <td>
+                      <p class="docText">Write a program to compare two <tt>string</tt>s. Now write a program to compare the value of two C-style character strings.</p>
+		      <p class="docText">编写程序比较两个 <tt>string</tt> 类型的字符串，然后编写另一个程序比较两个C风格字符串的值。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch04qa7q5"></a><b>Exercise 4.26:</b></td>
+
+                    <td>
+                      <p class="docText">Write a program to read a <tt>string</tt> from the standard input. How might you write a program to read from the standard input into a C-style character string?</p>
+		      <p class="docText">编写程序从标准输入设备读入一个 <tt>string</tt> 类型的字符串。考虑如何编程实现从标准输入设备读入一个 C 风格字符串。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table>
+
+
+        <a name="ch04lev2sec14"></a>
+        <h4 class="docSection2Title">4.3.1. Dynamically Allocating Arrays</h4>
+        <h4 class="docSection2Title">4.3.1. 创建动态数组</h4>
+
+<a name="ch04term7"></a>
+<a name="idd1e28367"></a><a name="idd1e28372"></a><a name="idd1e28376"></a><a name="idd1e28383"></a><a name="idd1e28386"></a><a name="idd1e28389"></a><a name="idd1e28393"></a>
+        <p class="docText">A variable of array type has three important limitations: Its size is fixed, the size must be known at compile time, and the array exists only until the end of the block in which it was defined. Real-world programs usually cannot live with these restrictionsthey need a way to allocate an array <b><a class="docLink" href="ch04lev1sec6.html#gloss04_07" >dynamically</a></b> at run time. Although all arrays have fixed size, the size of a dynamically allocated array need not be fixed at compile time. It can be (and usually is) determined at run time. Unlike an array variable, a dynamically allocated array continues to exist until it is explicitly freed by the program.</p>
+        <p class="docText">数组类型的变量有三个重要的限制：数组长度固定不变，在编译时必须知道其长度，数组只在定义它的块语句内存在。实际的程序往往不能忍受这样的限制——它们需要在运行时动态地分配数组。虽然数组长度是固定的，但动态分配的数组不必在编译时知道其长度，可以（通常也是）在运行时才确定数组长度。与数组变量不同，动态分配的数组将一直存在，直到程序显式释放它为止。</p>
+
+
+<a name="ch04term8"></a>
+<a name="ch04term9"></a>
+<a name="ch04term5"></a>
+<a name="ch04term10"></a>
+        <p class="docText">Every program has a pool of available memory it can use during program execution to hold dynamically allocated objects. This pool of available memory is referred to as the program's <b><a class="docLink" href="ch04lev1sec6.html#gloss04_08" >free store</a></b> or <b><a class="docLink" href="ch04lev1sec6.html#gloss04_09" >heap</a></b>. C programs use a pair of functions named <tt>malloc</tt> and <tt>free</tt> to allocate space from the free store. In C++ we use <b><a class="docLink" href="ch04lev1sec6.html#gloss04_10" ><span class="docEmphStrong"><tt>new</tt></span></a></b> and <b><a class="docLink" href="ch04lev1sec6.html#gloss04_05" ><span class="docEmphStrong"><tt>delete</tt></span></a></b> expressions.</p>
+	<p class="docText">每一个程序在执行时都占用一块可用的内存空间，用于存放动态分配的对象，此内存空间称为程序的<b><a class="docLink" href="ch04lev1sec6.html#gloss04_08" >自由存储区</a></b>或<b><a class="docLink" href="ch04lev1sec6.html#gloss04_09" >堆</a></b>。C 语言程序使用一对标准库函数 <tt>malloc</tt> 和 <tt>free</tt> 在自由存储区中分配存储空间，而 C++ 语言则使用 <b><a class="docLink" href="ch04lev1sec6.html#gloss04_10" ><span class="docEmphStrong"><tt>new</tt></span></a></b> 和 <b><a class="docLink" href="ch04lev1sec6.html#gloss04_05" ><span class="docEmphStrong"><tt>delete</tt></span></a></b> 表达式实现相同的功能。</p>
+
+<a name="ch04lev3sec25"></a>
+        <h5 class="docSection3Title">Defining a Dynamic Array</h5>
+        <h5 class="docSection3Title">动态数组的定义</h5>
+
+        <p class="docText">When we define an array variable, we specify a type, a name, and a dimension. When we dynamically allocate an array, we specify the type and size but do not name the object. Instead, the <tt>new</tt> expression returns a pointer to the first element in the newly allocated array:</p>
+	<p class="docText">数组变量通过指定类型、数组名和维数来定义。而动态分配数组时，只需指定类型和数组长度，不必为数组对象命名，<tt>new</tt> 表达式返回指向新分配数组的第一个元素的指针：</p>
+        <pre>
+          int *pia = new int[10]; // <span class="docEmphItalicAlt">array of 10 uninitialized</span> <span class="docEmphasis">ints</span>
+</pre>
+
+        <p class="docText">This <tt>new</tt> expression allocates an array of ten <tt>int</tt>s and returns a pointer to the first element in that array, which we use to initialize <tt>pia</tt>.</p>
+	<p class="docText">此 <tt>new</tt> 表达式分配了一个含有 10 个 <tt>int</tt> 型元素的数组，并返回指向该数组第一个元素的指针，此返回值初始化了指针 <tt>pia</tt>。</p>
+
+<a name="idd1e28555"></a><a name="idd1e28561"></a><a name="idd1e28566"></a><a name="idd1e28573"></a><a name="idd1e28578"></a>
+        <p class="docText">A <tt>new</tt> expression takes a type and optionally an array dimension specified inside a bracket-pair. The dimension can be an arbitrarily complex expression. When we allocate an array, <tt>new</tt> returns a pointer to the first element in the array. Objects allocated on the free store are unnamed. We use objects on the heap only indirectly through their address.</p>
+	<p class="docText"><tt>new</tt> 表达式需要指定指针类型以及在方括号中给出的数组维数，该维数可以是任意的复杂表达式。创建数组后，<tt>new</tt> 将返回指向数组第一个元素的指针。在自由存储区中创建的数组对象是没有名字的，程序员只能通过其地址间接地访问堆中的对象。</p>
+
+<a name="ch04lev3sec26"></a>
+        <h5 class="docSection3Title">Initializing a Dynamically Allocated Array</h5>
+        <h5 class="docSection3Title">初始化动态分配的数组</h5>
+
+        <p class="docText">When we allocate an array of objects of a class type, then that type's default constructor (<a class="docLink" href="ch02lev1sec3.html#ch02lev2sec13" >Section 2.3.4</a>, p. <a class="docLink" href="ch02lev1sec3.html#ch02lev2sec13" >50</a>) is used to initialize each element. If the array holds elements of built-in type, then the elements are uninitialized:</p>
+	<p class="docText">动态分配数组时，如果数组元素具有类类型，将使用该类的默认构造函数（<a class="docLink" href="ch02lev1sec3.html#ch02lev2sec13" >第 2.3.4 节</a>）实现初始化；如果数组元素是内置类型，则无初始化：</p>
+        <pre>
+          string *psa = new string[10]; // <span class="docEmphItalicAlt">array of 10 empty</span> <span class="docEmphasis">strings</span>
+          int *pia = new int[10];       // <span class="docEmphItalicAlt">array of 10 uninitialized</span> <span class="docEmphasis">ints</span>
+</pre>
+
+        <p class="docText">Each of these <tt>new</tt> expressions allocates an array of ten objects. In the first case, those objects are <tt>string</tt>s. After allocating memory to hold the objects, the default <tt>string</tt> constructor is run on each element of the array in turn. In the second case, the objects are a built-in type; memory to hold ten <tt>int</tt>s is allocated, but the elements are uninitialized.</p>
+	<p class="docText">这两个 <tt>new</tt> 表达式都分配了含有 10 个对象的数组。其中第一个数组是 <tt>string</tt> 类型，分配了保存对象的内存空间后，将调用 <tt>string</tt> 类型的默认构造函数依次初始化数组中的每个元素。第二个数组则具有内置类型的元素，分配了存储 10 个 <tt>int</tt> 对象的内存空间，但这些元素没有初始化。</p>
+
+        <p class="docText">Alternatively, we can value-initialize (<a class="docLink" href="ch03lev1sec3.html#ch03lev2sec6" >Section 3.3.1</a>, p. <a class="docLink" href="ch03lev1sec3.html#ch03lev2sec6" >92</a>) the elements by following the array size by an empty pair of parentheses:</p>
+        <p class="docText">也可使用跟在数组长度后面的一对空圆括号，对数组元素做值初始化（<a class="docLink" href="ch03lev1sec3.html#ch03lev2sec6" >第 3.3.1 节</a>）：</p>
+        <pre>
+          int *pia2 = new int[10] (); // <span class="docEmphItalicAlt">array of 10 uninitialized</span> <span class="docEmphasis">ints</span>
+</pre>
+
+        <p class="docText">The parentheses are effectively a request to the compiler to value-initialize the array, which in this case sets its elements to 0.</p>
+        <p class="docText">圆括号要求编译器对数组做值初始化，在本例中即把数组元素都设置为0。</p>
+
+<a name="ch04note20"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">The elements of a dynamically allocated array can be initialized only to the default value of the element type. The elements cannot be initialized to separate values as can be done for elements of an array variable.</p>
+                <p class="docText">对于动态分配的数组，其元素只能初始化为元素类型的默认值，而不能像数组变量一样，用初始化列表为数组元素提供各不相同的初值。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <a name="ch04lev3sec27"></a>
+
+        <h5 class="docSection3Title">Dynamic Arrays of <tt>const</tt> Objects</h5>
+	<h5 class="docSection3Title"><tt>const</tt> 对象的动态数组</h5>
+
+        <p class="docText">If we create an array of <tt>const</tt> objects of built-in type on the free store, we must initialize that array: The elements are <tt>const</tt>, there is no way to assign values to the elements. The only way to initialize the elements is to value-initialize the array:</p>
+	<p class="docText">如果我们在自由存储区中创建的数组存储了内置类型的 <tt>const</tt> 对象，则必须为这个数组提供初始化：因为数组元素都是 <tt>const</tt> 对象，无法赋值。实现这个要求的唯一方法是对数组做值初始化：</p>
+        <pre>
+          // <span class="docEmphItalicAlt">error: uninitialized</span> <span class="docEmphasis">const</span> <span class="docEmphItalicAlt">array</span>
+          const int *pci_bad = new const int[100];
+          // <span class="docEmphItalicAlt">ok: value-initialized</span> <span class="docEmphasis">const</span> <span class="docEmphItalicAlt">array</span>
+          const int *pci_ok = new const int[100]();
+</pre>
+
+        <p class="docText">It is possible to have a <tt>const</tt> array of elements of a class type that provides a default constructor:</p>
+	<p class="docText">C++ 允许定义类类型的 <tt>const</tt> 数组，但该类类型必须提供默认构造函数：</p>
+        <pre>
+          // <span class="docEmphItalicAlt">ok: array of 100 empty</span> <span class="docEmphasis">strings</span>
+          const string *pcs = new const string[100];
+</pre>
+
+        <p class="docText">In this case, the default constructor is used to initialize the elements of the array.</p>
+	<p class="docText">在这里，将使用 <tt>string</tt> 类的默认构造函数初始化数组元素。</p>
+
+        <p class="docText">Of course, once the elements are created, they may not be changedwhich means that such arrays usually are not very useful.</p>
+        <p class="docText">当然，已创建的常量元素不允许修改——因此这样的数组实际上用处不大。</p>
+
+<a name="ch04lev3sec28"></a>
+        <h5 class="docSection3Title">It Is Legal to Dynamically Allocate an Empty Array</h5>
+        <h5 class="docSection3Title">允许动态分配空数组</h5>
+
+<a name="idd1e28741"></a><a name="idd1e28747"></a>
+        <p class="docText">When we dynamically allocate an array, we often do so because we don't know the size of the array at compile time. We might write code such as</p>
+        <p class="docText">之所以要动态分配数组，往往是由于编译时并不知道数组的长度。我们可以编写如下代码</p>
+        <pre>
+          size_t n = get_size(); // <span class="docEmphasis">get_size</span> <span class="docEmphItalicAlt">returns number of elements needed</span>
+          int* p = new int[n];
+          for (int* q = p; q != p + n; ++q)
+               /* <span class="docEmphItalicAlt">process the array</span> */ ;
+</pre>
+
+        <p class="docText">to figure out the size of the array and then allocate and process the array.</p>
+        <p class="docText">计算数组长度，然后创建和处理该数组。</p>
+
+        <p class="docText">An interesting question is: What happens if <tt>get_size</tt> returns 0? The answer is that our code works fine. The language specifies that a call to <tt>new</tt> to create an array of size zero is legal. It is legal even though we could not create an array variable of size 0:</p>
+	<p class="docText">有趣的是，如果 <tt>get_size</tt> 返回 0 则会怎么样？答案是：代码仍然正确执行。C++ 虽然不允许定义长度为 0 的数组变量，但明确指出，调用 <tt>new</tt> 动态创建长度为 0 的数组是合法的：</p>
+        <pre>
+          char arr[0];            // <span class="docEmphItalicAlt">error: cannot define zero-length array</span>
+          char *cp = new char[0]; // <span class="docEmphItalicAlt">ok: but</span> <span class="docEmphasis">cp</span> <span class="docEmphItalicAlt">can't be dereferenced</span>
+</pre>
+
+        <p class="docText">When we use <tt>new</tt> to allocate an array of zero size, <tt>new</tt> returns a valid, nonzero pointer. This pointer will be distinct from any other pointer returned by <tt>new</tt>. The pointer cannot be dereferencedafter all, it points to no element. The pointer can be compared and so can be used in a loop such as the preceeding one. It is also legal to add (or subtract) zero to such a pointer and to subtract the pointer from itself, yielding zero.</p>
+	<p class="docText">用 <tt>new</tt> 动态创建长度为 0 的数组时，<tt>new</tt> 返回有效的非零指针。该指针与 <tt>new</tt> 返回的其他指针不同，不能进行解引用操作，因为它毕竟没有指向任何元素。而允许的操作包括：比较运算，因此该指针能在循环中使用；在该指针上加（减）0；或者减去本身，得 0 值。</p>
+
+        <p class="docText">In our hypothetical loop, if the call to <tt>get_size</tt> returned 0, then the call to <tt>new</tt> would still succeed. However, <tt>p</tt> would not address any element; the array is empty. Because <tt>n</tt> is zero, the <tt>for</tt> loop effectively compares <tt>q</tt> to <tt>p</tt>. These pointers are equal; <tt>q</tt> was initialized to <tt>p</tt>, so the condition in the <tt>for</tt> fails and the loop body is not executed.</p>
+	<p class="docText">在上述例题中，如果 <tt>get_size</tt> 返回 0，则仍然可以成功调用 <tt>new</tt>，但是 <tt>p</tt> 并没有指向任何对象，数组是空的。因为 <tt>n</tt> 为 0，所以 <tt>for</tt> 循环实际比较的是 <tt>p</tt> 和 <tt>q</tt>，而 <tt>q</tt> 是用 <tt>p</tt> 初始化的，两者具有相等的值，因此 <tt>for</tt> 循环条件不成立，循环体一次都没有执行。</p>
+
+<a name="ch04lev3sec29"></a>
+        <h5 class="docSection3Title">Freeing Dynamic Memory</h5>
+        <h5 class="docSection3Title">动态空间的释放</h5>
+
+        <p class="docText">When we allocate memory, we must eventually free it. Otherwise, memory is gradually used up and may be exhausted. When we no longer need the array, we must <span class="docEmphasis">explicitly</span> return its memory to the free store. We do so by applying the <tt>delete []</tt> expression to a pointer that addresses the array we want to release:</p>
+	<p class="docText">动态分配的内存最后必须进行释放，否则，内存最终将会逐渐耗尽。如果不再需要使用动态创建的数组，程序员必须显式地将其占用的存储空间返还给程序的自由存储区。C++ 语言为指针提供 <tt>delete []</tt> 表达式释放指针所指向的数组空间：</p>
+        <pre>
+          delete [] pia;
+</pre>
+
+        <p class="docText">deallocates the array pointed to by <tt>pia</tt>, returning the associated memory to the free store. The empty bracket pair between the <tt>delete</tt> keyword and the pointer is necessary: It indicates to the compiler that the pointer addresses an array of elements on the free store and not simply a single object.</p>
+	<p class="docText">该语句回收了 <tt>pia</tt> 所指向的数组，把相应的内存返还给自由存储区。在关键字 <tt>delete</tt> 和指针之间的空方括号对是必不可少的：它告诉编译器该指针指向的是自由存储区中的数组，而并非单个对象。</p>
+
+<a name="ch04note21"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">If the empty bracket pair is omitted, it is an error, but an error that the compiler is unlikely to catch; the program may fail at run time.</p>
+                <p class="docText">如果遗漏了空方括号对，这是一个编译器无法发现的错误，将导致程序在运行时出错。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+<a name="idd1e28888"></a><a name="idd1e28895"></a><a name="idd1e28900"></a>
+        <p class="docText">The least serious run-time consequence of omitting brackets when freeing an array is that too little memory will be freed, leading to a memory leak. On some systems and/or for some element types, more serious run-time problems are possible. It is essential to remember the bracket-pair when deleting pointers to arrays.</p>
+        <p class="docText">理论上，回收数组时缺少空方括号对，至少会导致运行时少释放了内存空间，从而产生内存泄漏（memory leak）。对于某些系统和/或元素类型，有可能会带来更严重的运行时错误。因此，在释放动态数组时千万别忘了方括号对。</p>
+
+<a name="ch04sb12"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Contrasting C-Style Strings and C++ Library <tt>string</tt>s</h2>
+	      <h2 class="docSidebarTitle">C 风格字符串与 C++ 的标准库类型 <tt>string</tt> 的比较</h2>
+
+              <p class="docText"><span class="docEmphStrong">The following two programs illustrate the differences in using C-style character strings versus using the C++ library <tt>string</tt> type. The <tt>string</tt> version is shorter, easier to understand, and less error-prone:</span></p>
+	      <p class="docText"><span class="docEmphStrong">以下两段程序反映了使用 C 风格字符串与 C++ 的标准库类型 <tt>string</tt> 的不同之处。使用 <tt>string</tt> 类型的版本更短、更容易理解，而且出错的可能性更小：</span></p>
+              <pre>
+<a name="PLID22"></a>
+</pre>
+
+              <div class="v1">
+                <a href="ch04lev1sec3.html#PLID22" >[View full width]</a>
+              </div>
+              <pre>
+
+          // <span class="docEmphItalicAlt">C-style character string implementation</span>
+             const char *pc = "a very long literal string";
+             const size_t len = strlen(pc +1);      // <span class="docEmphItalicAlt">space to
+<img border="0" width="14" height="9" alt="" align="left" src="images/ccc.gif" > allocate</span>
+             // <span class="docEmphItalicAlt">performance test on string allocation and copy</span>
+             for (size_t ix = 0; ix != 1000000; ++ix) {
+                 char *pc2 = new char[len + 1]; // <span class="docEmphItalicAlt">allocate the space</span>
+                 strcpy(pc2, pc);               // <span class="docEmphItalicAlt">do the copy</span>
+                 if (strcmp(pc2, pc))           // <span class="docEmphItalicAlt">use the new string</span>
+                     ;   // <span class="docEmphItalicAlt">do nothing</span>
+                 delete [] pc2;                 // <span class="docEmphItalicAlt">free the memory</span>
+          }
+          // <span class="docEmphItalicAlt">string implementation</span>
+             string str("a very long literal string");
+             // <span class="docEmphItalicAlt">performance test on string allocation and copy</span>
+             for (int ix = 0; ix != 1000000; ++ix) {
+                 string str2 = str; // <span class="docEmphItalicAlt">do the copy, automatically
+<img border="0" width="14" height="9" alt="" align="left" src="images/ccc.gif" > allocated</span>
+                 if (str != str2)           // <span class="docEmphItalicAlt">use the new string</span>
+                       ;  // <span class="docEmphItalicAlt">do nothing</span>
+          }
+                                            // <span class="docEmphasis">str2</span> <span class="docEmphItalicAlt">is
+<img border="0" width="14" height="9" alt="" align="left" src="images/ccc.gif" > automatically freed</span>
+<br>
+<br>
+<span class="docEmphStrong">These programs are further explored in the exercises to <a class="docLink" href="ch04lev1sec3.html#ch04lev2sec14">Section 4.3.1</a> (p. <a class="docLink" href="ch04lev1sec3.html#ch04lev2sec14">139</a>).</span>
+<span class="docEmphStrong">这些程序将在4.3.1节的习题中做进一步探讨。</span>
+</pre>
+            </td>
+          </tr>
+        </table><br>
+        <a name="ch04lev3sec30"></a>
+
+        <h5 class="docSection3Title">Using Dynamically Allocated Arrays</h5>
+        <h5 class="docSection3Title">动态数组的使用</h5>
+
+        <p class="docText">A common reason to allocate an array dynamically is if its dimension cannot be known at compile time. For example, <tt>char*</tt> pointers are often used to refer to multiple C-style strings during the execution of a program. The memory used to hold the various strings typically is allocated dynamically during program execution based on the length of the string to be stored. This technique is considerably safer than allocating a fixed-size array. Assuming we correctly calculate the size needed at run time, we no longer need to worry that a given string will overflow the fixed size of an array variable.</p>
+        <p class="docText">通常是因为在编译时无法知道数组的维数，所以才需要动态创建该数组。例如，在程序执行过程中，常常使用char*指针指向多个C风格字符串，于是必须根据每个字符串的长度实时地动态分配存储空间。采用这种技术要比建立固定大小的数组安全。如果程序员能够准确计算出运行时需要的数组长度，就不必再担心因数组变量具有固定的长度而造成的溢出问题。</p>
+
+        <p class="docText">Suppose we have the following C-style strings:</p>
+        <p class="docText">假设有以下C风格字符串：</p>
+        <pre>
+          const char *noerr = "success";
+          // ...
+          const char *err189 = "Error: a function declaration must "
+                               "specify a function return type!";
+</pre>
+
+        <p class="docText">We might want to copy one or the other of these strings at run time to a new character array. We could calculate the dimension at run time, as follows:</p>
+        <p class="docText">我们想在运行时把这两个字符串中的一个复制给新的字符数组，于是可以用以下程序在运行时计算维数：</p>
+        <pre>
+    const char *errorTxt;
+    if (errorFound)
+        errorTxt = err189;
+    else
+        errorTxt = noerr;
+    // <span class="docEmphItalicAlt">remember the 1 for the terminating null</span>
+    int dimension = strlen(errorTxt) + 1;
+    char *errMsg = new char[dimension];
+    // <span class="docEmphItalicAlt">copy the text for the error into</span> <span class="docEmphasis">errMsg</span>
+    strncpy (errMsg, errorTxt, dimension);
+</pre>
+
+        <p class="docText">Recall that <tt>strlen</tt> returns the length of the string <span class="docEmphasis">not</span> including the null. It is essential to remember to add 1 to the length returned from <tt>strlen</tt> to accommodate the trailing null.</p>
+	<p class="docText">别忘记标准库函数 <tt>strlen</tt> 返回的是字符串的长度，并不包括字符串结束符，在获得的字符串长度上必须加 1 以便在动态分配时预留结束符的存储空间。</p>
+
+<a name="ch04sb13"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 4.3.1</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch04qa8q1"></a><b>Exercise 4.27:</b></td>
+
+                    <td>
+                      <p class="docText">Given the following <tt>new</tt> expression, how would you <tt>delete pa</tt>?</p>
+		      <p class="docText">假设有下面的 <tt>new</tt> 表达式，请问如何释放 <tt>pa</tt>？</p>
+                      <pre>
+     int *pa = new int[10];
+</pre>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch04qa8q2"></a><b>Exercise 4.28:</b></td>
+
+                    <td>
+                      <p class="docText">Write a program to read the standard input and build a <tt>vector</tt> of <tt>int</tt>s from values that are read. Allocate an array of the same size as the <tt>vector</tt> and copy the elements from the <tt>vector</tt> into the array.</p>
+		      <p class="docText">编写程序由从标准输入设备读入的元素数据建立一个 <tt>int</tt> 型 <tt>vector</tt> 对象，然后动态创建一个与该 <tt>vector</tt> 对象大小一致的数组，把 <tt>vector</tt> 对象的所有元素复制给新数组。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch04qa8q3"></a><b>Exercise 4.29:</b></td>
+
+                    <td>
+                      <p class="docText">Given the two program fragments in the highlighted box on page <a class="docLink" href="ch04lev1sec3.html#ch04sb12">138</a>,</p>
+                      <p class="docText">对本小节<a class="docLink" href="ch04lev1sec3.html#ch04sb12">第 5 条框</a>中的两段程序：</p>
+
+                      <div style="font-weight:bold">
+                        <ol class="docList" type="a">
+                          <li>
+                            <div style="font-weight:normal">
+                              <p class="docList">Explain what the programs do.</p>
+                              <p class="docList">解释这两个程序实现什么功能？</p>
+                            </div>
+                          </li>
+
+                          <li>
+                            <div style="font-weight:normal">
+                              <p class="docList">As it happens, on average, the <tt>string</tt> class implementation executes considerably faster than the C-style string functions. The relative average execution times on our more than five-year-old PC are as follows:</p>
+			      <p class="docList">平均来说，使用 <tt>string</tt> 类型的程序执行速度要比用 C 风格字符串的快很多，在我们用了五年的 PC 机上其平均执行速度分别是：</p>
+                              <pre>
+          user       0.47    # string class
+          user       2.55    # C-style character string
+</pre><br>
+                            </div>
+                          </li>
+                        </ol>
+                      </div>
+
+                      <p class="docText">Did you expect that? How would you account for it?</p>
+                      <p class="docText">你预计的也一样吗？请说明原因。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch04qa8q4"></a><b>Exercise 4.30:</b></td>
+
+                    <td>
+                      <p class="docText">Write a program to concatenate two C-style string literals, putting the result in a C-style string. Write a program to concatenate two library <tt>string</tt>s that have the same value as the literals used in the first program.</p>
+		      <p class="docText">编写程序连接两个C风格字符串字面值，把结果存储在一个C风格字符串中。然后再编写程序连接两个 <tt>string</tt> 类型字符串，这两个 <tt>string</tt> 类型字符串与前面的C风格字符串字面值具有相同的内容。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table>
+        <a name="ch04lev2sec15"></a>
+
+        <h4 class="docSection2Title">4.3.2. Interfacing to Older Code</h4>
+        <h4 class="docSection2Title">4.3.2. 新旧代码的兼容</h4>
+
+<a name="idd1e29158"></a><a name="idd1e29165"></a><a name="idd1e29170"></a><a name="idd1e29174"></a><a name="idd1e29181"></a><a name="idd1e29187"></a><a name="idd1e29194"></a><a name="idd1e29202"></a><a name="idd1e29207"></a><a name="idd1e29213"></a>
+        <p class="docText">Many C++ programs exist that predate the standard library and so do not yet use the <tt>string</tt> and <tt>vector</tt> types. Moreover, many C++ programs interface to existing C programs that cannot use the C++ library. Hence, it is not infrequent to encounter situations where a program written in modern C++ must interface to code that uses arrays and/or C-style character strings. The library offers facilities to make the interface easier to manage.</p>
+	<p class="docText">许多 C++ 程序在有标准类之前就已经存在了，因此既没有使用标准库类型 <tt>string</tt> 也没有使用 <tt>vector</tt>。而且，许多 C++ 程序为了兼容现存的 C 程序，也不能使用 C++ 标准库。因此，现代的 C++ 程序经常必须兼容使用数组和／或 C 风格字符串的代码，标准库提供了使兼容界面更容易管理的手段。</p>
+
+<a name="ch04lev3sec31"></a>
+        <h5 class="docSection3Title">Mixing Library <tt>string</tt>s and C-Style Strings</h5>
+	<h5 class="docSection3Title">混合使用标准库类 <tt>string</tt> 和 C 风格字符串</h5>
+
+        <p class="docText">As we saw on page <a class="docLink" href="ch03lev1sec2.html#ch03lev2sec2" >80</a> we can initialize a <tt>string</tt> from a string literal:</p>
+	<p class="docText">正如<a class="docLink" href="ch03lev1sec2.html#ch03lev2sec2" >第 3.2.1 节</a>中显示的，可用字符串字面值初始化 <tt>string</tt> 类对象：</p>
+        <pre>
+          string st3("Hello World");  // <span class="docEmphasis">st3</span> <span class="docEmphItalicAlt">holds</span> <span class="docEmphasis">Hello World</span>
+</pre>
+
+        <p class="docText">More generally, because a C-style string has the same type as a string literal and is null-terminated in the same way, we can use a C-style string anywhere that a string literal can be used:</p>
+        <p class="docText">通常，由于 C 风格字符串与字符串字面值具有相同的数据类型，而且都是以空字符 null 结束，因此可以把 C 风格字符串用在任何可以使用字符串字面值的地方：</p>
+
+        <ul>
+          <li>
+            <p class="docList">We can initialize or assign to a <tt>string</tt> from a C-style string.</p>
+	    <p class="docList">可以使用 C 风格字符串对 <tt>string</tt> 对象进行初始化或赋值。</p>
+          </li>
+
+          <li>
+            <p class="docList">We can use a C-style string as one of the two operands to the <tt>string</tt> addition or as the right-hand operand to the compound assignment operators.</p>
+	    <p class="docList"><tt>string</tt> 类型的加法操作需要两个操作数，可以使用 C 风格字符串作为其中的一个操作数，也允许将 C 风格字符串用作复合赋值操作的右操作数。</p>
+          </li>
+        </ul>
+
+        <p class="docText">The reverse functionality is not provided: there is no direct way to use a library <tt>string</tt> when a C-style string is required. For example, there is no way to initialize a character pointer from a <tt>string:</tt></p>
+	<p class="docText">反之则不成立：在要求C风格字符串的地方不可直接使用标准库 <tt>string</tt> 类型对象。例如，无法使用 <tt>string</tt> 对象初始化字符指针：</p>
+        <pre>
+          char *str = st2; // <span class="docEmphItalicAlt">compile-time type error</span>
+</pre>
+
+        <p class="docText">There is, however, a <tt>string</tt> member function named <tt>c_str</tt> that we can often use to accomplish what we want:</p>
+	<p class="docText">但是，<tt>string</tt> 类提供了一个名为 <tt>c_str</tt> 的成员函数，以实现我们的要求：</p>
+        <pre>
+          char *str = st2.c_str(); // <span class="docEmphItalicAlt">almost ok, but not quite</span>
+</pre>
+
+        <p class="docText">The name <tt>c_str</tt> indicates that the function returns a C-style character string. Literally, it says, "Get me the C-style string representation"that is, a pointer to the beginning of a null-terminated character array that holds the same data as the characters in the <tt>string</tt>.</p>
+	<p class="docText"><tt>c_str</tt> 函数返回 C 风格字符串，其字面意思是：“返回 C 风格字符串的表示方法”，即返回指向字符数组首地址的指针，该数组存放了与 <tt>string</tt> 对象相同的内容，并且以结束符 null 结束。</p>
+
+        <p class="docText">This initialization fails because <tt>c_str</tt> returns a pointer to an array of <tt>const char</tt>. It does so to prevent changes to the array. The correct initialization is:</p>
+	<p class="docText">如果 <tt>c_str</tt> 返回的指针指向 <tt>const char</tt> 类型的数组，则上述初始化失败，这样做是为了避免修改该数组。正确的初始化应为：</p>
+        <pre>
+          const char *str = st2.c_str(); // <span class="docEmphasis">ok</span>
+</pre>
+        <a name="ch04note22"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">The array returned by <tt>c_str</tt> is not guaranteed to be valid indefinitely. Any subsequent use of <tt>st2</tt> that might change the value of <tt>st2</tt> can invalidate the array. If a program needs continuing access to the data, then the program must copy the array returned by <tt>c_str</tt>.</p>
+		<p class="docText"><tt>c_str</tt> 返回的数组并不保证一定是有效的，接下来对 <tt>st2</tt> 的操作有可能会改变 <tt>st2</tt> 的值，使刚才返回的数组失效。如果程序需要持续访问该数据，则应该复制 <tt>c_str</tt> 函数返回的数组。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <a name="ch04lev3sec32"></a>
+
+        <h5 class="docSection3Title">Using an Array to Initialize a <tt>vector</tt></h5>
+	<h5 class="docSection3Title">使用数组初始化 <tt>vector</tt> 对象</h5>
+
+        <p class="docText">On page <a class="docLink" href="ch04lev1sec1.html#page_112" >112</a> we noted that it is not possible to initialize an array from another array. Instead, we have to create the array and then explicitly copy the elements from one array into the other. It turns out that we can use an array to initialize a <tt>vector</tt>, although the form of the initialization may seem strange at first. To initialize a <tt>vector</tt> from an array, we specify the address of the first element and one past the last element that we wish to use as initializers:</p>
+	<p class="docText"><a class="docLink" href="ch04lev1sec1.html#page_112" >第 4.1.1 节</a>提到不能用一个数组直接初始化另一数组，程序员只能创建新数组，然后显式地把源数组的元素逐个复制给新数组。这反映 C++ 允许使用数组初始化 <tt>vector</tt> 对象，尽管这种初始化形式起初看起来有点陌生。使用数组初始化 <tt>vector</tt> 对象，必须指出用于初始化式的第一个元素以及数组最后一个元素的下一位置的地址：</p>
+        <pre>
+          const size_t arr_size = 6;
+          int int_arr[arr_size] = {0, 1, 2, 3, 4, 5};
+          // <span class="docEmphasis">ivec</span> <span class="docEmphItalicAlt">has 6 elements: each a copy of the corresponding element in</span> <span class="docEmphasis">int_arr</span>
+          vector&lt;int&gt; ivec(int_arr, int_arr + arr_size);
+</pre>
+
+<a name="idd1e29394"></a><a name="idd1e29399"></a>
+        <p class="docText">The two pointers passed to <tt>ivec</tt> mark the range of values with which to initialize the <tt>vector</tt>. The second pointer points one past the last element to be copied. The range of elements marked can also represent a subset of the array:</p>
+	<p class="docText">传递给 <tt>ivec</tt> 的两个指针标出了 <tt>vector</tt> 初值的范围。第二个指针指向被复制的最后一个元素之后的地址空间。被标出的元素范围可以是数组的子集：</p>
+        <pre>
+          // <span class="docEmphItalicAlt">copies 3 elements:</span> <span class="docEmphasis">int_arr[1], int_arr[2], int_arr[3]</span>
+          vector&lt;int&gt; ivec(int_arr + 1, int_arr + 4);
+</pre>
+
+        <p class="docText">This initialization creates <tt>ivec</tt> with three elements. The values of these elements are copies of the values in <tt>int_arr[1]</tt> through <tt>int_arr[3]</tt>.</p>
+	<p class="docText">这个初始化创建了含有三个元素的 <tt>ivec</tt>，三个元素的值分别是 <tt>int_arr[1]</tt> 到 <tt>int_arr[3]</tt> 的副本。</p>
+
+<a name="ch04sb14"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 4.3.2</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch04qa9q1"></a><b>Exercise 4.31:</b></td>
+
+                    <td>
+                      <p class="docText">Write a program that reads a string into a character array from the standard input. Describe how your program handles varying size inputs. Test your program by giving it a string of data that is longer than the array size you've allocated.</p>
+                      <p class="docText">编写程序从标准输入设备读入字符串，并把该串存放在字符数组中。描述你的程序如何处理可变长的输入。提供比你分配的数组长度长的字符串数据测试你的程序。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch04qa9q2"></a><b>Exercise 4.32:</b></td>
+
+                    <td>
+                      <p class="docText">Write a program to initialize a <tt>vector</tt> from an array of <tt>int</tt>s.</p>
+		      <p class="docText">编写程序用 <tt>int</tt> 型数组初始化 <tt>vector</tt> 对象。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch04qa9q3"></a><b>Exercise 4.33:</b></td>
+
+                    <td>
+                      <p class="docText">Write a program to copy a <tt>vector</tt> of <tt>int</tt>s into an array of <tt>int</tt>s.</p>
+		      <p class="docText">编写程序把 <tt>int</tt> 型 <tt>vector</tt> 复制给 <tt>int</tt> 型数组。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch04qa9q4"></a><b>Exercise 4.34:</b></td>
+
+                    <td>
+                      <p class="docText">Write a program to read <tt>string</tt>s into a <tt>vector</tt>. Now, copy that <tt>vector</tt> into an array of character pointers. For each element in the <tt>vector</tt>, allocate a new character array and copy the data from the <tt>vector</tt> element into that character array. Then insert a pointer to the character array into the array of character pointers.</p>
+		      <p class="docText">编写程序读入一组 <tt>string</tt> 类型的数据，并将它们存储在 <tt>vector</tt> 中。接着，把该 <tt>vector</tt> 对象复制给一个字符指针数组。为 <tt>vector</tt> 中的每个元素创建一个新的字符数组，并把该 <tt>vector</tt> 元素的数据复制到相应的字符数组中，最后把指向该数组的指针插入字符指针数组。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch04qa9q5"></a><b>Exercise 4.35:</b></td>
+
+                    <td>
+                      <p class="docText">Print the contents of the <tt>vector</tt> and the array created in the previous exercise. After printing the array, remember to delete the character arrays.</p>
+		      <p class="docText">输出习题 4.34中建立的 <tt>vector</tt> 对象和数组的内容。输出数组后，记得释放字符数组。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table>
+        <a href="21001535.html" ><img src="images/pixel.gif"  alt="" width="1" height="1" border="0"></a>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch04lev1sec2.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch04lev1sec4.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

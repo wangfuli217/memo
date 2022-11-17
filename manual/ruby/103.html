@@ -1,0 +1,365 @@
+<html><HEAD><TITLE>Programming Ruby: The Pragmatic Programmer's Guide</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=gb2312"><LINK media=screen href="103_files/pr_style[1].css"  type=text/css rel=StyleSheet></head>
+<BODY bgColor=white>
+<TABLE cellSpacing=0 cellPadding=3 width="100%" bgColor=#c09090 border=0>
+<TBODY>
+<TR>
+<TD colSpan=3>
+<TABLE cellPadding=20 width="100%" bgColor=#701a1a>
+<TBODY>
+<TR>
+<TD width="100%">
+<H1 class=header>Programming Ruby</H1>
+<H3 class=subheader>实用程序员指南</H3></TD></TR></TBODY></TABLE></TD></TR>
+<TR>
+<TD align=left width="33%"><A class=subheader href="102.html" >上一章 &lt;</A> </TD>
+<TD vAlign=center align=middle width="33%"><A class=subheader href="95.html" >目录</A><A class=subheader href="95.html" >^</A> <BR></TD>
+<TD align=right width="33%"><A class=subheader href="104.html" >下一章&gt;</A> <BR></TD></TR></TBODY></TABLE><!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<H1>深入方法</H1>
+<HR>
+
+<P>一些其它语言有函数，过程，方法等，而Ruby中只有方法：一段表达式代码，返回一个值。</P>
+<P>到目前为止，我们在这本书中只是基本的介绍了如何定义，使用方法，现在，我们会继续深入的探讨一些关于方法更深层的东西。</P>
+<H2><A name=S1>方法定义</A></H2>
+<P>如同在前面看到的一样，定义一个方法用关键字def开头，方法名应该以小写字母开头<I>[如果你用大写字母开头定义一个方法，你不会立即得到一个错误，但是当你调用这个方法时，Ruby首先认为你访问的是一个常量，所以可能会解析错误]</I>，如果一个方法主要用来完成一些查询操作（不专指数据库查询），通常以一个问号"?"结束，作为函数名的最后一个字母，比如instance_of?等。如果一个方法有一定危险，或者可能修改方法的接受者，通常以"!"结尾，比如String类提供了chop和chop!两个方法，第一个方法返回一个修改过的字符串，而第二个方法直接就修改了接收者本身。"?"和"!"是唯一两个能作为方法名后缀的特殊字符。</P>
+<P>我们已经指定了方法名，如果需要，我们可以定义一些参数，这些参数用双括号括起来，作用域范围都是局部变量，一些例子如下：</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>def&nbsp;myNewMethod(arg1,&nbsp;arg2,&nbsp;arg3)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;3&nbsp;arguments
+&nbsp;&nbsp;#&nbsp;Code&nbsp;for&nbsp;the&nbsp;method&nbsp;would&nbsp;go&nbsp;here
+end
+
+def&nbsp;myOtherNewMethod&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;No&nbsp;arguments    
+&nbsp;&nbsp;#&nbsp;Code&nbsp;for&nbsp;the&nbsp;method&nbsp;would&nbsp;go&nbsp;here    
+end
+  </PRE></TD></TR></TBODY></TABLE>
+<P>Ruby允许为方法的参数设置默认值：如果调用者没有显示的为这些参数提供值，将使用这些默认值。通过"="，就可以为这些参数设定默认值。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>def&nbsp;coolDude(arg1="Miles",&nbsp;arg2="Coltrane",&nbsp;arg3="Roach")</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;"#{arg1},&nbsp;#{arg2},&nbsp;#{arg3}."</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE></CODE></TD></TR>
+<TR>
+<TD vAlign=top><CODE>coolDude</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>"Miles,&nbsp;Coltrane,&nbsp;Roach."</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>coolDude("Bart")</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>"Bart,&nbsp;Coltrane,&nbsp;Roach."</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>coolDude("Bart",&nbsp;"Elwood")</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>"Bart,&nbsp;Elwood,&nbsp;Roach."</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>coolDude("Bart",&nbsp;"Elwood",&nbsp;"Linus")</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>"Bart,&nbsp;Elwood,&nbsp;Linus."</CODE> </TD></TR></TBODY></TABLE>
+<P>方法体中包含了一般的Ruby表达式，但是你不能在方法里面定义实例方法，类或者模块。方法的返回值是方法体最后一行执行后的结果，或者你显示的用一个return语句。</P>
+<P></P>
+<H3><A name=UA>可变长度的参数列表</A></H3>
+<P>如果我们想给方法传入一个数目不定的参数，或者把所有参数放到一个参数中进行传递的话，该怎么办呢？我们可以在普通的参数后面加入一个特殊的参数，这个参数以"*"开头，就可以达到这个目的了。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>def&nbsp;varargs(arg1,&nbsp;*rest)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;"Got&nbsp;#{arg1}&nbsp;and&nbsp;#{rest.join(',&nbsp;')}"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE></CODE></TD></TR>
+<TR>
+<TD vAlign=top><CODE>varargs("one")</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>"Got&nbsp;one&nbsp;and&nbsp;"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>varargs("one",&nbsp;"two")</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>"Got&nbsp;one&nbsp;and&nbsp;two"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>varargs&nbsp;"one",&nbsp;"two",&nbsp;"three"</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>"Got&nbsp;one&nbsp;and&nbsp;two,&nbsp;three"</CODE> </TD></TR></TBODY></TABLE>
+<P>在这个例子中，第一个参数很普通，直接作为第一个参数变量，而后面以"*"开头的参数，将会包括调用时候后面的所有参数，是一个Array的结构，包括了从第二个开始的所有参数。</P>
+<H3><A name=UB>方法和块</A></H3>
+<P>在讨论块和迭代的那章时，我们知道，当一个方法被调用时候，可以接收一个block，而我们在方法中可以用yield来执行这个block。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>def&nbsp;takeBlock(p1)
+&nbsp;&nbsp;if&nbsp;block_given?
+&nbsp;&nbsp;&nbsp;&nbsp;yield(p1)
+&nbsp;&nbsp;else
+&nbsp;&nbsp;&nbsp;&nbsp;p1
+&nbsp;&nbsp;end
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>takeBlock("no&nbsp;block")</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>"no&nbsp;block"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>takeBlock("no&nbsp;block")&nbsp;{&nbsp;|s|&nbsp;s.sub(/no&nbsp;/,&nbsp;'')&nbsp;}</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>"block"</CODE> </TD></TR></TBODY></TABLE>
+<P>但是，当方法接受参数中最后一个参数以"&amp;"开始的时候，任何给定的block都会转换为Proc对象，并且这个Proc对象将会赋值给这个参数（下例中block指向一个Proc对象）。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>class&nbsp;TaxCalculator</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;def&nbsp;initialize(name,&nbsp;&amp;block)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;&nbsp;&nbsp;@name,&nbsp;@block&nbsp;=&nbsp;name,&nbsp;block</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;def&nbsp;getTax(amount)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;&nbsp;&nbsp;"#@name&nbsp;on&nbsp;#{amount}&nbsp;=&nbsp;#{&nbsp;@block.call(amount)&nbsp;}"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE></CODE></TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>tc&nbsp;=&nbsp;TaxCalculator.new("Sales&nbsp;tax")&nbsp;{&nbsp;|amt|&nbsp;amt&nbsp;*&nbsp;0.075&nbsp;}</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE></CODE></TD></TR>
+<TR>
+<TD vAlign=top><CODE>tc.getTax(100)</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>"Sales&nbsp;tax&nbsp;on&nbsp;100&nbsp;=&nbsp;7.5"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>tc.getTax(250)</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>"Sales&nbsp;tax&nbsp;on&nbsp;250&nbsp;=&nbsp;18.75"</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<H2><A name=S2>调用方法</A></H2>
+<P>通常，调用一个方法需要指定一个接收者，方法名，还有一些参数或者block。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>connection.downloadMP3("jitterbug")&nbsp;{&nbsp;|p|&nbsp;showProgress(p)&nbsp;}
+</PRE></TD></TR></TBODY></TABLE>
+<P>在这个例子里，connection是接收者，downloadMP3是方法名，"jitterbug"是一个参数，{&nbsp;|p|&nbsp;showProgress(p)&nbsp;}是传递给这个方法的块。</P>
+<P>对于类或者模块方法来说，接收者是类或模块名：</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>File.size("testfile")
+Math.sin(Math::PI/4)
+</PRE></TD></TR></TBODY></TABLE>
+<P>如果你省略了接收者，那么默认为self是接收者，即当前对象：</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>self.id</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>537794160</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>id</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>537794160</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>self.type</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>Object</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>type</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>Object</CODE> </TD></TR></TBODY></TABLE>
+<P>这种机制也是Ruby实现private方法的体现，private方法不能用一个接收者来直接调用，只能在当前对象中使用。</P>
+<P>&nbsp;方法名后面是可选的参数，如果不会出现歧义的话，调用方法时参数可以不加括号括起来<I>[Ruby文档有时候也叫做这样的方法是命令（commands）]</I>，然而，除非特别简单的方法，否则还是加上括号的好，要不可能容易出错，比如，你的方法嵌套在另一个方法调用之中。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>a&nbsp;=&nbsp;obj.hash&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Same&nbsp;as
+a&nbsp;=&nbsp;obj.hash()&nbsp;&nbsp;#&nbsp;this.
+
+
+
+obj.someMethod&nbsp;"Arg1",&nbsp;arg2,&nbsp;arg3&nbsp;&nbsp;&nbsp;#&nbsp;Same&nbsp;thing&nbsp;as     
+obj.someMethod("Arg1",&nbsp;arg2,&nbsp;arg3)&nbsp;&nbsp;#&nbsp;with&nbsp;parentheses.
+</PRE></TD></TR></TBODY></TABLE>
+<H3><A name=UC>在方法调用时使用数组</A></H3>
+<P>前面我们已经说过了，在一个方法的参数前面可以加一个星号，这样所有后面的参数都被放到了一个数组中，反过来，Ruby也支持调用的时候指定一个数组代替若干个参数。</P>
+<P>在调用方法的时候，你可以使用一个数组作为一个参数，它的每个元素都将作为一个单独的参数使用。使用的时候，需要在这个作为参数的数组前面加一个星号。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>def&nbsp;five(a,&nbsp;b,&nbsp;c,&nbsp;d,&nbsp;e)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;"I&nbsp;was&nbsp;passed&nbsp;#{a}&nbsp;#{b}&nbsp;#{c}&nbsp;#{d}&nbsp;#{e}"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE></CODE></TD></TR>
+<TR>
+<TD vAlign=top><CODE>five(1,&nbsp;2,&nbsp;3,&nbsp;4,&nbsp;5&nbsp;)</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>"I&nbsp;was&nbsp;passed&nbsp;1&nbsp;2&nbsp;3&nbsp;4&nbsp;5"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>five(1,&nbsp;2,&nbsp;3,&nbsp;*['a',&nbsp;'b'])</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>"I&nbsp;was&nbsp;passed&nbsp;1&nbsp;2&nbsp;3&nbsp;a&nbsp;b"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>five(*(10..14).to_a)</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>"I&nbsp;was&nbsp;passed&nbsp;10&nbsp;11&nbsp;12&nbsp;13&nbsp;14"</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<H3><A name=UD>更加动态的block</A></H3>
+<P>我们已经看过了如何把一个方法和一个块联系起来。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>listBones("aardvark")&nbsp;do&nbsp;|aBone|
+&nbsp;&nbsp;#&nbsp;...
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P>通常，这已经足够好了，我们可以给一个方法提供一个机构良好的块，而不必再方法中使用很多的if或者while等语句。</P>
+<P>&nbsp;但是有些时候，你需要更灵活一些，比如，下面的例子，如果选择times，即输入t，将会打印2，4，6，8等等：</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>print&nbsp;"(t)imes&nbsp;or&nbsp;(p)lus:&nbsp;"
+times&nbsp;=&nbsp;gets
+print&nbsp;"number:&nbsp;"
+number&nbsp;=&nbsp;gets.to_i
+
+
+
+if&nbsp;times&nbsp;=~&nbsp;/^t/      
+&nbsp;&nbsp;puts((1..10).collect&nbsp;{&nbsp;|n|&nbsp;n*number&nbsp;}.join(",&nbsp;"))      
+else      
+&nbsp;&nbsp;puts((1..10).collect&nbsp;{&nbsp;|n|&nbsp;n+number&nbsp;}.join(",&nbsp;"))      
+end
+</PRE></TD></TR></TBODY></TABLE><EM>结果</EM><EM>:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>(t)imes&nbsp;or&nbsp;(p)lus:&nbsp;t
+number:&nbsp;2
+2,&nbsp;4,&nbsp;6,&nbsp;8,&nbsp;10,&nbsp;12,&nbsp;14,&nbsp;16,&nbsp;18,&nbsp;20
+</PRE></TD></TR></TBODY></TABLE>
+<P>虽然这样可以工作，但是不是很完美，我们可以把负责计算的部分抽出来组成一个block。</P>
+<P>&nbsp;</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>print&nbsp;"(t)imes&nbsp;or&nbsp;(p)lus:&nbsp;"
+times&nbsp;=&nbsp;gets
+print&nbsp;"number:&nbsp;"
+number&nbsp;=&nbsp;gets.to_i
+
+
+if&nbsp;times&nbsp;=~&nbsp;/^t/      
+&nbsp;&nbsp;calc&nbsp;=&nbsp;proc&nbsp;{&nbsp;|n|&nbsp;n*number&nbsp;}      
+else      
+&nbsp;&nbsp;calc&nbsp;=&nbsp;proc&nbsp;{&nbsp;|n|&nbsp;n+number&nbsp;}      
+end      
+puts((1..10).collect(&amp;calc).join(",&nbsp;"))
+</PRE></TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>(t)imes&nbsp;or&nbsp;(p)lus:&nbsp;t
+number:&nbsp;2
+2,&nbsp;4,&nbsp;6,&nbsp;8,&nbsp;10,&nbsp;12,&nbsp;14,&nbsp;16,&nbsp;18,&nbsp;20
+</PRE></TD></TR></TBODY></TABLE>
+<P>如果最后一个方法的最后一个参数以"&amp;"开头，Ruby把它最为一个Proc来处理，传到相应的block。</P>这种技术也有另外的用处，比如我们使用迭代器处理一些数据，把每个步骤地结果存储到一个数组中，我们下面将用到前面的Fibonacci 例子来产生一组数据： 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>a&nbsp;=&nbsp;[]</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>fibUpTo(20)&nbsp;{&nbsp;|val|&nbsp;a&nbsp;&lt;&lt;&nbsp;val&nbsp;}</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>nil</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>a.inspect</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>"[1,&nbsp;1,&nbsp;2,&nbsp;3,&nbsp;5,&nbsp;8,&nbsp;13]"</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P>尽管这样已经可以工作了，但是这显示出来的意图不像我们想象的那么明晰，所以，我们取而代之的是另外定义了一个方法into，它将返回一个完成填充array功能的block。（注意返回的block是一个闭包<I>closure</I> ，即使into返回了，它还指向参数<I>anArray</I>）</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>def&nbsp;into(anArray)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;return&nbsp;proc&nbsp;{&nbsp;|val|&nbsp;anArray&nbsp;&lt;&lt;&nbsp;val&nbsp;}</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE></CODE></TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>fibUpTo&nbsp;20,&nbsp;&amp;into(a&nbsp;=&nbsp;[])</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>a.inspect</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>"[1,&nbsp;1,&nbsp;2,&nbsp;3,&nbsp;5,&nbsp;8,&nbsp;13]"</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<H3><A name=UE>哈希结构作为参数</A></H3>
+<P>一些语言支持基于键的参数，即hash结构的参数。不按照参数的个数和位置来调用一个方法，而是用一个hash结构的键－值结构来设定参数，而不是按位置。Ruby1。6不支持这种特性，1。8支持。<I>[本书写的是基于1.6，而目前最新的Ruby是1.8]</I></P>同时，人们可以用hash结构来实现这一功能，比如，我们要为我们的SongList实现一个按名字查找的功能。 
+<P>　</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>class&nbsp;SongList
+&nbsp;&nbsp;def&nbsp;createSearch(name,&nbsp;params)
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;...
+&nbsp;&nbsp;end
+end
+aList.createSearch("short&nbsp;jazz&nbsp;songs",&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'genre'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&gt;&nbsp;"jazz",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'durationLessThan'&nbsp;=&gt;&nbsp;270
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;)
+</PRE></TD></TR></TBODY></TABLE>
+<P>第一个参数是查找的名称，第二个参数是一个hash结构，包含了各种查找的参数。使用hash结构，我们可以是有一些键－值特性：音乐流派是jazz，时长小于4.5分钟。但是这段代码不是太好，而且大括号中的内容很容易被误认为块。所以，Ruby提供了一个快捷方式，你可以在方法的参数中指定键=&gt;值的结构，像普通的参数那样。这样的结构都将作为一个hash结构传给方法，而不需要大扩号了。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>aList.createSearch("short&nbsp;jazz&nbsp;songs",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'genre'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&gt;&nbsp;"jazz",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'durationLessThan'&nbsp;=&gt;&nbsp;270
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>
+<HR>
+
+<TABLE cellSpacing=0 cellPadding=10 bgColor=#a03030 border=0>
+<TBODY>
+<TR>
+<TD align=left width="33%"><A class=subheader href="102.html" >上一章</A> <A class=subheader href="102.html" >&lt;</A> </TD>
+<TD vAlign=center align=middle width="33%"><A class=subheader href="95.html" >目录 ^</A> <BR></TD>
+<TD align=right width="33%"><A class=subheader href="104.html" >下一章</A> <A class=subheader href="104.html" >&gt;</A> <BR></TD></TR></TBODY></TABLE>
+<P></P><FONT size=-1>Extracted from the book "Programming Ruby - The Pragmatic Programmer's Guide"</FONT> <BR><FONT size=-3>Copyright &copy; 2001 by Addison Wesley Longman, Inc. This material may be distributed only subject to the terms and conditions set forth in the Open Publication License, v1.0 or later (the latest version is presently available at <A href="http://www.opencontent.org/openpub/" >http://www.opencontent.org/openpub/</A>)). 
+<P></P>Distribution of substantively modified versions of this document is prohibited without the explicit permission of the copyright holder. 
+<P></P>Distribution of the work or derivative of the work in any standard (paper) book form is prohibited unless prior permission is obtained from the copyright holder. <BR></FONT></BODY>

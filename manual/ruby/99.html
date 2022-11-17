@@ -1,0 +1,589 @@
+<html><HEAD><TITLE>Programming Ruby: The Pragmatic Programmer's Guide</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=gb2312"><LINK media=screen href="99_files/pr_style[1].css"  type=text/css rel=StyleSheet></head>
+<BODY bgColor=white>
+<TABLE cellSpacing=0 cellPadding=3 width="100%" bgColor=#c09090 border=0>
+<TBODY>
+<TR>
+<TD colSpan=3>
+<TABLE cellPadding=20 width="100%" bgColor=#701a1a>
+<TBODY>
+<TR>
+<TD width="100%">
+<H1 class=header>Programming Ruby</H1>
+<H3 class=subheader>The Pragmatic Programmer's Guide</H3></TD></TR></TBODY></TABLE></TD></TR>
+<TR>
+<TD align=left width="33%"><A class=subheader href="98.html" >前一章&lt;</A> </TD>
+<TD vAlign=center align=middle width="33%"><A class=subheader href="95.html" >目录 ^</A> <BR></TD>
+<TD align=right width="33%"><A class=subheader href="100.html" >下一章&gt;</A> <BR></TD></TR></TBODY></TABLE><!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<H1>Ruby.new</H1>
+<HR>
+<BR>
+<P></P>当我们开始要写这本书的时候，有一个伟大重要的计划，因为我们那时候还很年轻。我们决定从最高到低层次来记录ruby语言，从类和对象开始，然后以详细的核心语法结束。那时候，这看来是个不错的选择，几乎Ruby中很多东西都是对象，感觉也也应该先说说对象。 
+<P></P>我们是这么想的。 
+<P>但是，那样来描述一门语言显得比较困难：如果我们不曾涉及到string，if语句，赋值语句，或其他详细的东西，很难写一个类的例子。贯穿于我们从高到低的计划，我们不得不穿插一些低层次的细节来使得例子能被读者看懂。 </P>
+<P></P>所以，我们开始了另一个计划，虽然我们仍然从对象开始，但是在这之前，先用一章来描述ruby比较普通的特点，这都会在将来的例子里出现。就让我们从一小段指南开始，然后再进入剩余的部分。 
+<H2><A name=S1>Ruby 是面向对象的语言</A></H2>
+<P>重申一遍的是，ruby是纯的面向对象的语言，你操作的一切都是对象，并且他们产生的结果也是对象。尽管很多其他语言也说自己是面向对象的，但是他们总是用不同的解释来阐述什么是面向对象，用不同的术语描述他们的使用的观念。</P>
+<P>所以，在进一步深入到详细内容之前，先来简要看看我们要用到的术语和符号。</P>
+<P></P>
+<P>当你编写面向对象的代码时，总会将现实世界中的事物模型化到你的代码之中，在建模的过程中，你会发现事物能分成不同的对象（类）在代码中实现，比如在自动点唱机（jukebox）中，歌曲就是这样的例子。在ruby里，我们用<EM>class</EM>来表示一个对象类。一个类是状态（比如歌曲名称等）和方法（比如播放，停止）等地组合。<BR><BR>当你写完了类，就可以为每个类建立若干个实例，比如对于jukebox来说，它包含一个类song，我们可以建立诸如``Ruby Tuesday,'' ``Enveloped in Python,'' ``String of Pearls,'' ``Small talk,''等实例。对象这个词经常和类的实例交换使用，一般的时候我们还是乐意叫它对象。</P>
+<P>在 Ruby中，要建立这些对象，可以调用类的构造函数。这个函数是类中的特殊的函数标准名称是<CODE>new</CODE>. </P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>song1&nbsp;=&nbsp;Song.new("Ruby&nbsp;Tuesday")
+song2&nbsp;=&nbsp;Song.new("Enveloped&nbsp;in&nbsp;Python")
+#&nbsp;and&nbsp;so&nbsp;on
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>
+<P>这两个实例都来源于一个类，但他们有不同的特征。首先，每个对象都有一个唯一的对象标识符（<EM>object identifier</EM>）也就是对象id。第二，你可以定义实例变量，每个实例的实例变量都是不同的。实例变量保存着实例的不同状态。上面的例子中，两个实例是不同的因为他们有着不同的歌曲名称。</P>
+<P>在每一个类里面，还可以定义实例方法（<EM>instance methods</EM>），每个方法都是都是一块代码的集合，根据访问限制的不同，可以在内部或者外部访问这些方法。这些方法可以访问对象的实例变量，也就是对象的状态。</P>
+<P></P>要想调用一个方法，可以向这个对象发送一个消息。这个消息包括方法名和一些参数。[<EM>这种用发消息的方式调用方法来自smalltalk</EM>]。当一个对象收到消息，它会检查自己所属的类是否有对应的方法，如果有，那么就执行这个方法，如果没有，下面会讲到该会如何。 
+<P></P>方法和消息的关系听起来可能有些复杂，但是实际上这样很自然。我们先来看看一些方法调用(记住}}在这里表示的是对应的表达式返回的结果)： 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>"gin&nbsp;joint".length</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>9</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>"Rick".index("c")</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>2</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>-1942.abs</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>1942</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>sam.play(aSong)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"duh&nbsp;dum,&nbsp;da&nbsp;dum&nbsp;de&nbsp;dum&nbsp;..."</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>上面的例子中，点（.）前面的是消息的接收者，点后面的是要调用的方法名。第一个例子中，调用一个字符串的方法，得到它的长度，第二个得到一个字符在字符串中的位置，第三个取得了一个数的绝对值，第四个调用sam对象的play方法。 
+<P></P>It's worth noting here a major difference between Ruby and most other languages. 在java里，要想得到一个数的绝对值，要调用额外的方法，并且把那个数字传过去，比如这样： 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>number&nbsp;=&nbsp;Math.abs(number)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Java&nbsp;code
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>在Ruby中, 得到一个数的绝对值的功能在数字对象里是内建的，所有细节都在内部，我们只需要调用就行了。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>number&nbsp;=&nbsp;number.abs
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>同样，对其他ruby中的对象来说也是这样的。比如在c语言中要写 <CODE>strlen(name)</CODE>，在ruby中，只要<CODE>name.length</CODE> 就行了。这也是为什么我们说ruby是一个纯的oo语言。 
+<H2><A name=S2>Ruby</A>基础</H2>
+<P></P>一个人在学习一门新的语言的时候，都不大愿意去看长篇大论的繁琐的语法，所以，这一节我们打算涉及到一些显著的特点，如果你打算写ruby程序的话，这些东西你都应该知道。在第18章，我们将会更深入的解释类和对象。 
+<P></P>
+<P>让我们从一个简单的程序开始。这里有一个方法，它返回一个string类型的值，简单的把一个字符串加到用户名后面。然后调用这个函数2次。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>def&nbsp;sayGoodnight(name)
+&nbsp;&nbsp;result&nbsp;=&nbsp;"Goodnight,&nbsp;"&nbsp;+&nbsp;name
+&nbsp;&nbsp;return&nbsp;result
+end
+<P></P>
+#&nbsp;Time&nbsp;for&nbsp;bed...
+puts&nbsp;sayGoodnight("John-Boy")
+puts&nbsp;sayGoodnight("Mary-Ellen")
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>首先，从大体上我们看到，ruby的语法还是比较简单的，首先，你不必每行都写个分号，Ruby注释以＃开头，直到行尾。 Code layout is pretty much up to you; indentation is not significant. 
+<P></P>Methods定义以关键字def开始，接着是方法名(这里是sayGoodnight)和用两个小括号括起来的方法参数，ruby不需要用{ }来界定程序主体，只需要关键字end就行了。这个程序也相当简单，第一行把``Goodnight, ''加上参数name，并把它赋给了局部变量result，第二行把结果返回给调用者。注意我们不需要定义变量result，当给它赋值的时候，系统会自动创建的。<BR><BR>最后我们调用了2次这个方法，并把结果传给puts函数，这个函数简单的再新行上打印传给它的参数而已，最后结果像这样： 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>Goodnight,&nbsp;John-Boy
+Goodnight,&nbsp;Mary-Ellen
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>其实 ``puts sayGoodnight("John-Boy")'' 包括了2个函数调用，一个调用<CODE>sayGoodnight</CODE>，另一个调用<CODE>puts</CODE>，但是为什么puts调用没有用括号呢？实际上，下面的调用都是等价的： 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>puts&nbsp;sayGoodnight&nbsp;"John-Boy"
+puts&nbsp;sayGoodnight("John-Boy")
+puts(sayGoodnight&nbsp;"John-Boy")
+puts(sayGoodnight("John-Boy"))
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>但是事实上，这样很难看清楚哪个参数是给哪个方法的，所以还是建议在方法后面加上括号，除非是非常简单的场合。 
+<P></P>
+<P>这个方法还展示了string对象，有很多种办法可以创建string对象，但最普通的要算用string literals了：单引号或双引号包起来的一组字符。它们的区别是ruby构建这两种字符串时要做的操作。对单引号引起来的字符串来说，ruby做的工作会很少，单引号引起来得部分就是它的值。如果是双引号引起来得，则要做多一些工作了。首先，它检查是否包含反斜线，也就是转义符，然后用适当的二进制值代替，最常见的就是"\n"了，它将会被换行替换。</P>
+<P>比如： </P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>puts&nbsp;"And&nbsp;Goodnight,\nGrandma"
+</PRE></TD></TR></TBODY></TABLE>
+<P>&nbsp;</P>
+<P><EM>产生结果如下:</EM> </P>
+<P>&nbsp;</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>And&nbsp;Goodnight,
+Grandma
+</PRE></TD></TR></TBODY></TABLE>
+<P>处理双引号括起来的字符串的时候如果做的第二件事情就是表达式处理（expression interpolation）。#{ expression }将被expression的值代替，例如，下面的方法和刚才的例子是一样的结果：</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>def&nbsp;sayGoodnight(name)
+&nbsp;&nbsp;result&nbsp;=&nbsp;"Goodnight,&nbsp;#{name}"
+&nbsp;&nbsp;return&nbsp;result
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>当ruby构造这个字符串时，先检查name的值，然后用这个值替换到字符串里面去。表达式要放到 <CODE>#{...}</CODE>结构里面去。As a shortcut, you don't need to supply the braces when the expression is simply a global, instance, or class variable. For more information on strings, as well as on the other Ruby standard types, see Chapter 5, which begins on page 47. 
+<P></P>最后，我们还可以把刚才的函数简化成这样的。一个ruby函数返回的结果就是最后一行的值，所以这个函数也可以写成如下： 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>def&nbsp;sayGoodnight(name)
+&nbsp;&nbsp;  "Goodnight,&nbsp;#{name}"
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>We promised that this section would be brief. We've got just one more topic to cover: Ruby names. For brevity, we'll be using some terms (such as class variable) that we aren't going to define here. However, by talking about the rules now, you'll be ahead of the game when we actually come to discuss instance variables and the like later. 
+<P></P>Ruby uses a convention to help it distinguish the usage of a name: the first characters of a name indicate how the name is used. Local variables, method parameters, and method names should all start with a lowercase letter or with an underscore. Global variables are prefixed with a dollar sign ($), while instance variables begin with an ``at'' sign (@). Class variables start with two ``at'' signs (@@). Finally, class names, module names, and constants should start with an uppercase letter. Samples of different names are given in Table 2.1 on page 10. 
+<P></P>Following this initial character, a name can be any combination of letters, digits, and underscores (with the proviso that the character following an @ sign may not be a digit). 
+<P></P>
+<TABLE width=500 bgColor=#ffe0e0 border=2>
+<TBODY>
+<TR>
+<TD><B>Example variable and class names</B> 
+<CENTER>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<TBODY>
+<TR bgColor=#ff9999>
+<TD vAlign=top colSpan=4><B>Variables</B> </TD>
+<TD vAlign=top><B>Constants and</B> </TD></TR>
+<TR bgColor=#ff9999>
+<TD vAlign=top><B>Local</B> </TD>
+<TD vAlign=top><B>Global</B> </TD>
+<TD vAlign=top><B>Instance</B> </TD>
+<TD vAlign=top><B>Class</B> </TD>
+<TD vAlign=top><B>Class Names</B> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>name</CODE> </TD>
+<TD vAlign=top><CODE>$debug</CODE> </TD>
+<TD vAlign=top><CODE>@name</CODE> </TD>
+<TD vAlign=top><CODE>@@total</CODE> </TD>
+<TD vAlign=top><CODE>PI</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>fishAndChips</CODE> </TD>
+<TD vAlign=top><CODE>$CUSTOMER</CODE> </TD>
+<TD vAlign=top><CODE>@point_1</CODE> </TD>
+<TD vAlign=top><CODE>@@symtab</CODE> </TD>
+<TD vAlign=top><CODE>FeetPerMile</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>x_axis</CODE> </TD>
+<TD vAlign=top><CODE>$_</CODE> </TD>
+<TD vAlign=top><CODE>@X</CODE> </TD>
+<TD vAlign=top><CODE>@@N</CODE> </TD>
+<TD vAlign=top><CODE>String</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>thx1138</CODE> </TD>
+<TD vAlign=top><CODE>$plan9</CODE> </TD>
+<TD vAlign=top><CODE>@_</CODE> </TD>
+<TD vAlign=top><CODE>@@x_pos</CODE> </TD>
+<TD vAlign=top><CODE>MyClass</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>_26</CODE> </TD>
+<TD vAlign=top><CODE>$Global</CODE> </TD>
+<TD vAlign=top><CODE>@plan9</CODE> </TD>
+<TD vAlign=top><CODE>@@SINGLE</CODE> </TD>
+<TD vAlign=top><CODE>Jazz_Song</CODE> </TD></TR>
+<TR>
+<TD bgColor=#ff9999 colSpan=9 height=2><IMG height=1 src="120_files/dot[1].gif"  width=1></TD></TR></TBODY></TABLE>
+<P></P></CENTER></TD></TR></TBODY></TABLE>
+<P></P>
+<H2><A name=S3>数组和哈希表</A></H2>
+<P></P>ruby的数组和哈希是有索引的集合，它们存放着各种对象，并且用一个key来访问。对数组来说这个key是一个整数，而哈希则支持任何对象作为key。两者都可以动态增长，如果他们需要的话。访问数组是一件很方便的事情，但是访问哈希就要复杂一些了。<BR>最简单的创建和初始化一个数组的方法是用一对中括号包含一组值，这组值用逗号分割。然后用一个索引可以访问单独的任何一个元素。如下：<BR>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>a&nbsp;=&nbsp;[&nbsp;1,&nbsp;'cat',&nbsp;3.14&nbsp;]&nbsp;&nbsp;&nbsp;#&nbsp;array&nbsp;with&nbsp;three&nbsp;elements</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>#&nbsp;access&nbsp;the&nbsp;first&nbsp;element</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>a[0]</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>1</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>#&nbsp;set&nbsp;the&nbsp;third&nbsp;element</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>a[2]&nbsp;=&nbsp;nil</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>#&nbsp;dump&nbsp;out&nbsp;the&nbsp;array</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>a</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>[1,&nbsp;"cat",&nbsp;nil]</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>也可以这样创建新的空的数组：用空元素构造或者调用Array的构造函数 <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_array.html#Array.new" ><CODE>Array.new</CODE> </A>. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>empty1&nbsp;=&nbsp;[]
+empty2&nbsp;=&nbsp;Array.new
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>当然，像第一种方法那样写很多引号和逗号可能很麻烦，但是ruby提供了一个好东西，如下面那样%w可真管用： 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>a&nbsp;=&nbsp;%w{&nbsp;ant&nbsp;bee&nbsp;cat&nbsp;dog&nbsp;elk&nbsp;}</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>a[0]</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"ant"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>a[3]</CODE> </TD>
+<TD vAlign=top>}}
+<TD>
+<TD vAlign=top><CODE>"dog"</CODE> </TD></TR></TBODY></TABLE>
+<P>哈希和数组类似，不过它不用[]来包括，而是用{}，哈希里的每条记录要两个要素来表示，一个是关键字，另一个是对应这个key的值。如：</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>instSection&nbsp;=&nbsp;{
+&nbsp;&nbsp;'cello'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&gt;&nbsp;'string',
+&nbsp;&nbsp;'clarinet'&nbsp;&nbsp;=&gt;&nbsp;'woodwind',
+&nbsp;&nbsp;'drum'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&gt;&nbsp;'percussion',
+&nbsp;&nbsp;'oboe'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&gt;&nbsp;'woodwind',
+&nbsp;&nbsp;'trumpet'&nbsp;&nbsp;&nbsp;=&gt;&nbsp;'brass',
+&nbsp;&nbsp;'violin'&nbsp;&nbsp;&nbsp;&nbsp;=&gt;&nbsp;'string'
+}
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>哈希的引用也是用[]，像数组一样，但是它的[]里面是key，可以是字符串不像数组，只能是整数比如： 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>instSection['oboe']</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"woodwind"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>instSection['cello']</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"string"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>instSection['bassoon']</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>nil</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>从上面最后一个例子看出，如果哈希里不包含一个key值，则默认会返回nil，这也是一个关键字（保留字），在条件运算中，nil跟false是一样的。如果你想改变这个默认值，则可以在创建一个哈希的时候提供这个默认值就行了，如下面的 <CODE>&nbsp;Hash.new(0)</CODE>中，0就是默认值： 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>histogram&nbsp;=&nbsp;Hash.new(0)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>histogram['key1']</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>0</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>histogram['key1']&nbsp;=&nbsp;histogram['key1']&nbsp;+&nbsp;1</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>histogram['key1']</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>1</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>数组和哈希又很多其他有用的用法，可以参看书末附录中的参考手册。 
+<H2><A name=S4>条件控制</A></H2>
+<P></P>Ruby包括通常的一些条件控制语句，比如if，then，while等。 Java, C, 和 Perl 程序员可能会被打括号{}弄得很烦乱，与此不同Ruby用关键字end来结束一块代码 ，比如： 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>if&nbsp;count&nbsp;&gt;&nbsp;10
+&nbsp;&nbsp;puts&nbsp;"Try&nbsp;again"
+elsif&nbsp;tries&nbsp;==&nbsp;3
+&nbsp;&nbsp;puts&nbsp;"You&nbsp;lose"
+else
+&nbsp;&nbsp;puts&nbsp;"Enter&nbsp;a&nbsp;number"
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>同样，while语句看起来都是这样的。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>while&nbsp;weight&nbsp;&lt;&nbsp;100&nbsp;and&nbsp;numPallets&nbsp;&lt;=&nbsp;30
+&nbsp;&nbsp;pallet&nbsp;=&nbsp;nextPallet()
+&nbsp;&nbsp;weight&nbsp;+=&nbsp;pallet.weight
+&nbsp;&nbsp;numPallets&nbsp;+=&nbsp;1
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P><EM>statement modifiers</EM> 是ruby语法中的一点特别之处，如果你的if或while条件下的语句特别简单，可以把他们写在一行上：先写表达式，然后跟着写if或者while语句，比如下面的例子： 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>if&nbsp;radiation&nbsp;&gt;&nbsp;3000
+&nbsp;&nbsp;puts&nbsp;"Danger,&nbsp;Will&nbsp;Robinson"
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>可以改写成如下： 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>puts&nbsp;"Danger,&nbsp;Will&nbsp;Robinson"&nbsp;if&nbsp;radiation&nbsp;&gt;&nbsp;3000
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>同样，<CODE>while循环如下：</CODE> 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>while&nbsp;square&nbsp;&lt;&nbsp;1000
+&nbsp;&nbsp;&nbsp;square&nbsp;=&nbsp;square*square
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>
+<P>更简洁的形式：</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>square&nbsp;=&nbsp;square*square&nbsp;&nbsp;while&nbsp;square&nbsp;&lt;&nbsp;1000
+</PRE></TD></TR></TBODY></TABLE>
+<P>statement modifiers对perl程序员来说应该比较熟悉。 </P>
+<H2><A name=S5>正则表达式Regular Expressions</A></H2>
+<P></P>大多数语言都有字符串，整型，浮点型，数组等数据类型，所以ruby中的大多数内建类型对大家来说一定不算陌生。所谓的脚本语言比如perl，python，awk中都支持正则表达式，<BR>However, until Ruby came along, regular expression support was generally built into only the so-called scripting languages, such as Perl, Python, and awk. This is a shame: regular expressions, although cryptic, are a powerful tool for working with text. 
+<P></P>本书整个都包括正则表达式的内容，所以这里没必要用一节涵盖所有内容。所以，我们只会涉及到几个正则表达式的例子。 
+<P></P>正则表达式就是在一个字符串中查找一个匹配的模式，在Ruby中，要建立一个正在表达式，只要把要匹配的模式放到两个斜线中就行了(/<EM>pattern</EM>/)，而且，在Ruby中，正则表达式也是对象，可以像对象一样被操作。 
+<P></P>例如，你写了一个模式，匹配一个字符串中的Perl或者Python，模式如下： 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>/Perl|Python/
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>The forward slashes delimit the pattern, which consists of the two things we're matching, separated by a pipe character (``<CODE>|</CODE>''). You can use parentheses within patterns, just as you can in arithmetic expressions, so you could also have written this pattern as 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>/P(erl|ython)/
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>在模式里，还可以指定重复的字符，比如 <CODE>/ab+c/</CODE>匹配一个字符串包括一个a，一个或多个b，然后跟一个c。把加号改成星号，即 <CODE>/ab*c/</CODE>将匹配一个a，0个或多个b，然后是一个c。 
+<P></P>在一个模式中，也可以匹配一类字符，比如"\s"匹配一个空格，"\d"匹配数字，"\w"匹配在典型单词出现的字符，"."匹配任何字符。 
+<P>我们可以把这些规则写道一块，生成一些比较有用的表达式。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>/\d\d:\d\d:\d\d/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;a&nbsp;time&nbsp;such&nbsp;as&nbsp;12:34:56
+/Perl.*Python/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Perl,&nbsp;zero&nbsp;or&nbsp;more&nbsp;other&nbsp;chars,&nbsp;then&nbsp;Python
+/Perl\s+Python/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Perl,&nbsp;one&nbsp;or&nbsp;more&nbsp;spaces,&nbsp;then&nbsp;Python
+/Ruby&nbsp;(Perl|Python)/&nbsp;#&nbsp;Ruby,&nbsp;a&nbsp;space,&nbsp;and&nbsp;either&nbsp;Perl&nbsp;or&nbsp;Python
+</PRE></TD></TR></TBODY></TABLE>
+<P>创建了一个模式，当然要使用它。匹配操作符"<CODE>=~</CODE>"可以用来在一个字符串中匹配一个模式，如果在字符串中找到匹配的模式，<CODE>=~</CODE> 返回它的开始位置，否则返回nil。所以，你也可以将正则表达式放到if或者while语句中作为判断条件。 比如，下面代码判断到如果一个字符串包括指定的模式（包含Perl或者Python），则输出一条消息。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>if&nbsp;line&nbsp;=~&nbsp;/Perl|Python/
+&nbsp;&nbsp;puts&nbsp;"Scripting&nbsp;language&nbsp;mentioned:&nbsp;#{line}"
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>一个字符串中被匹配到的部分也可以用ruby自带的替换函数替换成不同的值。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>line.sub(/Perl/,&nbsp;'Ruby')&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;replace&nbsp;first&nbsp;'Perl'&nbsp;with&nbsp;'Ruby'
+line.gsub(/Python/,&nbsp;'Ruby')&nbsp;#&nbsp;replace&nbsp;every&nbsp;'Python'&nbsp;with&nbsp;'Ruby'
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>在本书以后 章节中，还有很多关于正则表达式的东西要讲述。 
+<H2><A name=S6>块和迭代</A></H2>
+<P></P>这节简要介绍ruby特别的一点长处。 一大块代码，可以像方法一样被调用，好像是方法的参数一样。你可以用块来实现方法回调（比java的内类要简单多了），给一段代码传递另一段代码（比c的方法指针要灵活），并且可以实现迭代。块用{}或者do…end包含起来： 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>{&nbsp;puts&nbsp;"Hello"&nbsp;}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;this&nbsp;is&nbsp;a&nbsp;block
+<P></P>
+do&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#
+&nbsp;&nbsp;club.enroll(person)&nbsp;&nbsp;#&nbsp;and&nbsp;so&nbsp;is&nbsp;this
+&nbsp;&nbsp;person.socialize&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#
+end&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>当你完成了一个块，下一步可以用一个方法来调用这个块，这个方法可以用yield关键字来调用一次或者多次块。如下面这个例子，我们定义了一个方法，调用了两次yield，然后调用这个方法，并且在同一行放了一个块： 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>def&nbsp;callBlock
+&nbsp;&nbsp;yield
+&nbsp;&nbsp;yield
+end
+<P></P>
+callBlock&nbsp;{&nbsp;puts&nbsp;"In&nbsp;the&nbsp;block"&nbsp;}
+</PRE></TD></TR></TBODY></TABLE><EM>结果如下:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>In&nbsp;the&nbsp;block
+In&nbsp;the&nbsp;block
+</PRE></TD></TR></TBODY></TABLE>
+<P>可以看到代买(<CODE>puts "In the block"</CODE>)执行了两次，每次yield调用都会执行一次。</P>
+<P>而且，我们还可以给yield传参数，这个参数也会被传到块中。在块中，列出参数的名字，用竖线 "|" 格开</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>  def callBlock
+    yield , 
+  end
+<P></P>
+  callBlock { |, | ... }
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>
+<P>块代码贯穿于Ruby库中迭代的实现之中：某种集合返回下一个值得方法，比如数组</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>a&nbsp;=&nbsp;%w(&nbsp;ant&nbsp;bee&nbsp;cat&nbsp;dog&nbsp;elk&nbsp;)&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;create&nbsp;an&nbsp;array
+a.each&nbsp;{&nbsp;|animal|&nbsp;puts&nbsp;animal&nbsp;}&nbsp;&nbsp;#&nbsp;iterate&nbsp;over&nbsp;the&nbsp;contents
+</PRE></TD></TR></TBODY></TABLE><EM>产生:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>ant
+bee
+cat
+dog
+elk
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>让我们看看上面的例子是如何来实现数组的<CODE>each</CODE>迭代的，each迭代循环整个数组，从第一个到最后一个元素，对每一个元素，调用yield。伪代码表示如下： 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>#&nbsp;within&nbsp;class&nbsp;Array...
+def&nbsp;each
+&nbsp;&nbsp;for&nbsp;each&nbsp;element
+&nbsp;&nbsp;&nbsp;&nbsp;yield(element)
+&nbsp;&nbsp;end
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>你可以循环迭代数组中的每个元素，并且提供一个块来处理。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>[&nbsp;'cat',&nbsp;'dog',&nbsp;'horse'&nbsp;].each&nbsp;do&nbsp;|animal|
+&nbsp;&nbsp;print&nbsp;animal,&nbsp;"&nbsp;--&nbsp;"
+end
+</PRE></TD></TR></TBODY></TABLE><EM>结果:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>cat&nbsp;--&nbsp;dog&nbsp;--&nbsp;horse&nbsp;--
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>
+<P>ruby也提供了类似c和java的其他一些循环结构，而且非常容易使用，每个方法可以运行0次和多次提供的块代码。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>5.times&nbsp;{&nbsp;&nbsp;print&nbsp;"*"&nbsp;}
+3.upto(6)&nbsp;{|i|&nbsp;&nbsp;print&nbsp;i&nbsp;}
+('a'..'e').each&nbsp;{|char|&nbsp;print&nbsp;char&nbsp;}
+</PRE></TD></TR></TBODY></TABLE><EM>产生:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>*****3456abcde
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>这里，我们让数字5调用块5次，然后从3到6调用另一个块，每次给块传递下一个循环值，最后，在从a到e的范围里用each方法循环。 
+<H2><A name=S7>读写操作</A></H2>
+<P></P>
+<P>Ruby自带了丰富的I/O操作库，在本书的例子中，我们只会用到很少的一些方法。目前我们已经接触到了2个输出方法，puts和print。puts依次输出所有的参数，每个参数之后都会加一个换行；print也类似， 不过不会在每个参数后面加入新行，比如（译者测试的例子，原书无）： <BR></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD>irb(main):011:0&gt; puts "puts 1","puts 2"<BR>puts 1<BR>puts 2<BR>=&gt; nil<BR>irb(main):012:0&gt; printf " puts %s puts %s",1,2<BR>puts 1 puts 2=&gt; nil #nil出现在此处<BR>irb(main):013:0&gt; </TD></TR></TBODY></TABLE>
+<P>这两个方法都可以输出到I/O对象，默认都输出到控制台。另一个经常用到的是printf，类似c里的，是格式化输出语句：</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>printf&nbsp;"Number:&nbsp;%5.2f,&nbsp;String:&nbsp;%s",&nbsp;1.23,&nbsp;"hello"
+</PRE></TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>Number:&nbsp;&nbsp;1.23,&nbsp;String:&nbsp;hello
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>
+<P>printf的格式如下：pringf（格式控制，输出列表）这个例子里，格式化字符串<CODE>"Number: %5.2f, String: %s"</CODE>中有两个参数，第一个是一个浮点型（%5.2f），5表示一共有5个数字，2表示小数点后边有两位；第二个表示是一个字符串。 </P>
+<P></P>读入输入字符有几种方法，按传统惯例来说最简单的是用gets。它返回你的程序标准输入的下一行。（下例为译者修改过的） 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>irb(main):016:0&gt; line=gets<BR>ruby<BR>=&gt; "ruby\n"<BR>irb(main):017:0&gt; puts line<BR>ruby<BR>=&gt; nil<BR>irb(main):018:0&gt;</PRE></TD></TR></TBODY></TABLE>
+<P></P>
+<P><CODE>不过gets也有一个副作用</CODE>：用它得到一行的时候，它还会将这个值存到一个全局变量$_里，这个变量很特殊，在很多场合，他都会作为一些方法的默认值。比如你光运行print而不带任何参数，就会输出$_的值，如果你的if或者while没有条件语句，而只有表达式，它们也会判断当前$_值的真假来做判断。这些缩写可能会使你能够写出很简练的程序。比如下面的程序从输入流接收数据，打印出所有包含"Ruby"的行。 </P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>while&nbsp;gets&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;assigns&nbsp;line&nbsp;to&nbsp;$_
+&nbsp;&nbsp;if&nbsp;/Ruby/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;matches&nbsp;against&nbsp;$_
+&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;prints&nbsp;$_
+&nbsp;&nbsp;end
+end
+</PRE>
+<P>#以下代码为译者添加</P>
+<P>irb(main):004:0&gt; line=gets <BR>hehe # 此时$_=line＝"hehe"<BR>=&gt; "hehe\n"<BR>irb(main):006:0&gt; print # print $_<BR>hehe<BR>=&gt; nil<BR>irb(main):007:0&gt; puts # 无效</P>
+<P>=&gt; nil<BR>irb(main):008:0&gt; gets # 存到$_<BR>xixi<BR>=&gt; "xixi\n"<BR>irb(main):009:0&gt; print # print $_<BR>xixi<BR>=&gt; nil<BR>irb(main):010:0&gt;</P></TD></TR></TBODY></TABLE>
+<P></P>Ruby特色的写法应该用一个迭代如下： 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>ARGF.each&nbsp;{&nbsp;|line|&nbsp;&nbsp;print&nbsp;line&nbsp;&nbsp;if&nbsp;line&nbsp;=~&nbsp;/Ruby/&nbsp;}
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>这里用到了一个预先定义好的对象ARGF，它代表了一个可以被程序使用的输入流。 
+<H2><A name=S8>Onward and Upward</A></H2>
+<P></P>到这里，我们快速的浏览了ruby的一些基本特点，我们知道了对象，方法字符串，容器，正则表达式，一些简单的条件控制，迭代等。希望这一章能帮助你很好的掌握本书的其他章节。 
+<P></P>Time to move on, and up---up to a higher level. Next, we'll be looking at classes and objects, things that are at the same time both the highest-level constructs in Ruby and the essential underpinnings of the entire language. 
+<P></P>
+<HR>
+
+<TABLE cellSpacing=0 cellPadding=10 bgColor=#a03030 border=0>
+<TBODY>
+<TR>
+<TD align=left width="33%"><A class=subheader href="98.html" >前一章&lt;</A> </TD>
+<TD vAlign=center align=middle width="33%"><A class=subheader href="95.html" >目录 ^</A> <BR></TD>
+<TD align=right width="33%"><A class=subheader href="100.html" >下一章&gt;</A> <BR></TD></TR></TBODY></TABLE>
+<P></P><FONT size=-1>Extracted from the book "Programming Ruby - The Pragmatic Programmer's Guide"</FONT> <BR><FONT size=-3>Copyright &copy; 2001 by Addison Wesley Longman, Inc. This material may be distributed only subject to the terms and conditions set forth in the Open Publication License, v1.0 or later (the latest version is presently available at <A href="http://www.opencontent.org/openpub/" >http://www.opencontent.org/openpub/</A>)). 
+<P></P>Distribution of substantively modified versions of this document is prohibited without the explicit permission of the copyright holder. 
+<P></P>Distribution of the work or derivative of the work in any standard (paper) book form is prohibited unless prior permission is obtained from the copyright holder. <BR></FONT></BODY>

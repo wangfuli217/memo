@@ -1,0 +1,668 @@
+<html>
+	<META http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<head>
+		<title>Section 1.4.&nbsp; Control Structures</title>
+		<link rel="STYLESHEET" type="text/css" href="images/style.css" >
+		<link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+	</head>
+	<body>
+		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<td>
+					<div STYLE="MARGIN-LEFT: 0.15in;">
+						<a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle"  alt="Team LiB"></a>
+					</div>
+				</td>
+				<td align="right">
+					<div STYLE="MARGIN-LEFT: 0.15in;">
+						<a href="ch01lev1sec3.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a>
+						<a href="ch01lev1sec5.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+					</div>
+				</td>
+			</tr>
+		</table><br>
+		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<td valign="top">
+					<a name="ch01lev1sec4"></a>
+					<h3 class="docSection1Title">1.4. Control Structures</h3>
+					<h3 class="docSection1Title">1.4. 控制结构</h3>
+					
+					<a name="idd1e2187"></a><a name="idd1e2193"></a>
+					<p class="docText">Statements execute sequentially: The first statement in a function is executed first, followed by the second, and so on. Of course, few programsincluding the one we'll need to write to solve our bookstore problemcan be written using only sequential execution. Instead, programming languages provide various control structures that allow for more complicated execution paths. This section will take a brief look at some of the control structures provided by C++. <a class="docLink" href="ch06.html#ch06" >Chapter 6</a> covers statements in detail.</P>
+					<p class="docText">语句总是顺序执行的：函数的第一条语句首先执行，接着是第二条，依次类推。当然，少数程序——包括我们将要编写的解决书店问题的程序——可以仅用顺序执行语句编写。事实上，程序设计语言提供了多种控制结构支持更为复杂的执行路径。本节将简要地介绍 C++ 提供的控制结构，<a class="docLink" href="ch06.html#ch06" >第六章</a>再详细介绍各种语句。</P>
+
+				<a name="ch01lev2sec5"></a>
+				<h4 class="docSection2Title">1.4.1. The <tt>while</tt> Statement</h4>
+				<h4 class="docSection2Title">1.4.1. <tt>while</tt> 语句</h4>
+				
+				<a name="ch01term46"></a>
+				<p class="docText">A <B><a class="docLink" href="ch01lev1sec8.html#gloss01_46" ><span class="docEmphStrong"><tt>while</tt></span> statement</a></b> provides for iterative execution. We could use a <tt>while</tt> to write a program to sum the numbers from <tt>1</tt> through <tt>10</tt> inclusive as follows:</P>
+				<p class="docText"><B><a class="docLink" href="ch01lev1sec8.html#gloss01_46" ><span class="docEmphStrong"><tt>while</tt></span> 语句</a></b>提供了迭代执行功能。可以用 <tt>while</tt> 语句编写一个如下所示的从 1 到 10（包括 10）的求和程序：</P>
+
+<pre>
+    #include &lt;iostream&gt;
+    int main()
+    {
+        int sum = 0, val = 1;
+        // <span class="docEmphItalicAlt">keep executing the</span> <span class="docEmphasis">while</span> <span class="docEmphItalicAlt">until</span> <span class="docEmphasis">val</span> <span class="docEmphItalicAlt">is greater than 10</span>
+        while (val &lt;= 10) {
+            sum += val;  // <span class="docEmphItalicAlt">assigns</span> <span class="docEmphasis">sum + val</span> <span class="docEmphItalicAlt">to</span> <span class="docEmphasis">sum</span>
+            ++val;       // <span class="docEmphItalicAlt">add</span> <span class="docEmphasis">1</span> <span class="docEmphItalicAlt">to</span> <span class="docEmphasis">val</span>
+        }
+        std::cout &lt;&lt; "Sum of 1 to 10 inclusive is "
+                  &lt;&lt; sum &lt;&lt; std::endl;
+        return 0;
+    }
+</pre>
+				<p class="docText">This program when compiled and executed will print:</p>
+				<p class="docText">编译并执行后，将输出：</p>
+
+<pre>
+   <span class="docEmphStrong">Sum of 1 to 10 inclusive is 55</span>
+</pre>
+				<p class="docText">As before, we begin by including the <tt>iostream</tt> header and define a <tt>main</tt> function. Inside <tt>main</tt> we define two <tt>int</tt> variables: <tt>sum</tt>, which will hold our summation, and <tt>val</tt>, which will represent each of the values from 1 through 10. We give <tt>sum</tt> an initial value of zero and start <tt>val</tt> off with the value one.</p>
+				<p class="docText">与前面一样，程序首先包含 <tt>iostream</tt> 头文件并定义 <tt>main</tt> 函数。在 <tt>main</tt> 函数中定义两个 <tt>int</tt> 型变量：<tt>sum</tt> 保存总和，<tt>val</tt> 表示从 1 到 10 之间的每一个值。我们给 <tt>sum</tt> 赋初值 0，而 <tt>val</tt> 则从 1 开始。</p>
+
+				<p class="docText">The important part is the <tt>while</tt> statement. A <tt>while</tt> has the form</p>
+				<p class="docText">重要的部分是 <tt>while</tt> 语句。<tt>while</tt> 结构有这样的形式：</p>
+
+<pre>
+   while (<span class="docEmphasis">condition</span>) <span class="docEmphasis">while_body_statement;</span>
+</pre>
+				<p class="docText">A <tt>while</tt> executes by (repeatedly) testing the <span class="docEmphasis">condition</span> and executing the associated <span class="docEmphasis">while_body_statement</span> until the <span class="docEmphasis">condition</span> is false.</p>
+				<p class="docText"><tt>while</tt> 通过测试 <span class="docEmphasis">condition</span> （条件）和执行相关 <span class="docEmphasis">while_body_statement</span> 来重复执行，直到 <span class="docEmphasis">condition</span> 为假。</p>
+
+				<a name="idd1e2392"></a><a name="idd1e2397"></a><a name="idd1e2402"></a><a name="idd1e2407"></a><a name="idd1e2412"></a><a name="idd1e2418"></a><a name="idd1e2421"></a><a name="idd1e2424"></a><a name="idd1e2427"></a><a name="idd1e2433"></a><a name="idd1e2439"></a><a name="idd1e2447"></a><a name="idd1e2455"></a><a name="idd1e2461"></a><a name="ch01term11"></a>
+				<p class="docText">A <b><a class="docLink" href="ch01lev1sec8.html#gloss01_11" >condition</a></b> is an expression that is evaluated so that its result can be tested. If the resulting value is nonzero, then the condition is true; if the value is zero then the condition is false.</p>
+				<p class="docText"><b><a class="docLink" href="ch01lev1sec8.html#gloss01_11" >条件</a></b>是一个可求值的表达式，所以可以测试其结果。如果结果值非零，那么条件为真；如果值为零，则条件为假。</p>
+
+			<p class="docText">If the <span class="docEmphasis">condition</span> is true (the expression evaluates to a value other than zero) then <span class="docEmphasis">while_body_statement</span> is executed. After executing <span class="docEmphasis">while_body_statement</span>, the <span class="docEmphasis">condition</span> is tested again. If <span class="docEmphasis">condition</span> remains true, then the <span class="docEmphasis">while_body_statement</span> is again executed. The <tt>while</tt> continues, alternatively testing the <span class="docEmphasis">condition</span> and executing <span class="docEmphasis">while_body_statement</span> until the <span class="docEmphasis">condition</span> is false.</p>
+			<p class="docText">如果 <span class="docEmphasis">condition</span> 为真（表达式求值不为零），则执行 <span class="docEmphasis">while_body_statement</span>。执行完后，再次测试 <span class="docEmphasis">condition</span> 。如果 <span class="docEmphasis">condition</span> 仍为真，则再次执行 <span class="docEmphasis">while_body_statement</span>。<tt>while</tt> 语句一直交替测试 <span class="docEmphasis">condition</span> 和执行 <span class="docEmphasis">while_body_statement</span>，直到 <span class="docEmphasis">condition</span> 为假为止。</p>
+
+			<p class="docText">In this program, the <tt>while</tt> statement is:</p>
+			<p class="docText">在这个程序中，<tt>while</tt> 语句是</p>
+
+<pre>
+    // <span class="docEmphItalicAlt">keep executing the</span> <span class="docEmphasis">while</span> <span class="docEmphItalicAlt">until</span> <span class="docEmphasis">val</span> <span class="docEmphItalicAlt">is greater than 10</span>
+    while (val &lt;= 10) {
+        sum += val; // <span class="docEmphItalicAlt">assigns</span> <span class="docEmphasis">sum + val</span> <span class="docEmphItalicAlt">to</span> <span class="docEmphasis">sum</span>
+        ++val; // <span class="docEmphItalicAlt">add</span> <span class="docEmphasis">1</span> <span class="docEmphItalicAlt">to</span> <span class="docEmphasis">val</span>
+    }
+</pre>
+			<a name="ch01term57"></a>
+			<p class="docText">The condition in the <tt>while</tt> uses the <b><a class="docLink" href="ch01lev1sec8.html#gloss01_57" >less-than-or-equal operator</a></b> (the <tt>&lt;=</tt> operator) to compare the current value of <tt>val</tt> and <tt>10</tt>. As long as <tt>val</tt> is less than or equal to 10, we execute the body of the <tt>while</tt>. In this case, the body of the <tt>while</tt> is a <span class="docEmphStrong">block</span> containing two statements:</P>
+			<p class="docText"><tt>while</tt> 语句的条件用了<b><a class="docLink" href="ch01lev1sec8.html#gloss01_57" >小于或等于操作符</a></b>（<tt>&lt;=</tt> 操作符），将 <tt>val</tt> 的当前值和 10 比较，只要 <tt>val</tt> 小于或等于 <tt>10</tt>，就执行 <tt>while</tt> 循环体。这种情况下，<tt>while</tt> 循环体是一个包含两个语句的块：</P>
+
+<pre>
+    {
+        sum += val; // <span class="docEmphItalicAlt">assigns</span> <span class="docEmphasis">sum + val</span> <span class="docEmphItalicAlt">to</span> <span class="docEmphasis">sum</span>
+        ++val; // <span class="docEmphItalicAlt">add</span> <span class="docEmphasis">1</span> <span class="docEmphItalicAlt">to</span> <span class="docEmphasis">val</span>
+    }
+</pre>
+			<a name="ch01term49"></a>
+			<p class="docText">A block is a sequence of statements enclosed by curly braces. In C++, a block may be used wherever a statement is expected. The first statement in the block uses the <b><a class="docLink" href="ch01lev1sec8.html#gloss01_49" >compound assignment operator</a></b>, (the += operator). This operator adds its right-hand operand to its left-hand operand. It has the same effect as writing an addition and an <span class="docEmphStrong">assignment</span>:</P>
+			<p class="docText">块是被花括号括起来的语句序列。C++ 中，块可用于任何可以用一条语句的地方。块中第一条语句使用了<b><a class="docLink" href="ch01lev1sec8.html#gloss01_49" >复合赋值操作符</a></b>（+= 操作符），这个操作符把它的右操作数加至左操作数，这等效于编写含一个加法和一个<span class="docEmphStrong">赋值</span>的语句：</P>
+
+<pre>
+    sum = sum + val; // <span class="docEmphItalicAlt">assign</span> <span class="docEmphasis">sum + val</span> <span class="docEmphItalicAlt">to</span> <span class="docEmphasis">sum</span>
+</pre>
+			
+			<p class="docText">Thus, the first statement adds the value of <tt>val</tt> to the current value of <tt>sum</tt> and stores the result back into <tt>sum</tt>.</p>
+			<p class="docText">因此第一条语句是把 <tt>val</tt> 的值加到 <tt>sum</tt> 的当前值，并把结果存入 <tt>sum</tt>。</p>
+
+			<p class="docText">The next statement</P>
+			<p class="docText">第二条语句</P>
+<pre>
+    ++val; // <span class="docEmphItalicAlt">add</span> <span class="docEmphasis">1</span> <span class="docEmphItalicAlt">to</span> <span class="docEmphasis">val</span>
+</pre>
+			<a name="ch01term48"></a>
+			<p class="docText">uses the <b><a class="docLink" href="ch01lev1sec8.html#gloss01_48" >prefix increment operator</a></b> (the <tt>++</tt> operator). The increment operator adds one to its operand. Writing <tt>++val</tt> is the same as writing <tt>val = val + 1</tt>.</p>
+			<p class="docText">使用了<b><a class="docLink" href="ch01lev1sec8.html#gloss01_48" >前自增操作符</a></b>（<tt>++</tt> 操作符），自增操作符就是在它的操作数上加 1，<tt>++val</tt> 和 <tt>val = val + 1</tt> 是一样的。</p>
+
+			<p class="docText">After executing the <tt>while</tt> body we again execute the condition in the <tt>while</tt>. If the (now incremented) value of <tt>val</tt> is still less than or equal to 10, then the body of the <tt>while</tt> is executed again. The loop continues, testing the condition and executing the body, until <tt>val</tt> is no longer less than or equal to 10.</p>
+			<p class="docText">执行 <tt>while</tt> 的循环体后，再次执行 <tt>while</tt> 的条件。如果 <tt>val</tt> 的值（自增后）仍小于或等于 10，那么再次执行 <tt>while</tt> 的循环体。循环继续，测试条件并执行循环体，直到 <tt>val</tt> 的值不再小于或等于 10 为止。</p>
+
+			<p class="docText">Once <tt>val</tt> is greater than 10, we fall out of the <tt>while</tt> loop and execute the statement following the <tt>while</tt>. In this case, that statement prints our output, followed by the <tt>return</tt>, which completes our <tt>main</tt> program.</p>
+			<p class="docText">一旦 <tt>val</tt> 的值大于 10，程序就跳出 <tt>while</tt> 循环并执行 <tt>while</tt> 后面的语句，此例中该语句打印输出，其后的 <tt>return</tt> 语句结束 <tt>main</tt> 程序。</p>
+			
+			<a name="ch01sb06"></a>
+			<p>
+			<table cellspacing="0" width="90%" border="1" cellpadding="5">
+				<tr>
+					<td>
+						<H2 class="docSidebarTitle">Key Concept: Indentation and Formatting of C++ Programs</H2>
+						<H2 class="docSidebarTitle">关键概念：C++ 程序的缩排和格式  </H2>
+
+						<a name="idd1e2733"></a><a name="idd1e2739"></a><a name="idd1e2742"></a><a name="idd1e2749"></a>
+						<p class="docText"><span class="docEmphStrong">C++ programs are largely free-format, meaning that the positioning of curly braces, indentation, comments, and newlines usually has no effect on the meaning of our programs. For example, the curly brace that denotes the beginning of the body of <tt>main</tt> could be on the same line as <span class="docEmphStrong"><tt>main</tt>,</span> positioned as we have done, at the beginning of the next line, or placed anywhere we'd like. The only requirement is that it be the first nonblank, noncomment character that the compiler sees after the close parenthesis that concludes <tt>main</tt>'s parameter list.</span></p>
+						<p class="docText"><span class="docEmphStrong">C++ 程序的格式非常自由，花括号、缩排、注释和换行的位置通常对程序的语义没有影响。例如，表示 <tt>main</tt> 函数体开始的花括号可以放在与 <tt>main</tt> 同一行，也可以像我们那样，放在下一行的开始，或放在你喜欢的任何地方。唯一的要求是，它是编译器所看到在 <tt>main</tt> 的参数列表的右括号之后的第一个非空格、非注释字符。</span></p>
+
+						<p class="docText"><span class="docEmphStrong">Although we are largely free to format programs as we wish, the choices we make affect the readability of our programs. We could, for example, have written <tt>main</tt> on a single, long line. Such a definition, although legal, would be hard to read.</span></p>
+						<p class="docText"><span class="docEmphStrong">虽然说我们可以很自由地编排程序的格式，但如果编排不当，会影响程序的可读性。例如，我们可以将 <tt>main</tt> 写成单独的一长行。这样的定义尽管合法，但很难阅读。</p>
+
+						<p class="docText"><span class="docEmphStrong">Endless debates occur as to the right way to format C or C++ programs. Our belief is that there is no single correct style but that there is value in consistency. We tend to put the curly braces that delimit functions on their own lines. We tend to indent compound input or output expressions so that the operators line up, as we did with the statement that wrote the output in the <tt>main</tt> function on page <a class="docLink" href="ch01lev1sec2.html#ch01lev2sec2" >6</a>. Other indentation conventions will become clear as our programs become more complex.</span></p>
+						<p class="docText"><span class="docEmphStrong">关于什么是 C 或 C++ 程序的正确格式存在无休止的争论，我们相信没有唯一正确的风格，但一致性是有价值的。我们倾向于把确定函数边界的花括号自成一行，且缩进复合的输入或输出表达式从而使操作符排列整齐，正如<a class="docLink" href="ch01lev1sec2.html#ch01lev2sec2" >第 1.2.2 节</a>的 <tt>main</tt> 函数中的输出语句那样。随着程序的复杂化，其他缩排规范也会变得清晰。</span></p>
+
+						<p class="docText"><span class="docEmphStrong">The important thing to keep in mind is that other ways to format programs are possible. When choosing a formatting style, think about how it affects readability and comprehension. Once you've chosen a style, use it consistently.</span></P>
+						<p class="docText"><span class="docEmphStrong">可能存在其他格式化程序的方式，记住这一点很重要。在选择格式化风格时，要考虑提高程序的可读性，使其更易于理解。一旦选择了某种风格，就要始终如一地使用。</span></p>
+					</td>
+				</tr>
+			</table>
+			</p><br>
+
+			<a name="ch01lev2sec6"></a>
+			<h4 class="docSection2Title">1.4.2. The <tt>for</tt> Statement</H4>
+			<h4 class="docSection2Title">1.4.2. <tt>for</tt> 语句</H4>
+			
+			<p class="docText">In our <tt>while</tt> loop, we used the variable <tt>val</tt> to control how many times we iterated through the loop. On each pass through the <tt>while</tt>, the value of <tt>val</tt> was tested and then in the body the value of <tt>val</tt> was incremented.</p>
+			<p class="docText">在 <tt>while</tt> 循环中，我们使用变量 <tt>val</tt> 来控制循环执行次数。每次执行 <tt>while</tt> 语句，都要测试 <tt>val</tt> 的值，然后在循环体中增加 <tt>val</tt> 的值。</p>
+
+<a name="ch01term18"></a>
+			<p class="docText">The use of a variable like <tt>val</tt> to control a loop happens so often that the language defines a second control structure, called a <b><a class="docLink" href="ch01lev1sec8.html#gloss01_18" ><span class="docEmphStrong"><tt>for</tt></span> statement</a></b>, that abbreviates the code that manages the loop variable. We could rewrite the program to sum the numbers from 1 through 10 using a <tt>for</tt> loop as follows:</P>
+			<p class="docText">由于需要频频使用像 <tt>val</tt> 这样的变量控制循环，因而 C++ 语言定义了第二种控制结构，称为 <b><a class="docLink" href="ch01lev1sec8.html#gloss01_18" ><span class="docEmphStrong"><tt>for</tt></span> 语句</a></b>，简化管理循环变量的代码。使用 <tt>for</tt> 循环重新编写求 1 到 10 的和的程序，如下：</P>
+
+<pre>
+    #include &lt;iostream&gt;
+    int main()
+    {
+        int sum = 0;
+        // <span class="docEmphItalicAlt">sum values from 1 up to 10 inclusive</span>
+        for (int val = 1; val &lt;= 10; ++val)
+            sum += val; // <span class="docEmphItalicAlt">equivalent to</span> <span class="docEmphasis">sum = sum + val</span>
+
+        std::cout &lt;&lt; "Sum of 1 to 10 inclusive is "
+                  &lt;&lt; sum &lt;&lt; std::endl;
+        return 0;
+    }
+</pre>
+			<p class="docText">Prior to the <tt>for</tt> loop, we define <tt>sum</tt>, which we set to zero. The variable <tt>val</tt> is used only inside the iteration and is defined as part of the <tt>for</tt> statement itself. The <tt>for</tt> statement</p>
+			<p class="docText">在 <tt>for</tt> 循环之前，我们定义 <tt>sum</tt> 并赋 0 值。用于迭代的变量 <tt>val</tt> 被定义为 <tt>for</tt> 语句自身的一部分。<tt>for</tt> 语句</p>
+
+<pre>
+    for (int val = 1; val &lt;= 10; ++val)
+        sum += val; // <span class="docEmphItalicAlt">equivalent to</span> <span class="docEmphasis">sum = sum + val</span>
+</pre>
+			
+			<a name="idd1e2879"></a><a name="idd1e2887"></a><a name="idd1e2894"></a>
+			<p class="docText">has two parts: the <tt>for</tt> header and the <tt>for</tt> body. The header controls how often the body is executed. The header itself consists of three parts: an <span class="docEmphasis">init-statement,</span> a <span class="docEmphasis">condition</span>, and an <span class="docEmphasis">expression.</span> In this case, the <span class="docEmphasis">init-statement</span></p>
+			<p class="docText">包含 <tt>for</tt> 语句头和 <tt>for</tt> 语句体两部分。<tt>for</tt> 语句头控制 <tt>for</tt> 语句体的执行次数。<tt>for</tt> 语句头由三部分组成：一个<span class="docEmphasis">初始化语句</span>，一个<span class="docEmphasis">条件</span>，一个<span class="docEmphasis">表达式</span>。在这个例子中，<span class="docEmphasis">初始化语句</span></p>
+
+<pre>
+    int val = 1;
+</pre>
+			<p class="docText">defines an <tt>int</tt> object named <tt>val</tt> and gives it an initial value of one. The <span class="docEmphasis">initstatement</span> is performed only once, on entry to the <tt>for</tt>. The <span class="docEmphasis">condition</span></p>
+			<p class="docText">定义一个名为 <tt>val</tt> 的 <tt>int</tt> 对象并给定初始值 1。初始化语句仅在进入 <tt>for</tt> 语句时执行一次。条件</p>
+
+<pre>
+    val &lt;= 10
+</pre>
+			<p class="docText">which compares the current value in <tt>val</tt> to 10, is tested each time through the loop. As long as <tt>val</tt> is less than or equal to 10, we execute the <tt>for</tt> body. Only after executing the body is the <span class="docEmphasis">expression</span> executed. In this <tt>for</tt>, the expression uses the prefix increment operator, which as we know adds one to the value of <tt>val</tt>. After executing the <span class="docEmphasis">expression</span>, the <tt>for</tt> retests the <span class="docEmphasis">condition</span>. If the new value of <tt>val</tt> is still less than or equal to <tt>10</tt>, then the <tt>for</tt> loop body is executed and <tt>val</tt> is incremented again. Execution continues until the <span class="docEmphasis">condition</span> fails.</p>
+			<p class="docText">将 <tt>val</tt> 的当前值和 10 比较，每次经过循环都要测试。只要 <tt>val</tt> 小于或等于 10，就执行 <tt>for</tt> 语句体。仅当 <tt>for</tt> 语句体执行后才执行表达式。在这个 <tt>for</tt> 循环中，表达式使用前自增操作符，<tt>val</tt> 的值加 1，执行完表达式后，<tt>for</tt> 语句重新测试条件，如果 <tt>val</tt> 的新值仍小于或等于 10，则执行 <tt>for</tt> 语句体，<tt>val</tt> 再次自增，继续执行直到条件不成立。</p>
+
+			<p class="docText">In this loop, the <tt>for</tt> body performs the summation</p>
+			<p class="docText">在这个循环中，<tt>for</tt> 语句体执行求和</p>
+<pre>
+  sum += val; // <span class="docEmphItalicAlt">equivalent to</span> <span class="docEmphasis">sum = sum + val</span>
+</pre>
+			<p class="docText">The body uses the compound assignment operator to add the current value of <tt>val</tt> to <tt>sum</tt>, storing the result back into <tt>sum</tt>.</p>
+			<p class="docText"><tt>for</tt> 语句体使用复合赋值操作符，把 <tt>val</tt> 的当前值加到 <tt>sum</tt>，并将结果保存到 <tt>sum</tt> 中。</p>
+
+			<p class="docText">To recap, the overall execution flow of this <tt>for</tt> is:</p>
+			<p class="docText">扼要重述一下，<tt>for</tt> 循环总的执行流程为：</p>
+
+			<div style="font-weight:bold">
+				<ol class="docList" type="1">
+					<li>
+					<div style="font-weight:normal">
+						<p class="docList">Create <tt>val</tt> and initialize it to <tt>1</tt>.</p>
+						<p class="docList">创建 <tt>val</tt> 并初始化为 <tt>1</tt>。</p>
+					</div>
+					</li>
+					<li>
+					<div style="font-weight:normal">
+						<p class="docList">Test whether <tt>val</tt> is less than or equal to <tt>10</tt>.</p>
+						<p class="docList">测试 <tt>val</tt> 是否小于或等于 <tt>10</tt>。</p>
+					</div>
+					</li>
+					<li>
+					<div style="font-weight:normal">
+						<p class="docList">If <tt>val</tt> is less than or equal to 10, execute the <tt>for</tt> body, which adds <tt>val</tt> to <tt>sum</tt>. If <tt>val</tt> is not less than or equal to 10, then break out of the loop and continue execution with the first statement following the <tt>for</tt> body.</P>
+						<p class="docList">如果 <tt>val</tt> 小于或等于 10，则执行 <tt>for</tt> 循环体，把 <tt>val</tt> 加到 <tt>sum</tt> 中。如果 <tt>val</tt> 大于 10，就退出循环，接着执行 <tt>for</tt> 语句体后的第一条语句。</p>
+					</div>
+					</li>
+					<li>
+					<div style="font-weight:normal">
+						<p class="docList">Increment <tt>val</tt>.</p>
+						<p class="docList"><tt>val</tt> 递增。</p>
+					</div>
+					</li>
+					<li>
+					<div style="font-weight:normal">
+						<p class="docList">Repeat the test in step 2, continuing with the remaining steps as long as the condition is true.</P>
+						<p class="docList">重复第 2 步的测试，只要条件为真，就继续执行其余步骤。</p>
+					</div>
+					</li>
+				</ol>
+			</div>
+			
+<a name="ch01note05"></a>
+<div class="docNote">
+	<p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" align="LEFT" width="57" height="96" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+			<td valign="top">
+				<p class="docText">When we exit the <tt>for</tt> loop, the variable <tt>val</tt> is no longer accessible. It is not possible to use <tt>val</tt> after this loop terminates. However, not all compilers enforce this requirement.</p>
+				<p class="docText">退出 <tt>for</tt> 循环后，变量 <tt>val</tt> 不再可访问，循环终止后使用 <tt>val</tt> 是不可能的。然而，不是所有的编译器都有这一要求。</p>
+			</td>
+		</tr>
+	</table>
+
+	<p class="docText">In pre-Standard C++ names defined in a <tt>for</tt> header <span class="docEmphasis">were</span> accessible outside the <tt>for</tt> itself. This change in the language definition can surprise people accustomed to using an older compiler when they instead use a compiler that adheres to the standard.</p>
+	<p class="docText">在标准化之前的 C++ 中，定义在 <tt>for</tt> 语句头的名字在 <tt>for</tt> 循环外是可访问的。语言定义中的这一改变，可能会使习惯于使用老式编译器的人，在使用遵循标准的新编译器时感到惊讶。</p>
+	</p>
+</div>
+
+<a name="ch01sb07"></a>
+<P>
+<table cellspacing="0" width="90%" border="1" cellpadding="5">
+	<tr>
+		<td>
+			<h2 class="docSidebarTitle">Compilation Revisited</h2>
+			<h2 class="docSidebarTitle">再谈编译 </h2>
+
+			<a name="idd1e3127"></a>
+			<p class="docText"><span class="docEmphStrong">Part of the compiler's job is to look for errors in the program text. A compiler cannot detect whether the meaning of a program is correct, but it can detect errors in the <span class="docEmphasis">form</span> of the program. The following are the most common kinds of errors a compiler will detect.</span></P>
+			<p class="docText"><span class="docEmphStrong">编译器的部分工作是寻找程序代码中的错误。编译器不能查出程序的意义是否正确, 但它可以查出程序形式上的错误。下面是编译器能查出的最普遍的一些错误。</span></P>
+
+			<div style="font-weight:bold">
+				<ol class="docList" type="1">
+					<li>
+					<div style="font-weight:normal">
+						<p class="docList"><span class="docEmphStrong">Syntax errors. The programmer has made a grammatical error in the C++ language. The following program illustrates common syntax errors; each comment describes the error on the following line:</span></p>
+						<p class="docList"><span class="docEmphStrong">语法错误。程序员犯了 C++ 语言中的语法错误。下面代码段说明常见的语法错误；每个注释描述下一行的错误。</span></p>
+<pre>
+                     // <span class="docEmphasis">error: missing ')' in parameter list for main</span>
+       int main ( {
+                     // <span class="docEmphasis">error: used colon, not a semicolon after endl</span>
+           std::cout &lt;&lt; "Read each file." &lt;&lt; std::endl:
+                     // <span class="docEmphasis">error: missing quotes around string literal</span>
+           std::cout &lt;&lt; Update master. &lt;&lt; std::endl;
+                     // <span class="docEmphasis">ok: no errors on this line</span>
+           std::cout &lt;&lt; "Write new master." &lt;&lt;std::endl;
+                     // <span class="docEmphasis">error: missing ';' on return statement</span>
+           return 0
+       }
+</pre><BR>
+					</div>
+					</li>
+					<li>
+					<div style="font-weight:normal">
+						<p class="docList"><span class="docEmphStrong">Type errors. Each item of data in C++ has an associated type. The value 10, for example, is an integer. The word &quot;hello&quot; surrounded by double quotation marks is a string literal. One example of a type error is passing a string literal to a function that expects an integer argument.</span></P>
+						<p class="docList"><span class="docEmphStrong">类型错误。C++ 中每个数据项都有其相关联的类型。例如，值 10 是一个整数。用双引号标注起来的单词“hello”是字符串字面值。类型错误的一个实例是传递了字符串字面值给应该得到整型参数的函数。</span></P>
+					</div>
+					</li>
+					<LI>
+					<div style="font-weight:normal">
+						<p class="docList"><span class="docEmphStrong">Declaration errors. Every name used in a C++ program must be declared before it is used. Failure to declare a name usually results in an error message. The two most common declaration errors are to forget to use <tt>std::</tt> when accessing a name from the library or to inadvertently misspell the name of an identifier:</span></p>
+						<p class="docList"><span class="docEmphStrong">声明错误。C++ 程序中使用的每个名字必须在使用之前声明。没有声明名字通常会导致错误信息。最常见的两种声明错误，是从标准库中访问名字时忘记使用“<tt>std::</tt>”，以及由于疏忽而拼错标识符名:</span></P>
+
+<pre>
+    #include &lt;iostream&gt;
+    int main()
+    {
+        int v1, v2;
+        std::cin &gt;&gt; v &gt;&gt; v2; // <span class="docEmphasis">error: uses "</span> v <span class="docEmphasis">"not"</span> v1<span class="docEmphasis">"</span>
+        // cout <span class="docEmphasis">not defined, should be</span> std::cout
+        cout &lt;&lt; v1 + v2 &lt;&lt; std::endl;
+        return 0;
+     }
+</pre>
+					</div>
+					</li>
+				</ol>
+			</div>
+			
+			<a name="ch01term15"></a>
+			<p class="docText"><span class="docEmphStrong">An error message contains a line number and a brief description of what the compiler believes we have done wrong. It is a good practice to correct errors in the sequence they are reported. Often a single error can have a cascading effect and cause a compiler to report more errors than actually are present. It is also a good idea to recompile the code after each fixor after making at most a small number of obvious fixes. This cycle is known as</span> <span class="docEmphBoldItalic"><a class="docLink" href="ch01lev1sec8.html#gloss01_15" >edit-compile-debug</a></span>.</p>
+			<p class="docText"><span class="docEmphStrong">错误信息包含行号和编译器对我们所犯错误的简要描述。按错误报告的顺序改正错误是个好习惯，通常一个错误可能会产生一连串的影响，并导致编译器报告比实际多得多的错误。最好在每次修改后或最多改正了一些显而易见的错误后，就重新编译代码。这个循环就是众所周知的<span class="docEmphBoldItalic"><a class="docLink" href="ch01lev1sec8.html#gloss01_15" >编辑—编译—调试</a></span>。</span></p>
+		</td>
+	</tr>
+</table>
+</p>
+
+<a name="ch01sb08"></a>
+<p>
+<table cellspacing="0" width="90%" border="1" cellpadding="5">
+	<tr>
+		<td>
+			<h2 class="docSidebarTitle">Exercises Section 1.4.2</h2>
+			<blockquote>
+				<P>
+				<table border="0" cellspacing="16" cellpadding="0">
+					<TR valign="top">
+						<a name="ch01qa4q1"></a>
+						<td align="right" class="docText" width="50"><b>Exercise 1.9:</b></td>
+						<td>
+							<a name="idd1e3223"></a><a name="idd1e3231"></a><a name="idd1e3236"></a>
+							<p class="docText">What does the following <tt>for</tt> loop do? What is the final value of <tt>sum</tt>?</P>
+							<p class="docText">下列循环做什么？<tt>sum</tt> 的最终值是多少?</P>
+<pre>
+    int sum = 0;
+    for (int i = -100; i &lt;= 100; ++i)
+        sum += i;
+</pre>
+						</td>
+					</tr>
+					<tr valign="top">
+						<td align="right" class="docText" width="50">
+							<a name="ch01qa4q2"></a>
+							<b>Exercise 1.10:</b>
+						</td>
+						<td>
+							<p class="docText">Write a program that uses a <tt>for</tt> loop to sum the numbers from 50 to 100. Now rewrite the program using a <tt>while</tt>.</P>
+							<p class="docText">用 <tt>for</tt> 循环编程，求从 50 到 100 的所有自然数的和。然后用 <tt>while</tt> 循环重写该程序。</P>
+						</td>
+					</tr>
+					<tr valign="top">
+						<a name="ch01qa4q3"></a>
+						<td align="right" class="docText" width="50"><b>Exercise 1.11:</b></td>
+						<td>
+							<p class="docText">Write a program using a <tt>while</tt> loop to print the numbers from 10 down to 0. Now rewrite the program using a <tt>for</tt>.</p>
+							<p class="docText">用 <tt>while</tt> 循环编程，输出 10 到 0 递减的自然数。然后用 <tt>for</tt> 循环重写该程序。</P>
+						</td>
+					</tr>
+					<tr valign="top">
+						<a name="ch01qa4q4"></a>
+						<td align="right" class="docText" width="50"><b>Exercise 1.12:</b></td>
+						<td>
+							<p class="docText">Compare and contrast the loops you wrote in the previous two exercises. Are there advantages or disadvantages to using either form?</p>
+							<p class="docText">对比前面两个习题中所写的循环。两种形式各有何优缺点？</P>
+						</td>
+					</tr>
+					<tr valign="top">
+						<a name="ch01qa4q5"></a>
+						<td align="right" class="docText" width="50"><b>Exercise 1.13:</b></td>
+						<td>
+							<p class="docText">Compilers vary as to how easy it is to understand their diagnostics. Write programs that contain the common errors discussed in the box on 16. Study the messages the compiler generates so that these messages will be familiar when you encounter them while compiling more complex programs.</p>
+							<p class="docText">编译器不同，理解其诊断内容的难易程度也不同。编写一些程序，包含本小节“再谈编译”部分讨论的那些常见错误。研究编译器产生的信息，这样你在编译更复杂的程序遇到这些信息时就不会陌生。</P>
+						</td>
+					</tr>
+				</table>
+				</p>
+			</blockquote>
+		</td>
+	</tr>
+</table>
+</p><br>
+
+<a name="ch01lev2sec7"></a>
+<h4 class="docSection2Title">1.4.3. The <tt>if</tt> Statement</H4>
+<h4 class="docSection2Title">1.4.3. <tt>if</tt> 语句</H4>
+
+<p class="docText">A logical extension of summing the values between 1 and 10 is to sum the values between two numbers our user supplies. We might use the numbers directly in our <tt>for</tt> loop, using the first input as the lower bound for the range and the second as the upper bound. However, if the user gives us the higher number first, that strategy would fail: Our program would exit the <tt>for</tt> loop immediately. Instead, we should adjust the range so that the larger number is the upper bound and the smaller is the lower. To do so, we need a way to see which number is larger.</P>
+<p class="docText">求 1 到 10 之间数的和，其逻辑延伸是求用户提供的两个数之间的数的和。可以直接在 <tt>for</tt> 循环中使用这两个数,使用第一个输入值作为下界而第二个输入值作为上界。然而, 如果用户首先给定的数较大，这种策略将会失败：程序会立即退出 <tt>for</tt> 循环。因此，我们应该调整范围以便较大的数作上界而较小的数作下界。这样做，我们需要一种方式来判定哪个数更大一些。</P>
+
+<a name="ch01term23"></a>
+<p class="docText">Like most languages, C++ provides an <b><a class="docLink" href="ch01lev1sec8.html#gloss01_23" ><span class="docEmphStrong"><tt>if</tt></span> statement</a></b> that supports conditional execution. We can use an <tt>if</tt> to write our revised sum program:</P>
+<p class="docText">像大多数语言一样，C++ 提供支持条件执行的 <b><a class="docLink" href="ch01lev1sec8.html#gloss01_23" ><span class="docEmphStrong"><tt>if</tt></span> 语句</a></b>。使用 <tt>if</tt> 语句来编写修订的求和程序如下：</P>
+
+<pre>
+    #include &lt;iostream&gt;
+    int main()
+    {
+        std::cout &lt;&lt; "Enter two numbers:" &lt;&lt; std::endl;
+        int v1, v2;
+        std::cin &gt;&gt; v1 &gt;&gt; v2; // <span class="docEmphItalicAlt">read input</span>
+        // <span class="docEmphItalicAlt">use smaller number as</span> <span class="docEmphasis">lower</span> <span class="docEmphItalicAlt">bound for summation</span>
+        // <span class="docEmphItalicAlt">and larger number as</span> <span class="docEmphasis">upper</span> <span class="docEmphItalicAlt">bound</span>
+        int lower, upper;
+        if (v1 &lt;= v2) {
+            lower = v1;
+            upper = v2;
+        } else {
+            lower = v2;
+            upper = v1;
+        }
+        int sum = 0;
+        // <span class="docEmphItalicAlt">sum values from</span> <span class="docEmphasis">lower</span> <span class="docEmphItalicAlt">up to and including</span> <span class="docEmphasis">upper</span>
+        for (int val = lower; val &lt;= upper; ++val)
+            sum += val; // sum = sum + val
+
+        std::cout &lt;&lt; "Sum of " &lt;&lt; lower
+                  &lt;&lt; " to " &lt;&lt; upper
+                  &lt;&lt; " inclusive is "
+                  &lt;&lt; sum &lt;&lt; std::endl;
+        return 0;
+    }
+</pre>
+
+<a name="idd1e3371"></a><a name="idd1e3379"></a>
+<p class="docText">If we compile and execute this program and give it as input the numbers 7 and 3, then the output of our program will be</p>
+<p class="docText">如果我们编译并执行这个程序给定输入数为 7 和 3，程序的输出结果将为：</p>
+
+<pre>
+  <span class="docEmphStrong">Sum of 3 to 7 inclusive is 25</span>
+</pre>
+
+<p class="docText">Most of the code in this program should already be familiar from our earlier examples. The program starts by writing a prompt to the user and defines four <tt>int</tt> variables. It then reads from the standard input into <tt>v1</tt> and <tt>v2</tt>. The only new code is the <tt>if</tt> statement</P>
+<p class="docText">这个程序中大部分代码我们在之前的举例中已经熟知了。程序首先向用户输出提示并定义 4 个 <tt>int</tt> 变量，然后从标准输入读入值到 <tt>v1</tt> 和 <tt>v2</tt> 中。仅有 <tt>if</tt> 条件语句是新增加的代码：</P>
+
+<pre>
+    // <span class="docEmphItalicAlt">use smaller number as</span> <span class="docEmphasis">lower</span> <span class="docEmphItalicAlt">bound for summation</span>
+    // <span class="docEmphItalicAlt">and larger number as</span> <span class="docEmphasis">upper</span> <span class="docEmphItalicAlt">bound</span>
+    int lower, upper;
+    if (v1 &lt;= v2) {
+        lower = v1;
+        upper = v2;
+    } else {
+        lower = v2;
+        upper = v1;
+    }
+</pre>
+
+<p class="docText">The effect of this code is to set <tt>upper</tt> and <tt>lower</tt> appropriately. The <tt>if</tt> condition tests whether <tt>v1</tt> is less than or equal to <tt>v2</tt>. If so, we perform the block that immediately follows the condition. This block contains two statements, each of which does an assignment. The first statement assigns <tt>v1</tt> to <tt>lower</tt> and the second assigns <tt>v2</tt> to <tt>upper</tt>.</p>
+<p class="docText">这段代码的效果是恰当地设置 <tt>upper</tt> 和 <tt>lower</tt> 。<tt>if</tt> 的条件测试 <tt>v1</tt> 是否小于或等于 <tt>v2</tt>。如果是，则执行条件后面紧接着的语句块。这个语句块包含两条语句，每条语句都完成一次赋值，第一条语句将 <tt>v1</tt> 赋值给 <tt>lower</tt> ，而第二条语句将 <tt>v2</tt> 赋值给 <tt>upper</tt>。</p>
+
+<p class="docText">If the condition is falsethat is, if <tt>v1</tt> is larger than <tt>v2</tt>then we execute the statement following the <tt>else</tt>. Again, this statement is a block consisting of two assignments. We assign <tt>v2</tt> to <tt>lower</tt> and <tt>v1</tt> to <tt>upper</tt>.</p>
+<p class="docText">如果这个条件为假（也就是说，如果 <tt>v1</tt> 大于 <tt>v2</tt>）那么执行 <tt>else</tt> 后面的语句。这个语句同样是一个由两个赋值语句组成的块，把 <tt>v2</tt> 赋值给 <tt>lower</tt> 而把 <tt>v1</tt> 赋值给 <tt>upper</tt> 。</p>
+
+<a name="ch01sb09"></a>
+<p>
+<table cellspacing="0" width="90%" border="1" cellpadding="5">
+	<tr>
+		<td>
+			<h2 class="docSidebarTitle">Exercises Section 1.4.3</h2>
+			<blockquote>
+				<p>
+				<table border="0" cellspacing="16" cellpadding="0">
+					<tr valign="top">
+						<a name="ch01qa5q1"></a>						
+						<td align="right" class="docText" width="50"><b>Exercise 1.14:</b></td>
+						<td>
+							<a name="idd1e3513"></a><a name="idd1e3518"></a><a name="idd1e3521"></a>
+							<p class="docText">What happens in the program presented in this section if the input values are equal?</p>
+							<p class="docText">如果输入值相等，本节展示的程序将产生什么问题?</p>
+						</td>
+					</tr>
+					<tr valign="top">
+						<a name="ch01qa5q2"></a>
+						<td align="right" class="docText" width="50"><b>Exercise 1.15:</b></td>
+						<td>
+							<p class="docText">Compile and run the program from this section with two equal values as input. Compare the output to what you predicted in the previous exercise. Explain any discrepancy between what happened and what you predicted.</p>
+							<p class="docText">用两个相等的值作为输入编译并运行本节中的程序。将实际输出与你在上一习题中所做的预测相比较，解释实际结果和你预计的结果间的不相符之处。</p>
+						</td>
+					</tr>
+					<tr valign="top">
+						<a name="ch01qa5q3"></a>
+						<td align="right" class="docText" width="50"><b>Exercise 1.16:</b></td>
+						<td>
+							<p class="docText">Write a program to print the larger of two inputs supplied by the user.</p>
+							<p class="docText">编写程序，输出用户输入的两个数中的较大者。</p>
+						</td>
+					</tr>
+					<tr valign="top">
+						<a name="ch01qa5q4"></a>
+						<td align="right" class="docText" width="50"><B>Exercise 1.17:</b></td>
+						<td>
+							<p class="docText">Write a program to ask the user to enter a series of numbers. Print a message saying how many of the numbers are negative numbers.</P>
+							<p class="docText">编写程序，要求用户输入一组数。输出信息说明其中有多少个负数。</p>
+						</td>
+					</tr>
+				</table>
+				</p>
+			</blockquote>
+		</td>
+	</tr>
+</table>
+</p>
+
+
+<a name="ch01lev2sec8"></a>
+<h4 class="docSection2Title">1.4.4. Reading an Unknown Number of Inputs</h4>
+<h4 class="docSection2Title">1.4.4. 读入未知数目的输入</h4>
+
+<p class="docText">Another change we might make to our summation program on page <a class="docLink" href="ch01lev1sec4.html#ch01lev2sec5">12</a> would be to allow the user to specify a set of numbers to sum. In this case we can't know how many numbers we'll be asked to add. Instead, we want to keep reading numbers until the program reaches the end of the input. When the input is finished, the program writes the total to the standard output:</P>
+<p class="docText">对<a class="docLink" href="ch01lev1sec4.html#ch01lev2sec5">第 1.4.1 节</a>的求和程序稍作改变，还可以允许用户指定一组数求和。这种情况下，我们不知道要对多少个数求和，而是要一直读数直到程序输入结束。输入结束时，程序将总和写到标准输出：</p>
+
+<pre>
+    #include &lt;iostream&gt;
+    int main()
+    {
+        int sum = 0, value;
+        // <span class="docEmphItalicAlt">read till end-of-file, calculating a running total of all values read</span>
+        while (std::cin &gt;&gt; value)
+            sum += value; // <span class="docEmphItalicAlt">equivalent to</span> <span class="docEmphasis">sum = sum + value</span>
+        std::cout &lt;&lt; "Sum is: " &lt;&lt; sum &lt;&lt; std::endl;
+        return 0;
+     }
+</pre>
+
+<p class="docText">If we give this program the input</P>
+<p class="docText">如果我们给出本程序的输入：</P>
+
+<pre>
+  <span class="docEmphStrong">3 4 5 6</span>
+</pre>
+
+<p class="docText">then our output will be</p>
+<p class="docText">那么输出是：</p>
+
+<pre>
+  <span class="docEmphStrong">Sum is: 18</span>
+</pre>
+
+
+
+<p class="docText">As usual, we begin by including the necessary headers. The first line inside <tt>main</tt> defines two <tt>int</tt> variables, named <tt>sum</tt> and <tt>value</tt>. We'lluse <tt>value</tt> to hold each number we read, which we do inside the condition in the <tt>while</tt>:</p>
+<p class="docText">与平常一样，程序首先包含必要的头文件。<tt>main</tt> 中第一行定义了两个 <tt>int</tt> 变量，命名为 <tt>sum</tt> 和 <tt>value</tt>。在 <tt>while</tt> 条件中，用 <tt>value</tt> 保存读入的每一个数：</p>
+
+<pre>
+  while (std::cin &gt;&gt; value)
+</pre>
+
+<p class="docText">What happens here is that to evaluate the condition, the input operation</P>
+<p class="docText">这里所产生的是，为判断条件，先执行输入操作 </P>
+
+<pre>
+  std::cin &gt;&gt; value
+</pre>
+
+<p class="docText">is executed, which has the effect of reading the next number from the standard input, storing what was read in <tt>value</tt>. The input operator (<a class="docLink" href="ch01lev1sec2.html#ch01lev2sec3" >Section 1.2.2</a>, p. <a class="docLink" href="ch01lev1sec2.html#ch01lev2sec3" >8</a>) returns its left operand. The condition tests that result, meaning it tests <tt>std::cin</tt>.</p>
+<p class="docText">它具有从标准输入读取下一个数并且将读入的值保存在 <tt>value</tt> 中的效果。输入操作符（<a class="docLink" href="ch01lev1sec2.html#ch01lev2sec3" >第 1.2.2 节</a>）返回其左操作数。<tt>while</tt> 条件测试输入操作符的返回结果，意味着测试 <tt>std::cin</tt>。</p>
+
+<a name="ch01term16"></a>
+<p class="docText">When we use an <tt>istream</tt> as a condition, the effect is to test the state of the stream. If the stream is validthat is, if it is still possible to read another input then the test succeeds. An <tt>istream</tt> becomes invalid when we hit <span class="docEmphBoldItalic"><a class="docLink" href="ch01lev1sec8.html#gloss01_16" >end-of-file</a></span> or encounter an invalid input, such as reading a value that is not an integer. An <tt>istream</tt> that is in an invalid state will cause the condition to fail.</p>
+<p class="docText">当我们使用 <tt>istream</tt> 对象作为条件，结果是测试流的状态。如果流是有效的（也就是说，如果读入下一个输入是可能的）那么测试成功。遇到<span class="docEmphBoldItalic"><a class="docLink" href="ch01lev1sec8.html#gloss01_16" >文件结束符</a></span>或遇到无效输入时，如读取了一个不是整数的值，则 <tt>istream</tt> 对象是无效的。处于无效状态的 <tt>istream</tt> 对象将导致条件失败。</p>
+
+<a name="idd1e3667"></a><a name="idd1e3670"></a><a name="idd1e3673"></a><a name="idd1e3676"></a><a name="idd1e3679"></a><a name="idd1e3682"></a><a name="idd1e3687"></a><a name="idd1e3692"></a><a name="idd1e3697"></a><a name="idd1e3700"></a>
+<p class="docText">Until we do encounter end-of-file (or some other input error), the test will succeed and we'll execute the body of the <tt>while</tt>. That body is a single statement that uses the compound assignment operator. This operator adds its right-hand operand into the left hand operand.</P>
+<p class="docText">在遇到文件结束符（或一些其他输入错误）之前，测试会成功并且执行 <tt>while</tt> 循环体。循环体是一条使用复合赋值操作符的语句，这个操作符将它的右操作数加到左操作数上。</p>
+
+<a name="ch01sb10"></a>
+<P>
+<table cellspacing="0" width="90%" border="1" cellpadding="5">
+	<tr>
+		<td>
+			<h2 class="docSidebarTitle">Entering an End-of-file from the Keyboard</h2>
+			<h2 class="docSidebarTitle">从键盘输入文件结束符</h2>
+
+			<p class="docText"><span class="docEmphStrong">Operating systems use different values for end-of-file. On Windows systems we enter an end-of-file by typing a control-zsimultaneously type the &quot;ctrl&quot; key and a &quot;z.&quot; On UNIX systems, including Mac OS-X machines, it is usually control-d.</span></P>
+			<p class="docText"><span class="docEmphStrong">操作系统使用不同的值作为文件结束符。Windows 系统下我们通过键入 control—z——同时键入“ctrl”键和“z”键，来输入文件结束符。Unix 系统中，包括 Mac OS—X 机器，通常用 control—d。</span></P>
+		</td>
+	</tr>
+</table>
+</p>
+
+<p class="docText">Once the test fails, the <tt>while</tt> terminates and we fall through and execute the statement following the <tt>while</tt>. That statement prints <tt>sum</tt> followed by <tt>endl</tt>, which prints a newline and flushes the buffer associated with <tt>cout</tt>. Finally, we execute the <tt>return</tt>, which as usual returns zero to indicate success.</p>
+<p class="docText">一旦测试失败，<tt>while</tt> 终止并退出循环体，执行 <tt>while</tt> 之后的语句。该语句在输出 <tt>sum</tt> 后输出 <tt>endl</tt>，<tt>endl</tt> 输出换行并刷新与 <tt>cout</tt> 相关联的缓冲区。最后，执行 <tt>return</tt>，通常返回零表示程序成功运行完毕。</p>
+
+<a name="ch01sb11"></a>
+<P>
+<table cellspacing="0" width="90%" border="1" cellpadding="5">
+	<tr>
+		<td>
+			<h2 class="docSidebarTitle">Exercises Section 1.4.4</h2>
+			<blockquote>
+				<p>
+				<table border="0" cellspacing="16" cellpadding="0">
+					<tr valign="top">
+						<a name="ch01qa6q1"></a>
+						<td align="right" class="docText" width="50"><b>Exercise 1.18:</b></td>
+						<td>
+							<p class="docText">Write a program that prompts the user for two numbers and writes each number in the range specified by the two numbers to the standard output.</p>
+							<p class="docText">编写程序，提示用户输入两个数并将这两个数范围内的每个数写到标准输出。</p>
+						</td>
+					</tr>
+					<tr valign="top">
+						<a name="ch01qa6q2"></a>
+						<td align="right" class="docText" width="50"><B>Exercise 1.19:</b></td>
+						<td>
+							<p class="docText">What happens if you give the numbers 1000 and 2000 to the program written for the previous exercise? Revise the program so that it never prints more than 10 numbers per line.</P>
+							<p class="docText">如果上题给定数 1000 和 2000，程序将产生什么结果？修改程序，使每一行输出不超过 10 个数。</p>
+						</td>
+					</tr>
+					<tr valign="top">
+						<td align="right" class="docText" width="50">
+							<a name="ch01qa6q3"></a>
+							<b>Exercise 1.20:</b>
+						</td>
+						<td>
+							<p class="docText">Write a program to sum the numbers in a user-specified range, omitting the <tt>if</tt> test that sets the upper and lower bounds. Predict what happens if the input is the numbers 7 and 3, in that order. Now run the program giving it the numbers 7 and 3, and see if the results match your expectation. If not, restudy the discussion on the <tt>for</tt> and <tt>while</tt> loop until you understand what happened.</p>
+							<p class="docText">编写程序，求用户指定范围内的数的和，省略设置上界和下界的 <tt>if</tt> 测试。假定输入数是 7 和 3，按照这个顺序，预测程序运行结果。然后按照给定的数是 7 和 3 运行程序，看结果是否与你预测的相符。如果不相符，反复研究关于 <tt>for</tt> 和 <tt>while</tt> 循环的讨论直到弄清楚其中的原因。</p>
+						</td>
+					</tr>
+				</table>
+				</p>
+			</blockquote>
+		</td>
+	</tr>
+</table>
+</p><br />
+
+<ul>
+</UL>
+</TD>
+</tr>
+</table>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+		<td>
+			<div STYLE="MARGIN-LEFT: 0.15in;">
+				<a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle"  alt="Team LiB"></a>
+			</div>
+		</td>
+		<td align="right">
+			<div STYLE="MARGIN-LEFT: 0.15in;">
+				<a href="ch01lev1sec3.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a>
+				<a href="ch01lev1sec5.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+			</div>
+		</td>
+	</tr>
+</table>
+</body>
+</html>
+

@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Class.addMethods - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>addMethods<div class="box">1.6.0</div>
+		</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">addMethods(methods)</code></pre>
+			<p>增加新的方法到已有的类中。</p>
+		</div>
+		<div id="abody">
+			<p>
+				<code>Class#addMethods</code> 方法应用于通过 <a href="create.htm" >Class.create</a> 方法创建的类上。
+				它可以为类增加一个新的实例方法，或者为已定义的类重写已有的方法。
+			</p>
+			<p>
+				新加入的方法会在类的继承层次中传播。如果该类具有子类，那么子类将会继承这个新的方法——甚至可以用 <code>$super</code>
+				调用这个方法。新的方法也会传递到类及其子类的实例中。<br />
+				<strong>译注：</strong>关于 <code>$super</code> 关键字，请看<a href="../../Reference/super.htm" >这里</a>。
+			</p>
+			<h3>样例</h3>
+			<pre><code class="javascript">var Animal = Class.create({
+	initialize: function(name, sound) {
+		this.name = name;
+		this.sound = sound;
+	}, 
+	speak: function() {
+		alert(this.name + " says: " + this.sound + "!");
+	}
+}); 
+// Animal 的子类
+var Snake = Class.create(Animal, {
+	initialize: function($super, name) {
+		$super(name, 'hissssssssss'); 
+	}
+}); 
+var ringneck = new Snake("Ringneck", "hissssssss");
+ringneck.speak(); //-> 提示："Ringneck says: hissssssss!" 
+// 增加 Snake#speak (使用 $super 关键字)
+Snake.addMethods({
+	speak: function($super) {
+		$super();
+		alert("You should probably run. He looks really mad.");
+	}
+});
+ringneck.speak(); 
+//-> 提示："Ringneck says: hissssssss!" 
+//-> 提示："You should probably run. He looks really mad." 
+// 重定义 Animal#speak 
+Animal.addMethods({
+	speak: function() {
+		alert(this.name + 'snarls: ' + this.sound + '!');
+	}
+});
+ringneck.speak();
+//-> 提示："Ringneck snarls: hissssssss!"
+//-> 提示："You should probably run. He looks really mad." </code></pre>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

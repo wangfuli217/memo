@@ -1,0 +1,369 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 16.5.  A Generic Handle Class</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch16lev1sec4.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch16lev1sec6.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch16lev1sec5"></a>
+
+	<h3 class="docSection1Title">16.5. A Generic Handle Class</h3>
+	<h3 class="docSection1Title">16.5. 一个泛型句柄类</h3>
+	
+	<a name="ch16note15"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">This example represents a fairly sophisticated use of C++. Understanding it requires understanding both inheritance and templates fairly well. It may be useful to delay studying this example until you are comfortable with these features. On the other hand, this example provides a good test of your understanding of these features.</p>
+                <p class="docText">这个例子体现了 C++ 相当复杂的语言应用，理解它需要很好地理解继承和模板。在熟悉了这些特性之后再研究这个例子也许会帮助。另一方面，这个例子还能很好地测试你对这些我的理解程序。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+	<a name="idd1e131268"></a><a name="idd1e131273"></a><a name="idd1e131276"></a><a name="idd1e131280"></a><a name="idd1e131285"></a><a name="idd1e131292"></a>
+        <p class="docText">In <a class="docLink" href="ch15.html#ch15" >Chapter 15</a> we defined two handle classes: the <tt>Sales_item</tt> (<a class="docLink" href="ch15lev1sec8.html#ch15lev1sec8" >Section 15.8</a>, p. <a class="docLink" href="ch15lev1sec8.html#ch15lev1sec8" >598</a>) class and the <tt>Query</tt> (<a class="docLink" href="ch15lev1sec9.html#ch15lev1sec9" >Section 15.9</a>, p. <a class="docLink" href="ch15lev1sec9.html#ch15lev1sec9" >607</a>) class. These classes managed pointers to objects in an inheritance hierarchy. Users of the handle did not have to manage the pointers to those objects. User code was written in terms of the handle class. The handle dynamically allocated and freed objects of the related inheritance classes and forwarded all "real" work back to the classes in the underlying inheritance hierarchy.</p>
+                <p class="docText">在<a class="docLink" href="ch15.html#ch15" >第十五章</a>定义了两个句柄类：<tt>Sales_item</tt> 类（<a class="docLink" href="ch15lev1sec8.html#ch15lev1sec8" >第 15.8 节</a>）和 Query 类（<a class="docLink" href="ch15lev1sec9.html#ch15lev1sec9" >第 15.9 节</a>）。这两个类管理继承层次中对象的指针，句柄的用户不必管理指向这些对象的指针，用户代码可以使用句柄类来编写。句柄能够动态分配和释放相关继承类的对象，并且将所有“实际”工作转发给继承层次中的底层类。</p>
+
+        <p class="docText">These handles were similar to but different from each other: They were similar in that each defined use-counted copy control to manage a pointer to an object of a type in an inheritance hierarchy. They differed with respect to the interface they provided to users of the inheritance hierarchy.</p>
+                <p class="docText">这两个句柄类似但并不相同：类似之处在于都定义了使用计数式的复制控制，管理指向继承层次中某类型对象的指针；不同之处在于它们提供给继承层次用户的接口。</p>
+
+        <p class="docText">The use-counting implementation was the same in both classes. This kind of problem is well suited to generic programming: We could define a class template to manage a pointer and do the use-counting. Our otherwise unrelated <tt>Sales_item</tt> and <tt>Query</tt> types could be simplified by using that template to do the common use-counting work. The handles would remain different as to whether they reveal or hide the underlying inheritance hierarchy.</p>
+                <p class="docText">两个类的使用计数的实现是相同的。这类问题非常适合于泛型编程：可以定义类模板管理指针和进行使用计数。原本不相关的 Sales_item 类型和 Query 类型，可通过使用该模板进行公共的使用计数工作面得以简化。至于是公开还是隐藏下层的继承层次，句柄可以保持不同。</p>
+
+<a name="ch16term4"></a>
+        <p class="docText">In this section, we'll implement a <b><a class="docLink" href="ch16lev1sec9.html#gloss16_04" >generic handle class</a></b> to provide the operations that manage the use count and the underlying objects. Then we'll rewrite the <tt>Sales_item</tt> class, showing how it could use the generic handle rather than defining its own use-counting operations.</p>
+                <p class="docText">本节将实现一个泛型句柄类（generic handle class），提供管理使用计数和基础对象的操作。然后，我们重新编写 Sales_item 类，展示它怎样使用泛型句柄而不是定义自己的使用计数操作。</p>
+
+<a name="ch16lev2sec25"></a>
+        <h4 class="docSection2Title">16.5.1. Defining the Handle Class</h4>
+        <h4 class="docSection2Title">16.5.1. 定义句柄类</h4>
+
+        <p class="docText">Our <tt>Handle</tt> class will behave like a pointer: Copying a <tt>Handle</tt> will not copy the underlying object. After the copy, both <tt>Handle</tt>s will refer to the same underlying object. To create a <tt>Handle</tt>, a user will be expected to pass the address of a dynamically allocated object of the type (or a type derived from that type) managed by the <tt>Handle</tt>. From that point on, the <tt>Handle</tt> will "own" the given object. In particular, the <tt>Handle</tt> class will assume responsibility for deleting that object once there are no longer any <tt>Handle</tt>s attached to it.</p>
+                <p class="docText"><tt>Handle</tt> 类行为类似于指针：复制 <tt>Handle</tt> 对象将不会复制基础对象，复制之后，两个 <tt>Handle</tt> 对象将引用同一基础对象。要创建 <tt>Handle</tt> 对象，用户需要传递属于由 <tt>Handle</tt> 管理的类型（或从该类型派生的类型）的动态分配对象的地址，从此刻起，<tt>Handle</tt> 将“拥有”这个对象。而且，一旦不再有任意 <tt>Handle</tt> 对象与该对象关联，<tt>Handle</tt> 类将负责删除该对象。</p>
+
+        <p class="docText">Given this design, here is an implementation of our generic <tt>Handle</tt>:</p>
+                <p class="docText">对于这一设计，我们的泛型 <tt>Handle</tt> 类的实现如下：</p>
+        <pre>
+     /* <span class="docEmphItalicAlt">generic handle class: Provides pointerlike behavior. Although access through</span>
+      * <span class="docEmphItalicAlt">an unbound</span> <span class="docEmphasis">Handle</span> <span class="docEmphItalicAlt">is checked and throws a</span> <span class="docEmphasis">runtime_error</span> <span class="docEmphItalicAlt">exception</span>.
+      * <span class="docEmphItalicAlt">The object to which the</span> <span class="docEmphasis">Handle</span> <span class="docEmphItalicAlt">points is deleted when the last</span> <span class="docEmphasis">Handle</span> <span class="docEmphItalicAlt">goes away.</span>
+      * <span class="docEmphItalicAlt">Users should allocate new objects of type</span> <span class="docEmphasis">T</span> <span class="docEmphItalicAlt">and bind them to a</span> <span class="docEmphasis">Handle.</span>
+      * <span class="docEmphItalicAlt">Once an object is bound to a</span> <span class="docEmphasis">Handle,</span>, <span class="docEmphItalicAlt">the user must not delete that object.</span>
+      */
+     template &lt;class T&gt; class Handle {
+     public:
+         // <span class="docEmphItalicAlt">unbound handle</span>
+         Handle(T *p = 0): ptr(p), use(new size_t(1)) { }
+         // <span class="docEmphItalicAlt">overloaded operators to support pointer behavior</span>
+         T&amp; operator*();
+         T* operator-&gt;();
+         const T&amp; operator*() const;
+         const T* operator-&gt;() const;
+         // <span class="docEmphItalicAlt">copy control: normal pointer behavior, but last</span> <span class="docEmphasis">Handle</span> <span class="docEmphItalicAlt">deletes the object</span>
+         Handle(const Handle&amp; h): ptr(h.ptr), use(h.use)
+                                             { ++*use; }
+         Handle&amp; operator=(const Handle&amp;);
+         ~Handle() { rem_ref(); }
+     private:
+         T* ptr;          // <span class="docEmphItalicAlt">shared object</span>
+         size_t *use;     // <span class="docEmphItalicAlt">count of how many</span> <span class="docEmphasis">Handle</span> <span class="docEmphItalicAlt">spointto</span> *ptr
+         void rem_ref()
+             { if (--*use == 0) { delete ptr; delete use; } }
+     };
+</pre><br>
+
+<a name="idd1e131446"></a><a name="idd1e131454"></a><a name="idd1e131460"></a><a name="idd1e131471"></a>
+        <p class="docText">This class looks like our other handles, as does the assignment operator.</p>
+                <p class="docText">这个类看来与其他句柄类似，赋值操作符也类似。</p>
+        <pre>
+     template &lt;class T&gt;
+     inline Handle&lt;T&gt;&amp; Handle&lt;T&gt;::operator=(const Handle &amp;rhs)
+     {
+         ++*rhs.use;      // <span class="docEmphItalicAlt">protect against self-assignment</span>
+         rem_ref();       // <span class="docEmphItalicAlt">decrement use count and delete pointers if needed</span>
+         ptr = rhs.ptr;
+         use = rhs.use;
+         return *this;
+     }
+</pre><br>
+
+        <p class="docText">The only other members our class will define are the dereference and member access operators. These operators will be used to access the underlying object. We'll provide a measure of safety by having these operations check that the <tt>Handle</tt> is actually bound to an object. If not, an attempt to access the object will throw an exception.</p>
+        <p class="docText"><tt>Handle</tt> 类将定义的其他成员是解引用操作符和成员访问操作符，这些操作符将用于访问基础对象。让这些操作检查 <tt>Handle</tt> 是否确实绑定到对象，可以提供一种安全措施。如果 <tt>Handle</tt> 没有绑定到对象，则试图访问对象将抛出一个异常。</p>
+
+        <p class="docText">The non<tt>const</tt> versions of these operators look like:</p>
+        <p class="docText">这些操作的非 <tt>const</tt> 版本看来如下所示：</p>
+        <pre>
+     template &lt;class T&gt; inline T&amp; Handle&lt;T&gt;::operator*()
+     {
+         if (ptr) return *ptr;
+         throw std::runtime_error
+                        ("dereference of unbound Handle");
+     }
+     template &lt;class T&gt; inline T* Handle&lt;T&gt;::operator-&gt;()
+     {
+         if (ptr) return ptr;
+         throw std::runtime_error
+                        ("access through unbound Handle");
+     }
+</pre><br>
+
+        <p class="docText">The <tt>const</tt> versions would be similar and are left as an exercise.</p>
+        <p class="docText">实现一个 Handle 类的自己的版本。</p>
+
+<a name="ch16sb17"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 16.5.1</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch16qa15q1"></a><b>Exercise 16.45:</b></td>
+
+                    <td>
+<a name="idd1e131554"></a><a name="idd1e131562"></a><a name="idd1e131573"></a>
+                      <p class="docText">Implement your own version of the <tt>Handle</tt> class.</p>
+                      <p class="docText">实现一个 <tt>Handle</tt> 类的自己的版本。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch16qa15q2"></a><b>Exercise 16.46:</b></td>
+
+                    <td>
+                      <p class="docText">Explain what happens when an object of type <tt>Handle</tt> is copied.</p>
+                      <p class="docText">解释复制 <tt>Handle</tt> 类型的对象时会发生什么。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch16qa15q3"></a><b>Exercise 16.47:</b></td>
+
+                    <td>
+                      <p class="docText">What, if any, restrictions does <tt>Handle</tt> place on the types used to instantiate an actual <tt>Handle</tt> class.</p>
+                      <p class="docText"><tt>Handle</tt> 类对用来实例化实际 <tt>Handle</tt> 类的类型有限制吗？如果有，限制有哪些？</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch16qa15q4"></a><b>Exercise 16.48:</b></td>
+
+                    <td>
+                      <p class="docText">Explain what happens if the user attaches a <tt>Handle</tt> to a local object. Explain what happens if the user deletes the object to which a <tt>Handle</tt> is attached.</p>
+                      <p class="docText">解释如果用户将 <tt>Handle</tt> 对象与局部对象关联会发生什么。解释如果用户删除 <tt>Handle</tt> 对象所关联的对象会发生什么。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+
+<a name="ch16lev2sec26"></a>
+        <h4 class="docSection2Title">16.5.2. Using the Handle</h4>
+        <h4 class="docSection2Title">16.5.2. 使用句柄</h4>
+
+        <p class="docText">We intend this class to be used by other classes in their internal implementations. However, as an aid to understanding how the <tt>Handle</tt> class works, we'll look at a simpler example first. This example illustrates the behavior of the <tt>Handle</tt> by allocating an <tt>int</tt> and binding a <tt>Handle</tt> to that newly allocated object:</p>
+        <p class="docText">我们希望 <tt>Handle</tt> 类能够用于其他类的内部实现中。但是，为了帮助理解 <tt>Handle</tt> 类怎样工作，交首先介绍一个较简单的例子。这个例子通过分配一个 <tt>int</tt> 对象，并将一个 <tt>Handle</tt> 对象绑定到新分配的 int 对象而说明 <tt>Handle</tt> 的行为：</p>
+
+
+        <pre>
+     { // <span class="docEmphItalicAlt">new scope</span>
+       // <span class="docEmphItalicAlt">user allocates but must not delete the object to which the</span> <span class="docEmphasis">Handle</span> <span class="docEmphItalicAlt">is attached</span>
+       Handle&lt;int&gt; hp(new int(42));
+       { // <span class="docEmphItalicAlt">new scope</span>
+           Handle&lt;int&gt; hp2 = hp; // <span class="docEmphItalicAlt">copies pointer; use count incremented</span>
+           cout &lt;&lt; *hp &lt;&lt; " " &lt;&lt; *hp2 &lt;&lt; endl; // <span class="docEmphItalicAlt">prints 42 42</span>
+           *hp2 = 10;           // <span class="docEmphItalicAlt">changes value of shared underlying</span> int
+       }   // hp2 <span class="docEmphItalicAlt">goes out of scope; use count is decremented</span>
+       cout &lt;&lt; *hp &lt;&lt; endl; // <span class="docEmphItalicAlt">prints 10</span>
+     } // hp <span class="docEmphItalicAlt">goes out of scope; its destructor deletes the</span> <span class="docEmphasis">int</span>
+</pre><br>
+
+        <p class="docText">Even though the user of <tt>Handle</tt> allocates the <tt>int</tt>, the <tt>Handle</tt> destructor will delete it. In this code, the <tt>int</tt> is deleted at the end of the outer block when the last <tt>Handle</tt> goes out of scope. To access the underlying object, we apply the <tt>Handle *</tt> operator. That operator returns a reference to the underlying <tt>int</tt> object.</p>
+                      <p class="docText">即使是 <tt>Handle</tt> 的用户分配了 <tt>int</tt> 对象，<tt>Handle</tt> 析构函数也将删除它。在外层代码块末尾最后一个 <tt>Handle</tt> 对象超出作用域时，删除该 <tt>int</tt> 对象。为了访问基础对象，应用了 <tt>Handle</tt> 的 <tt>*</tt> 操作符，该操作符返回对基础 <tt>int</tt> 对象的引用。</p>
+
+<a name="ch16lev3sec39"></a>
+        <h5 class="docSection3Title">Using a <tt>Handle</tt> to Use-Count a Pointer</h5>
+        <h5 class="docSection3Title">使用 <tt>Handle</tt> 对象对指针进行使用计数</h5>
+
+        <p class="docText">As an example of using <tt>Handle</tt> in a class implementation, we might reimplement our <tt>Sales_item</tt> class (<a class="docLink" href="ch15lev1sec8.html#ch15lev2sec21" >Section 15.8.1</a>, p. <a class="docLink" href="ch15lev1sec8.html#ch15lev2sec21" >599</a>). This version of the class defines the same interface, but we can eliminate the copy-control members by replacing the pointer to <tt>Item_base</tt> by a <tt>Handle&lt;Item_base&gt;:</tt></p>
+        <p class="docText">作为在类实现中使用 <tt>Handle</tt> 的例子，可以重新实现 <tt>Sales_item</tt> 类（<a class="docLink" href="ch15lev1sec8.html#ch15lev2sec21" >第 15.8.1 节</a>），该类的这个版本定义相同的接口，但可以通过用 <tt>Handle&lt;Item_base&gt;:</tt> 对象代替 <tt>Item_base</tt> 指针而删去复制控制成员：</p>
+        <pre>
+     class Sales_item {
+     public:
+         // <span class="docEmphItalicAlt">default constructor: unbound handle</span>
+         Sales_item(): h() { }
+         // <span class="docEmphItalicAlt">copy</span> <span class="docEmphasis">item</span> <span class="docEmphItalicAlt">and attach handle to the copy</span>
+         Sales_item(const Item_base &amp;item): h(item.clone()) { }
+         // <span class="docEmphItalicAlt">no copy control members: synthesized versions work</span>
+         // <span class="docEmphItalicAlt">member access operators: forward their work to the</span> <span class="docEmphasis">Handle</span> <span class="docEmphItalicAlt">class</span>
+         const Item_base&amp; operator*() const { return *h; }
+         const Item_base* operator-&gt;() const
+                                { return h.operator-&gt;(); }
+     private:
+         Handle&lt;Item_base&gt; h; // <span class="docEmphItalicAlt">use-counted handle</span>
+     };
+</pre><br>
+
+<a name="idd1e131767"></a>
+        <p class="docText">Although the interface to the class is unchanged, its implementation differs considerably from the original:</p>
+        <p class="docText">虽然 <tt>Sales_item</tt> 类的接口没变，它的实现与原来的相当不同：</p>
+
+        <ul>
+          <li>
+            <p class="docList">Both classes define a default constructor and a constructor that takes a <tt>const</tt> reference to an <tt>Item_base</tt> object.</p>
+            <p class="docList">两个类都定义了默认构造函数和以 <tt>Item_base</tt> 对象为参数和 <tt>const</tt> 引用的构造函数。</p>
+          </li>
+
+          <li>
+            <p class="docList">Both define overloaded <tt>*</tt> and <tt>-&gt;</tt> operators as <tt>const</tt> members.</p>
+            <p class="docList">两个类都将重载的 <tt>*</tt> 和 <tt>-&gt;</tt> 操作符定义为 const 成员。</p>
+          </li>
+        </ul>
+
+        <p class="docText">The <tt>Handle</tt>-based version of <tt>Sales_item</tt> has a single data member. That data member is a <tt>Handle</tt> attached to a copy of the <tt>Item_base</tt> object given to the constructor. Because this version of <tt>Sales_item</tt> has no pointer members, there is no need for copy-control members. This version of <tt>Sales_item</tt> can safely use the synthesized copy-control members. The work of managing the use-count and associated <tt>Item_base</tt> object is done inside <tt>Handle</tt>.</p>
+        <p class="docText">基于 <tt>Handle</tt> 的 <tt>Sales_item</tt> 版本有一个数据成员，该数据成员是关联传给构造函数的 <tt>Item_base</tt> 对象的副本上的 <tt>Handle</tt> 对象。因为 <tt>Sales_item</tt> 的这个版本没有指针成员，所以不需要复制控制成员，<tt>Sales_item</tt> 的这个版本可以安全地使用合成的复制控制成员。管理使用计数和相关 <tt>Item_base</tt> 对象的工作在 <tt>Handle</tt> 内部完成。</p>
+
+        <p class="docText">Because the interface is unchanged, there is no need to change code that uses <tt>Sales_item</tt>. For example, the program we wrote in <a class="docLink" href="ch15lev1sec8.html#ch15lev2sec23" >Section 15.8.3</a> (p. <a class="docLink" href="ch15lev1sec8.html#ch15lev2sec23" >603</a>) can be used without change:</p>
+        <p class="docText">因为接口没变，所以不需要改变使用 <tt>Sales_item</tt> 类的代码。例如，<a class="docLink" href="ch15lev1sec8.html#ch15lev2sec23" >第 15.8.3 节</a>中编写的程序可以无须改变而使用：</p>
+        <pre>
+     double Basket::total() const
+     {
+         double sum = 0.0; // <span class="docEmphItalicAlt">holds the running total</span>
+         /* <span class="docEmphItalicAlt">find each set of items with the same</span> <span class="docEmphasis">isbn</span> <span class="docEmphItalicAlt">and calculate</span>
+          * <span class="docEmphItalicAlt">the net price for that quantity of items</span>
+          * <span class="docEmphasis">iter</span> <span class="docEmphItalicAlt">refers to first copy of each book in the set</span>
+          * <span class="docEmphasis">upper_boundrefers</span> <span class="docEmphItalicAlt">to next element with a different</span> <span class="docEmphasis">isbn</span>
+          */
+         for (const_iter iter = items.begin();
+                         iter != items.end();
+                         iter = items.upper_bound(*iter))
+         {
+             // <span class="docEmphItalicAlt">we know there's at least one element with this key in the</span> <span class="docEmphasis">Basket</span>
+             // <span class="docEmphItalicAlt">virtual call to</span> <span class="docEmphasis">net_priceapplies</span> <span class="docEmphItalicAlt">appropriate discounts, if any</span>
+             sum += (*iter)-&gt;net_price(items.count(*iter));
+         }
+         return sum;
+     }
+</pre><br>
+
+        <p class="docText">It's worthwhile to look in detail at the statement that calls <tt>net_price</tt>:</p>
+        <p class="docText">调用 <tt>net_price</tt> 函数的语句值得仔细分析一下：</p>
+        <pre>
+     sum += (*iter)-&gt;net_price(items.count(*iter));
+</pre><br>
+
+        <p class="docText">This statement uses operator <tt>-&gt;</tt> to fetch and run the <tt>net_price</tt> function. What's important to understand is how this operator works:</p>
+        <p class="docText">这个语句使用 <tt>-&gt;</tt> 操作符获取并运行 <tt>net_price</tt> 函数，重要的是理解这个操作符怎样工作：</p>
+
+        <ul>
+          <li>
+            <p class="docList"><tt>(*iter)</tt> returns <tt>h</tt>, our use-counted handle member.</p>
+            <p class="docList"><tt>(*iter)</tt> 返回 <tt>h</tt>，<tt>h</tt> 是使用计数式句柄的成员。</p>
+          </li>
+
+          <li>
+            <p class="docList"><tt>(*iter)-&gt;</tt> therefore uses the overloaded arrow operator of the handle class</p>
+            <p class="docList">因此，<tt>(*iter)-&gt;</tt> 使用句柄类的重载箭头操作符。 </p>
+          </li>
+
+          <li>
+            <p class="docList">The compiler evaluates <tt>h.operator-&gt;()</tt>, which in turn yields the pointer to <tt>Item_base</tt> that the <tt>Handle</tt> holds.</p>
+            <p class="docList">编译器计算 <tt>h.operator-&gt;()</tt>，获得该 <tt>Handle</tt> 对象保存的 <tt>Item_base</tt> 指针。</p>
+          </li>
+
+          <li>
+            <p class="docList">The compiler dereferences that <tt>Item_base</tt> pointer and calls the <tt>net_price</tt> member for the object to which the pointer points.</p>
+          </li>
+        </ul><a name="ch16sb18">编译器对该 <tt>Item_base</tt> 指针解引用，并调用指针所指对象的 <tt>net_price</tt> 成员。</a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 16.5.2</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch16qa16q1"></a><b>Exercise 16.49:</b></td>
+
+                    <td>
+		<a name="idd1e131976"></a><a name="idd1e131981"></a><a name="idd1e131989"></a><a name="idd1e131996"></a><a name="idd1e132001"></a><a name="idd1e132006"></a>
+                      <p class="docText">Implement the version of the <tt>Sales_item</tt> handle presented here that uses the generic <tt>Handle</tt> class to manage the pointer to <tt>Item_base</tt>.</p>
+                      <p class="docText">实现本节提出的 <tt>Sales_item</tt> 句柄的版本，该版本使用泛型 <tt>Handle</tt> 类管理 <tt>Item_base</tt> 指针。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch16qa16q2"></a><b>Exercise 16.50:</b></td>
+
+                    <td>
+                      <p class="docText">Rerun the function to total a sale. List all changes you had to make to get your code to work.</p>
+                      <p class="docText">重新运行函数计算销售总额。列出让你的代码工作必须进行的所有修改。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch16qa16q3"></a><b>Exercise 16.51:</b></td>
+
+                    <td>
+                      <p class="docText">Rewrite the <tt>Query</tt> class from <a class="docLink" href="ch15lev1sec9.html#ch15lev2sec27" >Section 15.9.4</a> (p. <a class="docLink" href="ch15lev1sec9.html#ch15lev2sec27" >613</a>) to use the generic <tt>Handle</tt> class. Note that you will need to make the <tt>Handle</tt> a friend of the <tt>Query_base</tt> class to let it access the <tt>Query_base</tt> destructor. List and explain all other changes you made to get the programs to work.</p>
+                      <p class="docText">重新编写<a class="docLink" href="ch15lev1sec9.html#ch15lev2sec27" >Section 15.9.4第 15.9.4 节</a>的 <tt>Query</tt> 类以使用泛型 <tt>Handle</tt> 类。注意你需要将 <tt>Handle</tt> 类设为 <tt>Query_base</tt> 类的友元，以使它能够访问 <tt>Query_base</tt> 构造函数。列出并解释让程序工作要做的其他所有修改。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a href="21001535.html" ><img src="images/pixel.gif"  alt="" width="1" height="1" border="0"></a>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch16lev1sec4.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch16lev1sec6.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

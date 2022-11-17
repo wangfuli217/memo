@@ -1,0 +1,267 @@
+<html><HEAD><TITLE>Programming Ruby: The Pragmatic Programmer's Guide</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=iso-8859-1"><LINK media=screen href="117_files/pr_style[1].css"  type=text/css rel=StyleSheet></head>
+<BODY bgColor=white>
+<TABLE cellSpacing=0 cellPadding=3 width="100%" bgColor=#c09090 border=0>
+<TBODY>
+<TR>
+<TD colSpan=3>
+<TABLE cellPadding=20 width="100%" bgColor=#701a1a>
+<TBODY>
+<TR>
+<TD width=6>
+<H1 class=header>Programming Ruby</H1>
+<H3 class=subheader>The Pragmatic Programmer's Guide</H3></TD></TR></TBODY></TABLE></TD></TR>
+<TR>
+<TD align=left width="33%"><A class=subheader href="116.html" >Previous &lt;</A> </TD>
+<TD vAlign=center align=middle width="33%"><A class=subheader href="95.html" >Contents ^</A> <BR></TD>
+<TD align=right width="33%"><A class=subheader href="118.html" >Next &gt;</A> <BR></TD></TR></TBODY></TABLE><!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<H1>Locking Ruby in the Safe</H1>
+<HR>
+<BR>
+<P></P>Walter Webcoder has a great idea for a portal site: The Web Arithmetic Page. Surrounded by all sorts of cool mathematical links and banner ads that will make him rich is a simple central frame, containing a text field and a button. Users type an arithmetic expression into the field, press the button, and the answer is displayed. All the world's calculators become obsolete overnight, and Walter cashes in and retires to devote his life to his collection of car license plate numbers. 
+<P></P>Implementing the calculator is easy, thinks Walter. He accesses the contents of the form field using Ruby's CGI library, and uses the <CODE>eval</CODE> method to evaluate the string as an expression. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>require&nbsp;'cgi'
+<P></P>
+cgi&nbsp;=&nbsp;CGI::new("html4")
+<P></P>
+#&nbsp;Fetch&nbsp;the&nbsp;value&nbsp;of&nbsp;the&nbsp;form&nbsp;field&nbsp;"expression"
+expr&nbsp;=&nbsp;cgi["expression"].to_s
+<P></P>
+begin
+&nbsp;&nbsp;result&nbsp;=&nbsp;eval(expr)
+rescue&nbsp;Exception&nbsp;=&gt;&nbsp;detail
+&nbsp;&nbsp;#&nbsp;handle&nbsp;bad&nbsp;expressions
+end
+<P></P>
+#&nbsp;display&nbsp;result&nbsp;back&nbsp;to&nbsp;user...
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>Roughly seven seconds after Walter puts the application online, a twelve-year-old from Waxahachie with glandular problems and no real life types ``<CODE>system("rm&nbsp;*")</CODE>'' into the form and, like his application, Walter's dreams come tumbling down. 
+<P></P>Walter learned an important lesson: <EM>All external data is dangerous. Don't let it close to interfaces that can modify your system.</EM> In this case, the content of the form field was the external data, and the call to <CODE>eval</CODE> was the security breach. 
+<P></P>Fortunately, Ruby provides support for reducing this risk. All information from the outside world can be marked as <EM>tainted</EM>. When running in a safe mode, potentially dangerous methods will raise a <CODE>SecurityError</CODE> if passed a tainted object. 
+<H2><A name=S1>Safe Levels</A></H2>
+<P></P>The variable <CODE>$SAFE</CODE> determines Ruby's level of paranoia. Table 20.1 on page 257 gives details of the checks performed at each safe level. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<TBODY>
+<TR bgColor=#ff9999>
+<TD vAlign=top><B>$SAFE</B> </TD>
+<TD vAlign=top><B>Constraints</B> </TD></TR>
+<TR>
+<TD vAlign=top>0</TD>
+<TD vAlign=top>No checking of the use of externally supplied (tainted) data is performed. This is Ruby's default mode.</TD></TR>
+<TR>
+<TD vAlign=top>&gt;= 1</TD>
+<TD vAlign=top>Ruby disallows the use of tainted data by potentially dangerous operations.</TD></TR>
+<TR>
+<TD vAlign=top>&gt;= 2</TD>
+<TD vAlign=top>Ruby prohibits the loading of program files from globally writable locations.</TD></TR>
+<TR>
+<TD vAlign=top>&gt;= 3</TD>
+<TD vAlign=top>All newly created objects are considered tainted.</TD></TR>
+<TR>
+<TD vAlign=top>&gt;= 4</TD>
+<TD vAlign=top>Ruby effectively partitions the running program in two. Nontainted objects may not be modified. Typically, this will be used to create a sandbox: the program sets up an environment using a lower <CODE>$SAFE</CODE> level, then resets <CODE>$SAFE</CODE> to 4 to prevent subsequent changes to that environment.</TD></TR>
+<TR>
+<TD bgColor=#ff9999 colSpan=9 height=2><IMG height=1 src="120_files/dot[1].gif"  width=1></TD></TR></TBODY></TABLE>
+<P></P>The default value of <CODE>$SAFE</CODE> is zero under most circumstances. However, if a Ruby script is run <EM>setuid</EM> or <EM>setgid</EM>,<EM>[A Unix script may be flagged to be run under a different user or group id than the person running it. This allows the script to have privileges that the user does not have; the script can access resources that the user would otherwise be prohibited from using. These scripts are called <EM>setuid</EM> or <EM>setgid</EM>.]</EM> its safe level is automatically set to 1. The safe level may also be set using the <CODE>-T</CODE> command-line option, and by assigning to <CODE>$SAFE</CODE> within the program. It is not possible to lower the value of <CODE>$SAFE</CODE> by assignment. 
+<P></P>The current value of <CODE>$SAFE</CODE> is inherited when new threads are created. However, within each thread, the value of <CODE>$SAFE</CODE> may be changed without affecting the value in other threads. This facility may be used to implement secure ``sandboxes,'' areas where external code may run safely without risking the rest of your application or system. Do this by wrapping code that you load from a file in its own, anonymous module. This will protect your program's namespace from any unintended alteration. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>f=open(fileName,"w")
+f.print&nbsp;...&nbsp;&nbsp;&nbsp;#&nbsp;write&nbsp;untrusted&nbsp;program&nbsp;into&nbsp;file.
+f.close
+Thread.start&nbsp;{
+&nbsp;&nbsp;$SAFE&nbsp;=&nbsp;4
+&nbsp;&nbsp;load(fileName,&nbsp;true)
+}
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>With a <CODE>$SAFE</CODE> level of 4, you can load <EM>only</EM> wrapped files. See <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_m_kernel.html#Kernel.load" ><CODE>Kernel::load</CODE> </A>on page 418 for details. 
+<H2><A name=S2>Tainted Objects</A></H2>
+<P></P>Any Ruby object derived from some external source (for example, a string read from a file, or an environment variable) is automatically marked as being tainted. If your program uses a tainted object to derive a new object, then that new object will also be tainted, as shown in the code below. Any object with external data somewhere in its past will be tainted. This tainting process is performed regardless of the current safe level. You can inspect the tainted status of an object using <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_object.html#Object.tainted_qm" ><CODE>Object#tainted?</CODE> </A>. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>#&nbsp;internal&nbsp;data</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>#&nbsp;=============</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>x1&nbsp;=&nbsp;"a&nbsp;string"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>x1.tainted?</CODE> </TD>
+<TD vAlign=top>»</TD>
+<TD vAlign=top><CODE>false</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE></CODE></TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>x2&nbsp;=&nbsp;x1[2,&nbsp;4]</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>x2.tainted?</CODE> </TD>
+<TD vAlign=top>»</TD>
+<TD vAlign=top><CODE>false</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE></CODE></TD></TR>
+<TR>
+<TD vAlign=top><CODE>x1&nbsp;=~&nbsp;/([a-z])/</CODE> </TD>
+<TD vAlign=top>»</TD>
+<TD vAlign=top><CODE>0</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>$1.tainted?</CODE> </TD>
+<TD vAlign=top>»</TD>
+<TD vAlign=top><CODE>false</CODE> </TD></TR></TBODY></TABLE>
+<P></P></TD>
+<TD width=5></TD>
+<TD width=2 bgColor=#ffaaaa><IMG height=1 src="120_files/dot[1].gif"  width=1></TD>
+<TD width=5></TD>
+<TD vAlign=top>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>#&nbsp;external&nbsp;data</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>#&nbsp;=============</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>y1&nbsp;=&nbsp;ENV["HOME"]</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>y1.tainted?</CODE> </TD>
+<TD vAlign=top>»</TD>
+<TD vAlign=top><CODE>true</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE></CODE></TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>y2&nbsp;=&nbsp;y1[2,&nbsp;4]</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>y2.tainted?</CODE> </TD>
+<TD vAlign=top>»</TD>
+<TD vAlign=top><CODE>true</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE></CODE></TD></TR>
+<TR>
+<TD vAlign=top><CODE>y1&nbsp;=~&nbsp;/([a-z])/</CODE> </TD>
+<TD vAlign=top>»</TD>
+<TD vAlign=top><CODE>1</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>$1.tainted?</CODE> </TD>
+<TD vAlign=top>»</TD>
+<TD vAlign=top><CODE>true</CODE> </TD></TR></TBODY></TABLE>
+<P></P></TD></TR></TBODY></TABLE>
+<P></P>You can force any object to become tainted by invoking its <CODE>taint</CODE> method. If the safe level is less than 3, you can remove the taint from an object by invoking <CODE>untaint</CODE>.<EM>[There are also some devious ways of doing this without using <CODE>untaint</CODE>. We'll leave it up to your darker side to find them.]</EM> This is clearly not something to do lightly. 
+<P></P>Clearly, Walter should have run his CGI script at a safe level of 1. This would have raised an exception when the program tried to pass form data to <CODE>eval</CODE>. Once this had happened, Walter would have had a number of choices. He could have chosen to implement a proper expression parser, bypassing the risks inherent in using <CODE>eval</CODE>. However, being lazy, it's more likely he'd have performed some simple sanity check on the form data, and untaint it if it looked innocuous. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>require&nbsp;'cgi';
+<P></P>
+$SAFE&nbsp;=&nbsp;1
+<P></P>
+cgi&nbsp;=&nbsp;CGI::new("html4")
+<P></P>
+expr&nbsp;=&nbsp;cgi["field"].to_s
+<P></P>
+if&nbsp;expr&nbsp;=~&nbsp;%r{^-+*/\d\seE.()*$}
+&nbsp;&nbsp;expr.untaint
+&nbsp;&nbsp;result&nbsp;=&nbsp;eval(expr)
+&nbsp;&nbsp;#&nbsp;display&nbsp;result&nbsp;back&nbsp;to&nbsp;user...
+else
+&nbsp;&nbsp;#&nbsp;display&nbsp;error&nbsp;message...
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>Personally, we think Walter's still taking undue risks. We'd probably prefer to see a real parser here, but implementing one here has nothing to teach us about tainting, so we'll move on. 
+<P></P>And remember---it's a dangerous world out there. Be careful. 
+<P></P>
+<TABLE width=500 bgColor=#ffe0e0 border=2>
+<TBODY>
+<TR>
+<TD>
+<P></P><B>Definition of the safe levels</B> 
+<DL>
+<DT><CODE>$SAFE</CODE> &gt;= 1 
+<DD>
+<UL>
+<LI>The environment variables <CODE>RUBYLIB</CODE> and <CODE>RUBYOPT</CODE> are not processed, and the current directory is not added to the path. 
+<LI>The command-line options <CODE>-e</CODE>, <CODE>-i</CODE>, <CODE>-I</CODE>, <CODE>-r</CODE>, <CODE>-s</CODE>, <CODE>-S</CODE>, and <CODE>-x</CODE> are not allowed. 
+<LI>Can't start processes from <CODE>$PATH</CODE> if any directory in it is world-writable. 
+<LI>Can't manipulate or chroot to a directory whose name is a tainted string. 
+<LI>Can't glob tainted strings. 
+<LI>Can't eval tainted strings. 
+<LI>Can't load or require a file whose name is a tainted string. 
+<LI>Can't manipulate or query the status of a file or pipe whose name is a tainted string. 
+<LI>Can't execute a system command or exec a program from a tainted string. 
+<LI>Can't pass <CODE>trap</CODE> a tainted string. </LI></UL>
+<P></P>
+<DT><CODE>$SAFE</CODE> &gt;= 2 
+<DD>
+<UL>
+<LI>Can't change, make, or remove directories, or use chroot. 
+<LI>Can't load a file from a world-writable directory. 
+<LI>Can't load a file from a tainted filename starting with ~. 
+<LI>Can't use <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_file.html#File.chmod" ><CODE>File#chmod</CODE> </A>, <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_file.html#File.chown" ><CODE>File#chown</CODE> </A>, <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_file.html#File.lstat" ><CODE>File#lstat</CODE> </A>, <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_file.html#File.stat" ><CODE>File.stat</CODE> </A>, <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_file.html#File.truncate" ><CODE>File#truncate</CODE> </A>, <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_file.html#File.umask" ><CODE>File.umask</CODE> </A>, <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_file.html#File.flock" ><CODE>File#flock</CODE> </A>, <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_io.html#IO.ioctl" ><CODE>IO#ioctl</CODE> </A>, <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_io.html#IO.stat" ><CODE>IO#stat</CODE> </A>, <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_m_kernel.html#Kernel.fork" ><CODE>Kernel#fork</CODE> </A>, <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_m_kernel.html#Kernel.syscall" ><CODE>Kernel#syscall</CODE> </A>, <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_m_kernel.html#Kernel.trap" ><CODE>Kernel#trap</CODE> </A>. <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_m_process.html#Process.setpgid" ><CODE>Process::setpgid</CODE> </A>, <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_m_process.html#Process.setsid" ><CODE>Process::setsid</CODE> </A>, <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_m_process.html#Process.setpriority" ><CODE>Process::setpriority</CODE> </A>, or <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_m_process.html#Process.egid_eq" ><CODE>Process::egid=</CODE> </A>. 
+<LI>Can't handle signals using <CODE>trap</CODE>. </LI></UL>
+<P></P>
+<DT><CODE>$SAFE</CODE> &gt;= 3 
+<DD>
+<UL>
+<LI>All objects are created tainted. 
+<LI>Can't untaint objects. </LI></UL>
+<P></P>
+<DT><CODE>$SAFE</CODE> &gt;= 4 
+<DD>
+<UL>
+<LI>Can't modify a nontainted array, hash, or string. 
+<LI>Can't modify a global variable. 
+<LI>Can't access instance variables of nontainted objects. 
+<LI>Can't change an environment variable. 
+<LI>Can't close or reopen nontainted files. 
+<LI>Can't freeze nontainted objects. 
+<LI>Can't change visibility of methods (private/public/protected). 
+<LI>Can't make an alias in a nontainted class or module. 
+<LI>Can't get meta information (such as method or variable lists). 
+<LI>Can't define, redefine, remove, or undef a method in a nontainted class or module. 
+<LI>Can't modify <CODE>Object</CODE>. 
+<LI>Can't remove instance variables or constants from nontainted objects. 
+<LI>Can't manipulate threads, terminate a thread other than the current, or set <CODE>abort_on_exception</CODE>. 
+<LI>Can't have thread local variables. 
+<LI>Can't raise an exception in a thread with a lower <CODE>$SAFE</CODE> value. 
+<LI>Can't move threads between ThreadGroups. 
+<LI>Can't invoke <CODE>exit</CODE>, <CODE>exit!</CODE>, or <CODE>abort</CODE>. 
+<LI>Can load only wrapped files, and can't include modules in nontainted classes and modules. 
+<LI>Can't convert symbol identifiers to object references. 
+<LI>Can't write to files or pipes. 
+<LI>Can't use <CODE>autoload</CODE>. 
+<LI>Can't taint objects. </LI></UL></DD></DL></TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>
+<HR>
+
+<TABLE cellSpacing=0 cellPadding=10 bgColor=#a03030 border=0>
+<TBODY>
+<TR>
+<TD align=left width="33%"><A class=subheader href="116.html" >Previous &lt;</A> </TD>
+<TD vAlign=center align=middle width="33%"><A class=subheader href="95.html" >Contents ^</A> <BR></TD>
+<TD align=right width="33%"><A class=subheader href="118.html" >Next &gt;</A> <BR></TD></TR></TBODY></TABLE>
+<P></P><FONT size=-1>Extracted from the book "Programming Ruby - The Pragmatic Programmer's Guide"</FONT> <BR><FONT size=-3>Copyright © 2001 by Addison Wesley Longman, Inc. This material may be distributed only subject to the terms and conditions set forth in the Open Publication License, v1.0 or later (the latest version is presently available at <A href="http://www.opencontent.org/openpub/" >http://www.opencontent.org/openpub/</A>)). 
+<P></P>Distribution of substantively modified versions of this document is prohibited without the explicit permission of the copyright holder. 
+<P></P>Distribution of the work or derivative of the work in any standard (paper) book form is prohibited unless prior permission is obtained from the copyright holder. <BR></FONT></BODY>

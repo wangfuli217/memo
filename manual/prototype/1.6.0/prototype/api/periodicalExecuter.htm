@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>PeriodicalExecuter - Prototype JavaScript 框架</title>
+	<link href="../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>PeriodicalExecuter</h2>
+		<div id="method-list">
+			<ul><li><a href="periodicalExecuter.htm#method-stop">stop</a></li></ul>
+		</div>
+		<div id="abody">
+			<p>
+				这是一个简单实用的工具，用于定期执行一个指定的函数。从本质上来说，它是封装原生 <code>Window</code>
+				对象的 <code>setInterval</code>/<code>clearInterval</code> 机制。
+			</p>
+			<p>
+				<code>PeriodicalExecuter</code> 具有一项值得注意的非常有用的特性：它会阻止回调函数的多次并发执行，
+				并顺延执行的时间间隔（它维护一个内部的运行标志，用于屏蔽回调函数运行时的产生的异常）。如果需要定时与用户进行交互
+				（如使用一个 <code>prompt</code> 或 <code>confirm</code>），这非常有用，它将会避免在等待响应时产生多个信息框。				
+			</p>
+			<p>
+				当然，当前一个非常好的观点是：应尽量使用一个实际的对象，而不是维护一个全局的定时器句柄。这也算是
+				<code>PeriodicalExecuter</code> 的一项优势吧。
+			</p>
+			<h3>创建 <code>PeriodicalExecuter</code> 对象</h3>
+			<p>
+				<code>PeriodicalExecuter</code> 的构造函数有两个参数：回调函数和时间间隔（以<strong>秒</strong>为单位）。
+				该对象启动后，会无限制的触发执行回调函数，直到页面卸载为止（浏览器通常会在一个适当的时机清除所有的定时器和延时器）。
+				当然，你也可以调用 <a href="periodicalExecuter/stop.htm" >stop</a> 方法手动停止。
+			</p>
+			<pre><code class="javascript">new PeriodicalExecuter(pollChatRoom, 3); 
+new PeriodicalExecuter(function(pe) { 
+	if (!confirm('Want me to annoy you again later?')) 
+		pe.stop(); 
+}, 5); 
+// 注意，即使用户长时间不响应，这里也不会弹出一大堆询问信息</code></pre>
+		</div>
+		<p>
+			<strong>译注：</strong>其实对于上面的样例，简单的使用原生的 <code>setInterval</code> 也不会弹出一大堆的信息框（包括 IE
+			和 FireFox），甚至于在浏览器中要弹出一大堆信息框还是一件困难的事。所以对于该文第二段的解释，我觉得有些勉强，或许是我理解有误？
+			<br />使用 <code>setInterval</code> 实现上述例子：			
+		</p>
+		<pre><code class="javascript">var interval = setInterval(function(){
+	if (!confirm('Want me to annoy you again later?')) 
+		clearInterval(interval);
+}, 5000)</code></pre>
+		<div id="method-excerpts">
+			<h3>方法</h3>
+			<div id="method-stop" class="mexcerpt">
+				<h4><a href="periodicalExecuter/stop.htm" >stop</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">stop()</code></pre>
+					<p>停止 <code>PeriodicalExecuter</code> 的执行，回调函数不会再次被触发。</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

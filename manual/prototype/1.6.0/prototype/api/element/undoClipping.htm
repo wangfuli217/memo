@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Element.undoClipping - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+	<script type='text/javascript' src="../../prototype-1.6.0.3.js" ></script>
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>undoClipping</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">undoClipping(element) -> HTMLElement</code></pre>
+			<p>
+				设置 <code>element</code> 的 CSS <code>overflow</code> 属性，重置其值为应用 <a href="makeClipping.htm" >Element.makeClipping()</a>
+				之前的值，返回元素本身。
+			</p>
+		</div>
+		<div id="abody">
+			<h3>样例</h3>
+			<pre><code class="html">&lt;div id="framer"&gt; 
+	&lt;img src="/assets/2007/1/14/chairs.jpg" alt="example" /&gt; 
+&lt;/div&gt; </code></pre>
+			<pre><code class="javascript">$('framer').undoClipping(); 
+// -> HTMLElement（并恢复 CSS overflow 属性为初始值）</code></pre>
+			<p><a id="clipper" href="undoClipping.htm#">点我测试一下</a></p>
+			<div id="framer"><img src="../../images/chairs.jpg"  alt="example" /></div>
+			<script type="text/javascript" charset=utf-8"utf-8">
+				var Example = {};
+				Example.clip = function(){
+					$('clipper').update('撤销！');
+					$('framer').makeClipping().setStyle({width: '100px', height: '100px'});
+				};
+				Example.unClip = function(){
+					$('clipper').update('剪切！');
+					$('framer').undoClipping();
+				};
+				Example.toggleClip = function(event){
+					if($('clipper').innerHTML == '剪切！') 
+						Example.clip();
+					else 
+						Example.unClip();
+					Event.stop(event);
+				};
+				$('framer').makeClipping().setStyle({width: '100px', height: '100px'});
+				Event.observe('clipper', 'click', Example.toggleClip);
+			</script>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

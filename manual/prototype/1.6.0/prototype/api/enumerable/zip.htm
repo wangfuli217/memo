@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Enumerable.zip - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>zip</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">zip(Sequence...[, iterator = Prototype.K]) -> Array</code></pre>
+			<p>
+				将多个（两个及以上）序列按照顺序配对合并（想像一下拉链拉上的情形）为一个包含一序列元组的数组。
+				元组由每个原始序列的具有相同索引的元素组合而成。如果指定了可选的 <code>iterator</code> 参数，则元组由
+				<code>iterator</code> 指定的函数生成。
+			</p>
+		</div>
+		<div id="abody">
+			<p>
+				以前没有使用过 <code>zip</code> 函数的人（其实也就是没有 Haskell 或 Ruby 工作经验），
+				对于理解这个函数的行为可能会有一些困难。这里有一些例子，希望能够对你有所帮助。
+			</p>
+			<h3>样例</h3>
+			<pre><code class="javascript">var firstNames = ['Justin', 'Mislav', 'Tobie', 'Christophe'];
+var lastNames = ['Palmer', 'Marohnić', 'Langel', 'Porteneuve']; 
+
+firstNames.zip(lastNames)
+// -> [['Justin', 'Palmer'], ['Mislav', 'Marohnić'], 
+// ['Tobie', 'Langel'], ['Christophe', 'Porteneuve']] 
+
+firstNames.zip(lastNames, function(a) { 
+	return a.join(' '); 
+}) 
+// -> ['Justin Palmer', 'Mislav Marohnić', 'Tobie Langel', 'Christophe Porteneuve']
+
+var cities = ['Memphis', 'Zagreb', 'Montreal', 'Paris']; 
+firstNames.zip(lastNames, cities, function(p) { 
+	return p[0] + ' ' + p[1] + ', ' + p[2]; 
+}) 
+// -> ['Justin Palmer, Memphis', 'Mislav Marohnić, Zagreb', 
+// 'Tobie Langel, Montreal', 'Christophe Porteneuve, Paris'] 
+
+firstNames.zip($R(1, 100), function(a) { 
+	return a.reverse().join('.'); 
+}) 
+// -> ['1. Justin', '2. Mislav', '3. Tobie', '4. Christophe'] </code></pre>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

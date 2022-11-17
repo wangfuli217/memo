@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml">
+<HEAD><TITLE>Events模块（Events Module）</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=GB2312">
+<STYLE type=text/css>PRE {
+	BACKGROUND-COLOR: #cccccc
+}
+.STYLE1 {
+	COLOR: #ff0000
+}
+</STYLE>
+
+<META content="MSHTML 6.00.6000.16809" name=GENERATOR></HEAD>
+<BODY>
+<H2>Events模块（Events Module）</H2><BR>
+
+<H3>·摘要</H3>
+<H4>配置start/stop事件<BR>
+示例配置：<BR>
+<PRE>on_start /opt/f.sh;
+on_stop kill `cat /tmp/f.pid`;
+on_stop rm -f /tmp/f.sock;
+</PRE>
+作者：<A href="http://dutov.org/" >Anton Dutov</A><BR>
+<A href="http://hg.dutov.org/nginx-module-events/archive/tip.zip" >下载该模块</A><BR>
+<A href="http://hg.dutov.org/nginx-module-events/" >源代码</A><BR>
+文档：<A href="http://docs.dutov.org/nginx_modules_events_en.html" >英文</A>，<A href="http://docs.dutov.org/nginx_modules_events_ru.html" >俄文</A><BR></H4>
+<H3>·指令</H3>
+<H3>on_start </H3>
+<H4>语法：on_start &lt;system command&gt; <BR>
+默认值：none <BR>
+使用字段：server <BR>
+示例：on_start echo “started” &gt; /tmp/test && date &gt;&gt; /tmp/test; <BR>
+在服务启动时执行一些系统命令。</H4>
+<H3>on_stop</H3>
+<H4>语法：on_stop &lt;system command&gt; <BR>
+默认值：none <BR>
+使用字段：server <BR>
+示例：on_stop echo “stopped” &gt; /tmp/test && date &gt;&gt; /tmp/test; <BR>
+在服务停止时执行一些系统命令。</H4>
+<H3>·示例配置</H3>
+<H4><A href="http://mercurial.selenic.com/" >Mercurial</A> (代理)
+<PRE>server {
+    listen                   80;
+    server_name              hg.dutov.org;
+    server_name_in_redirect  off;
+    access_log               /var/log/nginx/org.dutov.hg.access.log  main;
+
+    on_start hg serve
+        --style paper
+        --webdir-conf /var/www/org.dutov.hg/org.dutov.hg.hgweb
+        --pid-file    /var/run/org.dutov.hg.pid
+        -A /dev/null
+        -E /dev/null
+        -d  -a 127.0.0.1 -p 8080;
+
+    on_stop kill `cat -- /var/run/org.dutov.hg.pid`;
+    on_stop rm -f -- /var/run/org.dutov.hg.pid;
+
+    location / {
+        if ($request_method = POST ) {
+            return 405;
+        }
+        proxy_pass         http://127.0.0.1:8080/;
+        proxy_redirect     off;
+        proxy_set_header   Host             $host;
+        proxy_set_header   X-Real-IP        $remote_addr;
+        proxy_set_header   X-Forwarded-For  $remote_addr;
+
+        client_max_body_size       10m;
+        client_body_buffer_size    128k;
+        proxy_connect_timeout      90;
+        proxy_send_timeout         90;
+        proxy_read_timeout         90;
+        proxy_buffer_size          4k;
+        proxy_buffers              4 32k;
+        proxy_busy_buffers_size    64k;
+        proxy_temp_file_write_size 10m;
+    }
+}
+</PRE>
+<A href="http://www.redmine.org/" >Redmine</A>
+<PRE>server {
+    listen                   80;
+    server_name              dev.dutov.org;
+    server_name_in_redirect  off;
+    access_log               /var/log/nginx/org.dutov.dev.access.log  main;
+    root                     /var/www/org.dutov.dev/public;
+
+    on_start export RAILS_ENV="production" && /usr/bin/spawn-fcgi
+        -u www-data
+        -g www-data
+        -P /var/run/org.dutov.dev.pid
+        -s /var/run/org.dutov.dev.sock
+        -f /var/www/org.dutov.dev/public/dispatch.fcgi;
+
+    on_stop kill `cat -- /var/run/org.dutov.dev.pid`;
+    on_stop rm -f -- /var/run/org.dutov.dev.pid;
+
+    location ~ ^/(javascripts|stylesheets|themes|images|help)/ {
+        expires    30d;
+        access_log off;
+    }
+
+    location / {
+        fastcgi_pass    unix:/var/run/org.dutov.dev.sock;
+        include         /etc/nginx/fastcgi_params;
+    }
+}
+</PRE>
+</H4>
+<H3>·参考文档</H3>
+<H4><A href="http://docs.dutov.org/nginx_modules_events_en.html" >Nginx Events Module</A></H4>
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://179401.cn/analytics/" : "http://179401.cn/analytics/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://shouce.jb51.net/179401.cn/analytics/piwik.php-idsite=1"  style="border:0" alt=""/></p></noscript>
+<!-- End Piwik Tag -->
+</BODY>
+</HTML>
+<H3><A href="ExpresszModule.html" >前进->Expressz模块（Expressz Module）</A></H3>

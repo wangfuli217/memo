@@ -1,0 +1,450 @@
+<html>
+<META http-equiv="Content-Type" content="text/html; charset=utf-8">
+<head>
+<title>Section 9.2.&nbsp; Iterators and Iterator Ranges</title>
+<link rel="STYLESHEET" type="text/css" href="images/style.css" >
+<link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+<body>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr><td><div STYLE="MARGIN-LEFT: 0.15in;"><a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle"  alt="Team LiB"></a></div></td>
+<td align="right"><div STYLE="MARGIN-LEFT: 0.15in;">
+<a href="ch09lev1sec1.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a>
+<a href="ch09lev1sec3.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+</div></td></tr></table>
+<br><table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td valign="top"><a name="ch09lev1sec2"></a>
+<h3 class="docSection1Title">9.2. Iterators and Iterator Ranges</h3>
+<h3 class="docSection1Title">9.2. 迭代器和迭代器范围</h3>
+
+<p class="docText">The constructors that take a pair of iterators are an example of a common form used extensively throughout the library. Before we look further at the container operations, we should understand a bit more about iterators and iterator ranges.</P>
+<p class="docText">在整个标准库中，经常使用形参为一对迭代器的构造函数。在深入探讨容器操作之前，先来了解一下迭代器和迭代器范围。</p>
+
+<p class="docText">In <a class="docLink" href="ch03lev1sec4.html#ch03lev1sec4" >Section 3.4</a> (p. <a class="docLink" href="ch03lev1sec4.html#ch03lev1sec4" >95</a>), we first encountered <tt>vector</tt> iterators. Each of the container types has several companion iterator types. Like the containers, the iterators have a common interface: If an iterator provides an operation, then the operation is supported in the same way for each iterator that supplies that operation. For example, all the container iterators let us read an element from a container, and they all do so by providing the dereference operator. Similarly, they all provide increment and decrement operators to allow us to go from one element to the next. <a name="idd1e63947"></a><a name="idd1e63954"></a><a name="idd1e63961"></a><a name="idd1e63968"></a><a name="idd1e63975"></a><a name="idd1e63980"></a><a name="idd1e63988"></a><a name="idd1e63994"></a><a name="idd1e64002"></a><a name="idd1e64010"></a><a name="idd1e64018"></a><a name="idd1e64023"></a><a name="idd1e64028"></a><a name="idd1e64031"></a><a name="idd1e64041"></a><a name="idd1e64049"></a><a name="idd1e64057"></a><a name="idd1e64065"></a><a class="docLink" href="ch09lev1sec2.html#ch09table03">Table 9.3</a> lists the iterator operations supported by the iterators for all of the library containers.</P>
+<p class="docText"><a class="docLink" href="ch03lev1sec4.html#ch03lev1sec4" >第 3.4 节</a>首次介绍了 <tt>vector</tt> 类型的迭代器。每种容器类型都提供若干共同工作的迭代器类型。与容器类型一样，所有迭代器具有相同的接口：如果某种迭代器支持某种操作，那么支持这种操作的其他迭代器也会以相同的方式支持这种操作。例如，所有容器迭代器都支持以解引用运算从容器中读入一个元素。类似地，容器都提供自增和自减操作符来支持从一个元素到下一个元素的访问。<a class="docLink" href="ch09lev1sec2.html#ch09table03">表 9.3</a> 列出迭代器为所有标准库容器类型所提供的运算。</p>
+
+<a name="ch09table03"></a>
+<p>
+<table cellspacing="0" class="allBorders" border="1" RULES="none" cellpadding="5">
+	<caption><H5 class="docTableTitle">Table 9.3. Common Iterator Operations</h5></caption>
+	<caption><H5 class="docTableTitle">表 9.3. 常用迭代器运算</h5></caption>
+	<colgroup><col width="150"><col width="375"></colgroup><thead></thead>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>*iter</tt></P>
+		</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Return a reference to the element referred to by the iterator <tt>iter</tt>.</p>
+			<p class="docText">返回迭代器 <tt>iter</tt> 所指向的元素的引用</p>
+		</td>
+	</tr>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>iter-&gt;mem</tt></P>
+		</TD>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Dereference <tt>iter</tt> and fetch the member named <tt>mem</tt> from the underlying element. Equivalent to <tt>(*iter).mem</tt>.</p>
+			<p class="docText">对 <tt>iter</tt> 进行解引用，获取指定元素中名为 <tt>mem</tt> 的成员。等效于 <tt>(*iter).mem</tt></p>
+		</td>
+	</TR>
+	<TR>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>++iter iter++</tt></p>
+		</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Increment <tt>iter</tt> to refer to the next element in the container.</P>
+			<p class="docText">给 <tt>iter</tt> 加 1，使其指向容器里的下一个元素</p>
+		</td>
+	</tr>
+	<TR>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>--iter iter--</tt></p>
+		</TD>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Decrement <tt>iter</tt> to refer to the previous element in the container.</P>
+			<p class="docText">给 <tt>iter</tt> 减 1，使其指向容器里的前一个元素</p>
+		</td>
+	</tr>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>iter1 == iter2 <br>iter1 != iter2</tt></p>
+		</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Compare two iterators for equality (inequality). Two iterators are equal if they refer to the same element of the same container or if they are the off-the-end iterator (<a class="docLink" href="ch03lev1sec4.html#ch03lev1sec4" >Section 3.4</a>, p. <a class="docLink" href="ch03lev1sec4.html#ch03lev1sec4" >97</a>) for the same container.</p>
+			<p class="docText">比较两个迭代器是否相等（或不等）。当两个迭代器指向同一个容器中的同一个元素，或者当它们都指向同一个容器的超出末端的下一位置时，两个迭代器相等</p>
+		</td>
+	</tr>
+</table>
+</p>
+<br>
+<a name="ch09lev2sec3"></a>
+<H4 class="docSection2Title">Iterators on <tt>vector</tt> and <tt>deque</tt> Support Additional Operations</H4>
+<H4 class="docSection2Title"><tt>vector</tt> 和 <tt>deque</tt> 容器的迭代器提供额外的运算</H4>
+<p class="docText">There are two important sets of operations that only <tt>vector</tt> and <tt>deque</tt> support: iterator arithmetic (<a class="docLink" href="ch03lev1sec4.html#ch03lev2sec14" >Section 3.4.1</a>, p. <a class="docLink" href="ch03lev1sec4.html#ch03lev2sec14" >100</a>) and the use of the relational operators (in addition to <tt>==</tt> and <tt>!=</tt>) to compare two iterators. These operations are summarized in <a class="docLink" href="ch09lev1sec2.html#ch09table04">Table 9.4</a> on the facing page.</p>
+<p class="docText">C++ 定义的容器类型中，只有 <tt>vector</tt> 和 <tt>deque</tt> 容器提供下面两种重要的运算集合：迭代器算术运算（<a class="docLink" href="ch03lev1sec4.html#ch03lev2sec14" >第 3.4.1 节</a>），以及使用除了 <tt>==</tt> 和 <tt>!=</tt> 之外的关系操作符来比较两个迭代器（<tt>==</tt> 和 <tt>!=</tt> 这两种关系运算适用于所有容器）。<a class="docLink" href="ch09lev1sec2.html#ch09table04">表 9.4</a> 总结了这些相关的操作符。</p>
+
+<a name="ch09table04"></a>
+<p>
+<table cellspacing="0" class="allBorders" border="1" RULES="none" cellpadding="5">
+	<caption><h5 class="docTableTitle">Table 9.4. Operations Supported by <tt>vector</tt> and <tt>deque</tt> Iterators</h5></caption>
+	<caption><h5 class="docTableTitle">表 9.4. <tt>vector</tt> 和 <tt>deque</tt> 类型迭代器支持的操作</h5></caption>
+	<colgroup><col width="150"><col width="350"></colgroup><thead></thead>
+	<TR>
+		<TD class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>iter + n <br>iter - n</tt></p></td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Adding (subtracting) an integral value <tt>n</tt> to (from) an iterator yields an iterator that many elements forward (backward) within the container. The resulting iterator must refer to an element in the container or one past the end of the container.</p>
+	<p class="docText">在迭代器上加（减）整数值 <tt>n</tt>，将产生指向容器中前面（后面）第 <tt>n</tt> 个元素的迭代器。新计算出来的迭代器必须指向容器中的元素或超出容器末端的下一位置</p></td></tr>
+	<TR>
+		<TD class="docTableCell" align="left" valign="top"><p class="docText"><tt>iter1 += iter2 <br>iter1 -= iter2</tt></p></td>
+		<TD class="docTableCell" align="left" valign="top">
+			<p class="docText">Compound-assignment versions of iterator addition and subtraction. Assigns the value of adding or subtracting <tt>iter1</tt> and <tt>iter2</tt> into <tt>iter1</tt>.</P>
+			<p class="docText">这里迭代器加减法的复合赋值运算：将 <tt>iter1</tt> 加上或减去 <tt>iter2</tt> 的运算结果赋给 <tt>iter1</tt></P>
+		</td>
+	</tr>
+	<tr>
+		<td class="docTableCell" align="left" valign="top"><p class="docText"><tt>iter1 - iter2</tt></P></td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Subtracting two iterators yields the number that when added to the right-hand iterator yields the left-hand iterator. The iterators must refer to elements in the same container or one past the end of the container.</P>
+			<p class="docText">两个迭代器的减法，其运算结果加上右边的迭代器即得左边的迭代器。这两个迭代器必须指向同一个容器中的元素或超出容器末端的下一位置</P>
+			<p class="docText"><span class="docEmphStrong">Supported only for</span> <tt>vector</tt> <span class="docEmphStrong">and</span> <tt>deque</tt>.</p>
+			<p class="docText"><span class="docEmphStrong">只适用于</span> <tt>vector</tt> <span class="docEmphStrong">和</span> <tt>deque</tt> 容器</p></td></TR>
+		</td>
+	</tr>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>&gt;, &gt;=, &lt;, &lt;=</tt></p>
+		</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Relational operators on iterators. One iterator is less than another if it refers to an element whose position in the container is ahead of the one referred to by the other iterator. The iterators must refer to elements in the same container or one past the end of the container.</p>
+			<p class="docText">迭代器的关系操作符。当一个迭代器指向的元素在容器中位于另一个迭代器指向的元素之前，则前一个迭代器小于后一个迭代器。关系操作符的两个迭代器必须指向同一个容器中的元素或超出容器末端的下一位置</p>
+			<p class="docText"><span class="docEmphStrong">Supported only for</span> <tt>vector</tt> <span class="docEmphStrong">and</span> <tt>deque</tt>.</p>
+			<p class="docText"><span class="docEmphStrong">只适用于</span> <tt>vector</tt> <span class="docEmphStrong">和</span> <tt>deque</tt> 容器</p>
+		</td>
+	</tr>
+</table>
+</p>
+<br>
+<p class="docText">The reason that only <tt>vector</tt> and <tt>deque</tt> support the relational operators is that only <tt>vector</tt> and <tt>deque</tt> offer fast, random access to their elements. These containers are guaranteed to let us efficiently jump directly to an element given its position in the container. Because these containers support random access by position, it is possible for their iterators to efficiently implement the arithmetic and relational operations.</p>
+<p class="docText">关系操作符只适用于 <tt>vector</tt> 和 <tt>deque</tt> 容器，这是因为只有这种两种容器为其元素提供快速、随机的访问。它们确保可根据元素位置直接有效地访问指定的容器元素。这两种容器都支持通过元素位置实现的随机访问，因此它们的迭代器可以有效地实现算术和关系运算。</p>
+
+<p class="docText">For example, we could calculate the midpoint of a <tt>vector</tt> as follows:</p>
+<p class="docText">例如，下面的语句用于计算 <tt>vector</tt> 对象的中点位置：</p>
+<pre>
+     vector&lt;int&gt;::iterator iter = vec.begin() + vec.size()/2;
+</pre><br>
+
+<p class="docText">On the other hand, this code</p>
+<p class="docText">另一方面，代码：</p>
+
+<pre>
+     // <span class="docEmphItalicAlt">copy elements from vec into ilist</span>
+     list&lt;int&gt; ilist(vec.begin(), vec.end());
+     ilist.begin() + ilist.size()/2; // <span class="docEmphItalicAlt">error: no addition on</span> <span class="docEmphasis">list</span> <span class="docEmphItalicAlt">iterators</span>
+</pre><BR>
+
+<p class="docText">is an error. The <tt>list</tt> iterator does not support the arithmetic operationsaddition or subtractionnor does it support the relational (<tt>&lt;=, &lt;, &gt;=, &gt;</tt>) operators. It does support pre- and postfix increment and decrement and the equality (inequality) operators.</P>
+<p class="docText">是错误的。<tt>list</tt> 容器的迭代器既不支持算术运算（加法或减法），也不支持关系运算（<tt>&lt;=, &lt;, &gt;=, &gt;</tt>），它只提供前置和后置的自增、自减运算以及相等（不等）运算。</p>
+
+<p class="docText">In <a class="docLink" href="ch11.html#ch11" >Chapter 11</a> we'll see that the operations an iterator supports are fundamental to using the library algorithms.</p>
+<p class="docText"><a class="docLink" href="ch11.html#ch11" >第十一章</a>中，我们将会了解到迭代器提供运算是使用标准库算法的基础。</p>
+
+<a name="ch09sb03"></a>
+<p>
+<table cellspacing="0" width="90%" border="1" cellpadding="5">
+	<tr>
+		<td>
+			<H2 class="docSidebarTitle">Exercises Section 9.2</H2>
+			<blockquote>
+				<p>
+				<table border="0" cellspacing="16" cellpadding="0">
+					<tr valign="top">
+						<td align="right" class="docText" width="50"><a name="ch09qa3q1"></a>
+							<b>Exercise 9.7:</b></td>
+						<td>
+							<p class="docText">
+							<a name="idd1e64409"></a><a name="idd1e64416"></a><a name="idd1e64423"></a><a name="idd1e64430"></a><a name="idd1e64438"></a><a name="idd1e64443"></a><a name="idd1e64448"></a><a name="idd1e64454"></a><a name="idd1e64459"></a><a name="idd1e64462"></a><a name="idd1e64467"></a><a name="idd1e64477"></a><a name="idd1e64485"></a><a name="idd1e64498"></a><a name="idd1e64506"></a>
+							What is wrong with the following program? How might you correct it?</p>
+							<p class="docText">
+							下面的程序错在哪里？如何改正。</p>
+<pre>
+     list&lt;int&gt; lst1;
+     list&lt;int&gt;::iterator iter1 = lst1.begin(),
+                         iter2 = lst1.end();
+     while (iter1 &lt; iter2) /* . . . */
+</pre><BR>
+						</td>
+					</tr>
+					<tr valign="top">
+						<td align="right" class="docText" width="50"><a name="ch09qa3q2"></a>
+							<B>Exercise 9.8:</b></TD>
+						<td>
+							<p class="docText">Assuming <tt>vec_iter</tt> is bound to an element in a <tt>vector</tt> that holds <tt>string</tt>s, what does this statement do?</p>
+							<p class="docText">假设 <tt>vec_iter</tt> 与 <tt>vector</tt> 对象的一个元素捆绑在一起，该 <tt>vector</tt> 对象存放 <tt>string</tt> 类型的元素，请问下面的语句实现什么功能？</p>
+<pre>
+     if (vec_iter-&gt;empty()) /* . . . */
+</pre><br>
+						</td>
+					</tr>
+					<tr valign="top">
+						<td align="right" class="docText" width="50"><a name="ch09qa3q3"></a>
+							<b>Exercise 9.9:</b></td>
+						<td>
+							<p class="docText">Write a loop to write the elements of a <tt>list</tt> in reverse order.</P>
+							<p class="docText">编写一个循环将 <tt>list</tt> 容器的元素逆序输出。</P>
+						</td>
+					</tr>
+					<tr valign="top">
+						<td align="right" class="docText" width="50"><a name="ch09qa3q4"></a>
+							<b>Exercise 9.10:</b></td>
+						<td>
+							<p class="docText">Which, if any, of the following iterator uses are in error?</p>
+							<p class="docText">下列迭代器的用法哪些（如果有的话）是错误的？</p>
+<pre>
+     const vector&lt; int &gt; ivec(10);
+     vector&lt; string &gt;    svec(10);
+     list&lt; int &gt;         ilist(10);
+
+     (a) vector&lt;int&gt;::iterator    it = ivec.begin();
+     (b) list&lt;int&gt;::iterator      it = ilist.begin()+2;
+     (c) vector&lt;string&gt;::iterator it = &amp;svec[0];
+     (d) for (vector&lt;string&gt;::iterator
+                  it = svec.begin(); it != 0; ++it)
+                     // ...
+</pre><br>
+							</td>
+					</tr>
+				</table>
+				</p>
+			</blockquote>
+		</td>
+	</tr>
+</table>
+</p>
+<BR>
+
+<a name="ch09lev2sec4"></a>
+<H4 class="docSection2Title">9.2.1. Iterator Ranges</h4>
+<H4 class="docSection2Title">9.2.1. 迭代器范围</h4>
+<a name="ch09note05"></a>
+<div class="docNote">
+	<p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" align="LEFT" width="50" height="54" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></TD>
+			<TD valign="top">
+				<a name="idd1e64588"></a><a name="idd1e64591"></a><a name="idd1e64594"></a><a name="idd1e64597"></a><a name="idd1e64600"></a><a name="idd1e64605"></a><a name="idd1e64610"></a>
+				<p class="docText"> The concept of an iterator range is fundamental to the standard library.</p></td></tr></table><br>
+				<p class="docText">迭代器范围这个概念是标准库的基础。</p>
+			</td>
+		</tr>
+	</table>
+<br>
+</p>
+</div><BR>
+
+<p class="docText">An <b><a name="ch09term8"></a><a class="docLink" href="ch09lev1sec9.html#gloss09_08" >iterator range</a></b> is denoted by a pair of iterators that refer to two elements, or to <span class="docEmphasis">one past the last element</span>, in the same container. These two iterators, often referred to as <tt>first</tt> and <tt>last</tt>, or <tt>beg</tt> and <span class="docEmphRoman"><a name="ch09term5"></a><a class="docLink" href="ch09lev1sec9.html#gloss09_05" ><span class="docEmphRoman"><tt>end</tt></span></a></span>, mark a range of elements from the container.</P>
+<p class="docText">C++ 语言使用一对迭代器标记<b><a class="docLink" href="ch09lev1sec9.html#gloss09_08" >迭代器范围（iterator range）</a></b>，这两个迭代器分别指向同一个容器中的两个元素或<span class="docEmphasis">超出末端的下一位置</span>，通常将它们命名为 <tt>first</tt> 和 <tt>last</tt>，或 <tt>beg</tt> 和 <tt>end</tt>，用于标记容器中的一段元素范围。</p>
+
+<p class="docText">Although the names <tt>last</tt> and <tt>end</tt> are common, they are a bit misleading. The second iterator never refers to the last element of the range. Instead, it refers to a point one past the last element. The elements in the range include the element referred to by <tt>first</tt> and every element from <tt>first</tt> tHRough the element just before <tt>last</tt>. If the iterators are equal, then the range is empty.</p>
+<p class="docText">尽管 <tt>last</tt> 和 <tt>end</tt> 这两个名字很常见，但是它们却容易引起误解。其实第二个迭代器从来都不是指向元素范围的最后一个元素，而是指向最后一个元素的下一位置。该范围内的元素包括迭代器 <tt>first</tt> 指向的元素，以及从 <tt>first</tt> 开始一直到迭代器 <tt>last</tt> 指向的位置之前的所有元素。如果两个迭代器相等，则迭代器范围为空。</p>
+
+<p class="docText">This element range is called a <b><a name="ch09term9"></a><a class="docLink" href="ch09lev1sec9.html#gloss09_09" >left-inclusive interval</a></b>. The standard notation for such a range is</p>
+<p class="docText">此类元素范围称为<b><a class="docLink" href="ch09lev1sec9.html#gloss09_09" >左闭合区间（left-inclusive interval）</a></b>，其标准表示方式为：</p>
+<pre>
+     // <span class="docEmphItalicAlt">to be read as: includes first and each element up to but not including last</span>
+     [ first, last )
+</pre><BR>
+<p class="docText">indicating that the range begins with <tt>first</tt> and ends with, but does not include, <tt>last</tt>. The iterator in <tt>last</tt> may be equal to the <tt>first</tt> or may refer to an element that appears after the one referred to by <tt>first</tt>. The <tt>last</tt> iterator must not refer to an element ahead of the one referred to by <tt>first</tt>.</P>
+<p class="docText">表示范围从 <tt>first</tt> 开始，到 <tt>last</tt> 结束，但不包括 <tt>last</tt>。迭代器 <tt>last</tt> 可以等于 <tt>first</tt>，或者指向 <tt>first</tt> 标记的元素后面的某个元素，但绝对不能指向 <tt>first</tt> 标记的元素前面的元素。</p>
+
+<a name="ch09sb04"></a><p><table cellspacing="0" width="90%" border="1" cellpadding="5"><tr><td>
+<h2 class="docSidebarTitle">Requirements on Iterators Forming an Iterator Range</H2>
+<h2 class="docSidebarTitle">对形成迭代器范围的迭代器的要求</h2>
+<p class="docText"><span class="docEmphStrong">Two iterators, <tt>first</tt> and <tt>last</tt></span><span class="docEmphStrong">, form an iterator range, if</span></p>
+<p class="docText"><span class="docEmphStrong">迭代器 <tt>first</tt> 和 <tt>last</tt> 如果满足以下条件，则可形成一个迭代器范围</span><span class="docEmphStrong"></span>：</p>
+
+<ul>
+	<li>
+	<p class="docList"><span class="docEmphStrong">They refer to elements of, or one-past-the-end of, the same container.</span></p>
+	<p class="docList"><span class="docEmphStrong">它们指向同一个容器中的元素或超出末端的下一位置。</span></p>
+	</li>
+	<li>
+	<p class="docList"><span class="docEmphStrong">If the iterators are not equal, then it must be possible to reach <tt>last</tt> by repeatedly incrementing <tt>first</tt></span><span class="docEmphStrong">. In other words, <tt>last</tt> must not precede <tt>first</tt> in the container.</span></p>
+	<p class="docList"><span class="docEmphStrong">如果这两个迭代器不相等，则对 <tt>first</tt> 反复做自增运算必须能够到达 <tt>last</tt>。</span><span class="docEmphStrong">换句话说，在容器中，<tt>last</tt> 绝对不能位于 <tt>first</tt> 之前。</span></p>
+	</li>
+</ul>
+
+<a name="ch09note06"></a>
+<div class="docNote">
+	<p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" align="LEFT" width="57" height="96" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+			<td valign="top">
+				<p class="docText"> <span class="docEmphStrong">The compiler cannot itself enforce these requirements. It does not know to which container an iterator is bound, nor does it know how many elements are in a container. Failing to meet these requirements results in undefined run-time behavior.</span></p>
+				<p class="docText"> <span class="docEmphStrong">编译器自己不能保证上述要求。编译器无法知道迭代器所关联的是哪个容器，也不知道容器内有多少个元素。若不能满足上述要求，将导致运行时未定义的行为。</span></p>
+			</td>
+		</tr>
+	</table>
+	<br>
+</p></div><br>
+</td>
+</tr>
+</table>
+</p>
+<br>
+
+<a name="ch09lev3sec6"></a>
+<H5 class="docSection3Title">Programming Implications of Using Left-Inclusive Ranges</h5>
+<H5 class="docSection3Title">使用左闭合区间的编程意义</h5>
+<p class="docText">The library uses left-inclusive ranges because such ranges have two convenient properties. Assuming <tt>first</tt> and <tt>last</tt> denote a valid iterator range, then</p>
+<p class="docText">因为左闭合区间有两个方便使用的性质，所以标准库使用此烦区间。假设 <tt>first</tt> 和 <tt>last</tt> 标记了一个有效的迭代器范围，于是：</p>
+
+<div style="font-weight:bold">
+	<ol class="docList" type="1">
+		<li>
+		<div style="font-weight:normal">
+			<p class="docList">When <tt>first</tt> equals <tt>last</tt>, the range is empty.</P>
+			<p class="docList">当 <tt>first</tt> 与 <tt>last</tt> 相等时，迭代器范围为空；</P>
+		</div>
+		</li>
+		<li>
+		<div style="font-weight:normal">
+			<p class="docList">When <tt>first</tt> is not equal to <tt>last</tt>, there is at least one element in the range, and <tt>first</tt> refers to the first element in that range. Moreover, we can advance <tt>first</tt> by incrementing it some number of times until <tt>first == last</tt>.</p>
+			<p class="docList">当 <tt>first</tt> 与不相等时，迭代器范围内至少有一个元素，而且 <tt>first</tt> 指向该区间中的第一元素。此外，通过若干次自增运算可以使 <tt>first</tt> 的值不断增大，直到 <tt>first == last</tt> 为止。</p>
+		</div>
+		</li>
+	</ol>
+</div>
+<p class="docText"><a name="idd1e64806"></a><a name="idd1e64809"></a><a name="idd1e64814"></a>These properties mean that we can safely write loops such as the following to process a range of elements by testing the iterators:</p>
+<p class="docText">这两个性质意味着程序员可以安全地编写如下的循环，通过测试迭代器处理一段元素：</p>
+<pre>
+     while (first != last) {
+         // <span class="docEmphItalicAlt">safe to use</span> <span class="docEmphasis">*first</span> <span class="docEmphItalicAlt">because we know there is at least one element</span>
+         ++first;
+     }
+</pre><BR>
+<p class="docText">Assuming <tt>first</tt> and <tt>last</tt> form a valid iterator range, then we know that either <tt>first == last</tt>, in which case the loop is exited, or the range is non-empty and <tt>first</tt> refers to an element. Because the condition in the <tt>while</tt> handles the case where the range is empty, there is no need for a special case to handle an empty range. When the range is non-empty, the loop will execute at least once. Because the loop body increments <tt>first</tt>, we know the loop will eventually terminate. Moreover, if we are in the loop, then we know that <tt>*first</tt> is safe: It must refer to an element in the non-empty range between <tt>first</tt> and <tt>last</tt>.</p>
+<p class="docText">假设 <tt>first</tt> 和 <tt>last</tt> 标记了一段有效的迭代器范围，于是我们知道要么 <tt>first == last</tt>，这是退出循环的情况；要么该区间非空，<tt>first</tt> 指向其第一个元素。因为 <tt>while</tt> 循环条件处理了空区间情况，所以对此无须再特别处理。当迭代器范围非空时，循环至少执行一次。由于循环体每次循环就给 <tt>first</tt> 加 1,因此循环必定会终止。而且在循环内可确保 <tt>*first</tt> 是安全的：它必然指向 <tt>first</tt> 和 <tt>last</tt> 之间非空区间内的某个特定元素。</p>
+
+<a name="ch09sb05"></a>
+<p>
+<table cellspacing="0" width="90%" border="1" cellpadding="5">
+	<tr>
+		<td>
+			<h2 class="docSidebarTitle">Exercises Section 9.2.1</h2>
+			<blockquote>
+				<p>
+				<table border="0" cellspacing="16" cellpadding="0">
+					<tr valign="top">
+						<td align="right" class="docText" width="50"><a name="ch09qa4q1"></a>
+							<b>Exercise 9.11:</b>
+						</td>
+						<td>
+							<p class="docText">What are the constraints on the iterators that form iterator ranges?</p>
+							<p class="docText">要标记出有效的迭代器范围，迭代器需要满足什么约束？</p>
+						</td>
+					</tr>
+					<tr valign="top">
+						<td align="right" class="docText" width="50"><a name="ch09qa4q2"></a>
+							<b>Exercise 9.12:</b></TD><td>
+							<p class="docText">Write a function that takes a pair of iterators and an <tt>int</tt> value. Look for that value in the range and return a <tt>bool</tt> indicating whether it was found.</P>
+							<p class="docText">编写一个函数，其形参是一对迭代器和一个 <tt>int</tt> 型数值，实现在迭代器标记的范围内寻找该 <tt>int</tt> 型数值的功能，并返回一个 <tt>bool</tt> 结果，以指明是否找到指定数据。</P>
+						</td>
+					</tr>
+					<tr valign="top">
+						<td align="right" class="docText" width="50"><a name="ch09qa4q3"></a>
+							<b>Exercise 9.13:</b></td>
+						<td>
+							<p class="docText">Rewrite the program that finds a value to return an iterator that refers to the element. Be sure your function works correctly if the element does not exist.</p>
+							<p class="docText">重写程序，查找元素的值，并返回指向找到的元素的迭代器。确保程序在要寻找的元素不存在时也能正确工作。</p>
+						</td>
+					</tr>
+					<tr valign="top">
+						<td align="right" class="docText" width="50"><a name="ch09qa4q4"></a>
+							<b>Exercise 9.14:</b>
+						</td>
+						<td>
+							<p class="docText">Using iterators, write a program to read a sequence of <tt>string</tt>s from the standard input into a <tt>vector</tt>. Print the elements in the <tt>vector</tt>.</p>
+							<p class="docText">使用迭代器编写程序，从标准输入设备读入若干 <tt>string</tt> 对象，并将它们存储在一个 <tt>vector</tt> 对象中，然后输出该 <tt>vector</tt> 对象中的所有元素。</p>
+						</td>
+					</tr>
+					<tr valign="top">
+						<td align="right" class="docText" width="50"><a name="ch09qa4q5"></a>
+							<B>Exercise 9.15:</b></td>
+						<td>
+							<p class="docText">Rewrite the program from the previous exercise to use a <tt>list</tt>. List the changes you needed to change the container type.</p>
+							<p class="docText">用 <tt>list</tt> 容器类型重写习题 9.14 得到的程序，列出改变了容器类型后要做的修改。</p>
+						</td>
+					</tr>
+				</table>
+				</p>
+		</blockquote>
+</td>
+</tr>
+</table>
+</p>
+<br>
+
+
+<a name="ch09lev2sec5"></a>
+<h4 class="docSection2Title">9.2.2. Some Container Operations Invalidate Iterators</h4>
+<h4 class="docSection2Title">9.2.2. 使迭代器失效的容器操作</h4>
+
+<p class="docText">In the sections that follow, we'll see that some container operations change the internal state of a container or cause the elements in the container to be moved. Such operations <B><a name="ch09term6"></a><a class="docLink" href="ch09lev1sec9.html#gloss09_06" >invalidate</a></b> all iterators that refer to the elements that are moved and may invalidate other iterators as well. Using an invalidated iterator is undefined, and likely to lead to the same kinds of problems as using a dangling pointer.</P>
+<p class="docText">在后面的几节里，我们将看到一些容器操作会修改容器的内在状态或移动容器内的元素。这样的操作使所有指向被移动的元素的迭代器失效，也可能同时使其他迭代器失效。使用无效迭代器是没有定义的，可能会导致与悬垂指针相同的问题。</p>
+
+<p class="docText">For example, each container defines one or more <tt>erase</tt> functions. These functions remove elements from the container. Any iterator that refers to an element that is removed has an invalid value. After all, the iterator was positioned on an element that no longer exists within the container.</p>
+<p class="docText">例如，每种容器都定义了一个或多个 <tt>erase</tt> 函数。这些函数提供了删除容器元素的功能。任何指向已删除元素的迭代器都具有无效值，毕竟，该迭代器指向了容器中不再存在的元素。</p>
+
+<a name="ch09note07"></a>
+<div class="docNote">
+	<p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" align="LEFT" width="57" height="96" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+			<td valign="top">
+				<p class="docText"> When writing programs that use iterators, we must be aware of which operations can invalidate the iterators. It is a serious run-time error to use an iterator that has been invalidated.</p>
+				<p class="docText">使用迭代器编写程序时，必须留意哪些操作会使迭代器失效。使用无效迭代器将会导致严重的运行时错误。</p>
+			</td>
+		</tr>
+	</table>
+	<br>
+	</p>
+</div><br>
+
+<a name="idd1e64975"></a><a name="idd1e64981"></a><a name="idd1e64987"></a><a name="idd1e64993"></a><a name="idd1e64999"></a><a name="idd1e65005"></a><a name="idd1e65011"></a><a name="idd1e65017"></a><a name="idd1e65022"></a><a name="idd1e65029"></a><a name="idd1e65036"></a><a name="idd1e65043"></a><a name="idd1e65050"></a><a name="idd1e65057"></a><a name="idd1e65064"></a><a name="idd1e65070"></a><a name="idd1e65074"></a><a name="idd1e65080"></a><a name="idd1e65087"></a><a name="idd1e65094"></a><a name="idd1e65101"></a><a name="idd1e65108"></a><a name="idd1e65115"></a><a name="idd1e65121"></a><a name="idd1e65128"></a><a name="idd1e65134"></a><a name="idd1e65140"></a><a name="idd1e65146"></a><a name="idd1e65151"></a><a name="idd1e65157"></a><a name="idd1e65163"></a><a name="idd1e65168"></a><a name="idd1e65174"></a><a name="idd1e65181"></a><a name="idd1e65188"></a><a name="idd1e65195"></a><a name="idd1e65202"></a><a name="idd1e65209"></a><a name="idd1e65216"></a>
+<p class="docText">There is no way to examine an iterator to determine whether it has been invalidated. There is no test we can perform to detect that it has gone bad. Any use of an invalidated iterator is likely to yield a run-time error, but there is no guarantee that the program will crash or otherwise make it easy to detect the problem.</p>
+<p class="docText">无法检查迭代器是否有效，也无法通过测试来发现迭代器是否已经失效。任何无效迭代器的使用都可能导致运行时错误，但程序不一定会崩溃，否则检查这种错误也许会容易些。</p>
+
+<a name="ch09note08"></a>
+<div class="docNote">
+	<p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" align="LEFT" width="84" height="51" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/tip.jpg;400478" >
+			</td>
+			<td valign="top">
+				<p class="docText"> When using iterators, it is usually possible to write the program so that the range of code over which an iterator must stay valid is relatively short. It is important to examine each statement in this range to determine whether elements are added or removed and adjust iterator values accordingly.</p>
+				<p class="docText">使用迭代器时，通常可以编写程序使得要求迭代器有效的代码范围相对较短。然后，在该范围内，严格检查每一条语句，判断是否有元素添加或删除，从而相应地调整迭代器的值。</p>
+			</td>
+		</tr>
+	</table>
+	<br>
+	</p>
+</div>
+<br>
+
+
+<a href="21001535.html" ><img src="images/pixel.gif"  alt="" width="1" height="1" border="0"></a><ul></ul></TD></TR></table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr><td><div STYLE="MARGIN-LEFT: 0.15in;"><a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle"  alt="Team LiB"></a></div></td>
+<td align="right"><div STYLE="MARGIN-LEFT: 0.15in;">
+<a href="ch09lev1sec1.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a>
+<a href="ch09lev1sec3.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+</div></td></tr></table>
+</body></html>

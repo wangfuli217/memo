@@ -1,0 +1,109 @@
+<html><HEAD><TITLE>27、存取器 - RUBY文档中心</TITLE>
+<STYLE type=text/css>
+<!--
+.code2 {font-size:14.7px;font-family:arial;color:#00009a;line-height:150%;background-color:#EFEFEF;height=25px;vertical-align=middle;margin-left: 20px;}
+.code {font-size:14.7px;font-family:arial;color:#00009a;background-color:#EFEFEF;line-height: 150%}
+.quote {font-size:14.7px;font-family:arial;color:#666666;line-height:150%;}
+-->
+</STYLE>
+
+<META http-equiv=Content-Type content="text/html; charset=gb2312"><LINK href="38_files/news[1].css"  rel=stylesheet></head>
+<BODY topMargin=0>
+<STYLE type=text/css>
+<!--
+body {
+	margin-top: 50px;
+}
+.style12 {font-size: 33px}
+.style15 {
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-weight: bold;
+}
+.style17 {font-family: "黑体", "楷体_GB2312", "新宋体"}
+.style18 {font-size: 12px}
+-->
+</STYLE>
+
+
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #929292 1px groove" cellSpacing=0 cellPadding=3 width=772 align=center bgColor=#ffffff border=0>
+<TBODY>
+<TR>
+<TD height=20></TD></TR>
+<TR>
+<TD bgColor=#8acd38 height=30>&nbsp;</TD></TR>
+<TR>
+<TD height=50></TD></TR></TBODY></TABLE>
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #ffffff 1px groove" borderColor=#ffffff cellSpacing=0 cellPadding=3 width=772 align=center bgColor=#ffffff border=0>
+<TBODY>
+<TR>
+<TD align=middle>
+<DIV class=moer-title><IMG src="51_files/logo_read[1].gif" > 27、存取器</DIV>
+<P>转帖：oasis_me　　发表时间：2005-6-15 21:41:52　　点击次数：276 </P></TD></TR>
+<TR>
+<TD height=50></TD></TR></TBODY></TABLE>
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #ffffff 1px groove" borderColor=#ffffff cellSpacing=0 cellPadding=3 width=772 align=center bgColor=#ffffff border=0>
+<TBODY>
+<TR>
+<TD width="10%" bgColor=#ffffff>&nbsp;</TD>
+<TD class=moer-ask vAlign=top align=left width="5%" bgColor=#ffffff>&nbsp;</TD>
+<TD vAlign=top align=left width="75%">
+<TABLE cellSpacing=0 cellPadding=0>
+<TBODY>
+<TR>
+<TD class=moer-content vAlign=top align=left><B>什么是一个存取器?</B><BR><BR>我们在前面已经讨论过实变量了,但却未过多的讨论.一个对象的实变量属于它的属性,也是它与其它来自同一个类的对象的一般区别.读写它的属性是重要的;这样做需要做一个叫着属性存取器(attribute&nbsp;accessors)的方法.我们将很快看到我们并不是总要明确地写出存取器方法,但现在先让我们了解所有的细节.存取器的两种类型是写(writer)和读(reader).<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;class&nbsp;Fruit<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;def&nbsp;set_kind(k)&nbsp;&nbsp;#&nbsp;a&nbsp;writer<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@kind&nbsp;=&nbsp;k<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;end<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;def&nbsp;get_kind&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;a&nbsp;reader<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@kind<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;end<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;end<BR>&nbsp;&nbsp;&nbsp;nil<BR>ruby&gt;&nbsp;f1&nbsp;=&nbsp;Fruit.new<BR>&nbsp;&nbsp;&nbsp;#&lt;Fruit:0xfd7e7c8c&gt;<BR>ruby&gt;&nbsp;f1.set_kind("peach")&nbsp;&nbsp;#&nbsp;use&nbsp;the&nbsp;writer<BR>&nbsp;&nbsp;&nbsp;"peach"<BR>ruby&gt;&nbsp;f1.get_kind&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;use&nbsp;the&nbsp;reader<BR>&nbsp;&nbsp;&nbsp;"peach"<BR>ruby&gt;&nbsp;f1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;inspect&nbsp;the&nbsp;object<BR>&nbsp;&nbsp;&nbsp;#&lt;Fruit:0xfd7e7c8c&nbsp;@kind="peach"&gt;&nbsp;</TD></TR></TBODY></TABLE><BR><BR>足够简单;我们可以存取关于我们搜索的水果种类的信息.但我们的方法名还有点儿牢骚.下面的这个更简洁,也更方便.<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;class&nbsp;Fruit<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;def&nbsp;kind=(k)<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@kind&nbsp;=&nbsp;k<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;end<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;def&nbsp;kind<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@kind<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;end<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;end<BR>&nbsp;&nbsp;&nbsp;nil<BR>ruby&gt;&nbsp;f2&nbsp;=&nbsp;Fruit.new<BR>&nbsp;&nbsp;&nbsp;#&lt;Fruit:0xfd7e7c8c&gt;<BR>ruby&gt;&nbsp;f2.kind&nbsp;=&nbsp;"banana"<BR>&nbsp;&nbsp;&nbsp;"banana"<BR>ruby&gt;&nbsp;f2.kind<BR>&nbsp;&nbsp;&nbsp;"banana"&nbsp;</TD></TR></TBODY></TABLE><BR><BR><B>inspect方法</B><BR><BR>一个小插曲.你已注意到当我们试着直接观察一个对象,就会出现一些像&nbsp;#&lt;anObject:&nbsp;0x83678&gt;&nbsp;的东西.这只是个缺省的行为,我们可以自由地改变它.我们所要做的只是加一个名为&nbsp;inspect&nbsp;的方法.它会换一个更明了的描述对象的字符串,包括部分或全部的实变量.<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;class&nbsp;Fruit<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;def&nbsp;inspect<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"a&nbsp;fruit&nbsp;of&nbsp;the&nbsp;"&nbsp;+&nbsp;@kind&nbsp;+&nbsp;"&nbsp;variety"<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;end<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;end<BR>&nbsp;&nbsp;&nbsp;nil<BR>ruby&gt;&nbsp;f2<BR>&nbsp;&nbsp;&nbsp;"a&nbsp;fruit&nbsp;of&nbsp;the&nbsp;banana&nbsp;variety"&nbsp;</TD></TR></TBODY></TABLE><BR><BR>一个相关的方法是to_s(转化为字符串),用在打印对象的时候.一般的,你可以认为&nbsp;inspect&nbsp;是一个编写或调试程序时用的工具,而&nbsp;to_s&nbsp;是一个美化程序输出的方法.eval.rb显示结果时总采用&nbsp;inspect.&nbsp;你可以用&nbsp;p&nbsp;方法简单的从程序里取得调试信息.<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>#&nbsp;These&nbsp;two&nbsp;lines&nbsp;are&nbsp;equivalent:<BR>p&nbsp;anObject<BR>print&nbsp;anObject.inspect,&nbsp;"\n"&nbsp;</TD></TR></TBODY></TABLE><BR><BR><B>生成存取器的简单方法</B><BR><BR>因为许多实变量需要存取方法,&nbsp;Ruby提供了对应于标准方法的缩写.<BR><BR>Shortcut缩写&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Effect等同于&nbsp;&nbsp;<BR>attr_reader&nbsp;:v&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;def&nbsp;v;&nbsp;@v;&nbsp;end&nbsp;&nbsp;<BR>attr_writer&nbsp;:v&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;def&nbsp;v=(value);&nbsp;@v=value;&nbsp;end&nbsp;&nbsp;<BR>attr_accessor&nbsp;:v&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attr_reader&nbsp;:v;&nbsp;attr_writer&nbsp;:v&nbsp;&nbsp;<BR>attr_accessor&nbsp;:v,&nbsp;:w&nbsp;&nbsp;attr_accessor&nbsp;:v;&nbsp;attr_accessor&nbsp;:w&nbsp;&nbsp;<BR><BR>让我们利用它加上"新鲜"信息.首先,我们自动生成了读和写方法,然后我们合并这一新信息到&nbsp;inspect&nbsp;中去:<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;class&nbsp;Fruit<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;attr_accessor&nbsp;:condition<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;def&nbsp;inspect<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"a&nbsp;"&nbsp;+&nbsp;@condition&nbsp;+&nbsp;@kind"<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;end<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;end<BR>&nbsp;&nbsp;&nbsp;nil<BR>ruby&gt;&nbsp;f2.condition&nbsp;=&nbsp;"ripe"<BR>&nbsp;&nbsp;&nbsp;"ripe"<BR>ruby&gt;&nbsp;f2<BR>&nbsp;&nbsp;&nbsp;"a&nbsp;ripe&nbsp;banana"&nbsp;</TD></TR></TBODY></TABLE><BR><BR><B>更有趣的水果</B><BR><BR>如果没人吃我们成熟的水果,也许我们该让它们烂掉.<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;class&nbsp;Fruit<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;def&nbsp;time_passes<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@condition&nbsp;=&nbsp;"rotting"<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;end<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;end<BR>&nbsp;&nbsp;&nbsp;nil<BR>ruby&gt;&nbsp;f2<BR>&nbsp;&nbsp;&nbsp;"a&nbsp;ripe&nbsp;banana"<BR>ruby&gt;&nbsp;f2.time_passes<BR>&nbsp;&nbsp;&nbsp;"rotting"<BR>ruby&gt;&nbsp;f2<BR>&nbsp;&nbsp;&nbsp;"a&nbsp;rotting&nbsp;banana"&nbsp;</TD></TR></TBODY></TABLE><BR><BR>但当我们这样做时,却引入了一个小问题.现在,如果我们再创造第三个水果会发生什么?记住:实变量不会在赋值前存在.<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;f3&nbsp;=&nbsp;Fruit.new<BR>ERR:&nbsp;failed&nbsp;to&nbsp;convert&nbsp;nil&nbsp;into&nbsp;String&nbsp;</TD></TR></TBODY></TABLE><BR><BR>是&nbsp;inspect&nbsp;方法在这里挺有理由地抱怨.我们已让它报告水果的品种和状态,但&nbsp;f3&nbsp;还未赋过任何值.如果我们愿意,我们可以重写inspect方法使之用&nbsp;define?&nbsp;方法测试实变量并只在它们存在时才报告,但也许那不是很有用;因为每一个水果都有类型和状态.看来我们应该在某种程度上确定其属性.这正是下一节我们要讨论的.</TD></TR>
+<TR>
+<TD class=moer-content vAlign=top align=left height=30></TD></TR>
+<TR>
+<TD vAlign=top align=left><SPAN style="FONT-WEIGHT: bold; FONT-SIZE: 12px">版权声明：</SPAN>RUBY文档中心的所有文章标明[<B>原创</B>]的均为本站作品，版权属RUBY中文化计划，若转载请注明；标明[<B>翻译</B>]的其外文版权归原作者，译文版权属RUBY中文化计划；标明[<B>转贴</B>]的，若原作者感到侵犯了他的著作权，那么请及时跟主持人联系，我们会尽快更正。</TD></TR></TBODY></TABLE></TD>
+<TD width="10%" bgColor=#ffffff>&nbsp;</TD></TR></TBODY></TABLE>
+<STYLE type=text/css>
+<!--
+body {
+	margin-bottom: 20px;
+}
+-->
+</STYLE>
+
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #929292 1px groove; BORDER-BOTTOM: #929292 1px groove" cellSpacing=0 cellPadding=0 width=772 align=center>
+<TBODY>
+<TR>
+<TD bgColor=#ffffff>
+<DIV align=center>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P><IMG height=11 src="55_files/logo_small[1].gif"  width=8> 版权所有(C) <A href="http://www.moer.net/ruby/index.asp" >RUBY中文化计划</A></P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></DIV></TD></TR></TBODY></TABLE>
+<DIV align=center></DIV>
+<div style="display:none;">
+<script type="text/javascript" src="http://shouce.jb51.net/js/stat.js" ></script>
+</div>
+</BODY>

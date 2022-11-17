@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>工具函数 $ - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />	
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>$</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">$(id | element) -> HTMLElement $((id | element)...) -> [HTMLElement...]</code></pre>
+			<p>
+				如果传入一个字符串参数，返回 HTML 页面中 ID 等于该字符串参数的元素。如果传入一个
+				HTML 元素作为参数，则返回该元素。可以传入任意多个参数（可同时具有字符串参数和元素参数）,
+				则返回一个 DOM 元素数组。所有返回的元素都已经经过 Prototype DOM 扩展。								
+			</p>
+		</div>
+		<div id='abody'></div>
+		<div id="abody">
+			<p>
+				<code>$</code> 函数是 Prototype 的基础，就像是一把瑞士军刀。它并不仅只是
+				<code>document.getElementById</code> 的简单别名。它同时也能让你在你的函数中引用
+				HTML 元素而不用关心你使用的参数是 ID 还是 DOM 节点：
+				<pre><code class="javascript">function foo(element) { element = $(element); /* 其它代码... */ } </code></pre>
+			</p>
+			<p>
+				这个方法将会使你的代码更具有灵活性——你可以传递元素 ID，也可以传递元素本身，而不用作任何类型检测。
+			</p>
+			<p>
+				如果只传入一个参数，<code>$</code> 函数返回元素，然而如果传入多个参数，则 <code>$</code>
+				函数返回一个元素数组（并且函数是递归的：在极端的情况下，你也可以传入一个包含着一些数组的数组）。
+				然而，这依赖于 <code>getElementById</code>，<a href="http://www.w3.org/TR/DOM-Level-2-Core/core.html#ID-getElBId" >
+				W3C 标准</a> 规定：如果指定的 ID 不存在，则返回 <code>null</code>，如果多个 DOM 节点具有同一个
+				ID，则返回的结果是不确定的。<strong>所以请不要为多个 DOM 元素指定同一个 ID。</strong>				
+			</p>
+			<p>				
+				该函数使用 <a href="../element/extend.htm" >Element.extend</a><strong>
+				扩展所有返回的元素</strong>，因此你可以在返回值上应用 Prototype 的 DOM 扩展方法。
+				下面两行代码是等同的，但是第二种方式更具有面向对象的特性：
+			</p>
+			<pre><code class="javascript">Element.hide('itemId'); 
+// 注意：与完全的面向对象程序设计相似...
+$('itemId').hide(); 
+// 非常清晰的感觉，幸亏对 DOM 元素做了扩展</code></pre>				
+			<p>
+				并且，在使用迭代器时，<code>$</code> 函数让代码变得更优雅、更简捷、更有效：
+			</p>
+			<pre><code class="javascript">['item1', 'item2', 'item3'].each(Element.hide); 
+$('item1', 'item2', 'item3').invoke('hide');  
+//更好的方式</code></pre>
+			<p>更多的信息请查看： <a href="http://www.prototypejs.org/learn/extensions" >How Prototype extends the DOM</a> </p>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

@@ -1,0 +1,157 @@
+﻿<html xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+    <META NAME="save" CONTENT="history" />
+    <title>如何：将字符串转换为整型（C# 编程指南）</title>
+    <link rel="stylesheet" type="text/css" href="../styles/presentation.css" />
+    <link rel="stylesheet" type="text/css" href="ms-help://Hx/HxRuntime/HxLink.css" />
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/EventUtilities.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/SplitScreen.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/Dropdown.js"> </script>
+    <script type="text/javascript" src="../scripts/script_manifold.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/script_feedBack.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CheckboxMenu.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CommonUtilities.js"> </script>
+    <xml>
+      <MSHelp:TOCTitle Title="如何：将字符串转换为整型" />
+      <MSHelp:Keyword Index="A" Term="467b9979-86ee-4afd-b734-30299cda91e3" />
+      <MSHelp:Keyword Index="K" Term="转换 [C#]" />
+      <MSHelp:Keyword Index="K" Term="转换 [C#], string 到 int" />
+      <MSHelp:Keyword Index="K" Term="将字符串转换为整型 [C#]" />
+      <MSHelp:Keyword Index="K" Term="int 数据类型 [C#]" />
+      <MSHelp:Attr Name="RevisionNumber" Value="16" />
+      <MSHelp:Attr Name="AssetID" Value="467b9979-86ee-4afd-b734-30299cda91e3" />
+      <MSHelp:Attr Name="Abstract" Value="这些示例演示了一些用于将 string 转换为 int 的不同方法。例如，当从命令行参数获取数值输入时，此类转换会很有用。还存在一些将字符串转换为其他数值类型（如 float 或 long）的类似方法。下表列出了其中的一些方法。" />
+      <MSHelp:Attr Name="codelang" Value="CSharp" />
+      <MSHelp:Attr Name="CommunityContent" Value="1" />
+      <MSHelp:Attr Name="DevLang" Value="CSharp" />
+      <MSHelp:Attr Name="DevLangVers" Value="CSharp" />
+      <MSHelp:Attr Name="DocSet" Value="C#" />
+      <MSHelp:Attr Name="DocSet" Value="C# Lang" />
+      <MSHelp:Attr Name="DocSet" Value="ExpressLibVS" />
+      <MSHelp:Attr Name="ProgModel" Value="managed" />
+      <MSHelp:Attr Name="ShippedIn" Value="vs.90" />
+      <MSHelp:Attr Name="Technology" Value="ManagedCode" />
+      <MSHelp:Attr Name="TopicVersion" Value="09.00.08178.10000" />
+      <MSHelp:Attr Name="Catalog Container" Value="System_Default_Catalog" />
+      <MSHelp:Attr Name="Content Set Container" Value="System_Default_Content_Set" />
+      <MSHelp:Attr Name="TopicType" Value="kbHowTo" />
+      <MSHelp:Attr Name="Locale" Value="zh-chs" />
+    </xml>
+  </head>
+  <body>
+    <input type="hidden" id="userDataCache" class="userDataStyle" />
+    <input type="hidden" id="hiddenScrollOffset" />
+    <img id="collapseImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" title="“折叠”图像" />
+    <img id="expandImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" title="“展开”图像" />
+    <img id="collapseAllImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" />
+    <img id="expandAllImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" />
+    <img id="dropDownImage" style="display:none; height:0; width:0;" src="../icons/dropdown.gif" />
+    <img id="dropDownHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/dropdownHover.gif" />
+    <img id="copyImage" style="display:none; height:0; width:0;" src="../icons/copycode.gif" title="“复制”图像" />
+    <img id="copyHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/copycodeHighlight.gif" title="“复制悬停”图像" />
+    <div id="header">
+      <table id="topTable" cellspacing="0" cellpadding="0">
+        <tr>
+          <td>
+            <span onclick="ExpandCollapseAll(toggleAllImage)" style="cursor:default;" onkeypress="ExpandCollapseAll_CheckKey(toggleAllImage, event)" tabindex="0">
+              <img ID="toggleAllImage" class="toggleAll" src="../icons/collapse_all.gif" /> <label id="collapseAllLabel" for="toggleAllImage" style="display: none;">全部折叠</label><label id="expandAllLabel" for="toggleAllImage" style="display: none;">全部展开</label> </span>
+            <span>    </span>
+            <span id="devlangsDropdown" class="filter" tabindex="0">
+              <img id="devlangsDropdownImage" src="../icons/dropdown.gif" /> <label id="devlangsMenuAllLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：全部 </nobr></label><label id="devlangsMenuMultipleLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：多个 </nobr></label><label id="devlangsMenuVisualBasicLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual Basic </nobr></label><label id="devlangsMenuCSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：C# </nobr></label><label id="devlangsMenuManagedCPlusPlusLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual C++ </nobr></label><label id="devlangsMenuJSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：J# </nobr></label><label id="devlangsMenuJScriptLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：JScript </nobr></label></span>
+          </td>
+        </tr>
+      </table>
+      <div id="devlangsMenu">
+        <input id="VisualBasicCheckbox" type="checkbox" data="VisualBasic,vb,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="VisualBasicCheckbox">Visual Basic</label>
+        <br />
+        <input id="CSharpCheckbox" type="checkbox" data="CSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="CSharpCheckbox">C#</label>
+        <br />
+        <input id="ManagedCPlusPlusCheckbox" type="checkbox" data="ManagedCPlusPlus,cpp,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="ManagedCPlusPlusCheckbox">Visual C++</label>
+        <br />
+        <input id="JSharpCheckbox" type="checkbox" data="JSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JSharpCheckbox">J#</label>
+        <br />
+        <input id="JScriptCheckbox" type="checkbox" data="JScript,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JScriptCheckbox">JScript</label>
+        <br />
+      </div>
+      <table id="bottomTable" cellpadding="0" cellspacing="0">
+        <tr id="headerTableRow1">
+          <td align="left">
+            <span id="runningHeaderText">C# 编程指南</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow2">
+          <td align="left">
+            <span id="nsrTitle">如何：将字符串转换为整型（C# 编程指南）</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow3">
+          <td align="left">
+            <a href="467b9979-86ee-4afd-b734-30299cda91e3.htm#exampleToggle" onclick="OpenSection(exampleToggle)">示例</a>  <a href="467b9979-86ee-4afd-b734-30299cda91e3.htm#seeAlsoToggle" onclick="OpenSection(seeAlsoToggle)">另请参见</a>  
+<script type="text/javascript">
+var fbBody = '%b8%d0%d0%bb%c4%fa%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%bf%aa%b7%a2%b0%e6%b1%e0%d0%b4%cd%c5%b6%d3%bd%ab%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%d3%c3%d3%da%b8%c4%bd%f8%ce%c4%b5%b5%a1%a3%ce%d2%c3%c7%d4%da%c9%f3%d4%c4%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%ca%b1%a3%ac%bf%c9%c4%dc%bb%e1%b8%f8%c4%fa%b7%a2%cb%cd%b5%e7%d7%d3%d3%ca%bc%fe%a3%ac%d2%d4%c7%eb%c4%fa%cc%e1%b9%a9%bd%f8%d2%bb%b2%bd%b5%c4%bd%e2%ca%cd%cb%b5%c3%f7%bb%f2%d5%df%be%cd%bd%e2%be%f6%b7%bd%b0%b8%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%ce%d2%c3%c7%b2%bb%bb%e1%bd%ab%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%d3%c3%d3%da%c8%ce%ba%ce%c6%e4%cb%fb%d3%c3%cd%be%a3%ac%b2%a2%c7%d2%d4%da%c9%f3%d4%c4%cd%ea%d6%ae%ba%f3%a3%ac%ce%d2%c3%c7%b2%bb%bb%e1%d4%d9%b1%a3%c1%f4%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%a1%a3%0d%0a%d3%d0%b9%d8%20Microsoft%20%d2%fe%cb%bd%d5%fe%b2%df%b5%c4%bd%f8%d2%bb%b2%bd%d0%c5%cf%a2%a3%ac%c7%eb%b2%ce%bc%fb%20http%3a%2f%2fprivacy.microsoft.com%2fzh-cn%2fdefault.aspx%a1%a3';
+var fbSubject = 'Customer%20Feedback';
+</script>
+  <span id="headfeedbackarea" class="feedbackhead"><a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);"> 发送反馈意见</a></span>
+</td>
+        </tr>
+      </table>
+      <table id="gradientTable">
+        <tr>
+          <td class="nsrBottom" background="../icons/gradient.gif" />
+        </tr>
+      </table>
+    </div>
+    <div id="mainSection">
+      <div id="mainBody">
+        <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
+        <font color="DarkGray"></font>
+        <p /> <p><font color="DarkGray">更新：2007 年 11 月</font></p><div class="introduction"><p>这些示例演示了一些用于将 <mshelp:link keywords="3037e558-fb22-494d-bca1-a15ade11b11a" tabindex="0">string</mshelp:link> 转换为 <mshelp:link keywords="212447b4-5d2a-41aa-88ab-84fe710bdb52" tabindex="0">int</mshelp:link> 的不同方法。例如，当从命令行参数获取数值输入时，此类转换会很有用。还存在一些将字符串转换为其他数值类型（如 <mshelp:link keywords="1e77db7b-dedb-48b7-8dd1-b055e96a9258" tabindex="0">float</mshelp:link> 或 <mshelp:link keywords="f9b24319-1f39-48be-a42b-d528ee28a7fd" tabindex="0">long</mshelp:link>）的类似方法。下表列出了其中的一些方法。</p><div class="caption"></div><div class="tableSection"><table width="50%" cellspacing="2" cellpadding="5" frame="lhs"><tr><th><p>数值类型</p></th><th><p>方法</p></th></tr><tr><td><p><span sdata="langKeyword" value="decimal"><span class="keyword">decimal</span></span></p></td><td><p><span sdata="cer" target="M:System.Convert.ToDecimal(System.String)"><mshelp:link keywords="M:System.Convert.ToDecimal(System.String)" tabindex="0">ToDecimal(String)</mshelp:link></span></p></td></tr><tr><td><p><span sdata="langKeyword" value="float"><span class="keyword">float</span></span></p></td><td><p><span sdata="cer" target="M:System.Convert.ToSingle(System.String)"><mshelp:link keywords="M:System.Convert.ToSingle(System.String)" tabindex="0">ToSingle(String)</mshelp:link></span></p></td></tr><tr><td><p><span sdata="langKeyword" value="double"><span class="keyword">double</span></span></p></td><td><p><span sdata="cer" target="M:System.Convert.ToDouble(System.String)"><mshelp:link keywords="M:System.Convert.ToDouble(System.String)" tabindex="0">ToDouble(String)</mshelp:link></span></p></td></tr><tr><td><p><span sdata="langKeyword" value="short"><span class="keyword">short</span></span></p></td><td><p><span sdata="cer" target="M:System.Convert.ToInt16(System.String)"><mshelp:link keywords="M:System.Convert.ToInt16(System.String)" tabindex="0">ToInt16(String)</mshelp:link></span></p></td></tr><tr><td><p><span sdata="langKeyword" value="long"><span class="keyword">long</span></span></p></td><td><p><span sdata="cer" target="M:System.Convert.ToInt64(System.String)"><mshelp:link keywords="M:System.Convert.ToInt64(System.String)" tabindex="0">ToInt64(String)</mshelp:link></span></p></td></tr><tr><td><p><span sdata="langKeyword" value="ushort"><span class="keyword">ushort</span></span></p></td><td><p><span sdata="cer" target="M:System.Convert.ToUInt16(System.String)"><mshelp:link keywords="M:System.Convert.ToUInt16(System.String)" tabindex="0">ToUInt16(String)</mshelp:link></span></p></td></tr><tr><td><p><span sdata="langKeyword" value="uint"><span class="keyword">uint</span></span></p></td><td><p><span sdata="cer" target="M:System.Convert.ToUInt32(System.String)"><mshelp:link keywords="M:System.Convert.ToUInt32(System.String)" tabindex="0">ToUInt32(String)</mshelp:link></span></p></td></tr><tr><td><p><span sdata="langKeyword" value="ulong"><span class="keyword">ulong</span></span></p></td><td><p><span sdata="cer" target="M:System.Convert.ToUInt64(System.String)"><mshelp:link keywords="M:System.Convert.ToUInt64(System.String)" tabindex="0">ToUInt64(String)</mshelp:link></span></p></td></tr></table></div></div><h1 class="heading"><span onclick="ExpandCollapse(exampleToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(exampleToggle, event)" tabindex="0"><img id="exampleToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />示例</span></h1><div id="exampleSection" class="section" name="collapseableSection" style=""><p>此示例调用 <span sdata="cer" target="M:System.Convert.ToInt32(System.String)"><mshelp:link keywords="M:System.Convert.ToInt32(System.String)" tabindex="0">ToInt32(String)</mshelp:link></span> 方法以将字符串“29”转换为 <span sdata="langKeyword" value="int"><span class="keyword">int</span></span>，然后将结果增加 1 并打印输出。</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> numVal = Convert.ToInt32(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"29"</span>);
+numVal++;
+
+Console.WriteLine(numVal);
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Output: 30</span>
+
+</pre></td></tr></table></span></div></div><p>将 <span sdata="langKeyword" value="string"><span class="keyword">string</span></span> 转换为 <span sdata="langKeyword" value="int"><span class="keyword">int</span></span> 的另一种方法是使用 <span sdata="cer" target="T:System.Int32"><mshelp:link keywords="T:System.Int32" tabindex="0">System<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span></span>Int32</mshelp:link></span> 结构的 <b>Parse</b> 或 <b>TryParse</b> 方法。<span sdata="cer" target="M:System.Convert.ToUInt32(System.String)"><mshelp:link keywords="Overload:System.Convert.ToUInt32" tabindex="0">ToUInt32</mshelp:link></span> 方法在内部使用 <span sdata="cer" target="M:System.Int32.Parse(System.String)"><mshelp:link keywords="Overload:System.Int32.Parse" tabindex="0">Parse</mshelp:link></span>。如果字符串的格式无效，则 <b>Parse</b> 会引发一个异常；而 <b>TryParse</b> 不会引发异常，而是返回 false。下面的示例演示了对 <b>Parse</b> 和 <b>TryParse</b> 的成功调用和不成功的调用。</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> numVal = Int32.Parse(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"-105"</span>);
+Console.WriteLine(numVal);
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Output: -105</span>
+
+</pre></td></tr></table></span></div></div><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> j;
+Int32.TryParse(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"-105"</span>, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">out</span> j);
+Console.WriteLine(j);
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Output: -105</span>
+
+</pre></td></tr></table></span></div></div><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">try</span>
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> m = Int32.Parse(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"abc"</span>);
+}
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">catch</span> (FormatException e)
+{
+    Console.WriteLine(e.Message);
+}
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Output: Input string was not in a correct format.</span>
+
+</pre></td></tr></table></span></div></div><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> inputString = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"abc"</span>;
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> numValue;
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">bool</span> parsed = Int32.TryParse(inputString, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">out</span> numValue);
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> (!parsed)
+    Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Int32.TryParse could not parse '{0}' to an int.\n"</span>, inputString);
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Output: Int32.TryParse could not parse 'abc' to an int.</span>
+
+</pre></td></tr></table></span></div></div></div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />请参见</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><h4 class="subHeading">任务</h4><div class="seeAlsoStyle"><span sdata="link"><a href="a4e84e10-ea0a-489f-a868-503dded9d85f.htm">如何：确定字符串是否表示数值（C# 编程指南）</a></span></div><h4 class="subHeading">参考</h4><div class="seeAlsoStyle"><span sdata="link"><a href="f782d7cc-035e-4500-b1b1-36a9881130ad.htm">类型（C# 编程指南）</a></span></div></div></div>
+      <div id="footer">
+        <div class="footerLine">
+          <img width="100%" height="3px" src="../icons/footer.gif" title="“页脚”图像" />
+        </div>
+<span id="feedbackarea">将有关本主题的<a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);">反馈意见</a>发送给 Microsoft。</span>
+</div>
+    </div>
+  </body>
+</html>

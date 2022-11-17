@@ -1,0 +1,307 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml">
+<HEAD><TITLE>FastCGI模块（FastCGI）</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=GB2312">
+<STYLE type=text/css>PRE {
+	BACKGROUND-COLOR: #cccccc
+}
+.STYLE1 {
+	COLOR: #ff0000
+}
+</STYLE>
+
+<META content="MSHTML 6.00.6000.16809" name=GENERATOR></HEAD>
+<BODY>
+<H2>FastCGI模块（FastCGI）</H2><BR>
+
+<H3>·摘要</H3>
+<H4>这个模块允许nginx同FastCGI协同工作，并且控制哪些参数将被安全传递。<BR>
+例：<BR>
+<PRE>location / {
+  fastcgi_pass   localhost:9000;
+  fastcgi_index  index.php;
+ 
+  fastcgi_param  SCRIPT_FILENAME  /home/www/scripts/php$fastcgi_script_name;
+  fastcgi_param  QUERY_STRING     $query_string;
+  fastcgi_param  REQUEST_METHOD   $request_method;
+  fastcgi_param  CONTENT_TYPE     $content_type;
+  fastcgi_param  CONTENT_LENGTH   $content_length;
+}</PRE>
+一个在缓存中的实例：<BR>
+<PRE>http {
+  fastcgi_cache_path   /path/to/cache  levels=1:2
+                       keys_zone=NAME:10m
+                       inactive=5m;
+ 
+  server {
+    location / {
+      fastcgi_pass    http://127.0.0.1;
+      fastcgi_cache   NAME;
+      fastcgi_cache_valid   200 302  1h;
+      fastcgi_cache_valid   301      1d;
+      fastcgi_cache_valid   any      1m;
+      fastcgi_cache_min_uses  1;
+      fastcgi_cache_use_stale error  timeout invalid_header http_500;
+    }
+  }
+}</PRE>
+0.7.48以后，缓存遵循后端服务器的Cache-Control, Expires等，0.7.66版本以后，"Cache-Control:"private"和"no-store"头同样被遵循。</H4>
+<H3>·指令</H3>
+<H3>fastcgi_buffer_size </H3>
+<H4>语法：fastcgi_buffer_size the_size ;<BR>
+默认值：fastcgi_buffer_size 4k/8k ;<BR>
+使用字段：http, server, location <BR>
+这个参数指定将用多大的缓冲区来读取从FastCGI服务器到来应答的第一部分。<BR>
+通常来说在这个部分中包含一个小的应答头。<BR>
+默认的缓冲区大小为fastcgi_buffers指令中的每块大小，可以将这个值设置更小。</H4>
+<H3>fastcgi_buffers </H3>
+<H4>语法：fastcgi_buffers the_number is_size; <BR>
+默认值：fastcgi_buffers 8 4k/8k; <BR>
+使用字段：http, server, location <BR>
+这个参数指定了从FastCGI服务器到来的应答，本地将用多少和多大的缓冲区读取，默认这个参数等于分页大小，根据环境的不同可能是4K, 8K或16K。</H4>
+<H3>fastcgi_cache</H3>
+<H4>语法：fastcgi_cache zone|off; <BR>
+默认值：off <BR>
+使用字段：http, server, location <BR>
+为缓存实际使用的共享内存指定一个区域，相同的区域可以用在不同的地方。</H4>
+<H3>fastcgi_cache_key </H3>
+<H4>语法：fastcgi_cache_key line<BR>
+默认值：none <BR>
+使用字段：http, server, location <BR>
+设置缓存的关键字，如：<BR>
+<PRE>fastcgi_cache_key localhost:9000$request_uri;</PRE></H4>
+<H3>fastcgi_cache_path</H3>
+<H4>语法：fastcgi_cache_path path [levels=m:n] keys_zone=name:size [inactive=time] [max_size=size] <BR>
+默认值：none <BR>
+使用字段：http <BR>
+clean_time参数在0.7.45版本中已经移除。<BR>
+这个指令指定FastCGI缓存的路径以及其他的一些参数，所有的数据以文件的形式存储，缓存的关键字(key)和文件名为代理的url计算出的MD5值。<BR>
+Level参数设置缓存目录的目录分级以及子目录的数量，例如指令如果设置为：<BR>
+<PRE>fastcgi_cache_path  /data/nginx/cache  levels=1:2   keys_zone=one:10m;</PRE>
+那么数据文件将存储为：<BR>
+<PRE>/data/nginx/cache/c/29/b7f54b2df7773722d382f4809d65029c</PRE>
+缓存中的文件首先被写入一个临时文件并且随后被移动到缓存目录的最后位置，0.8.9版本之后可以将临时文件和缓存文件存储在不同的文件系统，但是需要明白这种移动并不是简单的原子重命名系统调用，而是整个文件的拷贝，所以最好在fastcgi_temp_path和fastcgi_cache_path的值中使用相同的文件系统。<BR>
+另外，所有活动的关键字及数据相关信息都存储于共享内存池，这个值的名称和大小通过key_zone参数指定，inactive参数指定了内存中的数据存储时间，默认为10分钟。<BR>
+max_size参数设置缓存的最大值，一个指定的cache manager进程将周期性的删除旧的缓存数据。</H4>
+<H3>fastcgi_cache_methods </H3>
+<H4>语法：fastcgi_cache_methods [GET HEAD POST]; <BR>
+默认值：fastcgi_cache_methods GET HEAD; <BR>
+使用字段：main,http,location <BR>
+无法禁用GET/HEAD ，即使你只是这样设置：<BR>
+<PRE>fastcgi_cache_methods  POST;</PRE></H4>
+<H3>fastcgi_cache_min_uses </H3>
+<H4>语法：fastcgi_cache_min_uses n <BR>
+默认值：fastcgi_cache_min_uses 1 <BR>
+使用字段：http, server, location <BR>
+指令指定了经过多少次请求的相同URL将被缓存。</H4>
+<H3>fastcgi_cache_path </H3>
+<H4>语法：fastcgi_cache_path /path/to/cache [levels=m:n keys_zone=name:time inactive=time] <BR>
+默认值：none <BR>
+使用字段：http<BR>
+clean_time参数在0.7.45版本被移除<BR>
+未知。</H4>
+<H3>fastcgi_cache_use_stale </H3>
+<H4>语法：fastcgi_cache_use_stale [updating|error|timeout|invalid_header|http_500] <BR>
+默认值：fastcgi_cache_use_stale off; <BR>
+使用字段：http, server, location <BR>
+未知。</H4>
+<H3>fastcgi_cache_valid</H3>
+<H4>语法：fastcgi_cache_valid [http_error_code|time] <BR>
+默认值：none <BR>
+使用字段：http, server, location <BR>
+为指定的http返回代码指定缓存时间，例如：<BR>
+<PRE>fastcgi_cache_valid  200 302  10m;
+fastcgi_cache_valid  404      1m;</PRE>
+将响应状态码为200和302缓存10分钟，404缓存1分钟。<BR>
+默认情况下缓存只处理200，301，302的状态。<BR>
+同样也可以在指令中使用any表示任何一个。<BR>
+<PRE>fastcgi_cache_valid  200 302 10m;
+fastcgi_cache_valid  301 1h;
+fastcgi_cache_valid  any 1m;</PRE></H4>
+<H3>fastcgi_connect_timeout </H3>
+<H4>语法：fastcgi_connect_timeout time <BR>
+默认值：fastcgi_connect_timeout 60 <BR>
+使用字段：http, server, location <BR>
+指定同FastCGI服务器的连接超时时间，这个值不能超过75秒。</H4>
+<H3>fastcgi_index </H3>
+<H4>语法：fastcgi_index file <BR>
+默认值：none <BR>
+使用字段：http, server, location <BR>
+如果URI以斜线结尾，文件名将追加到URI后面，这个值将存储在变量$fastcgi_script_name中。例如：<BR>
+<PRE>fastcgi_index  index.php;
+fastcgi_param  SCRIPT_FILENAME  /home/www/scripts/php$fastcgi_script_name;</PRE>
+请求"/page.php"的参数SCRIPT_FILENAME将被设置为"/home/www/scripts/php/page.php"，但是"/"为"/home/www/scripts/php/index.php"。</H4>
+<H3>fastcgi_hide_header</H3>
+<H4>语法：fastcgi_hide_header name <BR>
+使用字段：http, server, location <BR>
+默认情况下nginx不会将来自FastCGI服务器的"Status"和"X-Accel-..."头传送到客户端，这个参数也可以隐藏某些其它的头。<BR>
+如果必须传递"Status"和"X-Accel-..."头，则必须使用fastcgi_pass_header强制其传送到客户端。<BR></H4>
+<H3>fastcgi_ignore_client_abort </H3>
+<H4>语法：fastcgi_ignore_client_abort on|off <BR>
+默认值：fastcgi_ignore_client_abort off <BR>
+使用字段：http, server, location <BR>
+如果当前连接请求FastCGI服务器失败，为防止其与nginx服务器断开连接，可以用这个指令。</H4>
+<H3>fastcgi_ignore_headers </H3>
+<H4>语法：fastcgi_ignore_headers name [name...] <BR>
+使用字段：http, server, location <BR>
+这个指令禁止处理一些FastCGI服务器应答的头部字段，比如可以指定像"X-Accel-Redirect", "X-Accel-Expires", "Expires"或"Cache-Control"等。</H4>
+<H3>fastcgi_intercept_errors </H3>
+<H4>语法：fastcgi_intercept_errors on|off <BR>
+默认值：fastcgi_intercept_errors off <BR>
+使用字段：http, server, location <BR>
+这个指令指定是否传递4xx和5xx错误信息到客户端，或者允许nginx使用error_page处理错误信息。<BR>
+你必须明确的在error_page中指定处理方法使这个参数有效，正如Igor所说“如果没有适当的处理方法，nginx不会拦截一个错误，这个错误不会显示自己的默认页面，这里允许通过某些方法拦截错误。<BR></H4>
+<H3>fastcgi_max_temp_file_size </H3>
+<H4>语法：fastcgi_max_temp_file_size 0 <BR>
+默认值：? <BR>
+使用字段：? <BR>
+根据源代码关闭FastCGI缓冲。<BR></H4>
+<H3>fastcgi_no_cache </H3>
+<H4>语法：fastcgi_no_cache variable [...]<BR>
+默认值：None <BR>
+使用字段：http, server, location <BR>
+确定在何种情况下缓存的应答将不会使用，示例：<BR>
+<PRE>  fastcgi_no_cache $cookie_nocache  $arg_nocache$arg_comment;
+  fastcgi_no_cache $http_pragma     $http_authorization;</PRE>
+如果为空字符串或者等于0，表达式的值等于false，例如，在上述例子中，如果在请求中设置了cookie "nocache"，缓存将被绕过。</H4>
+<H3>fastcgi_next_upstream</H3>
+<H4>语法：fastcgi_next_upstream error|timeout|invalid_header|http_500|http_503|http_404|off <BR>
+默认值：fastcgi_next_upstream error timeout <BR>
+使用字段：http, server, location <BR>
+指令指定哪种情况请求将被转发到下一个FastCGI服务器：<BR>
+·error — 传送中的请求或者正在读取应答头的请求在连接服务器的时候发生错误。<BR>
+·timeout — 传送中的请求或者正在读取应答头的请求在连接服务器的时候超时。<BR>
+·invalid_header — 服务器返回空的或者无效的应答。<BR>
+·http_500 — 服务器返回500应答代码。<BR>
+·http_503 — 服务器返回503应答代码。<BR>
+·http_404 — 服务器返回404应答代码。<BR>
+·off — 禁止请求传送到下一个FastCGI服务器。<BR>
+注意传送请求在传送到下一个服务器之前可能已经将空的数据传送到了客户端，所以，如果在数据传送中有错误或者超时发生，这个指令可能无法修复一些传送错误。</H4>
+<H3> fastcgi_param </H3>
+<H4>语法：fastcgi_param parameter value <BR>
+默认值：none <BR>
+使用字段：http, server, location <BR>
+指定一些传递到FastCGI服务器的参数。<BR>
+可以使用字符串，变量，或者其组合，这里的设置不会继承到其他的字段，设置在当前字段会清除掉任何之前的定义。<BR>
+下面是一个PHP需要使用的最少参数：<BR>
+<PRE>  fastcgi_param  SCRIPT_FILENAME  /home/www/scripts/php$fastcgi_script_name;
+  fastcgi_param  QUERY_STRING     $query_string;</PRE>
+PHP使用SCRIPT_FILENAME参数决定需要执行哪个脚本，QUERY_STRING包含请求中的某些参数。<BR>
+如果要处理POST请求，则需要另外增加三个参数：<BR>
+<PRE>  fastcgi_param  REQUEST_METHOD   $request_method;
+  fastcgi_param  CONTENT_TYPE     $content_type;
+  fastcgi_param  CONTENT_LENGTH   $content_length;</PRE>
+如果PHP在编译时带有--enable-force-cgi-redirect，则必须传递值为200的REDIRECT_STATUS参数：<BR>
+<PRE>fastcgi_param  REDIRECT_STATUS  200;</PRE></H4>
+<H3> fastcgi_pass </H3>
+<H4>语法：fastcgi_pass fastcgi-server <BR>
+默认值：none <BR>
+使用字段：http, server, location <BR>
+指定FastCGI服务器监听端口与地址，可以是本机或者其它：<BR>
+<PRE>fastcgi_pass   localhost:9000;</PRE>
+使用Unix socket:<BR>
+<PRE>fastcgi_pass   unix:/tmp/fastcgi.socket;</PRE>
+同样可以使用一个upstream字段名称：<BR>
+<PRE>upstream backend  {
+  server   localhost:1234;
+}
+ 
+fastcgi_pass   backend;</PRE></H4>
+<H3> fastcgi_pass_header </H3>
+<H4>语法：fastcgi_pass_header name <BR>
+默认值：none <BR>
+使用字段：http, server, location <BR></H4>
+<H3> fastcgi_read_timeout </H3>
+<H4>语法：fastcgi_read_timeout time <BR>
+默认值：fastcgi_read_timeout 60 <BR>
+使用字段：http, server, location <BR>
+前端FastCGI服务器的响应超时时间，如果有一些直到它们运行完才有输出的长时间运行的FastCGI进程，或者在错误日志中出现前端服务器响应超时错误，可能需要调整这个值。</H4>
+<H3> fastcgi_redirect_errors </H3>
+<H4>语法：fastcgi_redirect_errors on|off <BR>
+指令重命名为fastcgi_intercept_errors。</H4>
+<H3> fastcgi_send_timeout </H3>
+<H4>语法：fastcgi_send_timeout time <BR>
+<H4>默认值：fastcgi_send_timeout 60 <BR>
+<H4>使用字段：http, server, location <BR>
+指令为上游服务器设置等待一个FastCGI进程的传送数据时间，如果有一些直到它们运行完才有输出的长时间运行的FastCGI进程，那么可以修改这个值，如果你在上有服务器的error log里面发现一些超时错误，那么可以恰当的增加这个值。<BR>
+指令指定请求服务器的超时时间，指完成了2次握手的连接，而不是完整的连接，如果在这期间客户端没有进行数据传递，那么服务器将关闭这个连接。</H4>
+<H3> fastcgi_split_path_info </H3>
+<H4>语法：fastcgi_split_path_info regex <BR>
+使用字段：location <BR>
+可用版本：0.7.31以上，示例：<BR>
+<PRE>location ~ ^(.+\.php)(.*)$ {
+...
+fastcgi_split_path_info ^(.+\.php)(.*)$;
+fastcgi_param SCRIPT_FILENAME /path/to/php$fastcgi_script_name;
+fastcgi_param PATH_INFO $fastcgi_path_info;
+fastcgi_param PATH_TRANSLATED $document_root$fastcgi_path_info;
+...
+}</PRE>
+请求"/show.php/article/0001"的参数SCRIPT_FILENAME将设置为"/path/to/php/show.php"，参数PATH_INFO为"/article/0001"。</H4>
+<H3> fastcgi_store </H3>
+<H4>语法：fastcgi_store [on | off | path] <BR>
+默认值：fastcgi_store off <BR>
+使用字段：http, server, location <BR>
+制定了存储前端文件的路径，参数on指定了将使用root和alias指令相同的路径，off禁止存储，此外，参数中可以使用变量使路径名更明确：<BR>
+<PRE>fastcgi_store   /data/www$original_uri;</PRE>
+应答中的"Last-Modified"头将设置文件的最后修改时间，为了使这些文件更加安全，可以将其在一个目录中存为临时文件，使用fastcgi_temp_path指令。<BR>
+这个指令可以用在为那些不是经常改变的后端动态输出创建本地拷贝的过程中。如：<BR>
+<PRE>location /images/ {
+  root                 /data/www;
+  error_page           404 = /fetch$uri;
+}
+ 
+location /fetch {
+  internal;
+ 
+  fastcgi_pass           fastcgi://backend;
+  fastcgi_store          on;
+  fastcgi_store_access   user:rw  group:rw  all:r;
+  fastcgi_temp_path      /data/temp;
+ 
+  alias                  /data/www;
+}</PRE>
+fastcgi_store并不是缓存，某些需求下它更像是一个镜像。</H4>
+<H3> fastcgi_store_access </H3>
+<H4>语法：fastcgi_store_access users:permissions [users:permission ...] <BR>
+默认值：fastcgi_store_access user:rw <BR>
+使用字段：http, server, location <BR>
+这个参数指定创建文件或目录的权限，例如：<BR>
+<PRE>fastcgi_store_access  user:rw  group:rw  all:r;</PRE>
+如果要指定一个组的人的相关权限，可以不写用户，如：<BR>
+<PRE>fastcgi_store_access  group:rw  all:r;</PRE></H4>
+<H3> fastcgi_temp_path </H3>
+<H4>语法：fastcgi_temp_path path [level1 [level2 [level3]]] <BR>
+默认值：fastcgi_temp_path fastcgi_temp <BR>
+使用字段：http, server, location <BR>
+指令指定存储从别的服务器传送来的数据临时文件路径，同样可以指定三级目录已经哈希存储，level的值指定为哈希设置多少标记，例如，在下列配置中：<BR>
+<PRE>fastcgi_temp_path  /spool/nginx/fastcgi_temp 1 2;</PRE>
+临时文件类似如下：<BR>
+<PRE>/spool/nginx/fastcgi_temp/7/45/00000123457</PRE></H4>
+<H3>·传送到FastCGI服务器的相关参数</H3>
+<H4>请求头是以参数的形式传送到FastCGI服务器，以具体应用和脚本运行在FastCGI服务器上，这些参数通常以环境变量的形式取得，例如，"User-agent"头以HTTP_USER_AGENT参数传递，除此之外还有一些其他的http头，都可以用fastcgi_param指令自由传递。</H4>
+<H3>·变量</H3>
+<H3> $fastcgi_script_name </H3>
+<H4>这个变量等于一个以斜线结尾的请求URI加上fastcgi_index给定的参数。可以用这个变量代替SCRIPT_FILENAME 和PATH_TRANSLATED，以确定php脚本的名称。<BR>
+如下例，请求"/info/": <BR>
+<PRE> fastcgi_index  index.php;
+  fastcgi_param  SCRIPT_FILENAME  /home/www/scripts/php$fastcgi_script_name;</PRE>
+SCRIPT_FILENAME等于"/home/www/scripts/php/info/index.php"。</H4>
+<H3>·参考文档</H3>
+<H4><A href="http://sysoev.ru/nginx/docs/http/ngx_http_core_module.html" >Original Documentation</A><BR>
+<A href="http://wiki.nginx.org/NginxHttpFcgiModule/" >Nginx Http FastCGI Module</A></H4>
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://179401.cn/analytics/" : "http://179401.cn/analytics/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://shouce.jb51.net/179401.cn/analytics/piwik.php-idsite=1"  style="border:0" alt=""/></p></noscript>
+<!-- End Piwik Tag -->
+</BODY>
+</HTML>
+<H3><A href="Geo.html" >前进->Geo模块（Geo）</A></H3>

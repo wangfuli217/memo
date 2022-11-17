@@ -1,0 +1,112 @@
+<html><HEAD><TITLE>12、方法 - RUBY文档中心</TITLE>
+<STYLE type=text/css>
+<!--
+.code2 {font-size:14.7px;font-family:arial;color:#00009a;line-height:150%;background-color:#EFEFEF;height=25px;vertical-align=middle;margin-left: 20px;}
+.code {font-size:14.7px;font-family:arial;color:#00009a;background-color:#EFEFEF;line-height: 150%}
+.quote {font-size:14.7px;font-family:arial;color:#666666;line-height:150%;}
+-->
+</STYLE>
+
+<META http-equiv=Content-Type content="text/html; charset=gb2312"><LINK href="23_files/news[1].css"  rel=stylesheet></head>
+<BODY topMargin=0>
+<STYLE type=text/css>
+<!--
+body {
+	margin-top: 50px;
+}
+.style12 {font-size: 33px}
+.style15 {
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-weight: bold;
+}
+.style17 {font-family: "黑体", "楷体_GB2312", "新宋体"}
+.style18 {font-size: 12px}
+-->
+</STYLE>
+
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #929292 1px groove" cellSpacing=0 cellPadding=3 width=772 align=center bgColor=#ffffff border=0>
+<TBODY>
+<TR>
+<TD height=20></TD></TR>
+<TR>
+<TD bgColor=#8acd38 height=30>&nbsp;</TD></TR>
+<TR>
+<TD height=50></TD></TR></TBODY></TABLE>
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #ffffff 1px groove" borderColor=#ffffff cellSpacing=0 cellPadding=3 width=772 align=center bgColor=#ffffff border=0>
+<TBODY>
+<TR>
+<TD align=middle>
+<DIV class=moer-title><IMG src="51_files/logo_read[1].gif" > 12、方法</DIV>
+<P>转帖：oasis_me　　发表时间：2005-6-15 21:13:25　　点击次数：310 </P></TD></TR>
+<TR>
+<TD height=50></TD></TR></TBODY></TABLE>
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #ffffff 1px groove" borderColor=#ffffff cellSpacing=0 cellPadding=3 width=772 align=center bgColor=#ffffff border=0>
+<TBODY>
+<TR>
+<TD width="10%" bgColor=#ffffff>&nbsp;</TD>
+<TD class=moer-ask vAlign=top align=left width="5%" bgColor=#ffffff>&nbsp;</TD>
+<TD vAlign=top align=left width="75%">
+<TABLE cellSpacing=0 cellPadding=0>
+<TBODY>
+<TR>
+<TD class=moer-content vAlign=top align=left>什么叫做一个方法呢?在OO编程里,我们不希望直接从外部操纵一个对象的数据;相反的,对象自己了解如何操纵自身(当被恰当地要求时).<BR>你也许会说我们传递一条消息给一个对象,那些消息就会调用某类行为或者做有意义的回复.这些都会在我们无需了解或关心这个对象内部<BR>工作机制的情况下发生.为我们所允许的可让其执行的作业(或等价的,它能听懂的消息)就是对象的方法.&nbsp;<BR><BR>在ruby里,我们通过点(dot&nbsp;notation,正如C++或Java)来调用一个对象的方法.被调用的对象在点的左方给出.<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;"abcdef".length<BR>&nbsp;&nbsp;&nbsp;6&nbsp;</TD></TR></TBODY></TABLE><BR><BR>表面上看,这一字符串被问及其长度.技术上看,我们正调用对象"abcdef"的length方法.<BR><BR>其它的对象也许拥有一个稍有不同的length接口,或者根本没有.消息的如何应答在程序运行期间做决定,行为也取决于其所指变量.<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;foo&nbsp;=&nbsp;"abc"<BR>&nbsp;&nbsp;&nbsp;"abc"<BR>ruby&gt;&nbsp;foo.length<BR>&nbsp;&nbsp;&nbsp;3<BR>ruby&gt;&nbsp;foo&nbsp;=&nbsp;["abcde",&nbsp;"fghij"]<BR>&nbsp;&nbsp;&nbsp;["abcde",&nbsp;"fghij"]<BR>ruby&gt;&nbsp;foo.length<BR>&nbsp;&nbsp;&nbsp;2&nbsp;</TD></TR></TBODY></TABLE><BR><BR>length的意义也会随对象的变化而改变.在上例中,第一次我们叫foo返回其长度,它对应于一个简单字符串,这里也就只有一种合理的答案.第二次,foo代表一个数组,我们也许会考虑其长度为2,5或10;但一般情况下最合适的答案当然是2(其它类型长度也应被很容易的猜出).<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;foo[0].length<BR>&nbsp;&nbsp;&nbsp;5<BR>ruby&gt;&nbsp;foo[0].length&nbsp;+&nbsp;foo[1].length<BR>&nbsp;&nbsp;&nbsp;10&nbsp;</TD></TR></TBODY></TABLE><BR><BR>这里需注意的是一个数组了解其自身作为一个数组的意义.Ruby中的一部分代码赋予了他们这一性质,因此对他们的需求可以自动的通过各种<BR>适当的方法实现.由于相当少量的对应于我们在自然语言中所表达概念的方法名能被不同种类的数据如我们所愿地采用,这便将程序员从大量特殊函数名中解脱出来.OO编程语言的这一特点(在我看来,Java的这一点做的并不是很好)叫做多态(polymorphism).&nbsp;<BR><BR>当一个对象碰到一个不能理解的信息,一个错误便会"发生":<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;foo&nbsp;=&nbsp;5<BR>&nbsp;&nbsp;&nbsp;5<BR>ruby&gt;&nbsp;foo.length<BR>ERR:&nbsp;(eval):1:&nbsp;undefined&nbsp;method&nbsp;`length'&nbsp;for&nbsp;5(Fixnum)&nbsp;</TD></TR></TBODY></TABLE><BR><BR>所以我们就需要了解什么方法是被这一对象所接受的,虽然我们并不需要了解这个方法是如何工作的.<BR><BR>如果要给方法赋参数,参数应在一对括号内,<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>object.method(arg1,&nbsp;arg2)</TD></TR></TBODY></TABLE><BR><BR>如果不会引起歧义,括号可以去掉.<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>object.method&nbsp;arg1,&nbsp;arg2</TD></TR></TBODY></TABLE><BR><BR>Ruby里有个特殊变量self;它指向任意调用方法的对象.由于"self"经常用到,为了方便它可被省掉:<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>self.method_name(args...)</TD></TR></TBODY></TABLE><BR><BR>和这一样<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>method_name(args...)</TD></TR></TBODY></TABLE><BR><BR>我们传统意义上的函数调用只不过是self方式调用的一种简写罢了.这也使Ruby可以叫作一种纯正的面向对象语言.当然,为了那些搞不清在Ruby里函数调用其实就是对象方法的人,函数化的方法看起来很像在别的语言中的函数.如果我们喜欢,我们也可以叫它们函数,就仿佛他们不是真的对象方法一样.</TD></TR>
+<TR>
+<TD class=moer-content vAlign=top align=left height=30></TD></TR>
+<TR>
+<TD vAlign=top align=left><SPAN style="FONT-WEIGHT: bold; FONT-SIZE: 12px">版权声明：</SPAN>RUBY文档中心的所有文章标明[<B>原创</B>]的均为本站作品，版权属RUBY中文化计划，若转载请注明；标明[<B>翻译</B>]的其外文版权归原作者，译文版权属RUBY中文化计划；标明[<B>转贴</B>]的，若原作者感到侵犯了他的著作权，那么请及时跟主持人联系，我们会尽快更正。</TD></TR></TBODY></TABLE></TD>
+<TD width="10%" bgColor=#ffffff>&nbsp;</TD></TR></TBODY></TABLE>
+<STYLE type=text/css>
+<!--
+body {
+	margin-bottom: 20px;
+}
+-->
+</STYLE>
+
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #929292 1px groove; BORDER-BOTTOM: #929292 1px groove" cellSpacing=0 cellPadding=0 width=772 align=center>
+<TBODY>
+<TR>
+<TD bgColor=#ffffff>
+<DIV align=center>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P><IMG height=11 src="55_files/logo_small[1].gif"  width=8> 版权所有(C) <A href="http://www.moer.net/ruby/index.asp" >RUBY中文化计划</A></P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></DIV></TD></TR></TBODY></TABLE>
+<DIV align=center></DIV>
+<div style="display:none;">
+<script type="text/javascript" src="http://shouce.jb51.net/js/stat.js" ></script>
+</div>
+</BODY>

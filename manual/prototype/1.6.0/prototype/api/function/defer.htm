@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Function.defer - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>defer<div class="box">1.6.0</div></h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">defer(arg...) -> Number</code></pre>
+			<p>当 JavaScript 解释器空闲后，再运行函数。</p>
+		</div>
+		<div id="abody">
+			<p>
+				<strong>译注：</strong>其实这个方法是调用 <a href="delay.htm" >delay</a>，并将 <code>seconds</code>
+				参数设为 0.01 秒。因为从本质上来说，JavaScript 是单线程的（据说 Google Chrome 的 V8 引擎是多线程的），在
+				<code>delay</code> 方法中，当代码执行到 <code>window.setTimeout</code> 一句时，程序只是记下当前的时间，
+				然后继续执行下面的语句，<em>只有当下面的语句都执行完后</em>，才检查此时的时间是否大于 <code>setTimeout</code>
+				指定的时间间隔，如果大于，则执行 <code>setTimeout</code> 中指定的函数。这就是“解释器空闲后，再运行函数”的由来。
+			</p>
+			<p>
+				一个“延迟执行”的函数不会立即运行，从某种程度上来说，它会在 JavaScript 解释器调用堆栈为空时执行。
+			</p>
+			<p>
+				该方法的行为非常类似于将延时设为 <code>0</code> 的<a href="http://developer.mozilla.org/en/docs/DOM:window.setTimeout" >
+				window.setTimeout</a> 方法。该方法返回一个 ID，可以在函数运行前使用<a href="http://developer.mozilla.org/en/docs/DOM:window.clearTimeout" >
+				window.clearTimeout</a> 取消函数的运行。
+			</p>
+			<h3>样例</h3>
+			<pre><code class="javascript">function hideNewElement() { 
+	$('inserted').hide(); 
+}; 
+function insertThenHide(markup) { 
+	$('container').insert(markup); 
+	// IE 需要一点时间增加新的标记到 DOM 树中 
+	hideNewElement.defer(); 
+} 
+insertThenHide("&lt;div id='inserted'&gt;Lorem ipsum&lt;/div&gt;"); </code></pre>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

@@ -1,0 +1,1623 @@
+<html><HEAD><TITLE>Ruby参考手册 - ruby 1.6 特性</TITLE>
+<META http-equiv=Content-type content="text/html; charset=gb2312">
+<META http-equiv=Content-Style-Type content=text/css><LINK href="86_files/style[2].css"  type=text/css rel=stylesheet></head>
+<BODY>
+<DIV class=navi><A id=header-navi name=head-navi></A><SPAN class=navi>[<A href="61.html" >Ruby首页</A>]</SPAN><SPAN class=navi>[<A href="85.html" >Ruby变更记录</A>] </SPAN></DIV>
+<DIV class=body>
+<H1><A id=ruby.201.2e6.20feature name=ruby.201.2e6.20feature>ruby 1.6 特性</A><!-- RDLabel: "ruby 1.6 特性" --></H1>
+<P>ruby version 1.6是稳定版。在该版本中，主要修改了一些bug。</P>
+<P><A href="ftp://ftp.netlab.co.jp/pub/lang/ruby/stable-snapshot.tar.gz" >stable-snapshot</A>是稳定版的源代码，且每日更新。</P>
+<H2><A id=a1.2e6.2e8.20.282002-12-24.29.20-.3e.20stable-snapshot name=a1.2e6.2e8.20.282002-12-24.29.20-.3e.20stable-snapshot>1.6.8 (2002-12-24) -&gt; stable-snapshot</A><!-- RDLabel: "1.6.8 (2002-12-24) -> stable-snapshot" --></H2>
+<DL>
+<DT><A id=a2003-01-22.3a.20errno name=a2003-01-22.3a.20errno>2003-01-22: errno</A><!-- RDLabel: "2003-01-22: errno" --> 
+<DD>
+<P>在EAGAIN与EWOULDBLOCK同值的系统中，EWOULDBLOCK消失不见了。现在，这种系统中的EWOULDBLOCK被定义为EAGAIN。(这点与1.6.7不同)</P><PRE>p Errno::EAGAIN
+p Errno::EWOULDBLOCK
+
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   Errno::EAGAIN
+   Errno::EWOULDBLOCK
+
+=&gt; ruby 1.6.8 (2002-12-24) [i586-linux]
+   Errno::EAGAIN
+   -:2: uninitialized constant EWOULDBLOCK at Errno (NameError)
+
+=&gt; ruby 1.6.8 (2003-02-13) [i586-linux]
+   Errno::EAGAIN
+   Errno::EAGAIN
+</PRE></DD></DL>
+<H2><A id=a1.2e6.2e7.20.282002-03-01.29.20-.3e.201.2e6.2e8.20.282002-12-24.29 name=a1.2e6.2e7.20.282002-03-01.29.20-.3e.201.2e6.2e8.20.282002-12-24.29>1.6.7 (2002-03-01) -&gt; 1.6.8 (2002-12-24)</A><!-- RDLabel: "1.6.7 (2002-03-01) -> 1.6.8 (2002-12-24)" --></H2>
+<DL>
+<DT><A id=a2002-10-02.3a.20Thread.20.28cygwin.29 name=a2002-10-02.3a.20Thread.20.28cygwin.29>2002-10-02: Thread (cygwin)</A><!-- RDLabel: "2002-10-02: Thread (cygwin)" --> 
+<DD>
+<P>在Cygwin中，有时无法切换Thread。 <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-list/36058" >[ruby-list:36058]</A>, <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-list/24637" >[ruby-list:24637]</A></P>
+<DT><A id=a2002-10-01.3a.20Socket.20.28win.29 name=a2002-10-01.3a.20Socket.20.28win.29>2002-10-01: Socket (win)</A><!-- RDLabel: "2002-10-01: Socket (win)" --> 
+<DD>
+<P>好像解决了一个Windows中的socket问题。(从原来的邮件中无法得到具体的问题描述，但好像是：虽然可以用select来进行读入，但返回的是空数组) <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/40015" >[ruby-talk:40015]</A>, <A href="http://www.moonwolf.com/~arcml/cgi-bin/arcml/arcml.cgi?rm=view;list_id=1;ml_count=366" >[ruby-win32:366]</A></P>
+<DT><A id=a2002-09-12.3a.20Thread.2estatus.20.28.3f.29 name=a2002-09-12.3a.20Thread.2estatus.20.28.3f.29>2002-09-12: Thread.status (?)</A><!-- RDLabel: "2002-09-12: Thread.status (?)" --> 
+<DD>
+<P>有时用trap捕获信号时却并没有保存线程的状态，导致被信号中断的线程状态混乱<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/40337" >[ruby-talk:40337]</A>, <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-core/19" >[ruby-core:00019]</A></P>
+<DT>2002-09-11: Queue#pop<!-- RDLabel: "2002-09-11: Queue#pop" --> 
+<DD>
+<P>Queue#pop中存在竞争问题<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/17223" >[ruby-dev:17223]</A></P>
+<DT><A id=a2002-09-11.3a.20SizedQueue.2enew name=a2002-09-11.3a.20SizedQueue.2enew>2002-09-11: SizedQueue.new</A><!-- RDLabel: "2002-09-11: SizedQueue.new" --> 
+<DD>
+<P>修改了可接受0以下的参数的bug。</P>
+<DT>2002-09-05: <A class=modified-year id=a2002-09-05.3a.20.bc.b0.c5.b8.b3.ab title="字面值 (40d)" name=a2002-09-05.3a.20.bc.b0.c5.b8.b3.ab>展开式</A><!-- RDLabel: "2002-09-05: 展开式" --> 
+<DD>
+<P>在stable snapshot中，曾经有一段时间，需要对展开式中引号使用反斜线转义。该变更解决了这个问题。</P><PRE>p "#{ "" }"
+
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   ""
+
+=&gt; -:1: warning: bad substitution in string
+   ruby 1.6.7 (2002-09-12) [i586-linux]
+   "#{  }"
+
+=&gt; ruby 1.6.7 (2002-09-25) [i586-linux]
+   ""
+</PRE>
+<P>这并不是1.7之后的backport。在处理注释等对象时，与1.7有所不同。(请参考<A class=modified-old title="ruby 1.7 特性 (423d)" href="87.html" >ruby 1.7 特性</A>的2002-06-24)</P><PRE>p "#{ "" # comment }"
+=&gt; ruby 1.6.8 (2002-10-04) [i586-linux]
+   ""
+=&gt; -:1: parse error
+   ruby 1.7.3 (2002-10-04) [i586-linux]
+</PRE>
+<DT><A id=SizedQueue.23deq.2c.20.23shift name=SizedQueue.23deq.2c.20.23shift>SizedQueue#deq, #shift</A><!-- RDLabel: "SizedQueue#deq, #shift" --> 
+<DT><A id=SizedQueue.23enq name=SizedQueue.23enq>SizedQueue#enq</A><!-- RDLabel: "SizedQueue#enq" --> 
+<DD>
+<P>添加(push, pop的别名)。以前尚未定义它们时，调用enq等就会执行超类Queue的enq。</P>
+<DT>2002-09-11: Tempfile#<A class=modified-old id=a2002-09-11.3a.20Tempfile.23size title="Tempfile (855d)" name=a2002-09-11.3a.20Tempfile.23size>size</A><!-- RDLabel: "2002-09-11: Tempfile#size" --> 
+<DD>
+<P>添加<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/17221" >[ruby-dev:17221]</A></P>
+<DT><A id=a2002-09-09 name=a2002-09-09>2002-09-09</A><!-- RDLabel: "2002-09-09" --> 
+<DD>
+<P>在mswin32版和mingw32版的ruby中，从1.6.6版起就有一个bug：ruby的子进程无法接收环境变量。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/18236" >[ruby-dev:18236]</A></P>
+<DT><A id=a2002-09-03 name=a2002-09-03>2002-09-03</A><!-- RDLabel: "2002-09-03" --> 
+<DD>
+<P>在使用Bison编译的Ruby中，多次加载库的速度有所提高。(若不使用Bison的话，每次加载时，好像都会显式地执行GC，所以运行速度会下降) <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/18145" >[ruby-dev:18145]</A></P>
+<DT><A id=a2002-08-20.20File.2eexpand_path name=a2002-08-20.20File.2eexpand_path>2002-08-20 File.expand_path</A><!-- RDLabel: "2002-08-20 File.expand_path" --> 
+<DD>
+<P>Cygwin 1.3.x <A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs-ja?selectid=299" >[ruby-bugs-ja:PR#299]</A></P><PRE>p File.expand_path('file', 'c:/')
+
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   /tmp/c:/file
+=&gt; ruby 1.6.7 (2002-08-21) [i586-linux]
+   c:/file
+</PRE>
+<DT><A id=a2002-08-19.20Thread.20.28win.29 name=a2002-08-19.20Thread.20.28win.29>2002-08-19 Thread (win)</A><!-- RDLabel: "2002-08-19 Thread (win)" --> 
+<DD>
+<P>以前，同时使用Ruby线程和Win32的结构化异常（包括来自Win32 API的callback）的话就会引起故障。现在该bug已被修复。<A href="http://www.moonwolf.com/~arcml/cgi-bin/arcml/arcml.cgi?rm=view;list_id=1;ml_count=273" >[ruby-win32:273]</A></P>
+<DT><A id=a2002-08-12.20Hash.23.3d.3d name=a2002-08-12.20Hash.23.3d.3d>2002-08-12 Hash#==</A><!-- RDLabel: "2002-08-12 Hash#==" --> 
+<DD>
+<P>以前，只要两个Hash对象的默认值(<A class=modified-year title="Hash (173d)">default</A>)==的话，它们也就被看作相等。</P><PRE>p Hash.new("foo") == Hash.new("bar")
+
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   true
+=&gt; ruby 1.6.7 (2002-08-21) [i586-linux]
+   false
+</PRE>
+<DT><A id=a2002-07-11.20String.23slice.21 name=a2002-07-11.20String.23slice.21>2002-07-11 String#slice!</A><!-- RDLabel: "2002-07-11 String#slice!" --> 
+<DD>
+<P>以前，若指定了范围之外的字符串的话，有时会返回异常。现在统一返回nil。(也就是返回与String#[]或String#slice一样的结果)</P><PRE>p "foo".slice!("bar")   # &lt;- 以前此处返回 nil
+p "foo".slice!(5,10)
+
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   nil
+   -:2:in `slice!': index 5 out of string (IndexError)
+        from -:2
+=&gt; ruby 1.6.7 (2002-08-01) [i586-linux]
+   nil
+   nil
+</PRE>
+<DT><A id=a2002-07-05.20String.23split name=a2002-07-05.20String.23split>2002-07-05 String#split</A><!-- RDLabel: "2002-07-05 String#split" --> 
+<DD>
+<P>现在可以给第一个参数指定nil了。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/43513" >[ruby-talk:43513]</A> 此时把$;当作分割字符串。以前，只有省略参数时才能使用$;。</P><PRE>$; = ":"
+p "a:b:c".split(nil)
+=&gt; -:2:in `split': bad separator (ArgumentError)
+        from -:2
+   ruby 1.6.7 (2002-03-01) [i586-linux]
+
+=&gt; ruby 1.6.7 (2002-07-30) [i586-linux]
+   ["a", "b", "c"]
+</PRE>
+<DT><A id=a2002-06-15.20Dir.2eglob name=a2002-06-15.20Dir.2eglob>2002-06-15 Dir.glob</A><!-- RDLabel: "2002-06-15 Dir.glob" --> 
+<DD>
+<P>以前，Dir.glob不会匹配已断链的符号连接。</P><PRE>File.symlink("foo", "bar")
+p Dir.glob("bar")
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   []
+=&gt; ruby 1.6.7 (2002-08-01) [i586-linux]
+   ["bar"]
+</PRE>
+<DT><A id=a2002-06-13.20Hash.5b.5d name=a2002-06-13.20Hash.5b.5d>2002-06-13 Hash[]</A><!-- RDLabel: "2002-06-13 Hash[]" --> 
+<DD>
+<P>以前，无法用Hash[]来dup &amp; freeze键字符串。</P><PRE>a = "key"
+h = Hash[a,"val"]
+h.keys[0].upcase!
+p a
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   "KEY"
+=&gt; -:3:in `upcase!': can't modify frozen string (TypeError)
+        from -:3
+   ruby 1.6.7 (2002-08-01) [i586-linux]
+</PRE>
+<DT><A id=a2002-06-10.20Fixnum.23.3e.3e.2c.20.3c.3c name=a2002-06-10.20Fixnum.23.3e.3e.2c.20.3c.3c>2002-06-10 Fixnum#&gt;&gt;, &lt;&lt;</A><!-- RDLabel: "2002-06-10 Fixnum#>>, <<" --> 
+<DD>
+<P>有时对负数进行右移位时，就会变成0。 <A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs-ja?selectid=247" >[ruby-bugs-ja:PR#247]</A></P>
+<P>以负数为参数的左移位(即右移位)中也会出现这种问题。<A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs-ja?selectid=248" >[ruby-bugs-ja:PR#248]</A></P><PRE>p(-1 &gt;&gt; 31)
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   0
+=&gt; ruby 1.6.7 (2002-08-01) [i586-linux]
+   -1
+
+p(-1 &lt;&lt; -1)
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   -2147483649
+=&gt; ruby 1.6.7 (2002-08-01) [i586-linux]
+   -1
+</PRE>
+<DT><A id=a2002-06-05 name=a2002-06-05>2002-06-05</A><!-- RDLabel: "2002-06-05" --> 
+<DT><A class=modified-old id=Math.2eacosh title="Math (543d)" name=Math.2eacosh>Math.acosh</A><!-- RDLabel: "Math.acosh" --> 
+<DT><A class=modified-old id=Math.2easinh title="Math (543d)" name=Math.2easinh>Math.asinh</A><!-- RDLabel: "Math.asinh" --> 
+<DT><A class=modified-old id=Math.2eatanh title="Math (543d)" name=Math.2eatanh>Math.atanh</A><!-- RDLabel: "Math.atanh" --> 
+<DD>
+<P>添加。</P>
+<DT><A id=a2002-06-03 name=a2002-06-03>2002-06-03</A><!-- RDLabel: "2002-06-03" --> 
+<DT><A id=String.23.5b.5d.3d name=String.23.5b.5d.3d>String#[]=</A><!-- RDLabel: "String#[]=" --> 
+<DD>
+<P>若receiver中不包含指定的索引字符串时，直接返回右边部分。</P><PRE>foo = "foo"
+p foo["bar"] = "baz"
+p foo
+
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   "baz"
+   "foo"
+=&gt; -:2:in `[]=': string not matched (IndexError)
+        from -:2
+   ruby 1.6.7 (2002-07-30) [i586-linux]
+</PRE>
+<DT><A id=a2002-06-03.20sprintf.28.29 name=a2002-06-03.20sprintf.28.29>2002-06-03 sprintf()</A><!-- RDLabel: "2002-06-03 sprintf()" --> 
+<DD>
+<P>用"%d"把参数变为整数时，使用与<A class=modified-year title="内部函数 (171d)">Integer</A>相同的规则。</P><PRE>p sprintf("%d", nil)
+
+=&gt; -:1:in `sprintf': no implicit conversion from nil (TypeError)
+        from -:1
+   ruby 1.6.7 (2002-03-01) [i586-linux]
+
+=&gt; ruby 1.6.7 (2002-07-30) [i586-linux]
+   "0"
+</PRE>
+<DT><A id=a2002-05-23.20-.2a.20.a5.aa.a5.d7.a5.b7.a5.e7.a5.f3.28.3f.29 name=a2002-05-23.20-.2a.20.a5.aa.a5.d7.a5.b7.a5.e7.a5.f3.28.3f.29>2002-05-23 -* 选项(?)</A><!-- RDLabel: "2002-05-23 -* 选项(?)" --> 
+<DD>
+<P>以前，为了兼顾那些使用</P><PRE>#! ruby -*- mode: ruby -*-
+</PRE>
+<P>这种Emacs'-*-'的脚本，而特别规定：忽略-*以后的部分(将其看作是不进行任何操作的选项)，现在已经取消了这种特别设定。若想设定Emacs的'-*-'时，应该写在第2行。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/17193" >[ruby-dev:17193]</A></P><PRE>ruby '-*' -v
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+
+=&gt; ruby: invalid option -*  (-h will show valid options)
+</PRE>
+<DT><A id=a2002-05-22.20parsedate name=a2002-05-22.20parsedate>2002-05-22 parsedate</A><!-- RDLabel: "2002-05-22 parsedate" --> 
+<DD>
+<P>版本升级<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/17171" >[ruby-dev:17171]</A></P>
+<DT><A id=a2002-05-22.20-T.20.a5.aa.a5.d7.a5.b7.a5.e7.a5.f3 name=a2002-05-22.20-T.20.a5.aa.a5.d7.a5.b7.a5.e7.a5.f3>2002-05-22 -T 选项</A><!-- RDLabel: "2002-05-22 -T 选项" --> 
+<DD>
+<P>以前，若在ruby的命令行选项-T后不留空格地添加其他选项时，-T后面的选项将被忽略。现在，-T后面的非数字部分都被看作是选项(与-0选项相同) <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/17179" >[ruby-dev:17179]</A></P><PRE>ruby -Tv  # -v が無効 (ruby 1.6.7 (2002-03-01) [i586-linux])
+
+=&gt; ruby: No program input from stdin allowed in tainted mode (SecurityError)
+
+=&gt; ruby 1.6.7 (2002-07-30) [i586-linux]
+</PRE>
+<DT><A id=a2002-05-20.20IO.23close name=a2002-05-20.20IO.23close>2002-05-20 IO#close</A><!-- RDLabel: "2002-05-20 IO#close" --> 
+<DD>
+<P>若对双向管道dup进行close_write时，则会引发错误。 <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/17155" >[ruby-dev:17155]</A></P><PRE>open("|-","r+") {|f|
+  if f
+    f.dup.close_write
+  else
+     sleep 1
+  end
+}
+
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   -:3:in `close_write': closing non-duplex IO for writing (IOError)
+        from -:3
+        from -:1:in `open'
+        from -:1
+
+
+=&gt; ruby 1.6.7 (2002-07-30) [i586-linux]
+</PRE>
+<DT><A id=a2002-05-02.20Regexp.2equote name=a2002-05-02.20Regexp.2equote>2002-05-02 Regexp.quote</A><!-- RDLabel: "2002-05-02 Regexp.quote" --> 
+<DD>
+<P># 已经变为back slash quote。主要是为了能将quote中的正则表达式正确嵌入//x。<A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs-ja?selectid=231" >[ruby-bugs-ja:PR#231]</A></P><PRE>p Regexp.quote("#")
+
+p /a#{Regexp.quote("#")}b/x =~ "ab"
+
+=&gt; -:3: warning: ambiguous first argument; make sure
+   ruby 1.6.7 (2002-03-01) [i586-linux]
+   "#"
+   0
+
+=&gt; -:3: warning: ambiguous first argument; make sure
+   ruby 1.6.7 (2002-07-30) [i586-linux]
+   "\\#"
+   nil
+</PRE>
+<DT><A id=a2002-04-29.3a.20rb_find_file.28.29 name=a2002-04-29.3a.20rb_find_file.28.29>2002-04-29: rb_find_file()</A><!-- RDLabel: "2002-04-29: rb_find_file()" --> 
+<DD>
+<P>在$SAFE &gt;= 4的情况下，若没有指定绝对路径的话，则会引发SecurityError异常。</P>
+<DT><A id=a2002-04-26.3a.20Regexp.2equote name=a2002-04-26.3a.20Regexp.2equote>2002-04-26: Regexp.quote</A><!-- RDLabel: "2002-04-26: Regexp.quote" --> 
+<DD>
+<P><A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs-ja?selectid=231" >[ruby-bugs-ja:PR#231]</A></P><PRE>p Regexp.quote("\t")
+
+p /a#{Regexp.quote("\t")}b/x =~ "ab"
+
+=&gt; -:3: warning: ambiguous first argument; make sure
+   ruby 1.6.7 (2002-03-01) [i586-linux]
+   "\t"
+   0
+
+=&gt; -:3: warning: ambiguous first argument; make sure
+   ruby 1.6.7 (2002-05-04) [i586-linux]
+   "\\t"
+   nil
+</PRE>
+<DT><A id=a2002-04-20.3a.20Regexp.23inspect name=a2002-04-20.3a.20Regexp.23inspect>2002-04-20: Regexp#inspect</A><!-- RDLabel: "2002-04-20: Regexp#inspect" --> 
+<DD>
+<P>带/x标识的正则表达式对象的inspect把换行变成了\n。<A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs-ja?selectid=225" >[ruby-bugs-ja:PR#225]</A></P><PRE>p /a
+        b/x
+
+=&gt; -:1: warning: ambiguous first argument; make sure
+   ruby 1.6.7 (2002-03-01) [i586-linux]
+   /a\n                b/x
+
+=&gt; -:1: warning: ambiguous first argument; make sure
+   ruby 1.7.2 (2002-04-24) [i586-linux]
+   /a
+                   b/x
+</PRE>
+<DT><A id=a2002-04-19.3a.20.bd.aa.ce.bb.bd.e8.cd.fd name=a2002-04-19.3a.20.bd.aa.ce.bb.bd.e8.cd.fd>2002-04-19: 结束时的相关处理</A><!-- RDLabel: "2002-04-19: 结束时的相关处理" --> 
+<DD>
+<P>以前在下列脚本中，需要发送2次信号才能结束。现在该问题已解决。<A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs-ja?selectid=223" >[ruby-bugs-ja:PR#223]</A></P><PRE>trap(:TERM, "EXIT")
+
+END{
+  puts "exit"
+}
+
+Thread::start{ Thread::stop }
+sleep
+</PRE>
+<DT><A id=a2002-04-17.3a.20Regexp.23inspect name=a2002-04-17.3a.20Regexp.23inspect>2002-04-17: Regexp#inspect</A><!-- RDLabel: "2002-04-17: Regexp#inspect" --> 
+<DD>
+<P><A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs-ja?selectid=222" >[ruby-bugs-ja:PR#222]</A></P><PRE>p %r{\/}
+
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   /\\//
+
+=&gt; ruby 1.6.7 (2002-05-04) [i586-linux]
+   /\//
+</PRE>
+<DT><A id=a2002-04-15.3a.20pack.28.27U.27.29 name=a2002-04-15.3a.20pack.28.27U.27.29>2002-04-15: pack('U')</A><!-- RDLabel: "2002-04-15: pack('U')" --> 
+<DD>
+<P>已经修复了无法使用unpack('U')来还原pack('U')的bug。(unpack按照字符单位进行处理，而并非以前的字节单位) <A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs-ja?selectid=220" >[ruby-bugs-ja:PR#220]</A></P><PRE>p [128].pack("U")
+p [128].pack("U").unpack("U")
+
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   "\302\200"
+   [0]
+
+=&gt; ruby 1.6.7 (2002-05-04) [i586-linux]
+   "\302\200"
+   [128]
+</PRE>
+<DT><A id=a2002-04-11.3a.20IO.23write name=a2002-04-11.3a.20IO.23write>2002-04-11: IO#write</A><!-- RDLabel: "2002-04-11: IO#write" --> 
+<DD>
+<P>检测socket或管道中的EPIPE时，有时会出现失败的情况。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/16849" >[ruby-dev:16849]</A></P>
+<DT>2002-04-11: <A class=modified-old id=a2002-04-11.3a.20cgi.2fsession.2erb.20.20.20.20.28.2a.a5.c9.a5.ad.a5.e5.a5.e1.a5.f3.a5.c8.cc.a4.c8.bf.b1.c7.2a.29 title="cgi/session.rb (1207d)" name=a2002-04-11.3a.20cgi.2fsession.2erb.20.20.20.20.28.2a.a5.c9.a5.ad.a5.e5.a5.e1.a5.f3.a5.c8.cc.a4.c8.bf.b1.c7.2a.29>cgi/session.rb</A> (*文档中未出现*)<!-- RDLabel: "2002-04-11: cgi/session.rb    (*文档中未出现*)" --> 
+<DD>
+<P>support for multipart form.</P>
+<DT>2002-04-10: Object#<A class=modified-year id=a2002-04-10.3a.20Object.23remove_instance_variable title="Object (171d)" name=a2002-04-10.3a.20Object.23remove_instance_variable>remove_instance_variable</A><!-- RDLabel: "2002-04-10: Object#remove_instance_variable" --> 
+<DD>
+<P>若指定的实例变量尚未定义时，则引发NameError异常。<A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs-ja?selectid=216" >[ruby-bugs-ja:PR#216]</A></P><PRE>Object.new.instance_eval {
+  p remove_instance_variable :@foo
+}
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   nil
+
+=&gt; -:2:in `remove_instance_variable': instance variable @foo not defined (NameError)
+   ruby 1.6.7 (2002-04-10) [i586-linux]
+</PRE>
+<DT>2002-04-04: Integer#<A class=modified-old id=a2002-04-04.3a.20Integer.23step title="Integer (617d)" name=a2002-04-04.3a.20Integer.23step>step</A><!-- RDLabel: "2002-04-04: Integer#step" --> 
+<DD>
+<P>以前，若将第二参数设为小于1的数时，它会被看作为0，进而引发错误。</P><PRE>1.step(2, 0.1) {|f| p f }
+
+=&gt; -:1:in `step': step cannot be 0 (ArgumentError)
+        from -:1
+   ruby 1.6.7 (2002-03-01) [i586-linux]
+
+=&gt; ruby 1.6.7 (2002-04-10) [i586-linux]
+   1
+   1.1
+    :
+   1.9
+</PRE>
+<DT>2002-04-01: <A class=modified-year id=a2002-04-01.3a.20.24.7e title="内部变量 (138d)" name=a2002-04-01.3a.20.24.7e>$~</A><!-- RDLabel: "2002-04-01: $~" --> 
+<DD>
+<P>修复了无法将nil赋值给$~的bug。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/16697" >[ruby-dev:16697]</A></P><PRE>/foo/ =~ "foo"
+p $~
+$~ = nil
+p $~
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   #&lt;MatchData:0x401b1be4&gt;
+   -:3: wrong argument type nil (expected Match) (TypeError)
+                                          ^^^^^ MatchData的错误
+=&gt; ruby 1.6.7 (2002-04-04) [i586-linux]
+   #&lt;MatchData:0x401b1c98&gt;
+   nil
+</PRE>
+<DT>2002-03-25 <A class=modified-old id=a2002-03-25.20BasicSocket.2edo_not_reverse_lookup title="BasicSocket (645d)" name=a2002-03-25.20BasicSocket.2edo_not_reverse_lookup>BasicSocket.do_not_reverse_lookup</A><!-- RDLabel: "2002-03-25 BasicSocket.do_not_reverse_lookup" --> 
+<DD>
+<P>在$SAFE &gt; 3的情况下，无法设定值。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/16554" >[ruby-dev:16554]</A></P>
+<DT>2002-03-23 IO#<A class=modified-year id=a2002-03-23.20IO.23read title="IO (145d)" name=a2002-03-23.20IO.23read>read</A><!-- RDLabel: "2002-03-23 IO#read" --> 
+<DD>
+<P>修复了File#read等无法读取大小为0的有内容文件(在Linux的/proc文件系统中会发生这种情况)的bug。</P><PRE>p File.open("/proc/#$$/cmdline").read
+
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   ""
+
+=&gt; ruby 1.6.7 (2002-03-29) [i586-linux]
+   "ruby-1.6\000-v\000-"
+</PRE>
+<DT>2002-03-22 <A class=modified-year id=a2002-03-22.20module_eval title="Module (120d)" name=a2002-03-22.20module_eval>module_eval</A><!-- RDLabel: "2002-03-22 module_eval" --> 
+<DD>
+<P>在<A class=modified-year title="Module (120d)">module_eval</A>的块中，常数和类变量的作用域不再变化。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/17876" >[ruby-dev:17876]</A></P><PRE>class Foo
+  FOO = 1
+  @@foo = 1
+end
+
+FOO = 2
+@@foo = 2
+
+Foo.module_eval { p FOO, @@foo }
+
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   1
+   1
+
+=&gt; ruby 1.6.7 (2002-03-29) [i586-linux]
+   2
+   2
+</PRE>
+<DT>2002-03-22 <A class=modified-month id=a2002-03-22.20net.2fhttp.2erb title="net/http.rb (5d)" name=a2002-03-22.20net.2fhttp.2erb>net/http.rb</A><!-- RDLabel: "2002-03-22 net/http.rb" --> 
+<DD>
+<P>以前，Net::HTTP.new在不带块的时候返回nil。 <A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs-ja?selectid=214" >[ruby-bugs-ja:PR#214]</A></P>
+<P>一般认为会逐渐取消net/protocol.rb，该bug好像是在调试时不小心种下的。</P>
+<DT>2002-03-20 <A class=modified-year id=a2002-03-20.20File.2eexpand_path title="File (316d)" name=a2002-03-20.20File.2eexpand_path>File.expand_path</A><!-- RDLabel: "2002-03-20 File.expand_path" --> 
+<DD>
+<P>有时会出现内存释放不彻底的情况。<A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs?selectid=276" >[ruby-bugs:PR#276]</A></P>
+<DT><A id=a2002-03-18.20.ca.b8.bb.fa.ce.f3.a5.ea.a5.c6.a5.e9.a5.eb name=a2002-03-18.20.ca.b8.bb.fa.ce.f3.a5.ea.a5.c6.a5.e9.a5.eb>2002-03-18 字符串字面值</A><!-- RDLabel: "2002-03-18 字符串字面值" --> 
+<DD>
+<P>在#{..}等结构中，有时会出现汉字代码处理不全的现象。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-list/34478" >[ruby-list:34478]</A></P><PRE>#! ruby -Ks
+p a = "#{"表"}"
+=&gt; -:1: compile error in string expansion (SyntaxError)
+   -:1: unterminated string meets end of file
+   ruby 1.6.7 (2002-03-15) [i586-linux]
+=&gt; ruby 1.6.7 (2002-03-19) [i586-linux]
+   "表"
+
+#! ruby -Ks
+p %[评价]
+=&gt; -:2: parse error
+           p %[评价]
+                   ^
+   ruby 1.6.7 (2002-03-15) [i586-linux]
+
+=&gt; ruby 1.6.7 (2002-03-19) [i586-linux]
+   "评价"
+</PRE>
+<DT><A id=a2002-03-16.20.24.7e name=a2002-03-16.20.24.7e>2002-03-16 $~</A><!-- RDLabel: "2002-03-16 $~" --> 
+<DD>
+<P>以前，若正则表达式方法没有在内部进行匹配操作时，将不会清除$~ 的状态。<A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs-ja?selectid=208" >[ruby-bugs-ja:PR#208]</A></P><PRE>/foo/ =~ "foo"
+/foo/ =~ nil
+p $~
+
+/foo/ =~ "foo"
+$_ = nil; ~"foo"
+p $~
+
+/foo/ =~ "foo"
+"foo".index(/bar/, 4)
+p $~
+
+/foo/ =~ "foo"
+"foo".rindex(/bar/, -4)
+p $~
+
+=&gt; ruby 1.6.7 (2002-03-06) [i586-linux]
+   #&lt;MatchData:0x401b1be4&gt;
+   #&lt;MatchData:0x401b198c&gt;
+   #&lt;MatchData:0x401b1644&gt;
+   #&lt;MatchData:0x401b1414&gt;
+=&gt; ruby 1.6.7 (2002-03-19) [i586-linux]
+   nil
+   nil
+   nil
+   nil
+</PRE>
+<DT><A id=a2002-03-14.20.b3.c8.c4.a5.a5.e9.a5.a4.a5.d6.a5.e9.a5.ea.a4.ce.20autoload name=a2002-03-14.20.b3.c8.c4.a5.a5.e9.a5.a4.a5.d6.a5.e9.a5.ea.a4.ce.20autoload>2002-03-14 扩展库的autoload</A><!-- RDLabel: "2002-03-14 扩展库的autoload" --> 
+<DD>
+<P>无法对扩展库进行autoload。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/16379" >[ruby-dev:16379]</A></P><PRE>autoload :Fcntl, "fcntl"
+require "fcntl"
+
+=&gt; -:2:in `require': uninitialized constant Fcntl (NameError)
+        from -:2
+   ruby 1.6.7 (2002-03-01) [i586-linux]
+
+=&gt; ruby 1.6.7 (2002-03-15) [i586-linux]
+</PRE>
+<DT>2002-03-13 <A class=modified-old id=a2002-03-13.20getopts.2erb title="getopts.rb (451d)" name=a2002-03-13.20getopts.2erb>getopts.rb</A><!-- RDLabel: "2002-03-13 getopts.rb" --> 
+<DD>
+<P>refine. <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/16193" >[ruby-dev:16193]</A>, <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/16213" >[ruby-dev:16213]</A></P>
+<DT><A id=a2002-03-11.20.c0.b5.b5.ac.c9.bd.b8.bd.c3.e6.a4.ce.208.20.bf.ca.a5.b3.a1.bc.a5.c9 name=a2002-03-11.20.c0.b5.b5.ac.c9.bd.b8.bd.c3.e6.a4.ce.208.20.bf.ca.a5.b3.a1.bc.a5.c9>2002-03-11 正则表达式中的8进制代码</A><!-- RDLabel: "2002-03-11 正则表达式中的8进制代码" --> 
+<DD>
+<P>以前，在正则表达式中的\nnn形式的8进制表示法中，只有开头是0时，才允许4位数。<A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs-ja?selectid=207" >[ruby-bugs-ja:PR#207]</A></P><PRE>p /\0001/ =~ "\0001"   # equivalent to "\0" + "1"
+=&gt; -:1: warning: ambiguous first argument; make sure
+   ruby 1.6.7 (2002-03-01) [i586-linux]
+   nil
+=&gt; -:1: warning: ambiguous first argument; make sure
+   ruby 1.6.7 (2002-03-15) [i586-linux]
+   0
+</PRE>
+<DT><A id=a2002-03-11.20trap name=a2002-03-11.20trap>2002-03-11 trap</A><!-- RDLabel: "2002-03-11 trap" --> 
+<DD>
+<P><A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs-ja?selectid=206" >[ruby-bugs-ja:PR#206]</A></P><PRE>trap('EXIT','Foo')
+=&gt; -:1: [BUG] Segmentation fault
+   ruby 1.6.7 (2002-03-01) [i586-linux]
+=&gt; ruby 1.6.7 (2002-03-15) [i586-linux]
+</PRE>
+<DT><A id=a2002-03-10.20.a5.e1.a5.bd.a5.c3.a5.c9.a4.ce.cc.e1.a4.ea.c3.cd name=a2002-03-10.20.a5.e1.a5.bd.a5.c3.a5.c9.a4.ce.cc.e1.a4.ea.c3.cd>2002-03-10 方法的返回值</A><!-- RDLabel: "2002-03-10 方法的返回值" --> 
+<DD>
+<P>下列方法的返回值已被修正。<A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs-ja?selectid=205" >[ruby-bugs-ja:PR#205]</A></P>
+<UL>
+<LI><A class=modified-year title="Enumerable (105d)">each_with_index</A>返回self(以前是nil) 
+<LI><A class=modified-month title="Process (7d)">Process.setpgrp</A>返回不定值。 
+<LI><A class=modified-year title="String (104d)">ljust</A>, <A class=modified-year title="String (104d)">rjust</A>, <A class=modified-year title="String (104d)">center</A>返回已dup的字符串</LI></UL>
+<DT><A id=a2002-03-08.20class.20variable name=a2002-03-08.20class.20variable>2002-03-08 class variable</A><!-- RDLabel: "2002-03-08 class variable" --> 
+<DD>
+<P><A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/35122" >[ruby-talk:35122]</A></P><PRE>class C
+  class &lt;&lt; self
+    def test
+      @@cv = 5
+      p @@cv
+    end
+  end
+
+  test
+end
+=&gt; -:5:in `test': uninitialized class variable @@cv in C (NameError)
+        from -:9
+   ruby 1.6.7 (2002-03-01) [i586-linux]
+
+=&gt; ruby 1.6.6 (2001-12-26) [i586-linux]
+   5
+</PRE>
+<DT>2002-03-03 <A class=modified-old id=a2002-03-03.20Marshal.2eload title="Marshal (519d)" name=a2002-03-03.20Marshal.2eload>Marshal.load</A><!-- RDLabel: "2002-03-03 Marshal.load" --> 
+<DD>
+<P>以前，Marshal.load一直调用1.7的Proc#yield方法。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/16178" >[ruby-dev:16178]</A></P><PRE>Marshal.load(Marshal.dump('foo'), proc {|o| p o})
+=&gt; -:1:in `load': undefined method `yield' for #&lt;Proc:0x401b1b30&gt; (NameError)
+        from -:1
+   ruby 1.6.7 (2002-03-01) [i586-linux]
+
+=&gt; ruby 1.6.6 (2001-12-26) [i586-linux]
+   "foo"
+</PRE></DD></DL>
+<H2><A id=a1.2e6.2e6.20.282001-12-26.29.20-.3e.201.2e6.2e7.20.282002-03-01.29 name=a1.2e6.2e6.20.282001-12-26.29.20-.3e.201.2e6.2e7.20.282002-03-01.29>1.6.6 (2001-12-26) -&gt; 1.6.7 (2002-03-01)</A><!-- RDLabel: "1.6.6 (2001-12-26) -> 1.6.7 (2002-03-01)" --></H2>
+<DL>
+<DT><A id=a2002-02-20.20true.2ffalse.2fnil.20.a4.ce.c6.c3.b0.db.a5.e1.a5.bd.a5.c3.a5.c9.c4.ea.b5.c1 name=a2002-02-20.20true.2ffalse.2fnil.20.a4.ce.c6.c3.b0.db.a5.e1.a5.bd.a5.c3.a5.c9.c4.ea.b5.c1>2002-02-20 true/false/nil的特殊方法定义</A><!-- RDLabel: "2002-02-20 true/false/nil的特殊方法定义" --> 
+<DD>
+<P>可以通过定义特殊类的方法来为这些伪变量定义特殊方法。</P><PRE>class &lt;&lt;true
+  def foo
+   "foo"
+  end
+end
+p true.foo
+=&gt; -:1: no virtual class for true (TypeError)
+   ruby 1.6.6 (2001-12-26) [i586-linux]
+
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   "foo"
+</PRE>
+<DT><A class=modified-old id=time.2erb.2c.20URI title="time.rb (599d)" name=time.2erb.2c.20URI>time.rb</A>, URI<!-- RDLabel: "time.rb, URI" --> 
+<DD>
+<P>已添加。</P>
+<DT><A id=Ruby.2fTk name=Ruby.2fTk>Ruby/Tk</A><!-- RDLabel: "Ruby/Tk" --> 
+<DD>
+<P>修复bug，增加功能<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/16139" >[ruby-dev:16139]</A>,<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/16153" >[ruby-dev:16153]</A>。</P>
+<DT><A id=a.bf.f4.c3.cd.a5.ea.a5.c6.a5.e9.a5.eb.a4.ce.20.60_.27 name=a.bf.f4.c3.cd.a5.ea.a5.c6.a5.e9.a5.eb.a4.ce.20.60_.27>数值字面值的`_'</A><!-- RDLabel: "数值字面值的`_'" --> 
+<DD>
+<P>重新制定`_'的使用规则，统一了String#hex等数值变换方法的行为规则。<A href="http://www.freeml.com/message/rubyist@freeml.com/0001018" >[rubyist:1018]</A>, <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/15684" >[ruby-dev:15684]</A>, <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/15757" >[ruby-dev:15757]</A></P>
+<DT><A class=modified-year id=include title="Module (120d)" name=include>include</A><!-- RDLabel: "include" --> 
+<DD>
+<P>不会递归地对模块进行include操作。</P><PRE>module Foo; end
+module Bar; include Foo; end
+module Foo; include Bar; end
+
+p Foo.ancestors
+
+=&gt; ruby 1.6.6 (2001-12-26) [i586-linux]
+   [Foo, Bar, Foo]
+
+=&gt; -:3:in `append_features': cyclic include detected (ArgumentError)
+        from -:3:in `include'
+        from -:3
+   ruby 1.6.6 (2002-01-28) [i586-linux]
+</PRE>
+<DT><A id=a.a5.e1.a5.bd.a5.c3.a5.c9.a4.ce.cc.e1.a4.ea.c3.cd name=a.a5.e1.a5.bd.a5.c3.a5.c9.a4.ce.cc.e1.a4.ea.c3.cd>方法的返回值</A><!-- RDLabel: "方法的返回值" --> 
+<DD>
+<P>修正了下列方法的返回值。 <A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs-ja?selectid=182" >[ruby-bugs-ja:PR#182]</A>, <A href="http://www.freeml.com/message/rubyist@freeml.com/0001016" >[rubyist:1016]</A></P>
+<UL>
+<LI>Hash#default= 返回右边部分(以前返回self)。 
+<LI>Dir#pos= 返回右边部分(以前返回self)。 (Dir#seek仍然返回self) 
+<LI>Dir.glob 带块时返回nil(以前返回false) 
+<LI>IO#close 遇到已关闭的IO则引发IOError。 
+<LI>IO#each_byte 返回self(以前返回nil) </LI></UL>
+<DT><A id=rb_define_module_under.28.29 name=rb_define_module_under.28.29>rb_define_module_under()</A><!-- RDLabel: "rb_define_module_under()" --> 
+<DD>
+<P>以前，若C函数 rb_define_module_under()定义模块时遇到了已定义的同名常数的话就会失败。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/30203" >[ruby-talk:30203]</A></P><PRE>Constants = 1
+require 'syslog'
+p Syslog::Constants
+
+=&gt; -:2:in `require': Syslog::Fixnum is not a module (TypeError)
+        from -:2
+   ruby 1.6.6 (2001-12-26) [i586-linux]
+
+=&gt; ruby 1.6.6 (2002-01-07) [i586-linux]
+   Syslog::Constants
+</PRE>
+<P>因为这个bug的问题，可能最近就会放出1.6.7<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/30387" >[ruby-talk:30387]</A>(好像不是这样。因此使用1.6.6的stable-snapshot的用户需要特别注意。因为2002/1/30的下列变更(ChangeLog)</P>
+<UL>
+<LI>re.c (rb_reg_search): should set regs.allocated. </LI></UL>
+<P>的原因，将导致内存不足。2002/2/13以后的修正版解决了这个问题)。</P></DD></DL>
+<H2><A id=a1.2e6.2e5.20.282001-09-19.29.20-.3e.201.2e6.2e6.20.282001-09-19.29 name=a1.2e6.2e5.20.282001-09-19.29.20-.3e.201.2e6.2e6.20.282001-09-19.29>1.6.5 (2001-09-19) -&gt; 1.6.6 (2001-09-19)</A><!-- RDLabel: "1.6.5 (2001-09-19) -> 1.6.6 (2001-09-19)" --></H2>
+<DL>
+<DT><A class=modified-old id=Syslog title="Syslog (451d)" name=Syslog>Syslog</A><!-- RDLabel: "Syslog" --> 
+<DD>
+<P>已添加。</P>
+<DT><A id=CGI name=CGI>CGI</A><!-- RDLabel: "CGI" --> 
+<DD>
+<P>针对Netscape(版本是？)的bug进行了处理 <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-list/32089" >[ruby-list:32089]</A></P>
+<DT><A id=Time.23localtime name=Time.23localtime>Time#localtime</A><!-- RDLabel: "Time#localtime" --> 
+<DT><A id=Time.23gmtime name=Time.23gmtime>Time#gmtime</A><!-- RDLabel: "Time#gmtime" --> 
+<DD>
+<P>可以调用一次已冻结的Time 对象。</P><PRE>t = Time.new.freeze
+p t.gmtime
+p t.localtime
+
+=&gt; -:2:in `gmtime': can't modify frozen Time (TypeError)
+        from -:2
+   ruby 1.6.5 (2001-09-19) [i586-linux]
+
+=&gt; ruby 1.6.5 (2001-11-01) [i586-linux]
+   Mon Nov 05 18:08:34 UTC 2001
+   -:3:in `localtime': can't modify frozen Time (TypeError)
+        from -:3
+</PRE>
+<DT><A id=File.3a.3aSEPARATOR name=File.3a.3aSEPARATOR>File::SEPARATOR</A><!-- RDLabel: "File::SEPARATOR" --> 
+<DT><A id=File.3a.3aALT_SEPARATOR name=File.3a.3aALT_SEPARATOR>File::ALT_SEPARATOR</A><!-- RDLabel: "File::ALT_SEPARATOR" --> 
+<DT><A id=File.3a.3aPATH_SEPARATOR name=File.3a.3aPATH_SEPARATOR>File::PATH_SEPARATOR</A><!-- RDLabel: "File::PATH_SEPARATOR" --> 
+<DT><A id=RUBY_PLATFORM name=RUBY_PLATFORM>RUBY_PLATFORM</A><!-- RDLabel: "RUBY_PLATFORM" --> 
+<DT><A id=RUBY_RELEASE_DATE name=RUBY_RELEASE_DATE>RUBY_RELEASE_DATE</A><!-- RDLabel: "RUBY_RELEASE_DATE" --> 
+<DT><A id=RUBY_VERSION name=RUBY_VERSION>RUBY_VERSION</A><!-- RDLabel: "RUBY_VERSION" --> 
+<DD>
+<P>上述各项已变为被freeze的字符串。</P><PRE>p File::SEPARATOR.frozen?
+p File::ALT_SEPARATOR.frozen?
+p File::PATH_SEPARATOR.frozen?
+
+=&gt; ruby 1.6.5 (2001-09-19) [i586-linux]
+   false
+   false
+   false
+
+=&gt; ruby 1.6.5 (2001-11-01) [i586-linux]
+   true
+   false  # 因为运行环境是Linux，所以ALT_SEPARATOR是nil
+   true
+</PRE>
+<DT><A id=Integer.5bnth.5d name=Integer.5bnth.5d>Integer[nth]</A><!-- RDLabel: "Integer[nth]" --> 
+<DD>
+<P>以前，若遇到大索引值就会引发异常。 <A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs-ja?selectid=114" >[ruby-bugs-ja:PR#114]</A></P><PRE>p(-1[10000000000])
+
+=&gt; -:1:in `[]': bignum too big to convert into `int' (RangeError)
+        from -:1
+   ruby 1.6.5 (2001-09-19) [i586-linux]
+
+=&gt; ruby 1.6.5 (2001-11-01) [i586-linux]
+   1
+</PRE>
+<P>不能对整数的负索引返回0。？<A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs-ja?selectid=122" >[ruby-bugs-ja:PR#122]</A></P><PRE>p(-1[-1])
+
+=&gt; ruby 1.6.5 (2001-09-19) [i586-linux]
+   1
+=&gt; ruby 1.6.5 (2001-11-01) [i586-linux]
+   1
+</PRE>
+<DT><A id=Numeric.23remainder name=Numeric.23remainder>Numeric#remainder</A><!-- RDLabel: "Numeric#remainder" --> 
+<DD>
+<P><A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs-ja?selectid=110" >[ruby-bugs-ja:PR#110]</A></P><PRE>p( 3.remainder(-3))
+p(-3.remainder(3))
+
+=&gt; ruby 1.6.5 (2001-09-19) [i586-linux]
+   3
+   -3
+=&gt; ruby 1.6.5 (2001-11-01) [i586-linux]
+   0
+   0
+</PRE>
+<DT><A id=END.20.7b.20.2e.2e.2e.20.7d name=END.20.7b.20.2e.2e.2e.20.7d>END { ... }</A><!-- RDLabel: "END { ... }" --> 
+<DD>
+<P>以前，不能运行END块中的END块。 <A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs-ja?selectid=107" >[ruby-bugs-ja:PR#107]</A></P><PRE>END {
+  p 1
+  END { p 2 }
+}
+
+=&gt; ruby 1.6.5 (2001-09-19) [i586-linux]
+   1
+
+=&gt; ruby 1.6.5 (2001-11-01) [i586-linux]
+   1
+   2
+</PRE>
+<DT><A id=String.23succ name=String.23succ>String#succ</A><!-- RDLabel: "String#succ" --> </DT></DL>
+<P><A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/22557" >[ruby-talk:22557]</A></P><PRE>p "***".succ
+p "*".succ
+p sprintf("%c", 255).succ
+p sprintf("*%c", 255).succ
+p sprintf("**%c", 255).succ
+
+=&gt; ruby 1.6.5 (2001-09-19) [i586-linux]
+   "**+"
+   "\001+"
+   "\001\000"
+   "\001+\000"
+   "*+\000"
+
+=&gt; ruby 1.6.5 (2001-11-01) [i586-linux]
+   "**+"
+   "+"
+   "\001\000"
+   "+\000"
+   "*+\000"
+</PRE>
+<DL>
+<DT><A id=method_missing name=method_missing>method_missing</A><!-- RDLabel: "method_missing" --> 
+<DD>
+<P>以前，下列内容被Segmentation Fault。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/14942" >[ruby-dev:14942]</A></P><PRE>Module::constants.each {|c|
+  c = eval c
+  if c.instance_of?(Class)
+    p c
+    c.instance_methods.each {|m|
+      c.module_eval "undef #{m};"
+    }
+    c.module_eval {undef initialize}
+  end
+}
+
+=&gt; ruby 1.6.5 (2001-09-19) [i586-linux]
+   NotImplementedError
+   MatchData
+   Exception
+   Numeric
+   MatchData
+   Segmentation fault
+
+=&gt; ruby 1.6.5 (2001-10-15) [i586-linux]
+   MatchData
+   NotImplementedError
+   FloatDomainError
+   LoadError
+   Float
+   Binding
+   SignalException
+   Module
+   -:6:in `method_missing': stack level too deep (SystemStackError)
+</PRE>
+<DT><A id=a.25q.28.2e.2e.2e.29 name=a.25q.28.2e.2e.2e.29>%q(...)</A><!-- RDLabel: "%q(...)" --> 
+<DD>
+<P>在使用%表示法的字面值中，不能将英文字母和数字用作切分字符。</P><PRE>p %q1..1
+</PRE><PRE>=&gt; ruby 1.6.5 (2001-10-10) [i586-linux]
+   ".."
+=&gt; -:1: unknown type of %string
+        p %q1..1
+             ^
+   ruby 1.6.5 (2001-10-15) [i586-linux]
+</PRE>
+<DT><A id=String.23.3d.7e name=String.23.3d.7e>String#=~</A><!-- RDLabel: "String#=~" --> 
+<DD>
+<P>调用String#=~时，若两边都是字面值的话，为了提升速度而禁止进行方法调用。(实际上，此前就曾考虑过这么做，但因为出现了bug而未能禁止方法调用(不是String#=~，而是Regexp#=~))</P><PRE>class String
+  def =~(arg)
+    ["String#=~", self, arg]
+  end
+end
+
+class Regexp
+  def =~(arg)
+    ["Regexp#=~", self, arg]
+  end
+end
+
+p "foo" =~ /foo/
+p "foo" =~ Regexp.new("foo")
+
+=&gt; -:2: warning: discarding old =~
+   -:8: warning: discarding old =~
+   ruby 1.6.5 (2001-09-19) [i586-linux]
+   ["Regexp#=~", /foo/, "foo"]
+   ["String#=~", "foo", /foo/]
+
+=&gt; -:2: warning: discarding old =~
+   -:8: warning: discarding old =~
+   ruby 1.6.5 (2001-10-10) [i586-linux]
+   0
+   ["String#=~", "foo", /foo/]
+</PRE>
+<P>(<EM>有时会对内部方法进行这种最优化设置，因此可能导致重定义方法无效的情况</EM>，而确切地说，您应该先判断某方法是否已被重定义，然后再选择是否进行最优化)</P>
+<DT><A id=class.20.c4.ea.b5.c1 name=class.20.c4.ea.b5.c1>class 定义</A><!-- RDLabel: "class 定义" --> 
+<DD>
+<P>以前，若显式地使用一个不同的超类来重定义某个已定义的类时，则会忽略指定的超类。<A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs-ja?selectid=87" >[ruby-bugs-ja:PR#87]</A></P><PRE>class A
+  p self.id
+end
+class A &lt; String
+  p self.id
+  p self.superclass
+end
+
+=&gt; ruby 1.6.5 (2001-09-19) [i586-linux]
+   537760880
+   -:4: warning: already initialized constant A
+   537757180
+   Object
+=&gt; ruby 1.6.5 (2001-10-10) [i586-linux]
+   537760960
+   -:4: warning: already initialized constant A
+   537757200
+   String
+</PRE>
+<DT><A id=a.25w.28.2e.2e.2e.29 name=a.25w.28.2e.2e.2e.29>%w(...)</A><!-- RDLabel: "%w(...)" --> 
+<DD>
+<P>以前，语法解释器会将数组字面值 %w(...)误判为字符串字面值，从而导致下列异常情况。<A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs-ja?selectid=91" >[ruby-bugs-ja:PR#91]</A></P><PRE>%w!a! "b" 
+=&gt; -:1: tried to allocate too big memory (NoMemoryError)
+   ruby 1.6.5 (2001-09-19) [i586-linux]
+
+=&gt; -:1: parse error
+       %w!a! "b" 
+                ^
+   ruby 1.6.5 (2001-10-10) [i586-linux]
+</PRE>
+<DT><A id=Thread name=Thread>Thread</A><!-- RDLabel: "Thread" --> 
+<DD>
+<P>以前存在下列bug：Thread#status对aborting状态返回"run"，而Thread#priority = val会返回self而不是val。现已解决这些问题。<A href="http://www.freeml.com/message/rubyist@freeml.com/0000820" >[rubyist:0820]</A>, <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/14903" >[ruby-dev:14903]</A></P>
+<DT><A class=modified-old id=Marshal title="Marshal (519d)">Marshal</A><!-- RDLabel: "Marshal" --> 
+<DD>
+<P>不能dump无名的类／模块。</P><PRE>p Marshal.dump(Class.new)
+
+=&gt; ruby 1.6.4 (2001-06-04) [i586-linux]
+   "\004\005c\031#&lt;Class 0lx401a6b44&gt;"
+
+=&gt; -:1:in `dump': can't dump anonymous class #&lt;Class 0lx401ab980&gt; (ArgumentError)
+        from -:1
+   ruby 1.6.5 (2001-10-05) [i586-linux]
+</PRE>
+<DT><A id=UNIXSocket.23addr name=UNIXSocket.23addr>UNIXSocket#addr</A><!-- RDLabel: "UNIXSocket#addr" --> 
+<DD>
+<P>以前，UNIXSocket#addr会返回一些垃圾信息(在BSD中如何呢？)。 <A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs-ja?selectid=85" >[ruby-bugs-ja:PR#85]</A></P><PRE># server
+require 'socket'
+File.unlink("/tmp/sss")
+sock = UNIXServer.new("/tmp/sss").accept
+
+# client
+require 'socket'
+sock = UNIXSocket.new("/tmp/sss").addr
+
+=&gt; ["AF_UNIX", "\031((\306\031(\010"]
+
+=&gt; ["AF_UNIX", ""]
+</PRE>
+<DT><A id=a.3f.3f.3f name=a.3f.3f.3f>???</A><!-- RDLabel: "???" --> 
+<DD>
+<P><A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/21722" >[ruby-talk:21722]</A></P>
+<P>class Ptr</P><PRE>def initialize(obj) @obj = obj end
+def []=() @obj = obj end
+def []() @obj end
+</PRE>
+<P>end module Kernel</P><PRE>def _ptr() Ptr.new(self) end
+</PRE>
+<P>end</P>
+<P>def foo(int)</P><PRE>int[] += 1
+</PRE>
+<P>end x = 1._ptr foo(x) puts x[]</P>
+<P>=&gt; -:11: [BUG] Segmentation fault</P><PRE>ruby 1.6.5 (2001-09-19) [i586-linux]
+</PRE>
+<P>=&gt; -:11:in `[]=': wrong # of arguments(1 for 0) (ArgumentError)</P><PRE>from -:11:in `foo'
+from -:14
+</PRE><PRE>ruby 1.6.5 (2001-10-05) [i586-linux]
+</PRE>
+<DT><A id=Subclass.20of.20String.20and.20Array name=Subclass.20of.20String.20and.20Array>Subclass of String and Array</A><!-- RDLabel: "Subclass of String and Array" --> 
+<DD>
+<P>以前，在String, Array的子类中调用某些特定方法时，就会变成String, Array。</P><PRE>class Foo &lt; String
+end
+p Foo.new("").type
+p Foo.new("foo")[0,0].type              # String ???
+p Foo.new("foo")[1,1].type
+p Foo.new("foo").succ.type
+p Foo.new("foo").reverse.type
+p((Foo.new("foo") * 5).type)
+p Foo.new("foo").gsub(/foo/, "bar").type
+p Foo.new("foo").sub(/foo/, "bar").type
+p Foo.new("foo").ljust(10).type
+p Foo.new("foo").rjust(10).type
+p Foo.new("foo").center(10).type
+
+=&gt; ruby 1.6.5 (2001-09-19) [i586-linux]
+   Foo
+   String
+   String
+   String
+   String
+   String
+   String
+   Foo
+   String
+   String
+   String
+
+=&gt; ruby 1.6.5 (2001-10-05) [i586-linux]
+   Foo
+   String
+   Foo
+   Foo
+   Foo
+   Foo
+   Foo
+   Foo
+   Foo
+   Foo
+   Foo
+
+class Bar &lt; Array
+end
+bar = Bar.new
+p bar.type
+p bar.push(1,2,3)
+p bar.type
+p bar[0,0].type            # =&gt; Array ???
+p bar[0,1].type
+p ((bar * 5).type)
+
+=&gt; -:9: warning: p (...) interpreted as method call
+   ruby 1.6.5 (2001-09-19) [i586-linux]
+   Bar
+   [1, 2, 3]
+   Bar
+   Array
+   Array
+   Array
+=&gt; -:9: warning: p (...) interpreted as method call
+   ruby 1.6.5 (2001-10-05) [i586-linux]
+   Bar
+   [1, 2, 3]
+   Bar
+   Array
+   Bar
+   Bar
+</PRE></DD></DL>
+<H2><A id=a1.2e6.2e4.20.282001-06-04.29.20-.3e.201.2e6.2e5.20.282001-09-19.29 name=a1.2e6.2e4.20.282001-06-04.29.20-.3e.201.2e6.2e5.20.282001-09-19.29>1.6.4 (2001-06-04) -&gt; 1.6.5 (2001-09-19)</A><!-- RDLabel: "1.6.4 (2001-06-04) -> 1.6.5 (2001-09-19)" --></H2>
+<DL>
+<DT><A id=a.24_.2c.20.24.7e.2c.20if.20a.2e.2eb name=a.24_.2c.20.24.7e.2c.20if.20a.2e.2eb>$_, $~, if a..b</A><!-- RDLabel: "$_, $~, if a..b" --> 
+<DD>
+<P>以前，在函数中使用Thread#run时，与该线程共享scope的父线程中的$_, $~会被子线程所覆盖。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/14743" >[ruby-dev:14743]</A></P><PRE>def foo(t)
+  t.run
+end
+
+t = Thread.start do
+  t = $_= "sub"
+  loop{Thread.stop;puts "sub:#$_"}
+end
+
+$_ = "main"
+t.run                   # =&gt; sub:sub
+puts "main:#$_"         # =&gt; main:main
+foo(t)                  # =&gt; sub:sub
+puts "main:#$_"         # =&gt; main:sub
+=&gt; ruby 1.6.4 (2001-06-04) [i586-linux]
+   sub:sub
+   main:main
+   sub:sub
+   main:sub
+=&gt; ruby 1.6.5 (2001-09-19) [i586-linux]
+   sub:sub
+   main:main
+   sub:sub
+   main:main
+</PRE>
+<DT><A id=net.2ftelnet.2erb name=net.2ftelnet.2erb>net/telnet.rb</A><!-- RDLabel: "net/telnet.rb" --> 
+<DD>
+<P>有时，当Net::Telnet连接到特定的端口之后，就失去反应。 <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-list/31303" >[ruby-list:31303]</A></P>
+<DT><A id=CGI.23header name=CGI.23header>CGI#header</A><!-- RDLabel: "CGI#header" --> 
+<DD>
+<P>以前，在下述脚本中，TEXT_PLAIN会被改写成"text/plain; charset=iso-8859-1"。 <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/14716" >[ruby-dev:14716]</A></P><PRE>require 'cgi'
+
+TEXT_PLAIN = "text/plain"
+
+cgi = CGI.new
+print cgi.header("type" =&gt; TEXT_PLAIN,
+                 "charset" =&gt; "iso-8859-1")
+printf("TEXT_PLAIN: %s\n", TEXT_PLAIN)
+
+=&gt; ruby 1.6.4 (2001-06-04) [i586-linux]
+   Content-Type: text/plain; charset=iso-8859-1
+   ^M
+   TEXT_PLAIN: text/plain; charset=iso-8859-1
+   TEXT_PLAIN: text/plain
+
+=&gt; ruby 1.6.5 (2001-09-19) [i586-linux]
+   Content-Type: text/plain; charset=iso-8859-1
+   ^M
+   TEXT_PLAIN: text/plain
+</PRE>
+<DT><A id=Dir.2echdir name=Dir.2echdir>Dir.chdir</A><!-- RDLabel: "Dir.chdir" --> 
+<DD>
+<P>在尚未定义HOME或LOGDIR时，若不带参数地调用Dir.chdir的话，就会引发ArgumentError异常</P>
+<P>ENV['HOME'] = nil ENV['LOGDIR'] = nil Dir.chdir =&gt; -:3:in `chdir': Bad address (Errno::EFAULT)</P><PRE>from -:3
+</PRE><PRE>ruby 1.6.4 (2001-08-26) [i586-linux]
+</PRE>
+<P>=&gt; -:3:in `chdir': HOME/LOGDIR not set (ArgumentError)</P><PRE>from -:3
+</PRE><PRE>ruby 1.6.5 (2001-09-19) [i586-linux]
+</PRE>
+<DT><A id=Dir.2eglob name=Dir.2eglob>Dir.glob</A><!-- RDLabel: "Dir.glob" --> 
+<DD>
+<P>以前，下列代码会引起死循环。</P><PRE>Dir.mkdir("test?") rescue nil
+p Dir.glob("test?/*")
+=&gt; ruby 1.6.5 (2001-09-19) [i586-linux]
+   []
+</PRE>
+<DT><A id=jcode.2erb name=jcode.2erb>jcode.rb</A><!-- RDLabel: "jcode.rb" --> 
+<DD>
+<P>修改了若干bug。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-list/31238" >[ruby-list:31238]</A></P></DD></DL>
+<DL>
+<DT><A class=modified-old id=Dir.2eglob_2 title="Dir (449d)" name=Dir.2eglob_2>Dir</A>.glob<!-- RDLabel: "Dir.glob" --> 
+<DD>
+<P>Dir.glob("*/**/*")会重复返回子目录中的文件。 <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/14576" >[ruby-dev:14576]</A></P><PRE>Dir.mkdir('foo') rescue nil
+Dir.mkdir('foo/bar') rescue nil
+p Dir.glob('*/**/*')
+
+=&gt; ruby 1.6.4 (2001-06-04) [i586-linux]
+   ["foo/bar", "foo/bar"]
+
+=&gt; ruby 1.6.4 (2001-08-26) [i586-linux]
+   ["foo/bar"]
+</PRE>
+<DT><A class=modified-old id=UnboundMethod.23bind title="UnboundMethod (599d)" href="http://rubycn.ce-lab.net/ja/man/index.cgi?cmd=view;name=UnboundMethod"  name=UnboundMethod.23bind>UnboundMethod</A>#bind<!-- RDLabel: "UnboundMethod#bind" --> 
+<DD>
+<P>无法bind模块的UnboundMethod对象。 <A href="http://www.freeml.com/message/rubyist@freeml.com/0000728" >[rubyist:0728]</A></P><PRE>module Foo
+  def foo
+    :foo
+  end
+end
+
+class Bar
+  include Foo
+end
+
+m = Foo.instance_method :foo
+p m.bind(Bar.new).call
+
+=&gt; ruby 1.6.4 (2001-06-04) [i586-linux]
+   -:12:in `bind': first argument must be an instance of Foo (TypeError)
+        from -:12
+
+=&gt; ruby 1.6.4 (2001-08-23) [i586-linux]
+   :foo
+</PRE>
+<DT><A id=a.c1.c8.a4.df.b9.fe.a4.df.a5.af.a5.e9.a5.b9.a4.ce.c3.d6.a4.ad.b4.b9.a4.a8 name=a.c1.c8.a4.df.b9.fe.a4.df.a5.af.a5.e9.a5.b9.a4.ce.c3.d6.a4.ad.b4.b9.a4.a8>内部类的替换</A><!-- RDLabel: "内部类的替换" --> 
+<DD>
+<P>对内部类／模块进行赋值时，会出现警告。</P><PRE>Array = nil
+p Array
+=&gt; ruby 1.6.4 (2001-06-04) [i586-linux]
+   nil
+
+=&gt; -:1: warning: already initialized constant Array
+   ruby 1.6.4 (2001-08-23) [i586-linux]
+   nil
+</PRE>
+<DT><A class=modified-year id=Regexp title="Regexp (171d)" href="http://rubycn.ce-lab.net/ja/man/index.cgi?cmd=view;name=Regexp"  name=Regexp>Regexp</A><!-- RDLabel: "Regexp" --> 
+<DD>
+<P>以前，若反向参考中的数字大于括号数量时，则会匹配任何内容。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-list/30975" >[ruby-list:30975]</A></P><PRE>p /(foo)\2/ =~ "foobar"
+=&gt; ruby 1.6.4 (2001-06-04) [i586-linux]
+   0
+=&gt; ruby 1.6.4 (2001-08-23) [i586-linux]
+   nil
+</PRE>
+<DT><A class=modified-year id=TCPSocket.2eopen title="TCPSocket (250d)" href="http://rubycn.ce-lab.net/ja/man/index.cgi?cmd=view;name=TCPSocket"  name=TCPSocket.2eopen>TCPSocket</A>.open<!-- RDLabel: "TCPSocket.open" --> 
+<DD>
+<P>修复了<A class=modified-old title="Cygwin (446d)">Cygwin</A>中<A class=modified-year title="TCPSocket (250d)">TCPSocket</A>.open 时常出错(Errno::EINVAL, EALREADY)的问题。(1.6.4 20010712以后) <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/9939" >[ruby-talk:9939]</A>, <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/16632" >[ruby-talk:16632]</A>, <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-list/24702" >[ruby-list:24702]</A>, <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-list/27805" >[ruby-list:27805]</A>, <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-list/30512" >[ruby-list:30512]</A> 等等</P>
+<DT><A id=lib.2fresolv.2erb.2c.20lib.2fresolv-replace.2erb name=lib.2fresolv.2erb.2c.20lib.2fresolv-replace.2erb>lib/resolv.rb, lib/resolv-replace.rb</A><!-- RDLabel: "lib/resolv.rb, lib/resolv-replace.rb" --> 
+<DD>
+<P>添加。主要是为了在ruby的resolver(DNS解析)和Socket相关的类中使用该库而设立。</P>
+<P>在ruby的resovler中，timeout.rb的控制是有效的(即，在域名解析过程中可以进行Thread的切换)</P><PRE>require 'resolv'
+p Resolv.new.getaddress("www.ruby-lang.org").to_s
+
+=&gt; /usr/local/lib/ruby/1.6/resolv.rb:160: warning: timeout (...) interpreted as method call
+   /usr/local/lib/ruby/1.6/resolv.rb:55: warning: instance variable @initialized not initialized
+   /usr/local/lib/ruby/1.6/resolv.rb:113: warning: instance variable @initialized not initialized
+   /usr/local/lib/ruby/1.6/resolv.rb:392: warning: instance variable @initialized not initialized
+   ruby 1.6.4 (2001-08-23) [i586-linux]
+   "210.251.121.214"
+</PRE>
+<DT><A class=modified-old id=digest.2eso.20.a5.e2.a5.b8.a5.e5.a1.bc.a5.eb title="digest.so (465d)" name=digest.2eso.20.a5.e2.a5.b8.a5.e5.a1.bc.a5.eb>Digest</A> 模块<!-- RDLabel: "digest.so 模块" --> 
+<DD>
+<P>SHA1, MD5被替换成Digest::SHA1, Digest::MD5。 另外，还新增了Digest::SHA256, Digest::SHA384, Digest::SHA512, Digest::RMD160。</P><PRE>require 'digest/md5'
+include Digest
+
+md = MD5.new
+md &lt;&lt; "abc"
+puts md
+
+puts MD5.hexdigest("123")
+</PRE>
+<DT><A class=modified-old id=Struct title="Struct (612d)" name=Struct>Struct</A><!-- RDLabel: "Struct" --> 
+<DD>
+<P>以前，可以修改已被冻结的结构体对象。另外，当$SAFE = 4时，则禁止进行修改操作。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/19167" >[ruby-talk:19167]</A></P><PRE>cat = Struct.new("Cat", :name, :age, :life)
+a = cat.new("cat", 12, 7).freeze
+a.name = "dog"
+p a
+=&gt; ruby 1.6.4 (2001-06-04) [i586-linux]
+   #&lt;Struct::Cat name="dog", age=12, life=7&gt;
+=&gt; ruby 1.6.4 (2001-08-06) [i586-linux]
+   -:4:in `name=': can't modify frozen Struct (TypeError)
+        from -:4
+
+cat = Struct.new("Cat", :name, :age, :life)
+a = cat.new("cat", 12, 7)
+Thread.new do
+   abort_on_exception = true
+   $SAFE = 4
+   a.life -= 1
+end.join
+p a.life
+=&gt; ruby 1.6.4 (2001-06-04) [i586-linux]
+   6
+=&gt; ruby 1.6.4 (2001-08-06) [i586-linux]
+   -:6:in `life=': Insecure: can't modify Struct (SecurityError)
+        from -:3:in `join'
+        from -:3
+</PRE>
+<DT><A class=modified-year id=String.23rindex title="String (104d)" name=String.23rindex>String</A>#rindex<!-- RDLabel: "String#rindex" --> 
+<DD>
+<P>将正则表达式传给rindex时，则会出现bug。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/13843" >[ruby-dev:13843]</A> (该bug出现在1.6.4 版本之后)</P><PRE>p "foobar".rindex(/b/)
+=&gt; ruby 1.6.4 (2001-06-04) [i586-linux]
+   3
+
+=&gt; ruby 1.6.4 (2001-06-19) [i386-freebsd5.0]
+   nil
+
+=&gt; ruby 1.6.4 (2001-08-06) [i586-linux]
+   3
+</PRE>
+<DT><A class=modified-year id=a.c1.c8.a4.df.b9.fe.a4.df.b4.d8.bf.f4 title="内部函数 (171d)" name=a.c1.c8.a4.df.b9.fe.a4.df.b4.d8.bf.f4>require</A><!-- RDLabel: "内部函数" --> 
+<DD>
+<P>以前，若把以~开头的文件名传给require时必须带上扩展名，否则无法进行加载。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/13756" >[ruby-dev:13756]</A></P><PRE>$ echo p __FILE__ &gt; ~/a.rb
+$ ruby17 -v -r~/a -e0
+ruby 1.7.1 (2001-07-03) [i686-linux]
+0: No such file to load -- ~/a (LoadError)
+$ ruby16 -v -r~/a -e0
+ruby 1.6.4 (2001-07-02) [i686-linux]
+0: No such file to load -- ~/a (LoadError)
+$ ruby14 -v -r~/a -e0
+ruby 1.4.6 (2000-08-16) [i686-linux]
+"/home/nobu/a.rb"
+</PRE>
+<DT><A class=modified-year id=String.23each_line title="String (104d)" name=String.23each_line>String</A>#each_line<!-- RDLabel: "String#each_line" --> 
+<DD>
+<P>以前，无法正确传递污染。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/13755" >[ruby-dev:13755]</A></P><PRE>"foo\nbar\n".taint.each_line {|v| p v.tainted?}
+=&gt; ruby 1.6.4 (2001-06-04) [i586-linux]
+   false
+   true
+=&gt; ruby 1.6.4 (2001-08-06) [i586-linux]
+   true
+   true
+</PRE>
+<DT><A class=modified-month id=NKF.3a.3ankf title="NKF (7d)" name=NKF.3a.3ankf>NKF</A>::nkf<!-- RDLabel: "NKF::nkf" --> 
+<DD>
+<P>以前，无法正确传递污染。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/13754" >[ruby-dev:13754]</A></P><PRE>require 'nkf'
+p NKF.nkf("-j", "a".taint).tainted?
+
+=&gt; ruby 1.6.4 (2001-06-04) [i586-linux]
+   false
+=&gt; ruby 1.6.4 (2001-08-06) [i586-linux]
+   true
+</PRE>
+<DT><A id=ruby.20-x name=ruby.20-x>ruby -x</A><!-- RDLabel: "ruby -x" --> 
+<DD>
+<P>指定了<A class=modified-old title="Ruby的启动 (437d)">-x[directory]</A>选项的话，有时会出现尚未执行脚本就已经结束的情况。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/13752" >[ruby-dev:13752]</A></P>
+<DT><A id=attr_.2a name=attr_.2a>attr_*</A><!-- RDLabel: "attr_*" --> 
+<DD>
+<P>向accessor传递多余的参数也不会引起错误。 <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/13748" >[ruby-dev:13748]</A></P><PRE>class C
+  def initialize
+    @message = 'ok'
+  end
+  attr_reader :message
+end
+puts C.new.message(1,2,3)
+
+=&gt; ruby 1.6.4 (2001-06-04) [i586-linux]
+   ok
+=&gt; ruby 1.6.4 (2001-08-06) [i586-linux]
+   -:7:in `message': wrong # of arguments(3 for 0) (ArgumentError)
+        from -:7
+</PRE>
+<DT><A class=modified-old id=Readline.3a.3acompletion_append_character title="Readline (1107d)" name=Readline.3a.3acompletion_append_character>Readline</A>::completion_append_character<!-- RDLabel: "Readline::completion_append_character" --> 
+<DT><A class=modified-old id=Readline.3a.3acompletion_append_character.3d title="Readline (1107d)" name=Readline.3a.3acompletion_append_character.3d>Readline</A>::completion_append_character=<!-- RDLabel: "Readline::completion_append_character=" --> 
+<DD>
+<P>添加。GNU Readline库中的<CODE>rl_completion_append_character</CODE>变量的accessor。(在GNU readline 2.1之后的版本中才能使用该变量) <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-ext/1760" >[ruby-ext:01760]</A></P>
+<DT><A class=modified-year id=Socket.3a.3aConstants title="Socket::Constants (235d)" name=Socket.3a.3aConstants>Socket::Constants</A><!-- RDLabel: "Socket::Constants" --> 
+<DD>
+<P>添加了下列socket相关的常数。</P><PRE>SO_PASSCRED
+SO_PEERCRED
+SO_RCVLOWAT
+SO_SNDLOWAT
+SO_RCVTIMEO
+SO_SNDTIMEO
+SO_SECURITY_AUTHENTICATION
+SO_SECURITY_ENCRYPTION_TRANSPORT
+SO_SECURITY_ENCRYPTION_NETWORK
+SO_BINDTODEVICE
+SO_ATTACH_FILTER
+SO_DETACH_FILTER
+SO_PEERNAME
+SO_TIMESTAMP
+</PRE>
+<DT><A class=modified-year id=a.c1.c8.a4.df.b9.fe.a4.df.b4.d8.bf.f4.20.2f.20.24LOAD_PATH title="内部函数 (171d)" name=a.c1.c8.a4.df.b9.fe.a4.df.b4.d8.bf.f4.20.2f.20.24LOAD_PATH>require</A> / $LOAD_PATH<!-- RDLabel: "内部函数 / $LOAD_PATH" --> 
+<DD>
+<P>Changed to use a new algorithm to locate a library.</P>
+<P>Now when requiring "foo", the following directories are searched for the library in the order listed.</P><PRE>$prefix/lib/ruby/site_ruby/$ver/foo.rb
+$prefix/lib/ruby/site_ruby/$ver/foo.so
+$prefix/lib/ruby/site_ruby/$ver/$arch/foo.rb
+$prefix/lib/ruby/site_ruby/$ver/$arch/foo.so
+$prefix/lib/ruby/site_ruby/foo.rb
+$prefix/lib/ruby/site_ruby/foo.so
+$prefix/lib/ruby/$ver/foo.rb
+$prefix/lib/ruby/$ver/foo.so
+$prefix/lib/ruby/$ver/$arch/foo.rb
+$prefix/lib/ruby/$ver/$arch/foo.so
+./foo.rb
+./foo.so
+</PRE>
+<P>The previous behavior had a potential security risk because a foo.rb (if exists) in the current directory is located prior to a foo.so in $prefix/lib/ruby/site_ruby/$ver/$arch.</P>
+<P><A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs?selectid=140" >[ruby-bugs:PR#140]</A>, <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-ext/1778" >[ruby-ext:01778]</A>, <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/13659" >[ruby-dev:13659]</A></P>
+<DT><A id=lib.2fsync.2erb name=lib.2fsync.2erb>lib/sync.rb</A><!-- RDLabel: "lib/sync.rb" --> 
+<DT><A id=lib.2fmutex_m.2erb name=lib.2fmutex_m.2erb>lib/mutex_m.rb</A><!-- RDLabel: "lib/mutex_m.rb" --> 
+<DD>
+<P>Fixed for obj.extend(Sync_m) and obj.extend(Mutex_m).<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/13463" >[ruby-dev:13463]</A></P><PRE>$ ruby -v -rsocket -rmutex_m -e 's=TCPSocket.new("localhost",25); s.extend(Mutex_m)'
+ruby 1.6.4 (2001-06-04) [i386-linux]
+/usr/lib/ruby/1.6/mutex_m.rb:104:in `initialize': wrong # of arguments (0 for 1) (ArgumentError)
+        from /usr/lib/ruby/1.6/mutex_m.rb:104:in `initialize'
+        from /usr/lib/ruby/1.6/mutex_m.rb:50:in `mu_extended'
+        from /usr/lib/ruby/1.6/mutex_m.rb:34:in `extend_object'
+        from -e:1:in `extend'
+        from -e:1
+</PRE>
+<DT>$SAFE / <A class=modified-year id=a.24SAFE.20.2f.20.c1.c8.a4.df.b9.fe.a4.df.b4.d8.bf.f4 title="内部函数 (171d)" name=a.24SAFE.20.2f.20.c1.c8.a4.df.b9.fe.a4.df.b4.d8.bf.f4>load</A><!-- RDLabel: "$SAFE / 内部函数" --> 
+<DD>
+<P>以前存在以下bug：在1 &lt;= $SAFE &lt;= 3的情况下，当第二参数为true时，即使指定了被污染的对象名，也能进行load()。现在已经修复该bug。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/13481" >[ruby-dev:13481]</A></P><PRE>$SAFE = 1
+filename = "foo"
+filename.taint
+p load(filename, true)
+
+=&gt; ruby 1.6.4 (2001-06-04) [i586-linux]
+   true
+
+=&gt; ruby 1.6.4 (2001-08-06) [i586-linux]
+   -:4:in `load': Insecure operation - load (SecurityError)
+        from -:4
+</PRE>
+<DT><A class=modified-year id=Regexp_2 title="Regexp (171d)" name=Regexp_2>Regexp</A><!-- RDLabel: "Regexp" --> 
+<DD>
+<P>以前，只有后者能匹配成功。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/16233" >[ruby-talk:16233]</A></P><PRE>puts "OK 1" if /(.|a)bd/ =~ "cxbd"
+puts "OK 2" if /(a|.)bd/ =~ "cxbd"
+
+=&gt; ruby 1.6.4 (2001-06-04) [i586-linux]
+   OK 2
+=&gt; ruby 1.6.4 (2001-08-06) [i586-linux]
+   OK 1
+   OK 2
+</PRE>
+<DT><A class=modified-old id=Marshal_2 title="Marshal (519d)" name=Marshal_2>Marshal</A><!-- RDLabel: "Marshal" --> 
+<DD>
+<P>以前，模块加载时的类型检测中存在错误。修复该错误后，dump format的minor版本号升高1级</P><PRE>p Marshal.dump(Object.new).unpack("CC").join(".")
+    =&gt; ruby 1.6.4 (2001-06-04) [i586-linux]
+       "4.5"
+p Marshal.dump(Object.new).unpack("CC").join(".")
+    =&gt; ruby 1.6.4 (2001-06-11) [i586-linux]
+       "4.6"
+</PRE>
+<DT>$SAFE / <A class=modified-year id=a.24SAFE.20.2f.20def title="类／方法的定义 (115d)" name=a.24SAFE.20.2f.20def>def</A><!-- RDLabel: "$SAFE / def" --> 
+<DD>
+<P>虽然doc/NEWS中有下列内容</P><PRE>Fixed so defining a new method is allowed under $SAFE == 4, which
+previously wasn't.
+</PRE>
+<P>但实际上是行不通的。</P><PRE>$SAFE = 4; def a; end
+
+=&gt; -:1: Insecure operation `(null)' at level 4 (SecurityError)
+   ruby 1.6.4 (2001-06-04) [i586-linux]
+
+=&gt; -:1: Insecure: can't define method (SecurityError)
+   ruby 1.6.4 (2001-08-06) [i586-linux]
+</PRE>
+<P>对应的ChangeLog内容如下。</P><PRE>Tue Jun  5 15:16:06 2001  Yukihiro Matsumoto  &lt;matz@ruby-lang.org&gt;
+
+        * eval.c (rb_add_method): should not call rb_secure(), for
+          last_func may not be set.
+</PRE>
+<P>差别如下所示。</P><PRE>@@ -227,10 +227,7 @@ rb_add_method(klass, mid, node, noex)
+     NODE *body;
+
+     if (NIL_P(klass)) klass = rb_cObject;
+-    if (klass == rb_cObject) {
+-       rb_secure(4);
+-    }
+-    if (rb_safe_level() &gt;= 4 &amp;&amp; !OBJ_TAINTED(klass)) {
++    if (rb_safe_level() &gt;= 4 &amp;&amp; (klass == rb_cObject || !OBJ_TAINTED(klass))) {
+        rb_raise(rb_eSecurityError, "Insecure: can't define method");
+     }
+     if (OBJ_FROZEN(klass)) rb_error_frozen("class/module");
+</PRE>
+<P>留作日后调查。</P>
+<DT><A class=modified-year id=IO.23ioctl title="IO (145d)" name=IO.23ioctl>IO</A>#ioctl<!-- RDLabel: "IO#ioctl" --> 
+<DD>
+<P>第2参数也可以接受Bignum了(为了覆盖long int的范围)</P></DD></DL>
+<H2><A id=a1.2e6.2e3.20.282001-03-19.29.20-.3e.201.2e6.2e4.20.282001-06-04.29 name=a1.2e6.2e3.20.282001-03-19.29.20-.3e.201.2e6.2e4.20.282001-06-04.29>1.6.3 (2001-03-19) -&gt; 1.6.4 (2001-06-04)</A><!-- RDLabel: "1.6.3 (2001-03-19) -> 1.6.4 (2001-06-04)" --></H2>
+<DL>
+<DT><A class=modified-year id=Hash.23replace title="Hash (173d)" href="http://rubycn.ce-lab.net/ja/man/index.cgi?cmd=view;name=Hash"  name=Hash.23replace>Hash</A>#replace<!-- RDLabel: "Hash#replace" --> 
+<DD>
+<P>以前，在哈希表迭代过程中，若删除某元素后，向其他哈希表中进行replace时，就会Abort。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/13432" >[ruby-dev:13432]</A></P><PRE>h  = { 10 =&gt; 100, 20 =&gt; 200 }
+h2 = { }
+
+h.each { |k, v|
+  if (k == 10)
+    h.delete(10)
+    h2.replace(h)  # =&gt; Abort core dumped
+  end
+}
+</PRE>
+<DT>$SAFE / <A class=modified-year id=a.24SAFE.20.2f.20File.3a.3aunlink title="File (316d)" name=a.24SAFE.20.2f.20File.3a.3aunlink>File</A>::unlink<!-- RDLabel: "$SAFE / File::unlink" --> 
+<DD>
+<P>在$SAFE &gt;= 2的环境中，即使参数未被污染也不能使用File.unlink。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/13426" >[ruby-dev:13426]</A></P><PRE>touch foo
+ruby -v -e '$SAFE=2;File.unlink("foo")'
+
+=&gt; ruby 1.6.3 (2001-03-19) [i586-linux]
+=&gt; ruby 1.6.4 (2001-06-04) [i586-linux]
+   -e:1:in `unlink': Insecure operation `unlink' at level 2 (SecurityError)
+           from -e:1
+</PRE>
+<DT><A class=modified-year id=Object.23untaint title="Object (171d)" href="http://rubycn.ce-lab.net/ja/man/index.cgi?cmd=view;name=Object"  name=Object.23untaint>Object</A>#untaint<!-- RDLabel: "Object#untaint" --> 
+<DD>
+<P>现在不能对已冻结的对象使用untaint方法。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/13409" >[ruby-dev:13409]</A></P><PRE>a = Object.new
+a.taint
+a.freeze
+a.untaint
+
+=&gt; ruby 1.6.3 (2001-03-19) [i586-linux]
+=&gt; ruby 1.6.4 (2001-06-04) [i586-linux]
+   -:4:in `untaint': can't modify frozen object (TypeError)
+           from -:4
+</PRE>
+<DT><A id=ruby.20-T4 name=ruby.20-T4>ruby -T4</A><!-- RDLabel: "ruby -T4" --> 
+<DD>
+<P>指定-T4选项时，因为无法修改ARGV导致程序无法运行。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/13401" >[ruby-dev:13401]</A></P><PRE>touch foo
+ruby-1.6.3 -v -T4 foo
+=&gt; ruby 1.6.3 (2001-03-19) [i586-linux]
+   foo: Insecure: can't modify array (SecurityError)
+</PRE>
+<DT><A class=modified-year id=Regexp_3 title="Regexp (171d)" name=Regexp_3>Regexp</A><!-- RDLabel: "Regexp" --> 
+<DD>
+<P>现在，正则表达式中的 \1 .. \9 总是会被解释为反向参考(以前则不同，若有对应的括号则看作反向参考，若没有的话则看作8进制字符代码)。</P>
+<P>在正则表达式中指定8进制字符代码时，请使用形如\001这种3位表示法。</P>
+<P>另外，若反向参考中没有对应的括号，或者对应的括号中包含反向参考本身的话，则会引起匹配失败。</P><PRE>p /(foo)\2/ =~ "foo\002"
+=&gt; ruby 1.6.3 (2001-03-19) [i586-linux]
+   0
+=&gt; ruby 1.6.4 (2001-06-04) [i586-linux]
+   0
+=&gt; ruby 1.6.4 (2001-08-23) [i586-linux]
+   nil
+</PRE>
+<P>(如上所示，1.6.4中仍然有bug。大概是在2001-08-23的时候得到了修正<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-list/30975" >[ruby-list:30975]</A>)</P><PRE>p /(foo\1)/ =~ "foo"
+=&gt; ruby 1.6.3 (2001-03-19) [i586-linux]
+   0
+=&gt; ruby 1.6.4 (2001-06-04) [i586-linux]
+   nil
+</PRE>
+<DT><A id=a.b1.f8.c0.f7.ca.b8.bb.fa.ce.f3.a4.ce.c5.c1.c8.c2 name=a.b1.f8.c0.f7.ca.b8.bb.fa.ce.f3.a4.ce.c5.c1.c8.c2>污染字符串的传播</A> 
+<DD>
+<P>下列各项都会返回true。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/13340" >[ruby-dev:13340]</A></P><PRE># []=
+s1 = "abc"
+s2 = "cde".taint
+s1[0]= s2
+p s1.tainted?             # =&gt; false
+
+# crypt
+s = "abc".taint
+p s.crypt("cd").tainted?  # =&gt; false
+
+# ljust
+s = "abc".taint
+p s.ljust(10).tainted?    # =&gt; false
+
+# rjust
+s = "abc".taint
+p s.rjust(10).tainted?    # =&gt; false
+
+# center
+s = "abc".taint
+p s.center(10).tainted?   # =&gt; false
+</PRE>
+<DT><A id=rb_yield_0.28.29 name=rb_yield_0.28.29>rb_yield_0()</A><!-- RDLabel: "rb_yield_0()" --> 
+<DD>
+<P>以前在C API中使用yield时，1个参数会被当作只包含1个元素的数组来处理。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/13299" >[ruby-dev:13299]</A></P><PRE>class X
+  include Enumerable
+
+  def each(&amp;block)
+    block.call(1,2)
+    block.call(2,3)
+    block.call(3,4)
+  end
+end
+
+x = X.new
+p x.to_a #=&gt; [[1], [2], [3]]
+
+# =&gt; ruby 1.6.3 (2001-03-19) [i586-linux]
+     [[1], [2], [3]]
+
+# =&gt; ruby 1.6.4 (2001-06-04) [i586-linux]
+     [1, 2, 3]
+</PRE>
+<DT><A id=a.24SAFE.20.2f.20alias name=a.24SAFE.20.2f.20alias>$SAFE / alias</A><!-- RDLabel: "$SAFE / alias" --> 
+<DD>
+<P>当$SAFE = 4时，不允许全局变量使用别名。 <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/13287" >[ruby-dev:13287]</A></P>
+<DT><A class=modified-year id=Open3.3a.3apopen3 title="Open3 (113d)" name=Open3.3a.3apopen3>Open3</A>::popen3<!-- RDLabel: "Open3::popen3" --> 
+<DD>
+<P>结束的进程不会调用at_exit。 (将exit修正为exit!) <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/13170" >[ruby-dev:13170]</A></P>
+<DT><A class=modified-old id=SizedQueue.23pop title="SizedQueue (1037d)" name=SizedQueue.23pop>SizedQueue</A>#pop<!-- RDLabel: "SizedQueue#pop" --> 
+<DD>
+<P>下列代码不会再导致死锁了。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/13169" >[ruby-dev:13169]</A></P><PRE>ruby -r thread -e 'q = SizedQueue.new(1); q.push(1);'\
+               -e 'Thread.new{sleep 1; q.pop}; q.push(1);'
+</PRE>
+<DT><A class=modified-old id=SizedQueue.23max.3d title="SizedQueue (1037d)" name=SizedQueue.23max.3d>SizedQueue</A>#max=<!-- RDLabel: "SizedQueue#max=" --> 
+<DD>
+<P>以前当max大于当前值时，则会唤起相应的等待线程。但在该处理过程中存在错误。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/13170" >[ruby-dev:13170]</A></P>
+<DT><A class=modified-old id=Queue title="Queue (1041d)" name=Queue>Queue</A><!-- RDLabel: "Queue" --> 
+<DT><A class=modified-old id=SizedQueue title="SizedQueue (1037d)" name=SizedQueue>SizedQueue</A><!-- RDLabel: "SizedQueue" --> 
+<DD>
+<P>在调用<A class=modified-year title="Thread (259d)">Thread</A>#run时，若线程忽然死亡则会引发ThreadError。现在已经针对这个问题进行了相应的处理。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/13194" >[ruby-dev:13194]</A></P>
+<DT><A id=Ctrl-C.20.28Interrupt.29.a4.ac.b8.fa.a4.ab.a4.ca.a4.af.a4.ca.a4.eb name=Ctrl-C.20.28Interrupt.29.a4.ac.b8.fa.a4.ab.a4.ca.a4.af.a4.ca.a4.eb>Ctrl-C (Interrupt)失效</A><!-- RDLabel: "Ctrl-C (Interrupt)失效" --> 
+<DD>
+<P><A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/13195" >[ruby-dev:13195]</A></P><PRE>th1 = Thread.start {
+  begin
+    Thread.stop
+  ensure
+    Thread.pass
+    Thread.stop
+  end
+}
+sleep 1
+</PRE>
+<P>(据我所知，在ruby-1.7.0 (2001-05-17) 以后的版本中解决了这个问题，但1.6好像还不行)</P>
+<DT><A class=modified-month id=Array.23.26 title="Array (11d)" name=Array.23.26>Array</A>#&amp;<!-- RDLabel: "Array#&" --> 
+<DT><A class=modified-month id=Array.23.7c title="Array (11d)" name=Array.23.7c>Array</A>#|<!-- RDLabel: "Array#|" --> 
+<DT><A class=modified-month id=Array.23uniq title="Array (11d)" name=Array.23uniq>Array</A>#uniq<!-- RDLabel: "Array#uniq" --> 
+<DD>
+<P>以前，结果数组中的元素均被冻结，不能修改。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-list/29665" >[ruby-list:29665]</A></P><PRE>(%w(foo bar) &amp; %w(foo baz))[0].upcase!
+=&gt; -:1:in `upcase!': can't modify frozen string (TypeError)
+
+%w(foo bar bar baz).uniq[0].upcase!
+=&gt; -:1:in `upcase!': can't modify frozen string (TypeError)
+</PRE>
+<DT><A class=modified-year id=shell.2erb title="shell.rb (227d)" name=shell.2erb>shell.rb</A><!-- RDLabel: "shell.rb" --> 
+<DD>
+<P>shell.rb 0.6被添加到标准库中。(文档在doc目录中)</P>
+<DT><A class=modified-old id=forwardable.2erb title="forwardable.rb (599d)" name=forwardable.2erb>forwardable.rb</A><!-- RDLabel: "forwardable.rb" --> 
+<DD>
+<P>forwardable.rb 1.1被添加到标准库中。(文档在doc目录中)</P>
+<DT><A class=modified-month id=irb.2erb.20.26.20irb-tools title="irb.rb (25d)" name=irb.2erb.20.26.20irb-tools>irb.rb</A> &amp; irb-tools<!-- RDLabel: "irb.rb & irb-tools" --> 
+<DD>
+<P>irb和irb-tools分别升级到0.7.4和0.7.1。</P>
+<DT><A id=a.b2.c6.bb.fe.b4.d6 name=a.b2.c6.bb.fe.b4.d6>夏令时</A><!-- RDLabel: "夏令时" --> 
+<DD>
+<P>对夏令时的考虑不周(？) <A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs-ja?selectid=46" >[ruby-bugs-ja:PR#46]</A></P><PRE>env TZ=America/Managua ruby -e 'p Time.local(1998,12,1,0,59,59)'
+=&gt; Mon Nov 30 01:59:59 EST 1998
+env TZ=America/Managua ruby -e 'p Time.local(1998,12,1,0,59,59).tv_sec'   
+=&gt; 912409199
+</PRE>
+<DT><A id=SIGINFO name=SIGINFO>SIGINFO</A><!-- RDLabel: "SIGINFO" --> 
+<DD>
+<P>对4.4BSD的SIGINFO信号采取了相应的处理措施。<A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs-ja?selectid=45" >[ruby-bugs-ja:PR#45]</A></P>
+<DT><A class=modified-year id=Thread.2estop.20.a4.c7.20SEGV title="Thread (259d)" name=Thread.2estop.20.a4.c7.20SEGV>Thread</A>.stop中的SEGV 
+<DD>
+<P>有时会在<A class=modified-year title="Thread (259d)">Thread</A>.stop中发生SEGV。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/13189" >[ruby-dev:13189]</A></P>
+<DT><A id=rescue.20.bd.a4.be.fe name=rescue.20.bd.a4.be.fe>rescue 修饰部分</A><!-- RDLabel: "rescue 修饰部分" --> 
+<DD>
+<P>下列代码在1.6.3中会引起parse error，现在已经修复了该bug。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/13073" >[ruby-dev:13073]</A>, <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/13292" >[ruby-dev:13292]</A></P><PRE>raise "" rescue []
+raise "" rescue (p "foo"; true)
+raise "" rescue -1
+raise "" rescue (-1)
+</PRE>
+<DT><A class=modified-year id=Thread_2 title="Thread (259d)" name=Thread_2>Thread</A><!-- RDLabel: "Thread" --> 
+<DD>
+<P>下列代码不会再引起dead lock了。</P><PRE>Thread.start { Thread.stop }
+sleep
+
+=&gt; deadlock 0x40199b58: 2:0  - -:1
+   deadlock 0x401a2528: 2:4 (main) - -:2
+   -:2:in `sleep': Thread: deadlock (fatal)
+           from -:2
+   ruby 1.6.3 (2001-03-19) [i586-linux]
+</PRE>
+<DT><A class=modified-year id=Module.23const_defined.3f title="Module (120d)" name=Module.23const_defined.3f>Module</A>#const_defined?<!-- RDLabel: "Module#const_defined?" --> 
+<DT><A class=modified-year id=Module.23const_get title="Module (120d)" name=Module.23const_get>Module</A>#const_get<!-- RDLabel: "Module#const_get" --> 
+<DT><A class=modified-year id=Module.23const_set title="Module (120d)" name=Module.23const_set>Module</A>#const_set<!-- RDLabel: "Module#const_set" --> 
+<DD>
+<P>以前，这些方法甚至可以访问常数以外的对象。现在已经修正了该bug <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/13019" >[ruby-dev:13019]</A></P>
+<DT><A class=modified-old id=Marshal.2edump title="Marshal (519d)" name=Marshal.2edump>Marshal</A>.dump<!-- RDLabel: "Marshal.dump" --> 
+<DD>
+<P>dump <A class=modified-old title="Float (491d)">Float</A>时精度由"%.12g"提升到了"%.16g"。 <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-list/29349" >[ruby-list:29349]</A></P>
+<DT><A class=modified-old id=Fixnum.23.5b.5d title="Fixnum (687d)" name=Fixnum.23.5b.5d>Fixnum</A>#[]<!-- RDLabel: "Fixnum#[]" --> 
+<DD>
+<P>好像是修正了在sizeof(long) &gt; sizeof(int)这种系统上的bug。</P>
+<DT><A id=a.c0.b5.b5.ac.c9.bd.b8.bd name=a.c0.b5.b5.ac.c9.bd.b8.bd>正则表达式</A><!-- RDLabel: "正则表达式" --> 
+<DD>
+<P>修正了2个较少见的bug <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/13658" >[ruby-talk:13658]</A>, <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/13744" >[ruby-talk:13744]</A></P>
+<DT><A id=retry name=retry>retry</A><!-- RDLabel: "retry" --> 
+<DD>
+<P>在1.6.3中，下列代码不能正常运行<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/13957" >[ruby-talk:13957]</A></P><PRE>def WHILE(cond)
+  return if not cond
+  yield
+  retry
+end
+
+i=0
+WHILE(i&lt;3) {
+  print i
+  i+=1
+}
+
+ruby 1.6.2 (2000-12-25) [i586-linux]
+=&gt; 012
+
+ruby 1.6.3 (2001-03-19) [i586-linux]
+=&gt; 0
+
+ruby 1.6.4 (2001-05-02) [i586-linux]
+=&gt; 012
+</PRE>
+<DT><A class=modified-year id=File.3a.3aStat.23size title="File::Stat (171d)" name=File.3a.3aStat.23size>File::Stat</A>#size<!-- RDLabel: "File::Stat#size" --> 
+<DD>
+<P>以前无法正确返回超过1G byte的文件的大小。</P><PRE>File.open("/tmp/1GB", "w") {|f|
+  f.seek(2**30-1, 0)
+  f.puts
+  f.flush
+  p f.stat.size
+}
+
+# =&gt; ruby 1.6.3 (2001-04-03) [i586-linux]
+     -1073741824
+# =&gt; ruby 1.6.4 (2001-04-19) [i586-linux]
+     1073741824
+</PRE>
+<DT><A class=modified-old id=Float.23modulo.2c.20Float.23divmod title="Float (491d)" name=Float.23modulo.2c.20Float.23divmod>Float</A>#modulo, <A class=modified-old title="Float (491d)">Float</A>#divmod<!-- RDLabel: "Float#modulo, Float#divmod" --> 
+<DD>
+<P>好像修正了一些问题 <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/12718" >[ruby-dev:12718]</A></P>
+<DT><A class=modified-old id=ObjectSpace.23_id2ref title="ObjectSpace (508d)" href="http://rubycn.ce-lab.net/ja/man/index.cgi?cmd=view;name=ObjectSpace"  name=ObjectSpace.23_id2ref>ObjectSpace</A>#_id2ref<!-- RDLabel: "ObjectSpace#_id2ref" --> 
+<DD>
+<P>以前会莫名其妙地返回异常。</P>
+<DT><A id=malloc.20.a4.ce.ba.c6.b5.a2.b8.c6.a4.d3.bd.d0.a4.b7.cc.e4.c2.ea name=malloc.20.a4.ce.ba.c6.b5.a2.b8.c6.a4.d3.bd.d0.a4.b7.cc.e4.c2.ea>malloc的递归调用问题</A> 
+<DD>
+<P>当stdio在内部调用malloc()时，会破坏其与Thread的兼容性，因此采取了一些补救措施。(通过使用setvbuf()，来避免调用malloc()) <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/12795" >[ruby-dev:12795]</A></P>
+<DT><A class=modified-year id=File.23flock title="File (316d)" name=File.23flock>File</A>#flock<!-- RDLabel: "File#flock" --> 
+<DD>
+<P>在File#flock锁定之后，有时会抛出Errno::EACCES异常，而并不会返回false(这种情况出现在没有flock()的系统中)</P>
+<DT><A class=modified-year id=File.3a.3aStat.2enew.28filename.29 title="File::Stat (171d)" name=File.3a.3aStat.2enew.28filename.29>File::Stat</A>.new(filename)<!-- RDLabel: "File::Stat.new(filename)" --> 
+<DD>
+<P>添加 <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/12803" >[ruby-dev:12803]</A></P>
+<DT><A class=modified-old id=Bignum.23.25.20.a4.ce.b7.d7.bb.bb.b8.ed.a4.ea title="Bignum (1089d)" name=Bignum.23.25.20.a4.ce.b7.d7.bb.bb.b8.ed.a4.ea>Bignum</A>#%的计算错误 
+<DD>
+<P>(再次)修正了导致% 计算错误的bug</P><PRE>a = 677330545177305025495135714080
+b = 14269972710765292560
+p a % b  #=&gt; 0
+p -a % b #=&gt; 
+
+=&gt; ruby 1.6.3 (2001-04-02) [i386-cygwin]
+   0
+   14269972710765292560
+
+=&gt; ruby 1.6.4 (2001-04-19) [i586-linux]
+   0
+   0
+</PRE>
+<DT><A class=modified-old id=Marshal_3 title="Marshal (519d)" name=Marshal_3>Marshal</A><!-- RDLabel: "Marshal" --> 
+<DD>
+<P>将Bignum进行dump -&gt; load操作之后得到的结果往往与原值不同。</P>
+<P>在1.6.3版本之后，共进行了3次相关部分的修改。 请使用stable-snapshot的</P><PRE>ruby 1.6.3 (2001-03-22)
+</PRE>
+<P>之后的版本。</P>
+<DT><A id=Universal.20Naming.20Convention.28UNC.29.20.a4.ce.a5.b5.a5.dd.a1.bc.a5.c8.28win32.29 name=Universal.20Naming.20Convention.28UNC.29.20.a4.ce.a5.b5.a5.dd.a1.bc.a5.c8.28win32.29>Universal Naming Convention(UNC) 的支持(win32)</A><!-- RDLabel: "Universal Naming Convention(UNC) 的支持(win32)" --> 
+<DD>
+<P>UNC 形式的路径名 (//host/share)得到了支持。使用斜线(`<CODE>/</CODE>')，而并非反斜线(`<CODE>\</CODE>')。 (其实以前就支持的，难道是修正bug了？？)</P>
+<DT><A class=modified-old id=Dir.2eglob.20.28win32.29 title="Dir (449d)" name=Dir.2eglob.20.28win32.29>Dir</A>.glob (win32)<!-- RDLabel: "Dir.glob (win32)" --> 
+<DD>
+<P>以前，无法对当前目录(./)进行glob。</P><PRE>p Dir["./*.c"]
+=&gt; []
+</PRE></DD></DL>
+<H2><A id=a1.2e6.2e2.20-.3e.201.2e6.2e3.20.282001-03-19.29 name=a1.2e6.2e2.20-.3e.201.2e6.2e3.20.282001-03-19.29>1.6.2 -&gt; 1.6.3 (2001-03-19)</A><!-- RDLabel: "1.6.2 -> 1.6.3 (2001-03-19)" --></H2>
+<DL>
+<DT><A id=do.20.2e.2e.20end.20.a4.c8.20.7b.20.2e.2e.20.7d name=do.20.2e.2e.20end.20.a4.c8.20.7b.20.2e.2e.20.7d>do .. end 和 { .. }</A><!-- RDLabel: "do .. end 和 { .. }" --> 
+<DD>
+<P>以前的版本认定二者的结合度相同，现在修正了这个bug。</P>
+<P>在1.6.0到1.6.2之间的版本中，</P><PRE>method v { .. }
+method v do .. end
+</PRE>
+<P>两者之间没有区别。正确的描述详见<A class=modified-year title="方法调用 (104d)" href="78.html" >迭代器</A>部分。</P>
+<DT><A class=modified-old id=Bignum.23.25.20.a4.ce.b7.d7.bb.bb.b8.ed.a4.ea_2 title="Bignum (1089d)" href="http://rubycn.ce-lab.net/ja/man/index.cgi?cmd=view;name=Bignum"  name=Bignum.23.25.20.a4.ce.b7.d7.bb.bb.b8.ed.a4.ea_2>Bignum</A>#% 的计算错误 
+<DD>
+<P>修正了导致 % 计算错误的bug</P><PRE>ruby-1.6.2 -ve 'p 6800000000%4000000000'
+=&gt; ruby 1.6.2 (2000-12-25) [i586-linux]
+   -1494967296
+
+ruby-1.6.3 -ve 'p 6800000000%4000000000'
+=&gt; ruby 1.6.3 (2001-03-10) [i586-linux]
+   2800000000
+</PRE>
+<DT><A id=a.c6.c3.b0.db.a5.e1.a5.bd.a5.c3.a5.c9.c4.ea.b5.c1 name=a.c6.c3.b0.db.a5.e1.a5.bd.a5.c3.a5.c9.c4.ea.b5.c1>特殊方法定义</A><!-- RDLabel: "特殊方法定义" --> 
+<DD>
+<P>与通常的方法定义一样，也可以指定rescue, ensure部分</P><PRE>obj = Object.new
+def obj.foo
+rescue
+ensure
+end
+</PRE>
+<DT><A class=modified-year id=String.23count title="String (104d)" name=String.23count>String</A>#count<!-- RDLabel: "String#count" --> 
+<DT><A class=modified-year id=String.23delete title="String (104d)" name=String.23delete>String</A>#delete<!-- RDLabel: "String#delete" --> 
+<DT><A class=modified-year id=String.23squeeze title="String (104d)" name=String.23squeeze>String</A>#squeeze<!-- RDLabel: "String#squeeze" --> 
+<DT><A class=modified-year id=String.23tr title="String (104d)" <DT><A class=modified-year id=String.23tr_s title="String (104d)" name=String.23tr_s>String</A>#tr_s<!-- RDLabel: "String#tr_s" --> 
+<DD>
+<P>可以用'\-'来表示'-'(tr! 等、bang method也是一样的)。以前，只有字符串开头或末尾的'-'才会被看作是'-'。</P><PRE>p "-".tr("a-z",  "+")  # =&gt; "-"
+p "-".tr("-az",  "+")  # =&gt; "+"
+p "-".tr("az-",  "+")  # =&gt; "+"
+p "-".tr('a\-z', "+")  # =&gt; "+" # 请注意单引号字符串
+p "-".tr("a\\-z", "+") # =&gt; "+" # 在""中需要使用二个\
+</PRE>
+<DT><A class=modified-year id=Regexp.23.3d.3d title="Regexp (171d)" name=Regexp.23.3d.3d>Regexp</A>#==<!-- RDLabel: "Regexp#==" --> 
+<DD>
+<P>所有选项都相同的话，则被判定为相同。以前，只要汉字代码选项 和 /i (case-insensitive)相同，就被看作是相同。</P>
+<DT><A id=a.25q.28.29.2c.20.25w.28.29 name=a.25q.28.29.2c.20.25w.28.29>%q(), %w()</A><!-- RDLabel: "%q(), %w()" --> 
+<DD>
+<P>可以使用反斜线对字面值的末尾字符(`)'等)进行转义。</P>
+<DT><A class=modified-old id=Dir.2eglob_3 title="Dir (449d)" name=Dir.2eglob_3>Dir</A>.glob<!-- RDLabel: "Dir.glob" --> 
+<DD>
+<P>"**/"无法找到符号连接了。</P>
+<DT><A class=modified-year id=String.23.5b.5d title="String (104d)" name=String.23.5b.5d>String</A>#[]<!-- RDLabel: "String#[]" --> 
+<DD>
+<P>现在"a"[1,2]会返回""。</P><PRE>p "a"[1,2]
+=&gt; ""
+</PRE>
+<P>这是正确的结果。以前的老版本(1.4.6等)也都是对的。但1.6.0到1.6.2之间的版本则返回<CODE>nil</CODE>。</P>
+<P><CODE>p "a"[2,1]</CODE>返回<CODE>nil</CODE>。</P>
+<DT><A class=modified-year id=Object.23taint title="Object (171d)" name=Object.23taint>Object</A>#taint<!-- RDLabel: "Object#taint" --> 
+<DD>
+<P>无法对<A class=modified-year title="Object (171d)">freeze</A>的对象进行<CODE>taint</CODE>操作</P><PRE>obj = Object.new.freeze
+obj.taint
+=&gt; -:2:in `taint': can't modify frozen object (TypeError)
+           from -:2
+</PRE></DD></DL></DIV>
+<HR>
+
+<DIV class=footer>Originally Written by webmaster@ruby-lang.org<BR>Translated by <A href="http://cn.ce-lab.net/" >Community Engine China</A> (<A href="mailto:rubycn@ce-lab.net">Mail</A>)<BR>Last update on 2005-01-24 </DIV></BODY>

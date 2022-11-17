@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Event.stop - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>stop</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">Event.stop(event)</code></pre>
+			<p>停止事件的传播，并阻止事件被触发后最终的默认行为。</p>
+		</div>
+		<div id="abody">
+			<p>事件被触发后，浏览器对事件的处理包括两个方面：</p>
+			<ul>
+				<li>
+					事件发生后，浏览器通常首先触发事件发生元素上的事件处理程序，然后是它的父元素，父元素的父元素……依此类推，
+					直到文档的根元素为止。这被称为 <em>事件冒泡</em>，是事件传播的最常见的方式。当处理好一个事件后，
+					你可能想要停止事件的传播，不希望它继续冒泡。					
+				</li>
+				<li>
+					当你的程序有机会处理事件时，如果这个事件具有 <em>默认行为</em>，同时浏览器也会处理它。例如，点击导航链接、
+					将表单提交到服务器、在一个单行文本框中按下回车键等等。如果对这些事件你定义了自己的处理方式，
+					可能会非常希望阻止相关的默认行为。
+				</li>
+			</ul>
+			<p>
+				在上述的情形中，如果你阻止了其中一项，那么 99.9% 的，你也需要阻止另外一项，Prototype 在 <code>stop</code>
+				中对它们进行了统一处理。在事件对象上调用该函数将会停止事件的传播并且阻止事件的默认行为。
+			</p>
+			<h3>样例</h3>
+			<p>这里有一个简单的样例，如果指定的字段为空，则阻止表单提交到服务器。</p>
+			<pre><code class="javascript">Event.observe('signinForm', 'submit', function(event) { 
+	var login = $F('login').strip(); 
+	if ('' == login) { 
+		Event.stop(event); 
+		// 为用户提示相关的信息 
+	} 
+}); </code></pre>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

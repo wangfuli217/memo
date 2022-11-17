@@ -1,0 +1,359 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 10.5.  The multimap and multiset Types</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch10lev1sec4.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch10lev1sec6.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch10lev1sec5"></a>
+
+        <h3 class="docSection1Title">10.5. The <tt>multimap</tt> and <tt>multiset</tt> Types</h3>
+        <h3 class="docSection1Title">10.5. <tt>multimap</tt> 和 <tt>multiset</tt> 类型</h3>
+
+        <p class="docText">Both <tt>map</tt> and <tt>set</tt> can contain only a single instance of each key. The types <b><a name="ch10term7"></a><a class="docLink" href="ch10lev1sec8.html#gloss10_07" ><span class="docEmphStrong"><tt>multiset</tt></span></a></b> and a <b><a name="ch10term6"></a><a class="docLink" href="ch10lev1sec8.html#gloss10_06" ><span class="docEmphStrong"><tt>multimap</tt></span></a></b> allow multiple instances of a key. In a phone directory, for example, someone might wish to provide a separate listing for each phone number associated with an individual. A listing of available texts by an author might provide a separate listing for each title. The <tt>multimap</tt> and <tt>multiset</tt> types are defined in the same headers as the corresponding single-element versions: the <tt>map</tt> and <tt>set</tt> headers, respectively.</p>
+        <p class="docText"><tt>map</tt> 和 <tt>set</tt> 容器中，一个键只能对应一个实例。而 <b><a class="docLink" href="ch10lev1sec8.html#gloss10_07" ><span class="docEmphStrong"><tt>multiset</tt></span></a></b> 和 <b><a name="ch10term6"></a><a class="docLink" href="ch10lev1sec8.html#gloss10_06" ><span class="docEmphStrong"><tt>multimap</tt></span></a></b> 类型则允许一个键对应多个实例。例如，在电话簿中，每个人可能有单独的电话号码列表。在作者的文章集中，每位作者可能有单独的文章标题列表。<tt>multimap</tt> 和 <tt>multiset</tt> 类型与相应的单元素版本具有相同的头文件定义：分别是 <tt>map</tt> 和 <tt>set</tt> 头文件。</p>
+
+	<p class="docText"><a name="idd1e81217"></a><a name="idd1e81224"></a><a name="idd1e81231"></a><a name="idd1e81238"></a><a name="idd1e81245"></a><a name="idd1e81252"></a><a name="idd1e81258"></a><a name="idd1e81265"></a><a name="idd1e81272"></a><a name="idd1e81278"></a><a name="idd1e81285"></a><a name="idd1e81292"></a><a name="idd1e81299"></a>The operations supported by <tt>multimap</tt> and <tt>multiset</tt> are the same as those on <tt>map</tt> and <tt>set</tt>, respectively, with one exception: <tt>multimap</tt> does not support subscripting. We cannot subscript a <tt>multimap</tt> because there may be more than one value associated with a given key. The operations that are common to both <tt>map</tt> and <tt>multimap</tt> or <tt>set</tt> and <tt>multiset</tt> change in various ways to reflect the fact that there can be multiple keys. When using either a <tt>multimap</tt> or <tt>multiset</tt>, we must be prepared to handle multiple values, not just a single value.</p>
+        <p class="docText"><tt>multimap</tt> 和 <tt>multiset</tt> 所支持的操作分别与 <tt>map</tt> 和 <tt>set</tt> 的操作相同，只有一个例外：<tt>multimap</tt> 不支持下标运算。不能对 <tt>multimap</tt> 对象使用下标操作，因为在这类容器中，某个键可能对应多个值。为了顺应一个键可以对应多个值这一性质，<tt>map</tt> 和 <tt>multimap</tt>，或 <tt>set</tt> 和 <tt>multiset</tt> 中相同的操作都以不同的方式做出了一定的修改。在使用 <tt>multimap</tt> 或 <tt>multiset</tt> 时，对于某个键，必须做好处理多个值的准备，而非只有单一的值。</p>
+	
+	<a name="ch10lev2sec16"></a>
+        <h4 class="docSection2Title">10.5.1. Adding and Removing Elements</h4>
+        <h4 class="docSection2Title">10.5.1. 元素的添加和删除</h4>
+
+        <p class="docText">The <tt>insert</tt> operations described in <a class="docLink" href="ch10lev1sec3.html#ch10table05" >Table 10.5</a> (p. <a class="docLink" href="ch10lev1sec3.html#ch10table05" >365</a>) and the <tt>erase</tt> operations described in <a class="docLink" href="ch10lev1sec3.html#ch10table07" >Table 10.7</a> (p. <a class="docLink" href="ch10lev1sec3.html#ch10table07" >369</a>) are used to add and remove elements of a <tt>multimap</tt> or <tt>multiset</tt>.</p>
+	<p class="docText"><a class="docLink" href="ch10lev1sec3.html#ch10table05" >表 10.5</a> 描述的 <tt>insert</tt> 操作和<a class="docLink" href="ch10lev1sec3.html#ch10table07" >表 10.7</a> 描述的 <tt>erase</tt> 操作同样适用于 <tt>multimap</tt> 以及 <tt>multiset</tt> 容器，实现元素的添加和删除。</p>
+
+        <p class="docText">Because keys need not be unique, <tt>insert</tt> always adds an element. As an example, we might define a <tt>multimap</tt> to map authors to titles of the books they have written. The <tt>map</tt> might hold multiple entries for each author:</p>
+	<p class="docText">由于键不要求是唯一的，因此每次调用 <tt>insert</tt> 总会添加一个元素。例如，可如下定义一个 <tt>multimap</tt> 容器对象将作者映射到他们所写的书的书名上。这样的映射可为一个作者存储多个条目：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">adds first element with key Barth</span>
+     authors.insert(make_pair(
+       string("Barth, John"),
+       string("Sot-Weed Factor")));
+
+     // <span class="docEmphItalicAlt">ok: adds second element with key Barth</span>
+     authors.insert(make_pair(
+       string("Barth, John"),
+       string("Lost in the Funhouse")));
+</pre><br>
+
+        <p class="docText">The version of <tt>erase</tt> that takes a key removes <span class="docEmphasis">all</span> elements with that key. It returns a count of how many elements were removed. The versions that take an iterator or an iterator pair remove only the indicated element(s). These versions return <tt>void</tt>:</p>
+	<p class="docText">带有一个键参数的 <tt>erase</tt> 版本将删除拥有该键的所有元素，并返回删除元素的个数。而带有一个或一对迭代器参数的版本只删除指定的元素，并返回 <tt>void</tt> 类型：</p>
+        <pre>
+     multimap&lt;string, string&gt; authors;
+     string search_item("Kazuo Ishiguro");
+
+     // <span class="docEmphItalicAlt">erase all elements with this key; returns number of elements removed</span>
+     multimap&lt;string, string&gt;::size_type cnt =
+                               authors.erase(search_item);
+</pre><br>
+
+        <a name="ch10lev2sec17"></a>
+        <h4 class="docSection2Title">10.5.2. Finding Elements in a <tt>multimap</tt> or <tt>multiset</tt></h4>
+        <h4 class="docSection2Title">10.5.2. 在 <tt>multimap</tt> 和 <tt>multiset</tt> 中查找元素</h4>
+
+	<p class="docText">We noted that <tt>map</tt>s and <tt>sets</tt> store their elements in order. The <tt>multimap</tt> and <tt>multiset</tt> types do so as well. As a result, when a <tt>multimap</tt> or <tt>multiset</tt> has multiple instances of a given key, those instances will be adjacent elements within the container.</p>
+	<p class="docText">注意到，关联容器 <tt>map</tt> 和 <tt>set</tt> 的元素是按顺序存储的。而 <tt>multimap</tt> 和 <tt>multset</tt> 也一样。因此，在 <tt>multimap</tt> 和 <tt>multiset</tt> 容器中，如果某个键对应多个实例，则这些实例在容器中将相邻存放。</p>
+	
+	<a name="ch10note08"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">We are guaranteed that iterating across a <tt>multimap</tt> or <tt>multiset</tt> returns all the elements with a given key in sequence.</p>
+		<p class="docText">迭代遍历 <tt>multimap</tt> 或 <tt>multiset</tt> 容器时，可保证依次返回特定键所关联的所有元素。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText"><a name="idd1e81470"></a><a name="idd1e81476"></a><a name="idd1e81482"></a><a name="idd1e81488"></a><a name="idd1e81494"></a><a name="idd1e81501"></a><a name="idd1e81507"></a><a name="idd1e81514"></a><a name="idd1e81521"></a><a name="idd1e81527"></a><a name="idd1e81534"></a><a name="idd1e81541"></a><a name="idd1e81547"></a><a name="idd1e81554"></a><a name="idd1e81561"></a><a name="idd1e81568"></a><a name="idd1e81575"></a><a name="idd1e81582"></a><a name="idd1e81589"></a><a name="idd1e81596"></a><a name="idd1e81603"></a><a name="idd1e81611"></a><a name="idd1e81619"></a><a name="idd1e81628"></a><a name="idd1e81635"></a><a name="idd1e81642"></a>Finding an element in a <tt>map</tt> or a <tt>set</tt> is a simple matterthe element is or is not in the container. For <tt>multimap</tt> and <tt>multiset</tt> the process is more complicated: the element may be present many times. For example, given our map from author to titles, we might want to find and print all the books by a particular author.</p>
+	<p class="docText">在 <tt>map</tt> 或 <tt>set</tt> 容器中查找一个元素很简单——该元素要么在要么不在容器中。但对于 <tt>multimap</tt> 或 <tt>multiset</tt>，该过程就复杂多了：某键对应的元素可能出现多次。例如，假设有作者与书名的映射，我们可能希望找到并输出某个作者写的所有书的书名。</p>
+
+        <p class="docText">It turns out that there are three strategies we might use to find and print all the books by a given author. Each of these strategies relies on the fact that we know that all the entries for a given author will be adjacent within the <tt>multimap</tt>.</p>
+	<p class="docText">事实证明，上述问题可用三种策略解决。而且三种策略都基于一个事实——在 <tt>multimap</tt> 中，同一个键所关联的元素必然相邻存放。</p>
+
+	<p class="docText">We'll start by presenting a strategy that uses only functions we've already seen. This version turns out to require the most code, so we will continue by exploring more compact alternatives.</p>
+        <p class="docText">首先介绍第一种策略：仅使用前面介绍过的函数。但这种方法要编写比较多的代码，所以我们将继续探索更简洁的方法。</p>
+	
+	<a name="ch10lev3sec14"></a>
+        <h5 class="docSection3Title">Using <tt>find</tt> and <tt>count</tt></h5>
+	<h5 class="docSection3Title">使用 <tt>find</tt> 和 <tt>count</tt> 操作</h5>
+
+        <p class="docText">We could solve our problem using <tt>find</tt> and <tt>count</tt>. The <tt>count</tt> function tells us how many times a given key occurs, and the <tt>find</tt> operation returns an iterator that refers to the first instance of the key we're looking for:</p>
+	<p class="docText">使用 <tt>find</tt> 和 <tt>count</tt> 可有效地解决刚才的问题。<tt>count</tt> 函数求出某键出现的次数，而 <tt>find</tt> 操作则返回一个迭代器，指向第一个拥有正在查找的键的实例：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">author we'll look for</span>
+     string search_item("Alain de Botton");
+
+     // <span class="docEmphItalicAlt">how many entries are there for this author</span>
+     typedef multimap&lt;string, string&gt;::size_type sz_type;
+     sz_type entries = authors.count(search_item);
+
+     // <span class="docEmphItalicAlt">get iterator to the first entry for this author</span>
+     multimap&lt;string,string&gt;::iterator iter =
+                              authors.find(search_item);
+
+     // <span class="docEmphItalicAlt">loop through the number of entries there are for this author</span>
+     for (sz_type cnt = 0; cnt != entries; ++cnt, ++iter) cout &lt;&lt;
+            iter-&gt;second &lt;&lt; endl; // <span class="docEmphItalicAlt">print each title</span>
+</pre><br>
+
+	<p class="docText">We start by determining how many entries there are for the author by calling <tt>count</tt> and getting an iterator to the first element with this key by calling <tt>find</tt>. The number of iterations of the <tt>for</tt> loop depends on the number returned from <tt>count</tt>. In particular, if the <tt>count</tt> was zero, then the loop is never executed.</p>
+	<p class="docText">首先，调用 <tt>count</tt> 确定某作者所写的书籍数目，然后调用 <tt>find</tt> 获得指向第一个该键所关联的元素的迭代器。<tt>for</tt> 循环迭代的次数依赖于 <tt>count</tt> 返回的值。在特殊情况下，如果 <tt>count</tt> 返回 0 值，则该循环永不执行。</p>
+	
+	<a name="ch10lev3sec15"></a>
+        <h5 class="docSection3Title">A Different, Iterator-Oriented Solution</h5>
+        <h5 class="docSection3Title">与众不同的面向迭代器的解决方案</h5>
+
+        <p class="docText">Another, more elegant strategy uses two associative container operations that we haven't seen yet: <tt>lower_bound</tt> and <tt>upper_bound</tt>. These operations, listed in <a class="docLink" href="ch10lev1sec5.html#ch10table08">Table 10.8</a> (p. <a class="docLink" href="ch10lev1sec5.html#ch10table08">379</a>), apply to all associative containers. They can be used with (plain) <tt>map</tt>s or <tt>sets</tt> but are most often used with <tt>multimap</tt>s or <tt>multisets</tt>. Each of these operations takes a key and returns an iterator.</p>
+	<p class="docText">另一个更优雅简洁的方法是使用两个未曾见过的关联容器的操作：<tt>lower_bound</tt> 和 <tt>upper_bound</tt>。<a class="docLink" href="ch10lev1sec5.html#ch10table08">表 10.8</a> 列出的这些操作适用于所有的关联容器，也可用于普通的 <tt>map</tt> 和 <tt>set</tt> 容器，但更常用于 <tt>multimap</tt> 和 <tt>multiset</tt>。所有这些操作都需要传递一个键，并返回一个迭代器。</p>
+
+	<a name="ch10table08"></a>
+
+        <h5 class="docTableTitle">Table 10.8. Associative Container Operations Returning Iterators</h5>
+        <h5 class="docTableTitle">表 10.8. 返回迭代器的关联容器操作</h5>
+
+        <table cellspacing="0" class="allBorders" border="1" rules="none" cellpadding="5">
+          <colgroup>
+            <col width="200">
+            <col width="300">
+          </colgroup>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><a name="idd1e81984"></a><a name="idd1e81990"></a><a name="idd1e81997"></a><a name="idd1e82003"></a><a name="idd1e82009"></a><a name="idd1e82016"></a><a name="idd1e82023"></a><a name="idd1e82031"></a><a name="idd1e82041"></a><tt>m.lower_bound(k)</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Returns an iterator to the first element with key not less than <tt>k</tt>.</p>
+	      <p class="docText">返回一个迭代器，指向键不小于 <tt>k</tt> 的第一个元素</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>m.upper_bound(k)</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Returns an iterator to the first element with key greater than <tt>k</tt>.</p>
+	      <p class="docText">返回一个迭代器，指向键大于 <tt>k</tt> 的第一个元素</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>m.equal_range(k)</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Returns a <tt>pair</tt> of iterators.</p>
+        <p class="docText">返回一个迭代器的 <tt>pair 对象</p>
+
+	<p class="docText">The <tt>first</tt> member is equivalent to <tt>m.lower_bound(k)</tt> and <tt>second</tt> is equivalent to <tt>m.upper_bound(k)</tt>.</p>
+	<p class="docText">它的 <tt>first</tt> 成员等价于 <tt>m.lower_bound(k)</tt>。而 <tt>second</tt> 成员则等价于 <tt>m.upper_bound(k)</tt></p>
+</td>
+          </tr>
+        </table><br>
+
+	<p class="docText">Calling <tt>lower_bound</tt> and <tt>upper_bound</tt> on the same key yields an iterator range (<a class="docLink" href="ch09lev1sec2.html#ch09lev2sec4" >Section 9.2.1</a>, p. <a class="docLink" href="ch09lev1sec2.html#ch09lev2sec4" >314</a>) that denotes all the elements with that key. If the key is in the container, the iterators will differ: the one returned from <tt>lower_bound</tt> will refer to the first instance of the key, whereas <tt>upper_bound</tt> will return an iterator referring just after the last instance. If the element is not in the <tt>multimap</tt>, then <tt>lower_bound</tt> and <tt>upper_bound</tt> will return equal iterators; both will refer to the point at which the key could be inserted without disrupting the order.</p>
+	<p class="docText">在同一个键上调用 <tt>lower_bound</tt> 和 <tt>upper_bound</tt>，将产生一个迭代器范围（<a class="docLink" href="ch09lev1sec2.html#ch09lev2sec4" >第 9.2.1 节</a>），指示出该键所关联的所有元素。如果该键在容器中存在，则会获得两个不同的迭代器：<tt>lower_bound</tt> 返回的迭代器指向该键关联的第一个实例，而 <tt>upper_bound</tt> 返回的迭代器则指向最后一个实例的下一位置。如果该键不在 <tt>multimap</tt> 中，这两个操作将返回同一个迭代器，指向依据元素的排列顺序该键应该插入的位置。</p>
+
+	<p class="docText"><a name="idd1e81801"></a><a name="idd1e81808"></a><a name="idd1e81814"></a><a name="idd1e81824"></a>Of course, the iterator returned from these operations might be the off-the-end iterator for the container itself. If the element we look for has the largest key in the <tt>multimap</tt>, then <tt>upper_bound</tt> on that key returns the off-the-end iterator. If the key is not present and is larger than any key in the <tt>multimap</tt>, then the return from <tt>lower_bound</tt> will also be the off-the-end iterator.</p>
+	<p class="docText">当然，这些操作返回的也可能是容器自身的超出末端迭代器。如果所查找的元素拥有 <tt>multimap</tt> 容器中最大的键，那么的该键上调用 <tt>upper_bound</tt> 将返回超出末端迭代器。如果所查找的键不存在，而且比 <tt>multimap</tt> 容器中所有的键都大，则 <tt>low_bound</tt> 也将返回超出末端迭代器。</p>
+	
+	<a name="ch10note09"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">The iterator returned from <tt>lower_bound</tt> may or may not refer to an element with the given key. If the key is not in the container, then <tt>lower_bound</tt> refers to the first point at which this key could be inserted while preserving the element order within the container.</p>
+		<p class="docText"><tt>lower_bound</tt> 返回的迭代器不一定指向拥有特定键的元素。如果该键不在容器中，则 <tt>lower_bound</tt> 返回在保持容器元素顺序的前提下该键应被插入的第一个位置。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">Using these operations, we could rewrite our program as follows:</p>
+        <p class="docText">使用这些操作，可如下重写程序：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">definitions of authors and search_item as above</span>
+
+     // <span class="docEmphItalicAlt">beg and end denote range of elements for this author</span>
+     typedef multimap&lt;string, string&gt;::iterator authors_it;
+     authors_it beg = authors.lower_bound(search_item),
+                end = authors.upper_bound(search_item);
+
+     // <span class="docEmphItalicAlt">loop through the number of entries there are for this author</span>
+     while (beg != end) {
+         cout &lt;&lt; beg-&gt;second &lt;&lt; endl; // <span class="docEmphItalicAlt">print each title</span>
+         ++beg;
+     }
+</pre><br>
+
+	<p class="docText">This program does the same work as the previous one that used <tt>count</tt> and <tt>find</tt> but accomplishes its task more directly. The call to <tt>lower_bound</tt> positions <tt>beg</tt> so that it refers to the first element matching <tt>search_item</tt> if there is one. If there is no such element, then <tt>beg</tt> refers to first element with a key larger than <tt>search_item</tt>. The call to <tt>upper_bound</tt> sets <tt>end</tt> to refer to the element with the key just beyond the last element with the given key.</p><tt>
+		<p class="docText">这个程序实现的功能与前面使用 <tt>count</tt> 和 <tt>find</tt> 的程序相同，但任务的实现更直接。调用 <tt>lower_bound</tt> 定位 <tt>beg</tt> 迭代器，如果键 <tt>search_item</tt> 在容器中存在，则使 <tt>beg</tt> 指向第一个与之匹配的元素。如果容器中没有这样的元素，那么 <tt>beg</tt> 将指向第一个键比 <tt>search_item</tt> 大的元素。调用 <tt>upper_bound</tt> 设置 <tt>end</tt> 迭代器，使之指向拥有该键的最后一个元素的下一位置。</p>
+	
+	<a name="ch10note10"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">These operations say nothing about whether the key is present. The important point is that the return values act like an iterator range.</p>
+        <p class="docText">这两个操作不会说明键是否存在，其关键之处在于返回值给出了迭代器范围。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">If there is no element for this key, then <tt>lower_bound</tt> and <tt>upper_bound</tt> will be equal: They will both refer to the same element or they will both point one past the end of the <tt>multimap</tt>. They both will refer to the point at which this key could be inserted while maintaining the container order.</p>
+	<p class="docText">若该键没有关联的元素，则 <tt>lower_bound</tt> 和 <tt>upper_bound</tt> 返回相同的迭代器：都指向同一个元素或同时指向 <tt>multimap</tt> 的超出末端位置。它们都指向在保持容器元素顺序的前提下该键应被插入的位置。</p>
+
+        <p class="docText">If there are elements with this key, then <tt>beg</tt> will refer to the first such element. We can increment <tt>beg</tt> to traverse the elements with this key. The iterator in <tt>end</tt> will signal when we've seen all the elements. When <tt>beg</tt> equals <tt>end</tt>, we have seen every element with this key.</p>
+	<p class="docText">如果该键所关联的元素存在，那么 <tt>beg</tt> 将指向满足条件的元素中的第一个。可对 <tt>beg</tt> 做自增运算遍历拥有该键的所有元素。当迭代器累加至 <tt>end</tt> 标志时，表示已遍历了所有这些元素。当 <tt>beg</tt> 等于 <tt>end</tt> 时，表示已访问所有与该键关联的元素。</p>
+
+	<p class="docText">Given that these iterators form a range, we can use the same kind of <tt>while</tt> loop that we've used to traverse other ranges. The loop is executed zero or more times and prints the entries, if any, for the given author. If there are no elements, then <tt>beg</tt> and <tt>end</tt> are equal and the loop is never executed. Otherwise, we know that the increment to <tt>beg</tt> will eventually reach <tt>end</tt> and that in the process we will print each record associated with this author.</p>
+	<p class="docText">假设这些迭代器标记某个范围，可使用同样的 <tt>while</tt> 循环遍历该范围。该循环执行 0 次或多次，输出指定作者所写的所有书的书名（如果有的话）。如果没有相关的元素，那么 <tt>beg</tt> 和 <tt>end</tt> 相等，循环永不执行。否则，不断累加 <tt>beg</tt> 将最终到达 <tt>end</tt>，在这个过程中可输出该作者所关联的记录。</p>
+	
+
+        <a name="ch10lev3sec16"></a>
+
+        <h5 class="docSection3Title">The <tt>equal_range</tt> Function</h5>
+	<h5 class="docSection3Title"><tt>enual_range</tt> 函数</h5>
+
+        <p class="docText">It turns out that there is an even more direct way to solve this problem: Instead of calling <tt>upper_bound</tt> and <tt>lower_bound</tt>, we can call <tt>equal_range</tt>. This function returns a <tt>pair</tt> of iterators. If the value is present, then the first iterator refers to the first instance of the key and the second iterator refers one past the last instance of the key. If no matching element is found, then both the first and second iterator refer to the position where this key could be inserted.</p>
+	<p class="docText">事实上，解决上述问题更直接的方法是：调用 <tt>equal_range</tt> 函数来取代调用 <tt>upper_bound</tt> 和 <tt>lower_bound</tt> 函数。<tt>equal_range</tt> 函数返回存储一对迭代器的 <tt>pair</tt> 对象。如果该值存在，则 <tt>pair</tt> 对象中的第一个迭代器指向该键关联的第一个实例，第二个迭代器指向该键关联的最后一个实例的下一位置。如果找不到匹配的元素，则 <tt>pair</tt> 对象中的两个迭代器都将指向此键应该插入的位置。</p>
+
+        <p class="docText">We could use <tt>equal_range</tt> to modify our program once again:</p>
+	<p class="docText">使用 <tt>equal_range</tt> 函数再次修改程序：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">definitions of authors and search_item as above</span>
+
+     // <span class="docEmphItalicAlt">pos holds iterators that denote range of elements for this key</span>
+     pair&lt;authors_it, authors_it&gt;
+                      pos = authors.equal_range(search_item);
+
+     // <span class="docEmphItalicAlt">loop through the number of entries there are for this author</span>
+     while (pos.first != pos.second) {
+         cout &lt;&lt; pos.first-&gt;second &lt;&lt; endl; // <span class="docEmphItalicAlt">print each title</span>
+         ++pos.first;
+     }
+</pre><br>
+
+        <p class="docText">This program is essentially identical to the previous one that used <tt>upper_bound</tt> and <tt>lower_bound</tt>. Instead of using local variables, <tt>beg</tt> and <tt>end</tt>, to hold the iterator range, we use the <tt>pair</tt> returned by <tt>equal_range</tt>. The <tt>first</tt> member of that <tt>pair</tt> holds the same iterator as the one <tt>lower_bound</tt> would have returned. The iterator that <tt>upper_bound</tt> would have returned is in the <tt>second</tt> member.</p>
+	<p class="docText">这个程序段与前面使用 <tt>upper_bound</tt> 和 <tt>lower_bound</tt> 的程序基本上是相同的。本程序不用局部变量 <tt>beg</tt> 和 <tt>end</tt> 来记录迭代器范围，而是直接使用 <tt>equal_range</tt> 返回的 <tt>pair</tt> 对象。该 <tt>pair</tt> 对象的 <tt>first</tt> 成员存储 <tt>lower_bound</tt> 函数返回的迭代器，而 <tt>second</tt> 成员则记录 <tt>upper_bound</tt> 函数返回的迭代器。</p>
+
+        <p class="docText">Thus, in this program <tt>pos.first</tt> is equivalent to <tt>beg</tt>, and <tt>pos.second</tt> is equivalent to <tt>end</tt>.</p>
+	<p class="docText">因此，本程序的 <tt>pos.first</tt> 等价于前一方法中的 <tt>beg</tt>，而 <tt>pos.second</tt> 等价于 <tt>end</tt>。</p>
+
+	<a name="ch10sb11"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 10.5.2</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch10qa11q1"></a><b>Exercise 10.26:</b></td>
+
+                    <td>
+                      <p class="docText"><a name="idd1e82235"></a><a name="idd1e82242"></a><a name="idd1e82250"></a>Write a program that populates a <tt>multimap</tt> of authors and their works. Use <tt>find</tt> to find an element in the <tt>multimap</tt> and <tt>erase</tt> that element. Be sure your program works correctly if the element you look for is not in the <tt>map</tt>.</p>
+		      <p class="docText">编写程序建立作者及其作品的 <tt>multimap</tt> 容器。使用 <tt>find</tt> 函数在 <tt>multimap</tt> 中查找元素，并调用 <tt>erase</tt> 将其删除。当所寻找的元素不存在时，确保你的程序依然能正确执行。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch10qa11q2"></a><b>Exercise 10.27:</b></td>
+
+                    <td>
+                      <p class="docText">Repeat the program from the previous exercise, but this time use <tt>equal_range</tt> to get iterators so that you can <tt>erase</tt> a range of elements.</p>
+		      <p class="docText">重复上一题所编写的程序，但这一次要求使用 <tt>equal_range</tt> 函数获取迭代器，然后删除一段范围内的元素。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch10qa11q3"></a><b>Exercise 10.28:</b></td>
+
+                    <td>
+                      <p class="docText">Using the <tt>multimap</tt> from the previous exercise, write a program to generate the list of authors whose name begins with the each letter in the alphabet. Your output should look something like:</p>
+		      <p class="docText">沿用上题中的 <tt>multimap</tt> 容器，编写程序以下面的格式按姓名首字母的顺序输出作者名字：</p>
+                      <pre>
+     Author Names Beginning with 'A':
+     Author, book, book, ...
+     ...
+     Author Names Beginning with 'B':
+     ...
+</pre><br>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch10qa11q4"></a><b>Exercise 10.29:</b></td>
+
+                    <td>
+                      <p class="docText">Explain the meaning of the operand <tt>pos.first-&gt;second</tt> used in the output expression of the final program in this section.</p>
+		      <p class="docText">解释本节最后一个程序的输出表达式使用操作数 <tt>pos.first-&gt;second</tt> 的含义。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+
+
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch10lev1sec4.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch10lev1sec6.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

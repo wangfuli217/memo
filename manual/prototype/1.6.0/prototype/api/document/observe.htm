@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>document.observe - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>observe<div class="box">1.6.0</div></h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">observe(eventName, handler) -> document</code></pre>
+			<p>
+				侦听整个文档范围内的给定事件。也可以用于侦听 <code>"dom:loaded"</code> 事件。
+			</p>
+		</div>
+		<div id="abody">
+			<p>
+				<code>document.observe</code> 是 <a href="../element/observe.htm" >Element#observe</a>
+				基于整个文档范围的版本。它与 <code>Event.observe(document, eventName, handler)</code> 是等价的。
+			</p>
+			<h3><code>"dom:loaded"</code> 事件</h3>
+			<p>
+				Prototype 创建了一个确实非常有用的事件：你可能希望在文档的 DOM 树载入完成后，能够获取一个通知，
+				这就是所谓的 <code>"dom:loaded"</code> 事件。在支持 <code>DOMContentLoaded</code> 事件的浏览器上，
+				Prototype 会在 <code>DOMContentLoaded</code> 事件上触发 <code>"dom.loaded"</code> 事件。对于不支持
+				<code>DOMContentLoaded</code> 事件的浏览器，Prototype 会智能地模拟出 DOM 树载入完成事件。
+				如果你以前使用 <code>window.onload</code> 事件，现在也可能会转向 <code>dom:loaded</code>，
+				因为它会在 HTML 文档完全载入后，但页面上的图片尚未载入完成前就立即触发。<code>window.onload</code>
+				事件只有在页面上所有的图片都已经完全载入后才会发生，对于一些初始化过程，这可能不太适合，
+				比如说页面上的图片很多，而你又需要隐藏页面上的某些区域（因为图片载入所需的时间会很长，
+				而需要隐藏的区域又不能长时间显示）。
+			</p>
+			<h3>样例</h3>
+			<pre><code class="javascript">document.observe("dom:loaded", function() { 
+	// initially hide all containers for tab content 
+	$$('div.tabcontent').invoke('hide'); 
+}); </code></pre>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

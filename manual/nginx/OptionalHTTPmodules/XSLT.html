@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml">
+<HEAD><TITLE>XSLT模块（XSLT）</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=GB2312">
+<STYLE type=text/css>PRE {
+	BACKGROUND-COLOR: #cccccc
+}
+.STYLE1 {
+	COLOR: #ff0000
+}
+</STYLE>
+
+<META content="MSHTML 6.00.6000.16809" name=GENERATOR></HEAD>
+<BODY>
+<H2>XSLT模块（XSLT）</H2><BR>
+
+<H3>·摘要</H3>
+<H4>这个模块是一个过滤器，它可以通过XSLT模板转换XML应答。<BR>
+要使用这个模块必须在编译时指定下列编译参数（0.7.8后版本可用）：<BR>
+<PRE>./configure --with-http_xslt_module</PRE>
+示例配置：<BR>
+<PRE>location / {
+  xml_entities       /site/dtd/entities.dtd;
+  xslt_stylesheet    /site/xslt/one.xslt   param=value;
+  xslt_stylesheet    /site/xslt/two.xslt;
+}</PRE></H4>
+<H3>·指令</H3>
+<H3> xml_entities</H3>
+<H4>语法：xml_entities &lt;path&gt; <BR>
+默认值：no <BR>
+使用字段：http, server, location <BR>
+指定一个描述基本XML文档标记的DTD文件（XML实体），由于技术原因无法对正在处理的XML指定实体，但是会使用这个DTD文件，在这个文件中没有必要为处理的XML指定结构，只需要声明基本的XML文档标记。如：<BR>
+<PRE>&lt;! ENTITY of nbsp “  “&gt;
+</PRE></H4>
+<H3> xslt_stylesheet </H3>
+<H4>语法：xslt_stylesheet template [parameter[[ parameter... ]] <BR>
+默认值：no <BR>
+使用字段：http, server, location <BR>
+指定一个使用它自己参数的XSLT模板，参数指定为如下：<BR>
+<PRE>param=value</PRE>
+你可以为每行指定任何参数，使用“：”将每个参数分开，如果参数本身包含“：”字符请用“%3A”代替，另外，如果应用包含非数字与字符的字符串参数时需要使用单引号或双引号，并且引用它们依赖于libxslt。如：<BR>
+<PRE>param1='http%3A//www.example.com': param2=value2</PRE>
+可以在参数中使用变量，参数的实体字段可以用一个变量代替：<BR>
+<PRE>  location / {
+    xslt_stylesheet /site/xslt/one.xslt
+    $arg_xslt_params
+    param1='$value1': param2=value2
+    param3=value3;
+  }</PRE>
+可以指定多个模板。</H4>
+<H3> xslt_types </H3>
+<H4>语法：xslt_types mime-type [mime-type...] <BR>
+默认值：xslt_types text/xml <BR>
+使用字段：http, server, location <BR>
+可以让其处理除“text/xml”之外的mime类型，如果XSLT的输出模式为HTML，那么应答的MIME类型将修改为“text/HTML”。</H4>
+<H3>·参考文档</H3>
+<H4><A href="http://wiki.nginx.org/NginxHttpXsltModule/" >Nginx Http Xslt Module</A><BR></H4>
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://179401.cn/analytics/" : "http://179401.cn/analytics/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://shouce.jb51.net/179401.cn/analytics/piwik.php-idsite=1"  style="border:0" alt=""/></p></noscript>
+<!-- End Piwik Tag -->
+</BODY>
+</HTML>
+<H3><A href="SecureLink.html" >前进->Secure Link模块（Secure Link）</A></H3>

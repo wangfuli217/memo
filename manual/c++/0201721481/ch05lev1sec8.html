@@ -1,0 +1,155 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 5.8.  The sizeof Operator</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch05lev1sec7.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch05lev1sec9.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch05lev1sec8"></a>
+
+        <h3 class="docSection1Title" id="432172-829">5.8. The <tt>sizeof</tt> Operator</h3>
+	<h3 class="docSection1Title" id="432172-829">5.8. <tt>sizeof</tt> 操作符</h3>
+
+        <p class="docText"><a name="idd1e35257"></a><a name="idd1e35263"></a><a name="idd1e35272"></a>The <tt>sizeof</tt> operator returns a value of type <tt>size_t</tt> (<a class="docLink" href="ch03lev1sec5.html#ch03lev2sec16" >Section 3.5.2</a>, p. <a class="docLink" href="ch03lev1sec5.html#ch03lev2sec16" >104</a>) that is the size, in bytes (<a class="docLink" href="ch02lev1sec1.html#ch02lev1sec1" >Section 2.1</a>, p. <a class="docLink" href="ch02lev1sec1.html#ch02lev1sec1" >35</a>), of an object or type name. The result of <tt>sizeof</tt> expression is a compile-time constant. The <tt>sizeof</tt> operator takes one of the following forms:</p>
+
+        <p class="docText"><tt>sizeof</tt> 操作符的作用是返回一个对象或类型名的长度，返回值的类型为 <tt>size_t</tt>（<a class="docLink" href="ch03lev1sec5.html#ch03lev2sec16" >第 3.5.2 节</a>），长度的单位是字节（<a class="docLink" href="ch02lev1sec1.html#ch02lev1sec1" >第 2.1 节</a>）。<tt>size_t</tt> 表达式的结果是编译时常量，该操作符有以下三种语法形式：</p>
+        <pre>
+     sizeof <span class="docEmphasis">(type name)</span>;
+     sizeof <span class="docEmphasis">(expr)</span>;
+     sizeof <span class="docEmphasis">expr</span>;
+</pre>
+
+        <p class="docText">Applying <tt>sizeof</tt> to an <span class="docEmphasis">expr</span> returns the size of the result type of that expression:</p>
+
+        <p class="docText">将 <tt>sizeof</tt> 应用在表达式 <span class="docEmphasis">expr</span> 上，将获得该表达式的结果的类型长度：</p>
+        <pre>
+     Sales_item item, *p;
+     // <span class="docEmphItalicAlt">three ways to obtain size required to hold an object of type</span> <span class="docEmphasis">Sales_item</span>
+     sizeof(Sales_item); // <span class="docEmphItalicAlt">size required to hold an object of type</span> <span class="docEmphasis">Sales_item</span>
+     sizeof item; // <span class="docEmphItalicAlt">size of</span> <span class="docEmphasis">item</span><span class="docEmphItalicAlt">'s type, e.g.,</span> <span class="docEmphasis">sizeof(Sales_item)</span>
+     sizeof *p;   // <span class="docEmphItalicAlt">size of type to which</span> <span class="docEmphasis">p</span> <span class="docEmphItalicAlt">points, e.g.,</span> <span class="docEmphasis">sizeof(Sales_item)</span>
+</pre>
+
+        <p class="docText">Evaluating <tt>sizeof</tt> <span class="docEmphasis">expr</span> does not evaluate the expression. In particular, in <tt>sizeof *p</tt>, the pointer <tt>p</tt> may hold an invalid address, because <tt>p</tt> is not dereferenced.</p>
+
+        <p class="docText">将 <tt>sizeof</tt> 用于 <span class="docEmphasis">expr</span> 时，并没有计算表达式 <span class="docEmphasis">expr</span> 的值。特别是在 <tt>sizeof *p</tt> 中，指针 <tt>p</tt> 可以持有一个无效地址，因为不需要对 <tt>p</tt> 做解引用操作。</p>
+
+        <p class="docText">The result of applying <tt>sizeof</tt> depends in part on the type involved:</p>
+
+        <p class="docText">使用 <tt>sizeof</tt> 的结果部分地依赖所涉及的类型：</p>
+
+        <ul>
+          <li>
+            <p class="docList"><tt>sizeof char</tt> or an expression of type <tt>char</tt> is guaranteed to be 1</p>
+
+            <p class="docList">对 <tt>char</tt> 类型或值为 <tt>char</tt> 类型的表达式做 <tt>sizeof</tt> 操作保证得 1。</p>
+          </li>
+
+          <li>
+            <p class="docList"><tt>sizeof</tt> a reference type returns the size of the memory necessary to contain an object of the referenced type</p>
+
+            <p class="docList">对引用类型做 <tt>sizeof</tt> 操作将返回存放此引用类型对象所需的内在空间大小。</p>
+          </li>
+
+          <li>
+            <p class="docList"><tt>sizeof</tt> a pointer returns the size needed hold a pointer; to obtain the size of the object to which the pointer points, the pointer must be dereferenced</p>
+
+            <p class="docList">对指针做 <tt>sizeof</tt> 操作将返回存放指针所需的内在大小；注意，如果要获取该指针所指向对象的大小，则必须对指针进行引用。</p>
+          </li>
+
+          <li>
+            <p class="docList"><tt>sizeof</tt> an array is equivalent to taking the <tt>sizeof</tt> the element type times the number of elements in the array</p>
+
+            <p class="docList">对数组做 <tt>sizeof</tt> 操作等效于将对其元素类型做 <tt>sizeof</tt> 操作的结果乘上数组元素的个数。</p>
+          </li>
+        </ul>
+
+        <p class="docText">Because <tt>sizeof</tt> returns the size of the entire array, we can determine the number of elements by dividing the <tt>sizeof</tt> the array by the <tt>sizeof</tt> an element:</p>
+
+        <p class="docText">因为 <tt>sizeof</tt> 返回整个数组在内存中的存储长度，所以用 <tt>sizeof</tt> 数组的结果除以 <tt>sizeof</tt> 其元素类型的结果，即可求出数组元素的个数：</p>
+        <pre>
+     // sizeof(ia)/sizeof(*ia) <span class="docEmphItalicAlt">returns the number of elements in</span> <span class="docEmphasis">ia</span>
+     int sz = sizeof(ia)/sizeof(*ia);
+</pre>
+        <a name="ch05sb12"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 5.8</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch05qa9q1"></a> <b>Exercise 5.22:</b></td>
+
+                    <td>
+                      <p class="docText">Write a program to print the size of each of the built-in types.</p>
+                      <p class="docText">编写程序输出的每种内置类型的长度。</p>
+                    </td>
+                  </tr>
+                 
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch05qa9q2"></a> <b>Exercise 5.23:</b></td>
+
+                    <td>
+                      <p class="docText">Predict the output of the following program and explain your reasoning. Now run the program. Is the output what you expected? If not, figure out why.</p>
+                      <p class="docText">预测下列程序的输出是，并解释你的理由。然后运行该程序，输出的结果和你的预测的一样吗？如果不一样，为什么？</p>
+                  
+
+                      <pre>
+     int x[10];   int *p = x;
+     cout &lt;&lt; sizeof(x)/sizeof(*x) &lt;&lt; endl;
+     cout &lt;&lt; sizeof(p)/sizeof(*p) &lt;&lt; endl;
+</pre>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch05lev1sec7.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch05lev1sec9.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

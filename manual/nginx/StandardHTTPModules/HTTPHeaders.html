@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml">
+<HEAD><TITLE>HTTP头处理模块（HTTP Headers）</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=GB2312">
+<STYLE type=text/css>PRE {
+	BACKGROUND-COLOR: #cccccc
+}
+.STYLE1 {
+	COLOR: #ff0000
+}
+</STYLE>
+
+<META content="MSHTML 6.00.6000.16809" name=GENERATOR></HEAD>
+<BODY>
+<H2>HTTP头处理模块（HTTP Headers）</H2><BR>
+
+<H3>·摘要</H3>
+<H4>这个模块允许设置任意的HTTP头。<BR>
+如下例：<PRE>
+  expires       24h;
+  expires       modified +24h;
+  expires       @15h30m;
+  expires       0;
+  expires       -1;
+  expires       epoch;
+  add_header    Cache-Control  private;</PRE></H4>
+<H3>·指令</H3>
+<H3>add_header </H3>
+<H4>语法：add_header name value <BR>
+默认值：none <BR>
+使用字段：http, server, location <BR>
+当服务器应答代码为200, 204, 301, 302或304时为HTTP应答添加头。<BR>
+这个值可以使用变量<BR>
+注意这个指令只会在输出的头部中增加某个新字段，而并不能对某些已经定义的头（如server）进行重写，如果要实现这个操作可以使用第三方模块<A href="../Nginx3rdPartyModules/HttpHeadersMoreModule.html" >headers_more</A>。</H4>
+<H3>expires </H3>
+<H4>语法：expires [time|@time-of-day|epoch|max|off] <BR>
+默认值：expires off <BR>
+使用字段：http, server, location <BR>
+这个指令控制是否在应答中标记一个过期时间，如果是，如何标记。<BR>
+·off 将禁止修改头部中的 Expires和Cache-Control字段。<BR>
+·epoch 将Expires头设置为1 January, 1970 00:00:01 GMT。<BR>
+·max 将Expires头设置为31 December 2037 23:59:59 GMT，将Cache-Control最大化到10 years。<BR>
+·如果将指令设置为一个不带@标记的值，那么过期时间将是应答时间的相对时间（如果这个时间在“modified”之前），或者是文件的修改时间（当"modified"存在，在版本0.7.0和0.6.32可用），并且可以指定一个负的时间，它将Cache-Control头设置为no-cache比较。<BR>
+·如果指令的值被设置为一个带@标记的值，那么将指定一个绝对的time-of-day过期时间，可以指定两种格式分别为Hh或Hh:Mm，其中H的大小范围为0到24，M的大小范围为0到59（在0.7.9和0.6.34可用）。<BR>
+一个非负的时间值将Cache-Control头设置为 max-age = #，#将适当的换算为秒数。<BR>
+注意：expires仅仅适用于200, 204, 301, 302,和304应答</H4>
+<H3>·参考文档</H3>
+<H4><A href="http://sysoev.ru/nginx/docs/http/ngx_http_headers_module.html" >Original Documentation</A><BR>
+<A href="http://wiki.nginx.org/NginxHttpHeadersModule/" >Nginx Http Headers Module</A><BR>
+<A href="../3rdPartyModules/HttpHeadersMoreModule.html" >使用第三方模块来增加，修改或清除输入和输出的头部</A></H4>
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://179401.cn/analytics/" : "http://179401.cn/analytics/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://shouce.jb51.net/179401.cn/analytics/piwik.php-idsite=1"  style="border:0" alt=""/></p></noscript>
+<!-- End Piwik Tag -->
+</BODY>
+</HTML>
+<H3><A href="HTTPIndex.html" >前进->默认主页设置模块（Index）</A></H3>

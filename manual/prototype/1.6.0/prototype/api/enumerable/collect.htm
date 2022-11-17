@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Enumerable.collect - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>collect</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">collect(iterator[, context]) -> Array</code></pre>
+			<p>
+				通过 <code>iterator</code> 对 <code>Enumerable</code> 中的元素进行变换，返回变换后的结果集。该方法有一个别名
+				<a href="map.htm" >map</a>。参数 <code>iterator</code> 是一个函数对象。
+			</p>
+		</div>
+		<div id="abody">
+			<p>对于序列而言，这个方法像瑞士军刀一样简单易用，并且功能强大。你可以根据你的需要对原始值作任意转换。</p>
+			<p>
+				可选的 <code>context</code> 参数是 <code>iterator</code> 要绑定的对象，若设定该参数，<code>iterator</code>
+				中的 <code>this</code> 关键字将指向 <code>context</code> 对象。
+			</p>
+			<h3>样例</h3>
+			<pre><code class="javascript">['Hitch', "Hiker's", 'Guide', 'To', 'The', 'Galaxy'].collect(function(s){ 
+	return s.charAt(0).toUpperCase(); 
+}).join('') 
+// -> 'HHGTTG' 
+$R(1,5).collect(function(n) { return n * n; }) 
+// -> [1, 4, 9, 16, 25] </code></pre>
+			<h3>优化版本</h3>
+			<p>对于下述两种常见的情形，请使用针对该方法进行优化后的版本：</p>
+			<p>
+				第一，调用方法时：如果需要对所有的元素调用同一个方法（可具有参数），并获取结果集，请使用
+				<a href="invoke.htm" >invoke</a>。
+			</p>
+			<p>
+				第二，获取属性时：如果需要获取所有元素的同一个属性的值，请使用 <a href="pluck.htm" >pluck</a>。
+			</p>
+			<p>
+				上述两个方法的执行效率均优于 <code>collect</code>，因为它们避免了语法闭包的开销。
+			</p>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

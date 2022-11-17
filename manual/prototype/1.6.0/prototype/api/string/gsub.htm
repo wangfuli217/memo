@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>String.gsub - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>
+			gsub
+		</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">gsub(pattern, replacement) -> string</code></pre>
+			<p>
+				将字符串中所有与 <code>pattern</code> 指定的模式匹配的值全部用 <code>replacement</code>
+				替换掉。<code>replacement</code> 可以是一个普通的字符串、一个回调函数或是一个<a href="../template.htm" >
+				Template</a> 字符串。<code>pattern</code> 可以是一个字符串或是一个正则表达式。
+			</p>
+		</div>
+		<div id="abody">
+			<p>
+				如果参数 <code>replacement</code> 是一个字符串，<code>String#gsub</code> 与 JavaScript 原生的
+				<code>replace()</code> 方法设置为全局匹配时具有相同的功能。
+			</p>
+			<pre><code class="javascript">var mouseEvents = 'click dblclick mousedown mouseup mouseover mousemove mouseout'; 
+mouseEvents.gsub(' ', ', '); 
+// -> 'click, dblclick, mousedown, mouseup, mouseover, mousemove, mouseout' 
+mouseEvents.gsub(/\s+/, ', '); 
+// -> 'click, dblclick, mousedown, mouseup, mouseover, mousemove, mouseout' </code></pre>
+			<p>
+				如果参数 <code>replacement</code> 是一个函数，当每次找到与指定模式匹配的值时，将会调用该函数，
+				并将匹配到的结果值传递给它，作为它唯一的参数。注意，这个参数是在当前 <code>pattern</code>
+				指定的模式上调用 <code>match()</code> 方法后返回的值，它是一个数组，第一个元素是与模式完整匹配的结果，
+				随后是在正则表达式中使用小括号界定的分组的匹配结果。				
+			</p>
+			<pre><code class="javascript">mouseEvents.gsub(/\w+/, function(match){
+	return 'on' + match[0].capitalize()
+}); 
+// -> 'onClick onDblclick onMousedown onMouseup onMouseover onMousemove onMouseout' 
+
+var markdown = '![a pear](/img/pear.jpg) ![an orange](/img/orange.jpg)';
+markdown.gsub(/!\[(.*?)\]\((.*?)\)/, function(match){ 
+	return '&lt;img alt="' + match[1] + '" src="' + match[2] + '" /&gt;'; 
+}); 
+// -> '&lt;img alt="a pear" src="/img/pear.jpg"/&gt; &lt;img alt="an orange" src="/img/orange.jpg" /&gt;' </code></pre>
+			<p>
+				最后，如果参数是一个 <a href="../template.htm" >Template</a> 字符串，你可以使用 Ruby 创造的标记法访问
+				<code>match()</code> 方法返回的值：<code>#{0}</code> 表示数组的第一个元素，<code>#{1}</code>
+				表示第二个，依此类推。因此，使用这种方式重写前面的样例，代码会变得非常简单：
+			</p>
+			<pre><code class="javascript">markdown.gsub(/!\[(.*?)\]\((.*?)\)/, '&lt;img alt="#{1}" src="#{2}" /&gt;'); 
+// -> '&lt;img alt="a pear" src="/img/pear.jpg" /&gt; &lt;img alt="an orange" src="/img/orange.jpg" /&gt;' </code></pre>
+			<p>
+				如果你需要一个与 <code>String#gsub</code> 具有相同功能但不需要全局查找的方法，请使用 <a href="sub.htm" >String#sub</a>。
+			</p>
+			<h3>注意</h3>
+			<p>请 <em>不要</em> 在正则表达式中使用标识 <code>"g"</code>，这会导致一个无限循环。</p>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

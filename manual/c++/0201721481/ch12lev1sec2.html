@@ -1,0 +1,351 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 12.2.  The Implicit this Pointer</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch12lev1sec1.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch12lev1sec3.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch12lev1sec2"></a>
+
+        <h3 class="docSection1Title">12.2. The Implicit <tt>this</tt> Pointer</h3>
+	<h3 class="docSection1Title">12.2. 隐含的 <tt>this</tt> 指针</h3>
+
+        <p class="docText">As we saw in <a class="docLink" href="ch07lev1sec7.html#ch07lev2sec22" >Section 7.7.1</a> (p. <a class="docLink" href="ch07lev1sec7.html#ch07lev2sec22" >260</a>), member functions have an extra implicit parameter that is a pointer to an object of the class type. This implicit parameter is named <tt>this</tt>, and is bound to the object on which the member function is called. Member functions may not define the <tt>this</tt> parameter; the compiler does so implicitly. The body of a member function may explicitly use the <tt>this</tt> pointer, but is not required to do so. The compiler treats an unqualified reference to a class member as if it had been made through the <tt>this</tt> pointer.</p>
+	<p class="docText">在<a class="docLink" href="ch07lev1sec7.html#ch07lev2sec22" >第 7.7.1 节</a>中已经提到，成员函数具有一个附加的隐含形参，即指向该类对象的一个指针。这个隐含形参命名为 <tt>this</tt>，与调用成员函数的对象绑定在一起。成员函数不能定义 <tt>this</tt> 形参，而是由编译器隐含地定义。成员函数的函数体可以显式使用 <tt>this</tt> 指针，但不是必须这么做。如果对类成员的引用没有限定，编译器会将这种引用处理成通过 <tt>this</tt> 指针的引用。</p>
+
+	<a name="ch12lev2sec6"></a>
+        <h4 class="docSection2Title">When to Use the <tt>this</tt> Pointer</h4>
+	<h4 class="docSection2Title">何时使用 <tt>this</tt> 指针</h4>
+
+        <p class="docText">Although it is usually unnecessary to refer explicitly to <tt>this</tt> inside a member function, there is one case in which we must do so: when we need to refer to the object as a whole rather than to a member of the object. The most common case where we must use <tt>this</tt> is in functions that return a reference to the object on which they were invoked.</p>
+	<p class="docText">尽管在成员函数内部显式引用 <tt>this</tt> 通常是不必要的，但有一种情况下必须这样做：当我们需要将一个对象作为整体引用而不是引用对象的一个成员时。最常见的情况是在这样的函数中使用 <tt>this</tt>：该函数返回对调用该函数的对象的引用。</p>
+
+        <p class="docText">The <tt>Screen</tt> class is a good example of the kind of class that might have operations that should return references. So far our class has only a pair of <tt>get</tt> operations. We might logically add:</p>
+	<p class="docText">某种类可能具有某些操作，这些操作应该返回引用，<tt>Screen</tt> 类就是这样的一个类。迄今为止，我们的类只有一对 <tt>get</tt> 操作。逻辑上，我们可以添加下面的操作。</p>
+
+        <ul>
+          <li>
+	<a name="idd1e92702"></a><a name="idd1e92709"></a><a name="idd1e92715"></a><a name="idd1e92723"></a>
+            <p class="docList">A pair of <tt>set</tt> operations to set either a specified character or the character denoted by the cursor to a given value</p>
+            <p class="docList">一对 <tt>set</tt> 操作，将特定字符或光标指向的字符设置为给定值。</p>
+          </li>
+
+          <li>
+            <p class="docList">A <tt>move</tt> operation that, given two <tt>index</tt> values, moves the <tt>cursor</tt> to that new position</p>
+	    <p class="docList">一个 <tt>move</tt> 操作，给定两个 <tt>index</tt> 值，将光标移至新位置。</p>
+          </li>
+        </ul>
+
+        <p class="docText">Ideally, we'd like users to be able to concatenate a sequence of these actions into a single expression:</p>
+            <p class="docList">理想情况下，希望用户能够将这些操作的序列连接成一个单独的表达式：</p>
+
+        <pre>
+     // <span class="docEmphItalicAlt">move cursor to given position, and set that character</span>
+     myScreen.move(4,0).set('#');
+</pre><br>
+
+        <p class="docText">We'd like this statement to be equivalent to</p>
+        <p class="docText">这个语句等价于：</p>
+
+        <pre>
+     myScreen.move(4,0);
+     myScreen.set('#');
+</pre><br>
+        <a name="ch12lev2sec7"></a>
+
+        <h4 class="docSection2Title">Returning <tt>*this</tt></h4>
+	<h4 class="docSection2Title">返回 <tt>*this</tt></h4>
+
+        <p class="docText">To allow us to call <tt>move</tt> and <tt>set</tt> in a single expression, each of our new operations must return a reference to the object on which it executes:</p>
+	<p class="docText">在单个表达式中调用 <tt>move</tt> 和 <tt>set</tt> 操作时，每个操作必须返回一个引用，该引用指向执行操作的那个对象：</p>
+        <pre>
+     class Screen {
+     public:
+          // <span class="docEmphItalicAlt">interface member functions</span>
+          Screen&amp; move(index r, index c);
+          Screen&amp; set(char);
+          Screen&amp; set(index, index, char);
+          // <span class="docEmphItalicAlt">other members as before</span>
+     };
+</pre><br>
+
+        <p class="docText">Notice that the return type of these functions is <tt>Screen&amp;</tt>, which indicates that the member function returns a reference to an object of its own class type. Each of these functions returns the object on which it was invoked. We'll use the <tt>this</tt> pointer to get access to the object. Here is the implementation for two of our new members:</p>
+	<p class="docText">注意，这些函数的返回类型是 <tt>Screen&amp;</tt>，指明该成员函数返回对其自身类类型的对象的引用。每个函数都返回调用自己的那个对象。使用 <tt>this</tt> 指针来访问该对象。下面是对两个新成员的实现：</p>
+        <pre>
+     Screen&amp; Screen::set(char c)
+     {
+         contents[cursor] = c;
+         return *this;
+     }
+     Screen&amp; Screen::move(index r, index c)
+     {
+         index row = r * width; // <span class="docEmphItalicAlt">row location</span>
+         cursor = row + c;
+         return *this;
+     }
+</pre><br>
+
+        <p class="docText">The only interesting part in this function is the <tt>return</tt> statement. In each case, the function returns <tt>*this</tt>. In these functions, <tt>this</tt> is a pointer to a non<tt>const Screen</tt>. As with any pointer, we can access the object to which <tt>this</tt> points by dereferencing the <tt>this</tt> pointer.</p>
+	<p class="docText">函数中唯一需要关注的部分是 <tt>return</tt> 语句。在这两个操作中，每个函数都返回 <tt>*this</tt>。在这些函数中，<tt>this</tt> 是一个指向非常量 <tt>Screen</tt> 的指针。如同任意的指针一样，可以通过对 <tt>this</tt> 指针解引用来访问 <tt>this</tt> 指向的对象。</p>
+	
+	<a name="ch12lev2sec8"></a>
+        <h4 class="docSection2Title">Returning <tt>*this</tt> from a <tt>const</tt> Member Function</h4>
+	<h4 class="docSection2Title">从 <tt>const</tt> 成员函数返回 <tt>*this</tt></h4>
+
+	<a name="idd1e92854"></a><a name="idd1e92857"></a><a name="idd1e92860"></a><a name="idd1e92867"></a><a name="idd1e92874"></a><a name="idd1e92881"></a><a name="idd1e92888"></a>
+        <p class="docText">In an ordinary non<tt>const</tt> member function, the type of <tt>this</tt> is a <tt>const</tt> pointer (<a class="docLink" href="ch04lev1sec2.html#ch04lev2sec7" >Section 4.2.5</a>, p. <a class="docLink" href="ch04lev1sec2.html#ch04lev2sec7" >126</a>) to the class type. We may change the value to which <tt>this</tt> points but cannot change the address that <tt>this</tt> holds. In a <tt>const</tt> member function, the type of <tt>this</tt> is a <tt>const</tt> pointer to a <tt>const</tt> class-type object. We may change neither the object to which <tt>this</tt> points nor the address that <tt>this</tt> holds.</p>
+	<p class="docText">在普通的非 <tt>const</tt> 成员函数中，<tt>this</tt> 的类型是一个指向类类型的 <tt>const</tt> 指针（<a class="docLink" href="ch04lev1sec2.html#ch04lev2sec7" >第 4.2.5 节</a>）。可以改变 <tt>this</tt> 所指向的值，但不能改变 <tt>this</tt> 所保存的地址。在 <tt>const</tt> 成员函数中，<tt>this</tt> 的类型是一个指向 <tt>const</tt> 类类型对象的 <tt>const</tt> 指针。既不能改变 <tt>this</tt> 所指向的对象，也不能改变 <tt>this</tt> 所保存的地址。</p>
+	
+	<a name="ch12note08"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">We cannot return a plain reference to the class object from a <tt>const</tt> member function. A <tt>const</tt> member function may return <tt>*this</tt> only as a <tt>const</tt> reference.</p>
+		<p class="docText">不能从 <tt>const</tt> 成员函数返回指向类对象的普通引用。<tt>const</tt> 成员函数只能返回 <tt>*this</tt> 作为一个 <tt>const</tt> 引用。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">As an example, we might add a <tt>display</tt> operation to our <tt>Screen</tt> class. This function should print <tt>contents</tt> on a given <tt>ostream</tt>. Logically, this operation should be a <tt>const</tt> member. Printing the <tt>contents</tt> doesn't change the object. If we make <tt>display</tt> a <tt>const</tt> member of <tt>Screen</tt>, then the <tt>this</tt> pointer inside <tt>display</tt> will be a <tt>const Screen* const</tt>.</p>
+	<p class="docText">例如，我们可以给 <tt>Screen</tt> 类增加一个 <tt>display</tt> 操作。这个函数应该在给定的 <tt>ostream</tt> 上打印 <tt>contents</tt>。逻辑上，这个操作应该是一个 <tt>const</tt> 成员。打印 <tt>contents</tt> 不会改变对象。如果将 <tt>display</tt> 作为 <tt>Screen</tt> 的 <tt>const</tt> 成员，则 <tt>display</tt> 内部的 <tt>this</tt> 指针将是一个 <tt>const Screen*</tt> 型的 <tt>const</tt>。</p>
+
+        <p class="docText">However, as we can with the <tt>move</tt> and <tt>set</tt> operations, we'd like to be able to use the <tt>display</tt> in a series of actions:</p>
+	<p class="docText">然而，与 <tt>move</tt> 和 <tt>set</tt> 操作一样，我们希望能够在一个操作序列中使用 <tt>display</tt>：</p>
+
+        <pre>
+     // <span class="docEmphItalicAlt">move cursor to given position, set that character and display the screen</span>
+     myScreen.move(4,0).set('#').display(cout);
+</pre><br>
+
+        <p class="docText">This usage implies that <tt>display</tt> should return a <tt>Screen</tt> reference and take a reference to an <tt>ostream</tt>. If <tt>display</tt> is a <tt>const</tt> member, then its return type must be <tt>const Screen&amp;</tt>.</p>
+	<p class="docText">这个用法暗示了 <tt>display</tt> 应该返回一个 <tt>Screen</tt> 引用，并接受一个 <tt>ostream</tt> 引用。如果 <tt>display</tt> 是一个 <tt>const</tt> 成员，则它的返回类型必须是 <tt>const Screen&amp;</tt>。</p>
+
+        <p class="docText">Unfortunately, there is a problem with this design. If we define <tt>display</tt> as a <tt>const</tt> member, then we could call <tt>display</tt> on a non<tt>const</tt> object but would not be able to embed a call to <tt>display</tt> in a larger expression. The following code would be illegal:</p>
+	<p class="docText">不幸的是，这个设计存在一个问题。如果将 <tt>display</tt> 定义为 <tt>const</tt> 成员，就可以在非 <tt>const</tt> 对象上调用 <tt>display</tt>，但不能将对 <tt>display</tt> 的调用嵌入到一个长表达式中。下面的代码将是非法的：</p>
+
+        <pre>
+     Screen myScreen;
+     // <span class="docEmphItalicAlt">this code fails if</span> <span class="docEmphasis">display</span> <span class="docEmphItalicAlt">is a</span> <span class="docEmphasis">const</span> <span class="docEmphItalicAlt">member function</span>
+     // <span class="docEmphasis">display</span> <span class="docEmphItalicAlt">return a</span> <span class="docEmphasis">const</span> <span class="docEmphItalicAlt">reference; we cannot call</span> <span class="docEmphasis">set</span> <span class="docEmphItalicAlt">on a</span> <span class="docEmphasis">const</span>
+     myScreen.display().set('*');
+</pre><br>
+
+        <p class="docText">The problem is that this expression runs <tt>set</tt> on the object returned from <tt>display</tt>. That object is <tt>const</tt> because <tt>display</tt> returns its object as a <tt>const</tt>. We cannot call <tt>set</tt> on a <tt>const</tt> object.</p>
+	<p class="docText">问题在于这个表达式是在由 <tt>display</tt> 返回的对象上运行 <tt>set</tt>。该对象是 <tt>const</tt>，因为 <tt>display</tt> 将其对象作为 <tt>const</tt> 返回。我们不能在 <tt>const</tt> 对象上调用 <tt>set</tt>。</p>
+
+	<a name="ch12lev2sec9"></a>
+        <h4 class="docSection2Title">Overloading Based on <tt>const</tt></h4>
+	<h4 class="docSection2Title">基于 <tt>const</tt> 的重载</h4>
+
+        <p class="docText">To solve this problem we must define two <tt>display</tt> operations: one that is <tt>const</tt> and one that isn't. We can overload a member function based on whether it is <tt>const</tt> for the same reasons that we can overload a function based on whether a pointer parameter points to <tt>const</tt> (<a class="docLink" href="ch07lev1sec8.html#ch07lev2sec30" >Section 7.8.4</a>, p. <a class="docLink" href="ch07lev1sec8.html#ch07lev2sec30" >275</a>). A <tt>const</tt> object will use only the <tt>const</tt> member. A non<tt>const</tt> object could use either member, but the non<tt>const</tt> version is a better match.</p>
+	<p class="docText">为了解决这个问题，我们必须定义两个 <tt>display</tt> 操作：一个是 <tt>const</tt>，另一个不是 <tt>const</tt>。基于成员函数是否为 <tt>const</tt>，可以重载一个成员函数；同样地，基于一个指针形参是否指向 <tt>const</tt>（<a class="docLink" href="ch07lev1sec8.html#ch07lev2sec30" >第 7.8.4 节</a>），可以重载一个函数。<tt>const</tt> 对象只能使用 <tt>const</tt> 成员。非 <tt>const</tt> 对象可以使用任一成员，但非 <tt>const</tt> 版本是一个更好的匹配。</p>
+
+        <p class="docText">While we're at it, we'll define a <tt>private</tt> member named <tt>do_display</tt> to do the actual work of printing the <tt>Screen</tt>. Each of the <tt>display</tt> operations will call this function and then return the object on which it is executing:</p>
+	<p class="docText">在此，我们将定义一个名为 <tt>do_display</tt> 的 <tt>private</tt> 成员来打印 <tt>Screen</tt>。每个 <tt>display</tt> 操作都将调用此函数，然后返回调用自己的那个对象：</p>
+
+        <pre>
+     class Screen {
+     public:
+         // <span class="docEmphItalicAlt">interface member functions</span>
+         // <span class="docEmphItalicAlt">display overloaded on whether the object is const or not</span>
+         Screen&amp; display(std::ostream &amp;os)
+                       { do_display(os); return *this; }
+         const Screen&amp; display(std::ostream &amp;os) const
+                       { do_display(os); return *this; }
+     private:
+          // <span class="docEmphItalicAlt">single function to do the work of displaying a Screen,</span>
+          // <span class="docEmphItalicAlt">will be called by the display operations</span>
+          void do_display(std::ostream &amp;os) const
+                            { os &lt;&lt; contents; }
+          // <span class="docEmphItalicAlt">as before</span>
+      };
+</pre><br>
+
+	<a name="idd1e93202"></a><a name="idd1e93213"></a><a name="idd1e93221"></a><a name="idd1e93230"></a>
+        <p class="docText">Now, when we embed <tt>display</tt> in a larger expression, the non<tt>const</tt> version will be called. When we <tt>display</tt> a <tt>const</tt> object, then the <tt>const</tt> version is called:</p>
+	<p class="docText">现在，当我们将 <tt>display</tt> 嵌入到一个长表达式中时，将调用非 <tt>const</tt> 版本。当我们 <tt>display</tt> 一个 <tt>const</tt> 对象时，就调用 <tt>const</tt> 版本：</p>
+
+        <pre>
+     Screen myScreen(5,3);
+     const Screen blank(5, 3);
+     myScreen.set('#').display(cout); // <span class="docEmphItalicAlt">calls non</span><span class="docEmphasis">const</span> <span class="docEmphItalicAlt">version</span>
+     blank.display(cout);             // <span class="docEmphItalicAlt">calls</span> <span class="docEmphasis">const</span> <span class="docEmphItalicAlt">version</span>
+</pre><br>
+        <a name="ch12lev2sec10"></a>
+
+        <h4 class="docSection2Title">Mutable Data Members</h4>
+        <h4 class="docSection2Title">可变数据成员</h4>
+
+        <p class="docText">It sometimes (but not very often) happens that a class has a data member that we want to be able to modify, even inside a <tt>const</tt> member function. We can indicate such members by declaring them as <tt>mutable</tt>.</p>
+	<p class="docText">有时（但不是很经常），我们希望类的数据成员（甚至在 <tt>const</tt> 成员函数内）可以修改。这可以通过将它们声明为 <tt>mutable</tt> 来实现。</p>
+
+	<a name="ch12term19"></a>
+        <p class="docText">A <b><a class="docLink" href="ch12lev1sec8.html#gloss12_19" >mutable data member</a></b> is a member that is never <tt>const</tt>, even when it is a member of a <tt>const</tt> object. Accordingly, a <tt>const</tt> member function may change a <tt>mutable</tt> member. To declare a data member as mutable, the keyword <tt>mutable</tt> must precede the declaration of the member:</p>
+	<p class="docText"><b><a class="docLink" href="ch12lev1sec8.html#gloss12_19" >可变数据成员（mutable data member）</a></b>永远都不能为 <tt>const</tt>，甚至当它是 <tt>const</tt> 对象的成员时也如此。因此，<tt>const</tt> 成员函数可以改变 <tt>mutable</tt> 成员。要将数据成员声明为可变的，必须将关键字 <tt>mutable</tt> 放在成员声明之前：</p>
+
+        <pre>
+     class Screen {
+     public:
+     // <span class="docEmphItalicAlt">interface member functions</span>
+     private:
+         mutable size_t access_ctr; // <span class="docEmphItalicAlt">may change in a</span> <span class="docEmphasis">const</span> <span class="docEmphItalicAlt">members</span>
+         // <span class="docEmphItalicAlt">other data members as before</span>
+      };
+</pre><br>
+
+        <p class="docText">We've given <tt>Screen</tt> a new data member named <tt>access_ctr</tt> that is <tt>mutable</tt>. We'll use <tt>access_ctr</tt> to track how often <tt>Screen</tt> member functions are called:</p>
+	<p class="docText">我们给 <tt>Screen</tt> 添加了一个新的可变数据成员 <tt>access_ctr</tt>。使用 <tt>access_ctr</tt> 来跟踪调用 <tt>Screen</tt> 成员函数的频繁程度：</p>
+        <pre>
+     void Screen::do_display(std::ostream&amp; os) const
+     {
+         ++access_ctr; // <span class="docEmphItalicAlt">keep count of calls to any member function</span>
+         os &lt;&lt; contents;
+     }
+</pre><br>
+
+	<a name="idd1e93360"></a><a name="idd1e93363"></a>
+        <p class="docText">Even though <tt>do_display</tt> is <tt>const</tt>, it can increment <tt>access_ctr</tt>. That member is a <tt>mutable</tt> member, so any member function, including <tt>const</tt> functions, can change the value of <tt>access_ctr</tt>.</p>
+	<p class="docText">尽管 <tt>do_display</tt> 是 <tt>const</tt>，它也可以增加 <tt>access_ctr</tt>。该成员是可变成员，所以，任意成员函数，包括 <tt>const</tt> 函数，都可以改变 <tt>access_ctr</tt> 的值。</p>
+
+	<a name="ch12sb07"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Advice: Use Private Utility Functions for Common Code</h2>
+              <h2 class="docSidebarTitle">建议：用于公共代码的私有实用函数</h2>
+
+              <p class="docText"><span class="docEmphStrong">Some readers might be surprised that we bothered to define a separate <tt>do_display</tt> operation. After all, the calls to <tt>do_display</tt> aren't much simpler than the action done inside <tt>do_display</tt>. Why bother? We do so for several reasons:</span></p>
+	      <p class="docText"><span class="docEmphStrong">有些读者可能会奇怪为什么要费力地单独定义一个 <tt>do_display</tt> 内部所做的操作更简单。为什么还要如此麻烦？我们这样做有下面几个原因。</span></p>
+
+              <div style="font-weight:bold">
+                <ol class="docList" type="1">
+                  <li>
+                    <div style="font-weight:normal">
+                      <p class="docList"><span class="docEmphStrong">A general desire to avoid writing the same code in more than one place.</span></p>
+                      <p class="docList"><span class="docEmphStrong">一般愿望是避免在多个地方编写同样的代码。</span></p>
+                    </div>
+                  </li>
+
+                  <li>
+                    <div style="font-weight:normal">
+                      <p class="docList"><span class="docEmphStrong">The <tt>display</tt> operation can be expected to become more complicated as our class evolves. As the actions involved become more complex, it makes more obvious sense to write those actions in one place, not two.</span></p>
+		      <p class="docList"><span class="docEmphStrong"><tt>display</tt> 操作预期会随着类的演变而变得更复杂。当所涉及的动作变得更复杂时，只在一处而不是两处编写这些动作有更显著的意义。</span></p>
+                    </div>
+                  </li>
+
+                  <li>
+                    <div style="font-weight:normal">
+                      <p class="docList"><span class="docEmphStrong">It is likely that we might want to add debugging information to <tt>do_display</tt> during development that would be eliminated in the final product version of the code. It will be easier to do so if only one definition of <tt>do_display</tt> needs to be changed to add or remove the debugging code.</span></p>
+		      <p class="docList"><span class="docEmphStrong">很可能我们会希望在开发时给 <tt>do_display</tt> 增加调试信息，这些调试信息将会在代码的最终成品版本中去掉。如果只需要改变一个 <tt>do_display</tt> 的定义来增加或删除调试代码，这样做将更容易。</span></p>
+                    </div>
+                  </li>
+
+                  <li>
+                    <div style="font-weight:normal">
+                      <p class="docList"><span class="docEmphStrong">There needn't be any overhead involved in this extra function call. We made <tt>do_display</tt> inline, so the run-time performance between calling <tt>do_display</tt> or putting the code directly into the <tt>display</tt> operations should be identical.</span></p>
+		      <p class="docList"><span class="docEmphStrong">这个额外的函数调用不需要涉及任何开销。我们使 <tt>do_display</tt> 成为内联的，所以调用 <tt>do_display</tt> 与将代码直接放入 <tt>display</tt> 操作的运行时性能应该是相同的。</span></p>
+                    </div>
+                  </li>
+                </ol>
+              </div>
+
+              <p class="docText"><span class="docEmphStrong">In practice, well-designed C++ programs tend to have lots of small functions such as <tt>do_display</tt> that are called to do the "real" work of some other set of functions.</span></p>
+	      <p class="docText"><span class="docEmphStrong">实际上，设计良好的 C++ 程序经常具有许多像 <tt>do_display</tt> 这样的小函数，它们被调用来完成一些其他函数的“实际”工作。</span></p>
+            </td>
+          </tr>
+        </table><br>
+
+        <a name="ch12sb08"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 12.2</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch12qa5q1"></a><b>Exercise 12.13:</b></td>
+
+                    <td>
+                      <p class="docText">Extend your version of the <tt>Screen</tt> class to include the <tt>move, set</tt>, and <tt>display</tt> operations. Test your class by executing the expression:</p>
+
+		      <p class="docText">扩展 <tt>Screen</tt> 类以包含 <tt>move</tt>、<tt>set</tt> 和 <tt>display</tt> 操作。通过执行如下表达式来测试类：</p>
+                      <pre>
+<a name="PLID10"></a>
+</pre>
+
+                      <div class="v1">
+                        <a href="ch12lev1sec2.html#PLID10" >[View full width]</a>
+                      </div>
+                      <pre>
+
+     // <span class="docEmphasis">move cursor to given position, set that character and
+<img border="0" width="14" height="9" alt="" align="left" src="images/ccc.gif" > display the screen</span>
+     myScreen.move(4,0).set('#').display(cout);
+<br>
+</pre>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch12qa5q2"></a><b>Exercise 12.14:</b></td>
+
+                    <td>
+                      <p class="docText">It is legal but redundant to refer to members through the <tt>this</tt> pointer. Discuss the pros and cons of explicitly using the <tt>this</tt> pointer to access members.</p>
+		      <p class="docText">通过 <tt>this</tt> 指针引用成员虽然合法，但却是多余的。讨论显式使用 <tt>this</tt> 指针访问成员的优缺点。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a href="21001535.html" ><img src="images/pixel.gif"  alt="" width="1" height="1" border="0"></a>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch12lev1sec1.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch12lev1sec3.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

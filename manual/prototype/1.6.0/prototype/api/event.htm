@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Event - Prototype JavaScript 框架</title>
+	<link href="../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>Event</h2>
+		<div id="method-list">
+			<ul>
+				<li><a href="event.htm#method-element">element</a></li>
+				<li><a href="event.htm#method-extend">extend</a></li>
+				<li><a href="event.htm#method-findelement">findElement</a></li>
+				<li><a href="event.htm#method-isleftclick">isLeftClick</a></li>
+				<li><a href="event.htm#method-observe">observe</a></li>
+				<li><a href="event.htm#method-pointerx">pointerX</a></li>
+				<li><a href="event.htm#method-pointery">pointerY</a></li>
+				<li><a href="event.htm#method-stop">stop</a></li>
+				<li><a href="event.htm#method-stopobserving">stopObserving</a></li>
+				<li><a href="event.htm#method-unloadcache">unloadCache</a></li>
+			</ul>
+		</div>
+		<div id="abody">
+			<h3>&#9834; 令人惊叹的混乱 &#9835;</h3>
+			<p>对于编写跨浏览器的脚本而言，事件管理是一个让人头痛的地方。</p>
+			<p>
+				确实，一个异常明显的问题是：所有的人都遵循 W3C 的规范，而 MSIE 却另起炉灶。但是另外还有许多遍布各处的诡异的问题，
+				一不小心就会让你掉入陷井，例如基于 KHTML 的浏览器（Konqueror 和 Safari）的 <code>keypress</code>/<code>keydown</code>
+				事件。当然，也别忘了 MSIE 处理废弃的事件句柄时导致的内存泄漏问题。
+			</p>
+			<h3>Prototype 的补救！</h3>
+			<p>
+				当然，Prototype 很好的解决了这个问题，你甚至不会觉察到这些问题的存在。在 <code>Event</code> 命名空间中，包含了许多方法
+				（已在这个页面中列出）。所有的方法都具有一个用于表示当前事件对象的参数，它以非常友好的方式提供你所需要的信息，
+				并且跨越了所有主要的浏览器。
+			</p>
+			<p>
+				<code>Event</code> 同时提供了一个标准的键盘代码表，可以用在与键盘相关的事件中。在这个命名空间中，定义了以下一些常量：
+				<code>KEY_BACKSPACE</code>, <code>KEY_TAB</code>, <code>KEY_RETURN</code>, <code>KEY_ESC</code>,
+				<code>KEY_LEFT</code>, <code>KEY_UP</code>, <code>KEY_RIGHT</code>, <code>KEY_DOWN</code>,
+				<code>KEY_DELETE</code>, <code>KEY_HOME</code>, <code>KEY_END</code>, <code>KEY_PAGEUP</code>,
+				<code>KEY_PAGEDOWN</code>。这些常量名称都具有自我描述的特性。
+			</p>
+			<p>
+				下面这些函数经常会用到： <a href="event/observe.htm" >observe</a>、<a href="event/element.htm" >element</a>
+				和 <a href="event/stop.htm" >stop</a>。至于其它的，将取决于你的应用。
+			</p>
+			<h3>事件对象的实例方法<div class="box">1.6</div></h3>
+			<p>
+				在 Prototype 1.6 中，所有 <code>Event</code> 对象的方法也可以作为事件对象自身的实例方法使用：
+			</p>
+			<h4>以前的版本</h4>
+			<pre><code class="javascript">$('foo').observe('click', respondToClick); 
+function respondToClick(event) { 
+	var element = Event.element(event); 
+	element.addClassName('active'); 
+}</code></pre>
+			<h4>现在的版本</h4>
+			<pre><code class="javascript">$('foo').observe('click', respondToClick); 
+function respondToClick(event) { 
+	var element = event.element(); //注意这一句的区别
+	element.addClassName('active'); 
+}</code></pre>
+			<p>
+				<code>Event</code> 包含的方法已通过 <a href="event/extend.htm" >Event.extend</a> 增加到事件对象作为实例方法，这跟
+				<code>Element</code> 通过 <a href="element/extend.htm" >Element.extend</a> 将其所包含的方法添加到 DOM 节点是一样的。
+				在使用 <a href="event/observe.htm" >Event.observe</a> 方法注册事件处理程序时，Prototype 会自动扩展事件对象（
+				<strong>译注：</strong>调用 <code>Event.extend</code> 方法）。如果想采用不同的方法来加载事件处理程序，那你必须手动调用
+				<code>Event.extend</code> 来扩展事件对象。
+			</p>
+		</div>
+		<div id="method-excerpts">
+			<h3>方法</h3>
+			<div id="method-element" class="mexcerpt">
+				<h4><a href="event/element.htm" >element</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">Event.element(event) -> Element</code></pre>
+					<p>返回触发事件的 DOM 元素。</p>
+				</div>
+			</div>
+			<div id="method-extend" class="mexcerpt">
+				<h4><a href="event/extend.htm" >extend</a><div class="box">1.6</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">Event.extend(event)</code></pre>
+					<p>用 <code>Event.Methods</code> 包含的所有方法来扩展 <code>event</code>。</p>
+				</div>
+			</div>
+			<div id="method-findelement" class="mexcerpt">
+				<h4><a href="event/findElement.htm" >findElement</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">Event.findElement(event, tagName) -> Element</code></pre>
+					<p>从触发事件的 DOM 元素开始（包含该元素），由里而外搜索第一个具有指定标签名称的 DOM 元素。</p>
+				</div>
+			</div>
+			<div id="method-isleftclick" class="mexcerpt">
+				<h4><a href="event/isLeftClick.htm" >isLeftClick</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">Event.isLeftClick(event) -> Boolean</code></pre>
+					<p>判断鼠标相关的事件是否是由&#8220;左键&#8221;（主功能键）引发的。</p>
+				</div>
+			</div>
+			<div id="method-observe" class="mexcerpt">
+				<h4><a href="event/observe.htm" >observe</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">Event.observe(element, eventName, handler[, useCapture = false])</code></pre>
+					<p>在 DOM 元素上注册事件处理程序。</p>
+				</div>
+			</div>
+			<div id="method-pointerx" class="mexcerpt">
+				<h4><a href="event/pointerX.htm" >pointerX</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">Event.pointerX(event) -> Number</code></pre>
+					<p>返回鼠标事件发生时鼠标所在的绝对水平位置。</p>
+				</div>
+			</div>
+			<div id="method-pointery" class="mexcerpt">
+				<h4><a href="event/pointerY.htm" >pointerY</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">Event.pointerY(event) -> Number</code></pre>
+					<p>返回鼠标事件发生时鼠标所在的绝对垂直位置。</p>
+				</div>
+			</div>
+			<div id="method-stop" class="mexcerpt">
+				<h4><a href="event/stop.htm" >stop</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">Event.stop(event)</code></pre>
+					<p>停止事件的传播，并阻止事件被触发后最终的默认行为。</p>
+				</div>
+			</div>
+			<div id="method-stopobserving" class="mexcerpt">
+				<h4><a href="event/stopObserving.htm" >stopObserving</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">Event.stopObserving(element, eventName, handler[, useCapture = false])</code></pre>
+					<p>注销事件处理程序。</p>
+				</div>
+			</div>
+			<div id="method-unloadcache" class="mexcerpt">
+				<h4><a href="event/unloadCache.htm" >unloadCache</a><div class="box">1.6</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">Event.unloadCache()</code></pre>
+					<p>
+						注销所有通过 <a href="event/observe.htm" >observe</a> 方法注册的事件处理程序。<strong>从 1.6 版开始该方法不再可用。</strong>
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

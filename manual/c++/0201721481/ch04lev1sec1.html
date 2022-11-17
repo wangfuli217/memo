@@ -1,0 +1,452 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 4.1.  Arrays</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch04.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch04lev1sec2.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch04lev1sec1"></a>
+
+        <h3 class="docSection1Title">4.1. Arrays</h3>
+        <h3 class="docSection1Title">4.1. 数组</h3>
+
+<a name="ch04term6"></a>
+        <p class="docText">An array is a compound type (<a class="docLink" href="ch02lev1sec5.html#ch02lev1sec5" >Section 2.5</a>, p. <a class="docLink" href="ch02lev1sec5.html#ch02lev1sec5" >58</a>) that consists of a type specifier, an identifier, and a <b><a class="docLink" href="ch04lev1sec6.html#gloss04_06" ><span class="docEmphasis">dimension</span></a></b>. The type specifier indicates what type the elements stored in the array will have. The dimension specifies how many elements the array will contain.</p>
+        <p class="docText">数组是由类型名、标识符和维数组成的复合数据类型（<a class="docLink" href="ch02lev1sec5.html#ch02lev1sec5" >第 2.5 节</a>），类型名规定了存放在数组中的元素的类型，而维数则指定数组中包含的元素个数。</p>
+
+<a name="ch04note02"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">The type specifier can denote a built-in data or class type. With the exception of references, the element type can also be any compound type. There are no arrays of references.</p>
+                <p class="docText">数组定义中的类型名可以是内置数据类型或类类型；除引用之外，数组元素的类型还可以是任意的复合类型。没有所有元素都是引用的数组。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch04lev2sec1"></a>
+
+        <h4 class="docSection2Title">4.1.1. Defining and Initializing Arrays</h4>
+        <h4 class="docSection2Title">4.1.1. 数组的定义和初始化</h4>
+
+        <p class="docText">The dimension must be a constant expression (<a class="docLink" href="ch02lev1sec7.html#ch02lev1sec7" >Section 2.7</a>, p. <a class="docLink" href="ch02lev1sec7.html#ch02lev1sec7" >62</a>) whose value is greater than or equal to one. A constant expression is any expression that involves <span class="docEmphasis">only</span> integral literal constants, enumerators (<a class="docLink" href="ch02lev1sec7.html#ch02lev1sec7" >Section 2.7</a>, p. <a class="docLink" href="ch02lev1sec7.html#ch02lev1sec7" >62</a>), or <tt>const</tt> objects of integral type that are themselves initialized from constant expressions. A non<tt>const</tt> variable, or a <tt>const</tt> variable whose value is not known until run time, cannot be used to specify the dimension of an array.</p>
+	<p class="docText">数组的维数必须用值大于等于1的常量表达式定义（<a class="docLink" href="ch02lev1sec7.html#ch02lev1sec7" >第 2.7 节</a>）。此常量表达式<span class="docEmphasis">只能</span>包含整型字面值常量、枚举常量（<a class="docLink" href="ch02lev1sec7.html#ch02lev1sec7" >第 2.7 节</a>）或者用常量表达式初始化的整型 <tt>const</tt> 对象。非 <tt>const</tt> 变量以及要到运行阶段才知道其值的 <tt>const</tt> 变量都不能用于定义数组的维数。</p>
+
+        <p class="docText">The dimension is specified inside a <tt>[]</tt> bracket pair:</p>
+        <p class="docText">数组的维数必须在一对方括号 <tt>[]</tt> 内指定：</p>
+        <pre>
+          // <span class="docEmphItalicAlt">both</span> <span class="docEmphasis">buf_size</span> <span class="docEmphItalicAlt">and</span> <span class="docEmphasis">max_files</span> <span class="docEmphItalicAlt">are</span> <span class="docEmphasis">const</span>
+          const unsigned buf_size = 512, max_files = 20;
+          int staff_size = 27;            // <span class="docEmphItalicAlt">non</span><span class="docEmphasis">const</span>
+          const unsigned sz = get_size();  // <span class="docEmphasis">const</span> <span class="docEmphItalicAlt">value not known until run time</span>
+          char input_buffer[buf_size];     // <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">const</span> <span class="docEmphItalicAlt">variable</span>
+          string fileTable[max_files + 1]; // <span class="docEmphItalicAlt">ok: constant expression</span>
+          double salaries[staff_size];     // <span class="docEmphItalicAlt">error: non</span> <span class="docEmphasis">const</span> <span class="docEmphItalicAlt">variable</span>
+          int test_scores[get_size()];     // <span class="docEmphItalicAlt">error: non</span> <span class="docEmphasis">const</span> <span class="docEmphItalicAlt">expression</span>
+          int vals[sz];                    // <span class="docEmphItalicAlt">error:</span> <span class="docEmphasis">size</span> <span class="docEmphItalicAlt">not known until run time</span>
+</pre><br>
+
+	<a name="idd1e23600"></a><a name="idd1e23605"></a><a name="idd1e23610"></a>
+        <p class="docText">Although <tt>staff_size</tt> is initialized with a literal constant, <tt>staff_size</tt> itself is a non<tt>const</tt> object. Its value can be known only at run time, so it is illegal as an array dimension. Even though <tt>size</tt> is a <tt>const</tt> object, its value is not known until <tt>get_size</tt> is called at run time. Therefore, it may not be used as a dimension. On the other hand, the expression</p>
+	<p class="docText">虽然 <tt>staff_size</tt> 是用字面值常量进行初始化，但 <tt>staff_size</tt> 本身是一个非 <tt>const</tt> 对象，只有在运行时才能获得它的值，因此，使用该变量来定义数组维数是非法的。而对于 <tt>sz</tt>，尽管它是一个 <tt>const</tt> 对象，但它的值要到运行时调用 <tt>get_size</tt> 函数后才知道，因此，它也不能用于定义数组维数。</p>
+        <pre>
+          max_files + 1
+</pre><br>
+
+        <p class="docText">is a constant expression because <tt>max_files</tt> is a <tt>const</tt> variable. The expression can be and is evaluated at compile time to a value of 21.</p>
+        <p class="docText">另一方面，由于 <tt>max_files</tt> 是 <tt>const</tt> 变量，因此表达式是常量表达式，编译时即可计算出该表达式的值为21。</p>
+
+<a name="ch04lev3sec1"></a>
+        <h5 class="docSection3Title">Explicitly Initializing Array Elements</h5>
+        <h5 class="docSection3Title">显式初始化数组元素</h5>
+
+        <p class="docText">When we define an array, we can provide a comma-separated list of initializers for its elements. The initializer list must be enclosed in braces:</p>
+        <p class="docText">在定义数组时，可为其元素提供一组用逗号分隔的初值，这些初值用花括号{}括起来，称为初始化列表：</p>
+        <pre>
+          const unsigned array_size = 3;
+          int ia[array_size] = {0, 1, 2};
+</pre>
+
+        <p class="docText">If we do not supply element initializers, then the elements are initialized in the same way that variables are initialized (<a class="docLink" href="ch02lev1sec3.html#ch02lev2sec13" >Section 2.3.4</a>, p. <a class="docLink" href="ch02lev1sec3.html#ch02lev2sec13" >50</a>).</p>
+        <p class="docText">如果没有显式提供元素初值，则数组元素会像普通变量一样初始化（<a class="docLink" href="ch02lev1sec3.html#ch02lev2sec13" >第 2.3.4 节</a>）：</p>
+
+        <ul>
+          <li>
+            <p class="docList">Elements of an array of built-in type defined outside the body of a function are initialized to zero.</p>
+            <p class="docList">在函数体外定义的内置数组，其元素均初始化为 0。</p>
+          </li>
+
+          <li>
+            <p class="docList">Elements of an array of built-in type defined inside the body of a function are uninitialized.</p>
+            <p class="docList">在函数体内定义的内置数组，其元素无初始化。</p>
+          </li>
+
+          <li>
+            <p class="docList">Regardless of where the array is defined, if it holds elements of a class type, then the elements are initialized by the default constructor for that class if it has one. If the class does not have a default constructor, then the elements must be explicitly initialized.</p>
+            <p class="docList">不管数组在哪里定义，如果其元素为类类型，则自动调用该类的默认构造函数进行初始化；如果该类没有默认构造函数，则必须为该数组的元素提供显式初始化。</p>
+          </li>
+        </ul>
+
+<a name="ch04note03"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Unless we explicitly supply element initializers, the elements of a local array of built-in type are uninitialized. Using these elements for any purpose other than to assign a new value is undefined.</p>
+                <p class="docText">除非显式地提供元素初值，否则内置类型的局部数组的元素没有初始化。此时，除了给元素赋值外，其他使用这些元素的操作没有定义。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <p class="docText">An explicitly initialized array need not specify a dimension value. The compiler will infer the array size from the number of elements listed:</p>
+        <p class="docText">显式初始化的数组不需要指定数组的维数值，编译器会根据列出的元素个数来确定数组的长度：</p>
+        <pre>
+          int ia[] = {0, 1, 2}; // <span class="docEmphItalicAlt">an array of dimension 3</span>
+</pre>
+
+	<a name="idd1e23715"></a><a name="idd1e23720"></a><a name="idd1e23725"></a><a name="idd1e23733"></a><a name="idd1e23736"></a><a name="idd1e23741"></a><a name="idd1e23748"></a><a name="idd1e23753"></a><a name="idd1e23761"></a><a name="page_112"></a>
+        <p class="docText">If the dimension size is specified, the number of elements provided must not exceed that size. If the dimension size is greater than the number of listed elements, the initializers are used for the first elements. The remaining elements are initialized to zero if the elements are of built-in type or by running the default constructor if they are of class type:</p>
+        <p class="docText">如果指定了数组维数，那么初始化列表提供的元素个数不能超过维数值。如果维数大于列出的元素初值个数，则只初始化前面的数组元素；剩下的其他元素，若是内置类型则初始化为0，若是类类型则调用该类的默认构造函数进行初始化：</p>
+        <pre>
+          const unsigned array_size = 5;
+          // <span class="docEmphItalicAlt">Equivalent to</span> <span class="docEmphasis">ia = {0, 1, 2, 0, 0}</span>
+          // <span class="docEmphasis">ia[3]</span> <span class="docEmphItalicAlt">and</span> <span class="docEmphasis">ia[4]</span> <span class="docEmphItalicAlt">default initialized to 0</span>
+          int ia[array_size] = {0, 1, 2};
+          // <span class="docEmphItalicAlt">Equivalent to</span> <span class="docEmphasis">str_arr = {"hi", "bye", "", "", ""}</span>
+          // <span class="docEmphasis">str_arr[2]</span> <span class="docEmphItalicAlt">through</span> <span class="docEmphasis">str_arr[4]</span> <span class="docEmphItalicAlt">default initialized to the empty string</span>
+          string str_arr[array_size] = {"hi", "bye"};
+</pre>
+        <a name="ch04lev3sec2"></a>
+
+        <h5 class="docSection3Title">Character Arrays Are Special</h5>
+        <h5 class="docSection3Title">特殊的字符数组</h5>
+
+        <p class="docText">A character array can be initialized with either a list of comma-separated character literals enclosed in braces or a string literal. Note, however, that the two forms are not equivalent. Recall that a string literal (<a class="docLink" href="ch02lev1sec2.html#ch02lev1sec2" >Section 2.2</a>, p. <a class="docLink" href="ch02lev1sec2.html#ch02lev1sec2" >40</a>) contains an additional terminating null character. When we create a character array from a string literal, the null is also inserted into the array:</p>
+        <p class="docText">字符数组既可以用一组由花括号括起来、逗号隔开的字符字面值进行初始化，也可以用一个字符串字面值进行初始化。然而，要注意这两种初始化形式并不完全相同，字符串字面值（<a class="docLink" href="ch02lev1sec2.html#ch02lev1sec2" >第 2.2 节</a>）包含一个额外的空字符（null）用于结束字符串。当使用字符串字面值来初始化创建的新数组时，将在新数组中加入空字符：</p>
+        <pre>
+          char ca1[] = {'C', '+', '+'};                // <span class="docEmphItalicAlt">no null</span>
+          char ca2[] = {'C', '+', '+', '\0'};         // <span class="docEmphItalicAlt">explicit null</span>
+          char ca3[] = "C++";     // <span class="docEmphItalicAlt">null terminator added automatically</span>
+</pre>
+
+        <p class="docText">The dimension of <tt>ca1</tt> is 3; the dimension of <tt>ca2</tt> and <tt>ca3</tt> is 4. It is important to remember the null-terminator when initializing an array of characters to a literal. For example, the following is a compile-time error:</p>
+	<p class="docText"><tt>ca1</tt> 的维数是 3，而 <tt>ca2</tt> 和 <tt>ca3</tt> 的维数则是 4。使用一组字符字面值初始化字符数组时，一定要记得添加结束字符串的空字符。例如，下面的初始化将导致编译时的错误：</p>
+        <pre>
+          const char ch3[6] = "Daniel"; // <span class="docEmphItalicAlt">error:</span> <span class="docEmphasis">Daniel</span> <span class="docEmphItalicAlt">is 7 elements</span>
+</pre>
+
+        <p class="docText">While the literal contains only six explicit characters, the required array size is sevensix to hold the literal and one for the null.</p>
+        <p class="docText">上述字符串字面值包含了 6 个显式字符，存放该字符串的数组则必须有 7 个元素——6 个用于存储字符字面值，而 1 个用于存放空字符 null。</p>
+
+<a name="ch04lev3sec3"></a>
+        <h5 class="docSection3Title">No Array Copy or Assignment</h5>
+        <h5 class="docSection3Title">不允许数组直接复制和赋值</h5>
+
+        <p class="docText">Unlike a <tt>vector</tt>, it is not possible to initialize an array as a copy of another array. Nor is it legal to assign one array to another:</p>
+        <p class="docText">与vector不同，一个数组不能用另外一个数组初始化，也不能将一个数组赋值给另一个数组，这些操作都是非法的：</p>
+        <pre>
+          int ia[] = {0, 1, 2}; // <span class="docEmphItalicAlt">ok: array of ints</span>
+          int ia2[](ia);        // <span class="docEmphItalicAlt">error: cannot initialize one array with another</span>
+
+          int main()
+          {
+              const unsigned array_size = 3;
+              int ia3[array_size]; // <span class="docEmphItalicAlt">ok: but elements are uninitialized!</span>
+
+              ia3 = ia;           //  <span class="docEmphItalicAlt">error: cannot assign one array to another</span>
+              return 0;
+          }
+</pre>
+        <a name="ch04note04"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+		<a name="ch04term2"></a>
+                <p class="docText">Some compilers allow array assignment as a <b><a class="docLink" href="ch04lev1sec6.html#gloss04_02" >compiler extension</a></b>. If you intend to run a given program on more than one compiler, it is usually a good idea to avoid using nonstandard compiler-specific features such as array assignment.</p>
+                <p class="docText">一些编译器允许将数组赋值作为<b><a class="docLink" href="ch04lev1sec6.html#gloss04_02" >编译器扩展</a></b>。但是如果希望编写的程序能在不同的编译器上运行，则应该避免使用像数组赋值这类依赖于编译器的非标准功能。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <a name="ch04sb01"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Caution: Arrays Are Fixed Size</h2>
+              <h2 class="docSidebarTitle">警告：数组的长度是固定的</h2>
+
+		<a name="idd1e23920"></a><a name="idd1e23927"></a><a name="idd1e23932"></a><a name="idd1e23945"></a><a name="idd1e23951"></a>
+              <p class="docText"><span class="docEmphStrong">Unlike the <tt>vector</tt> type, there is no <tt>push_back</tt> or other operation to add elements to the array. Once we define an array, we cannot add elements to it.</span></p>
+	      <p class="docText"><span class="docEmphStrong">与 <tt>vector</tt> 类型不同，数组不提供 <tt>push_back</tt> 或者其他的操作在数组中添加新元素，数组一经定义，就不允许再添加新元素。</span></p>
+
+              <p class="docText"><span class="docEmphStrong">If we must add elements to the array, then we must manage the memory ourselves. We have to ask the system for new storage to hold the larger array and copy the existing elements into that new storage. We'll see how to do so in <a class="docLink" href="ch04lev1sec3.html#ch04lev2sec14" >Section 4.3.1</a> (p. <a class="docLink" href="ch04lev1sec3.html#ch04lev2sec14" >134</a>).</span></p>
+              <p class="docText"><span class="docEmphStrong">如果必须在数组中添加新元素，程序员就必须自己管理内存：要求系统重新分配一个新的内存空间用于存放更大的数组，然后把原数组的所有元素复制到新分配的内存空间中。我们将会在<a class="docLink" href="ch04lev1sec3.html#ch04lev2sec14" >第 4.3.1 节</a>学习如何去实现。</span></p>
+            </td>
+          </tr>
+        </table>
+        <a name="ch04sb02"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 4.1.1</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch04qa1q1"></a><b>Exercise 4.1:</b></td>
+
+                    <td>
+                      <p class="docText">Assuming <tt>get_size</tt> is a function that takes no arguments and returns an <tt>int</tt> value, which of the following definitions are illegal? Explain why.</p>
+		      <p class="docText">假设 <tt>get_size</tt> 是一个没有参数并返回 <tt>int</tt> 值的函数，下列哪些定义是非法的？为什么？</p>
+                      <pre>
+          unsigned buf_size = 1024;
+
+          (a) int ia[buf_size];
+          (b) int ia[get_size()];
+          (c) int ia[4 * 7 - 14];
+          (d) char st[11] = "fundamental";
+</pre><br>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch04qa1q2"></a><b>Exercise 4.2:</b></td>
+
+                    <td>
+                      <p class="docText">What are the values in the following arrays?</p>
+                      <p class="docText">下列数组的值是什么？</p>
+                      <pre>
+          string sa[10];
+          int ia[10];
+          int main() {
+              string sa2[10];
+              int    ia2[10];
+          }
+</pre><br>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch04qa1q3"></a><b>Exercise 4.3:</b></td>
+
+                    <td>
+                      <p class="docText">Which, if any, of the following definitions are in error?</p>
+                      <p class="docText">下列哪些定义是错误的？</p>
+                      <pre>
+          (a) int ia[7] = { 0, 1, 1, 2, 3, 5, 8 };
+          (b) vector&lt;int&gt; ivec = { 0, 1, 1, 2, 3, 5, 8 };
+          (c) int ia2[ ] = ia1;
+          (d) int ia3[ ] = ivec;
+</pre><br>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch04qa1q4"></a><b>Exercise 4.4:</b></td>
+
+                    <td>
+                      <p class="docText">How can you initialize some or all the elements of an array?</p>
+                      <p class="docText">如何初始化数组的一部分或全部元素？</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch04qa1q5"></a><b>Exercise 4.5:</b></td>
+
+                    <td>
+                      <p class="docText">List some of the drawbacks of using an array instead of a <tt>vector</tt>.</p>
+		      <p class="docText">列出使用数组而不是 <tt>vector</tt> 的缺点。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a name="ch04lev2sec2"></a>
+
+        <h4 class="docSection2Title">4.1.2. Operations on Arrays</h4>
+        <h4 class="docSection2Title">4.1.2. 数组操作</h4>
+
+        <p class="docText">Array elements, like <tt>vector</tt> elements, may be accessed using the subscript operator (<a class="docLink" href="ch03lev1sec3.html#ch03lev2sec7" >Section 3.3.2</a>, p. <a class="docLink" href="ch03lev1sec3.html#ch03lev2sec7" >94</a>). Like the elements of a <tt>vector</tt>, the elements of an array are numbered beginning with 0. For an array of ten elements, the correct index values are 0 through 9, not 1 through 10.</p>
+        <p class="docText">与vector元素一样，数组元素可用下标操作符（<a class="docLink" href="ch03lev1sec3.html#ch03lev2sec7" >第 3.3.2 节</a>）来访问，数组元素也是从 0 开始计数。对于一个包含 10 个元素的数组，正确的下标值是从 0 到 9，而不是从 1 到 10。</p>
+
+        <p class="docText">When we subscript a <tt>vector</tt>, we use <tt>vector::size_type</tt> as the type for the index. When we subscript an array, the right type to use for the index is <tt>size_t</tt> (<a class="docLink" href="ch03lev1sec5.html#ch03lev2sec16" >Section 3.5.2</a>, p. <a class="docLink" href="ch03lev1sec5.html#ch03lev2sec16" >104</a>).</p>
+	<p class="docText">在用下标访问元素时，<tt>vector</tt> 使用 <tt>vector::size_type</tt> 作为下标的类型，而数组下标的正确类型则是 <tt>size_t</tt>（<a class="docLink" href="ch03lev1sec5.html#ch03lev2sec16" >第 3.5.2 节</a>）。</p>
+
+<a name="idd1e24112"></a><a name="idd1e24119"></a><a name="idd1e24122"></a><a name="idd1e24130"></a><a name="idd1e24138"></a><a name="idd1e24141"></a><a name="idd1e24144"></a><a name="idd1e24149"></a>
+        <p class="docText">In the following example, a <tt>for</tt> loop steps through the 10 elements of an array, assigning to each the value of its index:</p>
+	<p class="docText">在下面的例子中，<tt>for</tt> 循环遍历数组的 10 个元素，并以其下标值作为各个元素的初始值：</p>
+        <pre>
+          int main()
+          {
+              const size_t array_size = 10;
+              int ia[array_size]; // <span class="docEmphItalicAlt">10 ints, elements are uninitialized</span>
+
+              // <span class="docEmphItalicAlt">loop through array, assigning value of its index to each element</span>
+              for (size_t ix = 0; ix != array_size; ++ix)
+                    ia[ix] = ix;
+              return 0;
+          }
+</pre><br>
+
+        <p class="docText">Using a similar loop, we can copy one array into another:</p>
+        <p class="docText">使用类似的循环，可以实现把一个数组复制给另一个数组：</p>
+        <pre>
+          int main()
+          {
+              const size_t array_size = 7;
+              int ia1[] = { 0, 1, 2, 3, 4, 5, 6 };
+              int ia2[array_size]; // <span class="docEmphItalicAlt">local array, elements uninitialized</span>
+
+              // <span class="docEmphItalicAlt">copy elements from ia1 into ia2</span>
+              for (size_t ix = 0; ix != array_size; ++ix)
+                    ia2[ix] = ia1[ix];
+              return 0;
+          }
+</pre><br>
+        <a name="ch04lev3sec4"></a>
+
+        <h5 class="docSection3Title">Checking Subscript Values</h5>
+        <h5 class="docSection3Title">检查数组下标值</h5>
+
+        <p class="docText">As with both <tt>string</tt>s and <tt>vectors</tt>, the programmer must guarantee that the subscript value is in rangethat the array has an element at the index value.</p>
+	<p class="docText">正如 <tt>string</tt> 和 <tt>vector</tt> 类型，程序员在使用数组时，也必须保证其下标值在正确范围之内，即数组在该下标位置应对应一个元素。</p>
+
+        <p class="docText">Nothing stops a programmer from stepping across an array boundary except attention to detail and thorough testing of the code. It is not inconceivable for a program to compile and execute and still be fatally wrong.</p>
+        <p class="docText">除了程序员自己注意细节，并彻底测试自己的程序之外，没有别的办法可防止数组越界。通过编译并执行的程序仍然存在致命的错误，这并不是不可能的。</p>
+
+<a name="ch04note05"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">By far, the most common causes of security problems are so-called "buffer overflow" bugs. These bugs occur when a subscript is not checked and reference is made to an element outside the bounds of an array or other similar data structure.</p>
+                <p class="docText">导致安全问题的最常见原因是所谓“缓冲区溢出（buffer overflow）”错误。当我们在编程时没有检查下标，并且引用了越出数组或其他类似数据结构边界的元素时，就会导致这类错误。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a href="21001535.html" ><img src="images/pixel.gif"  alt="" width="1" height="1" border="0"></a>
+      </td>
+    </tr>
+  </table>
+
+					<a name="ch04sb03"></a>
+					<p>
+					<table cellspacing="0" width="90%" border="1" cellpadding="5">
+						<TR>
+							<td>
+								<h2 class="docSidebarTitle">Exercises Section 4.1.2</H2>
+								<blockquote>
+									<P>
+									<table border="0" cellspacing="16" cellpadding="0">
+										<tr valign="top">
+											<td align="right" class="docText" width="50">
+												<a name="ch04qa2q1"></a>
+												<b>Exercise 4.6:</b>
+											</td>
+											<td>
+												<p class="docText">This code fragment intends to assign the value of its index to each array element. It contains a number of indexing errors. Identify them.</P>
+												<p class="docText">下面的程序段企图将下标值赋给数组的每个元素，其中在下标操作上有一些错误，请指出这些错误。</P>
+<pre>
+          const size_t array_size = 10;
+          int ia[array_size];
+          for (size_t ix = 1; ix &lt;= array_size; ++ix)
+                ia[ix] = ix;
+</pre>
+												<br>
+											</td>
+										</tr>
+										<tr valign="top">
+											<td align="right" class="docText" width="50">
+												<a name="ch04qa2q2"></a>
+												<b>Exercise 4.7:</b>
+											</td>
+											<td>
+												<p class="docText">Write the code necessary to assign one array to another. Now, change the code to use <tt>vector</tt>s. How might you assign one <tt>vector</tt> to another?</p>
+												<p class="docText">编写必要的代码将一个数组赋给另一个数组，然后把这段代码改用 <tt>vector</tt> 实现。考虑如何将一个 <tt>vector</tt> 赋给另一个 <tt>vector</tt>。</P>
+											</td>
+										</tr>
+										<tr valign="top">
+											<TD align="right" class="docText" width="50">
+												<a name="ch04qa2q3"></a>
+												<b>Exercise 4.8:</b>
+											</td>
+											<TD>
+												<p class="docText">Write a program to compare two arrays for equality. Write a similar program to compare two <tt>vector</tt>s.</p>
+												<p class="docText">编写程序判断两个数组是否相等，然后编写一段类似的程序比较两个 <tt>vector</tt>。</P>
+											</td>
+										</tr>
+										<tr valign="top">
+											<td align="right" class="docText" width="50">
+												<a name="ch04qa2q4"></a>
+												<b>Exercise 4.9:</b>
+											</td>
+											<td>
+												<p class="docText">Write a program to define an array of 10 <tt>int</tt>s. Give each element the same value as its position in the array.</p>
+												<p class="docText">编写程序定义一个有 10 个 <tt>int</tt> 型元素的数组，并以其在数组中的位置作为各元素的初值。</P>
+											</td>
+										</tr>
+									</table>
+									</p>
+								</blockquote>
+							</td>
+						</tr>
+					</table>
+					</p>
+					<br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch04.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch04lev1sec2.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

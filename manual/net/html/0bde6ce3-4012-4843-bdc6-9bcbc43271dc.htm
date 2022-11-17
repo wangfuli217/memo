@@ -1,0 +1,502 @@
+﻿<html xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+    <META NAME="save" CONTENT="history" />
+    <title>泛型类型中的变化（C# 编程指南）</title>
+    <link rel="stylesheet" type="text/css" href="../styles/presentation.css" />
+    <link rel="stylesheet" type="text/css" href="ms-help://Hx/HxRuntime/HxLink.css" />
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/EventUtilities.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/SplitScreen.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/Dropdown.js"> </script>
+    <script type="text/javascript" src="../scripts/script_manifold.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/script_feedBack.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CheckboxMenu.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CommonUtilities.js"> </script>
+    <xml>
+      <MSHelp:TOCTitle Title="泛型类型中的变化" />
+      <MSHelp:Keyword Index="A" Term="0bde6ce3-4012-4843-bdc6-9bcbc43271dc" />
+      <MSHelp:Keyword Index="K" Term="逆变 [C#]" />
+      <MSHelp:Keyword Index="K" Term="协变 [C#]" />
+      <MSHelp:Keyword Index="K" Term="泛型 [C#], 协变和逆变" />
+      <MSHelp:Attr Name="RevisionNumber" Value="8" />
+      <MSHelp:Attr Name="AssetID" Value="0bde6ce3-4012-4843-bdc6-9bcbc43271dc" />
+      <MSHelp:Attr Name="Abstract" Value="在 C# 中添加泛型的一个主要好处是能够使用 N:System.Collections.Generic 命名空间中的类型轻松地创建强类型集合。例如，您可以创建一个类型为  List&lt;int&gt; 的变量，编译器将检查对该变量的所有访问，确保只将  List&lt;int&gt; 添加到该集合中。与 C# 1.0 版中的非类型化集合相比，这是可用性方面的一个很大改进。" />
+      <MSHelp:Attr Name="codelang" Value="CSharp" />
+      <MSHelp:Attr Name="CommunityContent" Value="1" />
+      <MSHelp:Attr Name="DevLang" Value="CSharp" />
+      <MSHelp:Attr Name="DevLangVers" Value="CSharp" />
+      <MSHelp:Attr Name="DocSet" Value="C#" />
+      <MSHelp:Attr Name="DocSet" Value="C# Lang" />
+      <MSHelp:Attr Name="DocSet" Value="ExpressLibVS" />
+      <MSHelp:Attr Name="ProgModel" Value="managed" />
+      <MSHelp:Attr Name="ShippedIn" Value="vs.90" />
+      <MSHelp:Attr Name="Technology" Value="ManagedCode" />
+      <MSHelp:Attr Name="TopicVersion" Value="09.00.08178.10000" />
+      <MSHelp:Attr Name="Catalog Container" Value="System_Default_Catalog" />
+      <MSHelp:Attr Name="Content Set Container" Value="System_Default_Content_Set" />
+      <MSHelp:Attr Name="TopicType" Value="kbRef" />
+      <MSHelp:Attr Name="Locale" Value="zh-chs" />
+    </xml>
+  </head>
+  <body>
+    <input type="hidden" id="userDataCache" class="userDataStyle" />
+    <input type="hidden" id="hiddenScrollOffset" />
+    <img id="collapseImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" title="“折叠”图像" />
+    <img id="expandImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" title="“展开”图像" />
+    <img id="collapseAllImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" />
+    <img id="expandAllImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" />
+    <img id="dropDownImage" style="display:none; height:0; width:0;" src="../icons/dropdown.gif" />
+    <img id="dropDownHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/dropdownHover.gif" />
+    <img id="copyImage" style="display:none; height:0; width:0;" src="../icons/copycode.gif" title="“复制”图像" />
+    <img id="copyHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/copycodeHighlight.gif" title="“复制悬停”图像" />
+    <div id="header">
+      <table id="topTable" cellspacing="0" cellpadding="0">
+        <tr>
+          <td>
+            <span onclick="ExpandCollapseAll(toggleAllImage)" style="cursor:default;" onkeypress="ExpandCollapseAll_CheckKey(toggleAllImage, event)" tabindex="0">
+              <img ID="toggleAllImage" class="toggleAll" src="../icons/collapse_all.gif" /> <label id="collapseAllLabel" for="toggleAllImage" style="display: none;">全部折叠</label><label id="expandAllLabel" for="toggleAllImage" style="display: none;">全部展开</label> </span>
+            <span>    </span>
+            <span id="devlangsDropdown" class="filter" tabindex="0">
+              <img id="devlangsDropdownImage" src="../icons/dropdown.gif" /> <label id="devlangsMenuAllLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：全部 </nobr></label><label id="devlangsMenuMultipleLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：多个 </nobr></label><label id="devlangsMenuVisualBasicLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual Basic </nobr></label><label id="devlangsMenuCSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：C# </nobr></label><label id="devlangsMenuManagedCPlusPlusLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual C++ </nobr></label><label id="devlangsMenuJSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：J# </nobr></label><label id="devlangsMenuJScriptLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：JScript </nobr></label></span>
+          </td>
+        </tr>
+      </table>
+      <div id="devlangsMenu">
+        <input id="VisualBasicCheckbox" type="checkbox" data="VisualBasic,vb,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="VisualBasicCheckbox">Visual Basic</label>
+        <br />
+        <input id="CSharpCheckbox" type="checkbox" data="CSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="CSharpCheckbox">C#</label>
+        <br />
+        <input id="ManagedCPlusPlusCheckbox" type="checkbox" data="ManagedCPlusPlus,cpp,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="ManagedCPlusPlusCheckbox">Visual C++</label>
+        <br />
+        <input id="JSharpCheckbox" type="checkbox" data="JSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JSharpCheckbox">J#</label>
+        <br />
+        <input id="JScriptCheckbox" type="checkbox" data="JScript,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JScriptCheckbox">JScript</label>
+        <br />
+      </div>
+      <table id="bottomTable" cellpadding="0" cellspacing="0">
+        <tr id="headerTableRow1">
+          <td align="left">
+            <span id="runningHeaderText">C# 编程指南</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow2">
+          <td align="left">
+            <span id="nsrTitle">泛型类型中的变化（C# 编程指南）</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow3">
+          <td align="left">
+            <a href="0bde6ce3-4012-4843-bdc6-9bcbc43271dc.htm#seeAlsoToggle" onclick="OpenSection(seeAlsoToggle)">另请参见</a>  
+<script type="text/javascript">
+var fbBody = '%b8%d0%d0%bb%c4%fa%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%bf%aa%b7%a2%b0%e6%b1%e0%d0%b4%cd%c5%b6%d3%bd%ab%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%d3%c3%d3%da%b8%c4%bd%f8%ce%c4%b5%b5%a1%a3%ce%d2%c3%c7%d4%da%c9%f3%d4%c4%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%ca%b1%a3%ac%bf%c9%c4%dc%bb%e1%b8%f8%c4%fa%b7%a2%cb%cd%b5%e7%d7%d3%d3%ca%bc%fe%a3%ac%d2%d4%c7%eb%c4%fa%cc%e1%b9%a9%bd%f8%d2%bb%b2%bd%b5%c4%bd%e2%ca%cd%cb%b5%c3%f7%bb%f2%d5%df%be%cd%bd%e2%be%f6%b7%bd%b0%b8%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%ce%d2%c3%c7%b2%bb%bb%e1%bd%ab%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%d3%c3%d3%da%c8%ce%ba%ce%c6%e4%cb%fb%d3%c3%cd%be%a3%ac%b2%a2%c7%d2%d4%da%c9%f3%d4%c4%cd%ea%d6%ae%ba%f3%a3%ac%ce%d2%c3%c7%b2%bb%bb%e1%d4%d9%b1%a3%c1%f4%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%a1%a3%0d%0a%d3%d0%b9%d8%20Microsoft%20%d2%fe%cb%bd%d5%fe%b2%df%b5%c4%bd%f8%d2%bb%b2%bd%d0%c5%cf%a2%a3%ac%c7%eb%b2%ce%bc%fb%20http%3a%2f%2fprivacy.microsoft.com%2fzh-cn%2fdefault.aspx%a1%a3';
+var fbSubject = 'Customer%20Feedback';
+</script>
+  <span id="headfeedbackarea" class="feedbackhead"><a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);"> 发送反馈意见</a></span>
+</td>
+        </tr>
+      </table>
+      <table id="gradientTable">
+        <tr>
+          <td class="nsrBottom" background="../icons/gradient.gif" />
+        </tr>
+      </table>
+    </div>
+    <div id="mainSection">
+      <div id="mainBody">
+        <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
+        <font color="DarkGray"></font>
+        <p /> <p><font color="DarkGray">更新：2007 年 11 月</font></p><div class="introduction"><p>在 C# 中添加泛型的一个主要好处是能够使用 <span sdata="cer" target="N:System.Collections.Generic"><mshelp:link keywords="N:System.Collections.Generic" tabindex="0">System.Collections.Generic</mshelp:link></span> 命名空间中的类型轻松地创建强类型集合。例如，您可以创建一个类型为 <span sdata="langKeyword" value=" List&lt;int&gt;"><span class="keyword"> List&lt;int&gt;</span></span> 的变量，编译器将检查对该变量的所有访问，确保只将 <span sdata="langKeyword" value=" List&lt;int&gt;"><span class="keyword"> List&lt;int&gt;</span></span> 添加到该集合中。与 C# 1.0 版中的非类型化集合相比，这是可用性方面的一个很大改进。</p><p>遗憾的是强类型集合有自身的缺陷。例如，假设您有一个强类型 <span sdata="langKeyword" value="List&lt;object&gt;"><span class="keyword">List&lt;object&gt;</span></span>，您想将 List&lt;int&gt;  中的所有元素追加到 List&lt;object&gt; 中。您可能希望能够如下面的示例一样编写代码：</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>List&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt; ints = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> List&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt;();
+ints.Add(1);
+ints.Add(10);
+ints.Add(42);
+List&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">object</span>&gt; objects = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> List&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">object</span>&gt;();
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// doesnt compile ints is not a IEnumerable&lt;object&gt;</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//objects.AddRange(ints); </span>
+
+</pre></td></tr></table></span></div></div><p>在这种情况下，您希望能够将 List&lt;int&gt;（它同时也是 IEnumerable&lt;int&gt;）作为 IEnumerable&lt;object&gt; 处理。这样做看起来似乎很合理，因为 <span sdata="langKeyword" value="int"><span class="keyword">int</span></span> 可以转换为对象。这与能够将 string[] 当作 object[]（现在您就可以这样做）非常相似。如果您正面临这种情况，那么您需要一种称为泛型变化的功能，它将泛型类型的一种实例化（在本例中为 IEnumerable&lt;int&gt;）当成该类型的另一种实例化（在本例中为 IEnumerable&lt;object&gt;）。</p><p>由于 C# 不支持泛型类型的变化，所以当遇到这种情况时，您需要尝试几种可能的方法来解决此问题。对于最简单的情况，例如上例中的单个方法 AddRange，您可以声明一个简单的帮助器方法来为您执行转换。例如，您可以编写如下方法：</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Simple workaround for single method</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Variance in one direction only</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Add&lt;S, D&gt;(List&lt;S&gt; source, List&lt;D&gt; destination)
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">where</span> S : D
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (S sourceElement <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> source)
+    {
+        destination.Add(sourceElement);
+    }
+}
+
+</pre></td></tr></table></span></div></div><p>它使您能够完成以下操作：</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// does compile</span>
+VarianceWorkaround.Add&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">object</span>&gt;(ints, objects);
+
+</pre></td></tr></table></span></div></div><p>此示例演示了一种简单的变化解决方法的一些特征。帮助器方法带两个类型参数，分别对应于源和目标，源类型参数 <span class="parameter" sdata="paramReference">S</span> 有一个约束，即目标类型参数 <span class="parameter" sdata="paramReference">D</span>。这意味着读取的 List&lt;&gt; 所包含的元素必须可以转换为插入的 List&lt;&gt; 类型的元素。这使编译器可以强制 <span sdata="langKeyword" value="int"><span class="keyword">int</span></span> 可转换为对象。将类型参数约束为从另一类型参数派生被称为裸类型参数约束。</p><p>定义一个方法来解决变化问题不算是一种过于拙劣的方法。遗憾的是变化问题很快就会变得非常复杂。下一级别的复杂性产生在当您想要将一个实例化的接口当作另一个实例化的接口时。例如，您有一个 IEnumerable&lt;int&gt;，您想将它传递给一个只以 IEnumerable&lt;object&gt; 为参数的方法。同样，这样做也是有一定意义的，因为您可以将 IEnumerable&lt;object&gt; 看作对象的序列，将 IEnumerable&lt;int&gt; 看作 <span sdata="langKeyword" value="ints"><span class="keyword">ints</span></span> 的序列。由于 <span sdata="langKeyword" value="ints"><span class="keyword">ints</span></span> 是对象，因此 <span sdata="langKeyword" value="ints"><span class="keyword">ints</span></span> 的序列应当可以被当作对象序列。例如：</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> PrintObjects(IEnumerable&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">object</span>&gt; objects)
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">object</span> o <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> objects)
+    {
+        Console.WriteLine(o);
+    }
+}
+
+</pre></td></tr></table></span></div></div><p>您可能希望能够如下面的示例一样调用：</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// would like to do this, but cant ...</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// ... ints is not an IEnumerable&lt;object&gt;</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//PrintObjects(ints);</span>
+
+</pre></td></tr></table></span></div></div><p>接口 <span class="code">case</span> 的解决方法是：创建为接口的每个成员执行转换的包装对象。这可能类似于如下示例：</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Workaround for interface</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Variance in one direction only so type expressinos are natural</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> IEnumerable&lt;D&gt; Convert&lt;S, D&gt;(IEnumerable&lt;S&gt; source)
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">where</span> S : D
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> EnumerableWrapper&lt;S, D&gt;(source);
+}
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> EnumerableWrapper&lt;S, D&gt; : IEnumerable&lt;D&gt;
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">where</span> S : D
+{
+
+</pre></td></tr></table></span></div></div><p>它使您能够完成以下操作：</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>PrintObjects(VarianceWorkaround.Convert&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">object</span>&gt;(ints));
+
+</pre></td></tr></table></span></div></div><p>同样，请注意包装类和帮助器方法的裸类型参数约束。此系统已经变得相当复杂，但是包装类中的代码非常简单；它只委托给所包装接口的成员，除了简单的类型转换外，不执行其他任何操作。为什么不让编译器允许从 IEnumerable&lt;int&gt; 直接转换为 IEnumerable&lt;object&gt; 呢？</p><p>尽管在查看集合的只读视图的情况下，变化是类型安全的，然而在同时涉及读写操作的情况下，变化不是类型安全的。例如，不能用此自动方法处理 IList&lt;&gt; 接口。您仍然可以编写一个帮助器，用类型安全的方式包装 IList&lt;&gt; 上的所有读操作，但是写操作的包装就不能如此轻松了。</p><p>下面是处理 <span sdata="cer" target="T:System.Collections.Generic.IList`1"><mshelp:link keywords="T:System.Collections.Generic.IList`1" tabindex="0">IList<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span></span>T<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span></span></mshelp:link></span> 接口的变化的包装的一部分，它显示在读和写两个方面的变化所引发的问题：</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> ListWrapper&lt;S, D&gt; : CollectionWrapper&lt;S, D&gt;, IList&lt;D&gt;
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">where</span> S : D
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> ListWrapper(IList&lt;S&gt; source) : <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">base</span>(source)
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span>.source = source;
+    }
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> IndexOf(D item)
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> (item <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">is</span> S)
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span>.source.IndexOf((S) item);
+        }
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">else</span>
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> -1;
+        }
+    }
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// variance the wrong way ...</span>
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// ... can throw exceptions at runtime</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Insert(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> index, D item)
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> (item <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">is</span> S)
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span>.source.Insert(index, (S)item);
+        }
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">else</span>
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">throw</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Exception(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Invalid type exception"</span>);
+        }
+    }
+
+</pre></td></tr></table></span></div></div><p>包装中的 Insert 方法有一个问题。它将 D 当作参数，但是它必须将 D 插入到 IList&lt;S&gt; 中。由于 D 是 S 的基类型，不是所有的 D 都是 S，因此 Insert 操作可能会失败。此示例与数组的变化有相似之处。当将对象插入 object[] 时，将执行动态类型检查，因为 object[] 在运行时可能实际为 string[]。例如：</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">object</span>[] objects = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span>[10];
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// no problem, adding a string to a string[]</span>
+objects[0] = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"hello"</span>; 
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// runtime exception, adding an object to a string[]</span>
+objects[1] = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">object</span>(); 
+
+</pre></td></tr></table></span></div></div><p>在 IList&lt;&gt; 示例中，当实际类型在运行时与需要的类型不匹配时，可以仅仅引发 Insert 方法的包装。所以，您同样可以想象得到编译器将为程序员自动生成此包装。然而，有时候并不应该执行此策略。IndexOf 方法在集合中搜索所提供的项，如果找到该项，则返回该项在集合中的索引。然而，如果没有找到该项，IndexOf 方法将仅仅返回 -1，而并不引发。这种类型的包装不能由自动生成的包装提供。</p><p>到目前为止，我们描述了泛型变化问题的两种最简单的解决方法。然而，变化问题可能变得要多复杂就有多复杂。例如，当您将 List&lt;IEnumerable&lt;int&gt;&gt;当作 List&lt;IEnumerable&lt;object&gt;&gt;，或将 List&lt;IEnumerable&lt;IEnumerable&lt;int&gt;&gt;&gt; 当作 List&lt;IEnumerable&lt;IEnumerable&lt;object&gt;&gt;&gt; 时。</p><p>当生成这些包装以解决代码中的变化问题时，可能给代码带来巨大的系统开销。同时，它还会带来引用标识问题，因为每个包装的标识都与原始集合的标识不一样，从而会导致不易察觉的 Bug。当使用泛型时，应选择类型实例化，以减少紧密关联的组件之间的不匹配问题。这可能要求在设计代码时做出一些妥协。与往常一样，设计程序时必须权衡相互冲突的要求，在设计过程中应当考虑语言中类型系统具有的约束。</p><p>有的类型系统将泛型变化作为语言的首要任务。Eiffel 是其中一个主要示例。然而，将泛型变化作为类型系统的首要任务会明显增加 C# 的类型系统的复杂性，即使在不涉及变化的相对简单方案中也是如此。因此，C# 的设计人员觉得不包括变化才是 C# 的适当选择。</p><p>下面是上述示例的完整源代码。</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">using</span> System;
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">using</span> System.Collections.Generic;
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">using</span> System.Text;
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">using</span> System.Collections;
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> VarianceWorkaround
+{
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Simple workaround for single method</span>
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Variance in one direction only</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Add&lt;S, D&gt;(List&lt;S&gt; source, List&lt;D&gt; destination)
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">where</span> S : D
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (S sourceElement <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> source)
+        {
+            destination.Add(sourceElement);
+        }
+    }
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Workaround for interface</span>
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Variance in one direction only so type expressinos are natural</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> IEnumerable&lt;D&gt; Convert&lt;S, D&gt;(IEnumerable&lt;S&gt; source)
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">where</span> S : D
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> EnumerableWrapper&lt;S, D&gt;(source);
+    }
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> EnumerableWrapper&lt;S, D&gt; : IEnumerable&lt;D&gt;
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">where</span> S : D
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> EnumerableWrapper(IEnumerable&lt;S&gt; source)
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span>.source = source;
+        }
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> IEnumerator&lt;D&gt; GetEnumerator()
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> EnumeratorWrapper(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span>.source.GetEnumerator());
+        }
+
+        IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span>.GetEnumerator();
+        }
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> EnumeratorWrapper : IEnumerator&lt;D&gt;
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> EnumeratorWrapper(IEnumerator&lt;S&gt; source)
+            {
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span>.source = source;
+            }
+
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> IEnumerator&lt;S&gt; source;
+
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> D Current
+            {
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span> { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span>.source.Current; }
+            }
+
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Dispose()
+            {
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span>.source.Dispose();
+            }
+
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">object</span> IEnumerator.Current
+            {
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span> { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span>.source.Current; }
+            }
+
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">bool</span> MoveNext()
+            {
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span>.source.MoveNext();
+            }
+
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Reset()
+            {
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span>.source.Reset();
+            }
+        }
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> IEnumerable&lt;S&gt; source;
+    }
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Workaround for interface</span>
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Variance in both directions, causes issues</span>
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// similar to existing array variance</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> ICollection&lt;D&gt; Convert&lt;S, D&gt;(ICollection&lt;S&gt; source)
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">where</span> S : D
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> CollectionWrapper&lt;S, D&gt;(source);
+    }
+
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> CollectionWrapper&lt;S, D&gt; 
+        : EnumerableWrapper&lt;S, D&gt;, ICollection&lt;D&gt;
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">where</span> S : D
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> CollectionWrapper(ICollection&lt;S&gt; source)
+            : <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">base</span>(source)
+        {
+        }
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// variance going the wrong way ... </span>
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// ... can yield exceptions at runtime</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Add(D item)
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> (item <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">is</span> S)
+            {
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span>.source.Add((S)item);
+            }
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">else</span>
+            {
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">throw</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Exception(@<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Type mismatch exception, due to type hole introduced by variance."</span>);
+            }
+        }
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Clear()
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span>.source.Clear();
+        }
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// variance going the wrong way ... </span>
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// ... but the semantics of the method yields reasonable semantics</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">bool</span> Contains(D item)
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> (item <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">is</span> S)
+            {
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span>.source.Contains((S)item);
+            }
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">else</span>
+            {
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">false</span>;
+            }
+        }
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// variance going the right way ... </span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> CopyTo(D[] array, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> arrayIndex)
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (S src <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span>.source)
+            {
+                array[arrayIndex++] = src;
+            }
+        }
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> Count
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span> { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span>.source.Count; }
+        }
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">bool</span> IsReadOnly
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span> { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span>.source.IsReadOnly; }
+        }
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// variance going the wrong way ... </span>
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// ... but the semantics of the method yields reasonable  semantics</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">bool</span> Remove(D item)
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> (item <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">is</span> S)
+            {
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span>.source.Remove((S)item);
+            }
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">else</span>
+            {
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">false</span>;
+            }
+        }
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> ICollection&lt;S&gt; source;
+    }
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Workaround for interface</span>
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Variance in both directions, causes issues similar to existing array variance</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> IList&lt;D&gt; Convert&lt;S, D&gt;(IList&lt;S&gt; source)
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">where</span> S : D
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> ListWrapper&lt;S, D&gt;(source);
+    }
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> ListWrapper&lt;S, D&gt; : CollectionWrapper&lt;S, D&gt;, IList&lt;D&gt;
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">where</span> S : D
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> ListWrapper(IList&lt;S&gt; source) : <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">base</span>(source)
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span>.source = source;
+        }
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> IndexOf(D item)
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> (item <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">is</span> S)
+            {
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span>.source.IndexOf((S) item);
+            }
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">else</span>
+            {
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> -1;
+            }
+        }
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// variance the wrong way ...</span>
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// ... can throw exceptions at runtime</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Insert(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> index, D item)
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> (item <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">is</span> S)
+            {
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span>.source.Insert(index, (S)item);
+            }
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">else</span>
+            {
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">throw</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Exception(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Invalid type exception"</span>);
+            }
+        }
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> RemoveAt(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> index)
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span>.source.RemoveAt(index);
+        }
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> D <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span>[<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> index]
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>
+            {
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span>.source[index];
+            }
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span>
+            {
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">value</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">is</span> S)
+                    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span>.source[index] = (S)<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">value</span>;
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">else</span>
+                    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">throw</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Exception(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Invalid type exception."</span>);
+            }
+        }
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> IList&lt;S&gt; source;
+    }
+}
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">namespace</span> GenericVariance
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Program
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> PrintObjects(IEnumerable&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">object</span>&gt; objects)
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">object</span> o <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> objects)
+            {
+                Console.WriteLine(o);
+            }
+        }
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> AddToObjects(IList&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">object</span>&gt; objects)
+        {
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// this will fail if the collection provided is a wrapped collection </span>
+            objects.Add(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">object</span>());
+        }
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Main(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span>[] args)
+        {
+            List&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt; ints = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> List&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt;();
+            ints.Add(1);
+            ints.Add(10);
+            ints.Add(42);
+            List&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">object</span>&gt; objects = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> List&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">object</span>&gt;();
+
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// doesnt compile ints is not a IEnumerable&lt;object&gt;</span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//objects.AddRange(ints); </span>
+
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// does compile</span>
+            VarianceWorkaround.Add&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">object</span>&gt;(ints, objects);
+
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// would like to do this, but cant ...</span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// ... ints is not an IEnumerable&lt;object&gt;</span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//PrintObjects(ints);</span>
+
+            PrintObjects(VarianceWorkaround.Convert&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">object</span>&gt;(ints));
+
+            AddToObjects(objects); <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// this works fine</span>
+            AddToObjects(VarianceWorkaround.Convert&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">object</span>&gt;(ints));
+        }
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> ArrayExample()
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">object</span>[] objects = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span>[10];
+
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// no problem, adding a string to a string[]</span>
+            objects[0] = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"hello"</span>; 
+
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// runtime exception, adding an object to a string[]</span>
+            objects[1] = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">object</span>(); 
+        }
+    }
+}
+
+</pre></td></tr></table></span></div></div></div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />请参见</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><h4 class="subHeading">概念</h4><div class="seeAlsoStyle"><span sdata="link"><a href="ac0f23a2-6bf3-4077-be99-538ae5fd3bc5.htm">C# 编程指南</a></span></div><h4 class="subHeading">参考</h4><div class="seeAlsoStyle"><span sdata="link"><a href="75ea8509-a4ea-4e7a-a2b3-cf72482e9282.htm">泛型（C# 编程指南）</a></span></div></div></div>
+      <div id="footer">
+        <div class="footerLine">
+          <img width="100%" height="3px" src="../icons/footer.gif" title="“页脚”图像" />
+        </div>
+<span id="feedbackarea">将有关本主题的<a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);">反馈意见</a>发送给 Microsoft。</span>
+</div>
+    </div>
+  </body>
+</html>

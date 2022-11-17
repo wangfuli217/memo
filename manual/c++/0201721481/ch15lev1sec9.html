@@ -1,0 +1,983 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 15.9.  Text Queries Revisited</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch15lev1sec8.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch15lev1sec10.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch15lev1sec9"></a>
+
+        <h3 class="docSection1Title">15.9. Text Queries Revisited</h3>
+        <h3 class="docSection1Title">15.9. 再谈文本查询示例</h3>
+
+        <p class="docText">As a final example of inheritance, we'll extend our text query application from <a class="docLink" href="ch10lev1sec6.html#ch10lev1sec6" >Section 10.6</a> (p. <a class="docLink" href="ch10lev1sec6.html#ch10lev1sec6" >379</a>). The class we developed there let us look for occurrences of a given word in a text file. We'd like to extend the system to support more complex queries.</p>
+        <p class="docText">作为继承的最后一个例子，我们来扩展<a class="docLink" href="ch10lev1sec6.html#ch10lev1sec6" >第 10.6 节</a>的文本查询应用程序。使用在<a class="docLink" href="ch10lev1sec6.html#ch10lev1sec6" >第 10.6 节</a>开发的类，已经能够在文本文件中查找给定单词的出现，但我们想扩展系统以支持更复杂的查询。</p>
+
+        <p class="docText">For illustration purposes, we'll run queries against the following simple story:</p>
+        <p class="docText">为了说明问题，将用下面的简单小说来运行查询：</p>
+        <pre>
+     <span class="docEmphStrong">Alice Emma has long flowing red hair.</span>
+     <span class="docEmphStrong">Her Daddy says when the wind blows</span>
+     <span class="docEmphStrong">through her hair, it looks almost alive,</span>
+     <span class="docEmphStrong">like a fiery bird in flight.</span>
+     <span class="docEmphStrong">A beautiful fiery bird, he tells her,</span>
+     <span class="docEmphStrong">magical but untamed.</span>
+     <span class="docEmphStrong">"Daddy, shush, there is no such thing,"</span>
+     <span class="docEmphStrong">she tells him, at the same time wanting</span>
+     <span class="docEmphStrong">him to tell her more.</span>
+     <span class="docEmphStrong">Shyly, she asks, "I mean, Daddy, is there?"</span>
+</pre><br>
+
+        <p class="docText">Our system should support:</p>
+        <p class="docText">系统应该支持：</p>
+
+        <div style="font-weight:bold">
+          <ol class="docList" type="1">
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">Word queries that find a single word. All lines in which the word appears should be displayed in ascending order:</p>
+                <p class="docList">查找单个单词的查询。按升序显示所有包含该单词的行：</p>
+                <pre>
+     <span class="docEmphStrong">Executed Query for:</span>
+     <span class="docEmphStrong">Daddy match occurs 3 times:</span>
+     <span class="docEmphStrong">(line 2) Her Daddy says when the wind blows</span>
+     <span class="docEmphStrong">(line 7) "Daddy, shush, there is no such thing,"</span>
+     <span class="docEmphStrong">(line 10) Shyly, she asks, "I mean, Daddy, is there?"</span>
+</pre><br>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">Not queries, using the <tt>~</tt> operator. All lines that do not match the query are displayed:</p>
+		<p class="docList">“非”查询，使用 <tt>~</tt> 操作符。显示所有不匹配的行：</p>
+                <pre>
+     <span class="docEmphStrong">Executed Query for: ~(Alice)</span>
+     <span class="docEmphStrong">match occurs 9 times:</span>
+     <span class="docEmphStrong">(line 2) Her Daddy says when the wind blows</span>
+     <span class="docEmphStrong">(line 3) through her hair, it looks almost alive,</span>
+     <span class="docEmphStrong">(line 4) like a fiery bird in flight. ...</span>
+</pre><br>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">Or queries, using the <tt>|</tt> operator. All lines in which either of two queries match are displayed:</p>
+		<p class="docList">“或”查询，使用 <tt>|</tt> 操作符。显示与两个查询条件中任意一个匹配的所有行：</p>
+                <pre>
+     <span class="docEmphStrong">Executing Query for: (hair | Alice)</span>
+     <span class="docEmphStrong">match occurs 2 times:</span>
+     <span class="docEmphStrong">(line 1) Alice Emma has long flowing red hair.</span>
+     <span class="docEmphStrong">(line 3) through her hair, it looks almost alive,</span>
+</pre><br>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">And queries, using the <tt>&amp;</tt> operator. All lines in which both queries match are displayed.</p>
+		<p class="docList">“与”查询，使用 <tt>&amp;</tt> 操作符。显示与两个查询条件都匹配的所有行：</p>
+                <pre>
+     <span class="docEmphStrong">Executed query: (hair &amp; Alice)</span>
+     <span class="docEmphStrong">match occurs 1 time:</span>
+     <span class="docEmphStrong">(line 1) Alice Emma has long flowing red hair.</span>
+</pre><br>
+              </div>
+            </li>
+          </ol>
+        </div>
+
+        <p class="docText">Moreover, these elements can be combined, as in</p>
+        <p class="docText">而且，可以组合这些元素，如</p>
+        <pre>
+     <span class="docEmphStrong">fiery &amp; bird | wind</span>
+</pre><br>
+
+        <p class="docText">Our system will not be sophisticated enough to read these expressions. Instead, we'll build them up inside a C++ program. Hence, we'll evaluate compound expressions such as this example using normal C++ precedence rules. The evaluation of this query will match a line in which <tt>fiery</tt> and <tt>bird</tt> appear or one in which <tt>wind</tt> appears. It will not match a line on which <tt>fiery</tt> or <tt>bird</tt> appears alone:</p>
+	<p class="docText">我们的系统没有复杂到能够读这些表达式。我们将在 C++ 程序中创建它们，因此，将用常规 C++ 优先级规则对诸如此类的复合表达式求值。这个查询的求值结果将与出现的 <tt>fiery</tt> 和 <tt>bird</tt> 的行或者出现 <tt>wind</tt> 的行相匹配，而不会与 <tt>fiery</tt> 或 <tt>bird</tt> 单独出现的行相匹配：</p>
+        <pre>
+     <span class="docEmphStrong">Executing Query for: ((fiery &amp; bird) | wind)</span>
+     <span class="docEmphStrong">match occurs 3 times:</span>
+     <span class="docEmphStrong">(line 2) Her Daddy says when the wind blows</span>
+     <span class="docEmphStrong">(line 4) like a fiery bird in flight.</span>
+     <span class="docEmphStrong">(line 5) A beautiful fiery bird, he tells her,</span>
+</pre><br>
+
+        <p class="docText">Our output will print the query, using parentheses to indicate the way in which the query was interpreted. As with our original implementation, our system must be smart enough not to display the same line more than once.</p>
+        <p class="docText">输出将打印查询，并使用圆括号指出解释该查询的方法。像原来的实现一样，系统必须足够聪明，不会重复显示相同行。</p>
+
+	<a name="ch15lev2sec24"></a>
+        <h4 class="docSection2Title">15.9.1. An Object-Oriented Solution</h4>
+        <h4 class="docSection2Title">15.9.1. 面向对象的解决方案</h4>
+
+	<a name="idd1e120611"></a><a name="idd1e120616"></a><a name="idd1e120620"></a><a name="idd1e120627"></a><a name="idd1e120631"></a><a name="idd1e120638"></a><a name="idd1e120645"></a><a name="idd1e120652"></a><a name="idd1e120656"></a><a name="idd1e120660"></a><a name="idd1e120668"></a><a name="idd1e120673"></a><a name="idd1e120679"></a><a name="idd1e120684"></a><a name="idd1e120691"></a><a name="idd1e120697"></a><a name="idd1e120704"></a>
+        <p class="docText">We might think that we could use the <tt>TextQuery</tt> class from page <a class="docLink" href="ch10lev1sec6.html#ch10lev2sec19" >382</a> to represent our word queries. We might then derive our other queries from that class.</p>
+	<p class="docText">可以考虑使用<a class="docLink" href="ch10lev1sec6.html#ch10lev2sec19" >第 10.6.2 节</a>的 <tt>TextQuery</tt> 表示单词查询，然后从 <tt>TextQuery</tt> 类派生其他类。</p>
+
+        <p class="docText">However, this design would be flawed. Conceptually, a "not" query is not a kind of word query. Instead, a not query "has a" query (word query or any other kind of query) whose value it negates.</p>
+        <p class="docText">但是，这个设计可能缺陷。概念上，“非”查询不是一种单词查询，相反，非查询“有一个”查询（单词或其他任意种类的查询），非查询对该查询的值求反。</p>
+
+        <p class="docText">This observation suggests that we model our different kinds of queries as independent classes that share a common base class:</p>
+        <p class="docText">注意到这一点，我们将不同种类的查询建模为独立的类，它们共享一个公共基类：</p>
+        <pre>
+     WordQuery // <span class="docEmphItalicAlt">Shakespeare</span>
+     NotQuery  // <span class="docEmphItalicAlt">~Shakespeare</span>
+     OrQuery   // <span class="docEmphItalicAlt">Shakespeare | Marlowe</span>
+     AndQuery  // <span class="docEmphItalicAlt">William &amp; Shakespeare</span>
+</pre><br>
+
+        <p class="docText">Instead of inheriting from <tt>TextQuery</tt>, we will use that class to hold the file and build the associated <tt>word_map</tt>. We'll use the query classes to build up expressions that will ultimately run queries against the file in a <tt>TextQuery</tt> object.</p>
+	<p class="docText">我们不继承 <tt>TextQuery</tt>，而是使用 <tt>TextQuery</tt> 类保存文件并建立相关的 <tt>word_map</tt>，使用查询类建立表达式，这些表达式最终对 <tt>TextQuery</tt> 对象中的文件运行查询。</p>
+
+	<a name="ch15lev3sec41"></a>
+        <h5 class="docSection3Title">Abstract Interface Class</h5>
+        <h5 class="docSection3Title">抽象接口类</h5>
+
+        <p class="docText">We have identified four kinds of query classes. These classes are conceptually siblings. Each class shares the same abstract interface, which suggests that we'll need to define an abstract base class (<a class="docLink" href="ch15lev1sec6.html#ch15lev1sec6" >Section 15.6</a>, p. <a class="docLink" href="ch15lev1sec6.html#ch15lev1sec6" >595</a>) to represent the operations performed by a query. We'll name our abstract class <tt>Query_base</tt>, indicating that its role is to serve as the root of our query hierarchy.</p>
+	<p class="docText">已经识别出四各查询类，这些类在概念上是兄弟类。它们共享相同的抽象接口，这暗示我们定义一个抽象基类（<a class="docLink" href="ch15lev1sec6.html#ch15lev1sec6" >第 15.6 节</a>）以表示由查询执行的操作。将该抽象基类命名为 <tt>Query_base</tt>，以指出它的作用是作为查询继承层次的根。</p>
+
+        <p class="docText">We'll derive <tt>WordQuery</tt> and <tt>NotQuery</tt> directly from our abstract base. The <tt>AndQuery</tt> and <tt>OrQuery</tt> classes share one property that the other classes in our system do not: They each have two operands. To model this fact, we'll add another abstract class, named <tt>BinaryQuery</tt>, to our hierarchy to represent queries with two operands. The <tt>AndQuery</tt> and <tt>OrQuery</tt> classes will inherit from the <tt>BinaryQuery</tt> class, which in turn will inherit from <tt>Query_base</tt>. These decisions give us the class design represented in <a class="docLink" href="ch15lev1sec9.html#ch15fig03">Figure 15.3</a> on the next page.</p>
+	<p class="docText">直接从抽象基类派生 <tt>WordQuery</tt> 和 <tt>NotQuery</tt> 类，<tt>WordQuery</tt> 和 <tt>NotQuery</tt> 类具有系统中其他类所没有的一个性质：它们都有两个操作数。要为此建立模型，将在继承层次中增加另一个名为 <tt>BinaryQuery</tt> 的抽象类，表示带两个操作数的查询。<tt>WordQuery</tt> 和 <tt>NotQuery</tt> 类将继承 <tt>BinaryQuery</tt> 类，<tt>BinaryQuery</tt> 类继承 <tt>Query_base</tt> 类。这些决定得出了<a class="docLink" href="ch15lev1sec9.html#ch15fig03">图 15.3</a> 所示的类设计。</p>
+
+	<a name="ch15fig03"></a>
+        <center>
+          <h5 class="docFigureTitle">Figure 15.3. <tt>Query_base</tt> Inheritance Hierarchy</h5>
+	  <h5 class="docFigureTitle">图 15.3. <tt>Query_base</tt> 继承层次</h5>
+
+          <p class="docText"><img border="0" alt="" width="445" height="207" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/15fig03.gif;400478" ></p>
+        </center><br>
+        <a name="ch15lev3sec42"></a>
+
+        <h5 class="docSection3Title">Operations</h5>
+        <h5 class="docSection3Title">操作</h5>
+
+        <p class="docText">Our <tt>Query_base</tt> classes exist mostly to represent kinds of queries; they do little actual work. We'll reuse our <tt>TextQuery</tt> class to store the file, build the query <tt>map</tt>, and search for each word. Our query types need only two operations:</p>
+	<p class="docText"><tt>Query_base</tt> 类的存在主要是为了表示查询类型，不做实际工作。我们将重用 <tt>TextQuery</tt> 类以存储文件、建立查询以及查找每个单词。查询类型只需要两个操作：</p>
+
+        <div style="font-weight:bold">
+          <ol class="docList" type="1">
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">An <tt>eval</tt> operation to return the <tt>set</tt> of matching line numbers. This operation takes a <tt>TextQuery</tt> object on which to execute the query.</p>
+		<p class="docList"><tt>eval</tt> 操作，返回匹配行号编号的集合。该操作接受 <tt>TextQuery</tt> 对象，在 <tt>TextQuery</tt> 对象上执行查询。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">A <tt>display</tt> operation that takes a reference to an <tt>ostream</tt> and prints the query that a given object performs on that stream.</p>
+		<p class="docList"><tt>display</tt> 操作，接受 <tt>ostream</tt> 引用并打印给定对象在该 <tt>ostream</tt> 上执行的查询。</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+
+        <p class="docText">We'll define each of these operations as pure <tt>virtual</tt> functions (<a class="docLink" href="ch15lev1sec6.html#ch15lev1sec6" >Section 15.6</a>, p. <a class="docLink" href="ch15lev1sec6.html#ch15lev1sec6" >595</a>) in the <tt>Query_base</tt> class. Each of our derived classes will have to define its own version of these functions.</p>
+	<p class="docText">我们将这些操作定义为 <tt>Query_base</tt> 中的纯虚函数（<a class="docLink" href="ch15lev1sec6.html#ch15lev1sec6" >第 15.6 节</a>），每个派生类都必须对这些函数定义自己的版本。</p>
+
+	<a name="ch15lev2sec25"></a>
+        <h4 class="docSection2Title">15.9.2. A Valuelike Handle</h4>
+        <h4 class="docSection2Title">15.9.2. 值型句柄</h4>
+
+	<a name="idd1e120889"></a><a name="idd1e120897"></a><a name="idd1e120905"></a><a name="idd1e120913"></a><a name="idd1e120921"></a><a name="idd1e120929"></a><a name="idd1e120937"></a><a name="idd1e120942"></a><a name="idd1e120950"></a><a name="idd1e120954"></a><a name="idd1e120962"></a><a name="idd1e120970"></a><a name="idd1e120978"></a>
+        <p class="docText">Our program will deal with evaluating queries, not with building them. However, we need to be able to create queries in order to run our program. The simplest way to do so is to write C++ expressions to create queries directly. For example, we'd like to be able to write code such as</p>
+        <p class="docText">程序将处理计算查询，而不建立查询，但是，需要能够创建查询以便运行程序。最简单的办法是编写 C++ 表达式直接创建查询，例如，可以编写这样的代码：</p>
+        <pre>
+     Query q = Query("fiery") &amp; Query("bird") | Query("wind");
+</pre><br>
+
+        <p class="docText">to generate the compound query previously described.</p>
+        <p class="docText">以产生前面描述的复合查询。</p>
+
+        <p class="docText">This problem description implicitly suggests that user-level code won't use our inherited classes directly. Instead, we'll define a handle class named <tt>Query</tt>, which will hide the hierarchy. User code will execute in terms of the handle; user code will only indirectly manipulate <tt>Query_base</tt> objects.</p>
+	<p class="docText">这个问题描述暗示我们，用户级代码将不能直接使用我们的继承层次，相反，我们将定义一个名为 <tt>Query</tt> 的句柄类，用它隐藏继承层次。用户代码将根据句柄执行，用户代码只能间接操纵 <tt>Query_base</tt> 对象。</p>
+
+        <p class="docText">As with our <tt>Sales_item</tt> handle, our <tt>Query</tt> handle will hold a pointer to an object of a type in an inheritance hierarchy. The <tt>Query</tt> class will also point to a use count, which we'll use to manage the object to which the handle points.</p>
+	<p class="docText">像 <tt>Sales_item</tt> 句柄一样，<tt>Query</tt> 句柄将保存指向继承层次中一个类型的对象的指针，<tt>Query</tt> 类还指向一个使用计数，我们用这个使用计数管理句柄指向的对象。</p>
+
+        <p class="docText">In this case, our handle will completely hide the underlying inheritance hierarchy. Users will create and manipulate <tt>Query_base</tt> objects only indirectly through operations on <tt>Query</tt> objects. We'll define three overloaded operators on <tt>Query</tt> objects and a <tt>Query</tt> constructor that will dynamically allocate a new <tt>Query_base</tt> object. Each operator will bind the generated <tt>Query_base</tt> object to a <tt>Query</tt> handle: The <tt>&amp;</tt> operator will generate a <tt>Query</tt> bound to a new <tt>AndQuery</tt>; the <tt>|</tt> operator will generate a <tt>Query</tt> bound to a new <tt>OrQuery</tt>; and the <tt>~</tt> operator will generate a <tt>Query</tt> bound to a new <tt>NotQuery</tt>. We'll give <tt>Query</tt> a constructor that takes a <tt>string</tt>. This constructor will generate a new <tt>WordQuery</tt>.</p>
+	<p class="docText">在这种情况下，句柄将完全屏蔽基础继承层次，用户将只能间接地通过 <tt>Query</tt> 对象的操作创建和操纵 <tt>Query_base</tt> 对象。我们将定义 <tt>Query</tt> 对象的三个重载操作符以及 <tt>Query</tt>构造函数，<tt>Query</tt> 构造函数将动态分配新的 <tt>Query_base</tt> 对象。每个操作符将生成的对象绑定到 <tt>Query</tt> 句柄：<tt>&amp;</tt> 操作符将生成绑定到新的 <tt>AndQuery</tt> 对象的 <tt>Query</tt> 对象；<tt>|</tt> 操作符将生成绑定到新的 <tt>OrQuery</tt> 对象的 <tt>Query</tt> 对象；<tt>~</tt> 操作符将生成绑定到新的 <tt>NotQuery</tt> 对象的 <tt>Query</tt> 对象。给 <tt>Query</tt> 定义一个参数为 <tt>string</tt> 对象的构造函数，该构造函数将生成新的 <tt>WordQuery</tt>。</p>
+
+        <p class="docText">The <tt>Query</tt> class will provide the same operations as the <tt>Query_base</tt> classes: <tt>eval</tt> to evaluate the associated query, and <tt>display</tt> to print the query. It will define an overloaded output operator to display the associated query.</p>
+        <p class="docText"><tt>Query</tt> 类将提供与 <tt>Query_base</tt> 类同样的操作：<tt>eval</tt> 对相关查询进行计算，<tt>display</tt> 打印查询。它将定义重载输出操作符显示相关查询。</p>
+
+	<a name="ch15table01"></a>
+        <p class="docText"></p>
+
+        <h5 class="docTableTitle">Table 15.1. Query Program Design: A Recap</h5>
+        <h5 class="docTableTitle">表 15.1. 查询程序设计：扼要重述</h5>
+
+        <table cellspacing="0" class="allBorders" border="1" rules="none" cellpadding="5">
+          <colgroup>
+            <col width="100">
+            <col width="425">
+          </colgroup>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>TextQuery</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Class that reads a specified file and builds an associated lookup map. That class provides a <tt>query_text</tt> operation that takes a <tt>string</tt> argument and returns a <tt>set</tt> of line numbers on which the argument appears.</p>
+	      <p class="docText">读指定文件并建立数得上映射的类，该类提供 <tt>query_text</tt> 操作，该操作接受 <tt>string</tt> 实参并返回一个 <tt>set</tt>，保存出现实参的行的编号。</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>Query_base</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Abstract base class for the query classes.</p>
+              <p class="docText">查询类的抽象基类。</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>Query</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Use-counted handle class, which points to an object of a type derived from <tt>Query_base</tt>.</p>
+	      <p class="docText">用户计数的句柄类，它指向 <tt>Query_base</tt> 派生类型的对象。</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>WordQuery</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Class derived from <tt>Query_base</tt> that looks for a given word.</p>
+	      <p class="docText">从 <tt>Query_base</tt> 派生的类，查找给定单词。</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>NotQuery</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Class derived from <tt>Query_base</tt> that returns the set of lines in which its <tt>Query</tt> operand does not appear.</p>
+	      <p class="docText">从 <tt>Query_base</tt> 派生的类，返回操作数不出现的行的编号集合。</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>BinaryQuery</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Abstract base type derived from <tt>Query_base</tt> that represents queries with two <tt>Query</tt> operands.</p>
+	      <p class="docText">从 <tt>Query_base</tt> 派生的抽象基类类型，表示带两个 <tt>Query</tt> 操作数的查询。</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>OrQuery</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Class derived from <tt>BinaryQuery</tt> that returns the union of the line numbers in which its two operands appear.</p>
+	      <p class="docText">从 <tt>BinaryQuery</tt> 派生的类，返回两个操作数出现的行编号集的并集。</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>AndQuery</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Class derived from <tt>BinaryQuery</tt> that returns the intersection of the line numbers in which its two operands appear.</p>
+	      <p class="docText">从 <tt>BinaryQuery</tt> 派生的类，返回两个操作数出现的行编号集的交集。</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>q1 &amp; q2</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Returns a <tt>Query</tt> bound to a new <tt>AndQuery</tt> object that holds <tt>q1</tt> and <tt>q2</tt>.</p>
+	      <p class="docText">返回 <tt>Query</tt> 对象，该 <tt>Query</tt> 对象绑定到保存 <tt>q1</tt> 和 <tt>q2</tt> 的新 <tt>AndQuery</tt> 对象。</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>q1 | q2</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Returns a <tt>Query</tt> bound to a new <tt>OrQuery</tt> object that holds <tt>q1</tt> and <tt>q2</tt>.</p>
+	      <p class="docText">返回 <tt>Query</tt> 对象，该 <tt>Query</tt> 对象绑定到保存 <tt>q1</tt> 和 <tt>q2</tt> 的新 <tt>OrQuery</tt> 对象。</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>~q</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Returns a <tt>Query</tt> bound to a new <tt>NotQuery</tt> object that holds <tt>q</tt>.</p>
+	      <p class="docText">返回 <tt>Query</tt> 对象，该 <tt>Query</tt> 对象绑定到保存 <tt>q</tt> 的新 <tt>NotQuery</tt> 对象。</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>Query q(s)</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Binds the <tt>Query q</tt> to a new <tt>WordQuery</tt> that holds the <tt>string s</tt>.</p>
+	      <p class="docText">将 <tt>Query q</tt> 绑定到保存 <tt>string s</tt> 的新 <tt>WordQuery</tt> 对象。</p>
+            </td>
+          </tr>
+        </table><br>
+        <a name="ch15lev3sec43"></a>
+
+        <h5 class="docSection3Title">Our Design: A Recap</h5>
+        <h5 class="docSection3Title">我们的设计：扼要重述</h5>
+
+	<a name="ch15note30"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">It is often the case, especially when new to designing object-oriented systems, that understanding the design is the hardest part. Once we're comfortable with the design, the implementation flows naturally.</p>
+                <p class="docText">理解设计经常是最困难的部分，尤其是刚开始设计面向对象系统时，一旦熟悉了设计，实现就是顺理成章的了。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">It is important to realize that much of the work in this application consists of building objects to represent the user's query. As illustrated in <a class="docLink" href="ch15lev1sec9.html#ch15fig04">Figure 15.4</a> on the following page, an expression such as</p>
+        <p class="docText">这个应用程序的主要工作由建立对象表示用户的查询构成，认识到这一点很重要。正如<a class="docLink" href="ch15lev1sec9.html#ch15fig04">图 15.4</a> 所示，表达式</p>
+
+	<a name="ch15fig04"></a>
+        <center>
+          <h5 class="docFigureTitle">Figure 15.4. Objects Created by <tt>Query</tt> Expressions</h5>
+	  <h5 class="docFigureTitle">图 15.4. <tt>Query</tt> 表达式创建的对象</h5>
+
+          <p class="docText"><img border="0" alt="" width="481" height="227" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/15fig04.gif;400478" ></p>
+        </center><br>
+        <pre>
+     Query q = Query("fiery") &amp; Query("bird") | Query("wind");
+</pre><br>
+
+        <p class="docText">generates ten objects: five <tt>Query_base</tt> objects and their associated handles. The five <tt>Query_base</tt> objects are three <tt>WordQuery</tt>s, an <tt>OrQuery</tt>, and an <tt>AndQuery</tt>.</p>
+	<p class="docText">生成 10 个对象：5 个 <tt>Query_base</tt> 对象及其相关联的句柄。5 个 <tt>Query_base</tt> 对象分别是 3 个 <tt>WordQuery</tt> 对象，一个 <tt>OrQuery</tt> 对象和一个 <tt>AndQuery</tt> 对象。</p>
+
+        <p class="docText">Once the tree of objects is built up, evaluating (or displaying) a given query is basically a process (managed for us by the compiler) of following these links, asking each object in the tree to evaluate (or display) itself. For example, if we call <tt>eval</tt> on <tt>q</tt> (i.e., on the root of this tree), then <tt>eval</tt> will ask the <tt>OrQuery</tt> to which it points to <tt>eval</tt> itself. Evaluating this <tt>OrQuery</tt> calls <tt>eval</tt> on its two operands, which in turn calls <tt>eval</tt> on the <tt>AndQuery</tt> and <tt>WordQuery</tt> that looks for the word <tt>wind</tt>, and so on.</p>
+	<p class="docText">一旦建立了对象树，计算（或显示）给定查询基本上是沿着这些链接，要求树中每个对象计算（或显示）自己的过程，该过程由编译器管理。例如，如果调用 <tt>q</tt>（即，在这棵树的树根）的 <tt>eval</tt>，则 <tt>eval</tt> 将要求 <tt>q</tt> 指向的 <tt>OrQuery</tt> 对象调用 <tt>eval</tt> 来计算自己，计算这个 <tt>OrQuery</tt> 对象用两个操作数调用 <tt>eval</tt>，这个依次调用 <tt>AndQuery</tt> 对象和 <tt>WordQuery</tt> 对象的 <tt>eval</tt>，查找单词 <tt>wind</tt>，依此类推。</p>
+        <pre>
+     <span class="docEmphasis">Objects Created by the Expression</span>
+     Query("fiery") &amp; Query("bird") | Query("wind");
+</pre><br>
+        <a name="ch15sb22"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 15.9.2</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch15qa15q1"></a><b>Exercise 15.39:</b></td>
+
+                    <td>
+			<a name="idd1e121447"></a>
+			<p class="docText">Given that <tt>s1, s2, s3</tt> and <tt>s4</tt> are all <tt>string</tt>s, determine what objects are created in the following uses of the <tt>Query</tt> class:</p>
+			<p class="docText">给定 <tt>s1</tt>、<tt>s2</tt>、<tt>s3</tt> 和 <tt>s4</tt> 均为 <tt>string</tt> 对象，确定下述 <tt>Query</tt> 类的使用创建什么对象：</p>
+                      <pre>
+     (a) Query(s1) | Query(s2) &amp; ~ Query(s3);
+     (b) Query(s1) | (Query(s2) &amp; ~ Query(s3));
+     (c) (Query(s1) &amp; (Query(s2)) | (Query(s3) &amp; Query(s4)));
+</pre><br>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+
+        <a name="ch15lev2sec26"></a>
+        <h4 class="docSection2Title">15.9.3. The <tt>Query_base</tt> Class</h4>
+	<h4 class="docSection2Title">15.9.3. <tt>Query_base</tt> 类</h4>
+
+        <p class="docText">Now that we've explained our design, we'll start our implementation by defining the <tt>Query_base</tt> class:</p>
+	<p class="docText">现在我们的设计已经解释清楚，该开始实现了。首先来定义 <tt>Query_base</tt> 类：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">private, abstract class acts as a base class for concrete query types</span>
+     class Query_base {
+         friend class Query;
+     protected:
+         typedef TextQuery::line_no line_no;
+         virtual ~Query_base() { }
+     private:
+         // <span class="docEmphasis">eval</span> <span class="docEmphItalicAlt">returns the |set| of lines that this Query matches</span>
+         virtual std::set&lt;line_no&gt;
+             eval(const TextQuery&amp;) const = 0;
+         // <span class="docEmphasis">display</span> <span class="docEmphItalicAlt">prints the query</span>
+         virtual std::ostream&amp;
+             display(std::ostream&amp; = std::cout) const = 0;
+     };
+</pre><br>
+
+	<a name="idd1e121517"></a>
+        <p class="docText">The class defines two interface members: <tt>eval</tt> and <tt>display</tt>. Both are pure <tt>virtual</tt> functions (<a class="docLink" href="ch15lev1sec6.html#ch15lev1sec6" >Section 15.6</a>, p. <a class="docLink" href="ch15lev1sec6.html#ch15lev1sec6" >595</a>), which makes this class abstract. There will be no objects of type <tt>Query_base</tt> in our applications.</p>
+	<p class="docText">这个类定义了两个接口成员：<tt>eval</tt> 和 <tt>display</tt>。两个成员都是纯虚函数（<a class="docLink" href="ch15lev1sec6.html#ch15lev1sec6" >第 15.6 节</a>），因此该类为抽象类，应用程序中将没有 <tt>Query_base</tt> 类型的对象。</p>
+
+        <p class="docText">Users and the derived classes will use the <tt>Query_base</tt> class only through the <tt>Query</tt> handle. Therefore, we made our <tt>Query_base</tt> interface <tt>private</tt>. The (<tt>virtual</tt>) destructor (<a class="docLink" href="ch15lev1sec4.html#ch15lev2sec15" >Section 15.4.4</a>, p. <a class="docLink" href="ch15lev1sec4.html#ch15lev2sec15" >587</a>) and the typedef are <tt>protected</tt> so that the derived types can access these members. The destructor is used (implicitly) by the derived-class destructors and so must be accessible to them.</p>
+	<p class="docText">用户和派生类将只通过 <tt>Query</tt> 句柄使用 <tt>Query_base</tt> 类，因此，将 <tt>Query_base</tt> 接口设为 <tt>private</tt>。（虚）析构函数（<a class="docLink" href="ch15lev1sec4.html#ch15lev2sec15" >第 15.4.4 节</a>）和类型别名为 <tt>protected</tt>，这些派生类型就能够访问这些成员，构造函数由派生类构造函数（隐式）使用，因此派生类必须能够访问构造函数。</p>
+
+        <p class="docText">We grant friendship to the <tt>Query</tt> handle class. Members of that class will call the virtuals in <tt>Query_base</tt> and so must have access to them.</p>
+	<p class="docText">给 <tt>Query</tt> 句柄类授予友元关系，该类的成员将调用 <tt>Query_base</tt> 中的虚函数因此必须能够访问它们。</p>
+
+	<a name="ch15lev2sec27"></a>
+        <h4 class="docSection2Title">15.9.4. The <tt>Query</tt> Handle Class</h4>
+	<h4 class="docSection2Title">15.9.4. <tt>Query</tt> 句柄类</h4>
+
+        <p class="docText">Our <tt>Query</tt> handle will be similar to the <tt>Sales_item</tt> class in that it will hold a pointer to the <tt>Query_base</tt> and a pointer to a use count. As in the <tt>Sales_item</tt> class, the copy-control members of <tt>Query</tt> will manage the use count and the <tt>Query_base</tt> pointer.</p>
+	<p class="docText"><tt>Query</tt> 句柄将类似于 <tt>Sales_item</tt> 类，因为它将保存 <tt>Query_base</tt> 指针和使用计数指针。像 <tt>Sales_item</tt> 类一样，<tt>Query</tt> 的复制控制成员将管理使用计数和 <tt>Query_base</tt> 指针。</p>
+
+        <p class="docText">Unlike the <tt>Sales_item</tt> class, <tt>Query</tt> will provide the only interface to the <tt>Query_base</tt> hierarchy. Users will not directly access any of the members of <tt>Query_base</tt> or its derived classes. This design decision leads to two differences between <tt>Query</tt> and <tt>Sales_item</tt>. The first is that the <tt>Query</tt> class won't define overloaded versions of dereference and arrow operators. The <tt>Query_base</tt> class has no <tt>public</tt> members. If the <tt>Query</tt> handle defined the dereference or arrow operators, they would be of no use! Any attempt to use those operators to access a <tt>Query_base</tt> member would fail. Instead, <tt>Query</tt> must define its own versions of the <tt>Query_base</tt> interface functions <tt>eval</tt> and <tt>display</tt>.</p>
+	<p class="docText">与 <tt>Sales_item</tt> 类不同的是，<tt>Query</tt> 类将只为 <tt>Query_base</tt> 继承层次提供接口。用户将不能直接访问 <tt>Query</tt> 或其派生类的任意成员，这一设计决定导致 <tt>Query</tt> 和 <tt>Sales_item</tt> 之间存在两个区别。第一个区别是，<tt>Query</tt> 类将不定义解引用操作符和箭头操作符的重载版本。<tt>Query_base</tt> 类没有 <tt>public</tt> 成员，如果 <tt>Query</tt> 句柄定义了解引用操作符和箭头操作符，它们将没有用处！使用那些操作符访问成员的任何尝试都将失败，相反，<tt>Query</tt> 类必须定义接口函数 <tt>eval</tt> 和 <tt>display</tt> 的自身版本。</p>
+
+        <p class="docText">The other difference results from how we intend objects of the hierarchy to be created. Our design says that objects derived from <tt>Query_base</tt> will be created only through operations on the <tt>Query</tt> handle. This difference results in different constructors being required for the <tt>Query</tt> class than were used in the <tt>Sales_item</tt> handle.</p>
+	<p class="docText">另一个区别来自于我们打算怎样创建继承层次的对象。我们的设计指出将只通过 <tt>Query</tt> 句柄的操作创建 <tt>Query_base</tt> 的派生类对象，这个区别导致 <tt>Query</tt> 类需要与 <tt>Sales_item</tt> 句柄中所用的构造函数不同的构造函数。</p>
+
+	<a name="ch15lev3sec44"></a>
+        <h5 class="docSection3Title">The <tt>Query</tt> Class</h5>
+	<h5 class="docSection3Title"><tt>Query</tt> 类</h5>
+
+        <p class="docText">Given the preceeding design, the <tt>Query</tt> class itself is quite simple:</p>
+	<p class="docText">按照前面的的设计，<tt>Query</tt> 类本身相当简单：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">handle class to manage the</span> <span class="docEmphasis">Query_base</span> <span class="docEmphItalicAlt">inheritance hierarchy</span>
+     class Query {
+         // <span class="docEmphItalicAlt">these operators need access to the</span> <span class="docEmphasis">Query_base*</span> <span class="docEmphItalicAlt">constructor</span>
+         friend Query operator~(const Query &amp;);
+         friend Query operator|(const Query&amp;, const Query&amp;);
+         friend Query operator&amp;(const Query&amp;, const Query&amp;);
+     public:
+         Query(const std::string&amp;); // <span class="docEmphItalicAlt">builds a new</span> <span class="docEmphasis">WordQuery</span>
+         // <span class="docEmphItalicAlt">copy control to manage pointers and use counting</span>
+         Query(const Query &amp;c): q(c.q), use(c.use) { ++*use; }
+         ~Query() { decr_use(); }
+         Query&amp; operator=(const Query&amp;);
+     // <span class="docEmphItalicAlt">interface functions: will call corresponding</span> <span class="docEmphasis">Query_base</span> <span class="docEmphItalicAlt">operations</span>
+     std::set&lt;TextQuery::line_no&gt;
+       eval(const TextQuery &amp;t) const { return q-&gt;eval(t); }
+     std::ostream &amp;display(std::ostream &amp;os) const
+                             { return q-&gt;display(os); }
+     private:
+         Query(Query_base *query): q(query),
+                                   use(new std::size_t(1)) { }
+         Query_base *q;
+         std::size_t *use;
+         void decr_use()
+         { if (--*use == 0) { delete q; delete use; } }
+     };
+</pre><br>
+
+	<a name="idd1e121731"></a><a name="idd1e121741"></a><a name="idd1e121751"></a>
+        <p class="docText">We start by naming as friends the operators that create <tt>Query</tt> objects. We'll see shortly why these operators need to be friends.</p>
+	<p class="docText">首先指定创建 <tt>Query</tt> 对象的操作符为友元，我们将很快看快看到为什么需要将这些操作符设为友元。</p>
+
+        <p class="docText">In the <tt>public</tt> interface for <tt>Query</tt>, we declare, but cannot yet define, the constructor that takes a <tt>string</tt>. That constructor creates a <tt>WordQuery</tt> object, so we cannot define the constructor until we have defined the <tt>WordQuery</tt> class.</p>
+	<p class="docText">在 <tt>Query</tt> 类的 <tt>public</tt> 接口中，声明了但没有定义接受 <tt>string</tt> 对象的构造函数，该构造函数创建 <tt>WordQuery</tt> 对象，因此在定义 <tt>WordQuery</tt> 类之前不能定义它。</p>
+
+        <p class="docText">The next three members handle copy control and are the same as the corresponding members of the <tt>Sales_item</tt> class.</p>
+	<p class="docText">后面三个成员处理复制控制，与 <tt>Sales_item</tt> 类中的对应成员相同。</p>
+
+        <p class="docText">The last two <tt>public</tt> members represent the interface for <tt>Query_base</tt>. In each case, the <tt>Query</tt> operation uses its <tt>Query_base</tt> pointer to call the respective <tt>Query_base</tt> operation. These operations are virtual. The actual version that is called is determined at run time and will depend on the type of the object to which <tt>q</tt> points.</p>
+	<p class="docText">最后两个 <tt>public</tt> 成员表示对 <tt>Query_base</tt> 类的接口。每种情况下，<tt>Query</tt> 操作都使用它的 <tt>Query_base</tt> 指针调用相应 <tt>Query_base</tt> 操作。这些操作是虚函数，在运行时根据 <tt>q</tt> 指向的对象的类型确定调用的实际版本。</p>
+
+        <p class="docText">The <tt>private</tt> implementation of <tt>Query</tt> includes a constructor that takes a pointer to a <tt>Query_base</tt> object. This constructor stores in <tt>q</tt> the pointer it is given and allocates a new use counter, which it initializes to one. This constructor is <tt>private</tt> because we don't intend general user code to define <tt>Query_base</tt> objects. Instead, the constructor is needed for the operators that create <tt>Query</tt> objects. Because the constructor is <tt>private</tt>, the operators had to be made friends.</p>
+	<p class="docText"><tt>Query</tt> 类实现的 <tt>private</tt> 部分包括一个接受 <tt>Query_base</tt> 对象指针的构造函数，该构造函数将获得的指针存储在 <tt>q</tt> 中并分配新的使用计数，将使用计数初始化为 1。该构造函数为 <tt>private</tt>，是因为我们不希望普通用户代码定义 <tt>Query_base</tt> 对象，相反，创建 <tt>Query</tt> 对象的操作符需要这个构造函数。构造函数为 <tt>private</tt>，所以必须将操作符设为友元。</p>
+
+	<a name="ch15lev3sec45"></a>
+        <h5 class="docSection3Title">The <tt>Query</tt> Overloaded Operators</h5>
+	<h5 class="docSection3Title"><tt>Query</tt> 重载操作符</h5>
+
+        <p class="docText">The <tt>|, &amp;</tt> and <tt>~</tt> operators create <tt>OrQuery, AndQuery</tt>, and <tt>NotQuery</tt> objects, respectively:</p>
+	<p class="docText"><tt>|</tt>、<tt>&amp;</tt> 和 <tt>~</tt> 操作符分别创建 <tt>OrQuery</tt>、<tt>AndQuery</tt> 和 <tt>NotQuery</tt> 对象：</p>
+        <pre>
+     inline Query operator&amp;(const Query &amp;lhs, const Query &amp;rhs)
+     {
+         return new AndQuery(lhs, rhs);
+     }
+     inline Query operator|(const Query &amp;lhs, const Query &amp;rhs)
+     {
+          return new OrQuery(lhs, rhs);
+     }
+     inline Query operator~(const Query &amp;oper)
+     {
+         return new NotQuery(oper);
+     }
+</pre><br>
+
+	<a name="idd1e121869"></a><a name="idd1e121874"></a><a name="idd1e121879"></a><a name="idd1e121887"></a>
+        <p class="docText">Each of these operations dynamically allocates a new object of a type derived from <tt>Query_base</tt>. The <tt>return</tt> (implicitly) uses the <tt>Query</tt> constructor that takes a pointer to a <tt>Query_base</tt> to create the <tt>Query</tt> object from the <tt>Query_base</tt> pointer that the operation allocates. For example the <tt>return</tt> statement in the <tt>~</tt> operator is equivalent to</p>
+	<p class="docText">每个操作符动态分配 <tt>Query_base</tt> 派生类型的新对象，<tt>return</tt> 语句（隐式）使用接受 <tt>Query_base</tt> 指针的 <tt>Query</tt> 构造函数，用操作分配的 <tt>Query_base</tt> 指针创建 <tt>Query</tt> 对象。例如，<tt>~</tt> 操作符中的 <tt>return</tt> 语句等价于：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">allocate a new</span> <span class="docEmphasis">Not Query</span> <span class="docEmphItalicAlt">object</span>
+     // <span class="docEmphItalicAlt">convert the resulting pointer to</span> <span class="docEmphasis">NotQuery</span> <span class="docEmphItalicAlt">to a pointer to</span> <span class="docEmphasis">Query_base</span>
+     Query_base *tmp = new NotQuery(expr);
+
+     return Query(tmp); // <span class="docEmphasis">use Query constructor that takes a pointer to Query_base</span>
+</pre><br>
+
+        <p class="docText">There is no operator to create a <tt>WordQuery</tt>. Instead, we gave our <tt>Query</tt> class a constructor that takes a <tt>string</tt>. That constructor generates a <tt>WordQuery</tt> to look for the given <tt>string</tt>.</p>
+	<p class="docText">没有操作符创建 <tt>WordQuery</tt> 对象，相反，为 <tt>Query</tt> 类定义一个接受 <tt>string</tt> 对象的构造函数，该构造函数生成 <tt>WordQuery</tt> 对象查找给定 <tt>string</tt>。</p>
+
+	<a name="ch15lev3sec46"></a>
+        <h5 class="docSection3Title">The <tt>Query</tt> Output Operator</h5>
+	<h5 class="docSection3Title"><tt>Query</tt> 输出操作符</h5>
+
+        <p class="docText">We'd like users to be able to print <tt>Query</tt>s using the normal (overloaded) output operator. However, we also need the print operation to be virtualprinting a <tt>Query</tt> should print the <tt>Query_base</tt> object to which the <tt>Query</tt> points. There's only one problem: only member functions can be virtual, but the output operator cannot be a member of the <tt>Query_base</tt> classes (<a class="docLink" href="ch14lev1sec2.html#ch14lev2sec9" >Section 14.2.1</a>, p. <a class="docLink" href="ch14lev1sec2.html#ch14lev2sec9" >514</a>).</p>
+	<p class="docText">我们希望用户可以用标准（重载的）输出操作符打印 <tt>Query</tt> 对象，但是，也需要打印操作是虚函数——打印 <tt>Query</tt> 对象应打印 <tt>Query</tt> 对象指向的 <tt>Query_base</tt> 对象。这里存在一个问题：只有成员函数可以为虚函数，但输出操作符不能是 <tt>Query_base</tt> 类的成员（<a class="docLink" href="ch14lev1sec2.html#ch14lev2sec9" >第 14.2.1 节</a>）。</p>
+
+        <p class="docText">To obtain the necessary virtual behavior, our <tt>Query_base</tt> classes defined a virtual <tt>display</tt> member, which the <tt>Query</tt> output operator will use:</p>
+	<p class="docText">要获得必要的虚函数行为，<tt>Query_base</tt> 类定义了一个虚函数成员 <tt>display</tt>，<tt>Query</tt> 输出操作符将使用它：</p>
+        <pre>
+     inline std::ostream&amp;
+     operator&lt;&lt;(std::ostream &amp;os, const Query &amp;q)
+     {
+         return q.display(os);
+     }
+</pre><br>
+
+        <p class="docText">When we write</p>
+        <p class="docText">如果编写</p>
+        <pre>
+     Query andq = Query(sought1) &amp; Query(sought2);
+     cout &lt;&lt; "\nExecuted query: " &lt;&lt; andq &lt;&lt; endl;
+</pre><br>
+
+        <p class="docText">the Query output operator is invoked. That operator calls</p>
+	<p class="docText">将调用 <tt>Query</tt> 输出操作符，该操作符调用</p>
+        <pre>
+     q.display(os)
+</pre><br>
+
+        <p class="docText">with q referring to the Query object that points to this AndQuery, an dos bound to cout. When we write</p>
+	<p class="docText">其中，<tt>q</tt> 引用指向该 <tt>AndQuery</tt> 对象的 <tt>Query</tt> 对象，<tt>os</tt> 绑定到 <tt>cout</tt>。如果编写</p>
+        <pre>
+     Query name(sought);
+     cout &lt;&lt; "\nExecuted Query for: " &lt;&lt; name &lt;&lt; endl;
+</pre><br>
+
+        <p class="docText">the <tt>WordQuery</tt> instance of <tt>display</tt> is called. More generally, a call</p>
+	<p class="docText">将调用 <tt>display</tt> 的 <tt>WordQuery</tt> 实例。更一般的，以下代码</p>
+        <pre>
+     Query query = some_query;
+     cout &lt;&lt; query &lt;&lt; endl;
+</pre><br>
+
+        <p class="docText">invokes the instance of <tt>display</tt> associated with the object that <tt>query</tt> addresses at that point in the execution of our program.</p>
+	<p class="docText">将调用程序运行到此时与 <tt>query</tt> 所指对象相关联的 <tt>display</tt> 实例。</p>
+
+	<a name="ch15lev2sec28"></a>
+        <h4 class="docSection2Title">15.9.5. The Derived Classes</h4>
+        <h4 class="docSection2Title">15.9.5. 派生类</h4>
+
+	<a name="idd1e122077"></a><a name="idd1e122083"></a>
+        <p class="docText">We next need to implement our concrete query classes. The one interesting part about these classes is how they are represented. The <tt>WordQuery</tt> class is most straightforward. Its job is to hold the search word.</p>
+	<p class="docText">下面要实现具体的查询类。关于这些类，一个有趣的部分是如何表示它们。<tt>WordQuery</tt> 类最直接，它的工作是保存要查找的单词。</p>
+
+        <p class="docText">The other classes operate on one or two <tt>Query</tt> operands. A <tt>NotQuery</tt> negates the result of another <tt>Query</tt>. Both <tt>AndQuery</tt> and <tt>OrQuery</tt> have two operands, which are actually stored in their common base class, <tt>BinaryQuery</tt>.</p>
+	<p class="docText">其他类操作一个或两个 <tt>Query</tt> 操作数。<tt>NotQuery</tt> 对象对别的 <tt>Query</tt> 对象的结果求反，<tt>AndQuery</tt> 类和 <tt>OrQuery</tt> 类都有两个操作数，操作数实际存储在它们的公共基类 <tt>BinaryQuery</tt> 中。</p>
+
+        <p class="docText">In each of these classes, the operand(s) could be an object of any of the concrete <tt>Query_base</tt> classes: A <tt>NotQuery</tt> could be applied to a <tt>WordQuery</tt>, an <tt>AndQuery</tt>, an <tt>OrQuery</tt>, or another <tt>NotQuery</tt>. To allow this flexibility, the operands must be stored as pointers to <tt>Query_base</tt> that might point to any one of the concrete <tt>Query_base</tt> classes.</p>
+	<p class="docText">在这些类当中，操作灵长都可以是任意具体 <tt>Query_base</tt> 类的对象：<tt>NotQuery</tt> 对象可以应用于 <tt>WordQuery</tt> 对象、<tt>AndQuery</tt> 对象、<tt>OrQuery</tt> 对象或其他 <tt>NotQuery</tt> 对象。要允许这种灵活性，操作数必须存储为 <tt>Query_base</tt> 指针，它可以指向任意具体的 <tt>Query_base</tt> 类。</p>
+
+        <p class="docText">However, rather than storing a <tt>Query_base</tt> pointer, our classes will themselves use the <tt>Query</tt> handle. Just as user code is simplified by using a handle, we can simplify our own class code by using the same handle class. We'll make the <tt>Query</tt> operand <tt>const</tt> because once a given <tt>Query_base</tt> object is built, there are no operations that can change the operand(s).</p>
+	<p class="docText">但是，我们的类不存储 <tt>Query_base</tt> 指针，而是自己使用 <tt>Query</tt> 句柄。正如使用句柄可以简化用户代码，也可以使用同样的句柄类简化类代码。将 <tt>Query</tt> 操作数设为 <tt>const</tt>，因为一旦创立了 <tt>Query_base</tt> 对象，就没有操作可以改变操作数了。</p>
+
+        <p class="docText">Now that we know the design for these classes, we can implement them.</p>
+        <p class="docText">了解了这些类的设计之后，就可以实现它们了。</p>
+
+	<a name="ch15lev3sec47"></a>
+        <h5 class="docSection3Title">The <tt>WordQuery</tt> Class</h5>
+	<h5 class="docSection3Title"><tt>WordQuery</tt> 类</h5>
+
+        <p class="docText">A <tt>WordQuery</tt> is a kind of <tt>Query_base</tt> that looks for a specified word in a given query map:</p>
+	<p class="docText"><tt>WordQuery</tt> 是一种 <tt>Query_base</tt>，它在给定的查询映射中查找指定单词：</p>
+        <pre>
+     class WordQuery: public Query_base {
+         friend class Query; // <span class="docEmphasis">Query</span> <span class="docEmphItalicAlt">uses the</span> <span class="docEmphasis">WordQuery</span> <span class="docEmphItalicAlt">constructor</span>
+         WordQuery(const std::string &amp;s): query_word(s) { }
+         // <span class="docEmphasis">concrete class: WordQuery defines all inherited pure virtual functions</span>
+         std::set&lt;line_no&gt; eval(const TextQuery &amp;t) const
+                                 { return t.run_query(query_word); }
+         std::ostream&amp; display (std::ostream &amp;os) const
+                                   { return os &lt;&lt; query_word; }
+         std::string query_word; // <span class="docEmphItalicAlt">word for which to search</span>
+      };
+</pre><br>
+
+        <p class="docText">Like <tt>Query_base, WordQuery</tt> has no <tt>public</tt> members; <tt>WordQuery</tt> must make <tt>Query</tt> a friend to allow <tt>Query</tt> to access the <tt>WordQuery</tt> constructor.</p>
+	<p class="docText">像 <tt>Query_base</tt> 类一样，<tt>WordQuery</tt> 类没有 <tt>public</tt> 成员，<tt>WordQuery</tt> 为必须将 <tt>Query</tt> 类设为友元以允许 <tt>Query</tt> 访问 <tt>WordQuery</tt> 构造函数。</p>
+
+        <p class="docText">Each of the concrete query classes must define the inherited pure virtual functions. The <tt>WordQuery</tt> operations are simple enough to define in the class body. The <tt>eval</tt> member calls the <tt>query_text</tt> member of its <tt>TextQuery</tt> parameter passing it the <tt>string</tt> that was used to create this <tt>WordQuery</tt>. To <tt>display</tt> a <tt>WordQuery</tt>, we print the <tt>query_word</tt>.</p>
+	<p class="docText">每个具体的查询类必须定义继承的纯虚函数。<tt>WordQuery</tt> 类的操作足够简单，可以定义在类定义中。<tt>eval</tt> 成员调用其 <tt>TextQuery</tt> 形参的 <tt>query_word</tt> 成员，将用于创建该 <tt>WordQuery</tt> 对象的 <tt>string</tt> 对象传给它。要 <tt>display</tt> 一个 <tt>WordQuery</tt> 对象，就打印 <tt>query_word</tt> 对象。</p>
+
+	<a name="ch15lev3sec48"></a>
+        <h5 class="docSection3Title">The <tt>NotQuery</tt> Class</h5>
+	<h5 class="docSection3Title"><tt>NotQuery</tt> 类</h5>
+
+        <p class="docText">A <tt>NotQuery</tt> holds a <tt>const Query</tt>, which it negates:</p>
+	<p class="docText"><tt>NotQuery</tt> 对象保存一个 <tt>const Query</tt> 对象，对它求反：</p>
+        <pre>
+     class NotQuery: public Query_base {
+         friend Query operator~(const Query &amp;);
+         NotQuery(Query q): query(q) { }
+          // <span class="docEmphItalicAlt">concrete class:</span> <span class="docEmphasis">NotQuery</span> <span class="docEmphItalicAlt">defines all inherited pure virtual functions</span>
+          std::set&lt;line_no&gt; eval(const TextQuery&amp;) const;
+          std::ostream&amp; display(std::ostream &amp;os) const
+                { return os &lt;&lt; "~(" &lt;&lt; query &lt;&lt; ")"; }
+          const Query query;
+     };
+</pre><br>
+
+	<a name="idd1e122289"></a>
+        <p class="docText">The <tt>Query</tt> overloaded <tt>~</tt> operator is made a friend to allow that operator to create a new <tt>NotQuery</tt> object. To <tt>display</tt> a <tt>NotQuery</tt>, we print the <tt>~</tt> symbol followed by the underlying <tt>Query</tt>. We parenthesize the output to ensure that precedence is clear to the reader.</p>
+	<p class="docText">将 <tt>Query</tt> 的重载 <tt>~</tt> 操作符设为友元，从而允许该操作符创建新的 <tt>NotQuery</tt> 对象。为了 <tt>display</tt> 一个 <tt>NotQuery</tt> 对象，打印 <tt>~</tt> 对象，将输出用圆括号括住以保证读者清楚优先级。</p>
+
+	<a name="ch15note31"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">The use of the output operator in the <tt>display</tt> operation is ultimately a virtual call to a <tt>Query_base</tt> object:</p>
+		<p class="docText"><tt>display</tt> 操作中输出操作符的使用最终是对 <tt>Query_base</tt> 对象的虚函数调用：</p>
+              </td>
+            </tr>
+          </table><br>
+          <pre>
+     // <span class="docEmphItalicAlt">uses the</span> <span class="docEmphasis">Query</span> <span class="docEmphItalicAlt">output operator, which calls</span> <span class="docEmphasis">Query::display</span>
+     // <span class="docEmphItalicAlt">that funtion makes a</span> <span class="docEmphasis">virtual</span> <span class="docEmphItalicAlt">call to</span> <span class="docEmphasis">Query_base::display</span>
+     { return os &lt;&lt; "~(" &lt;&lt; query &lt;&lt; ")"
+</pre><br>
+        </div><br>
+
+        <p class="docText">The <tt>eval</tt> member is complicated enough that we will implement it outside the class body. The <tt>eval</tt> function appears in <a class="docLink" href="ch15lev1sec9.html#ch15lev2sec29">Section 15.9.6</a> (p. <a class="docLink" href="ch15lev1sec9.html#ch15lev2sec29">620</a>).</p>
+	<p class="docText"><tt>eval</tt> 成员比较复杂，我们将在类定义体之外实现它，<tt>eval</tt> 函数见<a class="docLink" href="ch15lev1sec9.html#ch15lev2sec29">第 15.9.6 节</a>。</p>
+
+	<a name="ch15lev3sec49"></a>
+        <h5 class="docSection3Title">The <tt>BinaryQuery</tt> Class</h5>
+	<h5 class="docSection3Title"><tt>BinaryQuery</tt> 类</h5>
+
+        <p class="docText">The <tt>BinaryQuery</tt> class is an abstract class that holds the data needed by the two query types, <tt>AndQuery</tt> and <tt>OrQuery</tt>, that operate on two operands:</p>
+	<p class="docText"><tt>BinaryQuery</tt> 类是一个抽象类，保存 <tt>AndQuery</tt> 和 <tt>OrQuery</tt> 两个查询类型所需的数据，<tt>AndQuery</tt> 和 <tt>OrQuery</tt> 有两个操作数：</p>
+        <pre>
+     class BinaryQuery: public Query_base {
+     protected:
+         BinaryQuery(Query left, Query right, std::string op):
+               lhs(left), rhs(right), oper(op) { }
+         // <span class="docEmphItalicAlt">abstract class:</span> <span class="docEmphasis">BinaryQuery</span> <span class="docEmphItalicAlt">doesn't define</span> <span class="docEmphasis">eval</span>
+         std::ostream&amp; display(std::ostream &amp;os) const
+         { return os &lt;&lt; "(" &lt;&lt; lhs &lt;&lt; " " &lt;&lt; oper &lt;&lt; " "
+                                  &lt;&lt; rhs &lt;&lt; ")"; }
+         const Query lhs, rhs; // <span class="docEmphItalicAlt">right- and left-hand operands</span>
+         const std::string oper; // <span class="docEmphItalicAlt">name of the operator</span>
+      };
+</pre><br>
+
+        <p class="docText">The data in a <tt>BinaryQuery</tt> are the two <tt>Query</tt> operands and the operator symbol to use when displaying the query. These data are all declared <tt>const</tt>, because the contents of a query should not change once it has been constructed. The constructor takes the two operands and the operator symbol, which it stores in the appropriate data members.</p>
+	<p class="docText"><tt>BinaryQuery</tt> 中的数据是两个 <tt>Query</tt> 操作数，以及显示查询时使用的操作符符号。这些数据均声明为 <tt>const</tt>，因为一旦建立了查询的内容就不应该再改变。构造函数接受两个操作数以及操作符符号，将它们存储在适当的数据成员中。</p>
+
+        <p class="docText">To <tt>display</tt> a <tt>BinaryOperator</tt>, we print the parenthesized expression consisting of the left-hand operand, followed by the operator, followed by the right-hand operand. As when we displayed a <tt>NotQuery</tt>, the overloaded <tt>&lt;&lt;</tt> operator that is used to print <tt>left</tt> and <tt>right</tt> ultimately makes a virtual call to the underlying <tt>Query_base display</tt>.</p>
+	<p class="docText">要显示一个 <tt>BinaryOperator</tt> 对象，打印由圆括号括住的表达式、该表达式由左操作数后接操作、再接右操作数构成。像显示 <tt>NotQuery</tt> 对象一样，用于打印 <tt>left</tt> 和 <tt>right</tt> 的重载 <tt>&lt;&lt;</tt> 操作符最终对基础 <tt>Query_base</tt> 对象的 <tt>display</tt> 进行虚函数调用。</p>
+
+	<a name="ch15note32"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+		<a name="idd1e122463"></a><a name="idd1e122469"></a>
+                <p class="docText"> The <tt>BinaryQuery</tt> class does not define the <tt>eval</tt> function and so inherits a pure virtual. As such, <tt>BinaryQuery</tt> is also an abstract class, and we cannot create objects of <tt>BinaryQuery</tt> type.</p>
+		<p class="docText"><tt>BinaryQuery</tt> 类没有定义 <tt>eval</tt> 函数，因此继承了一个纯虚函数。这样，<tt>BinaryQuery</tt> 也是一个抽象类，不能创建 <tt>BinaryQuery</tt> 类型的对象。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <a name="ch15lev3sec50"></a>
+        <h5 class="docSection3Title">The <tt>AndQuery</tt> and <tt>OrQuery</tt> Classes</h5>
+	<h5 class="docSection3Title"><tt>AndQuery</tt> 和 <tt>OrQuery</tt> 类</h5>
+
+        <p class="docText">The <tt>AndQuery</tt> and <tt>OrQuery</tt> classes are nearly identical:</p>
+        <p class="docText"><tt>AndQuery</tt> 类和 <tt>OrQuery</tt> 类几乎完全相同：</p>
+        <pre>
+     class AndQuery: public BinaryQuery {
+         friend Query operator&amp;(const Query&amp;, const Query&amp;);
+         AndQuery (Query left, Query right):
+                               BinaryQuery(left, right, "&amp;") { }
+         // <span class="docEmphItalicAlt">concrete class:</span> <span class="docEmphasis">And Query</span> <span class="docEmphItalicAlt">inherits</span> <span class="docEmphasis">display</span> <span class="docEmphItalicAlt">and defines remaining pure virtual</span>
+         std::set&lt;line_no&gt; eval(const TextQuery&amp;) const;
+     };
+         class OrQuery: public BinaryQuery {
+             friend Query operator|(const Query&amp;, const Query&amp;);
+             OrQuery(Query left, Query right):
+                         BinaryQuery(left, right, "|") { }
+             // <span class="docEmphItalicAlt">concrete class:</span> <span class="docEmphasis">OrQuery</span> <span class="docEmphItalicAlt">inherits</span> <span class="docEmphasis">display</span> <span class="docEmphItalicAlt">and defines remaining pure virtual</span>
+             std::set&lt;line_no&gt; eval(const TextQuery&amp;) const;
+     };
+</pre><br>
+
+        <p class="docText">These classes make the respective operator a friend and define a constructor to create their <tt>BinaryQuery</tt> base part with the appropriate operator. They inherit the <tt>BinaryQuery</tt> definition of <tt>display</tt>, but each defines its own version of the <tt>eval</tt> function.</p>
+	<p class="docText">这两个类将各自的操作符设为友元，并定义了构造函数用适当的操作符创建它们的 <tt>BinaryQuery</tt> 基类部分。它们继承 <tt>BinaryQuery</tt> 类的 <tt>display</tt> 函数定义，但各自定义了自己的 <tt>eval</tt> 函数版本。</p>
+
+	<a name="ch15sb23"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 15.9.5</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch15qa16q1"></a><b>Exercise 15.40:</b></td>
+
+                    <td>
+                      <p class="docText">For the expression built in <a class="docLink" href="ch15lev1sec9.html#ch15fig04">Figure 15.4</a> (p. <a class="docLink" href="ch15lev1sec9.html#ch15fig04">612</a>)</p>
+                      <p class="docText">对<a class="docLink" href="ch15lev1sec9.html#ch15fig04">图 15.4</a> 中建立的表达式：</p>
+
+                      <div style="font-weight:bold">
+                        <ol class="docList" type="a">
+                          <li>
+                            <div style="font-weight:normal">
+                              <p class="docList">List the constructors executed in processing this expression.</p>
+                              <p class="docList">列出处理这个表达式所执行的构造函数。</p>
+                            </div>
+                          </li>
+
+                          <li>
+                            <div style="font-weight:normal">
+                              <p class="docList">List the calls to <tt>display</tt> and to the overloaded <tt>&lt;&lt;</tt> operator that are made in executing <tt>cout &lt;&lt; q</tt>.</p>
+			      <p class="docList">列出执行 <tt>cout &lt;&lt; q</tt> 所调用的 <tt>display</tt> 函数和重载的 <tt>&lt;&lt;</tt> 操作符。</p>
+                            </div>
+                          </li>
+
+                          <li>
+                            <div style="font-weight:normal">
+                              <p class="docList">List the calls to <tt>eval</tt> made when evaluating <tt>q.eval</tt>.</p>
+			      <p class="docList">列出计算 <tt>q.eval</tt> 时所调用的 <tt>eval</tt> 函数。</p>
+                            </div>
+                          </li>
+                        </ol>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+
+        <a name="ch15lev2sec29"></a>
+        <h4 class="docSection2Title">15.9.6. The <tt>eval</tt> Functions</h4>
+	<h4 class="docSection2Title">15.9.6. <tt>eval</tt> 函数</h4>
+
+        <p class="docText">The heart of the query class hierarchy are the <tt>eval</tt> virtual functions. Each of these functions calls <tt>eval</tt> on its operand(s) and then applies its own logic: The <tt>AndQuery eval</tt> operation returns the union of the results of its two operands; <tt>OrQuery</tt> returns the intersection. The <tt>NotQuery</tt> is more complicated: It must return the line numbers not in its operand's set.</p>
+	<p class="docText">查询类层次的中心是虚函数 <tt>eval</tt>。每个 <tt>eval</tt> 函数调用其操作数的 <tt>eval</tt> 函数，然后应用自己的逻辑：<tt>AndQuery</tt> 的 <tt>eval</tt> 操作返回两个操作数的结果的并集，<tt>OrQuery</tt> 的 <tt>eval</tt> 操作返回交集，<tt>NotQuery</tt> 的 <tt>eval</tt> 操作比较复杂：它必须返回不在其操作数的集合中的行编号。</p>
+
+	<a name="ch15lev3sec51"></a>
+        <h5 class="docSection3Title"><tt>OrQuery::eval</tt></h5>
+
+	<a name="idd1e122662"></a><a name="idd1e122670"></a><a name="idd1e122678"></a>
+        <p class="docText">An <tt>OrQuery</tt> merges the set of line numbers returned by its two operandsits result is the union of the results for its two operands:</p>
+	<p class="docText"><tt>OrQuery</tt> 对象合并由它的两个操作数返回的行号编号集合——其结果是它的两个操作数的结果的并集：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">returns union of its operands' result sets</span>
+     set&lt;TextQuery::line_no&gt;
+     OrQuery::eval(const TextQuery&amp; file) const
+     {
+             // <span class="docEmphItalicAlt">virtual calls through the</span> <span class="docEmphasis">Query</span> <span class="docEmphItalicAlt">handle to get result sets for the operands</span>
+             set&lt;line_no&gt; right = rhs.eval(file),
+                         ret_lines = lhs.eval(file); // <span class="docEmphItalicAlt">destination to hold results</span>
+             // <span class="docEmphItalicAlt">inserts the lines from</span> <span class="docEmphasis">right</span> <span class="docEmphItalicAlt">that aren't already in</span> <span class="docEmphasis">ret_lines</span>
+             ret_lines.insert(right.begin(), right.end());
+
+             return ret_lines;
+     }
+</pre><br>
+
+        <p class="docText">The <tt>eval</tt> function starts by calling <tt>eval</tt> on each of its <tt>Query</tt> operands. Those calls call <tt>Query::eval</tt>, which in turn makes a virtual call to <tt>eval</tt> on the underlying <tt>Query_base</tt> object. Each of these calls yields a <tt>set</tt> of line numbers in which its operand appears. We then call <tt>insert</tt> on <tt>ret_lines</tt>, passing a pair of iterators denoting the <tt>set</tt> returned from evaluating the right-hand operand. Because <tt>ret_lines</tt> is a <tt>set</tt>, this call adds the elements from <tt>right</tt> that are not also in <tt>left</tt> into <tt>ret_lines</tt>. After the call to <tt>insert, ret_lines</tt> contains each line number that was in either of the <tt>left</tt> or <tt>right</tt> sets. We complete the function by returning <tt>ret_lines</tt>.</p>
+	<p class="docText"><tt>eval</tt> 函数首先调用每个操作数的 <tt>eval</tt> 函数，操作数的 <tt>eval</tt> 函数调用 <tt>Query::eval</tt>，<tt>Query::eval</tt> 再调用基础 <tt>Query_base</tt> 对象的虚函数 <tt>eval</tt>，每个调用获得其操作数出现在其中表示对右操作数求值所返回的 <tt>set</tt>。因为 <tt>ret_lines</tt> 是一个 <tt>set</tt> 对象，这个调用将 <tt>right</tt> 中未在 <tt>left</tt> 中出现的元素加到 <tt>ret_lines</tt> 中。调用 <tt>insert</tt> 函数之后，<tt>ret_lines</tt> 包含在 <tt>left</tt> 集或在 <tt>right</tt> 集的每个行编号。返回 <tt>ret_lines</tt> 而结束 <tt>OrQuery::eval</tt> 函数。</p>
+
+	<a name="ch15lev3sec52"></a>
+        <h5 class="docSection3Title"><tt>AndQuery::eval</tt></h5>
+
+        <p class="docText">The <tt>AndQuery</tt> version of <tt>eval</tt> uses one of the library algorithms that performs setlike operations. These algorithms are described in the Library Appendix, in <a class="docLink" href="app01lev1sec2.html#app01lev2sec8" >Section A.2.8</a> (p. <a class="docLink" href="app01lev1sec2.html#app01lev2sec8" >821</a>):</p>
+	<p class="docText"><tt>AndQuery</tt> 的 <tt>eval</tt> 版本使用了完成集合式操作的一个标准库算法。标准库附录中说明了这些算法，见 <a class="docLink" href="app01lev1sec2.html#app01lev2sec8" >A.2.8 节</a>。</p>
+        <pre>
+     // <span class="docEmphItalicAlt">returns intersection of its operands' result sets</span>
+     set&lt;TextQuery::line_no&gt;
+     AndQuery::eval(const TextQuery&amp; file) const
+     {
+          // <span class="docEmphItalicAlt">virtual calls through the</span> <span class="docEmphasis">Query</span> <span class="docEmphItalicAlt">handle to get result sets for the operands</span>
+          set&lt;line_no&gt; left = lhs.eval(file),
+                             right = rhs.eval(file);
+          set&lt;line_no&gt; ret_lines; // <span class="docEmphItalicAlt">destination to hold results</span>
+          // <span class="docEmphItalicAlt">writes intersection of two ranges to a destination iterator</span>
+          // <span class="docEmphItalicAlt">destination iterator in this call adds elements to</span> <span class="docEmphItalicAlt">ret</span>
+          set_intersection(left.begin(), left.end(),
+                        right.begin(), right.end(),
+                        inserter(ret_lines, ret_lines.begin()));
+          return ret_lines;
+     }
+</pre><br>
+
+	<a name="idd1e122841"></a>
+        <p class="docText">This version of <tt>eval</tt> uses the <tt>set_intersection</tt> algorithm to find the lines in common to both queries: That algorithm takes five iterators: The first four denote two input ranges, and the last denotes a destination. The algorithm writes each element that is in both of the two input ranges into the destination. The destination in this call is an insert iterator (<a class="docLink" href="ch11lev1sec3.html#ch11lev2sec7" >Section 11.3.1</a>, p. <a class="docLink" href="ch11lev1sec3.html#ch11lev2sec7" >406</a>) which inserts new elements into <tt>ret_lines</tt>.</p>
+	<p class="docText"><tt>eval</tt> 函数这个版本使用 <tt>set_intersection</tt> 算法查找两个查询中的公共行：该算法接受 5 个迭代器，前 4 个表示两个输入范围，最后一个表示目的地。算法将同时在两个输入范围中存在在每个元素写到目的地。该调用的目的地是一个迭代器（<a class="docLink" href="ch11lev1sec3.html#ch11lev2sec7" >第 11.3.1 节</a>），它将新元素插入到 <tt>ret_lines</tt> 中。</p>
+
+	<a name="ch15lev3sec53"></a>
+        <h5 class="docSection3Title"><tt>NotQuery::eval</tt></h5>
+
+        <p class="docText"><tt>NotQuery</tt> finds each line of the text within which the operand is not found. To support this function, we need the <tt>TextQuery</tt> class to add a member to return the size of the file, so that we can know what line numbers exist.</p>
+	<p class="docText"><tt>NotQuery</tt> 查找未出现操作数的每个文本行。要支持这个函数，需要 <tt>TextQuery</tt> 类增加一个成员返回文件的大小，以便了解存在什么样的行编号。</p>
+        <pre>
+     // <span class="docEmphItalicAlt">returns lines not in its operand's result set</span>
+     set&lt;TextQuery::line_no&gt;
+     NotQuery::eval(const TextQuery&amp; file) const
+     {
+          // <span class="docEmphItalicAlt">virtual call through the</span> <span class="docEmphasis">Query</span> <span class="docEmphItalicAlt">handle to</span> <span class="docEmphasis">eval</span>
+          set&lt;TextQuery::line_no&gt; has_val = query.eval(file);
+          set&lt;line_no&gt; ret_lines;
+          // <span class="docEmphItalicAlt">for each line in the input file, check whether that line is in</span> <span class="docEmphasis">has_val</span>
+         // <span class="docEmphItalicAlt">if not, add that line number to</span> <span class="docEmphasis">ret_lines</span>
+         for (TextQuery::line_no n = 0; n != file.size(); ++n)
+             if (has_val.find(n) == has_val.end())
+                 ret_lines.insert(n);
+         return ret_lines;
+     }
+</pre><br>
+
+        <p class="docText">As in the other <tt>eval</tt> functions, we start by calling <tt>eval</tt> on this object's operand. That call returns the <tt>set</tt> of line numbers on which the operand appears. What we want is the <tt>set</tt> of line numbers on which the operand does not appear. We obtain that <tt>set</tt> by looking at each line number in the input file. We use the <tt>size</tt> member that must be added to <tt>TextQuery</tt> to control the <tt>for</tt> loop. That loop adds each line number to <tt>ret_lines</tt> that does not appear in <tt>has_val</tt>. Once we've processed all the line numbers, we return <tt>ret_lines</tt>.</p>
+	<p class="docText">像其他 <tt>eval</tt> 函数一样，首先调用该对象的操作数的 <tt>eval</tt> 函数。该调用返回操作数所出现的行编号的 <tt>set</tt>，而我们想要的是不出现操作数的行编号的 <tt>set</tt>，通过查找输入文件的每个行编号获得该 <tt>set</tt>。使用必须加到 <tt>TextQuery</tt> 的 <tt>size</tt> 成员控制 <tt>for</tt> 循环，该循环将没有在 <tt>has_val</tt> 中出现的每个行编号加到 <tt>ret_lines</tt> 中，一旦处理完所有的行编号，就返回 <tt>ret_lines</tt>。</p>
+
+	<a name="ch15sb24"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 15.9.6</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch15qa18q2"></a><b>Exercise 15.41:</b></td>
+
+                    <td>
+                      <p class="docText">Implement the <tt>Query</tt> and <tt>Query_base</tt> classes, and add the needed <tt>size</tt> operation to the <tt>TextQuery</tt> class from <a class="docLink" href="ch10.html#ch10" >Chapter 10</a>. Test your application by evaluating and printing a query such as the one in <a class="docLink" href="ch15lev1sec9.html#ch15fig04">Figure 15.4</a> (p. <a class="docLink" href="ch15lev1sec9.html#ch15fig04">612</a>).</p>
+		      <p class="docText">实现 <tt>Query</tt> 类和 <tt>Query_base</tt> 类，并为<a class="docLink" href="ch10.html#ch10" >第十章</a>的 <tt>TextQuery</tt> 类增加需要的 <tt>size</tt> 操作。通过计算和打印如<a class="docLink" href="ch15lev1sec9.html#ch15fig04">图 15.4</a> 所示的查询，测试你的应用程序。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch15qa18q3"></a><b>Exercise 15.42:</b></td>
+
+                    <td>
+                      <p class="docText">Design and implement one of the following enhancements:</p>
+                      <p class="docText">设计并实现下述增强中的一个：</p>
+
+                      <div style="font-weight:bold">
+                        <ol class="docList" type="a">
+                          <li>
+                            <div style="font-weight:normal">
+                              <p class="docList">Introduce support for evaluating words based on their presence within the same sentence rather than the same line.</p>
+                              <p class="docList">引入基于同一句子而不是同一行计算单词的支持。</p>
+                            </div>
+                          </li>
+
+                          <li>
+                            <div style="font-weight:normal">
+                              <p class="docList">Introduce a history system in which the user can refer to a previous query by number, possibly adding to it or combining it with another.</p>
+                              <p class="docList">引入历史系统，用户可以用编号查阅前面的查询，并可以在其中增加内容或与其他查询组合。</p>
+                            </div>
+                          </li>
+
+                          <li>
+                            <div style="font-weight:normal">
+                              <p class="docList">Rather than displaying the count of matches and all the matching lines, allow the user to indicate a range of lines to display, both for intermediate query evaluation and the final query.</p>
+                              <p class="docList">除了显示匹配数目和所有匹配行之外，允许用户对中间查询计算和最终查询指出要显示的行的范围。</p>
+                            </div>
+                          </li>
+                        </ol>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a href="21001535.html" ><img src="images/pixel.gif"  alt="" width="1" height="1" border="0"></a>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch15lev1sec8.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch15lev1sec10.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

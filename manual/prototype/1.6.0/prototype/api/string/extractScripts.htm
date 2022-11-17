@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>String.extractScripts - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>extractScripts</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">extractScripts() -> [script...]</code></pre>
+			<p>提取出字符串中包含的所有 <code>script</code> 的内容，并将之返回作为一个字符串数组。</p>
+		</div>
+		<div id="abody">
+			<p>
+				这个方法被用于 <a href="evalScripts.htm" >String#evalScripts</a> 内部。它并 <em>不会</em> 执行脚本块中的代码
+				（如果要执行代码，请使用 <a href="evalScripts.htm" >String#evalScripts</a>），但如果你要延后执行这些脚本块中的代码，
+				它会非常有用。								
+			</p>
+			<h3>样例</h3>
+			<pre><code class="javascript">'lorem... &lt;script&gt;2 + 2&lt;/script&gt;'.extractScripts();
+// -> ['2 + 2'] 
+'&lt;script&gt;2 + 2&lt;/script&gt;&lt;script&gt;alert("hello world!")&lt;/script&gt;'.extractScripts();
+// -> ['2 + 2', 'alert("hello world!")'] </code></pre>
+			<h3>注意</h3>
+			<p>为延后执行脚本块中的代码，你可以使用下面的方法：</p>
+			<pre><code class="javascript">var myScripts = '&lt;script&gt;2 + 2&lt;/script&gt;&lt;script&gt;alert("hello world!")&lt;/script&gt;'.extractScripts(); 
+// -> ['2 + 2', 'alert("hello world!")']
+
+var myReturnedValues = myScripts.map(function(script) {
+	return eval(script); 
+});
+// -> [4, undefined]（并且弹出对话框显示 'hello world!'） </code></pre>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

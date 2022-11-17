@@ -1,0 +1,355 @@
+﻿<html xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+    <META NAME="save" CONTENT="history" />
+    <title>多态性（C# 编程指南）</title>
+    <link rel="stylesheet" type="text/css" href="../styles/presentation.css" />
+    <link rel="stylesheet" type="text/css" href="ms-help://Hx/HxRuntime/HxLink.css" />
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/EventUtilities.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/SplitScreen.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/Dropdown.js"> </script>
+    <script type="text/javascript" src="../scripts/script_manifold.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/script_feedBack.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CheckboxMenu.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CommonUtilities.js"> </script>
+    <xml>
+      <MSHelp:TOCTitle Title="多态性" />
+      <MSHelp:Keyword Index="A" Term="086af969-29a5-4ce8-a993-0b7d53839dab" />
+      <MSHelp:Keyword Index="K" Term="C# 语言, 多态性" />
+      <MSHelp:Keyword Index="K" Term="多态性, 关于多态性 [C#]" />
+      <MSHelp:Attr Name="RevisionNumber" Value="25" />
+      <MSHelp:Attr Name="AssetID" Value="086af969-29a5-4ce8-a993-0b7d53839dab" />
+      <MSHelp:Attr Name="Abstract" Value="&#xD;&#xA;                    多态性常被视为自封装和继承之后，面向对象的编程的第三个支柱。Polymorphism（多态性）是一个希腊词，指“多种形态”，多态性具有两个截然不同的方面：&#xD;&#xA;                " />
+      <MSHelp:Attr Name="codelang" Value="CSharp" />
+      <MSHelp:Attr Name="CommunityContent" Value="1" />
+      <MSHelp:Attr Name="DevLang" Value="CSharp" />
+      <MSHelp:Attr Name="DevLangVers" Value="CSharp" />
+      <MSHelp:Attr Name="DocSet" Value="C#" />
+      <MSHelp:Attr Name="DocSet" Value="C# Lang" />
+      <MSHelp:Attr Name="DocSet" Value="ExpressLibVS" />
+      <MSHelp:Attr Name="ProgModel" Value="managed" />
+      <MSHelp:Attr Name="ShippedIn" Value="vs.90" />
+      <MSHelp:Attr Name="Technology" Value="ManagedCode" />
+      <MSHelp:Attr Name="TopicVersion" Value="09.00.08178.10000" />
+      <MSHelp:Attr Name="Catalog Container" Value="System_Default_Catalog" />
+      <MSHelp:Attr Name="Content Set Container" Value="System_Default_Content_Set" />
+      <MSHelp:Attr Name="TopicType" Value="kbRef" />
+      <MSHelp:Attr Name="Locale" Value="zh-chs" />
+    </xml>
+  </head>
+  <body>
+    <input type="hidden" id="userDataCache" class="userDataStyle" />
+    <input type="hidden" id="hiddenScrollOffset" />
+    <img id="collapseImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" title="“折叠”图像" />
+    <img id="expandImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" title="“展开”图像" />
+    <img id="collapseAllImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" />
+    <img id="expandAllImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" />
+    <img id="dropDownImage" style="display:none; height:0; width:0;" src="../icons/dropdown.gif" />
+    <img id="dropDownHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/dropdownHover.gif" />
+    <img id="copyImage" style="display:none; height:0; width:0;" src="../icons/copycode.gif" title="“复制”图像" />
+    <img id="copyHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/copycodeHighlight.gif" title="“复制悬停”图像" />
+    <div id="header">
+      <table id="topTable" cellspacing="0" cellpadding="0">
+        <tr>
+          <td>
+            <span onclick="ExpandCollapseAll(toggleAllImage)" style="cursor:default;" onkeypress="ExpandCollapseAll_CheckKey(toggleAllImage, event)" tabindex="0">
+              <img ID="toggleAllImage" class="toggleAll" src="../icons/collapse_all.gif" /> <label id="collapseAllLabel" for="toggleAllImage" style="display: none;">全部折叠</label><label id="expandAllLabel" for="toggleAllImage" style="display: none;">全部展开</label> </span>
+            <span>    </span>
+            <span id="devlangsDropdown" class="filter" tabindex="0">
+              <img id="devlangsDropdownImage" src="../icons/dropdown.gif" /> <label id="devlangsMenuAllLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：全部 </nobr></label><label id="devlangsMenuMultipleLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：多个 </nobr></label><label id="devlangsMenuVisualBasicLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual Basic </nobr></label><label id="devlangsMenuCSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：C# </nobr></label><label id="devlangsMenuManagedCPlusPlusLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual C++ </nobr></label><label id="devlangsMenuJSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：J# </nobr></label><label id="devlangsMenuJScriptLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：JScript </nobr></label></span>
+          </td>
+        </tr>
+      </table>
+      <div id="devlangsMenu">
+        <input id="VisualBasicCheckbox" type="checkbox" data="VisualBasic,vb,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="VisualBasicCheckbox">Visual Basic</label>
+        <br />
+        <input id="CSharpCheckbox" type="checkbox" data="CSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="CSharpCheckbox">C#</label>
+        <br />
+        <input id="ManagedCPlusPlusCheckbox" type="checkbox" data="ManagedCPlusPlus,cpp,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="ManagedCPlusPlusCheckbox">Visual C++</label>
+        <br />
+        <input id="JSharpCheckbox" type="checkbox" data="JSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JSharpCheckbox">J#</label>
+        <br />
+        <input id="JScriptCheckbox" type="checkbox" data="JScript,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JScriptCheckbox">JScript</label>
+        <br />
+      </div>
+      <table id="bottomTable" cellpadding="0" cellspacing="0">
+        <tr id="headerTableRow1">
+          <td align="left">
+            <span id="runningHeaderText">C# 编程指南</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow2">
+          <td align="left">
+            <span id="nsrTitle">多态性（C# 编程指南）</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow3">
+          <td align="left">
+            <a href="086af969-29a5-4ce8-a993-0b7d53839dab.htm#seeAlsoToggle" onclick="OpenSection(seeAlsoToggle)">另请参见</a>  
+<script type="text/javascript">
+var fbBody = '%b8%d0%d0%bb%c4%fa%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%bf%aa%b7%a2%b0%e6%b1%e0%d0%b4%cd%c5%b6%d3%bd%ab%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%d3%c3%d3%da%b8%c4%bd%f8%ce%c4%b5%b5%a1%a3%ce%d2%c3%c7%d4%da%c9%f3%d4%c4%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%ca%b1%a3%ac%bf%c9%c4%dc%bb%e1%b8%f8%c4%fa%b7%a2%cb%cd%b5%e7%d7%d3%d3%ca%bc%fe%a3%ac%d2%d4%c7%eb%c4%fa%cc%e1%b9%a9%bd%f8%d2%bb%b2%bd%b5%c4%bd%e2%ca%cd%cb%b5%c3%f7%bb%f2%d5%df%be%cd%bd%e2%be%f6%b7%bd%b0%b8%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%ce%d2%c3%c7%b2%bb%bb%e1%bd%ab%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%d3%c3%d3%da%c8%ce%ba%ce%c6%e4%cb%fb%d3%c3%cd%be%a3%ac%b2%a2%c7%d2%d4%da%c9%f3%d4%c4%cd%ea%d6%ae%ba%f3%a3%ac%ce%d2%c3%c7%b2%bb%bb%e1%d4%d9%b1%a3%c1%f4%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%a1%a3%0d%0a%d3%d0%b9%d8%20Microsoft%20%d2%fe%cb%bd%d5%fe%b2%df%b5%c4%bd%f8%d2%bb%b2%bd%d0%c5%cf%a2%a3%ac%c7%eb%b2%ce%bc%fb%20http%3a%2f%2fprivacy.microsoft.com%2fzh-cn%2fdefault.aspx%a1%a3';
+var fbSubject = 'Customer%20Feedback';
+</script>
+  <span id="headfeedbackarea" class="feedbackhead"><a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);"> 发送反馈意见</a></span>
+</td>
+        </tr>
+      </table>
+      <table id="gradientTable">
+        <tr>
+          <td class="nsrBottom" background="../icons/gradient.gif" />
+        </tr>
+      </table>
+    </div>
+    <div id="mainSection">
+      <div id="mainBody">
+        <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
+        <font color="DarkGray"></font>
+        <p /> <p><font color="DarkGray">更新：
+                    
+    2008 年 7 月
+  
+                </font></p><div class="introduction"><p>
+                    多态性常被视为自封装和继承之后，面向对象的编程的第三个支柱。Polymorphism（多态性）是一个希腊词，指“多种形态”，多态性具有两个截然不同的方面：
+                </p><ol><li><p>
+                    在运行时，在方法参数和集合或数组等位置，派生类的对象可以作为基类的对象处理。发生此情况时，该对象的声明类型不再与运行时类型相同。
+                </p></li><li><p>
+                    基类可以定义并实现<mshelp:link keywords="5da9abae-bc1e-434f-8bea-3601b8dcb3b2" tabindex="0">虚</mshelp:link>方法，派生类可以<mshelp:link keywords="dd1907a8-acf8-46d3-80b9-c2ca4febada8" tabindex="0">重写</mshelp:link>这些方法，即派生类提供自己的定义和实现。在运行时，客户端代码调用该方法，CLR 查找对象的运行时类型，并调用虚方法的重写方法。因此，您可以在源代码中调用基类的方法，但执行该方法的派生类版本。
+                </p></li></ol><p>
+                    虚方法允许您以统一方式处理多组相关的对象。例如，假定您有一个绘图应用程序，允许用户在绘图图面上创建各种形状。您在编译时不知道用户将创建哪些特定类型的形状。但应用程序必须跟踪创建的所有类型的形状，并且必须更新这些形状以响应用户鼠标操作。您可以使用多态性通过两个基本步骤解决这一问题：
+                </p><ol><li><p>
+                    创建一个类层次结构，其中每个特定形状类均派生自一个公共基类。
+                </p></li><li><p>
+                    使用虚方法通过对基类方法的单个调用来调用任何派生类上的相应方法。
+                </p></li></ol><p>
+                    首先，创建一个名为 <span class="code">Shape</span> 的基类，并创建一些派生类，例如 <span class="code">Rectangle</span>、<span class="code">Circle</span> 和 <span class="code">Triangle</span>。为 <span class="code">Shape</span> 类提供一个名为 <span class="code">Draw</span> 的虚方法，并在每个派生类中重写该方法以绘制该类表示的特定形状。创建一个 <span class="code">List&lt;Shape&gt;</span> 对象，并向该对象添加 Circle、Triangle 和 Rectangle。若要更新绘图图面，请使用 <mshelp:link keywords="5a9c5ddc-5fd3-457a-9bb6-9abffcd874ec" tabindex="0">foreach</mshelp:link> 循环对该列表进行循环访问，并对其中的每个 <span class="code">Shape</span> 对象调用 <span class="code">Draw</span> 方法。虽然列表中的每个对象都具有声明类型 <span class="code">Shape</span>，但调用的将是运行时类型（该方法在每个派生类中的重写版本）。
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Shape
+{
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// A few example members</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> X { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>; <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span>; }
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> Y { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>; <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span>; }
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> Height { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>; <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span>; }
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> Width { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>; <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span>; }
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Virtual method</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">virtual</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Draw()
+    {
+        Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Performing base class drawing tasks"</span>);
+    }
+}
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Circle : Shape
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">override</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Draw()
+    {
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Code to draw a circle...</span>
+        Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Drawing a circle"</span>);
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">base</span>.Draw();
+    }
+}
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Rectangle : Shape
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">override</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Draw()
+    {
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Code to draw a rectangle...</span>
+        Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Drawing a rectangle"</span>);
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">base</span>.Draw();
+    }
+}
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Triangle : Shape
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">override</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Draw()
+    {
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Code to draw a triangle...</span>
+        Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Drawing a triangle"</span>);
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">base</span>.Draw();
+    }
+}
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Program
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Main(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span>[] args)
+    {
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Polymorphism at work #1: a Rectangle, Triangle and Circle</span>
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// can all be used whereever a Shape is expected. No cast is</span>
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// required because an implicit conversion exists from a derived </span>
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// class to its base class.</span>
+        System.Collections.Generic.List&lt;Shape&gt; shapes = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> System.Collections.Generic.List&lt;Shape&gt;();
+        shapes.Add(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Rectangle());
+        shapes.Add(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Triangle());
+        shapes.Add(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Circle());
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Polymorphism at work #2: the virtual method Draw is</span>
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// invoked on each of the derived classes, not the base class.</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (Shape s <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> shapes)
+        {
+            s.Draw();
+        }
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Keep the console open in debug mode.</span>
+        Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Press any key to exit."</span>);
+        Console.ReadKey();
+    }
+
+}
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">/* Output:
+    Drawing a rectangle
+    Performing base class drawing tasks
+    Drawing a triangle
+    Performing base class drawing tasks
+    Drawing a circle
+    Performing base class drawing tasks
+ */</span>
+
+</pre></td></tr></table></span></div></div><p>
+                    在 C# 中，每个类型都是多态的，因为包括用户定义类型在内的所有类型都继承自 <span sdata="cer" target="T:System.Object"><mshelp:link keywords="T:System.Object" tabindex="0">Object</mshelp:link></span>。
+                </p></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle0)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle0, event)" tabindex="0"><img id="sectionToggle0" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />多态性概述</span></h1><div id="sectionSection0" class="section" name="collapseableSection" style=""><h3 class="subHeading">虚拟成员</h3><div class="subsection"><p>
+                    当派生类从基类继承时，它会获得基类的所有方法、字段、属性和事件。派生类的设计器可以选择是否
+                </p><ul><li><p>
+                    重写基类中的虚拟成员。
+                </p></li><li><p>
+                    继承最接近的基类方法而不重写它
+                </p></li><li><p>
+                    定义隐藏基类实现的成员的新非虚实现
+                </p></li></ul><p>
+                    仅当基类成员声明为 <mshelp:link keywords="5da9abae-bc1e-434f-8bea-3601b8dcb3b2" tabindex="0">virtual</mshelp:link> 或 <mshelp:link keywords="b0797770-c1f3-4b4d-9441-b9122602a6bb" tabindex="0">abstract</mshelp:link> 时，派生类才能重写基类成员。派生成员必须使用 <mshelp:link keywords="dd1907a8-acf8-46d3-80b9-c2ca4febada8" tabindex="0">override</mshelp:link> 关键字显式指示该方法将参与虚调用。以下代码提供了一个示例：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> BaseClass
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">virtual</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> DoWork() { }
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">virtual</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> WorkProperty
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span> { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> 0; }
+    }
+}
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> DerivedClass : BaseClass
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">override</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> DoWork() { }
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">override</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> WorkProperty
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span> { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> 0; }
+    }
+}
+
+</pre></td></tr></table></span></div></div><p>
+                    字段不能是虚拟的，只有方法、属性、事件和索引器才可以是虚拟的。当派生类重写某个虚拟成员时，即使该派生类的实例被当作基类的实例访问，也会调用该成员。以下代码提供了一个示例：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>DerivedClass B = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> DerivedClass();
+B.DoWork();  <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Calls the new method.</span>
+
+BaseClass A = (BaseClass)B;
+A.DoWork();  <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Also calls the new method.</span>
+
+</pre></td></tr></table></span></div></div><p>
+                    虚方法和属性允许派生类扩展基类，而无需使用方法的基类实现。有关更多信息，请参见<span sdata="link"><a href="88247d07-bd0d-49e9-a619-45ccbbfdf0c5.htm">使用 Override 和 New 关键字进行版本控制（C# 编程指南）</a></span>。接口提供另一种方式来定义将实现留给派生类的方法或方法集。有关更多信息，请参见<span sdata="link"><a href="2feda177-ce11-432d-81b4-d50f5f35fd37.htm">接口（C# 编程指南）</a></span>和<span sdata="link"><mshelp:link keywords="c486dd99-2fcf-454b-b076-8fc7cbf7df9b" tabindex="0">在类和接口之间选择</mshelp:link></span>。
+                </p></div><h3 class="subHeading">使用新成员隐藏基类成员</h3><div class="subsection"><p>
+                    如果希望派生成员具有与基类中的成员相同的名称，但又不希望派生成员参与虚调用，则可以使用 <mshelp:link keywords="e4136516-f058-45a8-84e5-da00a5cf9b6a" tabindex="0">new</mshelp:link> 关键字。<span sdata="langKeyword" value="new"><span class="keyword">new</span></span> 关键字放置在要替换的类成员的返回类型之前。以下代码提供了一个示例：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> BaseClass
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> DoWork() { WorkField++; }
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> WorkField;
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> WorkProperty
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span> { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> 0; }
+    }
+}
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> DerivedClass : BaseClass
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> DoWork() { WorkField++; }
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> WorkField;
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> WorkProperty
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span> { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> 0; }
+    }
+}
+
+</pre></td></tr></table></span></div></div><p>
+                    通过将派生类的实例强制转换为基类的实例，仍然可以从客户端代码访问隐藏的基类成员。例如：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>DerivedClass B = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> DerivedClass();
+B.DoWork();  <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Calls the new method.</span>
+
+BaseClass A = (BaseClass)B;
+A.DoWork();  <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Calls the old method.</span>
+
+</pre></td></tr></table></span></div></div></div><h3 class="subHeading">阻止派生类重写虚拟成员</h3><div class="subsection"><p>
+                    无论在虚拟成员和最初声明虚拟成员的类之间已声明了多少个类，虚拟成员永远都是虚拟的。如果类 A 声明了一个虚拟成员，类 B 从 A 派生，类 C 从类 B 派生，则类 C 继承该虚拟成员，并且可以选择重写它，而不管类 B 是否为该成员声明了重写。以下代码提供了一个示例：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> A
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">virtual</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> DoWork() { }
+}
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> B : A
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">override</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> DoWork() { }
+}
+
+</pre></td></tr></table></span></div></div><p>
+                    派生类可以通过将重写声明为 <mshelp:link keywords="8e4ed5d3-10be-47db-9488-0da2008e6f3f" tabindex="0">sealed</mshelp:link> 来停止虚拟继承。这需要在类成员声明中的 <span sdata="langKeyword" value="override"><span class="keyword">override</span></span> 关键字前面放置 <span sdata="langKeyword" value="sealed"><span class="keyword">sealed</span></span> 关键字。以下代码提供了一个示例：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> C : B
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">sealed</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">override</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> DoWork() { }
+}
+
+</pre></td></tr></table></span></div></div><p>
+                    在上面的示例中，方法 <span class="code">DoWork</span> 对从 C 派生的任何类都不再是虚方法，但它仍是 C 的实例的虚方法 -- 即使将这些实例强制转换为类型 B 或类型 A 也是如此。派生类可以通过使用 <span sdata="langKeyword" value="new"><span class="keyword">new</span></span> 关键字替换密封的方法，如下面的示例所示：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> D : C
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> DoWork() { }
+}
+
+</pre></td></tr></table></span></div></div><p>
+                    在此情况下，如果在 D 中使用类型为 D 的变量调用 <span class="code">DoWork</span>，被调用的将是新的 <span class="code">DoWork</span>。如果使用类型为 C、B 或 A 的变量访问 D 的实例，对 <span class="code">DoWork</span> 的调用将遵循虚拟继承的规则，即把这些调用传送到类 C 的 <span class="code">DoWork</span> 实现。
+                </p></div><h3 class="subHeading">从派生类访问基类虚拟成员</h3><div class="subsection"><p>
+                    已替换或重写某个方法或属性的派生类仍然可以使用基关键字访问基类的该方法或属性。以下代码提供了一个示例：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Base
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">virtual</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> DoWork() {<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">/*...*/</span> }
+}
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Derived : Base
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">override</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> DoWork()
+    {
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//Perform Derived's work here</span>
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//...</span>
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Call DoWork on base class</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">base</span>.DoWork();
+    }
+}
+
+</pre></td></tr></table></span></div></div><p>
+                    有关更多信息，请参见 <mshelp:link keywords="8b645dbe-1a33-49b8-8716-1c401f9a5ea5" tabindex="0">base</mshelp:link>。
+                </p><div class="alert"><table width="100%" cellspacing="0" cellpadding="0"><tr><th align="left"><img class="note" title="说明" src="../icons/alert_note.gif" /><b>说明：</b></th></tr><tr><td><p>建议虚拟成员在它们自己的实现中使用 <span sdata="langKeyword" value="base"><span class="keyword">base</span></span> 来调用该成员的基类实现。允许基类行为发生使得派生类能够集中精力实现特定于派生类的行为。未调用基类实现时，由派生类负责使它们的行为与基类的行为兼容。</p></td></tr></table></div></div></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle1)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle1, event)" tabindex="0"><img id="sectionToggle1" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />本节内容</span></h1><div id="sectionSection1" class="section" name="collapseableSection" style=""><ul><li><p>
+                    <span sdata="link"><a href="88247d07-bd0d-49e9-a619-45ccbbfdf0c5.htm">使用 Override 和 New 关键字进行版本控制（C# 编程指南）</a></span>
+                </p></li><li><p>
+                    <span sdata="link"><a href="323db184-b136-46fc-8839-007886e7e8b0.htm">了解何时使用 Override 和 New 关键字（C# 编程指南）</a></span>
+                </p></li><li><p>
+                    <span sdata="link"><a href="8016db69-1f19-420c-8e17-98e8bebb7749.htm">如何：重写 ToString 方法（C# 编程指南）</a></span>
+                </p></li></ul></div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />请参见</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><h4 class="subHeading">概念</h4><div class="seeAlsoStyle"><span sdata="link"><a href="ac0f23a2-6bf3-4077-be99-538ae5fd3bc5.htm">C# 编程指南</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="ac0f23a2-6bf3-4077-be99-538ae5fd3bc5.htm">C# 编程指南</a></span></div><h4 class="subHeading">参考</h4><div class="seeAlsoStyle"><span sdata="link"><a href="81d64ee4-50f9-4d6c-a8dc-257c348d2eea.htm">继承（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="99aa52f7-b435-43f9-936e-2470af734c4e.htm">抽象类、密封类及类成员（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="cc738f07-e8cd-4683-9585-9f40c0667c37.htm">方法（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="a8e51b22-d294-44fb-9539-0072f06c4cb3.htm">事件（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="e295a8a2-b357-4ee7-a12e-385a44146fa8.htm">属性（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="022cd27d-d5e0-4cfe-8b97-dc018cc3355d.htm">索引器（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="f782d7cc-035e-4500-b1b1-36a9881130ad.htm">类型（C# 编程指南）</a></span></div></div><h1 class="heading"><span onclick="ExpandCollapse(changeHistoryToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(changeHistoryToggle, event)" tabindex="0"><img id="changeHistoryToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />修订记录</span></h1><div id="changeHistorySection" class="section" name="collapseableSection" style=""><div class="caption"></div><div class="tableSection"><table width="50%" cellspacing="2" cellpadding="5" frame="lhs"><tr><th><p>
+                    日期
+                </p></th><th><p>
+                    修订记录
+                </p></th><th><p>
+                    原因
+                </p></th></tr><tr><td><p>
+                    
+    <p>2008 年 7 月</p>
+  
+                </p></td><td><p>
+                    增加了内容和新的示例。
+                </p></td><td><p>
+                    
+    <p>信息补充。</p>
+  
+                </p></td></tr></table></div></div></div>
+      <div id="footer">
+        <div class="footerLine">
+          <img width="100%" height="3px" src="../icons/footer.gif" title="“页脚”图像" />
+        </div>
+<span id="feedbackarea">将有关本主题的<a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);">反馈意见</a>发送给 Microsoft。</span>
+</div>
+    </div>
+  </body>
+</html>

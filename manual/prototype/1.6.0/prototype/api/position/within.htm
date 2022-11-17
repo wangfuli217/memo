@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Position.within - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>within<div class="box">不推荐</div></h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">within(element, x, y) -> Boolean</code></pre>
+			<p>
+				判断点 <code>x, y</code>（以页面左上角为坐标原点）是否在 <code>element</code> 的边界范围内。
+				在使用 <a href="overlap.htm" >Position.overlap</a> 方法前必须立即调用该方法。
+			</p>
+		</div>
+		<div id="abody">
+			<p class="deprecated">已废弃！</p>
+			<p>
+				该方法使用 <code>Position.cumulativeOffset</code> 来计算 <code>element</code> 距页面左上角的距离，然后根据
+				<code>element</code> 的高度和宽度标识出元素四个角的偏移值，最后再与 <code>x</code> 和 <code>y</code>
+				参数指定的坐标相比较，如果 (x, y) 落入 <code>element</code> 的边界内，则返回 <code>true</code>。
+			</p>
+			<h3>样例</h3>
+			<pre><code class="javascript">var element = $('some_positioned_element'); 
+Position.cumulativeOffset(element);
+// -> [100, 100]（元素距离页面的左方和顶部都是 100px）
+Element.getDimensions(element);
+// -> { width: 150, height: 150 } 
+
+Position.within(element, 200, 200); 
+// -> true
+Position.within(element, 260, 260); 
+// -> false </code></pre>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

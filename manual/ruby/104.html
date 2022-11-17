@@ -1,0 +1,1031 @@
+<html><HEAD><TITLE>Programming Ruby: The Pragmatic Programmer's Guide</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=gb2312"><LINK media=screen href="104_files/pr_style[1].css"  type=text/css rel=StyleSheet></head>
+<BODY bgColor=white>
+<TABLE cellSpacing=0 cellPadding=3 width="100%" bgColor=#c09090 border=0>
+<TBODY>
+<TR>
+<TD colSpan=3>
+<TABLE cellPadding=20 width="100%" bgColor=#701a1a>
+<TBODY>
+<TR>
+<TD width="100%">
+<H1 class=header>Programming Ruby</H1>
+<H3 class=subheader>实用程序员指南</H3></TD></TR></TBODY></TABLE></TD></TR>
+<TR>
+<TD align=left width="33%"><A class=subheader href="103.html" >上一章&lt;</A> </TD>
+<TD vAlign=center align=middle width="33%"><A class=subheader href="95.html" >目录^</A> <BR></TD>
+<TD align=right width="33%"><A class=subheader href="105.html" >下一章&gt;</A> <BR></TD></TR></TBODY></TABLE><!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<H1>表达式（Expressions）</H1>
+<HR>
+<BR>到目前为止我们已经用了一些基本的表达式，毕竟，a＝b＋c是最基本的了，你即使不看本章，也能写出一大堆的Ruby代码来。但是那样做不是什么有趣的事情<CODE>;-)</CODE>。 
+<P>Ruby和其它语言的一个不同之处就是任何东西都能返回一个值，几乎所有的东西都是表达式，在实际中，这有什么意义呢？</P>
+<P>一些明显得作用是可以实现链式语句：</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>a&nbsp;=&nbsp;b&nbsp;=&nbsp;c&nbsp;=&nbsp;0</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>0</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>[&nbsp;3,&nbsp;1,&nbsp;7,&nbsp;0&nbsp;].sort.reverse</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>[7,&nbsp;3,&nbsp;1,&nbsp;0]</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P>一些不太起眼的东西，比如C和JAVA中的语句，在Ruby中都是表达式，例如，if和case都返回一个值，这个值就是这些语句中最后执行的那行。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>songType&nbsp;=&nbsp;if&nbsp;song.mp3Type&nbsp;==&nbsp;MP3::Jazz
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;song.written&nbsp;&lt;&nbsp;Date.new(1935,&nbsp;1,&nbsp;1)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Song::TradJazz
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Song::Jazz
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Song::Other
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end
+
+
+
+&nbsp;rating&nbsp;=&nbsp;case&nbsp;votesCast    
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;when&nbsp;0...10&nbsp;&nbsp;&nbsp;&nbsp;then&nbsp;Rating::SkipThisOne    
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;when&nbsp;10...50&nbsp;&nbsp;&nbsp;then&nbsp;Rating::CouldDoBetter    
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Rating::Rave    
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>
+<H2><A name=S1>操作表达式（Operator Expressions）</A></H2>
+<P>Ruby提供了诸如加减乘除等一些操作符，完整的操作符列表和优先级在第18章有列表。</P>
+<P>在Ruby中，很多操作符就是对一些方法的调用。比如你执行a*b+c，实际上就是调用对象a的乘方法，把b作为一个参数传递过去，然后在调用这个结果对象的加方法，把c作为参数传递，实际上等于：</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>(a.*(b)).+(c)
+</PRE></TD></TR></TBODY></TABLE>
+<P>因为你可以重新定义实例方法，所以你可以修改一些不能满足你的需求的方法，让它达到你需要的作用</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>class&nbsp;Fixnum</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;alias&nbsp;oldPlus&nbsp;+</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;def&nbsp;+(other)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;&nbsp;&nbsp;oldPlus(other).succ</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE></CODE></TD></TR>
+<TR>
+<TD vAlign=top><CODE>1&nbsp;+&nbsp;2</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>4</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>a&nbsp;=&nbsp;3</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>a&nbsp;+=&nbsp;4</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>8</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P>很有用的一个技巧是你自己写的的类可以像内建对象一样参与操作符的操作，比如，我们想从一首歌中间某处开始提取一部分音乐，我们可以用操作符"[ ]"来完成：</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>class&nbsp;Song
+&nbsp;&nbsp;def&nbsp;[](fromTime,&nbsp;toTime)
+&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;Song.new(self.title&nbsp;+&nbsp;"&nbsp;[extract]",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.artist,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;toTime&nbsp;-&nbsp;fromTime)
+&nbsp;&nbsp;&nbsp;&nbsp;result.setStartTime(fromTime)
+&nbsp;&nbsp;&nbsp;&nbsp;result
+&nbsp;&nbsp;end
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P>这段代码扩展了类Song，增加了[ ]方法，这个方法接收两个参数，一个开始时间，一个结束时间。这个方法返回一个新的Song对象，这个对象是歌曲的一部分。然后，我们就可以这样播放这段音乐：</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>aSong[0,&nbsp;0.15].play
+</PRE></TD></TR></TBODY></TABLE>
+<H2><A name=S2>混合表达式（Miscellaneous Expressions）</A></H2>
+<P>除了上面最普通的操作符表达式，或者不是很显眼的语句表达式（比如if或case），Ruby还支持在表达式中使用更多的东西。</P>
+<H3><A name=UA>命令展开 （Command Expansion）</A></H3>
+<P>如果你用反引号（`）来括起来一个字符串，或者用%x{ 和 }括起来，那么这个表达式中的字符串默认得会作为底层的操组系统命令来执行，并返回结果，这个结果就是这个命令在操作系统中执行之后的结果。换行符将不会从结果中去掉，所以返回结果一般都会包含一个回车符。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>`date`</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>"Sun&nbsp;Jun&nbsp;&nbsp;9&nbsp;00:08:26&nbsp;CDT&nbsp;2002\n"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>`dir`.split[34]</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>"lib_singleton.tip"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>%x{echo&nbsp;"Hello&nbsp;there"}</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>"Hello&nbsp;there\n"</CODE> </TD></TR></TBODY></TABLE>
+<P>你也可以在命令中使用表达式展开和所有通常的转义序列。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>for&nbsp;i&nbsp;in&nbsp;0..3
+&nbsp;&nbsp;status&nbsp;=&nbsp;`dbmanager&nbsp;status&nbsp;id=#{i}`
+&nbsp;&nbsp;#&nbsp;...
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P>执行的命令的返回状态存放在全局变量<CODE>$?</CODE>中。</P>
+<H3><A name=UB>重载反引号方法</A></H3>
+<P>上面我们说道，反引号之中的命令"默认"会作为操作系统命令来执行，实际上，这个字符串是传递给了<A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_m_kernel.html#Kernel._bq" ><CODE>Kernel::`</CODE> </A>这个方法（一个反引号）来执行。如果你愿意，可以重写这个方法，比如如下：</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>alias&nbsp;oldBackquote&nbsp;`
+def&nbsp;`(cmd)
+&nbsp;&nbsp;result&nbsp;=&nbsp;oldBackquote(cmd)
+&nbsp;&nbsp;if&nbsp;$?&nbsp;!=&nbsp;0
+&nbsp;&nbsp;&nbsp;&nbsp;raise&nbsp;"Command&nbsp;#{cmd}&nbsp;failed"
+&nbsp;&nbsp;end
+&nbsp;&nbsp;result
+end
+print&nbsp;`date`
+print&nbsp;`data`
+</PRE></TD></TR></TBODY></TABLE><EM>产生:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>Sun&nbsp;Jun&nbsp;&nbsp;9&nbsp;00:08:26&nbsp;CDT&nbsp;2002
+prog.rb:3:&nbsp;command&nbsp;not&nbsp;found:&nbsp;data
+prog.rb:5:in&nbsp;``':&nbsp;Command&nbsp;data&nbsp;failed&nbsp;(RuntimeError)
+	from&nbsp;prog.rb:10
+</PRE></TD></TR></TBODY></TABLE>
+<H2><A name=S3>赋值</A></H2>
+<P>我们前面的例子中都涉及到了赋值这一基本表达式，下面，我们来讨论一些关于赋值语句的东西。</P>
+<P>一个赋值语句给一个变量或者属性设定一个指定的值，变量或属性在左边，值在右边。然后这个值作为表达式的返回值返回。也就是说，我们可以用链式赋值来给一些变量赋值：</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>a&nbsp;=&nbsp;b&nbsp;=&nbsp;1&nbsp;+&nbsp;2&nbsp;+&nbsp;3</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>a</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>6</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>b</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>6</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>a&nbsp;=&nbsp;(b&nbsp;=&nbsp;1&nbsp;+&nbsp;2)&nbsp;+&nbsp;3</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>a</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>6</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>b</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>3</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>File.open(name&nbsp;=&nbsp;gets.chomp)</CODE> </TD></TR></TBODY></TABLE>
+<P>在Ruby中有两种基本的赋值格式，第一种是指给一个引用某一参数或者常量的对象赋值，这种形式是紧密连接到语言中的。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>instrument&nbsp;=&nbsp;"piano"
+MIDDLE_A&nbsp;&nbsp;&nbsp;=&nbsp;440
+</PRE></TD></TR></TBODY></TABLE>
+<P>另一种是在赋值语句左边使用对象的属性或者元素的引用。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>aSong.duration&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;234
+instrument["ano"]&nbsp;=&nbsp;"ccolo"
+</PRE></TD></TR></TBODY></TABLE>
+<P>这种方法比较特殊，通过调用左值的方法来赋值，也就是说我们可以重写这些方法。</P>
+<P>我们已经看过如何定义一个可以修改的属性了，只需要简单的在方法后面以等号结尾即可。这个方法把接收的参数作为赋值语句的右值。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>class&nbsp;Song
+&nbsp;&nbsp;def&nbsp;duration=(newDuration)
+&nbsp;&nbsp;&nbsp;&nbsp;@duration&nbsp;=&nbsp;newDuration
+&nbsp;&nbsp;end
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P>没有理由要求这些给参数设置值得方法与内部的实例变量一致，或者每个可以修改的属性都要提供一个读方法，反过来也是一样。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>class&nbsp;Amplifier
+&nbsp;&nbsp;def&nbsp;volume=(newVolume)
+&nbsp;&nbsp;&nbsp;&nbsp;self.leftChannel&nbsp;=&nbsp;self.rightChannel&nbsp;=&nbsp;newVolume
+&nbsp;&nbsp;end
+&nbsp;&nbsp;#&nbsp;...
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>
+<TABLE cellPadding=15 width=500 align=center bgColor=#ffe0e0 border=2>
+<TBODY>
+<TR>
+<TD align=middle><B>Sidebar:在类中使用访问方法（ Accessors）</B> </TD></TR>
+<TR>
+<TD>上面的例子中为什么我们必须要写 <CODE>self.leftChannel</CODE> 而不能省掉self呢？一般的，一个类中的方法可以直接调用同类或者父类中的其他方法（默认得接收者是self），但是，对于attribute writers来说这就不管用了，Ruby将把左面的名字作为一个本地变量，而不是一个对写属性方法的调用。 
+<P>　</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>class&nbsp;BrokenAmplifier</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;attr_accessor&nbsp;:leftChannel,&nbsp;:rightChannel</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;def&nbsp;volume=(vol)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;&nbsp;&nbsp;leftChannel&nbsp;=&nbsp;self.rightChannel&nbsp;=&nbsp;vol</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE></CODE></TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>ba&nbsp;=&nbsp;BrokenAmplifier.new</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>ba.leftChannel&nbsp;=&nbsp;ba.rightChannel&nbsp;=&nbsp;99</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>ba.volume&nbsp;=&nbsp;5</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>ba.leftChannel</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>99</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>ba.rightChannel</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>5</CODE> </TD></TR></TBODY></TABLE>
+<P>我们在<CODE>leftChannel</CODE>前面忘了写self.了，所以ruby把这个新值赋给了一个方法volume＝的一个局部变量，而这个对象的属性没有任何变化。这可能会经常产生问题。</P>
+<P></P></TD></TR></TBODY></TABLE>
+<P></P>
+<H3><A name=UC>并行赋值</A></H3>
+<P>在学习了一段时间程序设计之后，我们可能会遇到要求将两个变量的值互换：</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>int&nbsp;a&nbsp;=&nbsp;1;
+int&nbsp;b&nbsp;=&nbsp;2;
+int&nbsp;temp;
+</PRE>temp&nbsp;=&nbsp;a; a&nbsp;=&nbsp;b; b&nbsp;=&nbsp;temp; </TD></TR></TBODY></TABLE>
+<P>在Ruby中很简单，只需要：</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>a,&nbsp;b&nbsp;=&nbsp;b,&nbsp;a
+</PRE></TD></TR></TBODY></TABLE>
+<P>Ruby可以有效的实现并行赋值，在右边的值在被赋给左面的变量或属性之前按照它们的顺讯进行求值，然后对应的赋给左面的属性或变量。一个例子如下，第二行给a，b，c的值分别是x，x＋＝1，x＋＝1计算之后的值。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>x&nbsp;=&nbsp;0</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>0</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>a,&nbsp;b,&nbsp;c&nbsp;&nbsp;&nbsp;=&nbsp;&nbsp;&nbsp;x,&nbsp;(x&nbsp;+=&nbsp;1),&nbsp;(x&nbsp;+=&nbsp;1)</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>[0,&nbsp;1,&nbsp;2]</CODE> </TD></TR></TBODY></TABLE>
+<P>当一个赋值语句左值多余一时，这个表达式的返回值是一个由右面的值组成的数组，如果一个赋值语句的左值多余右值，多余的左值被设为nil，反过来如果右值多余左值，那么多余的右值将被忽略。在Ruby1.6.2中，如果左值只有一个，右值有多个，那么这些右值将作为一个数组赋给左值。</P>
+<P>你也可以在并行赋值语句中分解和扩展数组。如果最后的左值以星号作为前缀，那么所有对应这个得值和以后的值将会组成一个数组，赋给这个左值（如下面第三行的c）；类似的，如果最后一个右值是一个数组，你可以加一个星号作为前缀，Ruby将会把这个数组拆开按相应的位置赋给左值（如下面第六行的c，而且，如果这个数组是唯一的右值，这个星号是可以省略的，作为右值得数组自动拆开，如第二行所示）。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=4><CODE>a = [1, 2, 3, 4]</CODE> </TD></TR>
+<TR>
+<TD vAlign=top>b,&nbsp;&nbsp;c&nbsp;=&nbsp;a</TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top>b == 1,</TD>
+<TD vAlign=top>c == 2</TD></TR>
+<TR>
+<TD vAlign=top>b,&nbsp;*c&nbsp;=&nbsp;a</TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top>b == 1,</TD>
+<TD vAlign=top>c == [2, 3, 4]</TD></TR>
+<TR>
+<TD vAlign=top>b,&nbsp;&nbsp;c&nbsp;=&nbsp;99,&nbsp;&nbsp;a</TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top>b == 99,</TD>
+<TD vAlign=top>c == [1, 2, 3, 4]</TD></TR>
+<TR>
+<TD vAlign=top>b,&nbsp;*c&nbsp;=&nbsp;99,&nbsp;&nbsp;a</TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top>b == 99,</TD>
+<TD vAlign=top>c == [[1, 2, 3, 4]]</TD></TR>
+<TR>
+<TD vAlign=top>b,&nbsp;&nbsp;c&nbsp;=&nbsp;99,&nbsp;*a</TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top>b == 99,</TD>
+<TD vAlign=top>c == 1</TD></TR>
+<TR>
+<TD vAlign=top>b,&nbsp;*c&nbsp;=&nbsp;99,&nbsp;*a</TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top>b == 99,</TD>
+<TD vAlign=top>c == [1, 2, 3, 4]</TD></TR></TBODY></TABLE>
+<P></P>
+<H3><A name=UD>嵌套赋值</A></H3>
+<P>并行赋值还有一个值得一提的特性，赋值语句左边还可以包括用括号括起来的变量列表，Ruby中叫做嵌套赋值语句。Ruby首先摘出右值中相应的项进行赋值，然后在进行高层的赋值操作。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top>b,&nbsp;(c,&nbsp;d),&nbsp;e&nbsp;=&nbsp;1,2,3,4</TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top>b == 1,</TD>
+<TD vAlign=top>c == 2,</TD>
+<TD vAlign=top>d == nil,</TD>
+<TD vAlign=top>e == 3</TD></TR>
+<TR>
+<TD vAlign=top>b,&nbsp;(c,&nbsp;d),&nbsp;e&nbsp;=&nbsp;[1,2,3,4]</TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top>b == 1,</TD>
+<TD vAlign=top>c == 2,</TD>
+<TD vAlign=top>d == nil,</TD>
+<TD vAlign=top>e == 3</TD></TR>
+<TR>
+<TD vAlign=top>b,&nbsp;(c,&nbsp;d),&nbsp;e&nbsp;=&nbsp;1,[2,3],4</TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top>b == 1,</TD>
+<TD vAlign=top>c == 2,</TD>
+<TD vAlign=top>d == 3,</TD>
+<TD vAlign=top>e == 4</TD></TR>
+<TR>
+<TD vAlign=top>b,&nbsp;(c,&nbsp;d),&nbsp;e&nbsp;=&nbsp;1,[2,3,4],5</TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top>b == 1,</TD>
+<TD vAlign=top>c == 2,</TD>
+<TD vAlign=top>d == 3,</TD>
+<TD vAlign=top>e == 5</TD></TR>
+<TR>
+<TD vAlign=top>b,&nbsp;(c,*d),&nbsp;e&nbsp;=&nbsp;1,[2,3,4],5</TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top>b == 1,</TD>
+<TD vAlign=top>c == 2,</TD>
+<TD vAlign=top>d == [3, 4],</TD>
+<TD vAlign=top>e == 5</TD></TR></TBODY></TABLE>
+<P></P>
+<H3><A name=UE>其它赋值形式</A></H3>
+<P>像其它语言一样，ruby也为a=a+2提供了类似a+=2的快捷方式。</P>
+<P>第二种方式是第一种的深入，可以让操作符当成方法来工作。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>class&nbsp;Bowdlerize</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;def&nbsp;initialize(aString)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;&nbsp;&nbsp;@value&nbsp;=&nbsp;aString.gsub(/[aeiou]/,&nbsp;'*')</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;def&nbsp;+(other)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;&nbsp;&nbsp;Bowdlerize.new(self.to_s&nbsp;+&nbsp;other.to_s)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;def&nbsp;to_s</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;&nbsp;&nbsp;@value</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE></CODE></TD></TR>
+<TR>
+<TD vAlign=top><CODE>a&nbsp;=&nbsp;Bowdlerize.new("damn&nbsp;")</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>d*mn</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>a&nbsp;+=&nbsp;"shame"</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>d*mn&nbsp;sh*m*</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<H2><A name=S4>条件执行（Conditional Execution）</A></H2>
+<P>Ruby有几种不同的机制来实现条件执行，大多数都感觉很类似，也有一些很灵巧，在深入讨论之前，我们先来花点时间看看布尔表达式。</P>
+<H3><A name=UF>Boolean 表达式</A></H3>
+<P>Ruby中的true定义很简单，任何不是nil和false常量的东西都是true，你会发现系统的实现库中很多这种用法。比如，<A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_io.html#IO.gets" ><CODE>IO#gets</CODE> </A>，用来返回一个文件的下一行，如果到了文件末尾，返回nil，所以，我们才可以这样通过while来循环读取数据：</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>while&nbsp;line&nbsp;=&nbsp;gets
+&nbsp;&nbsp;#&nbsp;process&nbsp;line
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P>但是，这里对于c和perl程序员来说有一个误区，数字0和长度为0的字符串都不会被解释成false值，需要注意。</P>
+<H3><A name=UG>Defined?, And, Or, 和 Not</A></H3>
+<P>Ruby支持所有标准的布尔操作，另外，还引入了新的操作符defined？</P>
+<P>操作符``<CODE>and</CODE>'' 和``<CODE>&amp;&amp;</CODE>'' 只有当两面的值都为真才会返回真，第一个值为真，才会判断第二个值，否则直接返回假。这两个操作符的区别是优先级不同（and低于 &amp;&amp;）</P>
+<P>类似的 ``<CODE>or</CODE>'' 和``<CODE>||</CODE>''有一方为真就会返回真，如果第一个为真，则不会判断后面的值，类似and，这两个操作符只有优先级的不同。</P>
+<P>and和or有相同的优先级，而&amp;&amp;的优先级高于||。</P>
+<P>&nbsp;</P>``<CODE>not</CODE>'' and ``<CODE>!</CODE>'' 返回操作数的相反的值，如果操作数为true，则这个操作符返回false。并且and和！也只是优先级不同。 
+<P>所有的这些操作符和优先级都在18章有详细讲述。
+<P>操作符<CODE>defined?</CODE>将返回nil，如果操作数没有定义的话。否则，将返回后面参数的描述信息。</P>
+<P>&nbsp;</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>defined?&nbsp;1</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>"expression"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>defined?&nbsp;dummy</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>nil</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>defined?&nbsp;printf</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>"method"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>defined?&nbsp;String</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>"constant"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>defined?&nbsp;$&amp;</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>nil</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>defined?&nbsp;$_</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>"global-variable"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>defined?&nbsp;Math::PI</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>"constant"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>defined?&nbsp;(&nbsp;c,d&nbsp;=&nbsp;1,2&nbsp;)</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>"assignment"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>defined?&nbsp;42.abs</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>"method"</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P>除了这些布尔表达式，Ruby对象还支持使用 <CODE>==</CODE>, <CODE>===</CODE>, <CODE>&lt;=&gt;</CODE>, <CODE>=~</CODE>, <CODE>eql?</CODE>, 和<CODE>equal?</CODE>进行对象之间的比较。除了&lt;=&gt;之外这些操作符都在Object类中定义，但是经常被子类重载。比如，类Array重定义了==方法，判断两个数组相同的条件事它们的个数相同，同一位置的元素也相同。</P>
+<TABLE width=500 bgColor=#ffe0e0 border=2>
+<TBODY>
+<TR>
+<TD><B>通用比较操作符</B> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<TBODY>
+<TR bgColor=#ff9999>
+<TD vAlign=top><B>操作符</B> </TD>
+<TD vAlign=top><B>意义</B> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>==</CODE> </TD>
+<TD vAlign=top>测试是否相同</TD></TR>
+<TR>
+<TD vAlign=top><CODE>===</CODE> </TD>
+<TD vAlign=top>在case中的when语句判断是否相等</TD></TR>
+<TR>
+<TD vAlign=top><CODE>&lt;=&gt;</CODE> </TD>
+<TD vAlign=top>通用比较操作符，根据前面的对象小于，等于还是大于后面的对象，返回 -1, 0, 或者 +1。</TD></TR>
+<TR>
+<TD vAlign=top><CODE>&lt;</CODE>, <CODE>&lt;=</CODE>, <CODE>&gt;=</CODE>, <CODE>&gt;</CODE> </TD>
+<TD vAlign=top>小于，小于等于，大于等于，大于</TD></TR>
+<TR>
+<TD vAlign=top><CODE>=~</CODE> </TD>
+<TD vAlign=top>正则表达式匹配</TD></TR>
+<TR>
+<TD vAlign=top><CODE>eql?</CODE> </TD>
+<TD vAlign=top>如果前后两个对象都是同一类型，则返回true： 1 == 1.0返回true但是 1.eql?(1.0) 结果为false。</TD></TR>
+<TR>
+<TD vAlign=top><CODE>equal?</CODE> </TD>
+<TD vAlign=top>只有两个对象有相同的object id 才返回true。</TD></TR>
+<TR>
+<TD bgColor=#ff9999 colSpan=9 height=2><IMG height=1 src="120_files/dot[1].gif"  width=1></TD></TR></TBODY></TABLE>
+<P></P></TD></TR></TBODY></TABLE>
+<P>==和=~都有相反的操作符!=和!~，但是Ruby会将程序中的a!=b转换为!(a==b)，a!~b转换成!(a=~b)，如果你自己的类中重新写了==和=~方法，那么你同时的到了!=和!~两个方法；同时，你也不能离开了==和=~而孤立的定义!=和!~两个方法。</P>你可以使用Ruby&nbsp; range 作为一个布尔表达式，一个类似 <CODE>exp1..exp2</CODE> 的range只有在遇到exp1为true，然后exp2又为true之后，才会返回true。下面循环部分有例子。 
+<P>最后，你可以用正则表达式来当作一个布尔表达式。Ruby expands it to <CODE>$_=~/re/</CODE>.</P>
+<H3><A name=UH>If 和 Unless表达式</A></H3>
+<P>Ruby中的if语句跟其他语言类似。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>if&nbsp;aSong.artist&nbsp;==&nbsp;"Gillespie"&nbsp;then
+&nbsp;&nbsp;handle&nbsp;=&nbsp;"Dizzy"
+elsif&nbsp;aSong.artist&nbsp;==&nbsp;"Parker"&nbsp;then
+&nbsp;&nbsp;handle&nbsp;=&nbsp;"Bird"
+else
+&nbsp;&nbsp;handle&nbsp;=&nbsp;"unknown"
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P>如果你的if语句写在多行上，可以省略then关键字。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>if&nbsp;aSong.artist&nbsp;==&nbsp;"Gillespie"
+&nbsp;&nbsp;handle&nbsp;=&nbsp;"Dizzy"
+elsif&nbsp;aSong.artist&nbsp;==&nbsp;"Parker"
+&nbsp;&nbsp;handle&nbsp;=&nbsp;"Bird"
+else
+&nbsp;&nbsp;handle&nbsp;=&nbsp;"unknown"
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P>但是，如果你的语句都写在一行上，then应该写上来分开布尔表达式和后面的语句。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>if&nbsp;aSong.artist&nbsp;==&nbsp;"Gillespie"&nbsp;then&nbsp;&nbsp;handle&nbsp;=&nbsp;"Dizzy"
+elsif&nbsp;aSong.artist&nbsp;==&nbsp;"Parker"&nbsp;then&nbsp;&nbsp;handle&nbsp;=&nbsp;"Bird"
+else&nbsp;&nbsp;handle&nbsp;=&nbsp;"unknown"
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P>你可以使用0个或多个elsif语句，和一个可选的else语句。</P>
+<P>就像我们前面说道的，if是一个表达式，不是一个statement，它可以返回一个值，你不必使用if表达式的返回值，但是它可能有些用处。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>handle&nbsp;=&nbsp;if&nbsp;aSong.artist&nbsp;==&nbsp;"Gillespie"&nbsp;then
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Dizzy"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;elsif&nbsp;aSong.artist&nbsp;==&nbsp;"Parker"&nbsp;then
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Bird"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"unknown"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>Ruby也未if提供了一个否定的形式，unless： 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>unless&nbsp;aSong.duration&nbsp;&gt;&nbsp;180&nbsp;then
+&nbsp;&nbsp;cost&nbsp;=&nbsp;.25
+else
+&nbsp;&nbsp;cost&nbsp;=&nbsp;.35
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P>最后，也为使用C语言的程序员准备了条件表达式：</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>cost&nbsp;=&nbsp;aSong.duration&nbsp;&gt;&nbsp;180&nbsp;?&nbsp;.35&nbsp;:&nbsp;.25
+</PRE></TD></TR></TBODY></TABLE>
+<P>这个条件表达式在根据?前面的布尔值为true或false返回冒号前面或后面的值。在这个例子中，如果歌曲的时长大于3分钟，将返回.35，否则返回.25，然后，将这个值赋给cost。</P>
+<H3><A name=UI>If 和 Unless 修饰符（Modifiers）</A></H3>
+<P>Ruby也借鉴了Perl的一些特点，语句修饰符（Statement modifiers）使我们可以在语句末尾加上条件语句。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>mon,&nbsp;day,&nbsp;year&nbsp;=&nbsp;$1,&nbsp;$2,&nbsp;$3&nbsp;if&nbsp;/(\d\d)-(\d\d)-(\d\d)/
+puts&nbsp;"a&nbsp;=&nbsp;#{a}"&nbsp;if&nbsp;fDebug
+print&nbsp;total&nbsp;unless&nbsp;total&nbsp;==&nbsp;0
+</PRE></TD></TR></TBODY></TABLE>
+<P>对于if修饰符来说，只有当if后面的条件为true，前面的语句才会执行，unless正好和if相反。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>while&nbsp;gets
+&nbsp;&nbsp;next&nbsp;if&nbsp;/^#/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Skip&nbsp;comments
+&nbsp;&nbsp;parseLine&nbsp;unless&nbsp;/^$/&nbsp;&nbsp;&nbsp;#&nbsp;Don't&nbsp;parse&nbsp;empty&nbsp;lines
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P>因为if本身也是表达式，所以下面的写法将会使代码变得难懂。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>if&nbsp;artist&nbsp;==&nbsp;"John&nbsp;Coltrane"
+&nbsp;&nbsp;artist&nbsp;=&nbsp;"'Trane"
+end&nbsp;unless&nbsp;nicknames&nbsp;==&nbsp;"no"
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>　 
+<H2><A name=S5>Case 表达式</A></H2>
+<P></P>Ruby的 <CODE>case</CODE> 表达式非常强大，就像多个if的固化物一样。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>case&nbsp;inputLine
+
+
+
+&nbsp;&nbsp;when&nbsp;"debug"          
+&nbsp;&nbsp;&nbsp;&nbsp;dumpDebugInfo          
+&nbsp;&nbsp;&nbsp;&nbsp;dumpSymbols
+
+
+&nbsp;&nbsp;when&nbsp;/p\s+(\w+)/           
+&nbsp;&nbsp;&nbsp;&nbsp;dumpVariable($1)
+
+&nbsp;&nbsp;when&nbsp;"quit",&nbsp;"exit"           
+&nbsp;&nbsp;&nbsp;&nbsp;exit
+
+&nbsp;&nbsp;else           
+&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;"Illegal&nbsp;command:&nbsp;#{inputLine}"           
+end </PRE></TD></TR></TBODY></TABLE>
+<P>像if一样，case返回最后执行的语句的结果，如果你的when和后面的语句都在一行，你也需要加一个then关键字。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>kind&nbsp;=&nbsp;case&nbsp;year
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;when&nbsp;1850..1889&nbsp;then&nbsp;"Blues"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;when&nbsp;1890..1909&nbsp;then&nbsp;"Ragtime"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;when&nbsp;1910..1929&nbsp;then&nbsp;"New&nbsp;Orleans&nbsp;Jazz"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;when&nbsp;1930..1939&nbsp;then&nbsp;"Swing"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;when&nbsp;1940..1950&nbsp;then&nbsp;"Bebop"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Jazz"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P><CODE>case</CODE> 操作符根据case后面目标的值，跟每个when后面的值用===进行判断， 
+<P>operates by comparing the target (the expression after the keyword <CODE>case</CODE>) with each of the comparison expressions after the <CODE>when</CODE> keywords. This test is done using <EM>comparison</EM>&nbsp;<CODE>===</CODE>&nbsp;<EM>target</EM>. As long as a class defines meaningful semantics for <CODE>===</CODE> (and all the built-in classes do), objects of that class can be used in case expressions.</P>
+<P></P>For example, regular expressions define <CODE>===</CODE> as a simple pattern match. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>case&nbsp;line
+&nbsp;&nbsp;when&nbsp;/title=(.*)/
+&nbsp;&nbsp;&nbsp;&nbsp;puts&nbsp;"Title&nbsp;is&nbsp;#$1"
+&nbsp;&nbsp;when&nbsp;/track=(.*)/
+&nbsp;&nbsp;&nbsp;&nbsp;puts&nbsp;"Track&nbsp;is&nbsp;#$1"
+&nbsp;&nbsp;when&nbsp;/artist=(.*)/
+&nbsp;&nbsp;&nbsp;&nbsp;puts&nbsp;"Artist&nbsp;is&nbsp;#$1"
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>Ruby classes are instances of class <CODE>Class</CODE>, which defines <CODE>===</CODE> as a test to see if the argument is an instance of the class or one of its superclasses. So (abandoning the benefits of polymorphism and bringing the gods of refactoring down around your ears), you can test the class of objects: 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>case&nbsp;shape
+&nbsp;&nbsp;when&nbsp;Square,&nbsp;Rectangle
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;...
+&nbsp;&nbsp;when&nbsp;Circle
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;...
+&nbsp;&nbsp;when&nbsp;Triangle
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;...
+&nbsp;&nbsp;else
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;...
+end
+</PRE></TD></TR></TBODY></TABLE>
+<H2><A name=S6>循环</A></H2>
+<P>不要告诉他人，Ruby支持原始的灵巧的内建循环结构。</P>
+<P>while循环根据它的条件的真假来执行0次或者多次语句，比如，下面程序将一直运行，直到输入被打断。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>while&nbsp;gets
+&nbsp;&nbsp;#&nbsp;...
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P>util也可以用来循环，知道条件为真，才停止操作。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>until&nbsp;playList.duration&nbsp;&gt;&nbsp;60
+&nbsp;&nbsp;playList.add(songList.pop)
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>像if和unless一样，while和until也可以用作语句操作符。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>a&nbsp;*=&nbsp;2&nbsp;while&nbsp;a&nbsp;&lt;&nbsp;100
+a&nbsp;-=&nbsp;10&nbsp;until&nbsp;a&nbsp;&lt;&nbsp;100
+</PRE></TD></TR></TBODY></TABLE>
+<P>在前面的布尔表达式中，我们说过range也可以作为布尔表达式，这个机制多用于循环中，在下面的例子中，我们从一个包含从first到tenth的数字的文本文件中读取数据，但是只打印从以third开头的行，直到遇到fifth开头的行为止。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>file&nbsp;=&nbsp;File.open("ordinal")
+while&nbsp;file.gets
+&nbsp;&nbsp;print&nbsp;&nbsp;if&nbsp;/third/&nbsp;..&nbsp;/fifth/
+end
+</PRE></TD></TR></TBODY></TABLE><EM>打印结果</EM><EM>:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>third
+fourth
+fifth
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>The elements of a range used in a boolean expression can themselves be expressions. These are evaluated each time the overall boolean expression is evaluated. For example, the following code uses the fact that the variable <CODE>$.</CODE> contains the current input line number to display line numbers one through three and those between a match of <CODE>/eig/</CODE> and <CODE>/nin/</CODE>. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>file&nbsp;=&nbsp;File.open("ordinal")
+while&nbsp;file.gets
+&nbsp;&nbsp;print&nbsp;if&nbsp;($.&nbsp;==&nbsp;1)&nbsp;||&nbsp;/eig/&nbsp;..&nbsp;($.&nbsp;==&nbsp;3)&nbsp;||&nbsp;/nin/
+end
+</PRE></TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>first
+second
+third
+eighth
+ninth
+</PRE></TD></TR></TBODY></TABLE>
+<P>这里有一点需要注意，当while和until用作语句修饰符的时候，如果它们修饰的语句以begin开头，end结尾，这段代码将总会执行，而不管后面的条件。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>print&nbsp;"Hello\n"&nbsp;while&nbsp;false
+begin
+&nbsp;&nbsp;print&nbsp;"Goodbye\n"
+end&nbsp;while&nbsp;false
+</PRE></TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>Goodbye
+</PRE></TD></TR></TBODY></TABLE>
+<H3><A name=UJ>迭代Iterators</A></H3>
+<P>上面我们知道了，Ruby支持简单的循环，比如，Ruby没有for循环，而c和JAV等都支持for循环的，但是Ruby提供了其他的机制，比如迭代，提供了类似的功能。</P>
+<P>让我们看看一个例子：</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>3.times&nbsp;do
+&nbsp;&nbsp;print&nbsp;"Ho!&nbsp;"
+end
+</PRE></TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>Ho!&nbsp;Ho!&nbsp;Ho!
+</PRE></TD></TR></TBODY></TABLE>
+<P>这可以避免off-by-1 错误，这个循环将执行3次。除了times，整数还可以接收一些方法来执行循环，比如downto，upto，和step等。比如，传统的从0到9的循环(类似for( <CODE>i=0; i &lt; 10; i++)</CODE>) 类似下面的样子：</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>0.upto(9)&nbsp;do&nbsp;|x|
+&nbsp;&nbsp;print&nbsp;x,&nbsp;"&nbsp;"
+end
+</PRE></TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>0&nbsp;1&nbsp;2&nbsp;3&nbsp;4&nbsp;5&nbsp;6&nbsp;7&nbsp;8&nbsp;9
+</PRE></TD></TR></TBODY></TABLE>
+<P>一个从0到12，步长为3的循环如下：</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>0.step(12,&nbsp;3)&nbsp;{|x|&nbsp;print&nbsp;x,&nbsp;"&nbsp;"&nbsp;}
+</PRE></TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>0&nbsp;3&nbsp;6&nbsp;9&nbsp;12
+</PRE></TD></TR></TBODY></TABLE>
+<P>用于数组和其它容器的迭代的each方法也可以用来循环。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>[&nbsp;1,&nbsp;1,&nbsp;2,&nbsp;3,&nbsp;5&nbsp;].each&nbsp;{|val|&nbsp;print&nbsp;val,&nbsp;"&nbsp;"&nbsp;}
+</PRE></TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>1&nbsp;1&nbsp;2&nbsp;3&nbsp;5
+</PRE></TD></TR></TBODY></TABLE>
+<P>如果一个类支持了each方法，那么在模块<CODE>Enumerable</CODE> 中的方法也可以直接使用。比如，File类提供了each方法，依次返回一个文件的每一行。使用<CODE>Enumerable</CODE>中的grep方法，我们可以只迭代符合条件的行。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>File.open("ordinal").grep&nbsp;/d$/&nbsp;do&nbsp;|line|
+&nbsp;&nbsp;print&nbsp;line
+end
+</PRE></TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>second
+third
+</PRE></TD></TR></TBODY></TABLE>
+<P>最后也是最简单的，Ruby提供了一个内建的最基本的迭代器loop。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>loop&nbsp;{
+&nbsp;&nbsp;#&nbsp;block&nbsp;...
+}
+</PRE></TD></TR></TBODY></TABLE>
+<P>loop迭代器一直调用给定的block（或者你调用了break跳出循环，后面会讲到）。</P>
+<H3><A name=UK>For ... In</A></H3>
+<P>前面我们说道Ruby支持的最基本循环视while和until，而for指的什么呢，可以看如下代码：</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>for&nbsp;aSong&nbsp;in&nbsp;songList
+&nbsp;&nbsp;aSong.play
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P>Ruby将会把它翻译为如下：</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>songList.each&nbsp;do&nbsp;|aSong|
+&nbsp;&nbsp;aSong.play
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P>for和each的唯一区别是局部变量的作用域。</P>你可以在支持each的类上使用for方法，比如Array或者Range。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>for&nbsp;i&nbsp;in&nbsp;['fee',&nbsp;'fi',&nbsp;'fo',&nbsp;'fum']
+&nbsp;&nbsp;print&nbsp;i,&nbsp;"&nbsp;"
+end
+for&nbsp;i&nbsp;in&nbsp;1..3
+&nbsp;&nbsp;print&nbsp;i,&nbsp;"&nbsp;"
+end
+for&nbsp;i&nbsp;in&nbsp;File.open("ordinal").find_all&nbsp;{&nbsp;|l|&nbsp;l&nbsp;=~&nbsp;/d$/}
+&nbsp;&nbsp;print&nbsp;i.chomp,&nbsp;"&nbsp;"
+end
+</PRE></TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>fee&nbsp;fi&nbsp;fo&nbsp;fum&nbsp;1&nbsp;2&nbsp;3&nbsp;second&nbsp;third
+</PRE></TD></TR></TBODY></TABLE>
+<P>一旦你的类支持了each方法，你就可以使用for来进行遍历。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>class&nbsp;Periods
+&nbsp;&nbsp;def&nbsp;each
+&nbsp;&nbsp;&nbsp;&nbsp;yield&nbsp;"Classical"
+&nbsp;&nbsp;&nbsp;&nbsp;yield&nbsp;"Jazz"
+&nbsp;&nbsp;&nbsp;&nbsp;yield&nbsp;"Rock"
+&nbsp;&nbsp;end
+end
+ 
+periods&nbsp;=&nbsp;Periods.new             
+for&nbsp;genre&nbsp;in&nbsp;periods             
+&nbsp;&nbsp;print&nbsp;genre,&nbsp;"&nbsp;"             
+end
+ </PRE></TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>Classical&nbsp;Jazz&nbsp;Rock
+</PRE></TD></TR></TBODY></TABLE>
+<H3><A name=UL>Break, Redo, 和 Next</A></H3>
+<P>循环控制结构 <CODE>break</CODE>, <CODE>redo</CODE>, 和 <CODE>next</CODE> 让你可以控制循环或者迭代器的流程。</P><CODE>break</CODE> 立即结束当前循环，然后跳出去执行循环后面的语句。redo从这次循环体的头开始重新执行，但是不会在对条件进行运算或者从迭代中取下一个值。next跳到本次循环末尾，开始执行下一次循环。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>while&nbsp;gets
+&nbsp;&nbsp;next&nbsp;if&nbsp;/^\s*#/&nbsp;&nbsp;&nbsp;#&nbsp;skip&nbsp;comments
+&nbsp;&nbsp;break&nbsp;if&nbsp;/^END/&nbsp;&nbsp;&nbsp;#&nbsp;stop&nbsp;at&nbsp;end
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;substitute&nbsp;stuff&nbsp;in&nbsp;backticks&nbsp;and&nbsp;try&nbsp;again
+&nbsp;&nbsp;redo&nbsp;if&nbsp;gsub!(/`(.*?)`/)&nbsp;{&nbsp;eval($1)&nbsp;}
+&nbsp;&nbsp;#&nbsp;process&nbsp;line&nbsp;...
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P>这些关键字也可以用在基于迭代器的循环机制中。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>i=0
+loop&nbsp;do
+&nbsp;&nbsp;i&nbsp;+=&nbsp;1
+&nbsp;&nbsp;next&nbsp;if&nbsp;i&nbsp;&lt;&nbsp;3
+&nbsp;&nbsp;print&nbsp;i
+&nbsp;&nbsp;break&nbsp;if&nbsp;i&nbsp;&gt;&nbsp;4
+end
+</PRE></TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>345
+</PRE></TD></TR></TBODY></TABLE>
+<H3><A name=UM>Retry</A></H3>
+<P>redo使一个循环从当前迭代中重新执行。有时候，你需要从新开始一个循环，retry从新开始任何地迭代循环。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>for&nbsp;i&nbsp;in&nbsp;1..100
+&nbsp;&nbsp;print&nbsp;"Now&nbsp;at&nbsp;#{i}.&nbsp;Restart?&nbsp;"
+&nbsp;&nbsp;retry&nbsp;if&nbsp;gets&nbsp;=~&nbsp;/^y/i
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>运行上面的程序，结果如下： 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>Now&nbsp;at&nbsp;1.&nbsp;Restart?&nbsp;n
+Now&nbsp;at&nbsp;2.&nbsp;Restart?&nbsp;y
+Now&nbsp;at&nbsp;1.&nbsp;Restart?&nbsp;n
+&nbsp;.&nbsp;.&nbsp;.
+</PRE></TD></TR></TBODY></TABLE>
+<P></P><CODE>retry</CODE> 将重新计算条件值，然后再开始循环。Ruby文档有如下例子： 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>def&nbsp;doUntil(cond)
+&nbsp;&nbsp;yield
+&nbsp;&nbsp;retry&nbsp;unless&nbsp;cond
+end
+
+ 
+i&nbsp;=&nbsp;0              
+doUntil(i&nbsp;&gt;&nbsp;3)&nbsp;{              
+&nbsp;&nbsp;print&nbsp;i,&nbsp;"&nbsp;"              
+&nbsp;&nbsp;i&nbsp;+=&nbsp;1              
+}
+</PRE></TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>0&nbsp;1&nbsp;2&nbsp;3&nbsp;4
+</PRE></TD></TR></TBODY></TABLE>
+<H2><A name=S7>变量作用域和循环</A></H2>
+<P>while，until和for循环内建于Ruby语言之中，没有引入新的作用域，前面定义的局部变量可以在循环中使用，在循环中创建的变量在后面的代码也可以使用。</P>
+<P>而对loop或each使用block来说则不一样了。在这个block中创建的变量在外面是不能访问的。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>[&nbsp;1,&nbsp;2,&nbsp;3&nbsp;].each&nbsp;do&nbsp;|x|
+&nbsp;&nbsp;y&nbsp;=&nbsp;x&nbsp;+&nbsp;1
+end
+[&nbsp;x,&nbsp;y&nbsp;]
+</PRE></TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>prog.rb:4: undefined local variable or method `x'
+for #&lt;Object:0x401c2ce0&gt; (NameError)
+</PRE></TD></TR></TBODY></TABLE>
+<P>然而，如果block中的变量和前面已经定义的变量重名的话，已经存在的变量将会在块中使用，而在块执行完成后，这个变量的值也会改变。下面的例子，我们看到block执行之后，两个变量都改变了。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>x&nbsp;=&nbsp;nil</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>y&nbsp;=&nbsp;nil</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>[&nbsp;1,&nbsp;2,&nbsp;3&nbsp;].each&nbsp;do&nbsp;|x|</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;y&nbsp;=&nbsp;x&nbsp;+&nbsp;1</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>[&nbsp;x,&nbsp;y&nbsp;]</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>[3,&nbsp;4]</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>
+<P></P>
+<HR>
+
+<TABLE cellSpacing=0 cellPadding=10 bgColor=#a03030 border=0>
+<TBODY>
+<TR>
+<TD align=left width="33%"><A class=subheader href="103.html" >上一章 &lt;</A> </TD>
+<TD vAlign=center align=middle width="33%"><A class=subheader href="95.html" >目录</A> <A class=subheader href="95.html" >^</A> <BR></TD>
+<TD align=right width="33%"><A class=subheader href="105.html" >下一章</A><A class=subheader href="105.html" >&gt;</A> <BR></TD></TR></TBODY></TABLE>
+<P></P><FONT size=-1>Extracted from the book "Programming Ruby - The Pragmatic Programmer's Guide"</FONT> <BR><FONT size=-3>Copyright &copy; 2001 by Addison Wesley Longman, Inc. This material may be distributed only subject to the terms and conditions set forth in the Open Publication License, v1.0 or later (the latest version is presently available at <A href="http://www.opencontent.org/openpub/" >http://www.opencontent.org/openpub/</A>)). 
+<P></P>Distribution of substantively modified versions of this document is prohibited without the explicit permission of the copyright holder. 
+<P></P>Distribution of the work or derivative of the work in any standard (paper) book form is prohibited unless prior permission is obtained from the copyright holder. <BR></FONT></BODY>

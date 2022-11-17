@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>String.scan - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>scan</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">scan(pattern, iterator) -> string</code></pre>
+			<p>
+				该方法允许遍历字符串中与参数 <code>pattern</code> 指定的模式（可以是一个字符串或是一个正则表达式）
+				匹配的所有子串。返回原始字符串本身。
+			</p>
+		</div>
+		<div id="abody">
+			<p>
+				该方法只是简单的将参数 <code>pattern</code> 和 <code>iterator</code> 传递给 <a href="gsub.htm" >String#gsub</a>
+				方法，并调用它。
+			</p>
+			<h3>样例</h3>
+			<pre><code class="javascript">'apple, pear & orange'.scan(/\w+/, alert); 
+// -> 'apple pear orange'（并连续弹出对话框显示 'apple'、'pear' 和 'orange'）</code></pre>
+			<p>可以用来填充一个数组：</p>
+			<pre><code class="javascript">var fruits = []; 
+'apple, pear & orange'.scan(/\w+/, function(match){
+	fruits.push(match[0])
+}); 
+fruits.inspect() 
+// -> ['apple', 'pear', 'orange'] </code></pre>
+			<p>甚至可用于 DOM</p>
+			<pre><code class="javascript">'failure-message, success-message & spinner'.scan(/(\w|-)+/, Element.toggle) 
+// -> 'failure-message, success-message & spinner'（并切换每个元素的可见性）</code></pre>
+			<h3>注意</h3>
+			<p>请 <em>不要</em> 在正则表达式中使用标识 <code>"g"</code>，这会导致一个无限循环。</p>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

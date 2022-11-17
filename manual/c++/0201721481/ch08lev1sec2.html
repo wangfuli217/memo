@@ -1,0 +1,357 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 8.2.  Condition States</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch08lev1sec1.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch08lev1sec3.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch08lev1sec2"></a>
+
+        <h3 class="docSection1Title">8.2. Condition States</h3>
+        <h3 class="docSection1Title">8.2. 条件状态</h3>
+
+        <p class="docText">Before we explore the types defined in <tt>fstream</tt> and <tt>sstream</tt>, we need to understand a bit more about how the IO library manages its buffers and the state of a stream. Keep in mind that the material we cover in this section and the next applies equally to plain streams, file streams, or <tt>string</tt> streams.</p>
+        <p class="docText">在展开讨论 <tt>fstream</tt> 和 <tt>sstream</tt> 头文件中定义的类型之前，需要了解更多 IO 标准库如何管理其缓冲区及其流状态的相关内容。谨记本节和下一节所介绍的内容同样适用于普通流、文件流以及 <tt>string</tt> 流。</p>
+
+        <p class="docText">Inherent in doing IO is the fact that errors can occur. Some errors are recoverable; others occur deep within the system and are beyond the scope of a program to correct. The IO library manages a set of <b><a name="ch08term2"></a><a class="docLink" href="ch08lev1sec7.html#gloss08_02" >condition state</a></b> members that indicate whether a given IO object is in a usable state or has encountered a particular kind <a name="idd1e58607"></a><a name="idd1e58612"></a>of error. The library also defines a set of functions and flags, listed in <a class="docLink" href="ch08lev1sec2.html#ch08table02">Table 8.2</a>, that give us access to and let us manipulate the state of each stream.</p>
+	<p class="docText">实现 IO 的继承正是错误发生的根源。一些错误是可恢复的；一些错误则发生在系统底层，位于程序可修正的范围之外。IO 标准库管理一系列<b><a class="docLink" href="ch08lev1sec7.html#gloss08_02" >条件状态（condition state）</a></b>成员，用来标记给定的 IO 对象是否处于可用状态，或者碰到了哪种特定的错误。<a class="docLink" href="ch08lev1sec2.html#ch08table02">表 8.2</a> 列出了标准库定义的一组函数和标记，提供访问和操纵流状态的手段。</p>
+	
+	<a name="ch08table02"></a>
+        <h5 class="docTableTitle">Table 8.2. IO Library Condition State</h5>
+        <h5 class="docTableTitle">表 8.2. IO 标准库的条件状态</h5>
+
+        <table cellspacing="0" class="allBorders" border="1" rules="none" cellpadding="5">
+          <colgroup>
+            <col width="150">
+            <col width="350">
+          </colgroup>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><span class="docEmphBoldItalic">strm</span><tt>::iostate</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Name of the machine-dependent integral type, defined by each <tt>iostream</tt> class that is used to define the condition states.</p>
+              <p class="docText">机器相关的整型名，由各个 <tt>iostream</tt> 类定义，用于定义条件状态</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><span class="docEmphBoldItalic">strm</span><tt>::badbit</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><span class="docEmphasis">strm</span><tt>::iostate</tt> value used to indicate that a stream is corrupted.</p>
+              <p class="docText"><span class="docEmphasis">strm</span><tt>::iostate</tt> 类型的值，用于指出被破坏的流</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><span class="docEmphBoldItalic">strm</span><tt>::failbit</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><span class="docEmphasis">strm</span><tt>::iostate</tt> value used to indicate that an IO operation failed.</p>
+              <p class="docText"><span class="docEmphasis">strm</span><tt>::iostate</tt> 类型的值，用于指出失败的 IO 操作</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><span class="docEmphBoldItalic">strm</span><tt>::eofbit</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><span class="docEmphasis">strm</span><tt>::iostate</tt> value used to indicate the a stream hit end-of-file.</p>
+              <p class="docText"><span class="docEmphasis">strm</span><tt>::iostate</tt> 类型的值，用于指出流已经到达文件结束符</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>s.eof()</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>true</tt> if <tt>eofbit</tt> in the stream <tt>s</tt> is set.</p>
+              <p class="docText">如果设置了流 <tt>s</tt> 的 <tt>eofbit</tt> 值，则该函数返回 <tt>true</tt></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>s.fail()</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>true</tt> if <tt>failbit</tt> in the stream <tt>s</tt> is set.</p>
+              <p class="docText">如果设置了流 <tt>s</tt> 的 <tt>failbit</tt> 值，则该函数返回 <tt>true</tt></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>s.bad()</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>true</tt> if <tt>badbit</tt> in the stream <tt>s</tt> is set.</p>
+              <p class="docText">如果设置了流 <tt>s</tt> 的 <tt>badbit</tt> 值，则该函数返回 <tt>true</tt></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>s.good()</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>true</tt> if the stream <tt>s</tt> is in a valid state.</p>
+              <p class="docText">如果流 <tt>s</tt> 处于有效状态，则该函数返回 <tt>true</tt></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>s.clear()</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Reset all condition values in the stream <tt>s</tt> to valid state.</p>
+              <p class="docText">将流 <tt>s</tt> 中的所有状态值都重设为有效状态</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>s.clear(flag)</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Set specified condition state(s) in <tt>s</tt> to valid. Type of <tt>flag</tt> is <span class="docEmphasis">strm</span><tt>::iostate</tt>.</p>
+              <p class="docText">将流 <tt>s</tt> 中的某个指定条件状态设置为有效。<tt>flag</tt> 的类型是 <span class="docEmphasis">strm</span><tt>::iostate</tt></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>s.setstate(flag)</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Add specified condition to <tt>s</tt>. Type of <tt>flag</tt> is <span class="docEmphasis">strm</span><tt>::iostate</tt>.</p>
+              <p class="docText">给流 <tt>s</tt> 添加指定条件。<tt>flag</tt> 的类型是 <span class="docEmphasis">strm</span><tt>::iostate</tt></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>s.rdstate()</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Returns current condition of <tt>s</tt> as an <span class="docEmphasis">strm</span><tt>::iostate</tt> value.</p>
+              <p class="docText">返回流 <tt>s</tt> 的当前条件，返回值类型为 <span class="docEmphasis">strm</span><tt>::iostate</tt></p>
+            </td>
+          </tr>
+        </table><br>
+
+        <p class="docText">As an example of an IO error, consider the following code:</p>
+        <p class="docText">考虑下面 IO 错误的例子：</p>
+        <pre>
+     int ival;
+     cin &gt;&gt; ival;
+</pre><br>
+
+        <p class="docText">If we enter <tt>Borges</tt> on the standard input, then <tt>cin</tt> will be put in an error state following the unsuccessful attempt to read a string of characters as an <tt>int</tt>. Similarly, <tt>cin</tt> will be in an error state if we enter an end-of-file. Had we entered 1024, then the read would be successful and <tt>cin</tt> would be in a good, non-error state.</p>
+        <p class="docText">如果在标准输入设备输入 <tt>Borges</tt>，则 <tt>cin</tt> 在尝试将输入的字符串读为 <tt>int</tt> 型数据失败后，会生成一个错误状态。类似地，如果输入文件结束符（end-of-file），<tt>cin</tt> 也会进入错误状态。而如果输入 1024，则成功读取，<tt>cin</tt> 将处于正确的无错误状态。</p>
+
+        <p class="docText">To be used for input or output, a stream must be in a non-error state. The easiest way to test whether a stream is okay is to test its truth value:</p>
+        <p class="docText">流必须处于无错误状态，才能用于输入或输出。检测流是否用的最简单的方法是检查其真值：</p>
+        <pre>
+          if (cin)
+               // <span class="docEmphItalicAlt">ok to use cin, it is in a valid state</span>
+
+          while (cin &gt;&gt; word)
+               // <span class="docEmphItalicAlt">ok: read operation successful ...</span>
+</pre><br>
+
+        <p class="docText">The <tt>if</tt> directly tests the state of the stream. The <tt>while</tt> does so indirectly by testing the stream returned from the expression in the condition. If that input operation succeeds, then the condition tests <tt>true</tt>.</p>
+	<p class="docText"><tt>if</tt> 语句直接检查流的状态，而 <tt>while</tt> 语句则检测条件表达式返回的流，从而间接地检查了流的状态。如果成功输入，则条件检测为 <tt>true</tt>。</p>
+	
+	<a name="ch08lev2sec3"></a>
+        <h4 class="docSection2Title">Condition States</h4>
+        <h4 class="docSection2Title">条件状态</h4>
+
+	<a name="idd1e58931"></a><a name="idd1e58938"></a><a name="idd1e58942"></a><a name="idd1e58946"></a><a name="idd1e58950"></a><a name="idd1e58958"></a><a name="idd1e58962"></a><a name="idd1e58966"></a><a name="idd1e58970"></a><a name="idd1e58974"></a><a name="idd1e58978"></a><a name="idd1e58982"></a><a name="idd1e58990"></a>
+        <p class="docText">Many programs need only know whether a stream is valid. Other programs need more fine-grained access to and control of the state of the stream. Rather than knowing that the stream is in an error state, we might want to know what kind of error was encountered. For example, we might want to distinguish between reaching end-of-file and encountering an error on the IO device.</p>
+        <p class="docText">许多程序只需知道是否有效。而某些程序则需要更详细地访问或控制流的状态，此时，除了知道流处于错误状态外，还必须了解它遇到了哪种类型的错误。例如，程序员也许希望弄清是到达了文件的结尾，还是遇到了 IO 设备上的错误。</p>
+
+        <p class="docText">Each stream object contains a condition state member that is managed through the <tt>setstate</tt> and <tt>clear</tt> operations. This state member has type <tt>iostate</tt>, which is a machine-dependent integral type defined by each <tt>iostream</tt> class. It is used as a collection of bits, much the way we used the <tt>int_quiz1</tt> variable to represent test scores in the example in <a class="docLink" href="ch05lev1sec3.html#ch05lev2sec5" >Section 5.3.1</a> (p. <a class="docLink" href="ch05lev1sec3.html#ch05lev2sec5" >156</a>).</p>
+        <p class="docText">所有流对象都包含一个条件状态成员，该成员由 <tt>setstate</tt> 和 <tt>clear</tt> 操作管理。这个状态成员为 <tt>iostate</tt> 类型，这是由各个 <tt>iostream</tt> 类分别定义的机器相关的整型。该状态成员以二进制位（bit）的形式使用，类似于<a class="docLink" href="ch05lev1sec3.html#ch05lev2sec5" >第 5.3.1 节</a>的例子中用于记录测验成绩的 <tt>int_quiz1</tt> 变量。</p>
+
+        <p class="docText">Each IO class also defines three <tt>const</tt> values of type <tt>iostate</tt> that represent particular bit patterns. These <tt>const</tt> values are used to indicate particular kinds of IO conditions. They can be used with the bitwise operators (<a class="docLink" href="ch05lev1sec3.html#ch05lev1sec3" >Section 5.3</a>, p. <a class="docLink" href="ch05lev1sec3.html#ch05lev1sec3" >154</a>) to test or set multiple flags in one operation.</p>
+        <p class="docText">每个 IO 类还定义了三个 <tt>iostate</tt> 类型的常量值，分别表示特定的位模式。这些常量值用于指出特定类型的 IO 条件，可与位操作符（<a class="docLink" href="ch05lev1sec3.html#ch05lev1sec3" >第 5.3 节</a>）一起使用，以便在一次操作中检查或设置多个标志。</p>
+
+        <p class="docText">The <tt>badbit</tt> indicates a system level failure, such as an unrecoverable read or write error. It is usually not possible to continue using a stream after such an error. The <tt>failbit</tt> is set after a recoverable error, such as reading a character when numeric data was expected. It is often possible to correct the problem that caused the <tt>failbit</tt> to be set. The <tt>eofbit</tt> is set when an end-of-file is encountered. Hitting end-of-file also sets the <tt>failbit</tt>.</p>
+        <p class="docText"><tt>badbit</tt> 标志着系统级的故障，如无法恢复的读写错误。如果出现了这类错误，则该流通常就不能再继续使用了。如果出现的是可恢复的错误，如在希望获得数值型数据时输入了字符，此时则设置 <tt>failbit</tt> 标志，这种导致设置 <tt>failbit</tt> 的问题通常是可以修正的。<tt>eofbit</tt> 是在遇到文件结束符时设置的，此时同时还设置了 <tt>failbit</tt>。</p>
+
+        <p class="docText">The state of the stream is revealed by the <tt>bad, fail, eof</tt>, and <tt>good</tt> operations. If any of <tt>bad, fail</tt>, or <tt>eof</tt> are <tt>true</tt>, then testing the stream itself will indicate that the stream is in an error state. Similarly, the <tt>good</tt> operation returns <tt>TRue</tt> if none of the other conditions is <tt>true</tt>.</p>
+	<p class="docText">流的状态由 <tt>bad</tt>、<tt>fail</tt>、<tt>eof</tt> 和 <tt>good</tt> 操作提示。如果 <tt>bad</tt>、<tt>fail</tt> 或者 <tt>eof</tt> 中的任意一个为 <tt>true</tt>，则检查流本身将显示该流处于错误状态。类似地，如果这三个条件没有一个为 <tt>true</tt>，则 <tt>good</tt> 操作将返回 <tt>true</tt>。</p>
+
+        <p class="docText">The <tt>clear</tt> and <tt>setstate</tt> operations change the state of the condition member. The <tt>clear</tt> operations put the condition back in its valid state. They are called after we have remedied whatever problem occurred and we want to reset the stream to its valid state. The <tt>setstate</tt> operation turns on the specified condition to indicate that a problem occurred. <tt>setstate</tt> leaves the existing state variables unchanged except that it adds the additional indicated state(s).</p>
+	<p class="docText"><tt>clear</tt> 和 <tt>setstate</tt> 操作用于改变条件成员的状态。<tt>clear</tt> 操作将条件重设为有效状态。在流的使用出现了问题并做出补救后，如果我们希望把流重设为有效状态，则可以调用 <tt>clear</tt> 操作。使用 <tt>setstate</tt> 操作可打开某个指定的条件，用于表示某个问题的发生。除了添加的标记状态，<tt>setstate</tt> 将保留其他已存在的状态变量不变。</p>
+	
+	<a name="ch08lev2sec4"></a>
+        <h4 class="docSection2Title">Interrogating and Controlling the State of a Stream</h4>
+        <h4 class="docSection2Title">流状态的查询和控制</h4>
+
+        <p class="docText">We might manage an input operation as follows:</p>
+        <p class="docText">可以如下管理输入操作</p>
+        <pre>
+    int ival;
+    // <span class="docEmphItalicAlt">read</span> <span class="docEmphasis">cin</span> <span class="docEmphItalicAlt">and test only for EOF; loop is executed even if there are other IO failures</span>
+    while (cin &gt;&gt; ival, !cin.eof()) {
+        if (cin.bad())         // <span class="docEmphItalicAlt">input stream is corrupted; bail out</span>
+            throw runtime_error("IO stream corrupted");
+        if (cin.fail()) {                        // <span class="docEmphItalicAlt">bad input</span>
+            cerr&lt;&lt; "bad data, try again";        // <span class="docEmphItalicAlt">warn the user</span>
+            cin.clear(istream::failbit);         // <span class="docEmphItalicAlt">reset the stream</span>
+            continue;                            // <span class="docEmphItalicAlt">get next input</span>
+        }
+        // <span class="docEmphItalicAlt">ok to process</span> <span class="docEmphasis">ival</span>
+    }
+</pre><br>
+
+	<a name="idd1e59160"></a><a name="idd1e59167"></a><a name="idd1e59172"></a><a name="idd1e59180"></a><a name="idd1e59185"></a><a name="idd1e59189"></a><a name="idd1e59195"></a><a name="idd1e59202"></a><a name="idd1e59208"></a><a name="idd1e59216"></a><a name="idd1e59222"></a><a name="idd1e59226"></a><a name="idd1e59230"></a><a name="idd1e59235"></a>
+        <p class="docText">This loop reads <tt>cin</tt> until end-of-file or an unrecoverable read error occurs. The condition uses a comma operator (<a class="docLink" href="ch05lev1sec9.html#ch05lev1sec9" >Section 5.9</a>, p. <a class="docLink" href="ch05lev1sec9.html#ch05lev1sec9" >168</a>). Recall that the comma operator executes by evaluating each operand and returns its rightmost operand as its result. The condition, therefore, reads <tt>cin</tt> and ignores its result. The result of the condition is the result of <tt>!cin.eof()</tt>. If <tt>cin</tt> hit end-of-file, the condition is false and we fall out of the loop. If <tt>cin</tt> did not hit end-of-file, we enter the loop, regardless of any other error the read might have encountered.</p>
+        <p class="docText">这个循环不断读入 <tt>cin</tt>，直到到达文件结束符或者发生不可恢复的读取错误为止。循环条件使用了逗号操作符（<a class="docLink" href="ch05lev1sec9.html#ch05lev1sec9" >第 5.9 节</a>）。回顾逗号操作符的求解过程：首先计算它的每一个操作数，然后返回最右边操作数作为整个操作的结果。因此，循环条件只读入 <tt>cin</tt> 而忽略了其结果。该条件的结果是 <tt>!cin.eof()</tt> 的值。如果 <tt>cin</tt> 到达文件结束符，条件则为假，退出循环。如果 <tt>cin</tt> 没有到达文件结束符，则不管在读取时是否发生了其他可能遇到的错误，都进入循环。</p>
+
+        <p class="docText">Inside the loop, we first check whether the stream is corrupted. If so, we exit by throwing an exception (<a class="docLink" href="ch06lev1sec13.html#ch06lev1sec13" >Section 6.13</a>, p. <a class="docLink" href="ch06lev1sec13.html#ch06lev1sec13" >215</a>). If the input was invalid, we print a warning, and clear the <tt>failbit</tt> state. In this case, we execute a <tt>continue</tt> (<a class="docLink" href="ch06lev1sec11.html#ch06lev1sec11" >Section 6.11</a>, p. <a class="docLink" href="ch06lev1sec11.html#ch06lev1sec11" >214</a>) to return to the start of the <tt>while</tt> to read another value into <tt>ival</tt>. If there were no errors, the rest of the loop can safely use <tt>ival</tt>.</p>
+	<p class="docText">在循环中，首先检查流是否已破坏。如果是的放，抛出<a class="docLink" href="ch06lev1sec13.html#ch06lev1sec13" >异常</a>并退出循环。如果输入无效，则输出警告并清除 <tt>failbit</tt> 状态。在本例中，执行 <tt>continue</tt> 语句（<a class="docLink" href="ch06lev1sec11.html#ch06lev1sec11" >第 6.11 节</a>）回到 <tt>while</tt> 的开头，读入另一个值 <tt>ival</tt>。如果没有出现任何错误，那么循环体中余下的部分则可以很安全地使用 <tt>ival</tt>。</p>
+	
+	<a name="ch08lev2sec5"></a>
+        <h4 class="docSection2Title">Accessing the Condition State</h4>
+        <h4 class="docSection2Title">条件状态的访问</h4>
+
+        <p class="docText">The <tt>rdstate</tt> member function returns an <tt>iostate</tt> value that corresponds to the entire current condition state of the stream:</p>
+        <p class="docText"><tt>rdstate</tt> 成员函数返回一个 <tt>iostate</tt> 类型值，该值对应于流当前的整个条件状态：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">remember current state of</span> <span class="docEmphasis">cin</span>
+     istream::iostate old_state = cin.rdstate();
+     cin.clear();
+     process_input();  // <span class="docEmphItalicAlt">use</span> <span class="docEmphasis">cin</span>
+     cin.clear(old_state); // <span class="docEmphItalicAlt">now reset</span> <span class="docEmphasis">cin</span> <span class="docEmphItalicAlt">to old state</span>
+</pre><br>
+
+        <a name="ch08lev2sec6"></a>
+        <h4 class="docSection2Title">Dealing with Multiple States</h4>
+        <h4 class="docSection2Title">多种状态的处理</h4>
+
+        <p class="docText">Often we need to set or clear multiple state bits. We could do so by making multiple calls to the <tt>setstate</tt> or <tt>clear</tt> functions. Alternatively, we could use the bitwise OR (<a class="docLink" href="ch05lev1sec3.html#ch05lev1sec3" >Section 5.3</a>, p. <a class="docLink" href="ch05lev1sec3.html#ch05lev1sec3" >154</a>) operator to generate a value to pass two or more state bits in a single call. The bitwise OR generates an integral value using the bit patterns of its operands. For each bit in the result, the bit is 1 if the corresponding bit is 1 in either of its operands. For example:</p>
+        <p class="docText">常常会出现需要设置或清除多个状态二进制位的情况。此时，可以通过多次调用 <tt>setstate</tt> 或者 <tt>clear</tt> 函数实现。另外一种方法则是使用按位或（OR）操作符（<a class="docLink" href="ch05lev1sec3.html#ch05lev1sec3" >第 5.3 节</a>）在一次调用中生成“传递两个或更多状态位”的值。按位或操作使用其操作数的二进制位模式产生一个整型数值。对于结果中的每一个二进制位，如果其值为 1，则该操作的两个操作数中至少有一个的对应二进制位是 1。例如：</p>
+        <pre>
+   // <span class="docEmphItalicAlt">sets both the</span> <span class="docEmphasis">badbit</span> <span class="docEmphItalicAlt">and the</span> <span class="docEmphasis">failbit</span>
+   is.setstate(ifstream::badbit | ifstream::failbit);
+</pre><br>
+
+        <p class="docText">tells the object <tt>is</tt> to turn on both the <tt>failbit</tt> and the <tt>badbit</tt>. The argument</p>
+        <p class="docText">将对象 <tt>is</tt> 的 <tt>failbit</tt> 和 <tt>badbit</tt> 位同时打开。实参：</p>
+        <pre>
+     is.badbit | is.failbit
+</pre><br>
+
+        <p class="docText">creates a value in which the bits corresponding to the <tt>badbit</tt> and to the <tt>failbit</tt> are both turned onthat is they are both set to 1. All other bits in the value are zero. The call to <tt>setstate</tt> uses this value to turn on the bits corresponding to <tt>badbit</tt> and <tt>failbit</tt> in the stream's condition state member.</p>
+	<p class="docText">生成了一个值，其对应于 <tt>badbit</tt> 和 <tt>failbit</tt> 的位都打开了，也就是将这两个位都设置为 1，该值的其他位则都为 0。在调用 <tt>setstate</tt> 时，使用这个值来开启流条件状态成员中对应的 <tt>badbit</tt> 和 <tt>failbit</tt> 位。</p>
+
+  <a name="ch08sb02"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 8.2</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch08qa2q1"></a><b>Exercise 8.3:</b></td>
+
+                    <td>
+                      <p class="docText">Write a function that takes and returns an <tt>istream&amp;</tt>. The function should read the stream until it hits end-of-file. The function should print what it reads to the standard output. Reset the stream so that it is valid and return the stream.</p>
+                      <p class="docText">编写一个函数，其唯一的形参和返回值都是 <tt>istream&amp;</tt> 类型。该个函数应一直读取流直到到达文件结束符为止，还应将读到的内容输出到标准输出中。最后，重设流使其有效，并返回该流。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch08qa2q2"></a><b>Exercise 8.4:</b></td>
+
+                    <td>
+                      <p class="docText">Test your function by calling it passing <tt>cin</tt> as an argument.</p>
+                      <p class="docText">通过以 <tt>cin</tt> 为实参实现调用来测试上题编写的函数。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch08qa2q3"></a><b>Exercise 8.5:</b></td>
+
+                    <td>
+                      <p class="docText">What causes the following <tt>while</tt> to terminate?</p>
+                      <p class="docText">导致下面的 <tt>while</tt> 终止的原因是什么？</p>
+                      <pre>
+    while (cin &gt;&gt; i) /* . . . */
+</pre><br>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>	
+	<a href="21001535.html" ><img src="images/pixel.gif"  alt="" width="1" height="1" border="0"></a>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch08lev1sec1.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch08lev1sec3.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

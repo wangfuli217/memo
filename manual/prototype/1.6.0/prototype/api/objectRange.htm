@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>ObjectRange - Prototype JavaScript 框架</title>
+	<link href="../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>ObjectRange</h2>
+		<div id="method-list">
+			<ul><li><a href="objectRange.htm#method-include">include</a></li></ul>
+		</div>
+		<div id="abody">
+			<p>
+				排列（Range）描述了遵循某种规则变化的一系列的值。值必须是可推导的，更确切地说，需要实现一个 <code>succ</code>
+				方法让我们能够从一个值步进到下一个值（它的 <em>后继者</em>）。<br />
+				<strong>译注：</strong>对于这里的 Range，大多数翻译为“范围”，但我觉得它的表现更类似于数学中的“数列”，
+				因为这里明显不限于数值，故译为“排列”。
+			</p>
+			<p>
+				Prototype 为 <code>Number</code> 和 <code>String</code> 提供了相应的 <code>succ</code> 方法。对于自定义对象，
+				如果要启用排列，你必须实现符合相应语义的 <code>succ</code> 方法。
+			</p>
+			<p>
+				<code>ObjectRange</code> 混入了 <a href="enumerable.htm" >Enumerable</a>，从而使得排列具有多方面的用途。
+				然而，需要注意的是，为获得更好的性能，通常需要重写 <a href="objectRange/include.htm" >include</a> 方法。
+			</p>
+			<p>
+				虽然 <code>ObjectRange</code> 提供了一个构造器，但获取排列的方法还是应该优先使用 <a href="utility/dollar-r.htm" >$R</a>
+				工具函数。两者是完全等同的（只是后者更为简捷）。
+			</p>
+			<h3>样例</h3>
+			<p>毋庸置疑，数值的排列是最为常见的：</p>
+			<pre><code class="javascript">$A($R(1, 5)).join(', ') 
+// -> '1, 2, 3, 4, 5' 
+$R(1, 5).zip(
+	['one', 'two', 'three', 'four', 'five'], 
+	function(tuple) { 
+		return tuple.join(' = '); 
+	}
+)
+// -> ['1 = one', '2 = two', '3 = three', '4 = four', '5 = five'] </code></pre>
+			<p>
+				<strong>注意基于 <code>String</code> 的排列</strong>：在 <code>String</code> 的 <a href="string/succ.htm" >succ</a>
+				方法中已有描述，它的范围并不仅限于英语字母表，而是与当前浏览器的字符集一致：</p>
+			<pre><code class="javascript">$A($R('a', 'e')) 
+// -> ['a', 'b', 'c', 'd', 'e']，这一点都不奇怪
+$A($R('ax', 'ba')) 
+// -> 噢！非常大的数组，开始部分是 ['ax', 'ay', 'az', 'a{', 'a|', 'a}', 'a~'...] </code></pre>
+		</div>
+		<div id="method-excerpts">
+			<h3>方法</h3>
+			<div id="method-include" class="mexcerpt">
+				<h4><a href="objectRange/include.htm" >include</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">include(value) -> Boolean</code></pre>
+					<p>判断排列中是否包含指定的值。</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

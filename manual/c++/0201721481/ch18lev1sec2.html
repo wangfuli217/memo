@@ -1,0 +1,676 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 18.2.  Run-Time Type Identification</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch18lev1sec1.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch18lev1sec3.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch18lev1sec2"></a>
+
+        <h3 class="docSection1Title">18.2. Run-Time Type Identification</h3>
+        <h3 class="docSection1Title">18.2. 运行时类型识别</h3>
+
+        <p class="docText">Run-time Type Identification (RTTI) allows programs that use pointers or references to base classes to retrieve the actual derived types of the objects to which these pointers or references refer.</p>
+        <p class="docText">通过运行时类型识别（RTTI），程序能够使用基类的指针或引用来检索这些指针或引用所指对象的实际派生类型。</p>
+
+        <p class="docText">RTTI is provided through two operators:</p>
+        <p class="docText">通过下面两个操作符提供 RTTI：</p>
+
+        <div style="font-weight:bold">
+          <ol class="docList" type="1">
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">The <tt>typeid</tt> operator, which returns the actual type of the object referred to by a pointer or a reference</p>
+                <p class="docList"><tt>typeid</tt> 操作符，返回指针或引用所指对象的实际类型。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">The <tt>dynamic_cast</tt> operator, which safely converts from a pointer or reference to a base type to a pointer or reference to a derived type</p>
+                <p class="docList"><tt>dynamic_cast</tt> 操作符，将基类类型的指针或引用安全地转换为派生类型的指针或引用。</p>
+              </div>
+            </li>
+          </ol>
+        </div><a name="ch18note14"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">These operators return dynamic type information only for classes with one or more virtual functions. For all other types, information for the static (i.e., compile-time) type is returned.</p>
+                <p class="docText">这些操作符只为带有一个或多个虚函数的类返回动态类型信息，对于其他类型，返回静态（即编译时）类型的信息。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">The RTTI operators execute at run time for classes with virtual functions, but are evaluated at compile time for all other types.</p>
+        <p class="docText">对于带虚函数的类，在运行时执行 RTTI 操作符，但对于其他类型，在编译时计算 RTTI 操作符。</p>
+
+<a name="idd1e148417"></a><a name="idd1e148421"></a><a name="idd1e148427"></a><a name="idd1e148433"></a><a name="idd1e148440"></a><a name="idd1e148446"></a><a name="idd1e148454"></a>
+        <p class="docText">Dynamic casts are needed when we have a reference or pointer to a base class but need to perform operations from the derived class that are not part of the base class. Ordinarily, the best way to get derived behavior from a pointer to base is to do so through a virtual function. When we use virtual functions, the compiler automatically selects the right function according to the actual type of the object.</p>
+        <p class="docText">当具有基类的引用或指针，但需要执行不是基类组成部分的派生类操作的时候，需要动态的强制类型转换。通常，从基类指针获得派生类行为最好的方法是通过虚函数。当使用虚函数的时候，编译器自动根据对象的实际类型选择正确的函数。</p>
+
+        <p class="docText">In some situations however, the use of virtual functions is not possible. In these cases, RTTI offers an alternate mechanism. However, this mechanism is more error-prone than using virtual member functions: The programmer must <span class="docEmphasis">know</span> to which type the object should be cast and must check that the cast was performed successfully.</p>
+        <p class="docText">但是，在某些情况下，不可能使用虚函数。在这些情况下，RTTI 提供了可选的机制。然而，这种机制比使用虚函数更容易出错：程序员必须<span class="docEmphasis">知道</span>应该将对象强制转换为哪种类型，并且必须检查转换是否成功执行了。</p>
+
+<a name="ch18note15"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Dynamic casts should be used with caution. Whenever possible, it is much better to define and use a virtual function rather than to take over managing the types directly.</p>
+                <p class="docText">使用动态强制类型转换要小心。只要有可能，定义和使用虚函数比直接接管类型管理好得多。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch18lev2sec8"></a>
+
+        <h4 class="docSection2Title">18.2.1. The <tt>dynamic_cast</tt> Operator</h4>
+        <h4 class="docSection2Title">18.2.1. <tt>dynamic_cast</tt> 操作符</h4>
+
+<a name="ch18term6"></a>
+        <p class="docText">The <b><a class="docLink" href="ch18lev1sec9.html#gloss18_06" ><span class="docEmphStrong"><tt>dynamic_cast</tt> operator</span></a></b> can be used to convert a reference or pointer to an object of base type to a reference or pointer to another type in the same hierarchy. The pointer used with a <tt>dynamic_cast</tt> must be validit must either be <tt>0</tt> or point to an object.</p>
+        <p class="docText">可以使用 <b><a class="docLink" href="ch18lev1sec9.html#gloss18_06" ><span class="docEmphStrong"><tt>dynamic_cast</tt> 操作符</span></a></b>将基类类型对象的引用或指针转换为同一继承层次中其他类型的引用或指针。与 <tt>dynamic_cast</tt> 一起使用的指针必须是有效的——它必须为 <tt>0</tt> 或者指向一个对象。</p>
+
+        <p class="docText">Unlike other casts, a <tt>dynamic_cast</tt> involves a run-time type check. If the object bound to the reference or pointer is not an object of the target type, then the <tt>dynamic_cast</tt> fails. If a <tt>dynamic_cast</tt> to a pointer type fails, the result of the <tt>dynamic_cast</tt> is the value 0. If a <tt>dynamic_cast</tt> to a reference type fails, then an exception of type <tt>bad_cast</tt> is thrown.</p>
+        <p class="docText">与其他强制类型转换不同，<tt>dynamic_cast</tt> 涉及运行时类型检查。如果绑定到引用或指针的对象不是目标类型的对象，则 <tt>dynamic_cast</tt> 失败。如果转换到指针类型的 <tt>dynamic_cast</tt> 失败，则 <tt>dynamic_cast</tt> 的结果是 0 值；如果转换到引用类型的 <tt>dynamic_cast</tt> 失败，则抛出一个 <tt>bad_cast</tt> 类型的异常。</p>
+
+        <p class="docText">The <tt>dynamic_cast</tt> operator therefore performs two operations at once. It begins by verifying that the requested cast is valid. Only if the cast is valid does the operator actually do the cast. In general, the type of the object to which the reference or pointer is bound isn't known at compile-time. A pointer to base can be assigned to point to a derived object. Similarly, a reference to base can be initialized by a derived object. As a result, the verification that the <tt>dynamic_cast</tt> operator performs must be done at run time.</p>
+        <p class="docText">因此，<tt>dynamic_cast</tt> 操作符一次执行两个操作。它首先验证被请求的转换是否有效，只有转换有效，操作符才实际进行转换。一般而言，引用或指针所绑定的对象的类型在编译时是未知的，基类的指针可以赋值为指向派生类对象，同样，基类的引用也可以用派生类对象初始化，因此，<tt>dynamic_cast</tt> 操作符执行的验证必须在运行时进行。</p>
+
+<a name="ch18lev3sec16"></a>
+        <h5 class="docSection3Title">Using the <tt>dynamic_cast</tt> Operator</h5>
+        <h5 class="docSection3Title">使用 <tt>dynamic_cast</tt> 操作符</h5>
+
+        <p class="docText">As a simple example, assume that <tt>Base</tt> is a class with at least one virtual function and that class <tt>Derived</tt> is derived from <tt>Base</tt>. If we have a pointer to <tt>Base</tt> named <tt>basePtr</tt>, we can cast it at run time to a pointer to <tt>Derived</tt> as follows:</p>
+        <p class="docText">作为例子，假定 <tt>Base</tt> 是至少带一个虚函数的类，并且 <tt>Derived</tt> 类派生于 <tt>Base</tt> 类。如果有一个名为 <tt>basePtr</tt> 的指向 <tt>Base</tt> 的指针，就可以像这样在运行时将它强制转换为指向 <tt>Derived</tt> 的指针：</p>
+        <pre>
+     if (Derived *derivedPtr = dynamic_cast&lt;Derived*&gt;(basePtr))
+     {
+         // <span class="docEmphItalicAlt">use the</span> <span class="docEmphasis">Derived</span> <span class="docEmphItalicAlt">object to which</span> <span class="docEmphasis">derivedPtr</span> <span class="docEmphItalicAlt">points</span>
+     } else { // <span class="docEmphasis">BasePtr</span> <span class="docEmphItalicAlt">points at a</span> <span class="docEmphasis">Base</span> <span class="docEmphItalicAlt">object</span>
+         // <span class="docEmphItalicAlt">use the</span> <span class="docEmphasis">Base</span> <span class="docEmphItalicAlt">object to which</span> <span class="docEmphasis">basePtr</span> <span class="docEmphItalicAlt">points</span>
+     }
+</pre><br>
+
+<a name="idd1e148626"></a><a name="idd1e148630"></a><a name="idd1e148638"></a><a name="idd1e148644"></a><a name="idd1e148651"></a><a name="idd1e148661"></a>
+        <p class="docText">At run time, if <tt>basePtr</tt> actually points to a <tt>Derived</tt> object, then the cast will be successful, and <tt>derivedPtr</tt> will be initialized to point to the <tt>Derived</tt> object to which <tt>basePtr</tt> points. Otherwise, the result of the cast is 0, meaning that <tt>derivedPtr</tt> is set to 0, and the condition in the <tt>if</tt> fails.</p>
+        <p class="docText">在运行时，如果 <tt>basePtr</tt> 实际指向 <tt>Derived</tt> 对象，则转换将成功，并且 <tt>derivedPtr</tt> 将被初始化为指向 <tt>basePtr</tt> 所指的 <tt>Derived</tt> 对象；否则，转换的结果是 0，意味着将 <tt>derivedPtr</tt> 置为 0，并且 <tt>if</tt> 中的条件失败。</p>
+
+<a name="ch18note16"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">We can apply a <tt>dynamic_cast</tt> to a pointer whose value is 0. The result of doing so is 0.</p>
+                <p class="docText">可以对值为 0 的指针应用 <tt>dynamic_cast</tt>，这样做的结果是 0。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">By checking the value of <tt>derivedPtr</tt>, the code inside the <tt>if</tt> knows that it is operating on a <tt>Derived</tt> object. It is safe for that code to use <tt>Derived</tt> operations. If the <tt>dynamic_cast</tt> fails because <tt>basePtr</tt> refers to a <tt>Base</tt> object, then the <tt>else</tt> clause does processing appropriate to <tt>Base</tt> instead. The other advantage of doing the check inside the <tt>if</tt> condition is that it is not possible to insert code between the <tt>dynamic_cast</tt> and testing the result of the cast. It is, therefore, not possible to use the <tt>derivedPtr</tt> inadvertently before testing that the cast was successful. A third advantage is that the pointer is not accessible outside the <tt>if</tt>. If the cast fails, then the unbound pointer is not available for use in later cases where the test might be forgotten.</p>
+        <p class="docText">通过检查 <tt>derivedPtr</tt> 的值，<tt>if</tt> 内部的代码知道它是在操作 <tt>Derived</tt> 对象，该代码使用 <tt>Derived</tt> 的操作是安全的。如果 <tt>dynamic_cast</tt> 因 <tt>basePtr</tt> 引用了 <tt>Base</tt> 对象而失败，则 <tt>else</tt> 子句进行适应于 <tt>Base</tt> 的处理来代替。在 <tt>if</tt> 条件内部进行检查的另一好处是，不可能在 <tt>dynamic_cast</tt> 和测试转换结果之间插入代码，因此，不可能在测试转换是否成功之前不经意地使用 <tt>derivedPtr</tt>。第三个好处是，在 <tt>if</tt> 外部不能访问该指针，如果转换失败，则在后面的忘了测试的地方，未绑定的指针是不可用的。</p>
+
+<a name="ch18note17"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="116" height="74" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/bestpractices.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Performing a <tt>dynamic_cast</tt> in a condition ensures that the cast and test of its result are done in a single expression.</p>
+                <p class="docText">在条件中执行 <tt>dynamic_cast</tt> 保证了转换和其结果测试在一个表达式中进行。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch18lev3sec17"></a>
+
+        <h5 class="docSection3Title">Using a <tt>dynamic_cast</tt> and Reference Types</h5>
+        <h5 class="docSection3Title">使用 <tt>dynamic_cast</tt> 和引用类型</h5>
+
+        <p class="docText">In the previous example, we used a <tt>dynamic_cast</tt> to convert a pointer to base to a pointer to derived. A <tt>dynamic_cast</tt> can also be used to convert a reference to base to a reference to derived. The form for this a <tt>dynamic_cast</tt> operation is the following,</p>
+        <p class="docText">在前面例子中，使用了 <tt>dynamic_cast</tt> 将基类指针转换为派生类指针，也可以使用 <tt>dynamic_cast</tt> 将基类引用转换为派生类引用，这种 <tt>dynamic_cast</tt> 操作的形式如下：</p>
+        <pre>
+     dynamic_cast&lt; Type&amp; &gt;(val)
+</pre><br>
+
+        <p class="docText">where <tt>Type</tt> is the target type of the conversion, and <tt>val</tt> is an object of base class type.</p>
+        <p class="docText">这里，<tt>Type</tt> 是转换的目标类型，而 <tt>val</tt> 是基类类型的对象。</p>
+
+        <p class="docText">The <tt>dynamic_cast</tt> operation converts the operand <tt>val</tt> to the desired type <tt>Type&amp;</tt> only if <tt>val</tt> actually refers to an object of the type <tt>Type</tt> or is an object of a type derived from <tt>Type</tt>.</p>
+	<p class="docText">只有当 <tt>val</tt> 实际引用一个 <tt>Type</tt> 类型对象，或者 <tt>val</tt> 是一个 <tt>Type</tt> 派生类型的对象的时候，<tt>dynamic_cast</tt> 操作才将操作数 <tt>val</tt> 转换为想要的 <tt>Type&amp;</tt> 类型。</p>
+
+        <p class="docText">Because there is no such thing as a null reference, it is not possible to use the same checking strategy for references that is used for pointer casts. Instead, when a cast fails, it throws a <tt>std::bad_cast</tt> exception. This exception is defined in the <tt>typeinfo</tt> library header.</p>
+        <p class="docText">因为不存在空引用，所以不可能对引用使用用于指针强制类型转换的检查策略，相反，当转换失败的时候，它抛出一个 <tt>std::bad_cast</tt> 异常，该异常在库头文件 <tt>typeinfo</tt> 中定义。</p>
+
+        <p class="docText">We might rewrite the previous example to use references as follows:</p>
+        <p class="docText">可以重写前面的例子如下，以便使用引用：</p>
+        <pre>
+     void f(const Base &amp;b)
+     {
+        try {
+            const Derived &amp;d = dynamic_cast&lt;const Derived&amp;&gt;(b);
+        // <span class="docEmphItalicAlt">use the</span> <span class="docEmphasis">Derived</span> <span class="docEmphItalicAlt">object to which</span> <span class="docEmphasis">b</span> <span class="docEmphItalicAlt">referred</span>
+        } catch (bad_cast) {
+            // <span class="docEmphItalicAlt">handle the fact that the cast failed</span>
+        }
+     }
+</pre><br>
+        <a name="ch18sb07"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 18.2.1</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch18qa6q1"></a><b>Exercise 18.13:</b></td>
+
+                    <td>
+<a name="idd1e148854"></a><a name="idd1e148860"></a><a name="idd1e148866"></a><a name="idd1e148874"></a><a name="idd1e148879"></a>
+                      <p class="docText">Given the following class hierarchy in which each class defines a <tt>public</tt> default constructor and virtual destructor,</p>
+                      <p class="docText">给定下面的类层次，其中每个类都定义了 <tt>public</tt> 默认构造函数和虚析构函数。</p>
+                      <pre>
+     class A { /* ... */ };
+     class B : public A { /* ... */ };
+     class C : public B { /* ... */ };
+     class D : public B, public A { /* ... */ };
+</pre><br>
+
+                      <p class="docText">which, if any, of the following <tt>dynamic_casts</tt> fail?</p>
+                      <p class="docText">如果有，下面哪些 <tt>dynamic_casts</tt> 失败？</p>
+                      <pre>
+     (a) A *pa = new C;
+         B *pb = dynamic_cast&lt; B* &gt;(pa);
+
+     (b) B *pb = new B;
+         C *pc = dynamic_cast&lt; C* &gt;(pb);
+
+     (c) A *pa = new D;
+         B *pb = dynamic_cast&lt; B* &gt;(pa);
+</pre><br>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+<a name="ch18qa6q2"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 18.14:</b></td>
+
+                    <td>
+                      <p class="docText">What would happen in the last conversion in the previous exercise if both <tt>D</tt> and <tt>B</tt> inherited from <tt>A</tt> as a virtual base class?</p>
+                      <p class="docText">如果 <tt>D</tt> 和 <tt>B</tt> 都以 <tt>A</tt> 为虚基类，上题最后一个转换中将发生什么？</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+<a name="ch18qa6q3"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 18.15:</b></td>
+
+                    <td>
+                      <p class="docText">Using the class hierarchy defined in the previous exercise, rewrite the following piece of code to perform a reference <tt>dynamic_cast</tt> to convert the expression <tt>*pa</tt> to the type <tt>C&amp;</tt>:</p>
+                      <p class="docText">使用上面习题中定义的类层次，重写下面代码片段，以便执行 <tt>dynamic_cast</tt> 将表达式 <tt>*pa</tt> 转换为 <tt>C&amp;</tt> 类型：</p>
+                      <pre>
+     if (C *pc = dynamic_cast&lt; C* &gt;(pa))
+         // <span class="docEmphItalicAlt">use C's members</span>
+     } else {
+         // <span class="docEmphItalicAlt">use A's members</span>
+     }
+</pre><br>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+<a name="ch18qa6q4"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 18.16:</b></td>
+
+                    <td>
+                      <p class="docText">Explain when you would use <tt>dynamic_cast</tt> instead of a virtual function.</p>
+                      <p class="docText">解释什么时候可以使用 <tt>dynamic_cast</tt> 代替虚函数。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a name="ch18lev2sec9"></a>
+
+        <h4 class="docSection2Title">18.2.2. The <tt>typeid</tt> Operator</h4>
+        <h4 class="docSection2Title">18.2.2. <tt>typeid</tt> 操作符</h4>
+
+<a name="ch18term20"></a>
+        <p class="docText">The second operator provided for RTTI is the <b><a class="docLink" href="ch18lev1sec9.html#gloss18_20" ><span class="docEmphStrong"><tt>typeid</tt> operator</span></a></b>. The <tt>typeid</tt> operator allows a program to ask of an expression: What type are you?</p>
+        <p class="docText">为 RTTI 提供的第二个操作符是 <b><a class="docLink" href="ch18lev1sec9.html#gloss18_20" ><span class="docEmphStrong"><tt>typeid</tt> 操作符</span></a></b>。<tt>typeid</tt> 操作符使程序能够问一个表达式：你是什么类型？</p>
+
+        <p class="docText">A <tt>typeid</tt> expression has the form</p>
+        <p class="docText"><tt>typeid</tt> 表达式形如：</p>
+        <pre>
+     typeid(e)
+</pre><br>
+
+        <p class="docText">where <tt>e</tt> is any expression or a type name.</p>
+        <p class="docText">这里 <tt>e</tt> 是任意表达式或者是类型名。</p>
+
+        <p class="docText">If the type of the expression is a class type and that class contains one or more virtual functions, then the dynamic type of the expression may differ from its static compile-time type. For example, if the expression dereferences a pointer to a base class, then the static compile-time type of that expression is the base type. However, if the pointer actually addresses a derived object, then the <tt>typeid</tt> operator will say that the type of the expression is the derived type.</p>
+        <p class="docText">如果表达式的类型是类类型且该类包含一个或多个虚函数，则表达式的动态类型可能不同于它的静态编译时类型。例如，如果表达式对基类指针解引用，则该表达式的静态编译时类型是基类类型；但是，如果指针实际指向派生类对象，则 <tt>typeid</tt> 操作符将说表达式的类型是派生类型。</p>
+
+<a name="idd1e149032"></a><a name="idd1e149036"></a><a name="idd1e149043"></a><a name="idd1e149051"></a><a name="idd1e149061"></a><a name="idd1e149069"></a><a name="idd1e149076"></a>
+        <p class="docText">The <tt>typeid</tt> operator can be used with expressions of any type. Expressions of built-in type as well as constants can be used as operands for the <tt>typeid</tt> operator. When the operand is not of class type or is a class without virtual functions, then the <tt>typeid</tt> operator indicates the static type of the operand. When the operand has a class-type that defines at least one virtual function, then the type is evaluated at run time.</p>
+        <p class="docText"><tt>typeid</tt> 操作符可以与任何类型的表达式一起使用。内置类型的表达式以及常量都可以用作 <tt>typeid</tt> 操作符的操作数。如果操作数不是类类型或者是没有虚函数的类，则 <tt>typeid</tt> 操作符指出操作数的静态类型；如果操作数是定义了至少一个虚函数的类类型，则在运行时计算类型。</p>
+
+        <p class="docText">The result of a <tt>typeid</tt> operation is a reference to an object of a library type named <tt>type_info</tt>. <a class="docLink" href="ch18lev1sec2.html#ch18lev2sec11">Section 18.2.4</a> (p. <a class="docLink" href="ch18lev1sec2.html#ch18lev2sec11">779</a>) covers this type in more detail. To use the <tt>type_info</tt> class, the library header <tt>typeinfo</tt> must be included.</p>
+        <p class="docText"><tt>typeid</tt> 操作符的结果是名为 <tt>type_info</tt> 的标准库类型的对象引用，<a class="docLink" href="ch18lev1sec2.html#ch18lev2sec11">第 18.2.4 节</a>将更详细地讨论这个类型。要使用 <tt>type_info</tt> 类，必须包含库头文件 <tt>typeinfo</tt>。</p>
+
+<a name="ch18lev3sec18"></a>
+<a name="ch18lev3sec18"></a>
+        <h5 class="docSection3Title">Using the <tt>typeid</tt> Operator</h5>
+        <h5 class="docSection3Title">使用 <tt>typeid</tt> 操作符</h5>
+
+        <p class="docText">The most common use of <tt>typeid</tt> is to compare the types of two expressions or to compare the type of an expression to a specified type:</p>
+        <p class="docText"><tt>typeid</tt> 最常见的用途是比较两个表达式的类型，或者将表达式的类型与特定类型相比较：</p>
+        <pre>
+     Base *bp;
+     Derived *dp;
+     // <span class="docEmphItalicAlt">compare type at run time of two objects</span>
+     if (typeid(*bp) == typeid(*dp)) {
+         // <span class="docEmphasis">bp</span> <span class="docEmphItalicAlt">and</span> <span class="docEmphasis">dp</span> <span class="docEmphItalicAlt">point to objects of the same type</span>
+     }
+     // <span class="docEmphItalicAlt">test whether run time type is a specific type</span>
+     if (typeid(*bp) == typeid(Derived)) {
+         // <span class="docEmphasis">bp</span> <span class="docEmphItalicAlt">actually points to a</span> <span class="docEmphasis">Derived</span>
+     }
+</pre><br>
+
+        <p class="docText">In the first <tt>if</tt>, we compare the actual types of the objects to which <tt>bp</tt> and <tt>dp</tt> point. If they both point to the same type, then the test succeeds. Similarly, the second <tt>if</tt> succeeds if <tt>bp</tt> currently points to a <tt>Derived</tt> object.</p>
+        <p class="docText">第一个 <tt>if</tt> 中，比较 <tt>bp</tt> 所指对象与 <tt>dp</tt> 所指对象的实际类型，如果它们指向同一类型，则测试成功。类似地，如果 <tt>bp</tt> 当前指向 <tt>Derived</tt> 对象，则第二个 <tt>if</tt> 成功。</p>
+
+        <p class="docText">Note that the operands to the <tt>typeid</tt> are expressions that are objectswe tested <tt>*bp</tt>, not <tt>bp:</tt></p>
+        <p class="docText">注意，<tt>typeid</tt> 的操作数是表示对象的表达式——测试 <tt>*bp</tt>，而不是 <tt>bp</tt>：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">test always fails: The type of</span> <span class="docEmphasis">bp</span> <span class="docEmphItalicAlt">is pointer to</span> <span class="docEmphasis">Base</span>
+     if (typeid(bp) == typeid(Derived)) {
+          // <span class="docEmphItalicAlt">code never executed</span>
+     }
+</pre><br>
+
+        <p class="docText">This test compares the type <tt>Base*</tt> to type <tt>Derived</tt>. These types are unequal, so this test will always fail <span class="docEmphasis">regardless of the type of the object to which</span> <tt>bp</tt> <span class="docEmphasis">points</span>.</p>
+        <p class="docText">这个测试将 <tt>Base*</tt> 类型与 <tt>Derived</tt> 类型相比较，这两个类型不相等，所以，无论 <tt>bp</tt> 所指对象的类型是什么，这个测试将问题失败。</p>
+
+<a name="ch18note18"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Dynamic type information is returned only if the operand to <tt>typeid</tt> is an object of a class type with virtual functions. Testing a pointer (as opposed to the object to which the pointer points) returns the static, compile-time type of the pointer.</p>
+                <p class="docText">只有当 <tt>typeid</tt> 的操作数是带虚函数的类类型的对象的时候，才返回动态类型信息。测试指针（相对于指针指向的对象）返回指针的静态的、编译时类型。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">If the value of a pointer <tt>p</tt> is 0, then <tt>typeid(*p)</tt> throws a <tt>bad_typeid</tt> exception if the type of <tt>p</tt> is a type with virtual functions. If the type of <tt>p</tt> does not define any virtuals, then the value of <tt>p</tt> is irrelevant. As when evaluating a <tt>sizeof</tt> expression (<a class="docLink" href="ch05lev1sec8.html#ch05lev1sec8" >Section 5.8</a>, p. <a class="docLink" href="ch05lev1sec8.html#ch05lev1sec8" >167</a>) the compiler does not evaluate <tt>*p</tt>. It uses the static type of <tt>p</tt>, which does not require that <tt>p</tt> itself be a valid pointer.</p>
+        <p class="docText">如果指针 <tt>p</tt> 的值是 0，那么，如果 <tt>p</tt> 的类型是带虚函数的类型，则 <tt>typeid(*p)</tt> 抛出一个 <tt>bad_typeid</tt> 异常；如果 <tt>p</tt> 的类型没有定义任何虚函数，则结果与 <tt>p</tt> 的值是不相关的。正像计算表达式 <tt>sizeof</tt>（<a class="docLink" href="ch05lev1sec8.html#ch05lev1sec8" >第 5.8 节</a>）一样，编译器不计算 <tt>*p</tt>，它使用 <tt>p</tt> 的静态类型，这并不要求 <tt>p</tt> 本身是有效指针。</p>
+
+<a name="ch18sb08"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 18.2.2</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+<a name="ch18qa7q1"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 18.17:</b></td>
+
+                    <td>
+<a name="idd1e149297"></a><a name="idd1e149302"></a><a name="idd1e149307"></a>
+                      <p class="docText">Write an expression to dynamically cast a pointer to a <tt>Query_base</tt> to a pointer to an <tt>AndQuery</tt>. Test the cast by using objects of <tt>AndQuery</tt> and of another query type. Print a statement indicating whether the cast works and be sure that the output matches your expectations.</p>
+                      <p class="docText">编写一个表达式，动态地将 <tt>Query_base</tt> 对象的指针强制转换为 <tt>AndQuery</tt> 对象的指针。通过使用 <tt>AndQuery</tt> 和其他查询类型的对象测试该转换。显示一个语句指出强制转换是否工作，并确信输出与你的表达式匹配。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+<a name="ch18qa7q2"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 18.18:</b></td>
+
+                    <td>
+                      <p class="docText">Write the same cast, but cast a <tt>Query_base</tt> object to a reference to <tt>AndQuery</tt>. Repeat the test to ensure that your cast works correctly.</p>
+                      <p class="docText">编写相同的强制转换，但将 <tt>Query_base</tt> 对象转换为 <tt>AndQuery</tt> 的引用。重复测试以确信你的转换正确工作。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+<a name="ch18qa7q3"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 18.19:</b></td>
+
+                    <td>
+                      <p class="docText">Write a <tt>typeid</tt> expression to see whether two <tt>Query_base</tt> pointers point to the same type. Now check whether that type is an <tt>AndQuery</tt>.</p>
+                      <p class="docText">编写一个 <tt>typeid</tt> 表达式，看两个 <tt>Query_base</tt> 指针是否指向相同的类型，然后检查该类型是否为 <tt>AndQuery</tt>。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a name="ch18lev2sec10"></a>
+
+        <h4 class="docSection2Title">18.2.3. Using RTTI</h4>
+        <h4 class="docSection2Title">18.2.3. RTTI 的使用</h4>
+
+        <p class="docText">As an example of when RTTI might be useful, consider a class hierarchy for which we'd like to implement the equality operator. Two objects are equal if they have the same value for a given set of their data members. Each derived type may add its own data, which we will want to include when testing for equality.</p>
+        <p class="docText">作为说明何时可以使用 RTTI 的例子，考虑一个类层次，我们希望为它实现相等操作符。如果两个对象的给定数据成员集合的值相同，它们就相等。每个派生类型可以增加自己的数据，我们希望在测试相等的时候包含这些数据。</p>
+
+        <p class="docText">Because the values considered in determining equality for a derived type might differ from those considered for the base type, we'll (potentially) need a different equality operator for each pair of types in the hierarchy. Moreover, we'd like to be able to use a given type as either the left-hand or right-hand operand, so we'll actually need two operators for each pair of types.</p>
+        <p class="docText">因为确定派生类型的相等与确定基类类型的相等所考虑的值不同，所以对层次中的每一对类型（潜在地）需要一个不同的相等操作符。而且，希望能够使用给类型作为左操作数或右操作数，所以实际上对每一对类型将需要两个操作符。</p>
+
+        <p class="docText">If our hierarchy has only two types, we need four functions:</p>
+        <p class="docText">如果类层次中只有两个类型，就需要四个函数：</p>
+        <pre>
+     bool operator==(const Base&amp;, const Base&amp;)
+     bool operator==(const Derived&amp;, const Derived&amp;)
+     bool operator==(const Derived&amp;, const Base&amp;);
+     bool operator==(const Base&amp;, const Derived&amp;);
+</pre><br>
+
+        <p class="docText">But if our hierarchy has several types, the number of operators we must define expands rapidlyfor only 3 types we'd need 9 operators. If the hierarchy has 4 types, we'd need 16, and so on.</p>
+        <p class="docText">但是，如果类层次中有几个类型，必须定义的操作符的数目就迅速扩大——仅仅 3 个类型就需要 9 个操作符。如果类层次有 4 个类型，将需要 16 个操作符，以此类推。</p>
+
+        <p class="docText">We might think we could solve this problem by defining a set of virtual functions that would perform the equality test at each level in the hierarchy. Given those virtuals, we could define a single equality operator that operates on references to the base type. That operator could delegate its work to a virtual <tt>equal</tt> operation that would do the real work.</p>
+        <p class="docText">也许我们认为可以通过定义一个虚函数集合来解决这个问题，这些虚函数可以在类层次中每一层执行相等测试。给定这些虚函数，可以定义单个相等操作符，操作基类类型的引用，该操作符可以将工作委派给可以完成实际工作的虚操作。</p>
+
+        <p class="docText">Unfortunately, virtual functions are not a good match to this problem. The trouble is deciding on the type for the parameter to the <tt>equal</tt> operation. Virtual functions must have the same parameter type(s) in both the base and derived classes. That implies that a virtual <tt>equal</tt> operation must have a parameter that is a reference to the base class.</p>
+        <p class="docText">但是，虚函数并不是解决这个问题的好办法。麻烦在于决定 <tt>equal</tt> 操作的形参的类型。虚函数在基类类型和派生类型中必须有相同的形参类型，这意味着，虚 <tt>equal</tt> 操作必须有一个形参是基类的引用。</p>
+
+        <p class="docText">However, when we compare two derived objects, we want to compare data members that might be particular to that derived class. If the parameter is a reference to base, we can use only members that are present in the base class. We cannot access members that are in the derived class but not in the base.</p>
+        <p class="docText">但是，当比较两个派生类对象的时候，我们希望比较可能特定于派生类的数据成员。如果形参是基类的引用，就只能比较基类中出现的成员，我们不能访问在派生类中但不在基类中出现的成员。</p>
+
+<a name="idd1e149407"></a><a name="idd1e149412"></a><a name="idd1e149419"></a><a name="idd1e149424"></a><a name="idd1e149430"></a><a name="idd1e149435"></a>
+        <p class="docText">Thinking about the problem in this detail, we see that we want to return false if we attempt to compare objects of different types. Given this observation, we can now use RTTI to solve our problem.</p>
+        <p class="docText">仔细考虑这个问题，我们看到，希望在试图比较不同类型的对象时返回假（false）。有了这个观察，现在可以使用 RTTI 解决我们的问题。</p>
+
+        <p class="docText">We'll define a single equality operator. Each class will define a virtual <tt>equal</tt> function that first casts its operand to the right type. If the cast succeeds, then the real comparison will be performed. If the cast fails, then the <tt>equal</tt> operation will return <tt>false</tt>.</p>
+        <p class="docText">我们将定义单个相等操作符。每个类定义一个虚函数 <tt>equal</tt>，该函数首先将操作数强制转换为正确的类型。如果转换成功，就进行真正的比较；如果转换失败，<tt>equal</tt> 操作就返回 <tt>false</tt>。</p>
+
+<a name="ch18lev3sec19"></a>
+        <h5 class="docSection3Title">The Class Hierarchy</h5>
+        <h5 class="docSection3Title">类层次</h5>
+
+        <p class="docText">To make the concept a bit more concrete, let's assume that our classes look something like:</p>
+        <p class="docText">为了使概念更清楚一点，假定类层次是这样的：</p>
+        <pre>
+     class Base {
+         friend bool operator==(const Base&amp;, const Base&amp;);
+     public:
+         // <span class="docEmphItalicAlt">interface members for</span> <span class="docEmphasis">Base</span>
+     protected:
+         virtual bool equal(const Base&amp;) const;
+         // <span class="docEmphItalicAlt">data and other implementation members of</span> <span class="docEmphasis">Base</span>
+     };
+     class Derived: public Base {
+         friend bool operator==(const Base&amp;, const Base&amp;);
+     public:
+         // <span class="docEmphItalicAlt">other interface members for</span> <span class="docEmphasis">Derived</span>
+     private:
+         bool equal(const Base&amp;) const;
+         // <span class="docEmphItalicAlt">data and other implementation members of</span> <span class="docEmphasis">Derived</span>
+     };
+</pre><br>
+        <a name="ch18lev3sec20"></a>
+
+        <h5 class="docSection3Title">A Type-Sensitive Equality Operator</h5>
+        <h5 class="docSection3Title">类型敏感的相等操作符</h5>
+
+        <p class="docText">Next let's look at how we might define the overall equality operator:</p>
+        <p class="docText">下面看看可以怎样定义整体的相等操作符：</p>
+        <pre>
+     bool operator==(const Base &amp;lhs, const Base &amp;rhs)
+     {
+        // <span class="docEmphItalicAlt">returns false if typeids are different otherwise</span>
+        // <span class="docEmphItalicAlt">returns lhs.equal(rhs)</span>
+        return typeid(lhs) == typeid(rhs) &amp;&amp; lhs.equal(rhs);
+     }
+</pre><br>
+
+        <p class="docText">This operator returns false if the operands are different types. If they are the same type, then it delegates the real work of comparing the operands to the appropriate virtual <tt>equal</tt> function. If the operands are <tt>Base</tt> objects, then <tt>Base::equal</tt> will be called. If they are <tt>Derived</tt> objects, <tt>Derived::equal</tt> is called.</p>
+        <p class="docText">如果操作数类型不同，这个操作符就返回假；如果操作数类型相同，它就将实际比较操作数的工作委派给适当的虚函数 <tt>equal</tt>。如果操作数是 <tt>Base</tt> 对象，就调用 <tt>Base::equal</tt>；如果操作数是 <tt>Derived</tt> 对象，就调用 <tt>Derived::equal</tt>。</p>
+
+<a name="ch18lev3sec21"></a>
+        <h5 class="docSection3Title">The Virtual <tt>equal</tt> Functions</h5>
+        <h5 class="docSection3Title">虚函数 <tt>equal</tt></h5>
+
+        <p class="docText">Each class in the hierarchy must define its own version of <tt>equal</tt>. The functions in the derived classes will all start the same way: They'll cast their argument to the type of the class itself:</p>
+	<p class="docText">层次中的每个类都必须定义自己的 <tt>equal</tt> 版本。派生类中的 <tt>equal</tt> 函数将以相同的方式开始：它们将实参强制转换为类本身的类型。</p>
+        <pre>
+     bool Derived::equal(const Base &amp;rhs) const
+     {
+        if (const Derived *dp
+                   = dynamic_cast&lt;const Derived*&gt;(&amp;rhs)) {
+           // <span class="docEmphItalicAlt">do work to compare two</span> <span class="docEmphasis">Derived</span> <span class="docEmphItalicAlt">objects and return result</span>
+        } else
+           return false;
+     }
+</pre><br>
+
+<a name="idd1e149565"></a><a name="idd1e149572"></a>
+        <p class="docText">The cast should always succeedafter all, the function is called from the equality operator only after testing that the two operands are the same type. However, the cast is necessary so that the function can access the derived members of the right-hand operand. The operand is a <tt>Base&amp;</tt>, so if we want to access members of the <tt>Derived</tt>, we must first do the cast.</p>
+        <p class="docText">这个强制转换应该总是成功——毕竟，只有有测试了两个操作数类型相同之后，才从相等操作符调用该函数。但是，这个强制转换是必要的，以便函数可以访问右操作数的派生类成员。因为操作数是 <tt>Base&amp;</tt>，所以如果想要访问 <tt>Derived</tt> 的成员，就必须首先进行强制转换。</p>
+
+<a name="ch18lev3sec22"></a>
+        <h5 class="docSection3Title">The Base-Class <tt>equal</tt> Function</h5>
+        <h5 class="docSection3Title">基类 <tt>equal</tt> 函数</h5>
+
+        <p class="docText">This operation is a bit simpler than the others:</p>
+        <p class="docText">这个操作比其他的简单一点：</p>
+        <pre>
+     bool Base::equal(const Base &amp;rhs) const
+     {
+          // <span class="docEmphItalicAlt">do whatever is required to compare to</span> <span class="docEmphasis">Base</span> <span class="docEmphItalicAlt">objects</span>
+     }
+</pre><br>
+
+        <p class="docText">There is no need to cast the parameter before using it. Both <tt>*this</tt> and the parameter are <tt>Base</tt> objects, so all the operations available for this object are also defined for the parameter type.</p>
+        <p class="docText">使用形参之前不必强制转换，<tt>*this</tt> 和形参都是 <tt>Base</tt> 对象，所以对形参类型也定义了该对象可用的所有操作。</p>
+
+<a name="ch18lev2sec11"></a>
+        <h4 class="docSection2Title">18.2.4. The <tt>type_info</tt> Class</h4>
+        <h4 class="docSection2Title">18.2.4. <tt>type_info</tt> 类</h4>
+
+        <p class="docText">The exact definition of the <tt>type_info</tt> class varies by compiler, but the standard guarantees that all implementations will provide at least the operations listed in <a class="docLink" href="ch18lev1sec2.html#ch18table02">Table 18.2</a></p>
+        <p class="docText"><tt>type_info</tt> 类的确切定义随编译器而变化，但是，标准保证所有的实现将至少提供<a class="docLink" href="ch18lev1sec2.html#ch18table02">表 18.2</a> 列出的操作。</p>
+
+<a name="ch18table02"></a>
+        <h5 class="docTableTitle">Table 18.2. Operations on <tt>type_info</tt></h5>
+        <h5 class="docTableTitle">表 18.2. <tt>type_info</tt> 的操作</h5>
+
+        <table cellspacing="0" class="allBorders" border="1" rules="none" cellpadding="5">
+          <colgroup>
+            <col width="150">
+            <col width="350">
+          </colgroup>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>t1 == t2</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Returns <tt>true</tt> if the two <tt>type_info</tt> objects <tt>t1</tt> and <tt>t2</tt> refer to the same type; <tt>false</tt> otherwise.</p>
+              <p class="docText">如果两个对象 <tt>t1</tt> 和 <tt>t2</tt> 类型相同，就返回 <tt>true</tt>；否则，返回 <tt>false</tt></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>t1 != t2</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Returns <tt>true</tt> if the two <tt>type_info</tt> objects <tt>t1</tt> and <tt>t2</tt> refer to different types; <tt>false</tt> otherwise.</p>
+              <p class="docText">如果两个对象 <tt>t1</tt> 和 <tt>t2</tt> 类型不同，就返回 <tt>true</tt>；否则，返回 <tt>false</tt></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>t.name()</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Returns a C-style character string that is a printable version of the type name. Type names are generated in a system-dependent way.</p>
+              <p class="docText">返回 C 风格字符串，这是类型名字的可显示版本。类型名字用系统相关的方法产生</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>t1.before(t2)</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Returns a <tt>bool</tt> that indicates whether <tt>t1</tt> comes before <tt>t2</tt>. The ordering imposed by <tt>before</tt> is compiler-dependent.</p>
+              <p class="docText">返回指出 <tt>t1</tt> 是否出现在 <tt>t2</tt> 之前的 <tt>bool</tt> 值。<tt>before</tt> 强制的次序与编译器有关</p>
+            </td>
+          </tr>
+        </table><br>
+
+        <p class="docText">The class also provides a public virtual destructor, because it is intended to serve as a base class. If the compiler wants to provide additional type information, it should do so in a class derived from <tt>type_info</tt>.</p>
+	<p class="docText">因为打算作基类使用，<tt>type_info</tt> 类也提供公用虚析构函数。如果编译器想要提供附加的类型信息，应该在 <tt>type_info</tt> 的派生类中进行。</p>
+
+<a name="idd1e149756"></a><a name="idd1e149761"></a><a name="idd1e149766"></a><a name="idd1e149769"></a><a name="idd1e149777"></a>
+        <p class="docText">The default and copy constructors and the assignment operator are all defined as <tt>private</tt>, so we cannot define or copy objects of type <tt>type_info</tt>. The only way to create <tt>type_info</tt> objects in a program is to use the <tt>typeid</tt> operator.</p>
+        <p class="docText">默认构造函数和复制构造函数以及赋值操作符都定义为 <tt>private</tt>，所以不能定义或复制 <tt>type_info</tt> 类型的对象。程序中创建 <tt>type_info</tt> 对象的唯一方法是使用 <tt>typeid</tt> 操作符。</p>
+
+        <p class="docText">The <tt>name</tt> function returns a C-style character string for the name of the type represented by the <tt>type_info</tt> object. The value used for a given type depends on the compiler and in particular is not required to match the type names as used in a program. The only guarantee we have about the return from <tt>name</tt> is that it returns a unique string for each type. Nonetheless, the <tt>name</tt> member can be used to print the name of a <tt>type_info</tt> object:</p>
+        <p class="docText"><tt>name</tt> 函数为 <tt>type_info</tt> 对象所表示的类型的名字返回 C 风格字符串。给定类型所用的值取决于编译器，具体来说，无须与程序中使用的类型名字匹配。对 <tt>name</tt> 返回值的唯一保证是，它为每个类型返回唯一的字符串。虽然如此，仍可以使用 <tt>name</tt> 成员来显示 <tt>type_info</tt> 对象的名字：</p>
+        <pre>
+     int iobj;
+     cout &lt;&lt; typeid(iobj).name() &lt;&lt; endl
+          &lt;&lt; typeid(8.16).name() &lt;&lt; endl
+          &lt;&lt; typeid(std::string).name() &lt;&lt; endl
+          &lt;&lt; typeid(Base).name() &lt;&lt; endl
+          &lt;&lt; typeid(Derived).name() &lt;&lt; endl;
+</pre><br>
+
+        <p class="docText">The format and value returned by <tt>name</tt> varies by compiler. This program, when executed on our machine, generates the following output:</p>
+        <p class="docText"><tt>name</tt> 返回的格式和值随编译器而变化。在我们的机器上执行时，这个程序产生下面的输出：</p>
+        <pre>
+     <span class="docEmphStrong">i</span>
+     <span class="docEmphStrong">d</span>
+     <span class="docEmphStrong">Ss</span>
+     <span class="docEmphStrong">4Base</span>
+     <span class="docEmphStrong">7Derived</span>
+</pre><br>
+        <a name="ch18note19"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">The <tt>type_info</tt> class varies by compiler. Some compilers provide additional member functions that provide additional information about types used in a program. You should consult the reference manual for your compiler to understand the exact <tt>type_info</tt> support provided.</p>
+                <p class="docText"><tt>type_info</tt> 类随编译器而变。一些编译器提供附加的成员函数，那些函数提供关于程序中所用类型的附加信息。你应该查阅编译器的参考手册来理解所提供的确切的 <tt>type_info</tt> 支持。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+      </td>
+    </tr>
+  </table>
+
+<a name="ch18sb09"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 18.2.4</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch18qa8q1"></a><b>Exercise 18.20:</b></td>
+
+                    <td>
+<a name="idd1e149912"></a><a name="idd1e149919"></a><a name="idd1e149924"></a>
+                      <p class="docText">Given the following class hierarchy in which each class defines a <tt>public</tt> default constructor and virtual destructor, which type name do the following statements print?</p>
+                      <p class="docText">给定下面的类层次，其中每个类都定义了 <tt>public</tt> 默认构造函数及虚析构函数，下面语句显示哪些类型名？</p>
+                      <pre>
+     class A { /* ... */ };
+     class B : public  A { /* ... */ };
+     class C : public  B { /* ... */ };
+
+     (a) A *pa = new C;
+         cout &lt;&lt; typeid(pa).name() &lt;&lt; endl;
+
+     (b) C cobj;
+         A&amp; ra = cobj;
+         cout &lt;&lt; typeid(&amp;ra).name() &lt;&lt; endl;
+
+     (c) B *px = new B;
+         A&amp; ra = *px;
+         cout &lt;&lt; typeid(ra).name() &lt;&lt; endl;
+</pre><br>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch18lev1sec1.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch18lev1sec3.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

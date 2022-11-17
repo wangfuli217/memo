@@ -1,0 +1,819 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 7.8.  Overloaded Functions</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch07lev1sec7.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch07lev1sec9.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch07lev1sec8"></a>
+
+        <h3 class="docSection1Title" id="432172-971">7.8. Overloaded Functions</h3>
+        <h3 class="docSection1Title" id="432172-971">7.8. 重载函数</h3>
+
+<a name="ch07term29"></a>
+        <p class="docText">Two functions that appear in the same scope are <b><a class="docLink" href="ch07lev1sec11.html#gloss07_20" >overloaded</a></b> if they have the same name but have different parameter lists.</p>
+        <p class="docText">出现在相同作用域中的两个函数，如果具有相同的名字而形参表不同，则称为<b><a class="docLink" href="ch07lev1sec11.html#gloss07_20" >重载函数</a></b>。</p>
+
+        <p class="docText">If you have written an arithmetic expression in a programming language, you have used an overloaded function. The expression</p>
+        <p class="docText">使用某种程序设计语言编写过算术表达式的程序员都肯定使用过重载函数。表达式</p>
+        <pre>
+     1 + 3
+</pre><br>
+
+        <p class="docText">invokes the addition operation for integer operands, whereas the expression</p>
+        <p class="docText">调用了针对整型操作数加法操作符，而表达式</p>
+        <pre>
+     1.0 + 3.0
+</pre><br>
+
+        <p class="docText">invokes a <span class="docEmphasis">different</span> operation that adds floating-point operands. It is the compiler's responsibility, not the programmer's, to distinguish between the different operations and to apply the appropriate operation depending on the operands' types.</p>
+        <p class="docText">调用了另外一个专门处理浮点操作数的<span class="docEmphasis">不同</span>的加法操作。根据操作数的类型来区分不同的操作，并应用适当的操作，是编译器的责任，而不是程序员的事情。</p>
+
+        <p class="docText">Similarly, we may define a set of functions that perform the same general action but that apply to different parameter types. These functions may be called without worrying about which function is invoked, much as we can add <tt>int</tt>s or <tt>double</tt>s without worrying whether integer arithmetic or floating-point arithmetic is performed.</p>
+        <p class="docText">类似地，程序员可以定义一组函数，它们执行同样的一般性动作，但是应用在不同的形参类型上，调用这些函数时，无需担心调用的是哪个函数，就像我们不必操心执行的是整数算术操作还是浮点数自述操作就可以实现 <tt>int</tt> 型加法或 <tt>double</tt> 型加法一样。</p>
+
+<a name="idd1e54717"></a><a name="idd1e54724"></a>
+        <p class="docText">Function overloading can make programs easier to write and to understand by eliminating the need to inventand remembernames that exist only to help the compiler figure out which function to call. For example, a database application might well have several <tt>lookup</tt> functions that could do the lookup based on name, phone number, account number, and so on. Function overloading allows us to define a collection of functions, each named <tt>lookup</tt>, that differ in terms of what values they use to do the search. We can call <tt>lookup</tt> passing a value of any of several types:</p>
+        <p class="docText">通过省去为函数起名并记住函数名字的麻烦，函数重载简化了程序的实现，使程序更容易理解。函数名只是为了帮助编译器判断调用的是哪个函数而已。例如，一个数据库应用可能需要提供多个 <tt>lookup</tt> 函数，分别实现基于姓名、电话号码或账号之类的查询功能。函数重载使我们可以定义一系列的函数，它们的名字都是 <tt>lookup</tt>，不同之处在于用于查询的值不相同。如此可传递几种类型中的任一种值调用 <tt>lookup</tt> 函数：</p>
+        <pre>
+     Record lookup(const Account&amp;);  // <span class="docEmphItalicAlt">find by</span> <span class="docEmphasis">Account</span>
+     Record lookup(const Phone&amp;);    // <span class="docEmphItalicAlt">find by</span> <span class="docEmphasis">Phone</span>
+     Record lookup(const Name&amp;);     // <span class="docEmphItalicAlt">find by</span> <span class="docEmphasis">Name</span>
+     Record r1, r2;
+     r1 = lookup(acct);                  // <span class="docEmphItalicAlt">call version that takes an</span> <span class="docEmphasis">Account</span>
+     r2 = lookup(phone);                 // <span class="docEmphItalicAlt">call version that takes a</span> <span class="docEmphasis">Phone</span>
+</pre><br>
+
+        <p class="docText">Here, all three functions share the same name, yet they are three distinct functions. The compiler uses the argument type(s) passed in the call to figure out which function to call.</p>
+        <p class="docText">这里的三个函数共享同一个函数名，但却是三个不同的函数。编译器将根据所传递的实参类型来判断调用的是哪个函数。</p>
+
+        <p class="docText">To understand function overloading, we must understand how to define a set of overloaded functions and how the compiler decides which function to use for a given call. We'll review these topics in the remainder of this section.</p>
+        <p class="docText">要理解函数重载，必须理解如何定义一组重载函数和编译器如何决定对某一调用使用哪个函数。本节的其余部分将会回顾这些主题。</p>
+
+<a name="ch07note31"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">There may be only one instance of <tt>main</tt> in any program. The <tt>main</tt> function may <span class="docEmphasis">not</span> be overloaded.</p>
+                <p class="docText">任何程序都仅有一个 <tt>main</tt> 函数的实例。<tt>main</tt> 函数<span class="docEmphasis">不能</span>重载。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch07lev2sec26"></a>
+
+        <h4 class="docSection2Title">Distinguishing Overloading from Redeclaring a Function</h4>
+        <h4 class="docSection2Title">函数重载和重复声明的区别</h4>
+
+        <p class="docText">If the return type and parameter list of two functions declarations match exactly, then the second declaration is treated as a redeclaration of the first. If the parameter lists of two functions match exactly but the return types differ, then the second declaration is an error:</p>
+        <p class="docText">如果两个函数声明的返回类型和形参表完全匹配，则将第二个函数声明视为第一个的重复声明。如果两个函数的形参表完全相同，但返回类型不同，则第二个声明是错误的：</p>
+        <pre>
+     Record lookup(const Account&amp;);
+     bool lookup(const Account&amp;); // <span class="docEmphItalicAlt">error: only return type is different</span>
+</pre><br>
+
+        <p class="docText">Functions cannot be overloaded based only on differences in the return type.</p>
+        <p class="docText">函数不能仅仅基于不同的返回类型而实现重载。</p>
+
+        <p class="docText">Two parameter lists can be identical, even if they don't look the same:</p>
+        <p class="docText">有些看起来不相同的形参表本质上是相同的：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">each pair declares the same function</span>
+     Record lookup(const Account &amp;acct);
+     Record lookup(const Account&amp;); // <span class="docEmphItalicAlt">parameter names are ignored</span>
+     typedef Phone Telno;
+     Record lookup(const Phone&amp;);
+     Record lookup(const Telno&amp;); // <span class="docEmphasis">Telno</span> <span class="docEmphItalicAlt">and</span> <span class="docEmphasis">Phone</span> <span class="docEmphItalicAlt">are the same type</span>
+     Record lookup(const Phone&amp;, const Name&amp;);
+     // <span class="docEmphItalicAlt">default argument doesn't change the number of parameters</span>
+     Record lookup(const Phone&amp;, const Name&amp; = "");
+     // <span class="docEmphasis">const</span> <span class="docEmphItalicAlt">is irrelevent for nonreference parameters</span>
+     Record lookup(Phone);
+     Record lookup(const Phone); // <span class="docEmphItalicAlt">redeclaration</span>
+</pre><br>
+
+        <p class="docText">In the first pair, the first declaration names its parameter. Parameter names are only a documentation aid. They do not change the parameter list.</p>
+        <p class="docText">在第一对函数声明中，第一个声明给它的形参命了名。形参名只是帮助文档，并没有修改形参表。</p>
+
+<a name="idd1e54860"></a><a name="idd1e54866"></a><a name="page_267"></a>
+        <p class="docText">In the second pair, it looks like the types are different, but <tt>Telno</tt> is not a new type; it is a synonym for <tt>Phone</tt>. A typedef name provides an alternative name for an existing data type; it does not create a new data type. Therefore, two parameters that differ only in that one uses a typedef and the other uses the type to which the typedef corresponds are not different.</p>
+	<p class="docText">在第二对函数声明中，看似形参类型不同，但注意到 <tt>Telno</tt> 其实并不是新类型，只是 <tt>Phone</tt> 类型的同义词。<tt>typedef</tt> 给已存在的数据类型提供别名，但并没有创建新的数据类型。所以，如果两个形参的差别只是一个使用 <tt>typedef</tt> 定义的类型名，而另一个使用 <tt>typedef</tt> 对应的原类型名，则这两个形参并无不同。</p>
+
+        <p class="docText">In the third pair, the parameter lists differ only in their default arguments. A default argument doesn't change the number of parameters. The function takes two arguments, whether they are supplied by the user or by the compiler.</p>
+        <p class="docText">在第三对中，形参列表只有默认实参不同。默认实参并没有改变形参的个数。无论实参是由用户还是由编译器提供的，这个函数都带有两个实参。</p>
+
+        <p class="docText">The last pair differs only as to whether the parameter is <tt>const</tt>. This difference has no effect on the objects that can be passed to the function; the second declaration is treated as a redeclaration of the first. The reason follows from how arguments are passed. When the parameter is copied, whether the parameter is <tt>const</tt> is irrelevantthe function executes on a copy. Nothing the function does can change the argument. As a result, we can pass a <tt>const</tt> object to either a <tt>const</tt> or non<tt>const</tt> parameter. The two parameters are indistinguishable.</p>
+        <p class="docText">最后一对的区别仅在于是否将形参定义为 <tt>const</tt>。这种差异并不影响传递至函数的对象；第二个函数声明被视为第一个的重复声明。其原因在于实参传递的方式。复制形参时并不考虑形参是否为 <tt>const</tt>——函数操纵的只是副本。函数的无法修改实参。结果，既可将 <tt>const</tt> 对象传递给 <tt>const</tt> 形参，也可传递给非 <tt>const</tt> 形参，这两种形参并无本质区别。</p>
+
+        <p class="docText">It is worth noting that the equivalence between a parameter and a <tt>const</tt> parameter applies only to nonreference parameters. A function that takes a <tt>const</tt> reference is different from on that takes a non<tt>const</tt> reference. Similarly, a function that takes a pointer to a <tt>const</tt> type differs from a function that takes a pointer to the non<tt>const</tt> object of the same type.</p>
+        <p class="docText">值得注意的是，形参与 <tt>const</tt> 形参的等价性仅适用于非引用形参。有 <tt>const</tt> 引用形参的函数与有非 <tt>const</tt> 引用形参的函数是不同的。类似地，如果函数带有指向 <tt>const</tt> 类型的指针形参，则与带有指向相同类型的非 <tt>const</tt> 对象的指针形参的函数不相同。</p>
+
+<a name="ch07sb13"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Advice: When Not to Overload a Function Name</h2>
+              <h2 class="docSidebarTitle">建议：何时不重载函数名</h2>
+
+              <p class="docText"><span class="docEmphStrong">Although overloading can be useful in avoiding the necessity to invent (and remember) names for common operations, it is easy to take this advantage too far. There are some cases where providing different function names adds information that makes the program easier to understand. Consider a set of member functions for a <tt>Screen</tt> class that move <tt>Screen</tt></span><span class="docEmphStrong">'s cursor.</span></p>
+	      <p class="docText"><span class="docEmphStrong">虽然，对于通常的操作，重载函数能避免不必要的函数命名（和名字记忆），但很容易就会过分使用重载。在一些情况下，使用不同的函数名能提供较多的信息，使程序易于理解。考虑下面 <tt>Screen</tt> 类的一组用于移动屏幕光标的成员函数：</span></p>
+              <pre>
+     Screen&amp; moveHome();
+     Screen&amp; moveAbs(int, int);
+     Screen&amp; moveRel(int, int, char *direction);
+</pre><br>
+
+              <p class="docText"><span class="docEmphStrong">It might at first seem better to overload this set of functions under the name <tt>move</tt>:</span></p>
+              <p class="docText"><span class="docEmphStrong">乍看上去，似乎把这组函数重载为名为 <tt>move</tt> 的函数更好一些：</span></p>
+              <pre>
+     Screen&amp; move();
+     Screen&amp; move(int, int);
+     Screen&amp; move(int, int, *direction);
+</pre><br>
+
+              <p class="docText"><span class="docEmphStrong">However, by overloading these functions we've lost information that was inherent in the function names and by doing so may have rendered the program more obscure.</span></p>
+              <p class="docText"><span class="docEmphStrong">其实不然，重载过后的函数失去了原来函数名所包含的信息，如此一来，程序变得晦涩难懂了。</span></p>
+
+              <p class="docText"><span class="docEmphStrong">Although cursor movement is a general operation shared by all these functions, the specific nature of that movement is unique to each of these functions. <tt>moveHome</tt>, for example, represents a special instance of cursor movement. Which of the two calls is easier to understand for a reader of the program? Which of the two calls is easier to remember for a programmer using the <tt>Screen</tt> class?</span></p>
+              <p class="docText"><span class="docEmphStrong">虽则这几个函数共享的一般性动作都是光标移动，但特殊的移动性质却互不相同。例如，<tt>moveHome</tt> 表示的是光标移动的一个特殊实例。对于程序的读者，下面两种调用中，哪种更易于理解？而对于使用 <tt>Screen</tt> 类的程序员，哪一个调用又更容易记忆呢？</span></p>
+              <pre>
+     // <span class="docEmphItalicAlt">which is easier to understand?</span>
+     myScreen.home(); // <span class="docEmphItalicAlt">we think this one!</span>
+     myScreen.move();
+</pre><br>
+            </td>
+          </tr>
+        </table><br>
+        <a name="ch07lev2sec27"></a>
+
+        <h4 class="docSection2Title">7.8.1. Overloading and Scope</h4>
+        <h4 class="docSection2Title">7.8.1. 重载与作用域</h4>
+
+<a name="idd1e54988"></a><a name="idd1e54995"></a>
+        <p class="docText">We saw in the program on page <a class="docLink" href="ch02lev1sec3.html#ch02lev2sec15" >54</a> that scopes in C++ nest. A name declared local to a function hides the same name declared in the global scope (<a class="docLink" href="ch02lev1sec3.html#ch02lev2sec15" >Section 2.3.6</a>, p. <a class="docLink" href="ch02lev1sec3.html#ch02lev2sec15" >54</a>). The same is true for function names as for variable names:</p>
+        <p class="docText"><a class="docLink" href="ch02lev1sec3.html#ch02lev2sec15" >第 2.3.6 节</a>的程序演示了 C++ 作用域的嵌套。在函数中局部声明的名字将屏蔽在全局作用域（<a class="docLink" href="ch02lev1sec3.html#ch02lev2sec15" >第 2.3.6 节</a>）内声明的同名名字。这个关于变量名字的性质对于函数名同样成立：</p>
+        <pre>
+     /* <span class="docEmphItalicAlt">Program for illustration purposes only:</span>
+      * <span class="docEmphItalicAlt">It is bad style for a function to define a local variable</span>
+      * <span class="docEmphItalicAlt">with the same name as a global name it wants to use</span>
+      */
+     string init(); // <span class="docEmphItalicAlt">the name</span> <span class="docEmphasis">init</span> <span class="docEmphItalicAlt">has global scope</span>
+     void fcn()
+     {
+         int init = 0;        // <span class="docEmphasis">init</span> <span class="docEmphItalicAlt">is local and hides global</span> <span class="docEmphasis">init</span>
+         string s = init();   // <span class="docEmphItalicAlt">error: global</span> <span class="docEmphasis">init</span> <span class="docEmphItalicAlt">is hidden</span>
+     }
+</pre>
+
+        <p class="docText">Normal scoping rules apply to names of overloaded functions. If we declare a function locally, that function hides rather than overloads the same function declared in an outer scope. As a consequence, declarations for every version of an overloaded function must appear in the same scope.</p>
+        <p class="docText">一般的作用域规则同样适用于重载函数名。如果局部地声明一个函数，则该函数将屏蔽而不是重载在外层作用域中声明的同名函数。由此推论，每一个版本的重载函数都应在同一个作用域中声明。</p>
+
+<a name="ch07note32"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">In general, it is a bad idea to declare a function locally. Function declarations should go in header files.</p>
+                <p class="docText">一般来说，局部地声明函数是一种不明智的选择。函数的声明应放在头文件中。</p>
+              </td>
+            </tr>
+          </table>
+
+          <p class="docText">To explain how scope interacts with overloading we will violate this practice and use a local function declaration.</p>
+          <p class="docText">但为了解释作用域与重载的相互作用，我们将违反上述规则而使用局部函数声明。</p>
+        </div>
+
+        <p class="docText">As an example, consider the following program:</p>
+        <p class="docText">作为例子，考虑下面的程序：</p>
+        <pre>
+     void print(const string &amp;);
+     void print(double);   // <span class="docEmphItalicAlt">overloads the</span> <span class="docEmphasis">print</span> <span class="docEmphItalicAlt">function</span>
+     void fooBar(int ival)
+     {
+         void print(int);   // <span class="docEmphItalicAlt">new scope: hides previous instances of</span> <span class="docEmphasis">print</span>
+         print("Value: ");  // <span class="docEmphItalicAlt">error:</span> <span class="docEmphasis">print(const string &amp;)</span> <span class="docEmphItalicAlt">is hidden</span>
+         print(ival); // <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">print(int)</span> <span class="docEmphItalicAlt">is visible</span>
+         print(3.14); // <span class="docEmphItalicAlt">ok: calls</span> <span class="docEmphasis">print(int)</span><span class="docEmphItalicAlt">;</span> <span class="docEmphasis">print(double)</span> <span class="docEmphItalicAlt">is hidden</span>
+     }
+</pre>
+
+        <p class="docText">The declaration of <tt>print(int)</tt> in the function <tt>fooBar</tt> hides the other declarations of <tt>print</tt>. It is as if there is only one <tt>print</tt> function available: the one that takes a single <tt>int</tt> parameter. Any use of the name <tt>print</tt> at this scopeor a scope nested in this scopewill resolve to this instance.</p>
+	<p class="docText">函数 <tt>fooBar</tt> 中的 <tt>print(int)</tt> 声明将屏蔽 <tt>print</tt> 的其他声明，就像只有一个有效的 <tt>print</tt> 函数一样：该函数仅带有一个 <tt>int</tt> 型形参。在这个作用域或嵌套在这个作用域里的其他作用域中，名字 <tt>print</tt> 的任何使用都将解释为这个 <tt>print</tt> 函数实例。</p>
+
+        <p class="docText">When we call <tt>print</tt>, the compiler first looks for a declaration of that name. It finds the local declaration for <tt>print</tt> that takes an <tt>int</tt>. Once the name is found, the compiler does no further checks to see if the name exists in an outer scope. Instead, the compiler assumes that this declaration is the one for the name we are using. What remains is to see if the use of the name is valid</p>
+        <p class="docText">调用 <tt>print</tt> 时，编译器首先检索这个名字的声明，找到只有一个 <tt>int</tt> 型形参的 <tt>print</tt> 函数的局部声明。一旦找到这个名字，编译器将不再继续检查这个名字是否在外层作用域中存在，即编译器将认同找到的这个声明即是程序需要调用的函数，余下的工作只是检查该名字的使用是否有效。</p>
+
+<a name="idd1e55166"></a><a name="idd1e55171"></a><a name="idd1e55176"></a><a name="idd1e55181"></a><a name="idd1e55184"></a><a name="idd1e55189"></a><a name="idd1e55194"></a><a name="idd1e55197"></a><a name="idd1e55202"></a><a name="idd1e55207"></a>
+        <p class="docText">The first call passes a string literal but the function parameter is an <tt>int</tt>. A string literal cannot be implicitly converted to an <tt>int</tt>, so the call is an error. The <tt>print(const string&amp;)</tt> function, which would have matched this call, is hidden and is not considered when resolving this call.</p>
+        <p class="docText">第一个函数调用传递了一个字符串字面值，但是函数的形参却是 <tt>int</tt> 型的。字符串字面值无法隐式地转换为 <tt>int</tt> 型，因而该调用是错误的。<tt>print(const string&amp;)</tt> 函数与这个函数调用匹配，但已被屏蔽，因此不在解释该调用时考虑。</p>
+
+        <p class="docText">When we call <tt>print</tt> passing a <tt>double</tt>, the process is repeated. The compiler finds the local definition of <tt>print(int)</tt>. The <tt>double</tt> argument can be converted to an <tt>int</tt>, so the call is legal.</p>
+        <p class="docText">当传递一个 <tt>double</tt> 数据调用 <tt>print</tt> 函数时，编译器重复了同样的匹配过程：首先检索到 <tt>print(int)</tt> 局部声明，然后将 <tt>double</tt> 型的实参隐式转换为 <tt>int</tt> 型。因此，该调用合法。</p>
+
+<a name="ch07note33"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">In C++ name lookup happens before type checking.</p>
+                <p class="docText">在 C++ 中，名字查找发生在类型检查之前。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <p class="docText">Had we declared <tt>print(int)</tt> in the same scope as the other <tt>print</tt> functions, then it would be another overloaded version of <tt>print</tt>. In that case, these calls would be resolved differently:</p>
+        <p class="docText">另一种情况是，在与其他 <tt>print</tt> 函数相同的作用域中声明 <tt>print(int)</tt>，这样，它就成为 <tt>print</tt> 函数的另一个重载版本。此时，所有的调用将以不同的方式解释：</p>
+        <pre>
+     void print(const string &amp;);
+     void print(double); // <span class="docEmphItalicAlt">overloads</span> <span class="docEmphasis">print</span> <span class="docEmphItalicAlt">function</span>
+     void print(int);    // <span class="docEmphItalicAlt">another overloaded instance</span>
+     void fooBar2(int ival)
+     {
+         print("Value: "); // <span class="docEmphItalicAlt">ok: calls</span> <span class="docEmphasis">print(const string &amp;)</span>
+         print(ival);      // <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">print(int)</span>
+         print(3.14);      // <span class="docEmphItalicAlt">ok: calls</span> <span class="docEmphasis">print (double)</span>
+     }
+</pre>
+
+        <p class="docText">Now when the compiler looks for the name <tt>print</tt> it finds three functions with that name. On each call it selects the version of <tt>print</tt> that matches the argument that is passed.</p>
+        <p class="docText">现在，编译器在检索名字 <tt>print</tt> 时，将找到这个名字的三个函数。每一个调用都将选择与其传递的实参相匹配的 <tt>print</tt> 版本。</p>
+
+<a name="ch07sb14"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 7.8.1</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch07qa13q1"></a><b>Exercise 7.34:</b></td>
+
+                    <td>
+<a name="idd1e55364"></a><a name="idd1e55367"></a><a name="idd1e55372"></a><a name="idd1e55377"></a><a name="idd1e55382"></a>
+                      <p class="docText">Define a set of overloaded functions named <tt>error</tt> that would match the following calls:</p>
+                      <p class="docText">定义一组名为 <tt>error</tt> 的重载函数，使之与下面的调用匹配：</p>
+                      <pre>
+     int index, upperBound;
+     char selectVal;
+     // ...
+     error("Subscript out of bounds: ", index, upperBound);
+     error("Division by zero");
+     error("Invalid selection", selectVal);
+</pre>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch07qa13q2"></a><b>Exercise 7.35:</b></td>
+
+                    <td>
+                      <p class="docText">Explain the effect of the second declaration in each one of the following sets of declarations. Indicate which, if any, are illegal.</p>
+                      <p class="docText">下面提供了三组函数声明，解释每组中第二个声明的效果，并指出哪些（如果有的话）是不合法的。</p>
+                      <pre>
+     (a) int calc(int, int);
+         int calc(const int, const int);
+
+     (b) int get();
+         double get();
+
+     (c) int *reset(int *);
+         double *reset(double *);
+</pre>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table>
+
+
+<a name="ch07lev2sec28"></a>
+        <h4 class="docSection2Title">7.8.2. Function Matching and Argument Conversions</h4>
+        <h4 class="docSection2Title">7.8.2. 函数匹配与实参转换</h4>
+
+<a name="ch07term19"></a><a name="ch07term13"></a>
+        <p class="docText">Function <b><a class="docLink" href="ch07lev1sec11.html#gloss07_19" >overload resolution</a></b> (also known as <b><a class="docLink" href="ch07lev1sec11.html#gloss07_13" >function matching</a></b>) is the process by which a function call is associated with a specific function from a set of overloaded functions. The compiler matches a call to a function automatically by comparing the actual arguments used in the call with the parameters offered by each function in the overload set. There are three possible outcomes:</p>
+        <p class="docText">函数<b><a class="docLink" href="ch07lev1sec11.html#gloss07_19" >重载确定</a></b>，即<b><a class="docLink" href="ch07lev1sec11.html#gloss07_13" >函数匹配</a></b>是将函数调用与重载函数集合中的一个函数相关联的过程。通过自动提取函数调用中实际使用的实参与重载集合中各个函数提供的形参做比较，编译器实现该调用与函数的匹配。匹配结果有三种可能：</p>
+
+        <div style="font-weight:bold">
+          <ol class="docList" type="1">
+            <li>
+              <div style="font-weight:normal">
+<a name="ch07term4"></a>
+                <p class="docList">The compiler finds one function that is a <b><a class="docLink" href="ch07lev1sec11.html#gloss07_04" >best match</a></b> for the actual arguments and generates code to call that function.</p>
+                <p class="docList">编译器找到与实参<b><a class="docLink" href="ch07lev1sec11.html#gloss07_04" >最佳匹配</a></b>的函数，并生成调用该函数的代码。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">There is no function with parameters that match the arguments in the call, in which case the compiler indicates a compile-time error.</p>
+                <p class="docList">找不到形参与函数调用的实参匹配的函数，在这种情况下，编译器将给出编译错误信息。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+<a name="ch07term28"></a>
+                <p class="docList">There is more than one function that matches and none of the matches is clearly best. This case is also an error; the call is <b><a class="docLink" href="ch07lev1sec11.html#gloss07_01" >ambiguous</a></b>.</p>
+                <p class="docList">存在多个与实参匹配的函数，但没有一个是明显的最佳选择。这种情况也是，该调用具有<b><a class="docLink" href="ch07lev1sec11.html#gloss07_01" >二义性</a></b>。</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+
+        <p class="docText">Most of the time it is straghtforward to determine whether a particular call is legal and if so, which function will be invoked by the compiler. Often the functions in the overload set differ in terms of the number of arguments, or the types of the arguments are unrelated. Function matching gets tricky when multiple functions have parameters that are related by conversions (<a class="docLink" href="ch05lev1sec12.html#ch05lev1sec12" >Section 5.12</a>, p. <a class="docLink" href="ch05lev1sec12.html#ch05lev1sec12" >178</a>). In these cases, programmers need to have a good grasp of the process of function matching.</p>
+        <p class="docText">大多数情况下，编译器都可以直接明确地判断一个实际的调用是否合法，如果合法，则应该调用哪一个函数。重载集合中的函数通常有不同个数的参数或无关联的参数类型。当多个函数的形参具有可通过隐式转换（<a class="docLink" href="ch05lev1sec12.html#ch05lev1sec12" >第 5.12 节</a>）关联起来的类型，则函数匹配将相当灵活。在这种情况下，需要程序员充分地掌握函数匹配的过程。</p>
+
+        <a name="ch07lev2sec29"></a>
+
+        <h4 class="docSection2Title">7.8.3. The Three Steps in Overload Resolution</h4>
+        <h4 class="docSection2Title">7.8.3. 重载确定的三个步骤</h4>
+
+        <p class="docText">Consider the following set of functions and function call:</p>
+        <p class="docText">考虑下面的这组函数和函数调用：</p>
+        <pre>
+     void f();
+     void f(int);
+     void f(int, int);
+     void f(double, double = 3.14);
+     f(5.6);  // <span class="docEmphItalicAlt">calls</span> <span class="docEmphasis">void f(double, double)</span>
+</pre><br>
+        <a name="ch07lev3sec33"></a>
+
+        <h5 class="docSection3Title">Candidate Functions</h5>
+        <h5 class="docSection3Title">候选函数</h5>
+
+<a name="ch07term6"></a>
+        <p class="docText">The first step of function overload resolution identifies the set of overloaded functions considered for the call. The functions in this set are the <b><a class="docLink" href="ch07lev1sec11.html#gloss07_06" >candidate functions</a></b>. A candidate function is a function with the same name as the function that is called and for which a declaration is visible at the point of the call. In this example, there are four candidate functions named <tt>f</tt>.</p>
+        <p class="docText">函数重载确定的第一步是确定该调用所考虑的重载函数集合，该集合中的函数称为<b><a class="docLink" href="ch07lev1sec11.html#gloss07_06" >候选函数</a></b>。候选函数是与被调函数同名的函数，并且在调用点上，它的声明可见。在这个例子中，有四个名为 <tt>f</tt> 的候选函数。</p>
+
+<a name="ch07lev3sec34"></a>
+        <h5 class="docSection3Title">Determining the Viable Functions</h5>
+	<h5 class="docSection3Title">选择可行函数</h5>
+
+<a name="ch07term27"></a>
+        <p class="docText">The second step selects the functions from the set of candidate functions that can be called with the arguments specified in the call. The selected functions are the <b><a class="docLink" href="ch07lev1sec11.html#gloss07_27" >viable functions</a></b>. To be viable, a function must meet two tests. First, the function must have the same number of parameters as there are arguments in the call. Second, the type of each argument must matchor be convertible tothe type of its corresponding parameter.</p>
+        <p class="docText">第二步是从候选函数中选择一个或多个函数，它们能够用该调用中指定的实参来调用。因此，选出来的函数称为<b><a class="docLink" href="ch07lev1sec11.html#gloss07_27" >可行函数</a></b>。可行函数必须满足两个条件：第一，函数的形参个数与该调用的实参个数相同；第二，每一个实参的类型必须与对应形参的类型匹配，或者可被隐式转换为对应的形参类型。</p>
+
+<a name="ch07note34"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">When a function has default arguments (<a class="docLink" href="ch07lev1sec4.html#ch07lev2sec17" >Section 7.4.1</a>, p. <a class="docLink" href="ch07lev1sec4.html#ch07lev2sec17" >253</a>), a call may appear to have fewer arguments than it actually does. Default arguments are arguments and are treated the same way as any other argument during function matching.</p>
+                <p class="docText">如果函数具有默认实参（<a class="docLink" href="ch07lev1sec4.html#ch07lev2sec17" >第 7.4.1 节</a>），则调用该函数时，所用的实参可能比实际需要的少。默认实参也是实参，在函数匹配过程中，它的处理方式与其他实参一样。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <p class="docText">For the call <tt>f(5.6)</tt>, we can eliminate two of our candidate functions because of a mismatch on number of arguments. The function that has no parameters and the one that has two <tt>int</tt> parameters are not viable for this call. Our call has only one argument, and these functions have zero and two parameters, respectively.</p>
+	<p class="docText">对于函数调用 <tt>f(5.6)</tt>，可首先排除两个实参个数不匹配的候选函数。没有形参的 <tt>f</tt> 函数和有两个 <tt>int</tt> 型形参的 <tt>f</tt> 函数对于这个函数调用来说都不可行。例中的调用只有一个实参，而这些函数分别带有零个和两个形参。</p>
+
+        <p class="docText">On the other hand, the function that takes two <tt>double</tt>s might be viable. A call to a function declaration that has a default argument (<a class="docLink" href="ch07lev1sec4.html#ch07lev2sec17" >Section 7.4.1</a>, p. <a class="docLink" href="ch07lev1sec4.html#ch07lev2sec17" >253</a>) may omit that argument. The compiler will automatically supply the default argument value for the omitted argument. Hence, a given call might have more arguments than appear explicitly.</p>
+	<p class="docText">另一方面，有两个 <tt>double</tt> 型参数的 <tt>f</tt> 函数可能是可行的。调用带有默认实参（<a class="docLink" href="ch07lev1sec4.html#ch07lev2sec17" >第 7.4.1 节</a>）的函数时可忽略这个实参。编译器自动将默认实参的值提供给被忽略的实参。因此，某个调用拥有的实参可能比显式给出的多。</p>
+
+        <p class="docText">Having used the number of arguments to winnow the potentially viable functions, we must now look at whether the argument types match those of the parameters. As with any call, an argument might match its parameter either because the types match exactly or because there is a conversion from the argument type to the type of the parameter. In the example, both of our remaining functions are viable.</p>
+        <p class="docText">根据实参个数选出潜在的可行函数后，必须检查实参的类型是否与对应的形参类型匹配。与任意函数调用一样，实参必须与它的形参匹配，它们的类型要么精确匹配，要么实参类型能够转换为形参类型。在这个例子中，余下的两个函数都是是可行的。</p>
+
+        <ul>
+          <li>
+            <p class="docList"><tt>f(int)</tt> is a viable function because a conversion exists that can convert the argument of type <tt>double</tt> to the parameter of type <tt>int</tt>.</p>
+            <p class="docList"><tt>f(int)</tt> 是一个可行函数，因为通过隐式转换可将函数调用中的 <tt>double</tt> 型实参转换为该函数唯一的 <tt>int</tt> 型形参。</p>
+          </li>
+
+          <li>
+            <p class="docList"><tt>f(double, double)</tt> is a viable function because a default argument is provided for the function's second parameter and its first parameter is of type <tt>double</tt>, which exactly matches the type of the parameter.</p>
+            <p class="docList"><tt>f(double, double)</tt> 也是一个可行函数，因为该函数为其第二个形参提供了默认实参，而且第一个形参是 <tt>double</tt> 类型，与实参类型精确匹配。</p>
+          </li>
+        </ul><a name="ch07note35"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">If there are no viable functions, then the call is in error.</p>
+                <p class="docText">如果没有找到可行函数，则该调用错误。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <a name="ch07lev3sec35"></a>
+
+        <h5 class="docSection3Title">Finding the Best Match, If Any</h5>
+        <h5 class="docSection3Title">寻找最佳匹配（如果有的话）</h5>
+
+        <p class="docText">The third step of function overload resolution determines which viable function has the best match for the actual arguments in the call. This process looks at each argument in the call and selects the viable function (or functions) for which the corresponding parameter best matches the argument. The details of "best" here will be explained in the next section, but the idea is that the closer the types of the argument and parameter are to each other, the better the match. So, for example, an exact type match is better than a match that requires a conversion from the argument type to the parameter type.</p>
+        <p class="docText">函数重载确定的第三步是确定与函数调用中使用的实际参数匹配最佳的可行函数。这个过程考虑函数调用中的每一个实参，选择对应形参与之最匹配的一个或多个可行函数。这里所谓“最佳”的细节将在下一节中解释，其原则是实参类型与形参类型越接近则匹配越佳。因此，实参类型与形参类型之间的精确类型匹配比需要转换的匹配好。</p>
+
+        <p class="docText">In our case, we have only one explicit argument to consider. That argument has type <tt>double</tt>. To call <tt>f(int)</tt>, the argument would have to be converted from <tt>double</tt> to <tt>int</tt>. The other viable function, <tt>f(double, double)</tt>, is an exact match for this argument. Because an exact match is better than a match that requires a conversion, the compiler will resolve the call <tt>f(5.6)</tt> as a call to the function that has two <tt>double</tt> parameters.</p>
+	<p class="docText">在上述例子中，只需考虑一个 <tt>double</tt> 类型的显式实参。如果调用 <tt>f(int)</tt>，实参需从 <tt>double</tt> 型转换为 <tt>int</tt> 型。而另一个可行函数 <tt>f(double, double)</tt> 则与该实参精确匹配。由于精确匹配优于需要类型转换的匹配，因此编译器将会把函数调用 <tt>f(5.6)</tt> 解释为对带有两个 <tt>double</tt> 形参的 <tt>f</tt> 函数的调用。</p>
+
+<a name="ch07lev3sec36"></a>
+        <h5 class="docSection3Title">Overload Resolution with Multiple Parameters</h5>
+        <h5 class="docSection3Title">含有多个形参的重载确定</h5>
+
+<a name="idd1e55580"></a><a name="idd1e55585"></a><a name="idd1e55590"></a><a name="idd1e55595"></a><a name="idd1e55600"></a>
+        <p class="docText">Function matching is more complicated if there are two or more explicit arguments. Given the same functions named <tt>f</tt>, let's analyze the following call:</p>
+        <p class="docText">如果函数调用使用了两个或两个以上的显式实参，则函数匹配会更加复杂。假设有两样的名为 <tt>f</tt> 的函数，分析下面的函数调用：</p>
+        <pre>
+     f(42, 2.56);
+</pre><br>
+
+        <p class="docText">The set of viable functions is selected in the same way. The compiler selects those functions that have the required number of parameters and for which the argument types match the parameter types. In this case, the set of viable functions are <tt>f(int, int)</tt> and <tt>f(double, double)</tt>. The compiler then determines argument by argument which function is (or functions are) the best match. There is a match if there is one and only one function for which</p>
+        <p class="docText">可行函数将以同样的方式选出。编译器将选出形参个数和类型都与实参匹配的函数。在本例中，可行函数是 <tt>f(int, int)</tt> 和 <tt>f(double, double)</tt>。接下来，编译器通过依次检查每一个实参来决定哪个或哪些函数匹配最佳。如果有且仅有一个函数满足下列条件，则匹配成功：</p>
+
+        <div style="font-weight:bold">
+          <ol class="docList" type="1">
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">The match for each argument is no worse than the match required by any other viable function.</p>
+                <p class="docList">其每个实参的匹配都不劣于其他可行函数需要的匹配。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">There is at least one argument for which the match is better than the match provided by any other viable function.</p>
+                <p class="docList">至少有一个实参的匹配优于其他可行函数提供的匹配。</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+
+        <p class="docText">If after looking at each argument there is no single function that is preferable, then the call is in error. The compiler will complain that the call is ambiguous.</p>
+        <p class="docText">如果在检查了所有实参后，仍找不到唯一最佳匹配函数，则该调用错误。编译器将提示该调用具有二义性。</p>
+
+        <p class="docText">In this call, when we look only at the first argument, we find that the function <tt>f(int, int)</tt> is an exact match. To match the second function, the <tt>int</tt> argument <tt>42</tt> must be converted to a <tt>double</tt>. A match through a built-in conversion is "less good" than one that is exact. So, considering only this parameter, the function that takes two <tt>int</tt>s is a better match than the function that takes two <tt>double</tt>s.</p>
+        <p class="docText">在本例子的调用中，首先分析第一个实参，发现函数 <tt>f(int, int)</tt> 匹配精确。如果使之与第二个函数匹配，就必须将 <tt>int</tt> 型实参 <tt>42</tt> 转换为 <tt>double</tt> 型的值。通过内置转换的匹配“劣于”精确匹配。所以，如果只考虑这个形参，带有两个 <tt>int</tt> 型形参的函数比带有两个 <tt>double</tt> 型形参的函数匹配更佳。</p>
+
+        <p class="docText">However, when we look at the second argument, then the function that takes two <tt>double</tt>s is an exact match to the argument <tt>2.56</tt>. Calling the version of <tt>f</tt> that takes two <tt>int</tt>s would require that <tt>2.56</tt> be converted from <tt>double</tt> to <tt>int</tt>. When we consider only the second parameter, then the function <tt>f(double, double)</tt> is the better match.</p>
+        <p class="docText">但是，当分析第二个实参时，有两个 <tt>double</tt> 型形参的函数为实参 <tt>2.56</tt> 提供了精确匹配。而调用两个 <tt>int</tt> 型形参的 <tt>f</tt> 函数版本则需要把 <tt>2.56</tt> 从 <tt>double</tt> 型转换为 <tt>int</tt> 型。所以只考虑第二个形参的话，函数 <tt>f(double, double)</tt> 匹配更佳。</p>
+
+        <p class="docText">This call is therefore ambiguous: Each viable function is a better match on one of the arguments to the call. The compiler will generate an error. We could force a match by explicitly casting one of our arguments:</p>
+        <p class="docText">因此，这个调用有二义性：每个可行函数都对函数调用的一个实参实现更好的匹配。编译器将产生错误。解决这样的二义性，可通过显式的强制类型转换强制函数匹配：</p>
+        <pre>
+     f(static_cast&lt;double&gt;(42), 2.56);  // <span class="docEmphItalicAlt">calls</span> <span class="docEmphasis">f(double, double)</span>
+     f(42, static_cast&lt;int&gt;(2.56));     // <span class="docEmphItalicAlt">calls</span> <span class="docEmphasis">f(int, int)</span>
+</pre>
+        <a name="ch07note36"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="116" height="74" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/bestpractices.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">In practice, arguments should not need casts when calling over-loaded functions: The need for a cast means that the parameter sets are designed poorly.</p>
+                <p class="docText">在实际应用中，调用重载函数时应尽量避免对实参做强制类型转换：需要使用强制类型转换意味着所设计的形参集合不合理。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <a name="ch07lev2sec30"></a>
+
+<a name="ch07sb15"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 7.8.3</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch07qa14q1"></a><b>Exercise 7.36:</b></td>
+
+                    <td>
+<a name="idd1e55744"></a><a name="idd1e55749"></a>
+                      <p class="docText">What is a candidate function? What is a viable function?</p>
+                      <p class="docText">什么是候选函数？什么是可行函数？</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+<a name="ch07qa14q2"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 7.37:</b></td>
+
+                    <td>
+                      <p class="docText">Given the declarations for <tt>f</tt>, determine whether the following calls are legal. For each call list the viable functions, if any. If the call is illegal, indicate whether there is no match or why the call is ambiguous. If the call is legal, indicate which function is the best match.</p>
+                      <p class="docText">已知本节所列出的 <tt>f</tt> 函数的声明，判断下面哪些函数调用是合法的。如果有的话，列出每个函数调用的可行函数。如果调用非法，指出是没有函数匹配还是该调用存在二义性。如果调用合法，指出哪个函数是最佳匹配。</p>
+                      <pre>
+     (a) f(2.56, 42);
+     (b) f(42);
+     (c) f(42, 0);
+     (d) f(2.56, 3.14);
+</pre><br>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table>
+
+        <h4 class="docSection2Title">7.8.4. Argument-Type Conversions</h4>
+        <h4 class="docSection2Title">7.8.4. 实参类型转换</h4>
+
+        <p class="docText">In order to determine the best match, the compiler ranks the conversions that could be used to convert each argument to the type of its corresponding parameter. Conversions are ranked in descending order as follows:</p>
+        <p class="docText">为了确定最佳匹配，编译器将实参类型到相应形参类型转换划分等级。转换等级以降序排列如下：</p>
+
+        <div style="font-weight:bold">
+          <ol class="docList" type="1">
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">An exact match. The argument and parameter types are the same.</p>
+                <p class="docList">精确匹配。实参与形参类型相同。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">Match through a promotion (<a class="docLink" href="ch05lev1sec12.html#ch05lev2sec26" >Section 5.12.2</a>, p. <a class="docLink" href="ch05lev1sec12.html#ch05lev2sec26" >180</a>).</p>
+                <p class="docList">通过类型提升实现的匹配（<a class="docLink" href="ch05lev1sec12.html#ch05lev2sec26" >第 5.12.2 节</a>）。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">Match through a standard conversion (<a class="docLink" href="ch05lev1sec12.html#ch05lev2sec27" >Section 5.12.3</a>, p. <a class="docLink" href="ch05lev1sec12.html#ch05lev2sec27" >181</a>).</p>
+                <p class="docList">通过标准转换实现的匹配（<a class="docLink" href="ch05lev1sec12.html#ch05lev2sec27" >第 5.12.3 节</a>）。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">Match through a class-type conversion. (<a class="docLink" href="ch14lev1sec9.html#ch14lev1sec9" >Section 14.9</a> (p. <a class="docLink" href="ch14lev1sec9.html#ch14lev1sec9" >535</a>) covers these conversions.)</p>
+                <p class="docList">通过类类型转换实现的匹配（<a class="docLink" href="ch14lev1sec9.html#ch14lev1sec9" >第 14.9 节</a>将介绍这类转换）。</p>
+              </div>
+            </li>
+          </ol>
+        </div><a name="ch07note37"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Promotions and conversions among the built-in types can yield surprising results in the context of function matching. Fortunately, well-designed systems rarely include functions with parameters as closely related as those in the following examples.</p>
+                <p class="docText">内置类型的提升和转换可能会使函数匹配产生意想不到的结果。但幸运的是，设计良好的系统很少会包含与下面例子类似的形参类型如此接近的函数。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <p class="docText">These examples bear study to cement understanding both of function matching in particular and of the relationships among the built-in types in general.</p>
+        <p class="docText">通过这些例子，学习并加深了解特殊的函数匹配和内置类型之间的一般关系。</p>
+
+<a name="ch07lev3sec37"></a>
+        <h5 class="docSection3Title">Matches Requiring Promotion or Conversion</h5>
+        <h5 class="docSection3Title">需要类型提升或转换的匹配</h5>
+
+        <p class="docText">Promotions or conversions are applied when the type of the argument can be promoted or converted to the appropriate parameter type using one of the standard conversions.</p>
+        <p class="docText">类型提升或转换适用于实参类型可通过某种标准转换提升或转换为适当的形参类型情况。</p>
+
+        <p class="docText">One important point to realize is that the small integral types promote to <tt>int</tt>. Given two functions, one of which takes an <tt>int</tt> and the other a <tt>short</tt>, the <tt>int</tt> version will be a better match for a value of any integral type other than <tt>short</tt>, even though <tt>short</tt> might appear on the surface to be a better match:</p>
+        <p class="docText">必须注意的一个重点是较小的整型提升为 <tt>int</tt> 型。假设有两个函数，一个的形参为 <tt>int</tt> 型，另一个的形参则是 <tt>short</tt> 型。对于任意整型的实参值，<tt>int</tt> 型版本都是优于 <tt>short</tt> 型版本的较佳匹配，即使从形式上看 <tt>short</tt> 型版本的匹配较佳：</p>
+        <pre>
+     void ff(int);
+     void ff(short);
+     ff('a');    // <span class="docEmphasis">char</span> <span class="docEmphItalicAlt">promotes to</span> <span class="docEmphasis">int</span><span class="docEmphItalicAlt">, so matches</span> <span class="docEmphasis">f(int)</span>
+</pre><br>
+
+        <p class="docText">A character literal is type <tt>char</tt>, and <tt>chars</tt> are promoted to <tt>int</tt>. That promoted type matches the type of the parameter of function <tt>ff(int)</tt>. A <tt>char</tt> could also be converted to <tt>short</tt>, but a conversion is a "less good" match than a promotion. And so this call will be resolved as a call to <tt>ff (int)</tt>.</p>
+        <p class="docText">字符字面值是 <tt>char</tt> 类型，<tt>char</tt> 类型可提升为 <tt>int</tt> 型。提升后的类型与函数 <tt>ff(int)</tt> 的形参类型匹配。<tt>char</tt> 类型同样也可转换为 <tt>short</tt> 型，但需要类型转换的匹配“劣于”需要类型提升的匹配。结果应将该调用解释为对 <tt>ff (int)</tt> 的调用。</p>
+
+<a name="idd1e55910"></a><a name="idd1e55915"></a><a name="idd1e55920"></a>
+        <p class="docText">A conversion that is done through a promotion is preferred to another standard conversion. So, for example, a <tt>char</tt> is a better match for a function taking an <tt>int</tt> than it is for a function taking a <tt>double</tt>. All other standard conversions are treated as equivalent. The conversion from <tt>char</tt> to <tt>unsigned char</tt>, for example, does not take precedence over the conversion from <tt>char</tt> to <tt>double</tt>. As a concrete example, consider:</p>
+        <p class="docText">通过类型提升实现的转换优于其他标准转换。例如，对于 <tt>char</tt> 型实参来说，有 <tt>int</tt> 型形参的函数是优于有 <tt>double</tt> 型形参的函数的较佳匹配。其他的标准转换也以相同的规则处理。例如，从 <tt>char</tt> 型到 <tt>unsigned char</tt> 型的转换的优先级不比从 <tt>char</tt> 型到 <tt>double</tt> 型的转换高。再举一个具体的例子，考虑：</p>
+        <pre>
+     extern void manip(long);
+     extern void manip(float);
+     manip(3.14);  // <span class="docEmphItalicAlt">error: ambiguous call</span>
+</pre>
+
+        <p class="docText">The literal constant 3.14 is a <tt>double</tt>. That type could be converted to either <tt>long</tt> or <tt>float</tt>. Because there are two possible standard conversions, the call is ambiguous. No one standard conversion is given precedence over another.</p>
+        <p class="docText">字面值常量 3.14 的类型为 <tt>double</tt>。这种类型既可转为 <tt>long</tt> 型也可转为 <tt>float</tt> 型。由于两者都是可行的标准转换，因此该调用具有二义性。没有哪个标准转换比其他标准转换具有更高的优先级。</p>
+
+<a name="ch07lev3sec38"></a>
+        <h5 class="docSection3Title">Parameter Matching and Enumerations</h5>
+        <h5 class="docSection3Title">参数匹配和枚举类型</h5>
+
+        <p class="docText">Recall that an object of <tt>enum</tt> type may be initialized only by another object of that <tt>enum</tt> type or one of its enumerators (<a class="docLink" href="ch02lev1sec7.html#ch02lev1sec7" >Section 2.7</a>, p. <a class="docLink" href="ch02lev1sec7.html#ch02lev1sec7" >63</a>). An integral object that happens to have the same value as an enumerator cannot be used to call a function expecting an <tt>enum</tt> argument:</p>
+        <p class="docText">回顾枚举类型 <tt>enum</tt>，我们知道这种类型的对象只能用同一枚举类型的另一个对象或一个枚举成员进行初始化（<a class="docLink" href="ch02lev1sec7.html#ch02lev1sec7" >第 2.7 节</a>）。整数对象即使具有与枚举元素相同的值也不能用于调用期望获得枚举类型实参的函数。</p>
+        <pre>
+     enum Tokens {INLINE = 128, VIRTUAL = 129};
+     void ff(Tokens);
+     void ff(int);
+     int main() {
+         Tokens curTok = INLINE;
+         ff(128);    // <span class="docEmphItalicAlt">exactly matches</span> <span class="docEmphasis">ff(int)</span>
+         ff(INLINE); // <span class="docEmphItalicAlt">exactly matches</span> <span class="docEmphasis">ff(Tokens)</span>
+         ff(curTok); // <span class="docEmphItalicAlt">exactly matches</span> <span class="docEmphasis">ff(Tokens)</span>
+         return 0;
+     }
+</pre>
+
+        <p class="docText">The call that passes the literal <tt>128</tt> matches the version of <tt>ff</tt> that takes an <tt>int</tt>.</p>
+        <p class="docText">传递字面值常量 <tt>128</tt> 的函数调用与有一个 <tt>int</tt> 型参数的 <tt>ff</tt> 版本匹配。</p>
+
+        <p class="docText">Although we cannot pass an integral value to a <tt>enum</tt> parameter, we can pass an <tt>enum</tt> to a parameter of integral type. When we do so, the <tt>enum</tt> value promotes to <tt>int</tt> or to a larger integral type. The actual promotion type depends on the values of the enumerators. If the function is overloaded, the type to which the <tt>enum</tt> promotes determines which function is called:</p>
+        <p class="docText">虽然无法将整型值传递给枚举类型的形参，但可以将枚举值传递给整型形参。此时，枚举值被提升为 <tt>int</tt> 型或更大的整型。具体的提升类型取决于枚举成员的值。如果是重载函数，枚举值提升后的类型将决定调用哪个函数：</p>
+        <pre>
+     void newf(unsigned char);
+     void newf(int);
+     unsigned char uc = 129;
+     newf(VIRTUAL); // <span class="docEmphItalicAlt">calls</span> <span class="docEmphasis">newf(int)</span>
+     newf(uc);      // <span class="docEmphItalicAlt">calls</span> <span class="docEmphasis">newf(unsigned char)</span>
+</pre>
+
+        <p class="docText">The <tt>enum Tokens</tt> has only two enumerators, the largest of which has a value of 129. That value can be represented by the type <tt>unsigned char</tt>, and many compilers would store the <tt>enum</tt> as an <tt>unsigned char</tt>. However, the type of <tt>VIRTUAL</tt> is not <tt>unsigned char</tt>. Enumerators and values of an <tt>enum</tt> type, are not promoted to <tt>unsigned char</tt>, even if the values of the enumerators would fit.</p>
+        <p class="docText">枚举类型 <tt>Tokens</tt> 只有两个枚举成员，最大的值为 129。这个值可以用 <tt>unsigned char</tt> 类型表示，很多编译器会将这个枚举类型存储为 <tt>unsigned char</tt> 类型。然而，枚举成员 <tt>VIRTUAL</tt> 却并不是 <tt>unsigned char</tt> 类型。就算枚举成员的值能存储在 <tt>unsigned char</tt> 类型中，枚举成员和枚举类型的值也不会提升为 <tt>unsigned char</tt> 类型。</p>
+
+<a name="ch07note38"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+<a name="idd1e56099"></a><a name="idd1e56105"></a><a name="idd1e56114"></a><a name="idd1e56123"></a><a name="idd1e56132"></a>
+                <p class="docText"> When using overloaded functions with <tt>enum</tt> parameters, remember: Two enumeration types may behave quite differently during function overload resolution, depending on the value of their enumeration constants. The enumerators determine the type to which they promote. And that type is machine-dependent.</p>
+                <p class="docText">在使用有枚举类型形参的重载函数时，请记住：由于不同枚举类型的枚举常量值不相同，在函数重载确定过程中，不同的枚举类型会具有完全不同的行为。其枚举成员决定了它们提升的类型，而所提升的类型依赖于机器。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <a name="ch07lev3sec39"></a>
+
+        <h5 class="docSection3Title">Overloading and <tt>const</tt> Parameters</h5>
+        <h5 class="docSection3Title">重载和 <tt>const</tt> 形参</h5>
+
+<a name="ch07note39"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Whether a parameter is <tt>const</tt> only matters when the parameter is a reference or pointer.</p>
+                <p class="docText">仅当形参是引用或指针时，形参是否为 <tt>const</tt> 才有影响。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <p class="docText">We can overload a function based on whether a reference parameter refers to a <tt>const</tt> or non<tt>const</tt> type. Overloading on <tt>const</tt> for a reference parameter is valid because the compiler can use whether the argument is <tt>const</tt> to determine which function to call:</p>
+        <p class="docText">可基于函数的引用形参是指向 <tt>const</tt> 对象还是指向非 <tt>const</tt> 对象，实现函数重载。将引用形参定义为 <tt>const</tt> 来重载函数是合法的，因为编译器可以根据实参是否为 <tt>const</tt> 确定调用哪一个函数：</p>
+        <pre>
+     Record lookup(Account&amp;);
+     Record lookup(const Account&amp;); // <span class="docEmphItalicAlt">new function</span>
+     const Account a(0);
+     Account b;
+     lookup(a);   // <span class="docEmphItalicAlt">calls</span> <span class="docEmphasis">lookup(const Account&amp;)</span>
+     lookup(b);   // <span class="docEmphItalicAlt">calls</span> <span class="docEmphasis">lookup(Account&amp;)</span>
+</pre>
+
+        <p class="docText">If the parameter is a plain reference, then we may not pass a <tt>const</tt> object for that parameter. If we pass a <tt>const</tt> object, then the only function that is viable is the version that takes a <tt>const</tt> reference.</p>
+        <p class="docText">如果形参是普通的引用，则不能将 <tt>const</tt> 对象传递给这个形参。如果传递了 <tt>const</tt> 对象，则只有带 <tt>const</tt> 引用形参的版本才是该调用的可行函数。</p>
+
+        <p class="docText">When we pass a non<tt>const</tt> object, either function is viable. We can use a non<tt>const</tt> object to initializer either a <tt>const</tt> or non<tt>const</tt> reference. However, initializing a <tt>const</tt> reference to a non<tt>const</tt> object requires a conversion, whereas initializing a non<tt>const</tt> parameter is an exact match.</p>
+        <p class="docText">如果传递的是非 <tt>const</tt> 对象，则上述任意一种函数皆可行。非 <tt>const</tt> 对象既可用于初始化 <tt>const</tt> 引用，也可用于初始化非 <tt>const</tt> 引用。但是，将 <tt>const</tt> 引用初始化为非 <tt>const</tt> 对象，需通过转换来实现，而非 <tt>const</tt> 形参的初始化则是精确匹配。</p>
+
+        <p class="docText">Pointer parameters work in a similar way. We may pass the address of a <tt>const</tt> object only to a function that takes a pointer to <tt>const</tt>. We may pass a pointer to a non<tt>const</tt> object to a function taking a pointer to a <tt>const</tt> or non<tt>const</tt> type. If two functions differ only as to whether a pointer parameter points to <tt>const</tt> or non<tt>const</tt>, then the parameter that points to the non<tt>const</tt> type is a better match for a pointer to a non<tt>const</tt> object. Again, the compiler can distinguish: If the argument is <tt>const</tt>, it calls the function that takes a <tt>const*</tt>; otherwise, if the argument is a non<tt>const</tt>, the function taking a plain pointer is called.</p>
+        <p class="docText">对指针形参的相关处理如出一辙。可将 <tt>const</tt> 对象的地址值只传递给带有指向 <tt>const</tt> 对象的指针形参的函数。也可将指向非 <tt>const</tt> 对象的指针传递给函数的 <tt>const</tt> 或非 <tt>const</tt> 类型的指针形参。如果两个函数仅在指针形参时是否指向 <tt>const</tt> 对象上不同，则指向非 <tt>const</tt> 对象的指针形参对于指向非 <tt>const</tt> 对象的指针（实参）来说是更佳的匹配。重复强调，编译器可以判断：如果实参是 <tt>const</tt> 对象，则调用带有 <tt>const*</tt> 类型形参的函数；否则，如果实参不是 <tt>const</tt> 对象，将调用带有普通指针形参的函数。</p>
+
+        <p class="docText">It is worth noting that we cannot overload based on whether the pointer itself is <tt>const</tt>:</p>
+        <p class="docText">注意不能基于指针本身是否为 <tt>const</tt> 来实现函数的重载：</p>
+        <pre>
+     f(int *);
+     f(int *const); // <span class="docEmphItalicAlt">redeclaration</span>
+</pre>
+
+        <p class="docText">Here the <tt>const</tt> applies to the pointer, not the type to which the pointer points. In both cases the pointer is copied; it makes no difference whether the pointer itself is <tt>const</tt>. As we noted on page <a class="docLink" href="ch07lev1sec8.html#page_267">267</a>, when a parameter is passed as a copy, we cannot overload based on whether that parameter is <tt>const</tt>.</p>
+        <p class="docText">此时，<tt>const</tt> 用于修改指针本身，而不是修饰指针所指向的类型。在上述两种情况中，都复制了指针，指针本身是否为 <tt>const</tt> 并没有带来区别。正如前面<a class="docLink" href="ch07lev1sec8.html#page_267">第 7.8 节</a>所提到的，当形参以副本传递时，不能基于形参是否为 <tt>const</tt> 来实现重载。</p>
+
+<a name="ch07sb16"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 7.8.4</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch07qa15q1"></a><b>Exercise 7.38:</b></td>
+
+                    <td>
+<a name="idd1e56327"></a><a name="idd1e56332"></a><a name="idd1e56335"></a><a name="idd1e56340"></a><a name="idd1e56345"></a><a name="idd1e56348"></a><a name="idd1e56353"></a><a name="idd1e56358"></a>
+                      <p class="docText">Given the following declarations,</p>
+                      <p class="docText">给出如下声明：</p>
+                      <pre>
+     void manip(int, int);
+     double dobj;
+</pre>
+
+                      <p class="docText">what is the rank (<a class="docLink" href="ch07lev1sec8.html#ch07lev2sec30">Section 7.8.4</a>, p. <a class="docLink" href="ch07lev1sec8.html#ch07lev2sec30">272</a>) of each conversion in the following calls?</p>
+                      <p class="docText">对于下面两组函数调用，请指出实参上每个转换的优先级等级（<a class="docLink" href="ch07lev1sec8.html#ch07lev2sec30">第 7.8.4 节</a>）？</p>
+                      <pre>
+     (a) manip('a', 'z');    (b) manip(55.4, dobj);
+</pre>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch07qa15q2"></a><b>Exercise 7.39:</b></td>
+
+                    <td>
+                      <p class="docText">Explain the effect of the second declaration in each one of the following sets of declarations. Indicate which, if any, are illegal.</p>
+                      <p class="docText">解释以下每组声明中的第二个函数声明所造成的影响，并指出哪些不合法（如果有的话）。</p>
+                      <pre>
+     (a) int calc(int, int);
+         int calc(const int&amp;, const int&amp;);
+
+     (b) int calc(char*, char*);
+         int calc(const char*, const char*);
+
+     (c) int calc(char*, char*);
+         int calc(char* const, char* const);
+</pre>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch07qa15q3"></a><b>Exercise 7.40:</b></td>
+
+                    <td>
+                      <p class="docText">Is the following function call legal? If not, why is the call in error?</p>
+                      <p class="docText">下面的函数调用是否合法？如果不合法，请解释原因。</p>
+                      <pre>
+     enum Stat { Fail, Pass };
+     void test(Stat);
+     test(0);
+</pre><br>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table><br />
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch07lev1sec7.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch07lev1sec9.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

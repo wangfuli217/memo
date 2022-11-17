@@ -1,0 +1,132 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 2.7.  Enumerations</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch02lev1sec6.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch02lev1sec8.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch02lev1sec7"></a>
+
+        <h3 class="docSection1Title" id="432172-865">2.7. Enumerations</h3>
+        <h3 class="docSection1Title" id="432172-865">2.7. 枚举</h3>
+
+<a name="idd1e12331"></a><a name="idd1e12334"></a><a name="idd1e12339"></a><a name="idd1e12344"></a><a name="idd1e12347"></a><a name="idd1e12350"></a><a name="idd1e12355"></a>
+        <p class="docText">Often we need to define a set of alternative values for some attribute. A file, for example, might be open in one of three states: input, output, and append. One way to keep track of these state values might be to associate a unique constant number with each. We might write the following:</p>
+        <p class="docText">我们经常需要为某些属性定义一组可选择的值。例如，文件打开的状态可能会有三种：输入、输出和追加。记录这些状态值的一种方法是使每种状态都与一个唯一的常数值相关联。我们可能会这样编写代码：</p>
+        <pre>
+     const int input = 0;
+     const int output = 1;
+     const int append = 2;
+</pre>
+
+<a name="ch02term18"></a>
+        <p class="docText">Although this approach works, it has a significant weakness: There is no indication that these values are related in any way. <b><a class="docLink" href="ch02lev1sec11.html#gloss02_18" >Enumerations</a></b> provide an alternative method of not only defining but also grouping sets of integral constants.</p>
+        <p class="docText">虽然这种方法也能奏效，但是它有个明显的缺点：没有指出这些值是相关联的。<b><a class="docLink" href="ch02lev1sec11.html#gloss02_18" >枚举</a></b>提供了一种替代的方法，不但定义了整数常量集，而且还把它们聚集成组。</p>
+
+<a name="ch02lev2sec22"></a>
+        <h4 class="docSection2Title">Defining and Initializing Enumerations</h4>
+        <h4 class="docSection2Title">定义和初始化枚举</h4>
+
+<a name="ch02term19"></a>
+        <p class="docText">An enumeration is defined using the <tt>enum</tt> keyword, followed by an optional enumeration name, and a comma-separated list of <b><a class="docLink" href="ch02lev1sec11.html#gloss02_19" >enumerators</a></b> enclosed in braces.</p>
+	<p class="docText">枚举的定义包括关键字 <tt>enum</tt>，其后是一个可选的枚举类型名，和一个用花括号括起来、用逗号分开的<b><a class="docLink" href="ch02lev1sec11.html#gloss02_19" >枚举成员</a></b>列表。</p>
+        <pre>
+     // <span class="docEmphItalicAlt">input is 0, output is 1, and append is 2</span>
+     enum open_modes {input, output, append};
+</pre>
+
+        <p class="docText">By default, the first enumerator is assigned the value zero. Each subsequent enumerator is assigned a value one greater than the value of the enumerator that immediately precedes it.</p>
+        <p class="docText">默认地，第一个枚举成员赋值为 0，后面的每个枚举成员赋的值比前面的大 1。</p>
+
+<a name="ch02lev2sec23"></a>
+        <h4 class="docSection2Title">Enumerators Are <tt>const</tt> Values</h4>
+        <h4 class="docSection2Title">枚举成员是常量</h4>
+
+<a name="ch02term10"></a>
+        <p class="docText">We may supply an initial value for one or more enumerators. The value used to initialize an enumerator must be a <b><a class="docLink" href="ch02lev1sec11.html#gloss02_10" >constant expression</a></b>. A constant expression is an expression of integral type that the compiler can evaluate at compile time. An integral literal constant is a constant expression, as is a <tt>const</tt> object (<a class="docLink" href="ch02lev1sec4.html#ch02lev1sec4" >Section 2.4</a>, p. <a class="docLink" href="ch02lev1sec4.html#ch02lev1sec4" >56</a>) that is itself initialized from a constant expression.</p>
+	<p class="docText">可以为一个或多个枚举成员提供初始值，用来初始化枚举成员的值必须是一个<b><a class="docLink" href="ch02lev1sec11.html#gloss02_10" >常量表达式</a></b>。常量表达式是编译器在编译时就能够计算出结果的整型表达式。整型字面值常量是常量表达式，正如一个通过常量表达式自我初始化的 <tt>const</tt> 对象（<a class="docLink" href="ch02lev1sec4.html#ch02lev1sec4" >第 2.4 节</a>）也是常量表达式一样。</p>
+
+        <p class="docText">For example, we might define the following enumeration:</p>
+        <p class="docText">例如，可以定义下列枚举类型：</p>
+        <pre>
+     // <span class="docEmphasis">shape</span> <span class="docEmphItalicAlt">is 1,</span> <span class="docEmphasis">sphere</span> <span class="docEmphItalicAlt">is 2,</span> <span class="docEmphasis">cylinder</span> <span class="docEmphItalicAlt">is 3,</span> <span class="docEmphasis">polygon</span> <span class="docEmphItalicAlt">is 4</span>
+     enum Forms {shape = 1, sphere, cylinder, polygon};
+</pre><br>
+
+        <p class="docText">In the <tt>enum Forms</tt> we explicitly assigned <tt>shape</tt> the value <tt>1</tt>. The other enumerators are implicitly initialized: <tt>sphere</tt> is initialized to <tt>2, cylinder</tt> to <tt>3</tt>, and <tt>polygon</tt> to <tt>4</tt>.</p>
+	<p class="docText">在 <tt>枚举类型 Forms</tt> 中，显式将 <tt>shape</tt> 赋值为 <tt>1</tt>。其他枚举成员隐式初始化：<tt>sphere</tt> 初始化为 <tt>2</tt>，<tt>cylinder</tt> 初始化为 <tt>3</tt>，<tt>polygon</tt> 初始化为 <tt>4</tt>。</p>
+
+        <p class="docText">An enumerator value need not be unique.</p>
+        <p class="docText">枚举成员值可以是不唯一的。</p>
+        <pre>
+     // <span class="docEmphasis">point2d</span> <span class="docEmphItalicAlt">is 2,</span> <span class="docEmphasis">point2w</span> <span class="docEmphItalicAlt">is 3,</span> <span class="docEmphasis">point3d</span> <span class="docEmphItalicAlt">is 3,</span> <span class="docEmphasis">point3w</span> <span class="docEmphItalicAlt">is 4</span>
+     enum Points { point2d = 2, point2w,
+                   point3d = 3, point3w };
+</pre>
+
+<a name="idd1e12536"></a><a name="idd1e12539"></a><a name="idd1e12542"></a>
+        <p class="docText">In this example, the enumerator <tt>point2d</tt> is explicitly initialized to <tt>2</tt>. The next enumerator, <tt>point2w</tt>, is initialized by default, meaning that its value is one more than the value of the previous enumerator. Thus, <tt>point2w</tt> is initialized to <tt>3</tt>. The enumerator <tt>point3d</tt> is explicitly initialized to <tt>3</tt>, and <tt>point3w</tt>, again is initialized by default, in this case to <tt>4</tt>.</p>
+	<p class="docText">本例中，枚举成员 <tt>point2d</tt> 显式初始化为 <tt>2</tt>。下一个枚举成员 <tt>point2w</tt> 默认初始化，即它的值比前一枚举成员的值大 <tt>1</tt>。因此 <tt>point2w</tt> 初始化为 <tt>3</tt>。枚举成员 <tt>point3d</tt> 显式初始化为 <tt>3</tt>。一样，<tt>point3w</tt> 默认初始化，结果为 <tt>4</tt>。</p>
+
+        <p class="docText">It is not possible to change the value of an enumerator. As a consequence an enumerator is itself a constant expression and so can be used where a constant expression is required.</p>
+        <p class="docText">不能改变枚举成员的值。枚举成员本身就是一个常量表达式，所以也可用于需要常量表达式的任何地方。</p>
+
+<a name="ch02lev2sec24"></a>
+        <h4 class="docSection2Title">Each <tt>enum</tt> Defines a Unique Type</h4>
+	<h4 class="docSection2Title">每个 <tt>enum</tt> 都定义一种唯一的类型</h4>
+
+        <p class="docText">Each <tt>enum</tt> defines a new type. As with any type, we can define and initialize objects of type <tt>Points</tt> and can use those objects in various ways. An object of enumeration type may be initialized or assigned only by one of its enumerators or by another object of the same enumeration type:</p>
+	<p class="docText">每个 <tt>enum</tt> 都定义了一种新的类型。和其他类型一样，可以定义和初始化 <tt>Points</tt> 类型的对象，也可以以不同的方式使用这些对象。枚举类型的对象的初始化或赋值，只能通过其枚举成员或同一枚举类型的其他对象来进行：</p>
+        <pre>
+     Points pt3d = point3d; //  <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">point3d</span> <span class="docEmphItalicAlt">is a</span> <span class="docEmphasis">Points</span> <span class="docEmphItalicAlt">enumerator</span>
+     Points pt2w = 3;       //  <span class="docEmphItalicAlt">error:</span> <span class="docEmphasis">pt2w</span> <span class="docEmphItalicAlt">initialized with</span> <span class="docEmphasis">int</span>
+     pt2w = polygon;        //  <span class="docEmphItalicAlt">error:</span> <span class="docEmphasis">polygon</span> <span class="docEmphItalicAlt">is not a</span> <span class="docEmphasis">Points</span> <span class="docEmphItalicAlt">enumerator</span>
+     pt2w = pt3d;           //  <span class="docEmphItalicAlt">ok: both are objects of</span> <span class="docEmphasis">Points enum</span> <span class="docEmphItalicAlt">type</span>
+</pre>
+
+        <p class="docText">Note that it is illegal to assign the value <tt>3</tt> to a <tt>Points</tt> object even though <tt>3</tt> is a value associated with one of the <tt>Points</tt> enumerators.</p>
+	<p class="docText">注意把 <tt>3</tt> 赋给 <tt>Points</tt> 对象是非法的，即使 <tt>3</tt> 与一个 <tt>Points</tt> 枚举成员相关联。</p>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch02lev1sec6.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch02lev1sec8.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

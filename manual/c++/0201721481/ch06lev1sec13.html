@@ -1,0 +1,458 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 6.13.  try Blocks and Exception Handling</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch06lev1sec12.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch06lev1sec14.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch06lev1sec13"></a>
+
+        <h3 class="docSection1Title">6.13. <tt>try</tt> Blocks and Exception Handling</h3>
+
+        <h3 class="docSection1Title">6.13. <tt>try</tt> 块和异常处理</h3>
+
+        <p class="docText">Handling errors and other anomalous behavior in programs can be one of the most difficult parts of designing any system. Long-lived, interactive systems such as communication switches and routers can devote as much as 90 percent of their code to error detection and error handling. With the proliferation of Web-based applications that run indefinitely, attention to error handling is becoming more important to more and more programmers.</p>
+
+        <p class="docText">在设计各种软件系统的过程中，处理程序中的错误和其他反常行为是困难的部分之一。像通信交换机和路由器这类长期运行的交互式系统必须将 90% 的程序代码用于实现错误检测和错误处理。随着基于 Web 的应用程序在运行时不确定性的增多，越来越多的程序员更加注重错误的处理。</p>
+
+        <p class="docText"><a name="idd1e45495"></a><a name="idd1e45501"></a><a name="idd1e45506"></a><a name="idd1e45511"></a><a name="idd1e45517"></a><a name="idd1e45526"></a><a name="idd1e45533"></a><a name="idd1e45538"></a><a name="idd1e45542"></a><a name="idd1e45546"></a>Exceptions are run-time anomalies, such as running out of memory or encountering unexpected input. Exceptions exist outside the normal functioning of the program and require immediate handling by the program.</p>
+
+        <p class="docText">异常就是运行时出现的不正常，例如运行时耗尽了内存或遇到意外的非法输入。异常存在于程序的正常功能之外，并要求程序立即处理。</p>
+
+        <p class="docText">In well-designed systems, exceptions represent a subset of the program's error handling. Exceptions are most useful when the code that detects a problem cannot handle it. In such cases, the part of the program that detects the problem needs a way to transfer control to the part of the program that can handle the problem. The error-detecting part also needs to be able to indicate what kind of problem occurred and may want to provide additional information.</p>
+
+        <p class="docText">在设计良好的系统中，异常是程序错误处理的一部分。当程序代码检查到无法处理的问题时，异常处理就特别有用。在这些情况下，检测出问题的那部分程序需要一种方法把控制权转到可以处理这个问题的那部分程序。错误检测程序还必须指出具体出现了什么问题，并且可能需要提供一些附加信息。</p>
+
+        <p class="docText">Exceptions support this kind of communication between the error-detecting and error-handling parts of a program. In C++ exception handling involves:</p>
+
+        <p class="docText">异常机制提供程序中错误检测与错误处理部分之间的通信。C++ 的异常处理中包括：</p>
+
+        <div style="font-weight:bold">
+          <ol class="docList" type="1">
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList"><b><a name="ch06term25"></a> <a class="docLink" href="ch06lev1sec16.html#gloss06_25" ><span class="docEmphStrong"><tt>throw</tt> expressions</span></a></b>, which the error-detecting part uses to indicate that it encountered an error that it cannot handle. We say that a <tt>throw</tt> <b><a name="ch06term22"></a><a class="docLink" href="ch06lev1sec16.html#gloss06_22" >raises</a></b> an exceptional condition.</p>
+
+                <p class="docList"><b><a class="docLink" href="ch06lev1sec16.html#gloss06_25" ><span class="docEmphStrong"><tt>throw</tt> 表达式</span></a></b>，错误检测部分使用这种表达式来说明遇到了不可处理的错误。可以说，<tt>throw</tt> <b><a class="docLink" href="ch06lev1sec16.html#gloss06_22" >引发</a></b>了异常条件。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList"><b><a name="ch06term26"></a> <a class="docLink" href="ch06lev1sec16.html#gloss06_26" ><span class="docEmphStrong"><tt>try</tt> blocks</span></a></b>, which the error-handling part uses to deal with an exception. A <tt>try</tt> block starts with keyword <tt>try</tt> and ends with one or more <b><a name="ch06term5"></a><a class="docLink" href="ch06lev1sec16.html#gloss06_05" ><span class="docEmphStrong"><tt>catch</tt> clauses</span></a></b>. Exceptions thrown from code executed inside a <tt>try</tt> block are usually handled by one of the <tt>catch</tt> clauses. Because they "handle" the exception, catch clauses are known as <b><a name="ch06term12"></a><a class="docLink" href="ch06lev1sec16.html#gloss06_12" >handlers</a></b>.</p>
+
+                <p class="docList"><b><a class="docLink" href="ch06lev1sec16.html#gloss06_26" ><span class="docEmphStrong"><tt>try</tt> 块</span></a></b>，错误处理部分使用它来处理异常。<tt>try</tt> 语句块以 <tt>try</tt> 关键字开始，并以一个或多个 <b><a class="docLink" href="ch06lev1sec16.html#gloss06_05" ><span class="docEmphStrong"><tt>catch</tt> 子句</span></a></b>结束。在 <tt>try</tt> 块中执行的代码所抛出（throw）的异常，通常会被其中一个 <tt>catch</tt> 子句处理。由于它们“处理”异常，<tt>catch</tt> 子句也称为<b><a class="docLink" href="ch06lev1sec16.html#gloss06_12" >处理代码</a></b>。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">A set of <b><a name="ch06term11"></a><a class="docLink" href="ch06lev1sec16.html#gloss06_11" ><span class="docEmphStrong"><tt>exception</tt> classes</span></a></b> defined by the library, which are used to pass the information about an error between a <tt>throw</tt> and an associated <tt>catch</tt>.</p>
+
+                <p class="docList">由标准库定义的一组<b><a class="docLink" href="ch06lev1sec16.html#gloss06_11" ><span class="docEmphStrong">异常类</span></a></b>，用来在 <tt>throw</tt> 和相应的 <tt>catch</tt> 之间传递有关的错误信息。</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+
+        <p class="docText">In the remainder of this section we'll introduce these three components of exception handling. We'll have more to say about exceptions in <a class="docLink" href="ch17lev1sec1.html#ch17lev1sec1" >Section 17.1</a> (p. <a class="docLink" href="ch17lev1sec1.html#ch17lev1sec1" >688</a>).</p>
+
+        <p class="docText">在本节接下来的部分将要介绍这三种异常处理的构成。而<a class="docLink" href="ch17lev1sec1.html#ch17lev1sec1" >第 17.1 节</a>将会进一步了解异常的相关内容。</p><a name="ch06lev2sec13"></a>
+
+        <h4 class="docSection2Title">6.13.1. A <tt>throw</tt> Expression</h4>
+
+        <h4 class="docSection2Title">6.13.1 <tt>throw</tt> 表达式</h4>
+
+        <p class="docText">An exception is thrown using a <tt>throw</tt> expression, which consists of the keyword <tt>throw</tt> followed by an expression. A <tt>throw</tt> expression is usually followed by a semicolon, making it into an expression statement. The type of the expression determines what kind of exception is thrown.</p>
+
+        <p class="docText">系统通过 <tt>throw</tt> 表达式抛出异常。<tt>throw</tt> 表达式由关键字 <tt>throw</tt> 以及尾随的表达式组成，通常以分号结束，这样它就成为了表达式语句。<tt>throw</tt> 表达式的类型决定了所抛出异常的类型。</p>
+
+        <p class="docText">As a simple example, recall the program on page <a class="docLink" href="ch01lev1sec5.html#ch01sb13" >24</a> that added two objects of type <tt>Sales_item</tt>. That program checked whether the records it read referred to the same book. If not, it printed a message and exited.</p>
+
+        <p class="docText">回顾<a class="docLink" href="ch01lev1sec5.html#ch01sb13" >第 1.5.2 节</a>将两个 <tt>Sales_item</tt> 类型对象相加的程序，就是一个简单的例子。该程序检查读入的记录是否来自同一本书。如果不是，就输出一条信息然后退出程序。</p>
+        <pre>
+     Sales_item item1, item2;
+     std::cin &gt;&gt; item1 &gt;&gt; item2;
+     // <span class="docEmphItalicAlt">first check that</span> <span class="docEmphasis">item1</span> <span class="docEmphItalicAlt">and</span> <span class="docEmphasis">item2</span> <span class="docEmphItalicAlt">represent the same book</span>
+     if (item1.same_isbn(item2)) {
+         std::cout &lt;&lt; item1 + item2 &lt;&lt; std::endl;
+         return 0; // <span class="docEmphItalicAlt">indicate success</span>
+     } else {
+         std::cerr &lt;&lt; "Data must refer to same ISBN"
+                   &lt;&lt; std::endl;
+         return -1; // <span class="docEmphItalicAlt">indicate failure</span>
+     }
+</pre><br>
+
+        <p class="docText"><a name="idd1e45693"></a><a name="idd1e45699"></a><a name="idd1e45704"></a><a name="idd1e45711"></a><a name="idd1e45716"></a><a name="idd1e45722"></a><a name="idd1e45728"></a><a name="idd1e45732"></a><a name="idd1e45743"></a><a name="idd1e45748"></a><a name="idd1e45754"></a><a name="idd1e45759"></a>In a less simple program that used <tt>Sales_items</tt>, the part that adds the objects might be separated from the part that manages the interaction with a user. In this case, we might rewrite the test to <tt>throw</tt> an exception instead:</p>
+
+        <p class="docText">在使用 <tt>Sales_items</tt> 的更简单的程序中，把将对象相加的部分和负责跟用户交互的部分分开。在这个例子中，用 <tt>throw</tt> 抛出异常来改写检测代码：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">first check that data is for the same item</span>
+     if (!item1.same_isbn(item2))
+         throw runtime_error("Data must refer to same ISBN");
+     // <span class="docEmphItalicAlt">ok, if we're still here the ISBNs are the same</span>
+     std::cout &lt;&lt; item1 + item2 &lt;&lt; std::endl;
+</pre><br>
+
+        <p class="docText">In this code we check whether the ISBNs differ. If so, we discontinue execution and transfer control to a handler that will know how to handle this error.</p>
+
+        <p class="docText">这段代码检查 ISBN 对象是否不相同。如果不同的话，停止程序的执行，并将控制转移给处理这种错误的处理代码。</p>
+
+        <p class="docText">A <tt>throw</tt> takes an expression. In this case, that expression is an object of type <tt>runtime_error</tt>. The <tt>runtime_error</tt> type is one of the standard library exception types and is defined in the <tt>stdexcept</tt> header. We'll have more to say about these types shortly. We create a <tt>runtime_error</tt> by giving it a <tt>string</tt>, which provides additional information about the kind of problem that occurred.</p>
+
+        <p class="docText"><tt>throw</tt> 语句使用了一个表达式。在本例中，该表达式是 <tt>runtime_error</tt> 类型的对象。<tt>runtime_error</tt> 类型是标准库异常类中的一种，在 <tt>stdexcept</tt> 头文件中定义。在后续章节中很快就会更详细地介绍这些类型。我们通过传递 <tt>string</tt> 对象来创建 <tt>runtime_error</tt> 对象，这样就可以提供更多关于所出现问题的相关信息。</p><a name="ch06lev2sec14"></a>
+
+        <h4 class="docSection2Title">6.13.2. The <tt>try</tt> Block</h4>
+
+        <h4 class="docSection2Title">6.13.2. <tt>try</tt> 块</h4>
+
+        <p class="docText">The general form of a <tt>try</tt> block is</p>
+
+        <p class="docText"><tt>try</tt> 块的通用语法形式是：</p>
+        <pre>
+     try {
+         <span class="docEmphasis">program-statements</span>
+     } catch <span class="docEmphasis">(exception-specifier)</span> {
+         <span class="docEmphasis">handler-statements</span>
+     } catch <span class="docEmphasis">(exception-specifier)</span> {
+         <span class="docEmphasis">handler-statements</span>
+     } //...
+</pre><br>
+
+        <p class="docText">A <tt>try</tt> block begins with the keyword <tt>try</tt> followed by a block enclosed in braces. Following the <tt>try</tt> block is a list of one or more catch clauses. A catch clause consists of three parts: the keyword <tt>catch</tt>, the declaration of a single type or single object within parentheses (referred to as an <b><a name="ch06term13"></a><a class="docLink" href="ch06lev1sec16.html#gloss06_13" >exception specifier</a></b>), and a block, which as usual must be enclosed in curly braces. If the catch clause is selected to handle an exception, the associated block is executed. Once the catch clause finishes, execution continues with the statement immediately following the last catch clause.</p>
+
+        <p class="docText"><tt>try</tt> 块以关键字 <tt>try</tt> 开始，后面是用花括号起来的语句序列块。<tt>try</tt> 块后面是一个或多个 <tt>catch</tt> 子句。每个 <tt>catch</tt> 子句包括三部分：关键字 <tt>catch</tt>，圆括号内单个类型或者单个对象的声明——称为<b><a name="ch06term13"></a><a class="docLink" href="ch06lev1sec16.html#gloss06_13" >异常说明符</a></b>，以及通常用花括号括起来的语句块。如果选择了一个 <tt>catch</tt> 子句来处理异常，则执行相关的块语句。一旦 <tt>catch</tt> 子句执行结束，程序流程立即继续执行紧随着最后一个 catch 子句的语句。</p>
+
+        <p class="docText">The <span class="docEmphasis">program-statements</span> inside the <tt>try</tt> constitute the normal logic of the program. They can contain any C++ statement, including declarations. Like any block, a <tt>try</tt> block introduces a local scope, and variables declared within a <tt>try</tt> block cannot be referred to outside the <tt>try</tt>, including within the catch clauses.</p>
+
+        <p class="docText"><tt>try</tt> 语句内的 <span class="docEmphasis">program-statements</span> 形成程序的正常逻辑。这里面可以包含任意 C++ 语句，包括变量声明。与其他块语句一样，<tt>try</tt> 块引入局部作用域，在 <tt>try</tt> 块中声明的变量，包括 <tt>catch</tt> 子句声明的变量，不能在 <tt>try</tt> 外面引用。</p><a name="ch06lev3sec3"></a>
+
+        <h5 class="docSection3Title">Writing a Handler</h5>
+
+        <h5 class="docSection3Title">编写处理代码</h5>
+
+        <p class="docText">In the preceeding example we used a <tt>throw</tt> to avoid adding two <tt>Sales_items</tt> that represented different books. We imagined that the part of the program that added to <tt>Sales_items</tt> was separate from the part that communicated with the <a name="idd1e45896"></a><a name="idd1e45904"></a><a name="idd1e45912"></a>user. The part that interacts with the user might contain code something like the following to handle the exception that was thrown:</p>
+
+        <p class="docText">在前面的例子中，使用了 <tt>throw</tt> 来避免将两个表示不同书的 <tt>Sales_items</tt> 对象相加。想象一下将 <tt>Sales_items</tt> 对象相加的那部分程序与负责与用户交流的那部分是分开的，则与用户交互的部分也许会包含下面的用于处理所捕获异常的代码：</p>
+        <pre>
+     while (cin &gt;&gt; item1 &gt;&gt; item2) {
+         try {
+             // <span class="docEmphItalicAlt">execute code that will add the two</span> <span class="docEmphasis">Sales_items</span>
+             // <span class="docEmphItalicAlt">if the addition fails, the code</span> <span class="docEmphasis">throw</span><span class="docEmphItalicAlt">s a</span> <span class="docEmphasis">runtime_error</span> <span class="docEmphItalicAlt">exception</span>
+         } catch (runtime_error err) {
+             // <span class="docEmphItalicAlt">remind the user that ISBN must match and prompt for another pair</span>
+             cout &lt;&lt; err.what()
+                  &lt;&lt; "\nTry Again? Enter y or n" &lt;&lt; endl;
+             char c;
+             cin &gt;&gt; c;
+             if (cin &amp;&amp; c == 'n')
+                 break;     // <span class="docEmphItalicAlt">break out of the</span> <span class="docEmphasis">while</span> <span class="docEmphItalicAlt">loop</span>
+         }
+     }
+</pre><br>
+
+        <p class="docText">Following the <tt>try</tt> keyword is a block. That block would invoke the part of the program that processes <tt>Sales_item</tt> objects. That part might <tt>throw</tt> an exception of type <tt>runtime_error</tt>.</p>
+
+        <p class="docText">关键字 <tt>try</tt> 后面是一个块语句。这个块语句调用处理 <tt>Sales_item</tt> 对象的程序部分。这部分也可能会抛出 <tt>runtime_error</tt> 类型的异常。</p>
+
+        <p class="docText">This <tt>try</tt> block has a single <tt>catch</tt> clause, which handles exceptions of type <tt>runtime_error</tt>. The statements in the block following the <tt>catch</tt> define the actions that will be executed if code inside the <tt>try</tt> block throws a <tt>runtime_error</tt>. Our <tt>catch</tt> handles the error by printing a message and asking the user to indicate whether to continue. If the user enters an '<tt>n</tt>', then we break out of the <tt>while</tt>. Otherwise the loop continues by reading two new <tt>Sales_items</tt>.</p>
+
+        <p class="docText">上述 <tt>try</tt> 块提供单个 <tt>catch</tt> 子句，用来处理 <tt>runtime_error</tt> 类型的异常。在执行 <tt>try</tt> 块代码的过程中，如果在 <tt>try</tt> 块中的代码抛出 <tt>runtime_error</tt> 类型的异常，则处理这类异常的动作在 <tt>catch</tt> 后面的块语句中定义。本例中，<tt>catch</tt> 输出信息并且询问用户是否继续进行异常处理。如果用户输入'<tt>n</tt>'，则结束 <tt>while</tt>；否则继续循环，读入两个新的 <tt>Sales_items</tt> 对象。</p>
+
+        <p class="docText">The prompt to the user prints the return from <tt>err.what()</tt>. We know that <tt>err</tt> has type <tt>runtime_error</tt>, so we can infer that <tt>what</tt> is a member function (<a class="docLink" href="ch01lev1sec5.html#ch01lev2sec10" >Section 1.5.2</a>, p. <a class="docLink" href="ch01lev1sec5.html#ch01lev2sec10" >24</a>) of the <tt>runtime_error</tt> class. Each of the library exception classes defines a member function named <tt>what</tt>. This function takes no arguments and returns a C-style character string. In the case of <tt>runtime_error</tt>, the C-style string that <tt>what</tt> returns is a copy of the <tt>string</tt> that was used to initialize the <tt>runtime_error</tt>. If the code described in the previous section threw an exception, then the output printed by this <tt>catch</tt> would be</p>
+
+        <p class="docText">通过输出 <tt>err.what()</tt> 的返回值提示用户。大家都知道 <tt>err</tt> 返回 <tt>runtime_error</tt> 类型的值，因此可以推断出 <tt>what</tt> 是 <tt>runtime_error</tt> 类的一个成员函数（<a class="docLink" href="ch01lev1sec5.html#ch01lev2sec10" >1.5.2 节</a>）。每一个标准库异常类都定义了名为 <tt>what</tt> 的成员函数。这个函数不需要参数，返回 C 风格字符串。在出现 <tt>runtime_error</tt> 的情况下，<tt>what</tt> 返回的 C 风格字符串，是用于初始化 <tt>runtime_error</tt> 的 <tt>string</tt> 对象的副本。如果在前面章节描述的代码抛出异常，那么执行这个 <tt>catch</tt> 将输出。</p>
+        <pre>
+     <span class="docEmphStrong">Data must refer to same ISBN</span>
+     <span class="docEmphStrong">Try Again? Enter y or n</span>
+</pre><br>
+        <a name="ch06lev3sec4"></a>
+
+        <h5 class="docsection3title">functions are exited during the search for a handler</h5>
+
+        <h5 class="docsection3title">函数在寻找处理代码的过程中退出</h5>
+
+        <p class="doctext">in complex systems the execution path of a program may pass through multiple <tt>try</tt> blocks before encountering code that actually throws an exception. for example, a <tt>try</tt> block might call a function that contains a <tt>try</tt>, that calls another function with its own <tt>try</tt>, and so on.</p>
+
+        <p class="doctext">在复杂的系统中，程序的执行路径也许在遇到抛出异常的代码之前，就已经经过了多个 <tt>try</tt> 块。例如，一个 <tt>try</tt> 块可能调用了包含另一 <tt>try</tt> 块的函数，它的 <tt>try</tt> 块又调用了含有 <tt>try</tt> 块的另一个函数，如此类推。</p>
+
+        <p class="doctext">the search for a handler reverses the call chain. when an exception is thrown, the function that threw the exception is searched first. if no matching <tt>catch</tt> is found, the function terminates, and the function that called the one that threw is searched for a matching <tt>catch</tt>. if no handler is found, then that function also <a name="idd1e46090"></a><a name="idd1e46094"></a><a name="idd1e46098"></a><a name="idd1e46102"></a><a name="idd1e46108"></a><a name="idd1e46115"></a><a name="idd1e46120"></a><a name="idd1e46126"></a><a name="idd1e46132"></a><a name="idd1e46138"></a><a name="idd1e46144"></a><a name="idd1e46148"></a><a name="idd1e46152"></a><a name="idd1e46156"></a><a name="idd1e46163"></a><a name="idd1e46169"></a><a name="idd1e46174"></a><a name="idd1e46179"></a><a name="idd1e46184"></a><a name="idd1e46188"></a><a name="idd1e46193"></a><a name="idd1e46197"></a><a name="idd1e46201"></a><a name="idd1e46207"></a><a name="idd1e46211"></a>exits and the function that called it is searched; and so on back up the execution path until a catch of an appropriate type is found.</p>
+
+        <p class="docText">寻找处理代码的过程与函数调用链刚好相反。抛出一个异常时，首先要搜索的是抛出异常的函数。如果没有找到匹配的 <tt>catch</tt>，则终止这个函数的执行，并在调用这个函数的函数中寻找相配的 <tt>catch</tt>。如果仍然找到相应的处理代码，该函数同样要终止，搜索调用它的函数。如此类推，继续按执行路径回退，直到找到适当类型的 <tt>catch</tt> 为止。</p>
+
+        <p class="docText">If no catch clause capable of handling the exception exists, program execution is transferred to a library function named <b><a name="ch06term24"></a><a class="docLink" href="ch06lev1sec16.html#gloss06_24" ><span class="docEmphStrong"><tt>terminate</tt></span></a></b>, which is defined in the <tt>exception</tt> header. The behavior of that function is system dependent, but it usually aborts the program.</p>
+
+        <p class="docText">如果不存在处理该异常的 <tt>catch</tt> 子句，程序的运行就要跳转到名为 <b><a class="docLink" href="ch06lev1sec16.html#gloss06_24" ><span class="docEmphStrong"><tt>terminate</tt></span></a></b> 的标准库函数，该函数在 <tt>exception</tt> 头文件中定义。这个标准库函数的行为依赖于系统，通常情况下，它的执行将导致程序非正常退出。</p>
+
+        <p class="docText">Exceptions that occur in programs that define no <tt>try</tt> blocks are handled in the same manner: After all, if there are no <tt>try</tt> blocks, there can be no handlers for any exception that might be thrown. If an exception occurs, then <tt>terminate</tt> is called and the program (ordinarily) is aborted.</p>
+
+        <p class="docText">在程序中出现的异常，如果没有经 <tt>try</tt> 块定义，则都以相同的方式来处理：毕竟，如果没有任何 <tt>try</tt> 块，也就没有捕获异常的处理代码（<tt>catch</tt> 子句）。此时，如果发生了异常，系统将自动调用 <tt>terminate</tt> 终止程序的执行。</p><a name="ch06sb11"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 6.13.2</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch06qa10q1"></a> <b>Exercise 6.23:</b></td>
+
+                    <td>
+                      <p class="docText">The <tt>bitset</tt> operation <tt>to_ulong</tt> tHRows an <tt>overflow_error</tt> exception if the <tt>bitset</tt> is larger than the size of an <tt>unsigned long</tt>. Write a program that generates this exception.</p>
+
+                      <p class="docText"><tt>bitset</tt> 类提供 <tt>to_ulong</tt> 操作，如果 <tt>bitset</tt> 提供的位数大于 <tt>unsigned long</tt> 的长度时，抛出一个 <tt>overflow_error</tt> 异常。编写产生这种异常的程序。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch06qa10q2"></a> <b>Exercise 6.24:</b></td>
+
+                    <td>
+                      <p class="docText">Revise your program to catch this exception and print a message.</p>
+
+                      <p class="docText">修改上述的程序，使它能捕获这种异常并输出提示信息。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a name="ch06lev2sec15"></a>
+
+        <h4 class="docSection2Title">6.13.3. Standard Exceptions</h4>
+
+        <h4 class="docSection2Title">6.13.3. 标准异常</h4>
+
+        <p class="docText">The C++ library defines a set of classes that it uses to report problems encountered in the functions in the standard library. These standard exception classes are also intended to be used in the programs we write. Library exception classes are defined in four headers:</p>
+
+        <p class="docText">C++ 标准库定义了一组类，用于报告在标准库中的函数遇到的问题。程序员可在自己编写的程序中使用这些标准异常类。标准库异常类定义在四个头文件中：</p>
+
+        <div style="font-weight:bold">
+          <ol class="docList" type="1">
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">The <tt>exception</tt> header defines the most general kind of exception class named <tt>exception</tt>. It communicates only that an exception occurs but provides no additional information.</p>
+
+                <p class="docList"><tt>exception</tt> 头文件定义了最常见的异常类，它的类名是 <tt>exception</tt>。这个类只通知异常的产生，但不会提供更多的信息。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">The <tt>stdexcept</tt> header defines several general purpose exception classes. These types are listed in <a class="docLink" href="ch06lev1sec13.html#ch06table01">Table 6.1</a> on the following page.</p><a name="ch06table01"></a>
+
+                <p><tt>stdexcept</tt> 头文件定义了几种常见的异常类，这些类型在<a class="docLink" href="ch06lev1sec13.html#ch06table01">表 6.1</a> 中列出。</p>
+
+                <h5 class="docTableTitle">Table 6.1. Standard Exception Classes Defined in <tt>&lt;stdexcept&gt;</tt></h5>
+
+                <h5 class="docTableTitle">表 6.1 在 <tt>&lt;stdexcept&gt;</tt> 头文件中定义的标准异常类</h5>
+
+                <table cellspacing="0" class="allBorders" border="1" rules="none" cellpadding="5">
+                  <colgroup>
+                    <col width="200">
+                    <col width="300">
+                  </colgroup>
+
+                  <tr>
+                    <td class="docTableCell" align="left" valign="middle">
+                      <p class="docText"><tt>exception</tt></p>
+                    </td>
+
+                    <td class="docTableCell" align="left" valign="top">
+                      <p class="docText">The most general kind of problem.</p>
+
+                      <p class="docText">最常见的问题。</p>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td class="docTableCell" align="left" valign="middle">
+                      <p class="docText"><tt>runtime_error</tt></p>
+                    </td>
+
+                    <td class="docTableCell" align="left" valign="top">
+                      <p class="docText">Problem that can be detected only at run time.</p>
+
+                      <p class="docText">运行时错误：仅在运行时才能检测到问题</p>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td class="docTableCell" align="left" valign="middle">
+                      <p class="docText"><tt>range_error</tt></p>
+                    </td>
+
+                    <td class="docTableCell" align="left" valign="top">
+                      <p class="docText">Run-time error: result generated outside the range of values that are meaningful.</p>
+
+                      <p class="docText">运行时错误：生成的结果超出了有意义的值域范围</p>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td class="docTableCell" align="left" valign="middle">
+                      <p class="docText"><tt>overflow_error</tt></p>
+                    </td>
+
+                    <td class="docTableCell" align="left" valign="top">
+                      <p class="docText">Run-time error: computation that overflowed.</p>
+
+                      <p class="docText">运行时错误：计算上溢</p>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td class="docTableCell" align="left" valign="middle">
+                      <p class="docText"><tt>underflow_error</tt></p>
+                    </td>
+
+                    <td class="docTableCell" align="left" valign="top">
+                      <p class="docText">Run-time error: computation that underflowed.</p>
+
+                      <p class="docText">运行时错误：计算下溢</p>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td class="docTableCell" align="left" valign="middle">
+                      <p class="docText"><tt>logic_error</tt></p>
+                    </td>
+
+                    <td class="docTableCell" align="left" valign="top">
+                      <p class="docText">Problem that could be detected before run time.</p>
+
+                      <p class="docText">逻辑错误：可在运行前检测到问题</p>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td class="docTableCell" align="left" valign="middle">
+                      <p class="docText"><tt>domain_error</tt></p>
+                    </td>
+
+                    <td class="docTableCell" align="left" valign="top">
+                      <p class="docText">Logic error: argument for which no result exists.</p>
+
+                      <p class="docText">逻辑错误：参数的结果值不存在</p>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td class="docTableCell" align="left" valign="middle">
+                      <p class="docText"><tt>invalid_argument</tt></p>
+                    </td>
+
+                    <td class="docTableCell" align="left" valign="top">
+                      <p class="docText">Logic error: inappropriate argument.</p>
+
+                      <p class="docText">逻辑错误：不合适的参数</p>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td class="docTableCell" align="left" valign="middle">
+                      <p class="docText"><tt>length_error</tt></p>
+                    </td>
+
+                    <td class="docTableCell" align="left" valign="top">
+                      <p class="docText">Logic error: attempt to create an object larger than the maximum size for that type.</p>
+
+                      <p class="docText">逻辑错误：试图生成一个超出该类型最大长度的对象</p>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td class="docTableCell" align="left" valign="middle">
+                      <p class="docText"><tt>out_of_range</tt></p>
+                    </td>
+
+                    <td class="docTableCell" align="left" valign="top">
+                      <p class="docText">Logic error: used a value outside the valid range.</p>
+
+                      <p class="docText">逻辑错误：使用一个超出有效范围的值</p>
+                    </td>
+                  </tr>
+                </table><br>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">The <tt>new</tt> header defines the <tt>bad_alloc</tt> exception type, which is the exception thrown by <tt>new</tt> (<a class="docLink" href="ch05lev1sec11.html#ch05lev1sec11" >Section 5.11</a>, p. <a class="docLink" href="ch05lev1sec11.html#ch05lev1sec11" >174</a>) if it cannot allocate memory.</p>
+
+                <p class="docList"><tt>new</tt> 头文件定义了 <tt>bad_alloc</tt> 异常类型，提供因无法分配内在而由 <tt>new</tt>（<a class="docLink" href="ch05lev1sec11.html#ch05lev1sec11" >第 5.11 节</a>）抛出的异常。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">The <tt>type_info</tt> header defines the <tt>bad_cast</tt> exception type, which we will discuss in <a class="docLink" href="ch18lev1sec2.html#ch18lev1sec2" >Section 18.2</a> (p. <a class="docLink" href="ch18lev1sec2.html#ch18lev1sec2" >772</a>).</p>
+
+                <p class="docList"><tt>type_info</tt> 头文件定义了 <tt>bad_cast</tt> 异常类型，这种类型将<a class="docLink" href="ch18lev1sec2.html#ch18lev1sec2" >第 18.2 节</a>讨论。</p>
+              </div>
+            </li>
+          </ol>
+        </div><a name="ch06lev3sec5"></a>
+
+        <h5 class="docSection3Title">Standard Library Exception Classes</h5>
+
+        <h5 class="docSection3Title">标准库异常类</h5>
+
+        <p class="docText">The library exception classes have only a few operations. We can create, copy, and assign objects of any of the exception types. The <tt>exception, bad_alloc</tt>, and <tt>bad_cast</tt> types define only a default constructor (<a class="docLink" href="ch02lev1sec3.html#ch02lev2sec13" >Section 2.3.4</a>, p. <a class="docLink" href="ch02lev1sec3.html#ch02lev2sec13" >50</a>); it is not possible to provide an initializer for objects of these types. The other exception types define only a single constructor that takes a <tt>string</tt> initializer. When we <a name="idd1e46526"></a><a name="idd1e46531"></a><a name="idd1e46534"></a><a name="idd1e46540"></a><a name="idd1e46548"></a>define any of these other exception types, we must supply a <tt>string</tt> argument. That <tt>string</tt> initializer is used to provide additional information about the error that occurred.</p>
+
+        <p class="docText">标准库异常类只提供很少的操作，包括创建、复制异常类型对象以及异常类型对象的赋值。 <tt>exception</tt>、<tt>bad_alloc</tt> 以及 <tt>bad_cast</tt> 类型只定义了默认构造函数（<a class="docLink" href="ch02lev1sec3.html#ch02lev2sec13" >第 2.3.4 节</a>），无法在创建这些类型的对象时为它们提供初值。其他的异常类型则只定义了一个使用 <tt>string</tt> 初始化式的构造函数。当需要定义这些异常类型的对象时，必须提供一想 <tt>string</tt> 参数。<tt>string</tt> 初始化式用于为所发生的错误提供更多的信息。</p>
+
+        <p class="docText">The exception types define only a single operation named <tt>what</tt>. That function takes no arguments and returns a <tt>const char*</tt>. The pointer it returns points to a C-style character string (<a class="docLink" href="ch04lev1sec3.html#ch04lev1sec3" >Section 4.3</a>, p. <a class="docLink" href="ch04lev1sec3.html#ch04lev1sec3" >130</a>). The purpose of this C-style character string is to provide some sort of textual description of the exception thrown.</p>
+
+        <p class="docText">异常类型只定义了一个名为 <tt>what</tt> 的操作。这个函数不需要任何参数，并且返回 <tt>const char*</tt> 类型值。它返回的指针指向一个 C 风格字符串（<a class="docLink" href="ch04lev1sec3.html#ch04lev1sec3" >第 4.3 节</a>）。使用 C 风格字符串的目的是为所抛出的异常提出更详细的文字描述。</p>
+
+        <p class="docText">The contents of the C-style character array to which <tt>what</tt> returns a pointer depends on the type of the exception object. For the types that take a <tt>string</tt> initializer, the <tt>what</tt> function returns that <tt>string</tt> as a C-style character array. For the other types, the value returned varies by compiler.</p>
+
+        <p class="docText"><tt>what</tt> 函数所返回的指针指向 C 风格字符数组的内容，这个数组的内容依赖于异常对象的类型。对于接受 <tt>string</tt> 初始化式的异常类型，<tt>what</tt> 函数将返回该 <tt>string</tt> 作为 C 风格字符数组。对于其他异常类型，返回的值则根据编译器的变化而不同。</p><a href="21001535.html" ><img src="images/pixel.gif"  alt="" width="1" height="1" border="0"></a>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch06lev1sec12.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch06lev1sec14.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

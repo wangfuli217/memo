@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>String.evalJSON - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>evalJSON<div class="box">1.5.1</div></h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">evalJSON([sanitize = false]) -> object</code></pre>
+			<p>
+				执行一个 JSON 格式的字符串，并返回结果对象。如果可选的参数 <code>sanitize</code> 被设置为
+				<code>true</code>，则会检测字符串中是否包含恶意或错误代码，若检测到，则会停止字符串的执行，
+				不再调用 <code>eval</code>。
+			</p>
+		</div>
+		<div id="abody">
+			<p class="notice">如果 JSON 字符串格式错误或在字符串中检测到恶意代码，将会抛出一个 <code>SyntaxError</code> 异常。</p>
+			<h3>样例</h3>
+			<pre><code class="javascript">var person = '{ "name": "Violet", "occupation": "character" }'.evalJSON(); 
+person.name; 
+//-> "Violet"
+
+person = 'grabUserPassword()'.evalJSON(true);
+//-> SyntaxError: Badly formed JSON string: 'grabUserPassword()' 
+
+person = '/*-secure-\n{"name": "Violet", "occupation": "character"}\n*/'.evalJSON()
+person.name; 
+//-> "Violet"
+			</code></pre>
+			<h3>注意</h3>
+			<p>如果从外部源接收数据，请将参数 <code>sanitize</code> 设为 <code>true</code>，以防止 XSS 攻击。</p>
+			<p>
+				因为 <code>String#evalJSON</code> 方法内部调用了 <a href="unfilterjson.htm" >String#unfilterJSON</a>，
+				因此如果字符串包含有安全注释界定符（在 <code>Prototype.JSONFilter</code> 中定义），这些界定符将会被移除。
+			</p>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

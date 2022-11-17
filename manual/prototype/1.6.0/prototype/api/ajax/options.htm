@@ -1,0 +1,291 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Ajax 选项 - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />		
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>Ajax 选项</h2>
+		<div id="excerpt">
+			<p>本章描述所有核心选项（被所有 AJAX 请求共享）和回调函数的详细信息。</p>
+		</div>
+		<div id="abody">
+			<p>
+				在 <code>Ajax</code> 命名空间中的所有请求对象都共享一系列公共的<strong>选项</strong>和<strong>回调函数</strong>。
+				回调函数在请求生命周期的各个阶段被调用，并且它们具有相同的参数列表。在请求期间，参数所包括的选项被不断的传递到请求中。
+			</p>
+			<h3>公用选项</h3>
+			<table class="data" cellspacing="0" cellpadding="0">
+				<thead><tr>
+					<th>选项</th>
+					<th>默认值</th>
+					<th>描述</th>
+				</tr></thead>
+				<tbody>
+					<tr>
+						<th><code>asynchronous</code></th>
+						<td><code>true</code></td>
+						<td>
+							指出 <code>XMLHttpRequest</code> 是否是异步的。因为同步的方式在某种程度上具有一定的不确定性，
+							通常不是一个好的选择，应尽量避免使用。
+						</td>
+					</tr>
+					<tr>
+						<th><code>contentType</code></th>
+						<td><code>'application/x-www-form-urlencoded'</code></td>
+						<td>
+							请求头部的 <code>Content-Type</code>（译注：form 元素的 enctype 属性）设置。可能你想要发送的内容是
+							XML 格式而不是常规的 URL 编码格式，这时，你就需要重新设置这个选项。
+						</td>
+					</tr>
+					<tr>
+						<th><code>encoding</code></th>
+						<td><code>'UTF-8'</code></td>
+						<td>
+							请求内容的编码方式。最好使用默认的设置，但是如果发生一些离奇的编码问题，你必须修正它，
+							使你页面中与编码相关的部分和服务器上保持一致。
+						</td>
+					</tr>
+					<tr>
+						<th><code>method</code></th>
+						<td><code>'post'</code></td>
+						<td>
+							HTTP 的请求方式。另一个常用的方式是 <code>'get'</code>。在专用于 Ruby On Rails 时，Prototype
+							也能响应其它的谓词（例如 <code>'put'</code> 和 <code>'delete'</code>，事实上，这些谓词是在
+							<code>'post'</code> 方式上增加了一个额外的参数 <code>'_method'</code>）。
+						</td>
+					</tr>
+					<tr>
+						<th><code>parameters</code></th>
+						<td><code>''</code></td>
+						<td>
+							请求的参数。在 <code>'get'</code> 方式下，参数被编码并附加到 URL 中（译注：URL 中的查询字符串），
+							其它方式下，参数被插入到请求数据主体中。参数的类型可以是一个 URL 编码字符串，也可以是任意一个与
+							<a href="../hash.htm" >Hash</a> 兼容的对象（Prototype
+							会自动将兼容对象的属性名称和属性值转换为名值对作为参数）。
+						</td>
+					</tr>
+					<tr>
+						<th><code>postBody</code></th>
+						<td>None</td>
+						<td>
+							在 <code>'post'</code> （实际应用中可能会有一些变化，上面的 <code>method</code>
+							选项对此做了描述）方式下，指定请求发送的内容。如果该参数为空，则使用 <code>parameters</code> 选项填充内容。
+						</td>
+					</tr>
+					<tr>
+						<th><code>requestHeaders</code></th>
+						<td>请查看说明</td>
+						<td>
+							<p>请求头可以使用下述两种方式进行传递：</p>
+							<ul>
+								<li>作为一个 <strong>object</strong>：使用属性来描述请求头。</li>								
+								<li>作为一个 <strong>array</strong>：偶数索引 (0, 2&#8230;) 元素表示头名称，奇数索引
+								(1, 3&#8230;) 元素表示对应的值。</li>
+							</ul>
+							<p>Prototype 默认提供了一组预设的请求头，这些选项可以被重写，你也可以增加新的选项：</p>
+							<ul>
+								<li><strong><code>X-Requested-With</code></strong> 被设置为 <code>'XMLHttpRequest'</code>。</li>
+								<li><strong><code>X-Prototype-Version</code></strong> 提供 Prototype 的当前版本号（如：1.5.0）。</li>
+								<li><strong><code>Accept</code></strong> 默认为 <code>'text/javascript, text/html,
+									application/xml, text/xml, */*'</code></li>
+								<li><strong><code>Content-type</code></strong> 基于 <code>contentType</code> 和 <code>encoding</code>
+								选项的值生成。</li>
+							</ul>
+						</td>
+					</tr>
+					<tr>
+						<th><code>evalJS</code></th>
+						<td>true</td>
+						<td>
+							如果服务器返回的 content-type 是下述类型之一：<code>application/ecmascript</code>, <code>application/javascript</code>,
+							<code>application/x-ecmascript</code>, <code>application/x-javascript</code>, <code>text/ecmascript</code>,
+							<code>text/javascript</code>, <code>text/x-ecmascript</code> 或 <code>text/x-javascript</code>，<em>并且</em>
+							请求遵循 <a href="http://en.wikipedia.org/wiki/Same_origin_policy" ><abbr title="Same Origin Policy">SOP</abbr></a>
+							（译注：<a href="../../Reference/SOP.htm" >中文说明</a>）Prototype 默认会自动执行 <code>Ajax.Response#responseText</code>
+							内容中的 Javascript 代码。如果你想要在任何情况下，均强制执行内容中的 Javascript 代码，请将该选项设为
+							<code>'force'</code>，为完全阻止代码的执行，设为 <code>'false'</code>。<br />
+							<strong>译注：</strong>该选项设为 <code>'true'</code> 或 <code>'force'</code> 时，会执行返回内容中的 Javascript
+							代码，并且代码不需要置于 &lt;script&gt; 和 &lt/script&gt; 标签中。例如返回的内容值为 <code>alert('Hello world')</code>，
+							Prototype 也会执行该语句，而不是把它当作一个普通的字符串。<code>'force'</code> 和 <code>'true'</code> 的区别在于：
+							若返回内容的 content-type 不是上述列出的类型，<code>'force'</code> 会强制把返回内容当作 Javascript 代码执行，而 <code>'true'</code>
+							不会执行。例如返回的 content-type 为 <code>text/plain</code> 时，<code>'force'</code> 会执行，而 <code>'true'</code> 不执行。
+						</td>
+					</tr>
+					<tr>
+						<th><code>evalJSON</code></th>
+						<td>true</td>
+						<td>
+							如果服务器返回数据的 content-type 类型为 <code>application/json </code>，则自动解析执行
+							<code>Ajax.Response#responseText</code> 的内容，然后填充到 <code>Ajax.Response#responseJSON</code>。
+							如果请求不遵循 <a href="http://en.wikipedia.org/wiki/Same_origin_policy" ><abbr title="Same Origin Policy">SOP</abbr></a>
+							（译注：<a href="../../Reference/SOP.htm" >中文说明</a>）规范，在执行前会对内容进行过滤。如果你希望强制执行，请将该选项设置为
+							<code>'force'</code>，为完全阻止代码的执行，设为 <code>'false'</code>。
+						</td>
+					</tr>
+					<tr>
+						<th><code>sanitizeJSON</code></th>
+						<td>本地请求为 <code>false</code>，否则为 <code>true</code></td>　
+						<td>
+							在运行之前过滤 <code>Ajax.Response#responseText</code> 的内容。
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<h3>公用回调函数</h3>
+			<p>
+				用于单独的对象实例时（<strong>译注：</strong>“单独的对象实例”是相对 <a href="responders.htm" ><cod>Ajax.Responders</cod></a>
+				而言，<code>Ajax.Responders</code> 是一个全局的对象，面向所有通过 Prototype 发出的 Ajax 请求），所有的回调函数（除
+				<code>onException</code> 外）均包含两个参数：<code>XMLHttpRequest</code> 对象以及执行 <code>X-JSON</code>
+				响应头后的结果（如果有的话，可为 <code>null</code>）。
+			</p>
+			<p>
+				在 <a href="request.htm" >Ajax.Request</a>
+				中，从另外一个角度描述了回调函数在请求生命周期中调用的先后顺序以及回调函数的互斥性。
+			</p>
+			<table class="data" cellspacing="0" cellpadding="0">
+				<thead>
+					<tr>
+						<th>回调函数</th>
+						<th>描述</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<th><code>onCreate</code><br /><span style="color: gray; font-size: 90%">(v1.5.1)</span></th>
+						<td>
+							当 <code>Ajax.Request</code> 对象被初始化后触发。回调发生在参数和 URL 被处理之后，第一次调用
+							XHR（XMLHttpRequest） 对象的方法之前。
+						</td>
+					</tr>
+					<tr>
+						<th><code>onComplete</code></th>
+						<td>
+							在请求生命周期的最未端被触发，用于在请求完成后，与指定状态代码相关的回调函数（译注：on<em>XYZ</em>）
+							也被调用后，处理一些可能需要的善后事宜。
+						</td>
+					</tr>
+					<tr>
+						<th>
+							<code>onException</code>
+						</th>
+						<td>
+							当 XHR 发生错误时触发。有一个约定俗成的函数签名方式：第一个参数是请求本身（如 <code>Ajax.Request</code>
+							实例），第二个参数是异常对象。
+						</td>
+					</tr>
+					<tr>
+						<th><code>onFailure</code></th>
+						<td>
+							在一个请求完成后，若存在相应的状态代码，但状态代码不是 2xy 系列，将调用 onFailure。
+							如果已经定义了与指定状态代码相关的回调函数，该回调将不被执行。回调发生在 <code>onComplete</code>
+							之前。<br />
+							<strong>译注：</strong>参见<a href="../../Reference/Status.htm" >状态代码表</a>
+						</td>
+					</tr>
+					<tr>
+						<th><code>onInteractive</code></th>
+						<td>
+							（不保证可用）服务器响应的数据通常是通过多个包来发送的，当每次接收到其中一部分数据（但不是最后一部分）时触发该回调。
+						</td>
+					</tr>
+					<tr>
+						<th><code>onLoaded</code></th>
+						<td>
+							（不保证可用）当基础的 XHR 对象被创建，连接已打开，并准备发送实际的请求时，触发该回调。
+						</td>						
+					</tr>
+					<tr>
+						<th><code>onLoading</code></th>
+						<td>
+							（不保证可用）在基础的 XHR 对象创建过程中，连接被打开时，触发该回调。
+						</td>
+					</tr>
+					<tr>
+						<th><code>onSuccess</code></th>
+						<td>							
+							当一个请求完成时，没有返回状态代码，或者返回的状态代码是 2xy 系列，调用该回调。
+							如果已经定义了与指定状态代码相关的回调函数，该回调将不被执行。回调发生在 <code>onComplete</code>
+							之前。<br />
+							<strong>译注：</strong>参见<a href="../../Reference/Status.htm" >状态代码表</a>
+						</td>
+					</tr>
+					<tr>
+						<th><code>onUninitialized</code></th>
+						<td>（不保证可用）当 XHR 对象刚被创建时调用。</td>
+					</tr>
+					<tr>
+						<th><code>on</code><em>XYZ</em></th>
+						<td>
+							<em>XYZ</em> 表示 XMLHttp 请求返回的状态代码。当响应刚完成，并且返回的状态代码与你指定的
+							<em>XYZ</em> 值相同时调用该回调。它会阻止 <code>onSuccess</code>/<code>onFailure</code> 执行。
+							回调发生在 <code>onComplete</code> 之前。<br />
+							<strong>译注：</strong>参见<a href="../../Reference/Status.htm" >状态代码表</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<h3>响应回调</h3>
+			<p>
+				当用于响应器（responders，译注：<a href="responders.htm" >Ajax.Responders</a>）时，所有被调用的回调函数（除
+				<code>onException</code> 和 <code>onCreate</code> 外）都具有三个参数：请求本身（例如 <code>Ajax.Request</code>
+				的实例），<code>XMLHttpRequest</code> 对象和执行 <code>X-JSON</code> 响应头后的结果（如果有，可为
+				<code>null</code>）。它们运行在响应的上下文中，<code>this</code> 引用被绑定到响应本身。
+			</p>				
+			<table class="data" cellspacing="0" cellpadding="0">
+				<thead>
+					<tr>
+						<th>回调函数</th>
+						<th>描述</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<th><code>onCreate</code></th>
+						<td>
+							当一个请求对象通过 <code>Ajax</code> 命名空间创建，并且已经设置好它的参数，但它的 XHR
+							连接尚未打开的时候触发该回调。它具有两个参数：请求的对象和基础的 XHR 对象。
+						<td>
+					</tr>
+					<tr>
+						<th><code>onComplete</code></th>
+						<td>
+							在请求生命周期的最未端被触发，用于在请求完成后，与指定状态代码相关的回调函数（译注：on<em>XYZ</em>）
+							也被调用后，处理一些可能需要的善后事宜。
+						</td>
+					</tr>
+					<tr>
+						<th><code>onException</code></th>
+						<td>
+							当 XHR 发生错误时触发。有一个约定俗成的函数签名方式：第一个参数是请求本身（如 <code>Ajax.Request</code>
+							实例），第二个参数是异常对象。
+						</td>
+					</tr>
+					<tr>
+						<th><code>onInteractive</code></th>
+						<td>
+							（不保证可用）服务器响应的数据通常是通过多个包来发送的，当每次接收到其中一部分数据（但不是最后一部分）时触发该回调。						
+						</td>
+					</tr>
+					<tr>
+						<th><code>onLoaded</code></th>
+						<td>（不保证可用）当基础的 XHR 对象被创建，连接已打开，并准备发送实际的请求时，触发该回调。</td>
+					</tr>
+					<tr>
+						<th><code>onLoading</code></th>
+						<td>（不保证可用）在基础的 XHR 对象创建过程中，连接被打开时，触发该回调。</td>
+					</tr>
+					<tr>
+						<th><code>onUninitialized</code></th>
+						<td>（不保证可用）当 XHR 对象刚被创建时调用。</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

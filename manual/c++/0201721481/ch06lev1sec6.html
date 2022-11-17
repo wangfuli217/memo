@@ -1,0 +1,473 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 6.6.  The switch Statement</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch06lev1sec5.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch06lev1sec7.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch06lev1sec6"></a>
+
+        <h3 class="docSection1Title">6.6. The <tt>switch</tt> Statement</h3>
+        <h3 class="docSection1Title">6.6. <tt>switch</tt> 语句</h3>
+
+<a name="ch06term23"></a>
+        <p class="docText">Deeply nested <tt>if else</tt> statements can often be correct syntactically and yet not correctly reflect the programmer's logic. For example, mistaken <tt>else if</tt> matchings are more likely to pass unnoticed. Adding a new condition and associated logic or making other changes to the statements is also hard to get right. A <b><a class="docLink" href="ch06lev1sec16.html#gloss06_23" ><span class="docEmphStrong"><tt>switch</tt> statement</span></a></b> provides a more convenient way to write deeply nested if/else logic.</p>
+	<p class="docText">深层嵌套的 <tt>if else</tt> 语句往往在语法上是正确的，但逻辑上去却没有正确地反映程序员的意图。例如，错误的 <tt>else if</tt> 匹配很容易被忽略。添加新的条件和逻辑关系，或者对语句做其他修改，都很难保证正确。<b><a class="docLink" href="ch06lev1sec16.html#gloss06_23" ><span class="docEmphStrong"><tt>switch</tt> 语句</span></a></b>提供了一种更方便的方法来实现深层嵌套的 <tt>if/else</tt> 逻辑。</p>
+
+        <p class="docText">Suppose that we have been asked to count how often each of the five vowels appears in some segment of text. Our program logic is as follows:</p>
+        <p class="docText">假设要统计五个元音在文本里分别出现的次数，程序逻辑结构如下：</p>
+
+        <ul>
+          <li>
+<a name="idd1e43032"></a><a name="idd1e43037"></a>
+            <p class="docList">Read each character until there are no more characters to read</p>
+            <p class="docList">按顺序读入每个字符直到读入完成为止。</p>
+          </li>
+
+          <li>
+            <p class="docList">Compare each character to the set of vowels</p>
+            <p class="docList">把每个字符与元音字符集做比较。</p>
+          </li>
+
+          <li>
+            <p class="docList">If the character matches one of the vowels, add 1 to that vowel's count</p>
+            <p class="docList">如果该字符与某个元音匹配，则该元音的计数器加 1。</p>
+          </li>
+
+          <li>
+            <p class="docList">Display the results</p>
+            <p class="docList">显示结果。</p>
+          </li>
+        </ul>
+
+        <p class="docText">The program was used to analyze this chapter. Here is the output:</p>
+        <p class="docText">使用此程序分析本章的英文版，得到以下输出结果：</p>
+        <pre>
+     <span class="docEmphStrong">Number of vowel a: 3499</span>
+     <span class="docEmphStrong">Number of vowel e: 7132</span>
+     <span class="docEmphStrong">Number of vowel i: 3577</span>
+     <span class="docEmphStrong">Number of vowel o: 3530</span>
+     <span class="docEmphStrong">Number of vowel u: 1185</span>
+</pre><br>
+        <a name="ch06lev2sec4"></a>
+
+        <h4 class="docSection2Title">6.6.1. Using a <tt>switch</tt></h4>
+        <h4 class="docSection2Title">6.6.1. 使用 <tt>switch</tt></h4>
+
+        <p class="docText">We can solve our problem most directly using a <tt>switch</tt> statement:</p>
+        <p class="docText">直接使用 <tt>switch</tt> 语句解决上述问题：</p>
+        <pre>
+     char ch;
+     // <span class="docEmphItalicAlt">initialize counters for each vowel</span>
+     int aCnt = 0, eCnt = 0, iCnt = 0,
+         oCnt = 0, uCnt = 0;
+     while (cin &gt;&gt; ch) {
+         // <span class="docEmphItalicAlt">if</span> <span class="docEmphasis">ch</span> <span class="docEmphItalicAlt">is a vowel, increment the appropriate counter</span>
+         switch (ch) {
+             case 'a':
+                 ++aCnt;
+                 break;
+             case 'e':
+                 ++eCnt;
+                 break;
+             case 'i':
+                 ++iCnt;
+                 break;
+             case 'o':
+                 ++oCnt;
+                 break;
+             case 'u':
+                 ++uCnt;
+                 break;
+         }
+     }
+     // <span class="docEmphItalicAlt">print results</span>
+     cout  &lt;&lt; "Number of vowel a: \t" &lt;&lt; aCnt &lt;&lt; '\n'
+           &lt;&lt; "Number of vowel e: \t" &lt;&lt; eCnt &lt;&lt; '\n'
+           &lt;&lt; "Number of vowel i: \t" &lt;&lt; iCnt &lt;&lt; '\n'
+           &lt;&lt; "Number of vowel o: \t" &lt;&lt; oCnt &lt;&lt; '\n'
+           &lt;&lt; "Number of vowel u: \t" &lt;&lt; uCnt &lt;&lt; endl;
+</pre><br>
+
+<a name="idd1e43118"></a><a name="idd1e43127"></a><a name="idd1e43132"></a><a name="idd1e43137"></a><a name="idd1e43143"></a><a name="idd1e43149"></a><a name="idd1e43158"></a><a name="idd1e43165"></a>
+<a name="ch06term4"></a>
+        <p class="docText">A <tt>switch</tt> statement executes by evaluating the parenthesized expression that follows the keyword <tt>switch</tt>. That expression must yield an integral result. The result of the expression is compared with the value associated with each <tt>case</tt>. The <tt>case</tt> keyword and its associated value together are known as the <b><a class="docLink" href="ch06lev1sec16.html#gloss06_04" >case label</a></b>. Each case label's value must be a constant expression (<a class="docLink" href="ch02lev1sec7.html#ch02lev1sec7" >Section 2.7</a>, p. <a class="docLink" href="ch02lev1sec7.html#ch02lev1sec7" >62</a>). There is also a special case label, the <tt>default</tt> label, which we cover on page <a class="docLink" href="ch06lev1sec6.html#ch06note13">203</a>.</p>
+	<p class="docText">通过对圆括号内表达式的值与其后列出的关键字做比较，实现 <tt>switch</tt> 语句的功能。表达式必须产生一个整数结果，其值与每个 <tt>case</tt> 的值比较。关键字 <tt>case</tt> 和它所关联的值称为 <b><a class="docLink" href="ch06lev1sec16.html#gloss06_04" >case 标号</a></b>。每个 <tt>case</tt> 标号的值都必须是一个常量表达式（<a class="docLink" href="ch02lev1sec7.html#ch02lev1sec7" >第 2.7 节</a>）。除此之外，还有一个特殊的 <tt>case</tt> 标号——<tt>default</tt> 标号，我们将在<a class="docLink" href="ch06lev1sec6.html#ch06note13">第 6.6.3 节</a>介绍它。</p>
+
+        <p class="docText">If the expression matches the value of a <tt>case</tt> label, execution begins with the first statement following that label. Execution continues normally from that statement through the end of the <tt>switch</tt> or until a <tt>break</tt> statement. If no match is found, (and if there is no <tt>default</tt> label), execution falls through to the first statement following the <tt>switch</tt>. In this program, the <tt>switch</tt> is the only statement in the body of a <tt>while</tt>. Here, falling through the <tt>switch</tt> returns control to the <tt>while</tt> condition.</p>
+	<p class="docText">如果表达式与其中一个 <tt>case</tt> 标号的值匹配，则程序将从该标号后面的第一个语句开始依次执行各个语句，直到 <tt>switch</tt> 结束或遇到 <tt>break</tt> 语句为止。如果没有发现匹配的 <tt>case</tt> 标号（并且也没有 <tt>default</tt> 标号），则程序从 <tt>switch</tt> 语句后面的第一条继续执行。在这个程序中，<tt>switch</tt> 语句是 <tt>while</tt> 循环体中唯一的语句，于是，<tt>switch</tt> 语句匹配失败后，将控制流返回给 <tt>while</tt> 循环条件。</p>
+
+        <p class="docText">We'll look at <tt>break</tt> statements in <a class="docLink" href="ch06lev1sec10.html#ch06lev1sec10" >Section 6.10</a> (p. <a class="docLink" href="ch06lev1sec10.html#ch06lev1sec10" >212</a>). Briefly, a <tt>break</tt> statement interrupts the current control flow. In this case, the <tt>break</tt> transfers control out of the <tt>switch</tt>. Execution continues at the first statement following the <tt>switch</tt>. In this example, as we already know, transferring control to the statement following the <tt>switch</tt> returns control to the <tt>while</tt>.</p>
+        <p class="docText"><a class="docLink" href="ch06lev1sec10.html#ch06lev1sec10" >第 6.10 节</a>将讨论 <tt>break</tt> 语句。简单地说，<tt>break</tt> 语句中断当前的控制流。对于 <tt>switch</tt> 的应用，<tt>break</tt> 语句将控制跳出 <tt>switch</tt>，继续执行 <tt>switch</tt> 语句后面的第一个语句。在这个例子中，正如大家所知道的，将会把控制转移到 <tt>switch</tt> 后面的下一语句，即交回给 <tt>while</tt>。</p>
+
+<a name="ch06lev2sec5"></a>
+        <h4 class="docSection2Title">6.6.2. Control Flow within a <tt>switch</tt></h4>
+        <h4 class="docSection2Title">6.6.2. <tt>switch</tt> 中的控制流</h4>
+
+        <p class="docText">It is essential to understand that execution flows across <tt>case</tt> labels.</p>
+        <p class="docText">了解 <tt>case</tt> 标号的执行流是必要的。</p>
+
+<a name="ch06note10"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">It is a common misunderstanding to expect that only the statements associated with the matched <tt>case</tt> label are executed. However, execution continues <span class="docEmphasis">across</span> <tt>case</tt> boundaries until the end of the <tt>switch</tt> statement or a <tt>break</tt> is encountered.</p>
+                <p class="docText">存在一个普遍的误解：以为程序只会执行匹配的 <tt>case</tt> 标号相关联的语句。实际上，程序从该点开始执行，并<span class="docEmphasis">跨越</span> <tt>case</tt> 边界继续执行其他语句，直到 <tt>switch</tt> 结束或遇到 <tt>break</tt> 语句为止。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">Sometimes this behavior is indeed correct. We want to execute the code for a particular label as well as the code for following labels. More often, we want to execute only the code particular to a given label. To avoid executing code for subsequent cases, the programmer must explicitly tell the compiler to stop execution by specifying a <tt>break</tt> statement. Under most conditions, the last statement before the next <tt>case</tt> label is <tt>break</tt>. For example, here is an incorrect implementation of our vowel-counting <tt>switch</tt> statement:</p>
+	<p class="docText">有时候，这种行为的确是正确的。程序员也许希望执行完某个特定标号的代码后，接着执行后续标号关联的语句。但更常见的是，我们只需要执行某个特定标号对应的代码。为了避免继续执行其后续 <tt>case</tt> 标号的内容，程序员必须利用 <tt>break</tt> 语句清楚地告诉编译器停止执行 <tt>switch</tt> 中的语句。大多数情况下，在下一个 <tt>case</tt> 标号之前的最后一条语句是 <tt>break</tt>。例如，下面统计元音出现次数的 <tt>switch</tt> 语句是不正确的：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">warning: deliberately incorrect!</span>
+     switch (ch) {
+          case 'a':
+               ++aCnt;   // <span class="docEmphItalicAlt">oops: should have a</span> <span class="docEmphasis">break</span> <span class="docEmphItalicAlt">statement</span>
+          case 'e':
+               ++eCnt;   // <span class="docEmphItalicAlt">oops: should have a</span> <span class="docEmphasis">break</span> <span class="docEmphItalicAlt">statement</span>
+          case 'i':
+               ++iCnt;   // <span class="docEmphItalicAlt">oops: should have a</span> <span class="docEmphasis">break</span> <span class="docEmphItalicAlt">statement</span>
+          case 'o':
+               ++oCnt;   // <span class="docEmphItalicAlt">oops: should have a</span> <span class="docEmphasis">break</span> <span class="docEmphItalicAlt">statement</span>
+          case 'u':
+               ++uCnt;   // <span class="docEmphItalicAlt">oops: should have a</span> <span class="docEmphasis">break</span> <span class="docEmphItalicAlt">statement</span>
+     }
+</pre><br>
+
+        <p class="docText">To understand what happens, we'll trace through this version assuming that value of <tt>ch</tt> is <tt>'i'</tt>. Execution begins following <tt>case 'i'</tt>thus incrementing <tt>iCnt</tt>. Execution does not stop there but continues across the <tt>case</tt> labels incrementing <tt>oCnt</tt> and <tt>uCnt</tt> as well. If <tt>ch</tt> had been <tt>'e'</tt>, then <tt>eCnt, iCnt, oCnt</tt>, and <tt>uCnt</tt> would all be incremented.</p>
+	<p class="docText">为了搞清楚该程序导致了什么结果，假设 <tt>ch</tt> 的值是 <tt>'i'</tt> 来跟踪这个版本的代码。程序从 <tt>case 'i'</tt> 后面的语句开始执行，<tt>iCnt</tt> 的值加 1。但是，程序的执行并没有在这里停止，而是越过 <tt>case</tt> 标号继续执行，同时将 <tt>oCnt</tt> 和 <tt>uCnt</tt> 的值都加了 1.如果 <tt>ch</tt> 是 <tt>'e'</tt> 的话，那么 <tt>eCnt</tt>、<tt>iCnt</tt>、<tt>oCnt</tt> 以及 <tt>uCnt</tt> 的值都会加 1。</p>
+
+<a name="ch06note11"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Forgetting to provide a <tt>break</tt> is a common source of bugs in <tt>switch</tt> statements.</p>
+                <p class="docText">对于 <tt>switch</tt> 结构，漏写 <tt>break</tt> 语句是常见的程序错误。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch06note12"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="116" height="74" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/bestpractices.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Although it is not strictly necessary to specify a <tt>break</tt> statement after the last label of a <tt>switch</tt>, the safest course is to provide a <tt>break</tt> after every label, even the last. If an additional <tt>case</tt> label is added later, then the <tt>break</tt> is already in place.</p>
+		<p class="docText">尽管没有严格要求在 <tt>switch</tt> 结构的最后一个标号之后指定 <tt>break</tt> 语句，但是，为了安全起见，最好在每个标号后面提供一个 <tt>break</tt> 语句，即使是最后一个标号也一样。如果以后在 <tt>switch</tt> 结构的末尾又需要添加一个新的 <tt>case</tt> 标号，则不用再在前面加 <tt>break</tt> 语句了。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch06lev3sec2"></a>
+
+        <h5 class="docSection3Title"><tt>break</tt> Statements Aren't Always Appropriate</h5>
+        <h5 class="docSection3Title">慎用 <tt>break</tt> 语句，它并不总是恰当的</h5>
+
+        <p class="docText">There is one common situation where the programmer might wish to omit a <tt>break</tt> statement from a <tt>case</tt> label, allowing the program to <span class="docEmphasis">fall through</span> multiple case labels. That happens when two or more values are to be handled by the same sequence of actions. Only a single value can be associated with a case label. To indicate a range, therefore, we typically stack case labels following one another. For example, if we wished only to count vowels seen rather than count the individual vowels, we might write the following:</p>
+	<p class="docText">有这么一种常见的情况，程序员希望在 <tt>case</tt> 标号后省略 <tt>break</tt> 语句，允许程序<span class="docEmphasis">向下执行</span>多个 <tt>case</tt> 标号。这时，两个或多个 <tt>case</tt> 值由相同的动作序列来处理。由于系统限定一个 <tt>case</tt> 标号只能与一个值相关联，于是为了指定一个范围，典型的做法是，把 <tt>case</tt> 标号依次排列。例如，如果只希望计算文本中元音的总数，而不是每一个元音的个数，则可以这样写：</p>
+        <pre>
+     int vowelCnt = 0;
+     // ...
+     switch (ch)
+     {
+         // <span class="docEmphItalicAlt">any occurrence of a,e,i,o,u increments</span> <span class="docEmphasis">vowelCnt</span>
+         case 'a':
+         case 'e':
+         case 'i':
+         case 'o':
+         case 'u':
+             ++vowelCnt;
+             break;
+     }
+</pre><br>
+
+        <p class="docText">Case labels need not appear on a new line. We could emphasize that the cases represent a range of values by listing them all on a single line:</p>
+	<p class="docText">每个 <tt>case</tt> 标号不一定要另起一行。为了强调这些 <tt>case</tt> 标号表示的是一个要匹配的范围，可以将它们全部在一行中列出：</p>
+        <pre>
+     switch (ch)
+     {
+         // <span class="docEmphItalicAlt">alternative legal syntax</span>
+         case 'a': case 'e': case 'i': case 'o': case 'u':
+             ++vowelCnt;
+             break;
+     }
+</pre><br>
+
+	<a name="idd1e43489"></a><a name="idd1e43497"></a><a name="idd1e43502"></a><a name="idd1e43510"></a><a name="idd1e43519"></a>
+        <p class="docText">Less frequently, we deliberately omit a <tt>break</tt> because we want to execute code for one case and then continue into the next case, executing that code as well.</p>
+	<p class="docText">比较少见的用法是，为了执行某个 <tt>case</tt> 的代码后继续执行下一个 <tt>case</tt> 的代码，故意省略 <tt>break</tt> 语句。</p>
+
+<a name="ch06note13"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="116" height="74" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/bestpractices.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Deliberately omitting a <tt>break</tt> at the end of a case happens rarely enough that a comment explaining the logic should be provided.</p>
+		<p class="docText">故意省略 <tt>case</tt> 后面的 <tt>break</tt> 语句是很罕见的，因此应该提供一些注释说明其逻辑。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch06lev2sec6"></a>
+
+        <h4 class="docSection2Title">6.6.3. The <tt>default</tt> Label</h4>
+        <h4 class="docSection2Title">6.6.3. <tt>default</tt> 标号</h4>
+
+<a name="ch06term10"></a>
+        <p class="docText">The <b><a class="docLink" href="ch06lev1sec16.html#gloss06_10" ><span class="docEmphStrong"><tt>default</tt></span> label</a></b> provides the equivalent of an <tt>else</tt> clause. If no <tt>case</tt> label matches the value of the switch expression and there is a <tt>default</tt> label, then the statements following the <tt>default</tt> are executed. For example, we might add a counter to track how many nonvowels we read. We'll increment this counter, which we'll name <tt>otherCnt</tt>, in the <tt>default</tt> case:</p>
+	<p class="docText"><b><a class="docLink" href="ch06lev1sec16.html#gloss06_10" ><span class="docEmphStrong"><tt>default</tt></span> 标号</a></b>提供了相当于 <tt>else</tt> 子句的功能。如果所有的 <tt>case</tt> 标号与 <tt>switch</tt> 表达式的值都不匹配，并且 <tt>default</tt> 标号存在，则执行 <tt>default</tt> 标号后面的语句。例如，在上述例子中添加一个计数器 <tt>otherCnt</tt> 统计读入多少个辅音字母，为 <tt>switch</tt> 结构增加 <tt>default</tt> 标号，其标志的分支实现 <tt>otherCnt</tt> 的自增：</p>
+        <pre>
+         // <span class="docEmphItalicAlt">if</span> <span class="docEmphasis">ch</span> <span class="docEmphItalicAlt">is a vowel, increment the appropriate counter</span>
+         switch (ch) {
+             case 'a':
+                 ++aCnt;
+                 break;
+             // <span class="docEmphItalicAlt">remaining vowel cases as before</span>
+             default:
+                 ++otherCnt;
+                 break;
+         }
+     }
+</pre><br>
+
+        <p class="docText">In this version, if <tt>ch</tt> is not a vowel, execution will fall through to the <tt>default</tt> label, and we'll increment <tt>otherCnt</tt>.</p>
+        <p class="docText">在这个版本的代码中，如果 <tt>ch</tt> 不是元音，程序流程将执行 <tt>default</tt> 标号的相关语句，使 <tt>otherCnt</tt> 的值加 1。</p>
+
+<a name="ch06note14"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="116" height="74" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/bestpractices.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">It can be useful always to define a <tt>default</tt> label even if there is no processing to be done in the default case. Defining the label indicates to subsequent readers that the case was considered but that there is no work to be done.</p>
+		<p class="docText">哪怕没有语句要在 <tt>default</tt> 标号下执行，定义 <tt>default</tt> 标号仍然是有用的。定义 <tt>default</tt> 标号是为了告诉它的读者，表明这种情况已经考虑到了，只是没什么要执行的。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">A label may not stand alone; it must precede a statement. If a <tt>switch</tt> ends with the <tt>default</tt> case in which there is no work to be done, then the <tt>default</tt> label must be followed by a null statement.</p>
+        <p class="docText">一个标号不能独立存在，它必须位于语句之前。如果 <tt>switch</tt> 结构以 <tt>default</tt> 标号结束，而且 <tt>default</tt> 分支不需要完成任何任务，那么该标号后面必须有一个空语句。</p>
+
+<a name="ch06lev2sec7"></a>
+        <h4 class="docSection2Title">6.6.4. <tt>switch</tt> Expression and Case Labels</h4>
+	<h4 class="docSection2Title">6.6.4. <tt>switch</tt> 表达式与 <tt>case</tt> 标号</h4>
+
+        <p class="docText">The expression evaluated by a <tt>switch</tt> can be arbitrarily complex. In particular, the expression can define and intialize a variable:</p>
+        <p class="docText"><tt>switch</tt> 求解的表达式可以非常复杂。特别是，该表达式也可以定义和初始化一个变量：</p>
+        <pre>
+     switch(int ival = get_response())
+</pre><br>
+
+        <p class="docText">In this case, <tt>ival</tt> is initialized, and the value of <tt>ival</tt> is compared with each <tt>case</tt> label. The variable <tt>ival</tt> exists throughout the entire <tt>switch</tt> statement but not outside it.</p>
+	<p class="docText">在这个例子中，<tt>ival</tt> 被初始化为 <tt>get_response</tt> 函数的调用结果，其值将要与每个 <tt>case</tt> 标号作比较。变量 <tt>ival</tt> 始终存在于整个 <tt>switch</tt> 语句中，在 <tt>switch</tt> 结构外面该变量就不再有效了。</p>
+
+<a name="idd1e43672"></a><a name="idd1e43677"></a><a name="idd1e43683"></a><a name="idd1e43690"></a><a name="idd1e43695"></a>
+        <p class="docText">Case labels must be constant integral expressions (<a class="docLink" href="ch02lev1sec7.html#ch02lev1sec7" >Section 2.7</a>, p. <a class="docLink" href="ch02lev1sec7.html#ch02lev1sec7" >62</a>). For example, the following labels result in compile-time errors:</p>
+	<p class="docText"><tt>case</tt> 标号必须是整型常量表达式（<a class="docLink" href="ch02lev1sec7.html#ch02lev1sec7" >第 2.7 节</a>）。例如，下面的标号将导致编译时的错误：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">illegal case label values</span>
+     case 3.14:  // <span class="docEmphItalicAlt">noninteger</span>
+     case ival:  // <span class="docEmphItalicAlt">nonconstant</span>
+</pre><br>
+
+        <p class="docText">It is also an error for any two case labels to have the same value.</p>
+	<p class="docText">如果两个 <tt>case</tt> 标号具有相同的值，同样也会导致编译时的错误。</p>
+
+<a name="ch06lev2sec8"></a>
+        <h4 class="docSection2Title">6.6.5. Variable Definitions inside a <tt>switch</tt></h4>
+        <h4 class="docSection2Title">6.6.5. <tt>switch</tt> 内部的变量定义</h4>
+
+        <p class="docText">Variables can be defined following only the last <tt>case</tt> or <tt>default</tt> label:</p>
+	<p class="docText">对于 <tt>switch</tt> 结构，只能在它的最后一个 <tt>case</tt> 标号或 <tt>default</tt> 标号后面定义变量：</p>
+        <pre>
+     case true:
+          // <span class="docEmphItalicAlt">error: declaration precedes a case label</span>
+          string file_name = get_file_name();
+          break;
+     case false:
+          // ...
+</pre><br>
+
+        <p class="docText">The reason for this rule is to prevent code that might jump over the definition and initialization of a variable.</p>
+        <p class="docText">制定这个规则是为避免出现代码跳过变量的定义和初始化的情况。</p>
+
+        <p class="docText">Recall that a variable can be used from its point of definition until the end of the block in which it is defined. Now, consider what would happen if we could define a variable between two case labels. That variable would continue to exist until the end of the enclosing block. It could be used by code in case labels following the one in which it was defined. If the <tt>switch</tt> begins executing in one of these subsequent case labels, then the variable might be used even though it had not been defined.</p>
+	<p class="docText">回顾变量的作用域，变量从它的定义点开始有效，直到它所在块结束为止。现在考虑如果在两个 <tt>case</tt> 标号之间定义变量会出现什么情况。该变量会在块结束之前一直存在。对于定义该变量的标号后面的其他 <tt>case</tt> 标号，它们所关联的代码都可以使用这个变量。如果 <tt>switch</tt> 从那些后续 <tt>case</tt> 标号开始执行，那么这个变量可能还未定义就要使用了。</p>
+
+        <p class="docText">If we need to define a variable for a particular case, we can do so by defining the variable inside a block, thereby ensuring that the variable can be used only where it is guaranteed to have been defined and initialized:</p>
+	<p class="docText">在这种情况下，如果需要为某个特殊的 <tt>case</tt> 定义变量，则可以引入块语句，在该块语句中定义变量，从而保证这个变量在使用前被定义和初始化。</p>
+        <pre>
+     case true:
+         {
+             // <span class="docEmphItalicAlt">ok: declaration statement within a statement block</span>
+             string file_name = get_file_name();
+             // ...
+         }
+       break;
+         case false:
+             // ...
+</pre><br>
+        <a href="21001535.html" ><img src="images/pixel.gif"  alt="" width="1" height="1" border="0"></a>
+      </td>
+    </tr>
+  </table>
+
+        <a name="ch06sb03"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 6.6.5</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch06qa3q1"></a><b>Exercise 6.7:</b></td>
+
+                    <td>
+<a name="idd1e43819"></a><a name="idd1e43827"></a><a name="idd1e43835"></a>
+                      <p class="docText">There is one problem with our vowel-counting program as we've implemented it: It doesn't count capital letters as vowels. Write a program that counts both lower- and uppercase letters as the appropriate vowelthat is, your program should count both <tt>'a'</tt> and <tt>'A'</tt> as part of <tt>aCnt</tt>, and so forth.</p>
+                      <p class="docText">前面已实现的统计元音的程序存在一个问题：不能统计大写的元音字母。编写程序统计大小写的元音，也就是说，你的程序计算出来的 <tt>aCnt</tt>，既包括 <tt>'a'</tt> 也包括 <tt>'A'</tt> 出现的次数，其他四个元音也一样。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch06qa3q2"></a><b>Exercise 6.8:</b></td>
+
+                    <td>
+                      <p class="docText">Modify our vowel-count program so that it also counts the number of blank spaces, tabs, and newlines read.</p>
+                      <p class="docText">修改元音统计程序使其可统计出读入的空格、制表符和换行符的个数。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch06qa3q3"></a><b>Exercise 6.9:</b></td>
+
+                    <td>
+                      <p class="docText">Modify our vowel-count program so that it counts the number of occurrences of the following two-character sequences: <tt>ff, fl</tt>, and <tt>fi</tt>.</p>
+		      <p class="docText">修改元音统计程序使其可统计以下双字符序列出现的次数：<tt>ff</tt>、<tt>fl</tt> 以及 <tt>fi</tt>。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch06qa3q4"></a><b>Exercise 6.10:</b></td>
+
+                    <td>
+                      <p class="docText">Each of the programs in the highlighted text on page <a class="docLink" href="ch06lev1sec6.html#ch06sb04">206</a> contains a common programming error. Identify and correct each error.</p>
+                      <p class="docText">下面每段代码都暴露了一个常见编程错误。请指出并修改之。</p>
+
+        <a name="ch06sb04"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Code for Exercises in Section 6.6.5</h2>
+              <pre>
+     (a) switch (ival) {
+             case 'a': aCnt++;
+             case 'e': eCnt++;
+             default: iouCnt++;
+         }
+
+     (b) switch (ival) {
+             case 1:
+                 int ix = get_value();
+                 ivec[ ix ] = ival;
+                 break;
+             default:
+                 ix = ivec.size()-1;
+                 ivec[ ix ] = ival;
+         }
+
+     (c) switch (ival) {
+             case 1, 3, 5, 7, 9:
+                 oddcnt++;
+                 break;
+             case 2, 4, 6, 8, 10:
+                 evencnt++;
+                 break;
+         }
+
+     (d) int ival=512 jval=1024, kval=4096;
+         int bufsize;
+         // ...
+         switch(swt) {
+             case ival:
+                 bufsize = ival * sizeof(int);
+                 break;
+             case jval:
+                 bufsize = jval * sizeof(int);
+                 break;
+             case kval:
+                 bufsize = kval * sizeof(int);
+                 break;
+         }
+</pre><br>
+            </td>
+          </tr>
+        </table><br>
+
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch06lev1sec5.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch06lev1sec7.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 6.3.  Compound Statements (Blocks)</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch06lev1sec2.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch06lev1sec4.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch06lev1sec3"></a>
+
+        <h3 class="docSection1Title">6.3. Compound Statements (Blocks)</h3>
+        <h3 class="docSection1Title">6.3. 复合语句（块）</h3>
+
+<a name="ch06term6"></a><a name="ch06term2"></a>
+        <p class="docText">A <b><a class="docLink" href="ch06lev1sec16.html#gloss06_06" >compound statement</a></b>, usually referred to as a <b><a class="docLink" href="ch06lev1sec16.html#gloss06_02" >block</a></b>, is a (possibly empty) sequence of statements surrounded by a pair of curly braces. A block is a scope. Names introduced within a block are accessible only from within that block or from blocks nested inside the block. As usual, a name is visible only from its point of definition until the end of the enclosing block.</p>
+        <p class="docText"><b><a class="docLink" href="ch06lev1sec16.html#gloss06_06" >复合语句</a></b>，通常被称为<b><a class="docLink" href="ch06lev1sec16.html#gloss06_02" >块</a></b>，是用一对花括号括起来的语句序列（也可能是空的）。块标识了一个作用域，在块中引入的名字只能在该块内部或嵌套在块中的子块里访问。通常，一个名字只从其定义处到该块的结尾这段范围内可见。</p>
+
+        <p class="docText">Compound statements can be used where the rules of the language require a single statement, but the logic of our program needs to execute more than one. For example, the body of a <tt>while</tt> or <tt>for</tt> loop must be a single statement. Yet, we often need to execute more than one statement in the body of a loop. We can do so by enclosing the statements in a pair of braces, thus turning the sequence of statements into a block.</p>
+        <p class="docText">复合语句用在语法规则要求使用单个语句但程序逻辑却需要不止一个语句的地方。例如，<tt>while</tt> 或 <tt>for</tt> 语句的循环体必须是单个语句。然而，大多数情况都需要在循环体里执行多个语句。因而可使用一对花括号将语句序列括起来，使其成为块语句。</p>
+
+        <p class="docText">As an example, recall the <tt>while</tt> loop from our solution to the bookstore problem on page <a class="docLink" href="ch07lev1sec1.html#ch07lev1sec1" >26</a>:</p>
+        <p class="docText">回顾一下<a class="docLink" href="ch07lev1sec1.html#ch07lev1sec1" >第 1.6 节</a>处理书店问题的程序，以其中用到的 <tt>while</tt> 循环为例：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">if so, read the transaction records</span>
+     while (std::cin &gt;&gt; trans)
+         if (total.same_isbn(trans))
+             // <span class="docEmphItalicAlt">match: update the running</span> <span class="docEmphasis">total</span>
+             total = total + trans;
+        else {
+             // <span class="docEmphItalicAlt">no match: print &amp; assign to</span> <span class="docEmphasis">total</span>
+             std::cout &lt;&lt; total &lt;&lt; std::endl;
+             total = trans;
+     }
+</pre><br>
+
+<a name="idd1e42100"></a><a name="idd1e42105"></a>
+        <p class="docText">In the <tt>else</tt> branch, the logic of our program requires that we print <tt>total</tt> and then reset it from <tt>trans</tt>. An <tt>else</tt> may be followed by only a single statement. By enclosing both statements in curly braces, we transform them into a single (com-pound) statement. This statement satisfies the rules of the language and the needs of our program.</p>
+	<p class="docText">在 <tt>else</tt> 分支中，程序逻辑需要输出 <tt>total</tt> 的值，然后用 <tt>trans</tt> 重置 <tt>total</tt>。但是，<tt>else</tt> 分支只能后接单个语句。于是，用一对花括号将上述两条语句括起来，使其在语法上成为单个语句（复合语句）。这个语句既符合语法规则又满足程序的需要。</p>
+
+<a name="ch06note03"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Unlike most other statements, a block is <span class="docEmphasis">not</span> terminated by a semicolon.</p>
+                <p class="docText">与其他大多数语句不同，块并<span class="docEmphasis">不是</span>以分号结束的。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">Just as there is a null statement, we also can define an empty block. We do so by using a pair of curlies with no statements:</p>
+        <p class="docText">像空语句一样，程序员也可以定义空块，用一对内部没有语句的花括号实现：</p>
+        <pre>
+     while (cin &gt;&gt; s &amp;&amp; s != sought)
+         { } // <span class="docEmphItalicAlt">empty block</span>
+</pre><br>
+        <a name="ch06sb01"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 6.3</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch06qa1q1"></a><b>Exercise 6.1:</b></td>
+
+                    <td>
+                      <p class="docText">What is a null statement? Give an example of when you might use a null statement.</p>
+                      <p class="docText">什么是空语句？请给出一个使用空语句的例子。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch06qa1q2"></a><b>Exercise 6.2:</b></td>
+
+                    <td>
+                      <p class="docText">What is a block? Give an example of when you might use a block.</p>
+                      <p class="docText">什么是块语句？请给出一个使用块的例子。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch06qa1q3"></a><b>Exercise 6.3:</b></td>
+
+                    <td>
+                      <p class="docText">Use the comma operator (<a class="docLink" href="ch05lev1sec9.html#ch05lev1sec9" >Section 5.9</a>, p. <a class="docLink" href="ch05lev1sec9.html#ch05lev1sec9" >168</a>) to rewrite the <tt>else</tt> branch in the <tt>while</tt> loop from the bookstore problem so that it no longer requires a block. Explain whether this rewrite improves or diminishes the readability of this code.</p>
+                      <p class="docText">使用逗号操作符（<a class="docLink" href="ch05lev1sec9.html#ch05lev1sec9" >第 5.9 节</a>）重写书店问题中 <tt>while</tt> 循环里的 <tt>else</tt> 分支，使它不再需要用块实现。解释一下重写后是提高还是降低了该段代码的可读性。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch06qa1q4"></a><b>Exercise 6.4:</b></td>
+
+                    <td>
+                      <p class="docText">In the <tt>while</tt> loop that solved the bookstore problem, what effect, if any, would removing the curly brace following the <tt>while</tt> and its corresponding close curly have on the program?</p>
+                      <p class="docText">在解决书店问题的 <tt>while</tt> 循环中，如果删去 <tt>while</tt> 后面的左花括号及相应的右花括号，将会给程序带来什么影响？</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch06lev1sec2.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch06lev1sec4.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>

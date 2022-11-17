@@ -1,0 +1,302 @@
+﻿<html xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+    <META NAME="save" CONTENT="history" />
+    <title>如何：循环访问目录树（C# 编程指南）</title>
+    <link rel="stylesheet" type="text/css" href="../styles/presentation.css" />
+    <link rel="stylesheet" type="text/css" href="ms-help://Hx/HxRuntime/HxLink.css" />
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/EventUtilities.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/SplitScreen.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/Dropdown.js"> </script>
+    <script type="text/javascript" src="../scripts/script_manifold.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/script_feedBack.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CheckboxMenu.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CommonUtilities.js"> </script>
+    <xml>
+      <MSHelp:TOCTitle Title="如何：循环访问目录树" />
+      <MSHelp:Keyword Index="A" Term="c4be4a75-6b1b-46a7-9d38-bab353091ed7" />
+      <MSHelp:Keyword Index="K" Term="文件迭代 [C#]" />
+      <MSHelp:Keyword Index="K" Term="循环访问文件夹 [C#]" />
+      <MSHelp:Attr Name="RevisionNumber" Value="8" />
+      <MSHelp:Attr Name="AssetID" Value="c4be4a75-6b1b-46a7-9d38-bab353091ed7" />
+      <MSHelp:Attr Name="Abstract" Value="词组“循环访问目录树”的意思是在指定的根文件夹下，访问每个嵌套子目录中任意深度的所有文件。您不必打开每一个文件。可以只检索 string 形式的文件名或子目录名，或者可以检索 T:System.IO.FileInfo 或 T:System.IO.DirectoryInfo 对象形式的其他信息。" />
+      <MSHelp:Attr Name="codelang" Value="CSharp" />
+      <MSHelp:Attr Name="CommunityContent" Value="1" />
+      <MSHelp:Attr Name="DevLang" Value="CSharp" />
+      <MSHelp:Attr Name="DevLangVers" Value="CSharp" />
+      <MSHelp:Attr Name="DocSet" Value="C#" />
+      <MSHelp:Attr Name="DocSet" Value="C# Lang" />
+      <MSHelp:Attr Name="DocSet" Value="ExpressLibVS" />
+      <MSHelp:Attr Name="ProgModel" Value="managed" />
+      <MSHelp:Attr Name="ShippedIn" Value="vs.90" />
+      <MSHelp:Attr Name="Technology" Value="ManagedCode" />
+      <MSHelp:Attr Name="TopicVersion" Value="09.00.08178.10000" />
+      <MSHelp:Attr Name="Catalog Container" Value="System_Default_Catalog" />
+      <MSHelp:Attr Name="Content Set Container" Value="System_Default_Content_Set" />
+      <MSHelp:Attr Name="TopicType" Value="kbHowTo" />
+      <MSHelp:Attr Name="Locale" Value="zh-chs" />
+    </xml>
+  </head>
+  <body>
+    <input type="hidden" id="userDataCache" class="userDataStyle" />
+    <input type="hidden" id="hiddenScrollOffset" />
+    <img id="collapseImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" title="“折叠”图像" />
+    <img id="expandImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" title="“展开”图像" />
+    <img id="collapseAllImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" />
+    <img id="expandAllImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" />
+    <img id="dropDownImage" style="display:none; height:0; width:0;" src="../icons/dropdown.gif" />
+    <img id="dropDownHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/dropdownHover.gif" />
+    <img id="copyImage" style="display:none; height:0; width:0;" src="../icons/copycode.gif" title="“复制”图像" />
+    <img id="copyHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/copycodeHighlight.gif" title="“复制悬停”图像" />
+    <div id="header">
+      <table id="topTable" cellspacing="0" cellpadding="0">
+        <tr>
+          <td>
+            <span onclick="ExpandCollapseAll(toggleAllImage)" style="cursor:default;" onkeypress="ExpandCollapseAll_CheckKey(toggleAllImage, event)" tabindex="0">
+              <img ID="toggleAllImage" class="toggleAll" src="../icons/collapse_all.gif" /> <label id="collapseAllLabel" for="toggleAllImage" style="display: none;">全部折叠</label><label id="expandAllLabel" for="toggleAllImage" style="display: none;">全部展开</label> </span>
+            <span>    </span>
+            <span id="devlangsDropdown" class="filter" tabindex="0">
+              <img id="devlangsDropdownImage" src="../icons/dropdown.gif" /> <label id="devlangsMenuAllLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：全部 </nobr></label><label id="devlangsMenuMultipleLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：多个 </nobr></label><label id="devlangsMenuVisualBasicLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual Basic </nobr></label><label id="devlangsMenuCSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：C# </nobr></label><label id="devlangsMenuManagedCPlusPlusLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual C++ </nobr></label><label id="devlangsMenuJSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：J# </nobr></label><label id="devlangsMenuJScriptLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：JScript </nobr></label></span>
+          </td>
+        </tr>
+      </table>
+      <div id="devlangsMenu">
+        <input id="VisualBasicCheckbox" type="checkbox" data="VisualBasic,vb,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="VisualBasicCheckbox">Visual Basic</label>
+        <br />
+        <input id="CSharpCheckbox" type="checkbox" data="CSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="CSharpCheckbox">C#</label>
+        <br />
+        <input id="ManagedCPlusPlusCheckbox" type="checkbox" data="ManagedCPlusPlus,cpp,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="ManagedCPlusPlusCheckbox">Visual C++</label>
+        <br />
+        <input id="JSharpCheckbox" type="checkbox" data="JSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JSharpCheckbox">J#</label>
+        <br />
+        <input id="JScriptCheckbox" type="checkbox" data="JScript,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JScriptCheckbox">JScript</label>
+        <br />
+      </div>
+      <table id="bottomTable" cellpadding="0" cellspacing="0">
+        <tr id="headerTableRow1">
+          <td align="left">
+            <span id="runningHeaderText">C# 编程指南</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow2">
+          <td align="left">
+            <span id="nsrTitle">如何：循环访问目录树（C# 编程指南）</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow3">
+          <td align="left">
+            <a href="c4be4a75-6b1b-46a7-9d38-bab353091ed7.htm#exampleToggle" onclick="OpenSection(exampleToggle)">示例</a>  <a href="c4be4a75-6b1b-46a7-9d38-bab353091ed7.htm#seeAlsoToggle" onclick="OpenSection(seeAlsoToggle)">另请参见</a>  
+<script type="text/javascript">
+var fbBody = '%b8%d0%d0%bb%c4%fa%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%bf%aa%b7%a2%b0%e6%b1%e0%d0%b4%cd%c5%b6%d3%bd%ab%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%d3%c3%d3%da%b8%c4%bd%f8%ce%c4%b5%b5%a1%a3%ce%d2%c3%c7%d4%da%c9%f3%d4%c4%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%ca%b1%a3%ac%bf%c9%c4%dc%bb%e1%b8%f8%c4%fa%b7%a2%cb%cd%b5%e7%d7%d3%d3%ca%bc%fe%a3%ac%d2%d4%c7%eb%c4%fa%cc%e1%b9%a9%bd%f8%d2%bb%b2%bd%b5%c4%bd%e2%ca%cd%cb%b5%c3%f7%bb%f2%d5%df%be%cd%bd%e2%be%f6%b7%bd%b0%b8%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%ce%d2%c3%c7%b2%bb%bb%e1%bd%ab%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%d3%c3%d3%da%c8%ce%ba%ce%c6%e4%cb%fb%d3%c3%cd%be%a3%ac%b2%a2%c7%d2%d4%da%c9%f3%d4%c4%cd%ea%d6%ae%ba%f3%a3%ac%ce%d2%c3%c7%b2%bb%bb%e1%d4%d9%b1%a3%c1%f4%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%a1%a3%0d%0a%d3%d0%b9%d8%20Microsoft%20%d2%fe%cb%bd%d5%fe%b2%df%b5%c4%bd%f8%d2%bb%b2%bd%d0%c5%cf%a2%a3%ac%c7%eb%b2%ce%bc%fb%20http%3a%2f%2fprivacy.microsoft.com%2fzh-cn%2fdefault.aspx%a1%a3';
+var fbSubject = 'Customer%20Feedback';
+</script>
+  <span id="headfeedbackarea" class="feedbackhead"><a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);"> 发送反馈意见</a></span>
+</td>
+        </tr>
+      </table>
+      <table id="gradientTable">
+        <tr>
+          <td class="nsrBottom" background="../icons/gradient.gif" />
+        </tr>
+      </table>
+    </div>
+    <div id="mainSection">
+      <div id="mainBody">
+        <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
+        <font color="DarkGray"></font>
+        <p /> <p><font color="DarkGray">更新：2007 年 11 月</font></p><div class="introduction"><p>词组“循环访问目录树”的意思是在指定的根文件夹下，访问每个嵌套子目录中任意深度的所有文件。您不必打开每一个文件。可以只检索 <span sdata="langKeyword" value="string"><span class="keyword">string</span></span> 形式的文件名或子目录名，或者可以检索 <span sdata="cer" target="T:System.IO.FileInfo"><mshelp:link keywords="T:System.IO.FileInfo" tabindex="0">System.IO<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span></span>FileInfo</mshelp:link></span> 或 <span sdata="cer" target="T:System.IO.DirectoryInfo"><mshelp:link keywords="T:System.IO.DirectoryInfo" tabindex="0">System.IO<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span></span>DirectoryInfo</mshelp:link></span> 对象形式的其他信息。</p><div class="alert"><table width="100%" cellspacing="0" cellpadding="0"><tr><th align="left"><img class="note" title="说明" src="../icons/alert_note.gif" /><b>说明：</b></th></tr><tr><td><p>在 Windows 中，可交换使用术语“目录”和“文件夹”。大多数文档和用户界面文本使用术语“文件夹”，但 .NET Framework 类库使用术语“目录”。</p></td></tr></table></div><p>最简单的例子，如果您确信您拥有指定根目录下所有目录的访问权限，则您可以使用 <span class="code">System.IO.SearchOption.AllDirectories</span> 标志。该标志返回与指定模式相匹配的所有嵌套子目录。下面的示例演示如何使用该标志。</p><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>root.GetDirectories("*.*", System.IO.SearchOption.AllDirectories);</pre></td></tr></table></span></div><p>此方法的缺点是，如果指定根目录下任何一个子目录引发了 <span sdata="cer" target="T:System.IO.DirectoryNotFoundException"><mshelp:link keywords="T:System.IO.DirectoryNotFoundException" tabindex="0">DirectoryNotFoundException</mshelp:link></span> 或 <span sdata="cer" target="T:System.UnauthorizedAccessException"><mshelp:link keywords="T:System.UnauthorizedAccessException" tabindex="0">UnauthorizedAccessException</mshelp:link></span>，则整个方法将会失败并且不返回任何目录。使用 <span sdata="cer" target="M:System.IO.DirectoryInfo.GetFiles"><mshelp:link keywords="Overload:System.IO.DirectoryInfo.GetFiles" tabindex="0">GetFiles</mshelp:link></span> 方法时也是如此。如果一定要处理特定子文件夹中的这些异常，则必须手动遍历该目录树，如下面的示例所示。</p><p>手动遍历目录树时，可以先处理子目录（前序遍历），或者可以先处理文件（后序遍历）。如果执行前序遍历，则在循环访问直接位于当前文件夹本身中的文件之前，请先遍历当前文件夹下的整个树。本文档后面的示例执行的是后序遍历，但您可以轻松地将它们修改为执行前序遍历。</p><p>另外还可以选择是使用递归遍历，还是使用基于堆栈的遍历。本文档后面的示例对这两种方法进行了演示。</p><p>如果必须对文件和文件夹上执行各种操作，则可以通过下面的方法将这些示例模块化：将操作重构到单独的函数，这样您就可以通过单个委托来调用这些函数。</p><div class="alert"><table width="100%" cellspacing="0" cellpadding="0"><tr><th align="left"><img class="note" title="说明" src="../icons/alert_note.gif" /><b>说明：</b></th></tr><tr><td><p>NTFS 文件系统可以包含交接点、符号链接和硬链接形式的重新分析点。.NET Framework 方法（如 <span sdata="cer" target="M:System.IO.DirectoryInfo.GetFiles"><mshelp:link keywords="Overload:System.IO.DirectoryInfo.GetFiles" tabindex="0">GetFiles</mshelp:link></span> 和 <span sdata="cer" target="M:System.IO.DirectoryInfo.GetDirectories"><mshelp:link keywords="Overload:System.IO.DirectoryInfo.GetDirectories" tabindex="0">GetDirectories</mshelp:link></span>）将不返回重新分析点下的任何子目录。此行为可防止两个重新分析点相互引用时陷入无限循环。通常，为了确保您不会无意修改或删除文件，在使用重新分析点时应特别小心。如果需要精确控制重新分析点，请使用平台调用或本机代码直接调用相应的 Win32 文件系统方法。</p></td></tr></table></div></div><h1 class="heading"><span onclick="ExpandCollapse(exampleToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(exampleToggle, event)" tabindex="0"><img id="exampleToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />示例</span></h1><div id="exampleSection" class="section" name="collapseableSection" style=""><p>下面的示例演示如何使用递归遍历目录树。递归方法很简洁，但如果目录树很大且嵌套很深，则有可能会引起堆栈溢出异常。</p><p>对于所处理的特定异常以及在每个文件和文件夹上执行的特定操作，都只是作为示例提供。您应该修改此代码来满足自己特定的需要。有关更多信息，请参见代码中的注释。</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> RecursiveFileSearch
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> System.Collections.Specialized.StringCollection log = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> System.Collections.Specialized.StringCollection();
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Main()
+    {
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Start with drives if you have to search the entire computer.</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span>[] drives = System.Environment.GetLogicalDrives();
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> dr <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> drives)
+        {
+            System.IO.DriveInfo di = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> System.IO.DriveInfo(dr);
+
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Here we skip the drive if it is not ready to be read. This</span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// is not necessarily the appropriate action in all scenarios.</span>
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> (!di.IsReady)
+            {
+                Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"The drive {0} could not be read"</span>, di.Name);
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">continue</span>;
+            }
+            System.IO.DirectoryInfo rootDir = di.RootDirectory;
+            WalkDirectoryTree(rootDir);
+        }
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Write out all the files that could not be processed.</span>
+        Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Files with restricted access:"</span>);
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> s <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> log)
+        {
+            Console.WriteLine(s);
+        }
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Keep the console window open in debug mode.</span>
+        Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Press any key"</span>);
+        Console.ReadKey();
+    }
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> WalkDirectoryTree(System.IO.DirectoryInfo root)
+    {
+        System.IO.FileInfo[] files = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">null</span>;
+        System.IO.DirectoryInfo[] subDirs = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">null</span>;
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// First, process all the files directly under this folder</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">try</span>
+        {
+            files = root.GetFiles(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"*.*"</span>);
+        }
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// This is thrown if even one of the files requires permissions greater</span>
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// than the application provides.</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">catch</span> (UnauthorizedAccessException e)
+        {
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// This code just writes out the message and continues to recurse.</span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// You may decide to do something different here. For example, you</span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// can try to elevate your privileges and access the file again.</span>
+            log.Add(e.Message);
+        }
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">catch</span> (System.IO.DirectoryNotFoundException e)
+        {
+            Console.WriteLine(e.Message);
+        }
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> (files != <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">null</span>)
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (System.IO.FileInfo fi <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> files)
+            {
+                <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// In this example, we only access the existing FileInfo object. If we</span>
+                <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// want to open, delete or modify the file, then</span>
+                <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// a try-catch block is required here to handle the case</span>
+                <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// where the file has been deleted since the call to TraverseTree().</span>
+                Console.WriteLine(fi.FullName);
+            }
+
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Now find all the subdirectories under this directory.</span>
+            subDirs = root.GetDirectories();
+
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (System.IO.DirectoryInfo dirInfo <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> subDirs)
+            {
+                <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Resursive call for each subdirectory.</span>
+                WalkDirectoryTree(dirInfo);
+            }
+        }            
+    }
+}
+
+</pre></td></tr></table></span></div></div><p>下面的示例演示在不使用递归的情况下如何循环访问目录树中的文件和文件夹。该技术使用泛型 <span sdata="cer" target="T:System.Collections.Generic.Stack`1"><mshelp:link keywords="T:System.Collections.Generic.Stack`1" tabindex="0">Stack<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span></span>T<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span></span></mshelp:link></span> 集合类型，该类型是一个后进先出 (LIFO) 堆栈。</p><p>对于所处理的特定异常以及在每个文件和文件夹上执行的特定操作，都只是作为示例提供。您应该修改此代码来满足自己特定的需要。有关更多信息，请参见代码中的注释。</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> StackBasedIteration
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Main(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span>[] args)
+    {
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Specify the starting folder on the command line, or in </span>
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Visual Studio in the Project &gt; Properties &gt; Debug pane.</span>
+        TraverseTree(args[0]);
+
+        Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Press any key"</span>);
+        Console.ReadKey();
+    }
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> TraverseTree(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> root)
+    {
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Data structure to hold names of subfolders to be</span>
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// examined for files.</span>
+        Stack&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span>&gt; dirs = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Stack&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span>&gt;(20);
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> (!System.IO.Directory.Exists(root))
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">throw</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> ArgumentException();
+        }
+        dirs.Push(root);
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">while</span> (dirs.Count &gt; 0)
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> currentDir = dirs.Pop();
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span>[] subDirs;
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">try</span>
+            {
+                subDirs = System.IO.Directory.GetDirectories(currentDir);
+            }
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// An UnauthorizedAccessException exception will be thrown if we do not have</span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// discovery permission on a folder or file. It may or may not be acceptable </span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// to ignore the exception and continue enumerating the remaining files and </span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// folders. It is also possible (but unlikely) that a DirectoryNotFound exception </span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// will be raised. This will happen if currentDir has been deleted by</span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// another application or thread after our call to Directory.Exists. The </span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// choice of which exceptions to catch depends entirely on the specific task </span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// you are intending to perform and also on how much you know with certainty </span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// about the systems on which this code will run.</span>
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">catch</span> (UnauthorizedAccessException e)
+            {                    
+                Console.WriteLine(e.Message);
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">continue</span>;
+            }
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">catch</span> (System.IO.DirectoryNotFoundException e)
+            {
+                Console.WriteLine(e.Message);
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">continue</span>;
+            }
+
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span>[] files = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">null</span>;
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">try</span>
+            {
+                files = System.IO.Directory.GetFiles(currentDir);
+            }
+
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">catch</span> (UnauthorizedAccessException e)
+            {
+
+                Console.WriteLine(e.Message);
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">continue</span>;
+            }
+
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">catch</span> (System.IO.DirectoryNotFoundException e)
+            {
+                Console.WriteLine(e.Message);
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">continue</span>;
+            }
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Perform the required action on each file here.</span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Modify this block to perform your required task.</span>
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> file <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> files)
+            {
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">try</span>
+                {
+                    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Perform whatever action is required in your scenario.</span>
+                    System.IO.FileInfo fi = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> System.IO.FileInfo(file);
+                    Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"{0}: {1}, {2}"</span>, fi.Name, fi.Length, fi.CreationTime);
+                }
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">catch</span> (System.IO.FileNotFoundException e)
+                {
+                    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// If file was deleted by a separate application</span>
+                    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//  or thread since the call to TraverseTree()</span>
+                    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// then just continue.</span>
+                    Console.WriteLine(e.Message);
+                    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">continue</span>;
+                }
+            }
+
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Push the subdirectories onto the stack for traversal.</span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// This could also be done before handing the files.</span>
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> str <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> subDirs)
+                dirs.Push(str);
+        }
+    }
+}
+
+</pre></td></tr></table></span></div></div><p>通常，测试每个文件夹以确定您的应用程序是否有权限打开它是非常耗时的。因此，代码示例只是将该部分操作放到了一个 <span sdata="langKeyword" value="try/catch"><span class="keyword">try/catch</span></span> 块内。您可以修改该 <span sdata="langKeyword" value="catch"><span class="keyword">catch</span></span> 块，以便在访问某个文件夹遭受拒绝时，您可以提升自己的权限，然后再次访问它。通常，只捕捉那些无需使应用程序停留在一个未知状态就可以处理的异常。</p><p>如果必须将目录树的内容存储到内存或磁盘中，则最好只存储每个文件的 <span sdata="cer" target="P:System.IO.FileSystemInfo.FullName"><mshelp:link keywords="P:System.IO.FileSystemInfo.FullName" tabindex="0">FullName</mshelp:link></span> 属性（<span sdata="langKeyword" value="string"><span class="keyword">string</span></span> 类型）。然后，可以根据需要使用该字符串创建一个新的 <span sdata="cer" target="T:System.IO.FileInfo"><mshelp:link keywords="T:System.IO.FileInfo" tabindex="0">FileInfo</mshelp:link></span> 或 <span sdata="cer" target="T:System.IO.DirectoryInfo"><mshelp:link keywords="T:System.IO.DirectoryInfo" tabindex="0">DirectoryInfo</mshelp:link></span> 对象，或者打开任何需要进行其他处理的文件。</p></div><h1 class="heading"><span onclick="ExpandCollapse(robustProgrammingToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(robustProgrammingToggle, event)" tabindex="0"><img id="robustProgrammingToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />可靠编程</span></h1><div id="robustProgrammingSection" class="section" name="collapseableSection" style=""><p>可靠文件迭代代码必须考虑文件系统的诸多复杂性。有关更多信息，请参见 <a href="http://go.microsoft.com/fwlink/?LinkId=79488">NTFS Technical Reference</a>（NTFS 技术参考）。</p></div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />请参见</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><h4 class="subHeading">概念</h4><div class="seeAlsoStyle"><span sdata="link"><mshelp:link keywords="5a5d516c-0279-4a84-ac84-b87f54caa808" tabindex="0">LINQ 和文件目录</mshelp:link></span></div><h4 class="subHeading">参考</h4><div class="seeAlsoStyle"><span sdata="cer" target="N:System.IO"><mshelp:link keywords="N:System.IO" tabindex="0">System.IO</mshelp:link></span></div><h4 class="subHeading">其他资源</h4><div class="seeAlsoStyle"><span sdata="link"><a href="0f2511cf-2b02-4b41-b001-b1754677c38f.htm">文件系统和注册表（C# 编程指南）</a></span></div></div></div>
+      <div id="footer">
+        <div class="footerLine">
+          <img width="100%" height="3px" src="../icons/footer.gif" title="“页脚”图像" />
+        </div>
+<span id="feedbackarea">将有关本主题的<a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);">反馈意见</a>发送给 Microsoft。</span>
+</div>
+    </div>
+  </body>
+</html>

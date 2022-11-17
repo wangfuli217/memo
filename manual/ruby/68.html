@@ -1,0 +1,26 @@
+<html><HEAD><TITLE>Ruby参考手册 - 结束时的相关处理</TITLE>
+<META http-equiv=Content-type content="text/html; charset=gb2312">
+<META http-equiv=Content-Style-Type content=text/css><LINK href="68_files/style[1].css"  type=text/css rel=stylesheet></head>
+<BODY>
+<DIV class=navi><A id=header-navi name=head-navi></A><SPAN class=navi>[<A href="61.html" >Ruby首页</A>]</SPAN>  </DIV>
+<DIV class=body>
+<H1><A id=Ruby.a4.ce.bd.aa.ce.bb.bd.e8.cd.fd name=Ruby.a4.ce.bd.aa.ce.bb.bd.e8.cd.fd>Ruby结束时的相关处理</A><!-- RDLabel: "Ruby结束时的相关处理" --></H1>
+<P>当到达脚本尾部或出现了未能捕捉到的异常时，Ruby会结束程序(当调用函数<FONT color=blue><B>exit</B></FONT>、<FONT color=blue><B>abort</B></FONT>或对主线程发出<FONT color=blue><B>Thread.kill</B></FONT>命令时，会引发<FONT color=blue><B>SystemExit</B></FONT>异常)。结束程序时会依次进行下列处理。</P>
+<OL>
+<LI>对所有线程执行<FONT color=blue><B>Thread.kill</B></FONT>。 
+<LI>若注册了<B>Ruby</B>的伪信号<B>SIGEXIT</B>的处理程序的话，就执行它(请参考<FONT color=blue><B>trap</B></FONT>)。 
+<LI>若注册了<FONT color=blue>END</FONT>块(END {...}或<FONT color=blue>at_end</FONT>函数指定的块)的话,就以与记录相反的顺序执行它.若在该块的执行过程中发生大规模退出(non-local exit)的话,就中断该块的运行.但脚本仍将继续运行. 
+<LI>
+<P>在<FONT color=blue>ObjectSpace.define_finalizer</FONT>中,若注册了finalizer的话就执行它(执行顺序不定).若在执行finalizer的过程中,发生了大规模退出的话,就中断finalizer的运行,但脚本仍将继续运行.</P>
+<LI>
+<P>使用<FONT color=blue>exit(3)</FONT>结束程序.</P>
+<P>此时传来的状态值取决于程序的结束方法.例如,</P>
+<UL>
+<LI>到达脚本尾部时 值为0 
+<LI>传递给<FONT color=blue>exit</FONT>的参数 
+<LI>若非由<FONT color=blue>SystemExit</FONT>引起的异常的话,其值为1 
+<LI>若明显是<FONT color=blue>SystemExit</FONT>的话,其值为0 </LI></UL></LI></OL>
+<P>使用<FONT color=blue>exit!</FONT>函数时,将只执行<FONT color=blue>exit(2)</FONT>,而不会执行上述任何步骤.</P></DIV>
+<HR>
+
+<DIV class=footer>Originally Written by webmaster@ruby-lang.org<BR>Translated by <A href="http://cn.ce-lab.net/" >Community Engine China</A> (<A href="mailto:rubycn@ce-lab.net">Mail</A>)<BR>Last update on 2004-12-22 </DIV></BODY>

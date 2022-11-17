@@ -1,0 +1,182 @@
+﻿<html xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+    <META NAME="save" CONTENT="history" />
+    <title>如何：创建和使用 C# DLL（C# 编程指南）</title>
+    <link rel="stylesheet" type="text/css" href="../styles/presentation.css" />
+    <link rel="stylesheet" type="text/css" href="ms-help://Hx/HxRuntime/HxLink.css" />
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/EventUtilities.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/SplitScreen.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/Dropdown.js"> </script>
+    <script type="text/javascript" src="../scripts/script_manifold.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/script_feedBack.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CheckboxMenu.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CommonUtilities.js"> </script>
+    <xml>
+      <MSHelp:TOCTitle Title="如何：创建和使用 C# DLL" />
+      <MSHelp:Keyword Index="A" Term="70f65026-3687-4e9c-ab79-c18b97dd8be4" />
+      <MSHelp:Keyword Index="K" Term="DLL, C#" />
+      <MSHelp:Keyword Index="K" Term="互操作性, DLL" />
+      <MSHelp:Attr Name="RevisionNumber" Value="16" />
+      <MSHelp:Attr Name="AssetID" Value="70f65026-3687-4e9c-ab79-c18b97dd8be4" />
+      <MSHelp:Attr Name="Abstract" Value="动态链接库 (DLL) 在运行时链接到程序。为说明如何生成和使用 DLL，请看以下方案：" />
+      <MSHelp:Attr Name="codelang" Value="CSharp" />
+      <MSHelp:Attr Name="CommunityContent" Value="1" />
+      <MSHelp:Attr Name="CurrentDebugFrameLang" Value="CSharp" />
+      <MSHelp:Attr Name="DevLang" Value="CSharp" />
+      <MSHelp:Attr Name="DevLangVers" Value="CSharp" />
+      <MSHelp:Attr Name="DocSet" Value="C#" />
+      <MSHelp:Attr Name="DocSet" Value="C# Lang" />
+      <MSHelp:Attr Name="DocSet" Value="ExpressLibVS" />
+      <MSHelp:Attr Name="ProgModel" Value="managed" />
+      <MSHelp:Attr Name="ShippedIn" Value="vs.90" />
+      <MSHelp:Attr Name="Technology" Value="ManagedCode" />
+      <MSHelp:Attr Name="TopicVersion" Value="09.00.08178.10000" />
+      <MSHelp:Attr Name="Catalog Container" Value="System_Default_Catalog" />
+      <MSHelp:Attr Name="Content Set Container" Value="System_Default_Content_Set" />
+      <MSHelp:Attr Name="TopicType" Value="kbHowTo" />
+      <MSHelp:Attr Name="Locale" Value="zh-chs" />
+    </xml>
+  </head>
+  <body>
+    <input type="hidden" id="userDataCache" class="userDataStyle" />
+    <input type="hidden" id="hiddenScrollOffset" />
+    <img id="collapseImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" title="“折叠”图像" />
+    <img id="expandImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" title="“展开”图像" />
+    <img id="collapseAllImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" />
+    <img id="expandAllImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" />
+    <img id="dropDownImage" style="display:none; height:0; width:0;" src="../icons/dropdown.gif" />
+    <img id="dropDownHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/dropdownHover.gif" />
+    <img id="copyImage" style="display:none; height:0; width:0;" src="../icons/copycode.gif" title="“复制”图像" />
+    <img id="copyHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/copycodeHighlight.gif" title="“复制悬停”图像" />
+    <div id="header">
+      <table id="topTable" cellspacing="0" cellpadding="0">
+        <tr>
+          <td>
+            <span onclick="ExpandCollapseAll(toggleAllImage)" style="cursor:default;" onkeypress="ExpandCollapseAll_CheckKey(toggleAllImage, event)" tabindex="0">
+              <img ID="toggleAllImage" class="toggleAll" src="../icons/collapse_all.gif" /> <label id="collapseAllLabel" for="toggleAllImage" style="display: none;">全部折叠</label><label id="expandAllLabel" for="toggleAllImage" style="display: none;">全部展开</label> </span>
+            <span>    </span>
+            <span id="devlangsDropdown" class="filter" tabindex="0">
+              <img id="devlangsDropdownImage" src="../icons/dropdown.gif" /> <label id="devlangsMenuAllLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：全部 </nobr></label><label id="devlangsMenuMultipleLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：多个 </nobr></label><label id="devlangsMenuVisualBasicLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual Basic </nobr></label><label id="devlangsMenuCSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：C# </nobr></label><label id="devlangsMenuManagedCPlusPlusLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual C++ </nobr></label><label id="devlangsMenuJSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：J# </nobr></label><label id="devlangsMenuJScriptLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：JScript </nobr></label></span>
+          </td>
+        </tr>
+      </table>
+      <div id="devlangsMenu">
+        <input id="VisualBasicCheckbox" type="checkbox" data="VisualBasic,vb,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="VisualBasicCheckbox">Visual Basic</label>
+        <br />
+        <input id="CSharpCheckbox" type="checkbox" data="CSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="CSharpCheckbox">C#</label>
+        <br />
+        <input id="ManagedCPlusPlusCheckbox" type="checkbox" data="ManagedCPlusPlus,cpp,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="ManagedCPlusPlusCheckbox">Visual C++</label>
+        <br />
+        <input id="JSharpCheckbox" type="checkbox" data="JSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JSharpCheckbox">J#</label>
+        <br />
+        <input id="JScriptCheckbox" type="checkbox" data="JScript,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JScriptCheckbox">JScript</label>
+        <br />
+      </div>
+      <table id="bottomTable" cellpadding="0" cellspacing="0">
+        <tr id="headerTableRow1">
+          <td align="left">
+            <span id="runningHeaderText">C# 编程指南</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow2">
+          <td align="left">
+            <span id="nsrTitle">如何：创建和使用 C# DLL（C# 编程指南）</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow3">
+          <td align="left">
+            <a href="70f65026-3687-4e9c-ab79-c18b97dd8be4.htm#exampleToggle" onclick="OpenSection(exampleToggle)">示例</a>  <a href="70f65026-3687-4e9c-ab79-c18b97dd8be4.htm#seeAlsoToggle" onclick="OpenSection(seeAlsoToggle)">另请参见</a>  
+<script type="text/javascript">
+var fbBody = '%b8%d0%d0%bb%c4%fa%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%bf%aa%b7%a2%b0%e6%b1%e0%d0%b4%cd%c5%b6%d3%bd%ab%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%d3%c3%d3%da%b8%c4%bd%f8%ce%c4%b5%b5%a1%a3%ce%d2%c3%c7%d4%da%c9%f3%d4%c4%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%ca%b1%a3%ac%bf%c9%c4%dc%bb%e1%b8%f8%c4%fa%b7%a2%cb%cd%b5%e7%d7%d3%d3%ca%bc%fe%a3%ac%d2%d4%c7%eb%c4%fa%cc%e1%b9%a9%bd%f8%d2%bb%b2%bd%b5%c4%bd%e2%ca%cd%cb%b5%c3%f7%bb%f2%d5%df%be%cd%bd%e2%be%f6%b7%bd%b0%b8%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%ce%d2%c3%c7%b2%bb%bb%e1%bd%ab%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%d3%c3%d3%da%c8%ce%ba%ce%c6%e4%cb%fb%d3%c3%cd%be%a3%ac%b2%a2%c7%d2%d4%da%c9%f3%d4%c4%cd%ea%d6%ae%ba%f3%a3%ac%ce%d2%c3%c7%b2%bb%bb%e1%d4%d9%b1%a3%c1%f4%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%a1%a3%0d%0a%d3%d0%b9%d8%20Microsoft%20%d2%fe%cb%bd%d5%fe%b2%df%b5%c4%bd%f8%d2%bb%b2%bd%d0%c5%cf%a2%a3%ac%c7%eb%b2%ce%bc%fb%20http%3a%2f%2fprivacy.microsoft.com%2fzh-cn%2fdefault.aspx%a1%a3';
+var fbSubject = 'Customer%20Feedback';
+</script>
+  <span id="headfeedbackarea" class="feedbackhead"><a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);"> 发送反馈意见</a></span>
+</td>
+        </tr>
+      </table>
+      <table id="gradientTable">
+        <tr>
+          <td class="nsrBottom" background="../icons/gradient.gif" />
+        </tr>
+      </table>
+    </div>
+    <div id="mainSection">
+      <div id="mainBody">
+        <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
+        <font color="DarkGray"></font>
+        <p /> <p><font color="DarkGray">更新：2007 年 11 月</font></p><div class="introduction"><p>动态链接库 (DLL) 在运行时链接到程序。为说明如何生成和使用 DLL，请看以下方案：</p><ul><li><p><span class="code">MathLibrary.DLL</span>：为库文件，其中包含运行时要调用的方法。此例中，DLL 包含两个方法：<span class="code">Add</span> 和 <span class="code">Multiply</span>。</p></li><li><p><span class="code">Add.cs</span>：为源文件，其中包含 <span class="code">Add(long i, long j)</span> 方法。该方法返回参数之和。包含 <span class="code">Add</span> 方法的 <span class="code">AddClass</span> 类是命名空间 <span class="code">UtilityMethods</span> 的成员。</p></li><li><p><span class="code">Mult.cs</span>：为源文件，其中包含 <span class="code">Multiply(long x, long y)</span> 方法。该方法返回参数之积。包含 <span class="code">Multiply</span> 方法的 <span class="code">MultiplyClass</span> 类也是命名空间 <span class="code">UtilityMethods</span> 的成员。</p></li><li><p><span class="code">TestCode.cs</span>：包含 <span class="code">Main</span> 方法的文件。它使用 DLL 文件中的方法来计算运行时参数的和与积。</p></li></ul></div><h1 class="heading"><span onclick="ExpandCollapse(exampleToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(exampleToggle, event)" tabindex="0"><img id="exampleToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />示例</span></h1><div id="exampleSection" class="section" name="collapseableSection" style=""><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// File: Add.cs </span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">namespace</span> UtilityMethods
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> AddClass 
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">long</span> Add(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">long</span> i, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">long</span> j) 
+        { 
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> (i + j);
+        }
+    }
+}
+
+</pre></td></tr></table></span></div></div><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// File: Mult.cs</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">namespace</span> UtilityMethods 
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> MultiplyClass
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">long</span> Multiply(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">long</span> x, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">long</span> y) 
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> (x * y); 
+        }
+    }
+}
+
+</pre></td></tr></table></span></div></div><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// File: TestCode.cs</span>
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">using</span> UtilityMethods;
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> TestCode
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Main(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span>[] args) 
+    {
+        System.Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Calling methods from MathLibrary.DLL:"</span>);
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> (args.Length != 2)
+        {
+            System.Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Usage: TestCode &lt;num1&gt; &lt;num2&gt;"</span>);
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span>;
+        }
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">long</span> num1 = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">long</span>.Parse(args[0]);
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">long</span> num2 = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">long</span>.Parse(args[1]);
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">long</span> sum = AddClass.Add(num1, num2);
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">long</span> product = MultiplyClass.Multiply(num1, num2);
+
+        System.Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"{0} + {1} = {2}"</span>, num1, num2, sum);
+        System.Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"{0} * {1} = {2}"</span>, num1, num2, product);
+    }
+}
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">/* Output (assuming 1234 and 5678 are entered as command line args):
+    Calling methods from MathLibrary.DLL:
+    1234 + 5678 = 6912
+    1234 * 5678 = 7006652        
+*/</span>
+
+</pre></td></tr></table></span></div></div><p>此文件包含使用 DLL 方法 <span class="code">Add</span> 和 <span class="code">Multiply</span> 的算法。它首先分析从命令行输入的参数 <span class="code">num1</span> 和 <span class="code">num2</span>。然后使用 <span class="code">AddClass</span> 类中的 <span class="code">Add</span> 方法计算和，使用 <span class="code">MultiplyClass</span> 类中的 <span class="code">Multiply</span> 方法计算积。</p><p>请注意，文件开头的 <span sdata="langKeyword" value="using"><span class="keyword">using</span></span> 指令使您得以在编译时使用未限定的类名来引用 DLL 方法，如下所示：</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>MultiplyClass.Multiply(num1, num2);
+
+</pre></td></tr></table></span></div></div><p>否则，必须使用完全限定名，如下所示：</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>UtilityMethods.MultiplyClass.Multiply(num1, num2);
+
+</pre></td></tr></table></span></div></div><h3 class="subHeading">执行</h3><div class="subsection"><p>若要运行程序，请输入 EXE 文件的名称，文件名的后面跟两个数字，如下所示：</p><p><span class="code">TestCode 1234 5678</span></p></div></div><h1 class="heading"><span onclick="ExpandCollapse(buildInstructionsToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(buildInstructionsToggle, event)" tabindex="0"><img id="buildInstructionsToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />编译代码</span></h1><div id="buildInstructionsSection" class="section" name="collapseableSection" style=""><p>若要生成文件 <span class="code">MathLibrary.DLL</span>，请使用以下命令行编译文件 <span class="code">Add.cs</span> 和文件 <span class="code">Mult.cs</span>：</p><p><span class="code">csc /target:library /out:MathLibrary.DLL Add.cs Mult.cs</span></p><p><mshelp:link keywords="C5670E88-2126-47C1-8D1C-217923837D17" tabindex="0">/target:library</mshelp:link> 编译器选项通知编译器输出 DLL 文件而不是 EXE 文件。后跟文件名的 <mshelp:link keywords="70D91D01-7BD2-4AEA-BA8B-4E9807E9CAA5" tabindex="0">/out</mshelp:link> 编译器选项用于指定 DLL 文件名。否则，编译器使用第一个文件 (<span class="code">Add.cs</span>) 作为 DLL 文件名。</p><p>若要生成可执行文件 <span class="code">TestCode.exe</span>，请使用以下命令行：</p><p><span class="code">csc /out:TestCode.exe /reference:MathLibrary.DLL TestCode.cs</span></p><p><b>/out</b> 编译器选项通知编译器输出 EXE 文件并且指定输出文件名 (<span class="code">TestCode.exe</span>)。此编译器选项是可选的。<mshelp:link keywords="8d13e5b0-abf6-4c46-bf71-2daf2cd0a6c4" tabindex="0">/引用</mshelp:link>编译器选项指定该程序使用的 DLL 文件。</p></div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />请参见</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><h4 class="subHeading">任务</h4><div class="seeAlsoStyle"><span sdata="link"><mshelp:link keywords="98305305-50e2-448a-b9f7-a0b38259e601" tabindex="0">如何：为 DLL 指定基址</mshelp:link></span></div><h4 class="subHeading">概念</h4><div class="seeAlsoStyle"><span sdata="link"><a href="ac0f23a2-6bf3-4077-be99-538ae5fd3bc5.htm">C# 编程指南</a></span></div><div class="seeAlsoStyle"><span sdata="link"><mshelp:link keywords="e08e4c34-0223-45f7-aa55-a3d8dd979b0f" tabindex="0">创建用于容纳 DLL 函数的类</mshelp:link></span></div></div></div>
+      <div id="footer">
+        <div class="footerLine">
+          <img width="100%" height="3px" src="../icons/footer.gif" title="“页脚”图像" />
+        </div>
+<span id="feedbackarea">将有关本主题的<a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);">反馈意见</a>发送给 Microsoft。</span>
+</div>
+    </div>
+  </body>
+</html>

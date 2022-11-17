@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>String.toQueryParams - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>toQueryParams</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">toQueryParams([separator = '&']) -> Object</code></pre>
+			<p>解析一个 URI 查询字符串，并返回由“参数/值”对组成的对象。</p>
+		</div>
+		<div id="abody">
+			<p>
+				这个方法真正的目的是解析查询字符串（因此参数 <code>separator</code> 的默认值为
+				<code>"&amp"</code>）。
+			</p>
+			<p>
+				基于上述原因，它 <em>并不</em> 考虑问号（问号表示一个查询字符串的开始）之前的部分以及
+				<code>"#"</code> 号之后的部分，并且会在每一个“参数/值”对上调用 <code>decodeURIComponent()</code>
+				方法。<br />
+				<strong>译注：</strong>在 URL 中，<code>"#"</code> 号一般用来表示锚点，置于最后，如
+				http://xxx/News/Content.aspx?id=100#first ，在 JavaScript 中，可以通过方法
+				<code>location.hash</code> 获取 URL 中 <code>"#"</code> 号之后的部分。
+			</p>
+			<p>
+				另外，如果在查询字符串中，同一个参数包括不同的值，<code>String#toQueryParams</code>
+				会将那些值合并为一个数组，作为那个查询参数的值。
+			</p>
+			<p>注意，如果参数没有指定值，该参数的值将会被设置为 <code>undefined</code>。</p>
+			<h3>样例</h3>
+			<pre><code class="javascript">'section=blog&id=45'.toQueryParams(); 
+// -> {section: 'blog', id: '45'} 
+
+'section=blog;id=45'.toQueryParams(); 
+// -> {section: 'blog', id: '45'} 
+
+'http://www.example.com?section=blog&id=45#comments'.toQueryParams();
+// -> {section: 'blog', id: '45'} 
+
+'section=blog&tag=javascript&tag=prototype&tag=doc'.toQueryParams();
+// -> {section: 'blog', tag: ['javascript', 'prototype', 'doc']} 
+
+'tag=ruby%20on%20rails'.toQueryParams();
+// -> {tag: 'ruby on rails'} 
+
+'id=45&raw'.toQueryParams(); 
+// -> {id: '45', raw: undefined} </code></pre>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

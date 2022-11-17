@@ -1,0 +1,143 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 5.7.  The Conditional Operator</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch05lev1sec6.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch05lev1sec8.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch05lev1sec7"></a>
+
+        <h3 class="docSection1Title">5.7. The Conditional Operator</h3>
+        <h3 class="docSection1Title">5.7. 条件操作符</h3>
+
+        <p class="docText">The <span class="docEmphStrong">conditional operator</span> is the only ternary operator in C++. It allows us to embed simple if-else tests inside an expression. The conditional operator has the following syntactic form</p>
+        <p class="docText"><span class="docEmphStrong">条件操作符</span>是 C++ 中唯一的三元操作符，它允许将简单的 if-else 判断语句嵌入表达式中。条件操作符的语法格式为：</p>
+        <pre>
+     <span class="docEmphasis">cond ? expr1 : expr2;</span>
+</pre>
+
+        <p class="docText">where <span class="docEmphasis">cond</span> is an expression that is used as a condition (<a class="docLink" href="ch01lev1sec4.html#ch01lev2sec5" >Section 1.4.1</a>, p. <a class="docLink" href="ch01lev1sec4.html#ch01lev2sec5" >12</a>). The operator executes by evaluating <span class="docEmphasis">cond</span>. If <span class="docEmphasis">cond</span> evaluates to 0, then the condition is <tt>false</tt>; any other value is <tt>true</tt>. <span class="docEmphasis">cond</span> is always evaluated. If it is <tt>true</tt>, then <span class="docEmphasis">expr1</span> is evaluated; otherwise, <span class="docEmphasis">expr2</span> is evaluated. Like the logical AND and OR (<tt>&amp;&amp;</tt> and <tt>||</tt>) operators, the conditional operator guarantees this order of evaluation for its operands. Only one of <span class="docEmphasis">expr1</span> or <span class="docEmphasis">expr2</span> is evaluated. The following program illustrates use of the conditional operator:</p>
+	<p class="docText">其中，<span class="docEmphasis">cond</span> 是一个条件判断表达式（<a class="docLink" href="ch01lev1sec4.html#ch01lev2sec5" >第 1.4.1 节</a>）。条件操作符首先计算 <span class="docEmphasis">cond</span> 的值，如果 <span class="docEmphasis">cond</span> 的值为 0，则条件为 <tt>false</tt>；如果 <span class="docEmphasis">cond</span> 非 0，则条件为 <tt>true</tt>。无论如何，<span class="docEmphasis">cond</span> 总是要被计算的。然后，条件为 <tt>true</tt> 时计算 <span class="docEmphasis">expr1</span> ，否则计算 <span class="docEmphasis">expr2</span> 。和逻辑与、逻辑或（<tt>&amp;&amp;</tt> 和 <tt>||</tt>）操作符一样，条件操作符保证了上述操作数的求解次序。<span class="docEmphasis">expr1</span> 和 <span class="docEmphasis">expr2</span> 中只有一个表达式被计算。下面的程序说明了条件操作符的用法：</p>
+        <pre>
+     int i = 10, j = 20, k = 30;
+     // <span class="docEmphItalicAlt">if</span> <span class="docEmphasis">i &gt; j</span> <span class="docEmphItalicAlt">then</span> <span class="docEmphasis">maxVal = i</span> <span class="docEmphItalicAlt">else</span> <span class="docEmphasis">maxVal = j</span>
+     int maxVal = i &gt; j ? i : j;
+</pre>
+
+        <a name="ch05lev2sec12"></a>
+        <h4 class="docSection2Title">Avoid Deep Nesting of the Conditional Operator</h4>
+        <h4 class="docSection2Title">避免条件操作符的深度嵌套</h4>
+
+	<a name="idd1e35087"></a>
+        <p class="docText">We could use a set of nested conditional expressions to set <tt>max</tt> to the largest of three variables:</p>
+	<p class="docText">可以使用一组嵌套的条件操作符求出三个变量的最大值，并将最大值赋给 <tt>max</tt>：</p>
+        <pre>
+     int max = i &gt; j
+                   ? i &gt; k ? i : k
+                   : j &gt; k ? j : k;
+</pre>
+
+        <p class="docText">We could do the equivalent comparison in the following longer but simpler way:</p>
+        <p class="docText">我们也可以用下面更长却更简单的比较语句实现相同的功能：</p>
+        <pre>
+     int max = i;
+     if (j &gt; max)
+         max = j;
+     if (k &gt; max)
+         max = k;
+</pre>
+
+        <a name="ch05lev2sec13"></a>
+        <h4 class="docSection2Title">Using a Conditional Operator in an Output Expression</h4>
+        <h4 class="docSection2Title">在输出表达式中使用条件操作符</h4>
+
+        <p class="docText">The conditional operator has fairly low precedence. When we embed a conditional expression in a larger expression, we usually must parenthesize the conditional subexpression. For example, the conditional operator is often used to print one or another value, depending on the result of a condition. Incompletely parenthesized uses of the conditional operator in an output expression can have surprising results:</p>
+        <p class="docText">条件操作符的优先级相当低。当我们要在一个更大的表达式中嵌入条件表达式时，通常必须用圆括号把条件表达式括起来。例如，经常使用条件操作符根据一定的条件输出一个或另一个值，在输出表达式中，如果不严格使用圆括号将条件操作符括起来，将会得到意外的结果：</p>
+        <pre>
+     cout &lt;&lt; (i &lt; j ? i : j);  // <span class="docEmphItalicAlt">ok: prints larger of</span> <span class="docEmphasis">i</span> <span class="docEmphItalicAlt">and</span> <span class="docEmphasis">j</span>
+     cout &lt;&lt; (i &lt; j) ? i : j;  // <span class="docEmphItalicAlt">prints 1 or 0!</span>
+     cout &lt;&lt; i &lt; j ? i : j;    // <span class="docEmphItalicAlt">error: compares</span> <span class="docEmphasis">cout</span> <span class="docEmphItalicAlt">to</span> <span class="docEmphasis">int</span>
+</pre>
+
+        <p class="docText">The second expression is the most interesting: It treats the comparison between <tt>i</tt> and <tt>j</tt> as the operand to the <tt>&lt;&lt;</tt> operator. The value 1 or 0 is printed, depending on whether <tt>i &lt; j</tt> is true or false. The <tt>&lt;&lt;</tt> operator returns <tt>cout</tt>, which is tested as the condition for the conditional operator. That is, the second expression is equivalent to</p>
+	<p class="docText">第二个表达式比较有趣：它将i和j的比较结果视为 <tt>&lt;&lt;</tt> 操作符的操作数，输出 1 或 0。 <tt>&lt;&lt;</tt> 操作符返回 <tt>cout</tt> 值，然后将返回结果作为条件操作符的判断条件。也就是，第二个表达式等效于：</p>
+        <pre>
+     cout &lt;&lt; (i &lt; j); // <span class="docEmphItalicAlt">prints 1 or 0</span>
+     cout ? i : j;    // <span class="docEmphItalicAlt">test</span> <span class="docEmphasis">cout</span> <span class="docEmphItalicAlt">and then evaluate</span> <span class="docEmphasis">i</span> <span class="docEmphItalicAlt">or</span> <span class="docEmphasis">j</span>
+                      // <span class="docEmphItalicAlt">depending on whether</span> <span class="docEmphasis">cout</span> <span class="docEmphItalicAlt">evaluates to true or false</span>
+</pre>
+
+        <a name="ch05sb11"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 5.7</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch05qa8q1"></a><b>Exercise 5.20:</b></td>
+
+                    <td>
+                      <p class="docText">Write a program to prompt the user for a pair of numbers and report which is smaller.</p>
+                      <p class="docText">编写程序提示用户输入两个数，然后报告哪个数比较小。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch05qa8q2"></a><b>Exercise 5.21:</b></td>
+
+                    <td>
+                      <p class="docText">Write a program to process the elements of a <tt>vector&lt;int&gt;</tt>. Replace each element with an odd value by twice that value.</p>
+                      <p class="docText">编写程序处理 <tt>vector&lt;int&gt;</tt> 对象的元素：将每个奇数值元素用该值的两倍替换。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch05lev1sec6.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch05lev1sec8.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

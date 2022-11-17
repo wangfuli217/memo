@@ -1,0 +1,467 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 13.1.  The Copy Constructor</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch13.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch13lev1sec2.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch13lev1sec1"></a>
+
+        <h3 class="docSection1Title" id="432172-865">13.1. The Copy Constructor</h3>
+        <h3 class="docSection1Title" id="432172-865">13.1. 复制构造函数</h3>
+
+        <p class="docText">The constructor that takes a single parameter that is a (usually <tt>const</tt>) reference to an object of the class type itself is called the copy constructor. Like the default constructor, the copy constructor can be implicitly invoked by the compiler. The copy constructor is used to</p>
+        <p class="docText">只有单个形参，而且该形参是对本类类型对象的引用（常用 <tt>const</tt> 修饰），这样的构造函数称为复制构造函数。与默认构造函数一样，复制构造函数可由编译器隐式调用。复制构造函数可用于：</p>
+
+        <ul>
+          <li>
+            <p class="docList">Explicitly or implicitly initialize one object from another of the same type</p>
+
+            <p class="docList">根据另一个同类型的对象显式或隐式初始化一个对象。</p>
+          </li>
+
+          <li>
+            <p class="docList">Copy an object to pass it as an argument to a function</p>
+            <p class="docList">复制一个对象，将它作为实参传给一个函数。</p>
+          </li>
+
+          <li>
+	<a name="idd1e98927"></a><a name="idd1e98935"></a><a name="idd1e98940"></a><a name="idd1e98945"></a>
+            <p class="docList">Copy an object to return it from a function</p>
+            <p class="docList">从函数返回时复制一个对象。</p>
+          </li>
+
+          <li>
+            <p class="docList">Initialize the elements in a sequential container</p>
+            <p class="docList">初始化顺序容器中的元素。</p>
+          </li>
+
+          <li>
+            <p class="docList">Initialize elements in an array from a list of element initializers</p>
+            <p class="docList">根据元素初始化式列表初始化数组元素。</p>
+          </li>
+  </ul>
+  
+  <a name="ch13lev2sec1"></a>
+        <h4 class="docSection2Title">Forms of Object Definition</h4>
+        <h4 class="docSection2Title">对象的定义形式</h4>
+
+        <p class="docText">Recall that C++ supports two forms of initialization (<a class="docLink" href="ch02lev1sec3.html#ch02lev2sec12" >Section 2.3.3</a>, p. <a class="docLink" href="ch02lev1sec3.html#ch02lev2sec12" >48</a>): direct and copy. Copy-initialization uses the = symbol, and direct-initialization places the initializer in parentheses.</p>
+	<p class="docText">回忆一下，C++ 支持两种初始化形式（<a class="docLink" href="ch02lev1sec3.html#ch02lev2sec12" >第 2.3.3 节</a>）：直接初始化和复制初始化。复制初始化使用 <tt>=</tt> 符号，而直接初始化将初始化式放在圆括号中。</p>
+
+        <p class="docText">The copy and direct forms of initialization, when applied to objects of class type, are subtly different. Direct-initialization directly invokes the constructor matched by the arguments. Copy-initialization always involves the copy constructor. Copy-initialization first uses the indicated constructor to create a temporary object (<a class="docLink" href="ch07lev1sec3.html#ch07lev2sec14" >Section 7.3.2</a>, p. <a class="docLink" href="ch07lev1sec3.html#ch07lev2sec14" >247</a>). It then uses the copy constructor to copy that temporary into the one we are creating:</p>
+        <p class="docText">当用于类类型对象时，初始化的复制形式和直接形式有所不同：直接初始化直接调用与实参匹配的构造函数，复制初始化总是调用复制构造函数。复制初始化首先使用指定构造函数创建一个临时对象（<a class="docLink" href="ch07lev1sec3.html#ch07lev2sec14" >第 7.3.2 节</a>），然后用复制构造函数将那个临时对象复制到正在创建的对象：</p>
+        <pre>
+     string null_book = "9-999-99999-9"; // <span class="docEmphItalicAlt">copy-initialization</span>
+     string dots(10, '.');               // <span class="docEmphItalicAlt">direct-initialization</span>
+
+     string empty_copy = string();       // <span class="docEmphItalicAlt">copy-initialization</span>
+     string empty_direct;                // <span class="docEmphItalicAlt">direct-initialization</span>
+</pre><br>
+
+        <p class="docText">For objects of class type, copy-initialization can be used only when specifying a single argument or when we explicitly build a temporary object to copy.</p>
+        <p class="docText">对于类类型对象，只有指定单个实参或显式创建一个临时对象用于复制时，才使用复制初始化。</p>
+
+        <p class="docText">When <tt>dots</tt> is created, the <tt>string</tt> constructor that takes a count and a character is called and directly initializes the members in <tt>dots</tt>. To create <tt>null_book</tt>, the compiler first creates a temporary by invoking the <tt>string</tt> constructor that takes a C-style character string parameter. The compiler then uses the <tt>string</tt> copy constructor to initialize <tt>null_book</tt> as a copy of that temporary.</p>
+        <p class="docText">创建 <tt>dots</tt> 时，调用参数为一个数量和一个字符的 <tt>string</tt> 构造函数并直接初始化 <tt>dots</tt> 的成员。创建 <tt>null_book</tt> 时，编译器首先调用接受一个 C 风格字符串形参的 <tt>string</tt> 构造函数，创建一个临时对象，然后，编译器使用 <tt>string</tt> 复制构造函数将 <tt>null_book</tt> 初始化为那个临时对象的副本。</p>
+
+        <p class="docText">The initialization of <tt>empty_copy</tt> and <tt>empty_direct</tt> both call the <tt>string</tt> default constructor. In the first case, the default constructor creates a temporary object, which is then used by the copy constructor to initialize <tt>empty_copy</tt>. In the second case, the default constructor is run directly on <tt>empty_direct</tt>.</p>
+        <p class="docText"><tt>empty_copy</tt> 和 <tt>empty_direct</tt> 的初始化都调用默认构造函数。对前者初始化时，默认构造函数函数创建一个临时对象，然后复制构造函数用该对象初始化 <tt>empty_copy</tt>。对后者初始化时，直接运行 <tt>empty_direct</tt> 的默认构造函数。</p>
+
+        <p class="docText">The copy form of initialization is primarily supported for compatibility with C usage. When it can do so, the compiler is permitted (but not obligated) to skip the copy constructor and create the object directly.</p>
+        <p class="docText">支持初始化的复制形式主要是为了与 C 的用法兼容。当情况许可时，可以允许编译器跳过复制构造函数直接创建对象，但编译器没有义务这样做。</p>
+
+        <p class="docText">Usually the difference between direct- or copy-initialization is at most a matter of low-level optimization. However, for types that do not support copying, or when using a constructor that is non<tt>explicit</tt> (<a class="docLink" href="ch12lev1sec4.html#ch12lev2sec23" >Section 12.4.4</a>, p. <a class="docLink" href="ch12lev1sec4.html#ch12lev2sec23" >462</a>) the distinction can be essential:</p>
+        <p class="docText">通常直接初始化和复制初始化仅在低级别上存在差异。然而，对于不支持复制的类型，或者使用非 <tt>explicit</tt> 构造函数（<a class="docLink" href="ch12lev1sec4.html#ch12lev2sec23" >第 12.4.4 节</a>）的进修，它们有本质区别：</p>
+        <pre>
+     ifstream file1("filename"); // <span class="docEmphItalicAlt">ok: direct initialization</span>
+     ifstream file2 = "filename"; // <span class="docEmphItalicAlt">error: copy constructor is</span> <span class="docEmphasis">private</span>
+     // <span class="docEmphItalicAlt">This initialization is okay only if</span>
+     // <span class="docEmphItalicAlt">the</span> <span class="docEmphasis">Sales_item(const string&amp;)</span> <span class="docEmphItalicAlt">constructor is not</span> <span class="docEmphasis">explicit</span>
+     Sales_item item = string("9-999-99999-9");
+</pre><br>
+
+        <p class="docText">The initialization of <tt>file1</tt> is fine. The <tt>ifstream</tt> class defines a constructor that can be called with a C-style string. That constructor is used to initialize <tt>file1</tt>.</p>
+        <p class="docText"><tt>file1</tt> 的初始化是正确的。<tt>ifstream</tt> 类定义了一个可用 C 风格字符串调用的构造函数，使用该构造函数初始化 <tt>file1</tt>。</p>
+
+	<a name="idd1e99113"></a><a name="idd1e99120"></a><a name="idd1e99127"></a><a name="idd1e99132"></a><a name="idd1e99137"></a><a name="idd1e99143"></a><a name="idd1e99150"></a><a name="idd1e99156"></a><a name="idd1e99163"></a><a name="idd1e99170"></a><a name="idd1e99177"></a><a name="idd1e99182"></a><a name="idd1e99189"></a>
+        <p class="docText">The seemingly equivalent initialization of <tt>file2</tt> uses copy-initialization. That definition is not okay. We cannot copy objects of the IO types (<a class="docLink" href="ch08lev1sec1.html#ch08lev1sec1" >Section 8.1</a>, p. <a class="docLink" href="ch08lev1sec1.html#ch08lev1sec1" >287</a>), so we cannot use copy-initialization on objects of these types.</p>
+        <p class="docText">看上去等效的 <tt>file2</tt> 初始化使用复制初始化，但该定义不正确。由于不能复制 IO 类型的对象（<a class="docLink" href="ch08lev1sec1.html#ch08lev1sec1" >第 8.1 节</a>），所以不能对那些类型的对象使用复制初始化。</p>
+
+        <p class="docText">Whether the initialization of <tt>item</tt> is okay depends on which version of our <tt>Sales_item</tt> class we are using. Some versions define the constructor that takes a <tt>string</tt> as <tt>explicit</tt>. If the constructor is explicit, then the initialization fails. If the constructor is not explicit, then the initialization is fine.</p>
+        <p class="docText"><tt>item</tt> 的初始化是否正确，取决于正在使用哪个版本的 <tt>Sales_item</tt> 类。某些版本将参数为一个 <tt>string</tt> 的构造函数定义为 <tt>explicit</tt>。如果构造函数是显式的，则初始化失败；如果构造函数不是显式的，则初始化成功。</p>
+
+	<a name="ch13lev2sec2"></a>
+        <h4 class="docSection2Title">Parameters and Return Values</h4>
+        <h4 class="docSection2Title">形参与返回值</h4>
+
+        <p class="docText">As we know, when a parameter is a nonreference type (<a class="docLink" href="ch07lev1sec2.html#ch07lev2sec6" >Section 7.2.1</a>, p. <a class="docLink" href="ch07lev1sec2.html#ch07lev2sec6" >230</a>), the argument is copied. Similarly, a nonreference return value (<a class="docLink" href="ch07lev1sec3.html#ch07lev2sec14" >Section 7.3.2</a>, p. <a class="docLink" href="ch07lev1sec3.html#ch07lev2sec14" >247</a>) is returned by copying the value in the <tt>return</tt> statement.</p>
+        <p class="docText">正如我们所知，当形参为非引用类型（<a class="docLink" href="ch07lev1sec2.html#ch07lev2sec6" >第 7.2.1 节</a>）的时候，将复制实参的值。类似地，以非引用类型作返回值时，将返回 <tt>return</tt> 语句 中的值的副本（<a class="docLink" href="ch07lev1sec3.html#ch07lev2sec14" >第 7.3.2 节</a>）。</p>
+
+        <p class="docText">When the parameter or return type is a class type, the copy is done by the copy constructor. For example, consider our <tt>make_plural</tt> function from page <a class="docLink" href="ch07lev1sec3.html#page_248" >248</a>:</p>
+	<p class="docText">当形参或返回值为类类型时，由复制构造函数进行复制。例如，考虑 <a class="docLink" href="ch07lev1sec3.html#page_248" >第 7.3.2 节</a>的 <tt>make_plural</tt> 函数：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">copy constructor used to copy the return value;</span>
+     // <span class="docEmphItalicAlt">parameters are references, so they aren't copied</span>
+     string make_plural(size_t, const string&amp;, const string&amp;);
+</pre><br>
+
+        <p class="docText">This function implicitly uses the <tt>string</tt> copy constructor to return the plural version of a given word. The parameters are <tt>const</tt> references; they are not copied.</p>
+        <p class="docText">这个函数隐式使用 <tt>string</tt> 复制构造函数返回给定单词的复数形式。形参是 <tt>const</tt> 引用，不能复制。</p>
+
+<a name="ch13lev2sec3"></a>
+        <h4 class="docSection2Title">Initializing Container Elements</h4>
+        <h4 class="docSection2Title">初始化容器元素</h4>
+
+        <p class="docText">The copy constructor is used to initialize the elements in a sequential container. For example, we can initialize a container using a single parameter that represents a size (<a class="docLink" href="ch03lev1sec3.html#ch03lev2sec6" >Section 3.3.1</a>, p. <a class="docLink" href="ch03lev1sec3.html#ch03lev2sec6" >92</a>). This form of construction uses both the default constructor and the copy constructor for the element container:</p>
+        <p class="docText">复制构造函数可用于初始化顺序容器中的元素。例如，可以用表示容量的单个形参来初始化容器（<a class="docLink" href="ch03lev1sec3.html#ch03lev2sec6" >第 3.3.1 节</a>）。容器的这种构造方式使用默认构造函数和复制构造函数：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">default string constructor and five string copy constructors invoked</span>
+     vector&lt;string&gt; svec(5);
+</pre><br>
+
+        <p class="docText">The compiler initializes <tt>svec</tt> by first using the default <tt>string</tt> constructor to create a temporary value. The copy constructor is then used to copy the temporary into each element of <tt>svec</tt>.</p>
+        <p class="docText">编译器首先使用 <tt>string</tt> 默认构造函数创建一个临时值来初始化 <tt>svec</tt>，然后使用复制构造函数将临时值复制到 <tt>svec</tt> 的每个元素。</p>
+
+	<a name="ch13note02"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="84" height="51" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/tip.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">As a general rule (<a class="docLink" href="ch09lev1sec1.html#ch09lev2sec1" >Section 9.1.1</a>, p. <a class="docLink" href="ch09lev1sec1.html#ch09lev2sec1" >307</a>), unless you intend to use the default initial value of the container elements, it is more efficient to allocate an empty container and add elements as the values for those elements become known.</p>
+                <p class="docText">作为一般规则（<a class="docLink" href="ch09lev1sec1.html#ch09lev2sec1" >第 9.1.1 节</a>），除非你想使用容器元素的默认初始值，更有效的办法是，分配一个空容器并将已知元素的值加入容器。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch13lev2sec4"></a>
+
+        <h4 class="docSection2Title">Constructors and Array Elements</h4>
+        <h4 class="docSection2Title">构造函数与数组元素</h4>
+
+        <p class="docText">If we provide no element initializers for an array of class type, then the default constructor is used to initialize each element. However, if we provide explicit element initializers using the normal brace-enclosed array initialization list (<a class="docLink" href="ch04lev1sec1.html#ch04lev2sec1" >Section 4.1.1</a>, p. <a class="docLink" href="ch04lev1sec1.html#ch04lev2sec1" >111</a>), then each element is initialized using copy-initialization. An element of the appropriate type is created from the specified value, and then the copy constructor is used to copy that value to the corresponding element:</p>
+        <p class="docText">如果没有为类类型数组提供元素初始化式，则将用默认构造函数初始化每个元素。然而，如果使用常规的花括号括住的数组初始化列表（<a class="docLink" href="ch04lev1sec1.html#ch04lev2sec1" >第 4.1.1 节</a>）来提供显式元素初始化式，则使用复制初始化来初始化每个元素。根据指定值创建适当类型的元素，然后用复制构造函数将该值复制到相应元素：</p>
+        <pre>
+     Sales_item primer_eds[] = { string("0-201-16487-6"),
+                                 string("0-201-54848-8"),
+                                 string("0-201-82470-1"),
+                                 Sales_item()
+                               };
+</pre><br>
+
+	<a name="idd1e99354"></a><a name="idd1e99359"></a><a name="idd1e99364"></a><a name="idd1e99369"></a><a name="idd1e99372"></a>
+        <p class="docText">A value that can be used to invoke a single-argument constructor for the element type can be specified directly, as in the initializers for the first three elements. If we wish to specify no arguments or multiple arguments, we need to use the full constructor syntax, as we do in the initializer for the last element.</p>
+        <p class="docText">如前三个元素的初始化式中所示可以直接指定一个值，用于调用元素类型的单实参构造函数。如果希望不指定实参或指定多个实参，就需要使用完整的构造函数语法，正如最后一个元素的初始化那样。</p>
+
+	<a name="ch13sb01"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 13.1</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch13qa1q1"></a><b>Exercise 13.1:</b></td>
+
+                    <td>
+                      <p class="docText">What is a copy constructor? When is it used?</p>
+                      <p class="docText">什么是复制构造函数？何时使用它？</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch13qa1q2"></a><b>Exercise 13.2:</b></td>
+
+                    <td>
+                      <p class="docText">The second initialization below fails to compile. What can we infer about the definition of <tt>vector</tt>?</p>
+                      <p class="docText">下面第二个初始化不能编译。可以从 <tt>vector</tt> 的定义得出什么推断？</p>
+                      <pre>
+<a name="PLID5"></a>
+</pre>
+
+                      <div class="v1">
+                        <a href="ch13lev1sec1.html#PLID5" >[View full width]</a>
+                      </div>
+                      <pre>
+
+     vector&lt;int&gt; v1(42);  // <span class="docEmphItalicAlt">ok: 42 elements, each 0</span>
+     vector&lt;int&gt; v2 = 42; // <span class="docEmphItalicAlt">error: what does this error tell us
+<img border="0" width="14" height="9" alt="" align="left" src="images/ccc.gif" > about</span> <span class="docEmphasis">vector?</span>
+<br>
+</pre>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch13qa1q3"></a><b>Exercise 13.3:</b></td>
+
+                    <td>
+                      <p class="docText">Assuming <tt>Point</tt> is a class type with a <tt>public</tt> copy constructor, identify each use of the copy constructor in this program fragment:</p>
+                      <p class="docText">假定 <tt>Point</tt> 为类类型，该类类型有一个复制构造函数，指出下面程序段中每一个使用了复制构造函数的地方：</p>
+                      <pre>
+     Point global;
+
+     Point foo_bar(Point arg)
+     {
+          Point local = arg;
+          Point *heap = new Point(global);
+          *heap = local;
+          Point pa[ 4 ] = { local, *heap };
+          return *heap;
+     }
+</pre><br>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+
+        <a name="ch13lev2sec5"></a>
+        <h4 class="docSection2Title">13.1.1. The Synthesized Copy Constructor</h4>
+        <h4 class="docSection2Title">13.1.1. 合成的复制构造函数</h4>
+
+        <p class="docText">If we do not otherwise define the copy constructor, the compiler synthesizes one for us. Unlike the synthesized default constructor (<a class="docLink" href="ch12lev1sec4.html#ch12lev2sec22" >Section 12.4.3</a>, p. <a class="docLink" href="ch12lev1sec4.html#ch12lev2sec22" >458</a>), a copy constructor is synthesized even if we define other constructors. The behavior of the <b><a name="ch13term12"></a><a class="docLink" href="ch13lev1sec7.html#gloss13_12" >synthesized copy constructor</a></b> is to <b><a name="ch13term6"></a><a class="docLink" href="ch13lev1sec7.html#gloss13_06" >memberwise initialize</a></b> the new object as a copy of the original object.</p>
+	<p class="docText">如果我们没有定义复制构造函数，编译器就会为我们合成一个。与合成的默认构造函数（<a class="docLink" href="ch12lev1sec4.html#ch12lev2sec22" >第 12.4.3 节</a>）不同，即使我们定义了其他构造函数，也会合成复制构造函数。<b><a class="docLink" href="ch13lev1sec7.html#gloss13_12" >合成复制构造函数</a></b>的行为是，执行<b><a class="docLink" href="ch13lev1sec7.html#gloss13_06" >逐个成员初始化</a></b>，将新对象初始化为原对象的副本。</p>
+
+	<a name="idd1e99476"></a><a name="idd1e99479"></a><a name="idd1e99484"></a>
+        <p class="docText">By memberwise, we mean that taking each non<tt>static</tt> member in turn, the compiler copies the member from the existing object into the one being created. With one exception, the type of each member determines what it means to copy it. The synthesized copy constructor directly copies the value of members of built-in type. Members of class type are copied by using the copy constructor for that class. The one exception concerns array members. Even though we ordinarily cannot copy an array, if a class has a member that is an array, then the synthesized copy constructor will copy the array. It does so by copying each element.</p>
+        <p class="docText">所谓“逐个成员”，指的是编译器将现在对象的每个非 <tt>static</tt> 成员，依次复制到正创建的对象。只有一个例外，每个成员搂类型决定了复制该成员的含义。合成复制构造函数直接复制内置类型成员的值，类类型成员使用该类的复制构造函数进行复制。数组成员的复制是个例外。虽然一般不能复制数组，但如果一个类具有数组成员，则合成复制构造函数将复制数组。复制数组时合成复制构造函数将复制数组的每一个元素。</p>
+
+        <p class="docText">The simplest conceptual model of memberwise initialization is to think of the synthesized copy constructor as one in which each data member is initialized in the constructor initializer list. For example, given our <tt>Sales_item</tt> class, which has three data members</p>
+        <p class="docText">逐个成员初始化最简单的概念模型是，将合成复制构造函数看作这样一个构造函数：其中每个数据成员在构造函数初始化列表中进行初始化。例如，对于我们的 <tt>Sales_item</tt> 类，它有三个数据成员：</p>
+        <pre>
+     class Sales_item {
+     // <span class="docEmphItalicAlt">other members and constructors as before</span>
+     private:
+         std::string isbn;
+         int units_sold;
+         double revenue;
+     };
+</pre><br>
+
+        <p class="docText">the synthesized Sales_item copy constructor would look something like:</p>
+        <p class="docText">合成复制构造函数如下所示：</p>
+        <pre>
+     Sales_item::Sales_item(const Sales_item &amp;orig):
+         isbn(orig.isbn),              // <span class="docEmphItalicAlt">uses</span> <span class="docEmphasis">string</span> <span class="docEmphItalicAlt">copy constructor</span>
+         units_sold(orig.units_sold),  // <span class="docEmphItalicAlt">copies</span> <span class="docEmphasis">orig.units_sold</span>
+         revenue(orig.revenue)         // <span class="docEmphItalicAlt">copy</span> <span class="docEmphasis">orig.revenue</span>
+         {    }                        // <span class="docEmphItalicAlt">empty body</span>
+</pre><br>
+        <a name="ch13lev2sec6"></a>
+
+        <h4 class="docSection2Title">13.1.2. Defining Our Own Copy Constructor</h4>
+        <h4 class="docSection2Title">13.1.2. 定义自己的复制构造函数</h4>
+
+        <p class="docText">The copy constructor is the constructor that takes a single parameter that is a (usually <tt>const</tt>) reference to the class type:</p>
+        <p class="docText">复制构造函数就是接受单个类类型引用形参（通常用 <tt>const</tt> 修饰）的构造函数：</p>
+        <pre>
+     class Foo {
+     public:
+        Foo();           // <span class="docEmphasis">default constructor</span>
+        Foo(const Foo&amp;); // <span class="docEmphasis">copy constructor</span>
+        // ...
+     };
+</pre><br>
+
+        <p class="docText">Usually the parameter is a <tt>const</tt> reference, although we can also define the copy constructor to take a non<tt>const</tt> reference. Because the constructor is used (implicitly) to pass and return objects to and from functions, it usually should not be made <tt>explicit</tt> (<a class="docLink" href="ch12lev1sec4.html#ch12lev2sec23" >Section 12.4.4</a>, p. <a class="docLink" href="ch12lev1sec4.html#ch12lev2sec23" >462</a>). The copy constructor should copy the members from its argument into the object that is being constructed.</p>
+        <p class="docText">虽然也可以定义接受非 <tt>const</tt> 引用的复制构造函数，但形参通常是一个 <tt>const</tt> 引用。因为用于向函数传递对象和从函数返回对象，该构造函数一般不应设置为 <tt>explicit</tt>（<a class="docLink" href="ch12lev1sec4.html#ch12lev2sec23" >第 12.4.4 节</a>）。复制构造函数应将实参的成员复制到正在构造的对象。</p>
+
+        <p class="docText">For many classes, the synthesized copy constructor does exactly the work that is needed. Classes that contain only members that are of class type or members that are of built-in (but not pointer type) often can be copied without explicitly defining the copy constructor.</p>
+        <p class="docText">对许多类而言，合成复制构造函数只完成必要的工作。只包含类类型成员或内置类型（但不是指针类型）成员的类，无须显式地定义复制构造函数，也可以复制。</p>
+
+        <p class="docText">However, some classes <span class="docEmphasis">must</span> take control of what happens when objects are copied. Such classes often have a data member that is a pointer or that represents another resource that is allocated in the constructor. Other classes have bookkeeping that must be done whenever a new object is created. In both these cases, the copy constructor must be defined.</p>
+        <p class="docText">然而，有些类<span class="docEmphasis">必须</span>对复制对象时发生的事情加以控制。这样的类经常有一个数据成员是指针，或者有成员表示在构造函数中分配的其他资源。而另一些类在创建新对象时必须做一些特定工作。这两种情况下，都必须定义复制构造函数。</p>
+
+	<a name="idd1e99594"></a><a name="idd1e99599"></a><a name="idd1e99602"></a>
+        <p class="docText">Often the hardest part about defining a copy constructor is recognizing that a copy constructor is needed. Defining the constructor is usually pretty easy once the need for the constructor is recognized. The copy constructor itself is defined like any other constructor: It has the same name as the name of the class, it has no return value, it may (should) use a constructor initializer to initialize the members of the newly created object, and it may do any other necessary work inside a function body.</p>
+        <p class="docText">通常，定义复制构造函数最困难的部分在于认识到需要复制构造函数。只要能认识到需要复制构造函数，定义构造函数一般非常简单。复制构造函数的定义与其他构造函数一样：它与类同名，没有返回值，可以（而且应该）使用构造函数初始化列表初始化新创建对象的成员，可以在函数体中做任何其他必要工作。</p>
+
+        <p class="docText">We'll look at examples of classes that require class-defined copy constructors in later sections. <a class="docLink" href="ch13lev1sec4.html#ch13lev1sec4" >Section 13.4</a> (p. <a class="docLink" href="ch13lev1sec4.html#ch13lev1sec4" >486</a>) looks at a pair of classes that require an explicit copy constructor to handle bookkeeping associated with a simple message-handling application; classes with members that are pointers are covered in <a class="docLink" href="ch13lev1sec5.html#ch13lev1sec5" >Section 13.5</a> (p. <a class="docLink" href="ch13lev1sec5.html#ch13lev1sec5" >492</a>).</p><a name="ch13sb02"></a>
+        <p class="docText">后续章节中将给出一些需要定义复制构造函数的类的例子。<a class="docLink" href="ch13lev1sec4.html#ch13lev1sec4" >第 13.4 节</a>给出了一对类，它们需要显式复制构造函数，用于处理与简单消息处理应用程序相关的工作。具有指针成员的类在<a class="docLink" href="ch13lev1sec5.html#ch13lev1sec5" >第 13.5 节</a>给出。</p>
+
+<a name="ch13sb02"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 13.1.2</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch13qa2q1"></a><b>Exercise 13.4:</b></td>
+
+                    <td>
+                      <p class="docText">Given the following sketch of a class, write a copy constructor that copies all the elements. Copy the object to which <tt>pstring</tt> points, not the pointer.</p>
+                      <p class="docText">对于如下的类的简单定义，编写一个复制构造函数复制所有成员。复制 <tt>pstring</tt> 指向的对象而不是复制指针。</p>
+                      <pre>
+     struct NoName {
+         NoName(): pstring(new std::string), i(0), d(0) { }
+     private:
+         std::string *pstring;
+         int    i;
+         double d;
+     };
+</pre><br>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch13qa2q2"></a><b>Exercise 13.5:</b></td>
+
+                    <td>
+                      <p class="docText">Which class definition is likely to need a copy constructor?</p>
+                      <p class="docText">哪个类定义可能需要一个复制构造函数？</p>
+
+                      <div style="font-weight:bold">
+                        <ol class="docList" type="a">
+                          <li>
+                            <div style="font-weight:normal">
+                              <p class="docList">A <tt>Point3w</tt> class containing four float members</p>
+                              <p class="docList">包含四个 float 成员的 <tt>Point3w</tt> 类。</p>
+                            </div>
+                          </li>
+
+                          <li>
+                            <div style="font-weight:normal">
+                              <p class="docList">A <tt>Matrix</tt> class in which the actual matrix is allocated dynamically within the constructor and is deleted within its destructor</p>
+                              <p class="docList"><tt>Matrix</tt> 类，其中，实际矩阵在构造函数中动态分配，在析构函数中删除。</p>
+                            </div>
+                          </li>
+
+                          <li>
+                            <div style="font-weight:normal">
+                              <p class="docList">A <tt>Payroll</tt> class in which each object is provided with a unique ID</p>
+                              <p class="docList"><tt>Payroll</tt> 类，在这个类中为每个对象提供唯一 ID。</p>
+                            </div>
+                          </li>
+
+                          <li>
+                            <div style="font-weight:normal">
+                              <p class="docList">A <tt>Word</tt> class containing a <tt>string</tt> and a <tt>vector</tt> of line and column location pairs</p>
+                              <p class="docList"><tt>Word</tt> 类，包含一个 <tt>string</tt> 和一个以行列位置对为元素的 <tt>vector</tt>。</p>
+                            </div>
+                          </li>
+                        </ol>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch13qa2q3"></a><b>Exercise 13.6:</b></td>
+
+                    <td>
+                      <p class="docText">The parameter of the copy constructor does not strictly need to be <tt>const</tt>, but it does need to be a reference. Explain the rationale for this restriction. For example, explain why the following definition could not work.</p>
+                      <p class="docText">复制构造函数的形参并不限制为 <tt>const</tt>，但必须是一个引用。解释这个限制的基本原理，例如，解释为什么下面的定义不能工作。</p>
+                      <pre>
+     Sales_item::Sales_item(const Sales_item rhs);
+</pre><br>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+
+        <a name="ch13lev2sec7"></a>
+        <h4 class="docSection2Title">13.1.3. Preventing Copies</h4>
+        <h4 class="docSection2Title">13.1.3. 禁止复制</h4>
+
+        <p class="docText">Some classes need to prevent copies from being made at all. For example, the <tt>iostream</tt> classes do not permit copying (<a class="docLink" href="ch08lev1sec1.html#ch08lev1sec1" >Section 8.1</a>, p. <a class="docLink" href="ch08lev1sec1.html#ch08lev1sec1" >287</a>). It might seem that if we want to forbid copies, we could omit the copy constructor. However, if we don't define a copy constructor, the compiler will synthesize one.</p>
+
+        <p class="docText">有些类需要完全禁止复制。例如，<tt>iostream</tt> 类就不允许复制（<a class="docLink" href="ch08lev1sec1.html#ch08lev1sec1" >第 8.1 节</a>）。如果想要禁止复制，似乎可以省略复制构造函数，然而，如果不定义复制构造函数，编译器将合成一个。</p>
+
+<a name="ch13note03"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+		<a name="idd1e99745"></a><a name="idd1e99750"></a><a name="idd1e99755"></a><a name="idd1e99760"></a><a name="idd1e99763"></a><a name="idd1e99766"></a>
+                <p class="docText">To prevent copies, a class must explicitly declare its copy constructor as <tt>private</tt>.</p>
+                <p class="docText">为了防止复制，类必须显式声明其复制构造函数为 <tt>private</tt>。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">If the copy constructor is private, then user code will not be allowed to copy objects of the class type. The compiler will reject any attempt to make a copy.</p>
+        <p class="docText">如果复制构造函数是私有的，将不允许用户代码复制该类类型的对象，编译器将拒绝任何进行复制的尝试。</p>
+
+        <p class="docText">However, the friends and members of the class could still make copies. If we want to prevent copies even within the friends and members, we can do so by declaring a (<tt>private</tt>) copy constructor but not defining it.</p>
+        <p class="docText">然而，类的友元和成员仍可以进行复制。如果想要连友元和成员中的复制也禁止，就可以声明一个（<tt>private</tt>）复制构造函数但不对其定义。</p>
+
+        <p class="docText">It is legal to declare but not define a member function. However, any attempt to <span class="docEmphasis">use</span> an undefined member results in a link-time failure. By declaring (but not defining) a <tt>private</tt> copy constructor, we can forestall any attempt to copy an object of the class type: Attempts to make copies in user code will be flagged as an error at compile time, and attempts to make copies in member functions or friends will result in an error at link time.</p>
+        <p class="docText">声明而不定义成员函数是合法的，但是，<span class="docEmphasis">使用</span>未定义成员的任何尝试将导致链接失败。通过声明（但不定义）<tt>private</tt> 复制构造函数，可以禁止任何复制类类型对象的尝试：用户代码中复制尝试将在编译时标记为错误，而成员函数和友元中的复制尝试将在链接时导致错误。</p>
+
+	<a name="ch13lev3sec1"></a>
+        <h5 class="docSection3Title">Most Classes Should Define Copy and Default Constructors</h5>
+        <h5 class="docSection3Title">大多数类应定义复制构造函数和默认构造函数</h5>
+
+        <p class="docText">Classes that do not define the default constructor and/or the copy constructor impose serious limits on users of the class. Objects of classes that do not allow copies may be passed to (or returned from) a function only as a reference. They also may not be used as elements in a container.</p>
+        <p class="docText">不定义复制构造函数和／或默认构造函数，会严重局限类的使用。不允许复制的类对象只能作为引用传递给函数或从函数返回，它们也不能用作容器的元素。</p>
+
+	<a name="ch13note04"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="116" height="74" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/bestpractices.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">It is usually best to defineeither implicitly or explicitlythe default and copy constructors. The default constructor is synthesized only if there are no other constructors. If the copy constructor is defined, then the default constructor must be defined as well.</p>
+                <p class="docText">一般来说，最好显式或隐式定义默认构造函数和复制构造函数。只有不存在其他构造函数时才合成默认构造函数。如果定义了复制构造函数，也必须定义默认构造函数。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch13.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch13lev1sec2.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

@@ -1,0 +1,259 @@
+﻿<html xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+    <META NAME="save" CONTENT="history" />
+    <title>线程同步（C# 编程指南）</title>
+    <link rel="stylesheet" type="text/css" href="../styles/presentation.css" />
+    <link rel="stylesheet" type="text/css" href="ms-help://Hx/HxRuntime/HxLink.css" />
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/EventUtilities.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/SplitScreen.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/Dropdown.js"> </script>
+    <script type="text/javascript" src="../scripts/script_manifold.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/script_feedBack.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CheckboxMenu.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CommonUtilities.js"> </script>
+    <xml>
+      <MSHelp:TOCTitle Title="线程同步" />
+      <MSHelp:Keyword Index="A" Term="413e1f28-a2c5-4eec-8338-aa43e7982ff4" />
+      <MSHelp:Keyword Index="K" Term="lock, 线程同步 [C#]" />
+      <MSHelp:Keyword Index="K" Term="线程处理 [C#], 锁定语句" />
+      <MSHelp:Keyword Index="K" Term="线程处理 [C#], 线程同步" />
+      <MSHelp:Attr Name="RevisionNumber" Value="43" />
+      <MSHelp:Attr Name="AssetID" Value="413e1f28-a2c5-4eec-8338-aa43e7982ff4" />
+      <MSHelp:Attr Name="Abstract" Value="&#xD;&#xA;                    以下各节描述了在多线程应用程序中可以用来同步资源访问的功能和类。&#xD;&#xA;                " />
+      <MSHelp:Attr Name="codelang" Value="CSharp" />
+      <MSHelp:Attr Name="CommunityContent" Value="1" />
+      <MSHelp:Attr Name="DevLang" Value="CSharp" />
+      <MSHelp:Attr Name="DevLangVers" Value="CSharp" />
+      <MSHelp:Attr Name="DocSet" Value="C#" />
+      <MSHelp:Attr Name="DocSet" Value="C# Lang" />
+      <MSHelp:Attr Name="DocSet" Value="ExpressLibVS" />
+      <MSHelp:Attr Name="ProgModel" Value="managed" />
+      <MSHelp:Attr Name="ShippedIn" Value="vs.90" />
+      <MSHelp:Attr Name="Technology" Value="ManagedCode" />
+      <MSHelp:Attr Name="TopicVersion" Value="09.00.08178.10000" />
+      <MSHelp:Attr Name="Catalog Container" Value="System_Default_Catalog" />
+      <MSHelp:Attr Name="Content Set Container" Value="System_Default_Content_Set" />
+      <MSHelp:Attr Name="TopicType" Value="kbRef" />
+      <MSHelp:Attr Name="Locale" Value="zh-chs" />
+    </xml>
+  </head>
+  <body>
+    <input type="hidden" id="userDataCache" class="userDataStyle" />
+    <input type="hidden" id="hiddenScrollOffset" />
+    <img id="collapseImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" title="“折叠”图像" />
+    <img id="expandImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" title="“展开”图像" />
+    <img id="collapseAllImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" />
+    <img id="expandAllImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" />
+    <img id="dropDownImage" style="display:none; height:0; width:0;" src="../icons/dropdown.gif" />
+    <img id="dropDownHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/dropdownHover.gif" />
+    <img id="copyImage" style="display:none; height:0; width:0;" src="../icons/copycode.gif" title="“复制”图像" />
+    <img id="copyHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/copycodeHighlight.gif" title="“复制悬停”图像" />
+    <div id="header">
+      <table id="topTable" cellspacing="0" cellpadding="0">
+        <tr>
+          <td>
+            <span onclick="ExpandCollapseAll(toggleAllImage)" style="cursor:default;" onkeypress="ExpandCollapseAll_CheckKey(toggleAllImage, event)" tabindex="0">
+              <img ID="toggleAllImage" class="toggleAll" src="../icons/collapse_all.gif" /> <label id="collapseAllLabel" for="toggleAllImage" style="display: none;">全部折叠</label><label id="expandAllLabel" for="toggleAllImage" style="display: none;">全部展开</label> </span>
+            <span>    </span>
+            <span id="devlangsDropdown" class="filter" tabindex="0">
+              <img id="devlangsDropdownImage" src="../icons/dropdown.gif" /> <label id="devlangsMenuAllLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：全部 </nobr></label><label id="devlangsMenuMultipleLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：多个 </nobr></label><label id="devlangsMenuVisualBasicLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual Basic </nobr></label><label id="devlangsMenuCSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：C# </nobr></label><label id="devlangsMenuManagedCPlusPlusLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual C++ </nobr></label><label id="devlangsMenuJSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：J# </nobr></label><label id="devlangsMenuJScriptLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：JScript </nobr></label></span>
+          </td>
+        </tr>
+      </table>
+      <div id="devlangsMenu">
+        <input id="VisualBasicCheckbox" type="checkbox" data="VisualBasic,vb,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="VisualBasicCheckbox">Visual Basic</label>
+        <br />
+        <input id="CSharpCheckbox" type="checkbox" data="CSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="CSharpCheckbox">C#</label>
+        <br />
+        <input id="ManagedCPlusPlusCheckbox" type="checkbox" data="ManagedCPlusPlus,cpp,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="ManagedCPlusPlusCheckbox">Visual C++</label>
+        <br />
+        <input id="JSharpCheckbox" type="checkbox" data="JSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JSharpCheckbox">J#</label>
+        <br />
+        <input id="JScriptCheckbox" type="checkbox" data="JScript,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JScriptCheckbox">JScript</label>
+        <br />
+      </div>
+      <table id="bottomTable" cellpadding="0" cellspacing="0">
+        <tr id="headerTableRow1">
+          <td align="left">
+            <span id="runningHeaderText">C# 编程指南</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow2">
+          <td align="left">
+            <span id="nsrTitle">线程同步（C# 编程指南）</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow3">
+          <td align="left">
+            <a href="413e1f28-a2c5-4eec-8338-aa43e7982ff4.htm#seeAlsoToggle" onclick="OpenSection(seeAlsoToggle)">另请参见</a>  
+<script type="text/javascript">
+var fbBody = '%b8%d0%d0%bb%c4%fa%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%bf%aa%b7%a2%b0%e6%b1%e0%d0%b4%cd%c5%b6%d3%bd%ab%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%d3%c3%d3%da%b8%c4%bd%f8%ce%c4%b5%b5%a1%a3%ce%d2%c3%c7%d4%da%c9%f3%d4%c4%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%ca%b1%a3%ac%bf%c9%c4%dc%bb%e1%b8%f8%c4%fa%b7%a2%cb%cd%b5%e7%d7%d3%d3%ca%bc%fe%a3%ac%d2%d4%c7%eb%c4%fa%cc%e1%b9%a9%bd%f8%d2%bb%b2%bd%b5%c4%bd%e2%ca%cd%cb%b5%c3%f7%bb%f2%d5%df%be%cd%bd%e2%be%f6%b7%bd%b0%b8%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%ce%d2%c3%c7%b2%bb%bb%e1%bd%ab%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%d3%c3%d3%da%c8%ce%ba%ce%c6%e4%cb%fb%d3%c3%cd%be%a3%ac%b2%a2%c7%d2%d4%da%c9%f3%d4%c4%cd%ea%d6%ae%ba%f3%a3%ac%ce%d2%c3%c7%b2%bb%bb%e1%d4%d9%b1%a3%c1%f4%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%a1%a3%0d%0a%d3%d0%b9%d8%20Microsoft%20%d2%fe%cb%bd%d5%fe%b2%df%b5%c4%bd%f8%d2%bb%b2%bd%d0%c5%cf%a2%a3%ac%c7%eb%b2%ce%bc%fb%20http%3a%2f%2fprivacy.microsoft.com%2fzh-cn%2fdefault.aspx%a1%a3';
+var fbSubject = 'Customer%20Feedback';
+</script>
+  <span id="headfeedbackarea" class="feedbackhead"><a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);"> 发送反馈意见</a></span>
+</td>
+        </tr>
+      </table>
+      <table id="gradientTable">
+        <tr>
+          <td class="nsrBottom" background="../icons/gradient.gif" />
+        </tr>
+      </table>
+    </div>
+    <div id="mainSection">
+      <div id="mainBody">
+        <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
+        <font color="DarkGray"></font>
+        <p /> <p><font color="DarkGray">更新：2007 年 11 月</font></p><div class="introduction"><p>
+                    以下各节描述了在多线程应用程序中可以用来同步资源访问的功能和类。
+                </p><p>
+                    在应用程序中使用多个线程的一个好处是每个线程都可以异步执行。对于 Windows 应用程序，耗时的任务可以在后台执行，而使应用程序窗口和控件保持响应。对于服务器应用程序，多线程处理提供了用不同线程处理每个传入请求的能力。否则，在完全满足前一个请求之前，将无法处理每个新请求。
+                </p><p>
+                    然而，线程的异步特性意味着必须协调对资源（如文件句柄、网络连接和内存）的访问。否则，两个或更多的线程可能在同一时间访问相同的资源，而每个线程都不知道其他线程的操作。结果将产生不可预知的数据损坏。
+                </p><p>
+                    对于整数数据类型的简单操作，可以用 <span sdata="cer" target="T:System.Threading.Interlocked"><mshelp:link keywords="T:System.Threading.Interlocked" tabindex="0">Interlocked</mshelp:link></span> 类的成员来实现线程同步。对于其他所有数据类型和非线程安全的资源，只有使用本主题中的结构才能安全地执行多线程处理。
+                </p><p>
+                    有关多线程编程的背景信息，请参见：
+                </p><ul><li><p>
+                    <span sdata="link"><a href="8587c5e7-7d6b-4a1c-918c-5b62b16be8a8.htm">使用线程处理（C# 编程指南）</a></span>
+                </p></li><li><p>
+                    <span sdata="link"><mshelp:link keywords="b2944911-0e8f-427d-a8bb-077550618935" tabindex="0">托管线程处理基本知识</mshelp:link></span>
+                </p></li><li><p>
+                    <span sdata="link"><mshelp:link keywords="9b5ec2cd-121b-4d49-b075-222cf26f2344" tabindex="0">使用线程和线程处理</mshelp:link></span>
+                </p></li><li><p>
+                    <span sdata="link"><mshelp:link keywords="e51988e7-7f4b-4646-a06d-1416cee8d557" tabindex="0">托管线程处理的最佳做法</mshelp:link></span>
+                </p></li></ul></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle0)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle0, event)" tabindex="0"><img id="sectionToggle0" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />lock 关键字</span></h1><div id="sectionSection0" class="section" name="collapseableSection" style=""><p>
+                    <span sdata="langKeyword" value="lock"><span class="keyword">lock</span></span> 关键字可以用来确保代码块完成运行，而不会被其他线程中断。这是通过在代码块运行期间为给定对象获取互斥锁来实现的。
+                </p><p>
+                    <span sdata="langKeyword" value="lock"><span class="keyword">lock</span></span> 语句以关键字 <span sdata="langKeyword" value="lock"><span class="keyword">lock</span></span> 开头，它有一个作为参数的对象，在该参数的后面还有一个一次只能由一个线程执行的代码块。例如：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> TestThreading
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> System.Object lockThis = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> System.Object();
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Function()
+    {
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">lock</span> (lockThis)
+        {
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Access thread-sensitive resources.</span>
+        }
+    }
+
+}
+
+</pre></td></tr></table></span></div></div><p>
+                    提供给 <span sdata="langKeyword" value="lock"><span class="keyword">lock</span></span> 关键字的参数必须为基于引用类型的对象，该对象用来定义锁的范围。在上面的示例中，锁的范围限定为此函数，因为函数外不存在任何对对象 <span class="code">lockThis</span> 的引用。如果确实存在此类引用，锁的范围将扩展到该对象。严格地说，提供给 <span sdata="langKeyword" value="lock"><span class="keyword">lock</span></span> 的对象只是用来唯一地标识由多个线程共享的资源，所以它可以是任意类实例。然而，实际上，此对象通常表示需要进行线程同步的资源。例如，如果一个容器对象将被多个线程使用，则可以将该容器传递给 lock，而 lock 后面的同步代码块将访问该容器。只要其他线程在访问该容器前先锁定该容器，则对该对象的访问将是安全同步的。
+                </p><p>
+                    通常，最好避免锁定 <span sdata="langKeyword" value="public"><span class="keyword">public</span></span> 类型或锁定不受应用程序控制的对象实例。例如，如果该实例可以被公开访问，则 <span class="code">lock(this)</span> 可能会有问题，因为不受控制的代码也可能会锁定该对象。这可能导致死锁，即两个或更多个线程等待释放同一对象。出于同样的原因，锁定公共数据类型（相比于对象）也可能导致问题。锁定字符串尤其危险，因为字符串被公共语言运行时 (CLR)“暂留”。这意味着整个程序中任何给定字符串都只有一个实例，就是这同一个对象表示了所有运行的应用程序域的所有线程中的该文本。因此，只要在应用程序进程中的任何位置处具有相同内容的字符串上放置了锁，就将锁定应用程序中该字符串的所有实例。因此，最好锁定不会被暂留的私有或受保护成员。某些类提供专门用于锁定的成员。例如，<span sdata="cer" target="T:System.Array"><mshelp:link keywords="T:System.Array" tabindex="0">Array</mshelp:link></span> 类型提供 <span sdata="cer" target="P:System.Array.SyncRoot"><mshelp:link keywords="P:System.Array.SyncRoot" tabindex="0">SyncRoot</mshelp:link></span>。许多集合类型也提供 <span class="code">SyncRoot</span>。
+                </p><p>
+                    有关 <span sdata="langKeyword" value="lock"><span class="keyword">lock</span></span> 关键字的更多信息，请参见：
+                </p><ul><li><p>
+                    <span sdata="link"><a href="656da1a4-707e-4ef6-9c6e-6d13b646af42.htm">lock 语句（C# 参考）</a></span>
+                </p></li><li><p>
+                    <span sdata="link"><a href="3c7b02f9-4b0e-4b19-a6da-e2585f4fce85.htm">如何：对制造者线程和使用者线程进行同步（C# 编程指南）</a></span>
+                </p></li></ul></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle1)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle1, event)" tabindex="0"><img id="sectionToggle1" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />监视器</span></h1><div id="sectionSection1" class="section" name="collapseableSection" style=""><p>
+                    与 <span sdata="langKeyword" value="lock"><span class="keyword">lock</span></span> 关键字类似，监视器防止多个线程同时执行代码块。<span sdata="cer" target="M:System.Threading.Monitor.Enter(System.Object)"><mshelp:link keywords="M:System.Threading.Monitor.Enter(System.Object)" tabindex="0">Enter</mshelp:link></span> 方法允许一个且仅一个线程继续执行后面的语句；其他所有线程都将被阻止，直到执行语句的线程调用 <span sdata="cer" target="M:System.Threading.Monitor.Exit(System.Object)"><mshelp:link keywords="M:System.Threading.Monitor.Exit(System.Object)" tabindex="0">Exit</mshelp:link></span>。这与使用 <span sdata="langKeyword" value="lock"><span class="keyword">lock</span></span> 关键字一样。事实上，<span sdata="langKeyword" value="lock"><span class="keyword">lock</span></span> 关键字就是用 <span sdata="cer" target="T:System.Threading.Monitor"><mshelp:link keywords="T:System.Threading.Monitor" tabindex="0">Monitor</mshelp:link></span> 类来实现的。例如：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">lock</span> (x)
+{
+    DoSomething();
+}
+
+</pre></td></tr></table></span></div></div><p>
+                    这等效于：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>System.Object obj = (System.Object)x;
+System.Threading.Monitor.Enter(obj);
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">try</span>
+{
+    DoSomething();
+}
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">finally</span>
+{
+    System.Threading.Monitor.Exit(obj);
+}
+
+</pre></td></tr></table></span></div></div><p>
+                    使用 <span sdata="langKeyword" value="lock"><span class="keyword">lock</span></span> 关键字通常比直接使用 <span sdata="cer" target="T:System.Threading.Monitor"><mshelp:link keywords="T:System.Threading.Monitor" tabindex="0">Monitor</mshelp:link></span> 类更可取，一方面是因为 <span sdata="langKeyword" value="lock"><span class="keyword">lock</span></span> 更简洁，另一方面是因为 <span sdata="langKeyword" value="lock"><span class="keyword">lock</span></span> 确保了即使受保护的代码引发异常，也可以释放基础监视器。这是通过 <span sdata="langKeyword" value="finally"><span class="keyword">finally</span></span> 关键字来实现的，无论是否引发异常它都执行关联的代码块。
+                </p><p>
+                    有关监视器的更多信息，请参见<span sdata="link"><mshelp:link keywords="e3536e49-254b-48cc-953e-7b5da4e13f73" tabindex="0">监视器同步技术示例</mshelp:link></span>。
+                </p></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle2)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle2, event)" tabindex="0"><img id="sectionToggle2" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />同步事件和等待句柄</span></h1><div id="sectionSection2" class="section" name="collapseableSection" style=""><p>
+                    使用锁或监视器对于防止同时执行区分线程的代码块很有用，但是这些构造不允许一个线程向另一个线程传达事件。这需要“同步事件”，它是有两个状态（终止和非终止）的对象，可以用来激活和挂起线程。让线程等待非终止的同步事件可以将线程挂起，将事件状态更改为终止可以将线程激活。如果线程试图等待已经终止的事件，则线程将继续执行，而不会延迟。
+                </p><p>
+                    同步事件有两种：<span sdata="cer" target="T:System.Threading.AutoResetEvent"><mshelp:link keywords="T:System.Threading.AutoResetEvent" tabindex="0">AutoResetEvent</mshelp:link></span> 和 <span sdata="cer" target="T:System.Threading.ManualResetEvent"><mshelp:link keywords="T:System.Threading.ManualResetEvent" tabindex="0">ManualResetEvent</mshelp:link></span>。它们之间唯一的不同在于，无论何时，只要 <span sdata="cer" target="T:System.Threading.AutoResetEvent"><mshelp:link keywords="T:System.Threading.AutoResetEvent" tabindex="0">AutoResetEvent</mshelp:link></span> 激活线程，它的状态将自动从终止变为非终止。相反，<span sdata="cer" target="T:System.Threading.ManualResetEvent"><mshelp:link keywords="T:System.Threading.ManualResetEvent" tabindex="0">ManualResetEvent</mshelp:link></span> 允许它的终止状态激活任意多个线程，只有当它的 <span sdata="cer" target="M:System.Threading.EventWaitHandle.Reset"><mshelp:link keywords="M:System.Threading.EventWaitHandle.Reset" tabindex="0">Reset</mshelp:link></span> 方法被调用时才还原到非终止状态。
+                </p><p>
+                    可以通过调用 <span sdata="cer" target="M:System.Threading.WaitHandle.WaitOne"><mshelp:link keywords="Overload:System.Threading.WaitHandle.WaitOne" tabindex="0">WaitOne</mshelp:link></span>、<span sdata="cer" target="M:System.Threading.WaitHandle.WaitAny(System.Threading.WaitHandle[])"><mshelp:link keywords="Overload:System.Threading.WaitHandle.WaitAny" tabindex="0">WaitAny</mshelp:link></span> 或 <span sdata="cer" target="M:System.Threading.WaitHandle.WaitAll(System.Threading.WaitHandle[])"><mshelp:link keywords="Overload:System.Threading.WaitHandle.WaitAll" tabindex="0">WaitAll</mshelp:link></span> 等中的某个等待方法使线程等待事件。<span sdata="cer" target="Overload:System.Threading.WaitHandle.WaitOne"><mshelp:link keywords="Overload:System.Threading.WaitHandle.WaitOne" tabindex="0">WaitHandle<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span></span>WaitOne<span class="languageSpecificText"><span class="cs">()</span><span class="cpp">()</span><span class="nu">()</span></span></mshelp:link></span> 使线程一直等待，直到单个事件变为终止状态；<span sdata="cer" target="Overload:System.Threading.WaitHandle.WaitAny"><mshelp:link keywords="Overload:System.Threading.WaitHandle.WaitAny" tabindex="0">WaitHandle<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span></span>WaitAny<span class="languageSpecificText"><span class="cs">()</span><span class="cpp">()</span><span class="nu">()</span></span></mshelp:link></span> 阻止线程，直到一个或多个指示的事件变为终止状态；<span sdata="cer" target="Overload:System.Threading.WaitHandle.WaitAll"><mshelp:link keywords="Overload:System.Threading.WaitHandle.WaitAll" tabindex="0">WaitHandle<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span></span>WaitAll<span class="languageSpecificText"><span class="cs">()</span><span class="cpp">()</span><span class="nu">()</span></span></mshelp:link></span> 阻止线程，直到所有指示的事件都变为终止状态。当调用事件的 <span sdata="cer" target="M:System.Threading.EventWaitHandle.Set"><mshelp:link keywords="M:System.Threading.EventWaitHandle.Set" tabindex="0">Set</mshelp:link></span> 方法时，事件将变为终止状态。
+                </p><p>
+                    在下面的示例中，创建了一个线程，并由 <span class="code">Main</span> 函数启动该线程。新线程使用 <span sdata="cer" target="Overload:System.Threading.WaitHandle.WaitOne"><mshelp:link keywords="Overload:System.Threading.WaitHandle.WaitOne" tabindex="0">WaitOne</mshelp:link></span> 方法等待一个事件。在该事件被执行 <span class="code">Main</span> 函数的主线程终止之前，该线程一直处于挂起状态。一旦该事件终止，辅助线程将返回。在本示例中，因为事件只用于一个线程的激活，所以使用 <span sdata="cer" target="T:System.Threading.AutoResetEvent"><mshelp:link keywords="T:System.Threading.AutoResetEvent" tabindex="0">AutoResetEvent</mshelp:link></span> 或 <span sdata="cer" target="T:System.Threading.ManualResetEvent"><mshelp:link keywords="T:System.Threading.ManualResetEvent" tabindex="0">ManualResetEvent</mshelp:link></span> 类都可以。
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">using</span> System;
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">using</span> System.Threading;
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> ThreadingExample
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> AutoResetEvent autoEvent;
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> DoWork()
+    {
+        Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"   worker thread started, now waiting on event..."</span>);
+        autoEvent.WaitOne();
+        Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"   worker thread reactivated, now exiting..."</span>);
+    }
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Main()
+    {
+        autoEvent = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> AutoResetEvent(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">false</span>);
+
+        Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"main thread starting worker thread..."</span>);
+        Thread t = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Thread(DoWork);
+        t.Start();
+
+        Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"main thread sleeping for 1 second..."</span>);
+        Thread.Sleep(1000);
+
+        Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"main thread signaling worker thread..."</span>);
+        autoEvent.Set();
+    }
+}
+
+</pre></td></tr></table></span></div></div><p>
+                    有关线程同步事件用法的更多示例，请参见：
+                </p><ul><li><p>
+                    <span sdata="link"><mshelp:link keywords="e3536e49-254b-48cc-953e-7b5da4e13f73" tabindex="0">监视器同步技术示例</mshelp:link></span>
+                </p></li><li><p>
+                    <span sdata="link"><mshelp:link keywords="44705bfc-93ec-45d5-bfef-5105e7b85aaf" tabindex="0">读取器－编写器同步技术示例</mshelp:link></span>
+                </p></li><li><p>
+                    <span sdata="link"><mshelp:link keywords="23b4375a-0d66-42e4-9017-8323f66e2525" tabindex="0">线程池技术示例</mshelp:link></span>
+                </p></li><li><p>
+                    <span sdata="link"><mshelp:link keywords="3284fc60-de63-4262-ba92-ee730a873e3a" tabindex="0">等待同步技术示例</mshelp:link></span>
+                </p></li></ul></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle3)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle3, event)" tabindex="0"><img id="sectionToggle3" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />Mutex 对象</span></h1><div id="sectionSection3" class="section" name="collapseableSection" style=""><p>
+                    mutex 与监视器类似；它防止多个线程在某一时间同时执行某个代码块。事实上，名称“mutex”是术语“互相排斥 (mutually exclusive)”的简写形式。然而与监视器不同的是，mutex 可以用来使跨进程的线程同步。mutex 由 <span sdata="cer" target="T:System.Threading.Mutex"><mshelp:link keywords="T:System.Threading.Mutex" tabindex="0">Mutex</mshelp:link></span> 类表示。
+                </p><p>
+                    当用于进程间同步时，mutex 称为“命名 mutex”，因为它将用于另一个应用程序，因此它不能通过全局变量或静态变量共享。必须给它指定一个名称，才能使两个应用程序访问同一个 mutex 对象。
+                </p><p>
+                    尽管 mutex 可以用于进程内的线程同步，但是使用 <span sdata="cer" target="T:System.Threading.Monitor"><mshelp:link keywords="T:System.Threading.Monitor" tabindex="0">Monitor</mshelp:link></span> 通常更为可取，因为监视器是专门为 .NET Framework 而设计的，因而它可以更好地利用资源。相比之下，<span sdata="cer" target="T:System.Threading.Mutex"><mshelp:link keywords="T:System.Threading.Mutex" tabindex="0">Mutex</mshelp:link></span> 类是 Win32 构造的包装。尽管 mutex 比监视器更为强大，但是相对于 <span sdata="cer" target="T:System.Threading.Monitor"><mshelp:link keywords="T:System.Threading.Monitor" tabindex="0">Monitor</mshelp:link></span> 类，它所需要的互操作转换更消耗计算资源。有关 mutex 的用法示例，请参见 <span sdata="link"><mshelp:link keywords="9dd06e25-12c0-4a9e-855a-452dc83803e2" tabindex="0">Mutex</mshelp:link></span>。
+                </p></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle4)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle4, event)" tabindex="0"><img id="sectionToggle4" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />相关章节</span></h1><div id="sectionSection4" class="section" name="collapseableSection" style=""><ul><li><p>
+                    <span sdata="link"><a href="d0c491af-5398-415f-9882-ebaa47f4b3a4.htm">如何：创建和终止线程（C# 编程指南）</a></span>
+                </p></li><li><p>
+                    <span sdata="link"><a href="5426dae4-c3f3-4e76-a998-19f7ca4baf3f.htm">如何：使用线程池（C# 编程指南）</a></span>
+                </p></li><li><p>
+                    <a href="http://support.microsoft.com/default.aspx?scid=kb;zh-cn;816161">如何：使用 Visual C# .NET 同步对多线程环境中共享资源的访问</a>
+                </p></li><li><p>
+                    <a href="http://support.microsoft.com/default.aspx?scid=kb;zh-cn;815804">如何：使用 Visual C# .NET 创建线程</a>
+                </p></li><li><p>
+                    <a href="http://support.microsoft.com/default.aspx?scid=kb;zh-cn;315460">如何：使用 Visual C# .NET 将工作项提交到线程池</a>
+                </p></li><li><p>
+                    <a href="http://support.microsoft.com/default.aspx?scid=kb;zh-cn;816161">如何：使用 Visual C# .NET 同步对多线程环境中共享资源的访问</a>
+                </p></li></ul></div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />请参见</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><h4 class="subHeading">概念</h4><div class="seeAlsoStyle"><span sdata="link"><a href="ac0f23a2-6bf3-4077-be99-538ae5fd3bc5.htm">C# 编程指南</a></span></div><h4 class="subHeading">参考</h4><div class="seeAlsoStyle"><span sdata="cer" target="T:System.Threading.Thread"><mshelp:link keywords="T:System.Threading.Thread" tabindex="0">Thread</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="cer" target="Overload:System.Threading.WaitHandle.WaitOne"><mshelp:link keywords="Overload:System.Threading.WaitHandle.WaitOne" tabindex="0">WaitOne</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="cer" target="Overload:System.Threading.WaitHandle.WaitAny"><mshelp:link keywords="Overload:System.Threading.WaitHandle.WaitAny" tabindex="0">WaitAny</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="cer" target="Overload:System.Threading.WaitHandle.WaitAll"><mshelp:link keywords="Overload:System.Threading.WaitHandle.WaitAll" tabindex="0">WaitAll</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="cer" target="T:System.Threading.Monitor"><mshelp:link keywords="T:System.Threading.Monitor" tabindex="0">Monitor</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="cer" target="T:System.Threading.Mutex"><mshelp:link keywords="T:System.Threading.Mutex" tabindex="0">Mutex</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="cer" target="T:System.Threading.AutoResetEvent"><mshelp:link keywords="T:System.Threading.AutoResetEvent" tabindex="0">AutoResetEvent</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="cer" target="T:System.Threading.ManualResetEvent"><mshelp:link keywords="T:System.Threading.ManualResetEvent" tabindex="0">ManualResetEvent</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="cer" target="T:System.Threading.Interlocked"><mshelp:link keywords="T:System.Threading.Interlocked" tabindex="0">Interlocked</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="cer" target="T:System.Threading.WaitHandle"><mshelp:link keywords="T:System.Threading.WaitHandle" tabindex="0">WaitHandle</mshelp:link></span></div><h4 class="subHeading">其他资源</h4><div class="seeAlsoStyle"><a href="http://msdn.microsoft.com/zh-cn/magazine/cc163467.aspx">实现 CLR 异步编程模型</a></div><div class="seeAlsoStyle"><a href="http://msdn.microsoft.com/zh-cn/magazine/cc163323.aspx">通过 C# 简化 APM</a></div><div class="seeAlsoStyle"><a href="http://msdn.microsoft.com/zh-cn/magazine/cc163352.aspx">死锁监控</a></div></div></div>
+      <div id="footer">
+        <div class="footerLine">
+          <img width="100%" height="3px" src="../icons/footer.gif" title="“页脚”图像" />
+        </div>
+<span id="feedbackarea">将有关本主题的<a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);">反馈意见</a>发送给 Microsoft。</span>
+</div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,120 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Part III:  Classes and Data Abstraction</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch11lev1sec7.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch12.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="part03"></a>
+
+        <h1 class="docPartTitle">Part III: Classes and Data Abstraction</h1>
+
+        <h1 class="docPartTitle">第三部分：类和数据抽象</h1>
+
+        <blockquote>
+          <p class="docText">Classes are central to most C++ programs: Classes let us define our own types that are customized for the problems we need to solve, resulting in applications that are easier to write and understand. Well-designed class types can be as easy to use as the built-in types.</p>
+
+          <p class="docText">在大多数 C++ 程序中，类都是至关重要的：我们能够使用类来定义为要解决的问题定制的数据类型，从而得到更加易于编写和理解的应用程序。设计良好的类类型可以像内置类型一样容易使用。</p>
+
+          <p class="docText">A class defines data and function members: The data members store the state associated with objects of the class type, and the functions perform operations that give meaning to the data. Classes let us separate implementation and interface. The interface specifies the operations that the class supports. Only the implementor of the class need know or care about the details of the implementation. This separation reduces the bookkeeping aspects that make programming tedious and error-prone.</p>
+
+          <p class="docText">类定义了数据成员和函数成员：数据成员用于存储与该类类型的对象相关联的状态，而函数成员则负责执行赋予数据意义的操作。通过类我们能够将实现和接口分离，用接口指定类所支持的操作，而实现的细节只需类的实现者了解或关心。这种分离可以减少使编程冗长乏味和容易出错的那些繁琐工作。</p>
+
+          <p class="docText">Class types often are referred to as <span class="docEmphasis">abstract data types</span>. An abstract data type treats the data (state) and operations on that state as a single unit. We can think abstractly about what the class does, rather than always having to be aware of how the class operates. Abstract data types are fundamental to both object-oriented and generic programming.</p>
+
+          <p class="docText">类类型常被称为<span class="docEmphasis">抽象数据类型（abstract data types）</span>。抽象数据类型将数据（即状态）和作用于状态的操作视为一个单元。我们可以抽象地考虑类该做什么，而无须知道类如何去完成这些操作。抽象数据类型是面向对象编程和泛型编程的基础。</p>
+
+          <p class="docText"><a class="docLink" href="ch12.html#ch12" >Chapter 12</a> begins our detailed coverage of how classes are defined. This chapter covers topics fundamental to any use of classes: class scope, data hiding, and constructors. It also introduces some new class features: friends, uses of the implicit <tt>this</tt> pointer, and the role of <tt>static</tt> and <tt>mutable</tt> members.</p>
+
+          <p class="docText"><a class="docLink" href="ch12.html#ch12" >第十二章</a>开始详细地介绍如何定义类，包括类的使用中非常基本的主题：类作用域、数据隐藏和构造函数。此外，还介绍了类的一些新特征：友元、使用隐含的 <tt>this</tt> 指针，以及<tt>静态（static）</tt>和<tt>可变（mutable）</tt>成员的作用。</p>
+
+          <p class="docText">Classes in C++ control what happens when objects are initialized, copied, assigned, and destroyed. In this respect, C++ differs from many other languages, many of which do not give class designers the ability to control these operations. <a class="docLink" href="ch13.html#ch13" >Chapter 13</a> covers these topics.</p>
+
+          <p class="docText">C++ 中的类能够控制在初始化、复制、赋值和销毁对象时发生的操作。在此方面，C++ 不同于许多其他语言，它们大多没有赋予类设计者控制这些操作的能力。<a class="docLink" href="ch13.html#ch13" >第十三章</a>讨论了这些主题。</p>
+
+          <p class="docText"><a class="docLink" href="ch14.html#ch14" >Chapter 14</a> looks at operator overloading, which allows operands of class types to be used with the built-in operators. Operator over-loading is one of the ways whereby C++ lets us create new types that are as intuitive to use as are the built-in types. This chapter also presents another special kind of class <span class="docEmphRoman"><a name="ch12term18"></a><a class="docLink" href="ch12lev1sec8.html#gloss12_18" >member function</a></span>conversion functionswhich define implicit conversions from objects of class type. The compiler applies these conversions in the same contextsand for the same reasonsas it does with conversions among the built-in types.</p>
+
+          <p class="docText"><a class="docLink" href="ch14.html#ch14" >第十四章</a>考察了操作符重载，允许将类类型的操作数与内置操作符一起使用。利用操作符重载，在 C++ 中创建新的类型，就像创建内置类型一样。此外，还介绍了另一种特殊的类成员函数——转换函数，这种函数定义了类类型对象之间的隐式转换。编译器应用这些转换就像它们是在内置类型之间发生的转换一样。</p>
+        </blockquote><br>
+
+        <h5 class="docTocTitle">C<span class="docEmphSmaller">ONTENTS</span></h5>
+
+        <table width="500" cols="3" border="0">
+          <tr>
+            <td width="40"> </td>
+
+            <td colspan="2">
+              <p class="docList"><a class="docLink" href="ch12.html#ch12" >Chapter 12</a> <span class="docEmphStrong">Classes</span></p>
+
+              <p class="docList"><a class="docLink" href="ch12.html#ch12" >第十二章</a> <span class="docEmphStrong">类</span></p>
+            </td>
+          </tr>
+        </table>
+
+        <table width="500" cols="3" border="0">
+          <tr>
+            <td width="40"> </td>
+
+            <td colspan="2">
+              <p class="docList"><a class="docLink" href="ch13.html#ch13" >Chapter 13</a> <span class="docEmphStrong">Copy Control</span></p>
+
+              <p class="docList"><a class="docLink" href="ch13.html#ch13" >第十三章</a> <span class="docEmphStrong">复制控制</span></p>
+            </td>
+          </tr>
+        </table>
+
+        <table width="500" cols="3" border="0">
+          <tr>
+            <td width="40"> </td>
+
+            <td colspan="2">
+              <p class="docList"><a class="docLink" href="ch14.html#ch14" >Chapter 14</a> <span class="docEmphStrong">Overloaded Operations and Conversions</span></p>
+
+              <p class="docList"><a class="docLink" href="ch14.html#ch14" >第十四章</a> <span class="docEmphStrong">重载操作符与转换</span></p>
+            </td>
+          </tr>
+        </table><a href="21001535.html" ><img src="images/pixel.gif"  alt="" width="1" height="1" border="0"></a>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch11lev1sec7.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch12.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

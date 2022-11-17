@@ -1,0 +1,245 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 11.4.  Structure of Generic Algorithms</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch11lev1sec3.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch11lev1sec5.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch11lev1sec4"></a>
+
+        <h3 class="docSection1Title">11.4. Structure of Generic Algorithms</h3>
+	<h3 class="docSection1Title">11.4. 泛型算法的结构</h3>
+	
+	<a name="idd1e89310"></a><a name="idd1e89315"></a><a name="idd1e89320"></a>
+
+        <p class="docText">Just as there is a consistent design pattern behind the containers, there is a common design underlying the algorithms. Understanding the design behind the library makes it easier to learn and easier to use the algorithms. Because there are more than 100 algorithms, it is much better to understand their structure than to memorize the whole list of algorithms.</p>
+        <p class="docText">正如所有的容器都建立在一致的设计模式上一样，算法也具有共同的设计基础。理解标准算法库的设计基础有利于学习和使用算法。C++ 提供了超过一百个算法，了解它们的结构显然要比死记所有的算法更好。</p>
+
+        <p class="docText">The most fundamental property of any algorithm is the kind(s) of iterators it expects. Each algorithm specifies for each of its iterator parameters what kind of iterator can be supplied. If a parameter must be a random-access iterator, then we can provide an iterator for a <tt>vector</tt> or a <tt>deque</tt>, or we can supply a pointer into an array. Iterators on the other containers cannot be used with such algorithms.</p>
+	<p class="docText">算法最基本的性质是需要使用的迭代器种类。所有算法都指定了它的每个迭代器形参可使用的迭代器类型。如果形参必须为随机访问迭代器则可提供 <tt>vector</tt> 或 <tt>deque</tt> 类型的迭代器，或者提供指向数组的指针。而其他容器的迭代器不能用在这类算法上。</p>
+
+        <p class="docText">A second way is to classify the algorithms is as we did in the beginning of this chapter. We can categorize them by what actions they take on the elements:</p>
+        <p class="docText">另一种算法分类的方法，则如本章开头介绍的一样，根据对元素的操作将算法分为下面几种：</p>
+
+        <ul>
+          <li>
+            <p class="docList">Some are read-only and leave element values and ordering unchanged.</p>
+            <p class="docList">只读算法，不改变元素的值顺序。</p>
+          </li>
+
+          <li>
+            <p class="docList">Others assign new values to specific elements.</p>
+            <p class="docList">给指定元素赋新值的算法。</p>
+          </li>
+
+          <li>
+            <p class="docList">Others move values from one element to another.</p>
+            <p class="docList">将一个元素的值移给另一个元素的算法。</p>
+          </li>
+        </ul>
+
+        <p class="docText">As we'll see in the remainder of this section, there are two additional patterns to the algorithms: One pattern is defined by the parameters the algorithms take; the other is defined by two function naming and overloading conventions.</p>
+        <p class="docText">正如本节后续部分所介绍的，C++ 还提供了另外两种算法模式：一种模式由算法所带的形参定义；另一种模式则通过两种函数命名和重载的规范定义。</p>
+
+        <a name="ch11lev2sec12"></a>
+        <h4 class="docSection2Title">11.4.1. Algorithm Parameter Patterns</h4>
+        <h4 class="docSection2Title">11.4.1. 算法的形参模式</h4>
+
+        <p class="docText">Superimposed on any other classification of the algorithms is a set of parameter conventions. Understanding these parameter conventions can aid in learning new algorithmsby knowing what the parameters mean, you can concentrate on understanding the operation the algorithm performs. Most of algorithms take one of the following four forms:</p>
+        <p class="docText">任何其他的算法分类都含有一组形参规范。理解这些形参规范有利于学习新的算法——只要知道形参的含义，就可专注于了解算法实现的操作。大多数算法采用下面四种形式之一：</p>
+        <pre>
+     alg (beg, end, other parms);
+     alg (beg, end, dest, other parms);
+     alg (beg, end, beg2, other parms);
+     alg (beg, end, beg2, end2, other parms);
+</pre>
+
+        <p class="docText">where <span class="docEmphasis">alg</span> is the name of the algorithm, and <tt>beg</tt> and <tt>end</tt> denote the range of elements on which the algorithm operates. We typically refer to this range as the "input range" of the algorithm. Although nearly all algorithms take an input range, the presence of the other parameters depends on the work being performed. The common ones listed here<tt>dest, beg2</tt> and <tt>end2</tt>are all iterators. When used, these iterators fill similar roles. In addition to these iterator parameters, some algorithms take additional, noniterator parameters that are algorithm-specific.</p>
+	<p class="docText">其中，<span class="docEmphasis">alg</span> 是算法的名字，<tt>beg</tt> 和 <tt>end</tt> 指定算法操作的元素范围。我们通常将该范围称为算法的“输入范围”。尽管几乎所有算法都有输入范围，但算法是否使用其他形参取决于它所执行的操作。这里列出了比较常用的其他形参：<tt>dest</tt>、<tt>beg2</tt> 和 <tt>end2</tt>，它们都是迭代器。这些迭代器在使用时，充当类似的角色。除了这些迭代器形参之外，有些算法还带有其他的菲迭代器形参，它们是这些算法特有的。</p>
+	
+	<a name="ch11lev3sec24"></a>
+        <h5 class="docSection3Title">Algorithms with a Single Destination Iterator</h5>
+        <h5 class="docSection3Title">带有单个目标迭代器的算法</h5>
+
+        <p class="docText">A <tt>dest</tt> parameter is an iterator that denotes a destination used to hold the output. Algorithms <span class="docEmphasis">assume</span> that it is safe to write as many elements as needed.</p>
+	<p class="docText"><tt>dest</tt> 形参是一个迭代器，用于指定存储输出数据的目标对象。算法假定无论需要写入多少个元素都是安全的。</p>
+	
+	<a name="ch11note09"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <a name="idd1e89409"></a><a name="idd1e89416"></a><a name="idd1e89421"></a><a name="idd1e89426"></a><a name="idd1e89431"></a><a name="idd1e89439"></a>
+
+                <p class="docText">When calling these algorithms, it is essential to ensure that the output container is sufficiently large to hold the output, which is why they are frequently called with insert iterators or <tt>ostream_iterators</tt>. If we call these algorithms with a container iterator, the algorithm assumes there are as many elements as needed in that container.</p>
+		<p class="docText">调用这些算法时，必须确保输出容器有足够大的容量存储输出数据，这正是通常要使用插入迭代器或者 <tt>ostream_iterator</tt> 来调用这些算法的原因。如果使用容器迭代器调用这些算法，算法将假定容器里有足够多个需要的元素。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <p class="docText">If <tt>dest</tt> is an iterator on a container, then the algorithm writes its output to existing elements within the container. More commonly, <tt>dest</tt> is bound to an insert iterator (<a class="docLink" href="ch11lev1sec3.html#ch11lev2sec7" >Section 11.3.1</a>, p. <a class="docLink" href="ch11lev1sec3.html#ch11lev2sec7" >406</a>) or an <tt>ostream_iterator</tt>. An insert iterator adds elements to the container, ensuring that there is enough space. An <tt>ostream_iterator</tt> writes to an output stream, again presenting no problem regardless of how many elements are written.</p>
+        <p class="docText">如果 <tt>dest</tt> 是容器上的迭代器，则算法将输出内容写到容器中已存在的元素上。更普遍的用法是，将 <tt>dest</tt> 与某个插入迭代器（<a class="docLink" href="ch11lev1sec3.html#ch11lev2sec7" >第 11.3.1 节</a>）或者 <tt>ostream_iterator</tt> 绑定在一起。插入迭代器在容器中添加元素，以确保容器有足够的空间存储输出。<tt>ostream_iterator</tt> 则实现写输出流的功能，无需要考虑所写的元素个数。</p>
+
+        <h5 class="docSection3Title">Algorithms with a Second Input Sequence</h5>
+        <h5 class="docSection3Title">带第二个输入序列的算法</h5>
+
+        <p class="docText">Algorithms that take either <tt>beg2</tt> alone or <tt>beg2</tt> and <tt>end2</tt> use these iterators to denote a second input range. These algorithms typically use the elements from the second range in combination with the input range to perform a computation. When an algorithm takes both <tt>beg2</tt> and <tt>end2</tt>, these iterators are used to denote the entire second range. That is, the algorithm takes two completely specified ranges: the input range denoted by <tt>beg</tt> and <tt>end</tt>, and a second input range denoted by <tt>beg2</tt> and <tt>end2</tt>.</p>
+	<p class="docText">有一些算法带有一个 <tt>beg2</tt> 迭代器形参，或者同时带有 <tt>beg2</tt> 和 <tt>end2</tt> 迭代器形参，来指定它的第二个输入范围。这类算法通常将联合两个输入范围的元素来完成计算功能。算法同时使用 <tt>beg2</tt> 和 <tt>end2</tt> 时，这些迭代器用于标记完整的第二个范围。也就是说，此时，算法完整地指定了两个范围：<tt>beg</tt> 和 <tt>end</tt> 标记第一个输入范围，而 <tt>beg2</tt> 和 <tt>end2</tt> 则标记第二个输入范围。</p>
+
+        <p class="docText">Algorithms that take <tt>beg2</tt> but not <tt>end2</tt> treat <tt>beg2</tt> as the first element in the second input range. The end of this range is not specified. Instead, these algorithms <span class="docEmphasis">assume</span> that the range starting at <tt>beg2</tt> is at least as large as the one denoted by <tt>beg, end</tt>.</p>
+        <p class="docText">带有 <tt>beg2</tt> 而不带 <tt>end2</tt> 的算法将 <tt>beg2</tt> 视为第二个输入范围的首元素，但没有指定该范围的最后一个元素。这些算法假定以 <tt>beg2</tt> 开始的范围至少与 <tt>beg</tt> 和 <tt>end</tt> 指定的范围一样大。</p>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">As with algorithms that write to <tt>dest</tt>, algorithms that take <tt>beg2</tt> alone <span class="docEmphasis">assume</span> that the sequence beginning at <tt>beg2</tt> is as large as the range denoted by <tt>beg</tt> and <tt>end</tt>.</p>
+        <p class="docText">与写入 <tt>dest</tt> 的算法一样，只带有 <tt>beg2</tt> 的算法也假定以 <tt>beg2</tt> 开始的序列与 <tt>beg</tt> 和 <tt>end</tt> 标记的序列一样大。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <a name="ch11lev2sec13"></a>
+
+        <h4 class="docSection2Title">11.4.2. Algorithm Naming Conventions</h4>
+        <h4 class="docSection2Title">11.4.2. 算法的命名规范</h4>
+
+        <p class="docText">The library uses a set of consistent naming and overload conventions that can simplify learning the library. There are two important patterns. The first involves algorithms that test the elements in the input range, and the second applies to those that reorder elements within the input range.</p>
+        <p class="docText">标准库使用一组相同的命名和重载规范，了解这些规范有助于更容易地学习标准库。它们包括两种重要模式：第一种模式包括测试输入范围内元素的算法，第二种模式则应用于对输入范围内元素重新排序的算法。</p>
+
+        <h5 class="docSection3Title">Distinguishing Versions that Take a Value or a Predicate</h5>
+        <h5 class="docSection3Title">区别带有一个值或一个谓词函数参数的算法版本</h5>
+
+        <p class="docText">Many algorithms operate by testing elements in their input range. These algorithms typically use one of the standard relational operators, either <tt>==</tt> or <tt>&lt;</tt>. Most of the algorithms provide a second version that allows the programmer to override the use of the operator and instead to supply a comparison or test function.</p>
+	<p class="docText">很多算法通过检查其输入范围内的元素实现其功能。这些算法通常要用到标准关系操作符：<tt>==</tt> 或 <tt>&lt;</tt>。其中的大部分算法会提供第二个版本的函数，允许程序员提供比较或测试函数取代操作符的使用。</p>
+
+        <p class="docText">Algorithms that reorder the container elements use the <tt>&lt;</tt> operator. These algorithms define a second, overloaded version that takes an additional parameter <a name="idd1e89591"></a><a name="idd1e89598"></a><a name="idd1e89605"></a><a name="idd1e89612"></a><a name="idd1e89617"></a><a name="idd1e89625"></a><a name="idd1e89629"></a><a name="idd1e89635"></a>representing a different operation to use to order the elements:</p>
+        <p class="docText">重新对容器元素排序的算法要使用 <tt>&lt;</tt> 操作符。这些算法的第二个重载版本带有一个额外的形参，表示用于元素排序的不同运算：</p>
+        <pre>
+     sort (beg, end);         // <span class="docEmphItalicAlt">use &lt; operator to sort the elements</span>
+     sort (beg, end, comp);   // <span class="docEmphItalicAlt">use function named</span> <span class="docEmphasis">comp</span> <span class="docEmphItalicAlt">to sort the elements</span>
+</pre>
+
+        <p class="docText">Algorithms that test for a specific value use the <tt>==</tt> operator by default. These algorithms provide a second namednot overloadedversion with a parameter that is a predicate (<a class="docLink" href="ch11lev1sec2.html#ch11lev2sec6" >Section 11.2.3</a>, p. <a class="docLink" href="ch11lev1sec2.html#ch11lev2sec6" >402</a>). Algorithms that take a predicate have the suffix <tt>_if</tt> appended:</p>
+        <p class="docText">检查指定值的算法默认使用 <tt>==</tt> 操作符。系统为这类算法提供另外命名的（而非重载的）版本，带有谓词函数（<a class="docLink" href="ch11lev1sec2.html#ch11lev2sec6" >第 11.2.3 节</a>）形参。带有谓词函数形参的算法，其名字带有后缀 <tt>_if</tt>：</p>
+        <pre>
+     find(beg, end, val);       // <span class="docEmphItalicAlt">find first instance of</span> <span class="docEmphasis">val</span> <span class="docEmphItalicAlt">in the input range</span>
+     find_if(beg, end, pred);   // <span class="docEmphItalicAlt">find first instance for which</span> <span class="docEmphasis">pred</span> <span class="docEmphItalicAlt">is true</span>
+</pre>
+
+        <p class="docText">These algorithms both find the first instance of a specific element in the input range. The <tt>find</tt> algorithm looks for a specific value; the <tt>find_if</tt> algorithm looks for a value for which <tt>pred</tt> returns a nonzero value.</p>
+        <p class="docText">上述两个算法都在输入范围内寻找指定元素的第一个实例。其中，<tt>find</tt> 算法查找一个指定的值，而 <tt>find_if</tt> 算法则用于查找一个使谓词函数 <tt>pred</tt> 返回非零值的元素。</p>
+
+        <p class="docText">The reason these algorithms provide a named version rather than an over-loaded one is that both versions take the same number of parameters. In the case of the ordering algorithms, it is easy to disambiguate a call based solely on the number of parameters. In the case of algorithms that look for a specific element, the number of parameters is the same whether testing for a value or testing a predicate. Overloading ambiguities (<a class="docLink" href="ch07lev1sec8.html#ch07lev2sec28" >Section 7.8.2</a>, p. <a class="docLink" href="ch07lev1sec8.html#ch07lev2sec28" >269</a>) would therefore be possible, albeit rare, and so the library provides two named versions for these algorithms rather than relying on overloading.</p>
+        <p class="docText">标准库为这些算法提供另外命名的版本，而非重载版本，其原因在于这个两种版本的算法带有相同数目的形参。对于排序算法，只要根据参数的个数就很容易消除函数调用的歧义。而对于查找指定元素的算法，不管检查的是一个值还是谓词函数，函数调用都需要相同个数的参数。此时，如果使用重载版本，则可能导致二义性（<a class="docLink" href="ch07lev1sec8.html#ch07lev2sec28" >第 7.8.2 节</a>），尽管这个可能出现的几率很低。因此，标准库为这些算法提供两种不同名字的版本，而没有使用重载。</a>
+
+        <h5 class="docSection3Title">Distinguishing Versions that Copy from Those that Do Not</h5>
+        <h5 class="docSection3Title">区别是否实现复制的算法版本</h5>
+
+        <p class="docText">Independently of whether an algorithm tests its elements, the algorithm may re-arrange elements within the input range. By default, such algorithms write the rearranged elements back into their input range. These algorithms also provide a second, named version that writes to a specified output destination. These algorithms append <tt>_copy</tt> to their names:</p>
+        <p class="docText">无论算法是否检查它的元素值，都可能重新排列输入范围内的元素。在默认情况下，这些算法将重新排列的元素写回其输入范围。标准库也为这些算法提供另外命名的版本，将元素写到指定的输出目标。此版本的算法在名字中添加了 <tt>_copy</tt> 后缀：</p>
+        <pre>
+     reverse(beg, end);
+     reverse_copy(beg, end, dest);
+</pre>
+
+        <p class="docText">The <tt>reverse</tt> function does what its name implies: It reverses the order of the elements in the input sequence. The first version reverses the elements in the input sequence itself. The second version, <tt>reverse_copy</tt>, makes a copy of the elements, placing them in reverse order in the sequence that begins at <tt>dest</tt>.</p>
+	<p class="docText"><tt>reverse</tt> 函数的功能就如它的名字所意味的：将输入序列中的元素反射重新排列。其中，第一个函数版本将自己的输入序列中的元素反向重排。而第二个版本，<tt>reverse_copy</tt>，则复制输入序列的元素，并将它们逆序存储到 <tt>dest</tt> 开始的序列中。</p>
+
+	<a name="ch11sb12"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 11.4.2</h2>
+
+              <blockquote>
+                <a name="ch11qa9q1"></a>
+
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><b>Exercise 11.27:</b></td>
+
+                    <td>
+			    <p class="docText">The library defines the following algorithms:</p>
+                      <p class="docText">标准库定义了下面的算法：</p>
+                      <pre>
+     replace(beg, end, old_val, new_val);
+     replace_if(beg, end, pred, new_val);
+     replace_copy(beg, end, dest, old_val, new_val);
+     replace_copy_if(beg, end, dest, pred, new_val);
+</pre>
+
+                      <p class="docText">Based only on the names and parameters to these functions, describe the operation that these algorithms perform.</p>
+                      <p class="docText">只根据这些函数的名字和形参，描述这些算法的功能。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch11qa9q2"></a><b>Exercise 11.28:</b></td>
+
+                    <td>
+                      <p class="docText">Assume <tt>lst</tt> is a container that holds 100 elements. Explain the following program fragment and fix any bugs you think are present.</p>
+                      <p class="docText">假设 <tt>lst</tt> 是存储了 100 个元素的容器。请解释下面的程序段，并修正你认为的错误。</p>
+                      <pre>
+     vector&lt;int&gt; vec1;
+     reverse_copy(lst.begin(), lst.end(), vec1.begin());
+</pre>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table>
+
+	<a href="21001535.html" ><img src="images/pixel.gif"  alt="" width="1" height="1" border="0"></a>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch11lev1sec3.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch11lev1sec5.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

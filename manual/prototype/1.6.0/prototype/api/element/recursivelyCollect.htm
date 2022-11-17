@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Element.recursivelyCollect - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>recursivelyCollect</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">recursivelyCollect(element, property) -> [HTMLElement...]</code></pre>
+			<p>
+				通过递归获取和 <code>element</code> 相关的元素集合，元素的相关性由 <code>property</code> 参数指定，<code>property</code>
+				必须是 <code>element</code> 的一个<em>属性</em>（不能为方法！），指向<em>单个</em> DOM 节点。该方法返回一个数组，数组元素已经过
+				<a href="extend.htm" >扩展</a>。
+			</p>
+		</div>
+		<div id="abody">
+			<p>
+				该方法用于在 <a href="ancestors.htm" >Element.ancestors</a>、
+				<a href="descendants.htm" >Element.descendants</a>、
+				<a href="nextSiblings.htm" >Element.nextSiblings</a>、
+				<a href="previousSiblings.htm" >Element.previousSiblings</a> 和
+				<a href="siblings.htm" >Element.siblings</a> 的内部，提供简捷的获取元素的途径，一般不需要直接访问它。当然，
+				如果你有一些不同寻常的需求，也可以选择使用它。
+			</p>
+			<p>注意：所有 Prototype 的 DOM 扩展方法均忽略文本节点，仅返回元素节点。</p>
+			<h3>样例</h3>
+			<pre><code class="html">&lt;ul id="fruits"&gt;
+	&lt;li id="apples"&gt; 
+		&lt;ul id="list-of-apples"&gt;
+			&lt;li id="golden-delicious"&gt;&lt;p&gt;Golden Delicious&lt;/p&gt;&lt;/li&gt;
+			&lt;li id="mutsu"&gt;Mutsu&lt;/li&gt;
+			&lt;li id="mcintosh"&gt;McIntosh&lt;/li&gt;
+			&lt;li id="ida-red"&gt;Ida Red&lt;/li&gt;
+		&lt;/ul&gt; 
+	&lt;/li&gt; 
+&lt;/ul&gt; </code></pre>
+			<pre><code class="javascript">$('fruits').recursivelyCollect('firstChild'); 
+// -> [li#apples, ul#list-of-apples, li#golden-delicious, p] </code></pre>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

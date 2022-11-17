@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Hash.toQueryString - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>toQueryString<div class="box">1.6 改进</div></h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">toQueryString() -> String</code></pre>
+			<p>将一个 hash 转换为 URL 编码字符串形式。</p>
+		</div>
+		<div id="abody">
+			<p>
+				这是一种串行化的形式，常用于提供复合的参数集，例如为 Ajax 命名空间中的那些对象提供参数（如
+				<a href="../ajax/request.htm" >Ajax.Request</a> 的 <code>parameters</code> 选项）。
+			</p>
+			<p>
+				值为 <code>undefined</code> 的“键/值”对串行化后只保留了键名称。值为数组的“键/值”对会将数组的每个元素串行化为一个键值对。
+				所有的值都会使用 JavaScript 原生的 <code>encodeURIComponent</code> 方法获取 URI 编码。
+			</p>
+			<p>
+				除数组外（数组是按照元素在数组中的顺序进行串行化的），串行化后键值对的顺序并不保证总是一致的
+				（并且通常情况下查询字符串中键值对的顺序也是无关紧要的）。
+			</p>
+			<h3>样例</h3>
+			<pre><code class="javascript">$H({ action: 'ship', order_id: 123, fees: ['f1', 'f2'], 'label': 'a demo' }).toQueryString() 
+// -> 'action=ship&order_id=123&fees=f1&fees=f2&label=a%20demo'
+// 一个空的 hash 是一个空的查询字符串： 
+$H().toQueryString() 
+// -> ''</code></pre>
+			<h3><strong>译注：</strong>一些特殊值的串行化：</h3>
+			<pre><code>var hash = new Hash({a: 'aa', b: null, c: undefined, d: 'dd'});
+hash.toQueryString()
+// -> 'a=aa&b=&c&d=dd'</code></pre>
+			<p class="deprecated">
+				不能再将 <code>Hash.toQueryString(obj)</code> 作为<strong>类方法</strong>使用，只能作为一个实例方法，或者用
+				<a href="../object/toquerystring.htm" >Object.toQueryString</a> 来代替。
+			</p>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

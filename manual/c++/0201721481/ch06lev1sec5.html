@@ -1,0 +1,334 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 6.5.  The if Statement</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch06lev1sec4.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch06lev1sec6.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch06lev1sec5"></a>
+
+        <h3 class="docSection1Title">6.5. The <tt>if</tt> Statement</h3>
+        <h3 class="docSection1Title">6.5. <tt>if</tt> 语句</h3>
+
+<a name="ch06term18"></a>
+        <p class="docText">An <b><a class="docLink" href="ch06lev1sec16.html#gloss06_18" ><span class="docEmphStrong"><tt>if</tt></span> statement</a></b> conditionally executes another statement based on whether a specified expression is true. There are two forms of the <tt>if</tt>: one with an <tt>else</tt> branch and one without. The syntactic form of the plain <tt>if</tt> is the following:</p>
+        <p class="docText"><b><a class="docLink" href="ch06lev1sec16.html#gloss06_18" ><span class="docEmphStrong"><tt>if</tt></span> 语句</a></b>根据特定表达式是否为真来有条件地执行另一个语句。<tt>if</tt> 语句有两种形式：其中一种带 <tt>else</tt> 分支而另一种则没有。根据语法结构，最简单的 <tt>if</tt> 语句是这样的：</p>
+        <pre>
+     if (<span class="docEmphasis">condition</span>)
+          <span class="docEmphasis">statement</span>
+</pre><br>
+
+        <p class="docText">The <span class="docEmphasis">condition</span> must be enclosed in parentheses. It can be an expression, such as</p>
+        <p class="docText">其中的 <span class="docEmphasis">condition</span> 部分必须用圆括号括起来。它可以是一个表达式，例如：</p>
+        <pre>
+     if (a + b &gt; c) {/* ... */}
+</pre><br>
+
+<a name="idd1e42413"></a><a name="idd1e42420"></a>
+        <p class="docText">or an initialized declaration, such as</p>
+        <p class="docText">或者一个初始化声明，例如：</p>
+        <pre>
+     // <span class="docEmphasis">ival</span> <span class="docEmphItalicAlt">only accessible within the</span> <span class="docEmphasis">if</span> <span class="docEmphItalicAlt">statement</span>
+     if (int ival = compute_value()) {/* ... */}
+</pre><br>
+
+        <p class="docText">As usual, <span class="docEmphasis">statement</span> could be a compound statementthat is, a block of statements enclosed in curly braces.</p>
+        <p class="docText">通常，<span class="docEmphasis">statement</span> 部分可以是复合语句，即用花括号括起来的块语句。</p>
+
+        <p class="docText">When a condition defines a variable, the variable must be initialized. The value of the initialized variable is converted to <tt>bool</tt> (<a class="docLink" href="ch05lev1sec12.html#ch05lev2sec27" >Section 5.12.3</a>, p. <a class="docLink" href="ch05lev1sec12.html#ch05lev2sec27" >181</a>) and the resulting <tt>bool</tt> determines the value of the condition. The variable can be of any type that can be converted to <tt>bool</tt>, which means it can be an arithmetic or pointer type. As we'll see in <a class="docLink" href="ch14.html#ch14" >Chapter 14</a>, whether a class type can be used in a condition depends on the class. Of the types we've used so far, the IO types can be used in a condition, but the <tt>vector</tt> and <tt>string</tt> types may not be used as a condition.</p>
+        <p class="docText">如果在条件表达式中定义了变量，那么变量必须初始化。将已初始化的变量值转换为 <tt>bool</tt> 值（<a class="docLink" href="ch05lev1sec12.html#ch05lev2sec27" >第 5.12.3 节</a>）后，该 <tt>bool</tt> 值决定条件是否成立。变量类型可以是任何可转换为 <tt>bool</tt> 型的类型，这意味着它可以是算术类型或指针类型。正如<a class="docLink" href="ch14.html#ch14" >第十四章</a>要提及的，一个类类型能否用在条件表达式中取决于类本身。迄今为止，在所有用过的类类型中，IO 类型可以用作条件，但 <tt>vector</tt> 类型和 <tt>string</tt> 类型一般不可用作条件。</p>
+
+        <p class="docText">To illustrate the use of the <tt>if</tt> statement, we'll find the smallest value in a <tt>vector&lt;int&gt;</tt>, keeping a count of how many times that minimum value occurs. To solve this problem, we'll need two <tt>if</tt> statements: one to determine whether we have a new minimum and the other to increment a count of the number of occurrences of the current minimum value:</p>
+        <p class="docText">为了说明 <tt>if</tt> 语句的用法，下面程序用于寻找 <tt>vector&lt;int&gt;</tt> 对象中的最小值，并且记录这个最小值出现的次数。为了解决这个问题，需要两个 <tt>if</tt> 语句：一个判断是否得到一个新的最小值，而另一个则用来增加当前最小值的数目。</p>
+        <pre>
+     if (minVal &gt; ivec[i])  { /* <span class="docEmphItalicAlt">process new</span> <span class="docEmphasis">minVal</span> */ }
+     if (minVal == ivec[i]) { /* <span class="docEmphItalicAlt">increment occurrence count</span> */ }
+</pre><br>
+        <a name="ch06lev2sec2"></a>
+
+        <h4 class="docSection2Title">Statement Block as Target of an <tt>if</tt></h4>
+	<h4 class="docSection2Title">语句块用作 <tt>if</tt> 语句的对象</h4>
+
+        <p class="docText">We'll start by considering each <tt>if</tt> in isolation. One of these <tt>if</tt> statements will determine whether there is a new minimum and, if so, reset the counter and update <tt>minVal</tt>:</p>
+        <p class="docText">现在单独考虑上述例子中的每个 <tt>if</tt> 语句。其中一个 <tt>if</tt> 语句将要决定是否出现了一个新的最小值，如果是的话，则要重置计数器并更新最小值：</p>
+        <pre>
+     if (minVal &gt; ivec[i]) { // <span class="docEmphItalicAlt">execute both statements if condition is true</span>
+          minVal = ivec[i];
+          occurs = 1;
+     }
+</pre><br>
+
+        <p class="docText">The other conditionally updates the counter. This <tt>if</tt> needs only one statement, so it need not be enclosed in curlies:</p>
+        <p class="docText">另一个 <tt>if</tt> 语句则有条件地更新计数器，它只需要一个语句，因此不必用花括号起来：</p>
+        <pre>
+     if (minVal == ivec[i])
+          ++occurs;
+</pre><br>
+        <a name="ch06note06"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">It is a somewhat common error to forget the curly braces when multiple statements must be executed as a single statement.</p>
+                <p class="docText">当多个语句必须作为单个语句执行时，比较常见的错误是漏掉了花括号。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">In the following program, contrary to the indentation and intention of the programmer, the assignment to <tt>occurs</tt> is not part of the <tt>if</tt> statement:</p>
+        <p class="docText">在下面的程序中，与程序员缩进目的相反，对 <tt>occurs</tt> 的赋值并不是 <tt>if</tt> 语句的一部分：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">error: missing curly brackets to make a block!</span>
+     if (minVal &gt; ivec[i])
+          minVal = ivec[i];
+          occurs = 1; // <span class="docEmphItalicAlt">executed unconditionally: not part of the</span> <span class="docEmphasis">if</span>
+</pre><br>
+
+<a name="idd1e42584"></a><a name="idd1e42593"></a>
+        <p class="docText">Written this way, the assignment to <tt>occurs</tt> will be executed unconditionally. Uncovering this kind of error can be very difficult because the text of the program looks correct.</p>
+        <p class="docText">这样写的话，对 <tt>occurs</tt> 的赋值将会无条件地执行。这种错误很难发现，因为程序代码看起来是正确的。</p>
+
+<a name="ch06note07"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="116" height="74" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/bestpractices.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Many editors and development environments have tools to automatically indent source code to match its structure. It is a good idea to use such tools if they are available.</p>
+                <p class="docText">很多编辑器和开发环境都是提供工具自动根据语句结构缩排源代码。有效地利用这些工具将是一种很好的编程方法。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch06lev2sec3"></a>
+
+        <h4 class="docSection2Title">6.5.1. The <tt>if</tt> Statement <tt>else</tt> Branch</h4>
+        <h4 class="docSection2Title">6.5.1. <tt>if</tt> 语句的 <tt>else</tt> 分支</h4>
+
+        <p class="docText">Our next task is to put these <tt>if</tt> statements together into an execution sequence. The order of the <tt>if</tt> statements is significant. If we use the following order</p>
+        <p class="docText">紧接着，我们要考虑如何将那些 <tt>if</tt> 语句放在一起形成一个执行语句序列。这些 <tt>if</tt> 语句的排列顺序非常重要。如果采用下面的顺序：</p>
+        <pre>
+     if (minVal &gt; ivec[i]) {
+          minVal = ivec[i];
+          occurs = 1;
+     }
+     // <span class="docEmphItalicAlt">potential error if</span> <span class="docEmphasis">minVal</span> <span class="docEmphItalicAlt">has just been set to</span> <span class="docEmphasis">ivec[i]</span>
+     if (minVal == ivec[i])
+          ++occurs;
+</pre><br>
+
+        <p class="docText">our count will always be off by 1. This code double-counts the first occurrence of the minimum.</p>
+        <p class="docText">那么计数器将永远得不到 1。这段代码只是对第一次出现的最小值重复计数。</p>
+
+        <p class="docText">Not only is the execution of both <tt>if</tt> statements on the same value potentially dangerous, it is also unnecessary. The same element cannot be both less than <tt>minVal</tt> and equal to it. If one condition is true, the other condition can be safely ignored. The <tt>if</tt> statement allows for this kind of <span class="docEmphasis">either-or</span> condition by providing an <tt>else</tt> clause.</p>
+        <p class="docText">这样两个 <tt>if</tt> 语句不但在值相同时执行起来有潜在的危险，而且还是没必要的。同一个元素不可能既小于 <tt>minVal</tt> 又等于它。如果其中一个条件是真的，那么另一个条件就可以安全地忽略掉。<tt>if</tt> 语句为这种只能<span class="docEmphasis">二选一的</span>条件提供了 <tt>else</tt> 子句。</p>
+
+<a name="ch06term17"></a>
+        <p class="docText">The syntactic form of the <b><a class="docLink" href="ch06lev1sec16.html#gloss06_17" ><span class="docEmphStrong"><tt>if else</tt> statement</span></a></b> is</p>
+        <p class="docText"><b><a class="docLink" href="ch06lev1sec16.html#gloss06_17" ><span class="docEmphStrong"><tt>if else</tt> 语句</span></a></b>的语法形式为：</p>
+        <pre>
+     if <span class="docEmphasis">(condition)</span>
+          <span class="docEmphasis">statement1</span>
+     else
+          <span class="docEmphasis">statement2</span>
+</pre><br>
+
+        <p class="docText">If <span class="docEmphasis">condition</span> is true, then <span class="docEmphasis">statement1</span> is executed; otherwise, <span class="docEmphasis">statement2</span> is executed:</p>
+        <p class="docText">如果 <span class="docEmphasis">condition</span> 为真，则执行 <span class="docEmphasis">statement1</span>；否则，执行 <span class="docEmphasis">statement2</span>：</p>
+        <pre>
+     if (minVal == ivec[i])
+          ++occurs;
+     else if (minVal &gt; ivec[i]) {
+              minVal = ivec[i];
+              occurs = 1;
+     }
+</pre><br>
+
+        <p class="docText">It is worth noting that <span class="docEmphasis">statement2</span> can be any statement or a block of statements enclosed in curly braces. In this example, <span class="docEmphasis">statement2</span> is itself an <tt>if</tt> statement.</p>
+        <p class="docText">值得注意的是，<span class="docEmphasis">statement2</span> 既可以是任意语句，也可以是用花括号起来的块语句。在这个例子里，<span class="docEmphasis">statement2</span> 本身是一个 <tt>if</tt> 语句。</p>
+
+<a name="ch06lev3sec1"></a>
+        <h5 class="docSection3Title">Dangling <tt>else</tt></h5>
+        <h5 class="docSection3Title">悬垂 <tt>else</tt></h5>
+
+<a name="idd1e42739"></a><a name="idd1e42744"></a><a name="idd1e42750"></a>
+        <p class="docText">There is one important complexity in using <tt>if</tt> statements that we have not yet covered. Notice that neither <tt>if</tt> directly handles the case where the current element is greater than <tt>minVal</tt>. Logically, ignoring these elements is finethere is nothing to do if the element is greater than the minimum we've found so far. However, it is often the case that an <tt>if</tt> needs to do something on all three cases: Unique steps may be required if one value is greater than, less than, or equal to some other value. We've rewritten our loop to explicitly handle all three cases:</p>
+        <p class="docText">对于 <tt>if</tt> 语句的使用，还有一个重要的复杂问题没有考虑。上述例子中，注意到没有一个 <tt>if</tt> 分支能直接处理元素值大于 <tt>minVal</tt> 的情况。从逻辑上来说，可以忽略这些元素——如果该元素比当前已找到的最小值大，那就应该没什么要做的。然而，通常需要使用 <tt>if</tt> 语句为三种不同情况提供执行的内容，即如果一个值大于、小于或等于其他值时，可能都需要执行特定的步骤。为此重写循环部分，显式地处理这三种情况：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">note: indented to make clear how the</span> <span class="docEmphasis">else</span> <span class="docEmphItalicAlt">branches align with the corresponding</span> <span class="docEmphasis">if</span>
+     if (minVal &lt; ivec[i])
+         { }                       // <span class="docEmphItalicAlt">empty block</span>
+     else if (minVal == ivec[i])
+             ++occurs;
+     else {                        // <span class="docEmphasis">minVal &gt; ivec[i]</span>
+         minVal = ivec[i];
+         occurs = 1;
+     }
+</pre><br>
+
+        <p class="docText">This three-way test handles each case correctly. However, a simple rewrite that collapses the first two tests into a single, nested <tt>if</tt> runs into problems:</p>
+        <p class="docText">上述的三路测试精确地控制了所有的情况。然而，简单地把前两个情况用一个嵌套 <tt>if</tt> 语句实现将会产生问题：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">oops: incorrect rewrite: This code won't work!</span>
+     if (minVal &lt;= ivec[i])
+          if (minVal == ivec[i])
+               ++occurs;
+     else {      // <span class="docEmphItalicAlt">this</span> <span class="docEmphasis">else</span> <span class="docEmphItalicAlt">goes with the inner</span> <span class="docEmphasis">if,</span> <span class="docEmphItalicAlt">not the outer one!</span>
+          minVal = ivec[i];
+          occurs = 1;
+     }
+</pre><br>
+        <a name="ch06note08"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+<a name="ch06term8"></a>
+                <p class="docText">This version illustrates a source of potential ambiguity common to <tt>if</tt> statements in all languages. The problem, usually referred to as the <b><a class="docLink" href="ch06lev1sec16.html#gloss06_08" >dangling-else</a></b> problem, occurs when a statement contains more <tt>if</tt> clauses than <tt>else</tt> clauses. The question then arises: To which <tt>if</tt> does each <tt>else</tt> clause belong?</p>
+                <p class="docText">这个版本表明了所有语言的 <tt>if</tt> 语句都普通存在着潜在的二义性。这种情况往往称为<b><a class="docLink" href="ch06lev1sec16.html#gloss06_08" >悬垂 else</a></b> 问题，产生于一个语句包含的 <tt>if</tt> 子句多于 <tt>else</tt> 子句时：对于每一个 <tt>else</tt>，究竟它们归属哪个 <tt>if</tt> 语句？</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">The indentation in our code indicates the expectation that the <tt>else</tt> should match up with the outer <tt>if</tt> clause. In C++, however, the dangling-else ambiguity is resolved <span class="docEmphasis">by matching the</span> <tt>else</tt> <span class="docEmphasis">with the last occurring unmatched</span> <tt>if</tt>. In this case, the actual evaluation of the <tt>if else</tt> statement is as follows:</p>
+	<p class="docText">在上述的代码中，缩进的用法表明 <tt>else</tt> 应该与外层的 <tt>if</tt> 子句匹配。然而，C++ 中悬垂 <tt>else</tt> 问题带来的二义性，通过将 <tt>else</tt> 匹配给<span class="docEmphasis">最后出现的尚未匹配</span>的 <tt>if</tt> 子句来解决。在这个情况下，这个 <tt>if else</tt> 语句实际上等价于下面的程序：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">oops: still wrong, but now the indentation matches execution path</span>
+     if (minVal &lt;= ivec[i])
+         // <span class="docEmphItalicAlt">indented to match handling of dangling-else</span>
+         if (minVal == ivec[i])
+              ++occurs;
+         else {
+             minVal = ivec[i];
+             occurs = 1;
+         }
+</pre><br>
+
+        <p class="docText">We can force an <tt>else</tt> to match an outer <tt>if</tt> by enclosing the inner <tt>if</tt> in a compound statement:</p>
+        <p class="docText">可以通过用花括号将内层的 <tt>if</tt> 语句括起来成为复合语句，从而迫使这个 <tt>else</tt> 子句与外层的 <tt>if</tt> 匹配。</p>
+        <pre>
+     if (minVal &lt;= ivec[i]) {
+         if (minVal == ivec[i])
+               ++occurs;
+     } else {
+         minVal = ivec[i];
+         occurs = 1;
+     }
+</pre><br>
+        <a name="ch06note09"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="84" height="51" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/tip.jpg;400478" ></td>
+
+              <td valign="top">
+<a name="idd1e42905"></a><a name="idd1e42914"></a><a name="idd1e42920"></a><a name="idd1e42925"></a>
+                <p class="docText"> Some coding styles recommend <span class="docEmphasis">always</span> using braces after any <tt>if</tt>. Doing so avoids any possible confusion and error in later modifications of the code. At a minimum, it is nearly always a good idea to use braces after an <tt>if</tt> (or <tt>while</tt>) when the statement in the body is anything other than a simple expression statement, such as an assignment or output expression.</p>
+                <p class="docText">有些编程风格建议<span class="docEmphasis">总是</span>在 <tt>if</tt> 后面使用花括号。这样做可以避免日后修改代码时产生混乱和错误。至少，无论 <tt>if</tt>（或者 <tt>while</tt>）后面是简单语句，例如赋值和输出语句，还是其他任意语句，使用花括号都是一个比较好的做法。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch06sb02"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 6.5.1</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch06qa2q1"></a><b>Exercise 6.5:</b></td>
+
+                    <td>
+                      <p class="docText">Correct each of the following:</p>
+                      <p class="docText">改正下列代码：</p>
+                      <pre>
+     (a) if (ival1 != ival2)
+              ival1 = ival2
+         else ival1 = ival2 = 0;
+
+     (b) if (ival &lt; minval)
+              minval = ival;  // <span class="docEmphItalicAlt">remember new minimum</span>
+              occurs = 1;     // <span class="docEmphItalicAlt">reset occurrence counter</span>
+
+     (c) if (int ival = get_value())
+              cout &lt;&lt; "ival = " &lt;&lt; ival &lt;&lt; endl;
+         if (!ival)
+              cout &lt;&lt; "ival = 0\n";
+
+     (d) if (ival = 0)
+              ival = get_value();
+</pre><br>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch06qa2q2"></a><b>Exercise 6.6:</b></td>
+
+                    <td>
+                      <p class="docText">What is a "dangling else"? How are <tt>else</tt> clauses resolved in C++?</p>
+		      <p class="docText">什么是“悬垂 <tt>else</tt>”？C++ 是如何匹配 <tt>else</tt> 子句的？</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a href="21001535.html" ><img src="images/pixel.gif"  alt="" width="1" height="1" border="0"></a>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch06lev1sec4.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch06lev1sec6.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

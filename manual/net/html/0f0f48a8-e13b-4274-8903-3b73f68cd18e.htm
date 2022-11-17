@@ -1,0 +1,388 @@
+﻿<html xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+    <META NAME="save" CONTENT="history" />
+    <title>如何：按连续键对结果进行分组（C# 编程指南）</title>
+    <link rel="stylesheet" type="text/css" href="../styles/presentation.css" />
+    <link rel="stylesheet" type="text/css" href="ms-help://Hx/HxRuntime/HxLink.css" />
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/EventUtilities.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/SplitScreen.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/Dropdown.js"> </script>
+    <script type="text/javascript" src="../scripts/script_manifold.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/script_feedBack.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CheckboxMenu.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CommonUtilities.js"> </script>
+    <xml>
+      <MSHelp:TOCTitle Title="如何：按连续键对结果进行分组" />
+      <MSHelp:Keyword Index="A" Term="0f0f48a8-e13b-4274-8903-3b73f68cd18e" />
+      <MSHelp:Keyword Index="K" Term="连续键 [C# 中的 LINQ]" />
+      <MSHelp:Attr Name="RevisionNumber" Value="8" />
+      <MSHelp:Attr Name="AssetID" Value="0f0f48a8-e13b-4274-8903-3b73f68cd18e" />
+      <MSHelp:Attr Name="Abstract" Value="下面的示例演示如何将元素归到不同的块区中，块区表示连续键的子序列。例如，假设您有下面的键值对序列：" />
+      <MSHelp:Attr Name="codelang" Value="CSharp" />
+      <MSHelp:Attr Name="CommunityContent" Value="1" />
+      <MSHelp:Attr Name="DevLang" Value="CSharp" />
+      <MSHelp:Attr Name="DevLangVers" Value="CSharp" />
+      <MSHelp:Attr Name="DocSet" Value="C#" />
+      <MSHelp:Attr Name="DocSet" Value="C# Lang" />
+      <MSHelp:Attr Name="DocSet" Value="ExpressLibVS" />
+      <MSHelp:Attr Name="ProgModel" Value="managed" />
+      <MSHelp:Attr Name="ShippedIn" Value="vs.90" />
+      <MSHelp:Attr Name="Technology" Value="ManagedCode" />
+      <MSHelp:Attr Name="TopicVersion" Value="09.00.08178.10000" />
+      <MSHelp:Attr Name="Catalog Container" Value="System_Default_Catalog" />
+      <MSHelp:Attr Name="Content Set Container" Value="System_Default_Content_Set" />
+      <MSHelp:Attr Name="TopicType" Value="kbHowTo" />
+      <MSHelp:Attr Name="Locale" Value="zh-chs" />
+    </xml>
+  </head>
+  <body>
+    <input type="hidden" id="userDataCache" class="userDataStyle" />
+    <input type="hidden" id="hiddenScrollOffset" />
+    <img id="collapseImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" title="“折叠”图像" />
+    <img id="expandImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" title="“展开”图像" />
+    <img id="collapseAllImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" />
+    <img id="expandAllImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" />
+    <img id="dropDownImage" style="display:none; height:0; width:0;" src="../icons/dropdown.gif" />
+    <img id="dropDownHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/dropdownHover.gif" />
+    <img id="copyImage" style="display:none; height:0; width:0;" src="../icons/copycode.gif" title="“复制”图像" />
+    <img id="copyHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/copycodeHighlight.gif" title="“复制悬停”图像" />
+    <div id="header">
+      <table id="topTable" cellspacing="0" cellpadding="0">
+        <tr>
+          <td>
+            <span onclick="ExpandCollapseAll(toggleAllImage)" style="cursor:default;" onkeypress="ExpandCollapseAll_CheckKey(toggleAllImage, event)" tabindex="0">
+              <img ID="toggleAllImage" class="toggleAll" src="../icons/collapse_all.gif" /> <label id="collapseAllLabel" for="toggleAllImage" style="display: none;">全部折叠</label><label id="expandAllLabel" for="toggleAllImage" style="display: none;">全部展开</label> </span>
+            <span>    </span>
+            <span id="devlangsDropdown" class="filter" tabindex="0">
+              <img id="devlangsDropdownImage" src="../icons/dropdown.gif" /> <label id="devlangsMenuAllLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：全部 </nobr></label><label id="devlangsMenuMultipleLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：多个 </nobr></label><label id="devlangsMenuVisualBasicLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual Basic </nobr></label><label id="devlangsMenuCSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：C# </nobr></label><label id="devlangsMenuManagedCPlusPlusLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual C++ </nobr></label><label id="devlangsMenuJSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：J# </nobr></label><label id="devlangsMenuJScriptLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：JScript </nobr></label></span>
+          </td>
+        </tr>
+      </table>
+      <div id="devlangsMenu">
+        <input id="VisualBasicCheckbox" type="checkbox" data="VisualBasic,vb,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="VisualBasicCheckbox">Visual Basic</label>
+        <br />
+        <input id="CSharpCheckbox" type="checkbox" data="CSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="CSharpCheckbox">C#</label>
+        <br />
+        <input id="ManagedCPlusPlusCheckbox" type="checkbox" data="ManagedCPlusPlus,cpp,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="ManagedCPlusPlusCheckbox">Visual C++</label>
+        <br />
+        <input id="JSharpCheckbox" type="checkbox" data="JSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JSharpCheckbox">J#</label>
+        <br />
+        <input id="JScriptCheckbox" type="checkbox" data="JScript,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JScriptCheckbox">JScript</label>
+        <br />
+      </div>
+      <table id="bottomTable" cellpadding="0" cellspacing="0">
+        <tr id="headerTableRow1">
+          <td align="left">
+            <span id="runningHeaderText">C# 编程指南</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow2">
+          <td align="left">
+            <span id="nsrTitle">如何：按连续键对结果进行分组（C# 编程指南）</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow3">
+          <td align="left">
+            <a href="0f0f48a8-e13b-4274-8903-3b73f68cd18e.htm#exampleToggle" onclick="OpenSection(exampleToggle)">示例</a>  <a href="0f0f48a8-e13b-4274-8903-3b73f68cd18e.htm#seeAlsoToggle" onclick="OpenSection(seeAlsoToggle)">另请参见</a>  
+<script type="text/javascript">
+var fbBody = '%b8%d0%d0%bb%c4%fa%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%bf%aa%b7%a2%b0%e6%b1%e0%d0%b4%cd%c5%b6%d3%bd%ab%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%d3%c3%d3%da%b8%c4%bd%f8%ce%c4%b5%b5%a1%a3%ce%d2%c3%c7%d4%da%c9%f3%d4%c4%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%ca%b1%a3%ac%bf%c9%c4%dc%bb%e1%b8%f8%c4%fa%b7%a2%cb%cd%b5%e7%d7%d3%d3%ca%bc%fe%a3%ac%d2%d4%c7%eb%c4%fa%cc%e1%b9%a9%bd%f8%d2%bb%b2%bd%b5%c4%bd%e2%ca%cd%cb%b5%c3%f7%bb%f2%d5%df%be%cd%bd%e2%be%f6%b7%bd%b0%b8%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%ce%d2%c3%c7%b2%bb%bb%e1%bd%ab%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%d3%c3%d3%da%c8%ce%ba%ce%c6%e4%cb%fb%d3%c3%cd%be%a3%ac%b2%a2%c7%d2%d4%da%c9%f3%d4%c4%cd%ea%d6%ae%ba%f3%a3%ac%ce%d2%c3%c7%b2%bb%bb%e1%d4%d9%b1%a3%c1%f4%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%a1%a3%0d%0a%d3%d0%b9%d8%20Microsoft%20%d2%fe%cb%bd%d5%fe%b2%df%b5%c4%bd%f8%d2%bb%b2%bd%d0%c5%cf%a2%a3%ac%c7%eb%b2%ce%bc%fb%20http%3a%2f%2fprivacy.microsoft.com%2fzh-cn%2fdefault.aspx%a1%a3';
+var fbSubject = 'Customer%20Feedback';
+</script>
+  <span id="headfeedbackarea" class="feedbackhead"><a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);"> 发送反馈意见</a></span>
+</td>
+        </tr>
+      </table>
+      <table id="gradientTable">
+        <tr>
+          <td class="nsrBottom" background="../icons/gradient.gif" />
+        </tr>
+      </table>
+    </div>
+    <div id="mainSection">
+      <div id="mainBody">
+        <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
+        <font color="DarkGray"></font>
+        <p /> <p><font color="DarkGray">更新：2007 年 11 月</font></p><div class="introduction"><p>下面的示例演示如何将元素归到不同的块区中，块区表示连续键的子序列。例如，假设您有下面的键值对序列：</p><div class="caption"></div><div class="tableSection"><table width="50%" cellspacing="2" cellpadding="5" frame="lhs"><tr><th><p>键</p></th><th><p>值</p></th></tr><tr><td><p>A</p></td><td><p>We</p></td></tr><tr><td><p>A</p></td><td><p>think</p></td></tr><tr><td><p>A</p></td><td><p>that</p></td></tr><tr><td><p>B</p></td><td><p>Linq</p></td></tr><tr><td><p>C</p></td><td><p>is</p></td></tr><tr><td><p>A</p></td><td><p>really</p></td></tr><tr><td><p>B</p></td><td><p>cool</p></td></tr><tr><td><p>B</p></td><td><p>!</p></td></tr></table></div><p>将按照下面的顺序创建以下各组：</p><ol><li><p>We, think, that</p></li><li><p>Linq</p></li><li><p>is</p></li><li><p>really</p></li><li><p>cool, !</p></li></ol><p>此解决方案作为扩展方法实现，扩展方法是线程安全的且以流的方式返回其结果。也就是说，它在移动通过源序列的过程中生成自己的各个组。与 <span sdata="langKeyword" value="group"><span class="keyword">group</span></span> 或 <span sdata="langKeyword" value="orderby"><span class="keyword">orderby</span></span> 运算符不同，它可以在整个序列读取完毕之前就开始将组返回给调用方。</p><p>线程安全性是通过在迭代源序列的过程中创建每个组或块区的副本来实现的，如源代码注释中所述。如果源序列包含一个由连续项组成的很大的序列，则公共语言运行时可能会引发 <span sdata="cer" target="T:System.OutOfMemoryException"><mshelp:link keywords="T:System.OutOfMemoryException" tabindex="0">OutOfMemoryException</mshelp:link></span>。</p></div><h1 class="heading"><span onclick="ExpandCollapse(exampleToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(exampleToggle, event)" tabindex="0"><img id="exampleToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />示例</span></h1><div id="exampleSection" class="section" name="collapseableSection" style=""><p>下面的示例显示了此扩展方法及使用它的客户端代码。</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">using</span> System;
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">using</span> System.Collections.Generic;
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">using</span> System.Linq;
+
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">namespace</span> ChunkIt
+{
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Static class to contain the extension methods.</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> MyExtensions
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> IEnumerable&lt;IGrouping&lt;TKey, TSource&gt;&gt; ChunkBy&lt;TSource, TKey&gt;(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span> IEnumerable&lt;TSource&gt; source, Func&lt;TSource, TKey&gt; keySelector)
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> source.ChunkBy(keySelector, EqualityComparer&lt;TKey&gt;.Default);
+        }
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> IEnumerable&lt;IGrouping&lt;TKey, TSource&gt;&gt; ChunkBy&lt;TSource, TKey&gt;(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span> IEnumerable&lt;TSource&gt; source, Func&lt;TSource, TKey&gt; keySelector, IEqualityComparer&lt;TKey&gt; comparer)
+        {
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Flag to signal end of source sequence.</span>
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">const</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">bool</span> noMoreSourceElements = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">true</span>;
+
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Auto-generated iterator for the source array.       </span>
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> enumerator = source.GetEnumerator();
+
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Move to the first element in the source sequence.</span>
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> (!enumerator.MoveNext()) <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">yield</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">break</span>;
+
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Iterate through source sequence and create a copy of each Chunk.</span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// On each pass, the iterator advances to the first element of the next </span><span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Chunk"</span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// in the source sequence. This loop corresponds to the outer foreach loop that</span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// executes the query.</span>
+            Chunk&lt;TKey, TSource&gt; current = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">null</span>;
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">while</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">true</span>)
+            {
+                <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Get the key for the current Chunk. The source iterator will churn through</span>
+                <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// the source sequence until it finds an element with a key that doesn't match.</span>
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> key = keySelector(enumerator.Current);
+
+                <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Make a new Chunk (group) object that initially has one GroupItem, which is a copy of the current source element.</span>
+                current = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Chunk&lt;TKey, TSource&gt;(key, enumerator, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">value</span> =&gt; comparer.Equals(key, keySelector(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">value</span>)));
+
+                <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Return the Chunk. A Chunk is an IGrouping&lt;TKey,TSource&gt;, which is the return value of the ChunkBy method.</span>
+                <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// At this point the Chunk only has the first element in its source sequence. The remaining elements will be</span>
+                <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// returned only when the client code foreach's over this chunk. See Chunk.GetEnumerator for more info.</span>
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">yield</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> current;
+
+                <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Check to see whether (a) the chunk has made a copy of all its source elements or </span>
+                <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// (b) the iterator has reached the end of the source sequence. If the caller uses an inner</span>
+                <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// foreach loop to iterate the chunk items, and that loop ran to completion,</span>
+                <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// then the Chunk.GetEnumerator method will already have made</span>
+                <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// copies of all chunk items before we get here. If the Chunk.GetEnumerator loop did not</span>
+                <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// enumerate all elements in the chunk, we need to do it here to avoid corrupting the iterator</span>
+                <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// for clients that may be calling us on a separate thread.</span>
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> (current.CopyAllChunkElements() == noMoreSourceElements)
+                {
+                    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">yield</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">break</span>;
+                }
+            }
+        }
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// A Chunk is a contiguous group of one or more source elements that have the same key. A Chunk </span>
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// has a key and a list of ChunkItem objects, which are copies of the elements in the source sequence.</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Chunk&lt;TKey, TSource&gt; : IGrouping&lt;TKey, TSource&gt;
+        {
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// INVARIANT: DoneCopyingChunk == true || </span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//   (predicate != null &amp;&amp; predicate(enumerator.Current) &amp;&amp; current.Value == enumerator.Current)</span>
+
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// A Chunk has a linked list of ChunkItems, which represent the elements in the current chunk. Each ChunkItem</span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// has a reference to the next ChunkItem in the list.</span>
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> ChunkItem
+            {
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> ChunkItem(TSource <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">value</span>)
+                {
+                    Value = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">value</span>;
+                }
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">readonly</span> TSource Value;
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> ChunkItem Next = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">null</span>;
+            }
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// The value that is used to determine matching elements</span>
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">readonly</span> TKey key;
+
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Stores a reference to the enumerator for the source sequence</span>
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> IEnumerator&lt;TSource&gt; enumerator;
+
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// A reference to the predicate that is used to compare keys.</span>
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> Func&lt;TSource, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">bool</span>&gt; predicate;
+
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Stores the contents of the first source element that</span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// belongs with this chunk.</span>
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">readonly</span> ChunkItem head;
+
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// End of the list. It is repositioned each time a new</span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// ChunkItem is added.</span>
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> ChunkItem tail;
+
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Flag to indicate the source iterator has reached the end of the source sequence.</span>
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">internal</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">bool</span> isLastSourceElement = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">false</span>;
+
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Private object for thread syncronization</span>
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">object</span> m_Lock;
+
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// REQUIRES: enumerator != null &amp;&amp; predicate != null</span>
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> Chunk(TKey key, IEnumerator&lt;TSource&gt; enumerator, Func&lt;TSource, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">bool</span>&gt; predicate)
+            {
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span>.key = key;
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span>.enumerator = enumerator;
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span>.predicate = predicate;
+
+                <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// A Chunk always contains at least one element.</span>
+                head = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> ChunkItem(enumerator.Current);
+
+                <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// The end and beginning are the same until the list contains &gt; 1 elements.</span>
+                tail = head;
+
+                m_Lock = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">object</span>();
+            }
+
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Indicates that all chunk elements have been copied to the list of ChunkItems, </span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// and the source enumerator is either at the end, or else on an element with a new key.</span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// the tail of the linked list is set to null in the CopyNextChunkElement method if the</span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// key of the next element does not match the current chunk's key, or there are no more elements in the source.</span>
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">bool</span> DoneCopyingChunk { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span> { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> tail == <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">null</span>; } }
+
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Adds one ChunkItem to the current group</span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// REQUIRES: !DoneCopyingChunk &amp;&amp; lock(this)</span>
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> CopyNextChunkElement()
+            {
+                <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Try to advance the iterator on the source sequence.</span>
+                <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// If MoveNext returns false we are at the end, and isLastSourceElement is set to true</span>
+                isLastSourceElement = !enumerator.MoveNext();
+
+                <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// If we are (a) at the end of the source, or (b) at the end of the current chunk</span>
+                <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// then null out the enumerator and predicate for reuse with the next chunk.</span>
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> (isLastSourceElement || !predicate(enumerator.Current))
+                {
+                    enumerator = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">null</span>;
+                    predicate = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">null</span>;
+                }
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">else</span>
+                {
+                    tail.Next = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> ChunkItem(enumerator.Current);
+                }
+
+                <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// tail will be null if we are at the end of the chunk elements</span>
+                <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// This check is made in DoneCopyingChunk.</span>
+                tail = tail.Next;
+            }
+
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Called after the end of the last chunk was reached. It first checks whether</span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// there are more elements in the source sequence. If there are, it </span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Returns true if enumerator for this chunk was exhausted.</span>
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">internal</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">bool</span> CopyAllChunkElements()
+            {
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">while</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">true</span>)
+                {
+                    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">lock</span> (m_Lock)
+                    {
+                        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> (DoneCopyingChunk)
+                        {
+                            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// If isLastSourceElement is false,</span>
+                            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// it signals to the outer iterator</span>
+                            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// to continue iterating.</span>
+                            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> isLastSourceElement;
+                        }
+                        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">else</span>
+                        {
+                            CopyNextChunkElement();
+                        }
+                    }
+                }
+            }
+
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> TKey Key { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span> { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> key; } }
+
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Invoked by the inner foreach loop. This method stays just one step ahead</span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// of the client requests. It adds the next element of the chunk only after</span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// the clients requests the last element in the list so far.</span>
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> IEnumerator&lt;TSource&gt; GetEnumerator()
+            {
+                <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//Specify the initial element to enumerate.</span>
+                ChunkItem current = head;
+
+                <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// There should always be at least one ChunkItem in a Chunk.</span>
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">while</span> (current != <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">null</span>)
+                {
+                    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Yield the current item in the list.</span>
+                    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">yield</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> current.Value;
+
+                    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Copy the next item from the source sequence, </span>
+                    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// if we are at the end of our local list.</span>
+                    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">lock</span> (m_Lock)
+                    {
+                        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> (current == tail)
+                        {
+                            CopyNextChunkElement();
+                        }
+                    }
+
+                    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Move to the next ChunkItem in the list.</span>
+                    current = current.Next;
+                }
+            }
+
+            System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+            {
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> GetEnumerator();
+            }
+        }
+    }
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// A simple named type is used for easier viewing in the debugger. Anonymous types</span>
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// work just as well with the ChunkBy operator.</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> KeyValPair
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> Key { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>; <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span>; }
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> Value { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>; <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span>; }
+    }
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Program
+    {
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// The source sequence.</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> IEnumerable&lt;KeyValPair&gt; list;
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Query variable declared as class member to be available</span>
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// on different threads.</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> IEnumerable&lt;IGrouping&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span>, KeyValPair&gt;&gt; query;
+
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Main(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span>[] args)
+        {
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Initialize the source sequence with an array initializer.</span>
+            list = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span>[]
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> KeyValPair{ Key = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"A"</span>, Value = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"We"</span> },
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> KeyValPair{ Key = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"A"</span>, Value = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Think"</span> },
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> KeyValPair{ Key = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"A"</span>, Value = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"That"</span> },
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> KeyValPair{ Key = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"B"</span>, Value = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Linq"</span> },
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> KeyValPair{ Key = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"C"</span>, Value = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Is"</span> },
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> KeyValPair{ Key = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"A"</span>, Value = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Really"</span> },
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> KeyValPair{ Key = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"B"</span>, Value = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Cool"</span> },
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> KeyValPair{ Key = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"B"</span>, Value = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"!"</span> }
+        };
+
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Create the query by using our user-defined query operator.</span>
+            query = list.ChunkBy(p =&gt; p.Key);
+
+
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// ChunkBy returns IGrouping objects, therefore a nested</span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// foreach loop is required to access the elements in each </span><span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"chunk"</span>.
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> item <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> query)
+            {
+                Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Group key = {0}"</span>, item.Key);
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> inner <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> item)
+                {
+                    Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"\t{0}"</span>, inner.Value);
+                }
+            }
+
+            Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Press any key to exit"</span>);
+            Console.ReadKey();
+        }       
+
+     }
+}
+
+</pre></td></tr></table></span></div></div><p>若要在您的项目中使用此扩展方法，请将 <span class="code">MyExtensions</span> 静态类复制到一个新的或现有源代码文件中，并在必要时，为该类所在的命名空间添加一条 <span sdata="langKeyword" value="using"><span class="keyword">using</span></span> 指令。</p></div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />请参见</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><h4 class="subHeading">概念</h4><div class="seeAlsoStyle"><span sdata="link"><a href="40638f19-fb46-4d26-a2d9-a383b48f5ed4.htm">LINQ 查询表达式（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><mshelp:link keywords="67bf1ae5-e632-44a8-a5d6-3b78b6d0e73e" tabindex="0">标准查询运算符按执行方式的分类</mshelp:link></span></div></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle0)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle0, event)" tabindex="0"><img id="sectionToggle0" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />修订记录</span></h1><div id="sectionSection0" class="section" name="collapseableSection" style=""><div class="caption"></div><div class="tableSection"><table width="50%" cellspacing="2" cellpadding="5" frame="lhs"><tr><th><p>日期</p></th><th><p>修订</p></th><th><p>原因</p></th></tr><tr><td><p>
+    <p>2008 年 7 月</p>
+  </p></td><td><p>新增主题。</p></td><td><p>
+    <p>内容 Bug 修复</p>
+  </p></td></tr></table></div></div></div>
+      <div id="footer">
+        <div class="footerLine">
+          <img width="100%" height="3px" src="../icons/footer.gif" title="“页脚”图像" />
+        </div>
+<span id="feedbackarea">将有关本主题的<a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);">反馈意见</a>发送给 Microsoft。</span>
+</div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Function.bindAsEventListener - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>bindAsEventListener</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">bindAsEventListener(thisObj[, arg...]) -> Function</code></pre>
+			<p>
+				一个专用于事件的 <a href="bind.htm" >bind</a> 方法的变体，
+				它确保事件触发后会将当前事件对象作为第一个参数传递给事件处理函数。
+			</p>
+		</div>
+		<div id="abody">
+			<p>
+				如果你不清楚“绑定”是什么，请查阅 <a href="../function.htm" >Function 概述</a>。如果你不是非常明白
+				<a href="bind.htm" >bind()</a> 能够做什么，请查阅它的文档。
+			</p>
+			<p>
+				假如创建一个用于事件处理的函数，你需要以某种方式获取当前的事件对象，同时还要控制函数运行时所在的<em>
+				上下文</em>，该怎么办？<code>bindAsEventListener</code> 都为你考虑到了，它将事件处理函数绑定到指定的上下文
+				（<code>thisObj</code>），并且确保当事件发生时，事件对象会传递到事件处理函数。
+			</p>
+			<p>
+				对于仅实现了 DOM Level 0 事件处理方式的 MSIE，事件对象 <em>不是</em> 作为事件处理程序的第一个参数来传递的，
+				而是使用一个全局的 <code>window.event</code> 代替。但是这个方法仍然可以正常使用。该方法让你能够忽略浏览器间的差异，
+				不用再通过手动编码来处理这些问题。				
+			</p>
+			<p>
+				这个方法的典型应用是协助 <a href="../event/observe.htm" >Event.observe</a>，在任何你需要的地方设置方法作为事件侦听器。
+			</p>
+			<h3>样例</h3>
+			<p>这里有一个统一的例子：</p>
+			<pre><code class="javascript">var obj = { name: 'A nice demo' }; 
+function handler(e) { 
+	var tag = Event.element(e).tagName.toLowerCase(); 
+	var data = $A(arguments); 
+	data.shift();
+	alert(this.name + '\nClick on a ' + tag + '\nOther args: ' + data.join(', ')); 
+}
+
+Event.observe(window, 'load', function(){
+	Event.observe(document.body, 'click', handler.bindAsEventListener(obj, 1, 2, 3));
+	// 现在，页面上的任意点击都会显示 obj.name、所点击元素的小写的标签名称以及 "1, 2, 3" 
+})</code></pre>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

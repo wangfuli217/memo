@@ -1,0 +1,277 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 2.5.  References</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch02lev1sec4.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch02lev1sec6.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch02lev1sec5"></a>
+
+        <h3 class="docSection1Title">2.5. References</h3>
+        <h3 class="docSection1Title">2.5. 引用</h3>
+
+<a name="ch02term40"></a>
+        <p class="docText">A <b><a class="docLink" href="ch02lev1sec11.html#gloss02_40" >reference</a></b> serves as an alternative name for an object. In real-world programs, references are primarily used as formal parameters to functions. We'll have more to say about reference parameters in <a class="docLink" href="ch07lev1sec2.html#ch07lev2sec7" >Section 7.2.2</a> (p. <a class="docLink" href="ch07lev1sec2.html#ch07lev2sec7" >232</a>). In this section we introduce and illustrate the use of references as independent objects.</p>
+        <p class="docText"><b><a class="docLink" href="ch02lev1sec11.html#gloss02_40" >引用</a></b>就是对象的另一个名字。在实际程序中，引用主要用作函数的形式参数。我们将在<a class="docLink" href="ch07lev1sec2.html#ch07lev2sec7" >第 7.2.2 节</a> 再详细介绍引用参数。在这一节，我们用独立的对象来介绍并举例说明引用的用法。</p>
+
+<a name="ch02term8"></a>
+        <p class="docText">A reference is a <b><a class="docLink" href="ch02lev1sec11.html#gloss02_08" >compound type</a></b> that is defined by preceding a variable name by the <tt>&amp;</tt> symbol. A compound type is a type that is defined in terms of another type. In the case of references, each reference type "refers to" some other type. We cannot define a reference to a reference type, but can make a reference to any other data type.</p>
+	<p class="docText">引用是一种<b><a class="docLink" href="ch02lev1sec11.html#gloss02_08" >复合类型</a></b>，通过在变量名前添加“<tt>&amp;</tt>”符号来定义。复合类型是指用其他类型定义的类型。在引用的情况下，每一种引用类型都“关联到”某一其他类型。不能定义引用类型的引用，但可以定义任何其他类型的引用。</p>
+
+<a name="idd1e11724"></a><a name="idd1e11730"></a>
+        <p class="docText">A reference <span class="docEmphasis">must</span> be initialized using an object of the same type as the reference:</p>
+        <p class="docText">引用<span class="docEmphasis">必须</span>用与该引用同类型的对象初始化：</p>
+        <pre>
+      int ival = 1024;
+      int &amp;refVal = ival; // <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">refVal</span> <span class="docEmphItalicAlt">refers to</span> <span class="docEmphasis">ival</span>
+      int &amp;refVal2;       // <span class="docEmphItalicAlt">error: a reference must be initialized</span>
+      int &amp;refVal3 = 10;  // <span class="docEmphItalicAlt">error: initializer must be an object</span>
+</pre>
+
+        <a name="ch02lev2sec19"></a>
+
+        <h4 class="docSection2Title">A Reference Is an Alias</h4>
+        <h4 class="docSection2Title">引用是别名</h4>
+
+        <p class="docText">Because a reference is just another name for the object to which it is bound, <span class="docEmphasis">all</span> operations on a reference are actually operations on the underlying object to which the reference is bound:</p>
+        <p class="docText">因为引用只是它绑定的对象的另一名字，作用在引用上的所有操作事实上都是作用在该引用绑定的对象上：</p>
+        <pre>
+      refVal += 2;
+</pre><br>
+
+        <p class="docText">adds 2 to <tt>ival</tt>, the object referred to by <tt>refVal</tt>. Similarly,</p>
+        <p class="docText">将 <tt>refVal</tt> 指向的对象 <tt>ival</tt> 加 2。类似地，</p>
+        <pre>
+      int ii = refVal;
+</pre>
+
+        <p class="docText">assigns to <tt>ii</tt> the value currently associated with <tt>ival</tt>.</p>
+	<p class="docText">把和 <tt>ival</tt> 相关联的值赋给 <tt>ii</tt>。</p>
+
+<a name="ch02note16"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">When a reference is initialized, it remains bound to that object as long as the reference exists. There is no way to rebind a reference to a different object.</p>
+                <p class="docText">当引用初始化后，只要该引用存在，它就保持绑定到初始化时指向的对象。不可能将引用绑定到另一个对象。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <p class="docText">The important concept to understand is that a reference is <span class="docEmphasis">just another name for an object</span>. Effectively, we can access <tt>ival</tt> either through its actual name or through its alias, <tt>refVal</tt>. Assignment is just another operation, so that when we write</p>
+	<p class="docText">要理解的重要概念是引用<span class="docEmphasis">只是对象的另一名字</span>。事实上，我们可以通过 <tt>ival</tt> 的原名访问 <tt>ival</tt>，也可以通过它的别名 <tt>refVal</tt> 访问。赋值只是另外一种操作，因此我们编写</p>
+        <pre>
+      refVal = 5;
+</pre>
+
+        <p class="docText">the effect is to change the value of <tt>ival</tt> to 5. A consequence of this rule is that you must initialize a reference when you define it; initialization is the only way to say to which object a reference refers.</p>
+	<p class="docText">的效果是把 <tt>ival</tt> 的值修改为5。这一规则的结果是必须在定义引用时进行初始化。初始化是指明引用指向哪个对象的唯一方法。</p>
+
+<a name="ch02lev2sec20"></a>
+        <h4 class="docSection2Title">Defining Multiple References</h4>
+        <h4 class="docSection2Title">定义多个引用</h4>
+
+        <p class="docText">We can define multiple references in a single type definition. Each identifier that is a reference must be preceded by the <tt>&amp;</tt> symbol:</p>
+	<p class="docText">可以在一个类型定义行中定义多个引用。必须在每个引用标识符前添加“<tt>&amp;</tt>”符号：</p>
+        <pre>
+      int i = 1024, i2 = 2048;
+      int &amp;r = i, r2 = i2;      // <span class="docEmphasis">r</span> <span class="docEmphItalicAlt">is a reference,</span> <span class="docEmphasis">r2</span> <span class="docEmphItalicAlt">is an</span> <span class="docEmphasis">int</span>
+      int i3 = 1024, &amp;ri = i3;  // <span class="docEmphItalicAlt">defines one object, and one reference</span>
+      int &amp;r3 = i3, &amp;r4 = i2;   // <span class="docEmphItalicAlt">defines two references</span>
+</pre>
+        <a name="ch02lev2sec21"></a>
+
+        <h4 class="docSection2Title"><tt>const</tt> References</h4>
+	<h4 class="docSection2Title"><tt>const</tt> 引用</h4>
+
+<a name="ch02term9"></a>
+        <p class="docText">A <b><a class="docLink" href="ch02lev1sec11.html#gloss02_09" ><span class="docEmphStrong"><tt>const</tt></span> reference</a></b> is a reference that may refer to a <tt>const</tt> object:</p>
+	<p class="docText"><b><a class="docLink" href="ch02lev1sec11.html#gloss02_09" ><span class="docEmphStrong"><tt>const</tt></span> 引用</a></b>是指向 <tt>const</tt> 对象的引用：</p>
+        <pre>
+      const int ival = 1024;
+      const int &amp;refVal = ival;      // <span class="docEmphItalicAlt">ok: both reference and object are</span> <span class="docEmphasis">const</span>
+      int &amp;ref2 = ival;              // <span class="docEmphItalicAlt">error: non</span> <span class="docEmphasis">const</span> <span class="docEmphItalicAlt">reference to a</span> <span class="docEmphasis">const</span> <span class="docEmphItalicAlt">object</span>
+</pre>
+
+<a name="idd1e11927"></a><a name="idd1e11935"></a><a name="idd1e11941"></a><a name="idd1e11950"></a>
+        <p class="docText">We can read from but not write to <tt>refVal</tt>. Thus, any assignment to <tt>refVal</tt> is illegal. This restriction should make sense: We cannot assign directly to <tt>ival</tt> and so it should not be possible to use <tt>refVal</tt> to change <tt>ival</tt>.</p>
+	<p class="docText">可以读取但不能修改 <tt>refVal</tt> ，因此，任何对 <tt>refVal</tt> 的赋值都是不合法的。这个限制有其意义：不能直接对 <tt>ival</tt> 赋值，因此不能通过使用 <tt>refVal</tt> 来修改 <tt>ival</tt>。</p>
+
+<a name="ch02term34"></a>
+        <p class="docText">For the same reason, the initialization of <tt>ref2</tt> by <tt>ival</tt> is an error: <tt>ref2</tt> is a plain, <b><a class="docLink" href="ch02lev1sec11.html#gloss02_34" >non<span class="docEmphStrong"><tt>const</tt></span> reference</a></b> and so could be used to change the value of the object to which <tt>ref2</tt> refers. Assigning to <tt>ival</tt> through <tt>ref2</tt> would result in changing the value of a <tt>const</tt> object. To prevent such changes, it is illegal to bind a plain reference to a <tt>const</tt> object.</p>
+	<p class="docText">同理，用 <tt>ival</tt> 初始化 <tt>ref2</tt> 也是不合法的：<tt>ref2</tt> 是普通的<b><a class="docLink" href="ch02lev1sec11.html#gloss02_34" >非 <span class="docEmphStrong"><tt>const</tt></span> 引用</a></b>，因此可以用来修改 <tt>ref2</tt> 指向的对象的值。通过 <tt>ref2</tt> 对 <tt>ival</tt> 赋值会导致修改 <tt>const</tt> 对象的值。为阻止这样的修改，需要规定将普通的引用绑定到 <tt>const</tt> 对象是不合法的。</p>
+
+<a name="ch02sb17"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Terminology: <tt>const</tt> Reference is a Reference to <tt>const</tt></h2>
+	      <h2 class="docSidebarTitle">术语：<tt>const</tt> 引用是指向 <tt>const</tt> 的引用</h2>
+
+              <p class="docText"><span class="docEmphStrong">C++ programmers tend to be cavalier in their use of the term <tt>const</tt> reference. Strictly speaking, what is meant by "<tt>const</tt> reference" is "reference to <tt>const</tt>." Similarly, programmers use the term "non<tt>const</tt> reference" when speaking of reference to a non<tt>const</tt> type. This usage is so common that we will follow it in this book as well.</span></p>
+	      <p class="docText"><span class="docEmphStrong">C++ 程序员常常随意地使用术语 <tt>const</tt> 引用。严格来说，“<tt>const</tt> 引用”的意思是“指向 <tt>const</tt> 对象的引用”。类似地，程序员使用术语“非 <tt>const</tt> 引用”表示指向非 <tt>const</tt> 类型的引用。这种用法非常普遍，我们在本书中也遵循这种用法。</span></p>
+            </td>
+          </tr>
+        </table><br>
+
+        <p class="docText">A <tt>const</tt> reference can be initialized to an object of a different type or to an rvalue (<a class="docLink" href="ch02lev1sec3.html#ch02lev2sec10" >Section 2.3.1</a>, p. <a class="docLink" href="ch02lev1sec3.html#ch02lev2sec10" >45</a>), such as a literal constant:</p>
+	<p class="docText"><tt>const</tt> 引用可以初始化为不同类型的对象或者初始化为右值（<a class="docLink" href="ch02lev1sec3.html#ch02lev2sec10" >第 2.3.1 节</a>），如字面值常量：</p>
+        <pre>
+      int i = 42;
+      //  <span class="docEmphItalicAlt">legal for</span> <span class="docEmphasis">const</span> <span class="docEmphItalicAlt">references only</span>
+      const int &amp;r = 42;
+      const int &amp;r2 = r + i;
+</pre><br>
+
+        <p class="docText">The same initializations are not legal for non<tt>const</tt> references. Rather, they result in compile-time errors. The reason is subtle and warrants an explanation.</p>
+	<p class="docText">同样的初始化对于非 <tt>const</tt> 引用却是不合法的，而且会导致编译时错误。其原因非常微妙，值得解释一下。</p>
+
+        <p class="docText">This behavior is easiest to understand when we look at what happens when we bind a reference to an object of a different type. If we write</p>
+        <p class="docText">观察将引用绑定到不同的类型时所发生的事情，最容易理解上述行为。假如我们编写</p>
+        <pre>
+      double dval = 3.14;
+      const int &amp;ri = dval;
+</pre>
+
+        <p class="docText">the compiler transforms this code into something like this:</p>
+        <p class="docText">编译器会把这些代码转换成如以下形式的编码：</p>
+        <pre>
+      int temp = dval;          // <span class="docEmphItalicAlt">create temporary</span> <span class="docEmphasis">int</span> <span class="docEmphItalicAlt">from the</span> <span class="docEmphasis">double</span>
+      const int &amp;ri = temp;   // <span class="docEmphItalicAlt">bind</span> <span class="docEmphasis">ri</span> <span class="docEmphItalicAlt">to that temporary</span>
+</pre>
+
+        <p class="docText">If <tt>ri</tt> were not <tt>const</tt>, then we could assign a new value to <tt>ri</tt>. Doing so would not change <tt>dval</tt> but would instead change <tt>temp</tt>. To the programmer expecting that assignments to <tt>ri</tt> would change <tt>dval</tt>, it would appear that the change did not work. Allowing only <tt>const</tt> references to be bound to values requiring temporaries avoids the problem entirely because a <tt>const</tt> reference is read-only.</p>
+	<p class="docText">如果 <tt>ri</tt> 不是 <tt>const</tt>，那么可以给 <tt>ri</tt> 赋一新值。这样做不会修改 <tt>dval</tt>，而是修改了 <tt>temp</tt>。期望对 <tt>ri</tt> 的赋值会修改 <tt>dval</tt> 的程序员会发现 <tt>dval</tt> 并没有被修改。仅允许 <tt>const</tt> 引用绑定到需要临时使用的值完全避免了这个问题，因为 <tt>const</tt> 引用是只读的。</p>
+
+<a name="ch02note17"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">A non<tt>const</tt> reference may be attached only to an object of the same type as the reference itself.</p>
+		<p class="docText">非 <tt>const</tt> 引用只能绑定到与该引用同类型的对象。</p>
+              </td>
+            </tr>
+          </table><br>
+
+          <p class="docText">A <tt>const</tt> reference may be bound to an object of a different but related type or to an rvalue.</p>
+	  <p class="docText"><tt>const</tt> 引用则可以绑定到不同但相关的类型的对象或绑定到右值。</p>
+        </div>
+        <a name="ch02sb18"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 2.5</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch02qa11q1"></a><b>Exercise 2.24:</b></td>
+
+                    <td>
+<a name="idd1e12174"></a>
+                      <p class="docText">Which of the following definitions, if any, are invalid? Why? How would you correct them?</p>
+                      <p class="docText">下列哪些定义是非法的？为什么？如何改正？</p>
+                      <pre>
+     (a) int ival = 1.01;     (b) int &amp;rval1 = 1.01;
+     (c) int &amp;rval2 = ival;   (d) const int &amp;rval3 = 1;
+</pre><br>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch02qa11q2"></a><b>Exercise 2.25:</b></td>
+
+                    <td>
+                      <p class="docText">Given the preceeding definitions, which, if any, of the following assignments are invalid? If they are valid, explain what they do.</p>
+                      <p class="docText">在上题给出的定义下，下列哪些赋值是非法的？如果赋值合法，解释赋值的作用。</p>
+                      <pre>
+     (a) rval2 = 3.14159;  (b) rval2 = rval3;
+     (c) ival = rval3;     (d) rval3 = ival;
+</pre><br>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch02qa11q3"></a><b>Exercise 2.26:</b></td>
+
+                    <td>
+                      <p class="docText">What are the differences among the definitions in (a) and the assignments in (b)? Which, if any, are illegal?</p>
+                      <p class="docText">(a) 中的定义和 (b) 中的赋值存在哪些不同？哪些是非法的？</p>
+                      <pre>
+     (a) int ival = 0;          (b) ival = ri;
+         const int &amp;ri = 0;         ri = ival;
+</pre><br>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch02qa11q4"></a><b>Exercise 2.27:</b></td>
+
+                    <td>
+                      <p class="docText">What does the following code print?</p>
+                      <p class="docText">下列代码输出什么？</p>
+                      <pre>
+     int i, &amp;ri = i;
+     i = 5; ri =10;
+     std::cout &lt;&lt; i &lt;&lt; " " &lt;&lt; ri &lt;&lt; std::endl;
+</pre><br>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table>
+        <a href="21001535.html" ><img src="images/pixel.gif"  alt="" width="1" height="1" border="0"></a>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch02lev1sec4.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch02lev1sec6.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

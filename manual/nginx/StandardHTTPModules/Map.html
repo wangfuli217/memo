@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml">
+<HEAD><TITLE>Map模块（Map）</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=GB2312">
+<STYLE type=text/css>PRE {
+	BACKGROUND-COLOR: #cccccc
+}
+.STYLE1 {
+	COLOR: #ff0000
+}
+</STYLE>
+
+<META content="MSHTML 6.00.6000.16809" name=GENERATOR></HEAD>
+<BODY>
+<H2>Map模块（Map）</H2><BR>
+
+<H3>·摘要</H3>
+<H4>这个模块允许你分类或者同时映射多个值到多个不同值并储存到一个变量中。<BR>
+如下例：<BR>
+<PRE>map  $http_host  $name  {
+  hostnames;
+ 
+  default          0;
+ 
+  example.com      1;
+  *.example.com    1;
+  test.com         2;
+  *.test.com       2;
+  .site.com        3;
+}</PRE>
+一个典型的使用映射的例子是代替一个含有很多服务器的/location或者重定向：<BR>
+<PRE>map $uri $new {
+  default        http://www.domain.com/home/;
+ 
+  /aa            http://aa.domain.com/;
+  /bb            http://bb.domain.com/;
+  /john          http://my.domain.com/users/john/;
+}
+ 
+server {
+  server_name   www.domain.com;
+  rewrite  ^    $new   redirect;
+}</PRE></H4>
+<H3>·指令</H3>
+<H3>map</H3>
+<H4>语法：map $var1 $var2 { ... } <BR>
+默认值：none <BR>
+使用字段：http <BR>
+指定一个变量使用的映射表，有三个指定的参数：<BR>
+·default - 指定如果没有匹配结果将使用的默认值。<BR>
+·hostnames - 允许对类似主机名的值进行简单的查询匹配，第一个点后面的部分将用作精确的主机名。例如：<BR>
+<PRE>*.example.com  1; </PRE>
+而不是写成两个：<BR>
+<PRE>example.com    1;
+*.example.com  1;
+</PRE>
+可以只写成一条：<BR>
+<PRE>.example.com   1;</PRE>
+·include - 包含一个含有映射值的文件，可以包含多个。</H4>
+<H3>map_hash_max_size </H3>
+<H4>语法：map_hash_max_size number <BR>
+默认值：map_hash_max_size 2048 <BR>
+使用字段：http <BR>
+这个指令设置映射表对应的哈希表的最大值，更多信息可以参考<A href="../Optimizations.html" >优化章节</A>。</H4>
+<H3>map_hash_bucket_size</H3>
+<H4>语法：map_hash_bucket_size n<BR>
+默认值：map_hash_bucket_size 32/64/128 <BR>
+使用字段：http <BR>
+这个指令指定一个映射表中的变量在哈希表中的最大值，这个值取决于处理器的缓存，更多信息可以参考<A href="../Optimizations.html" >优化章节</A>。</H4>
+<H3>·参考文档</H3>
+<H4><A href="http://sysoev.ru/nginx/docs/http/ngx_http_map_module.html" >Original Documentation</A><BR>
+<A href="http://wiki.nginx.org/NginxHttpMapModule/" >Nginx Http Map Module</A></H4>
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://179401.cn/analytics/" : "http://179401.cn/analytics/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://shouce.jb51.net/179401.cn/analytics/piwik.php-idsite=1"  style="border:0" alt=""/></p></noscript>
+<!-- End Piwik Tag -->
+</BODY>
+</HTML>
+<H3><A href="Memcached.html" >前进->Memcached模块（Memcached）</A></H3>

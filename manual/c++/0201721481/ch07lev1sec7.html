@@ -1,0 +1,447 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 7.7.  Class Member Functions</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch07lev1sec6.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch07lev1sec8.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch07lev1sec7"></a>
+
+        <h3 class="docSection1Title">7.7. Class Member Functions</h3>
+        <h3 class="docSection1Title">7.7. 类的成员函数</h3>
+
+        <p class="docText">In <a class="docLink" href="ch02lev1sec8.html#ch02lev1sec8" >Section 2.8</a> (p. <a class="docLink" href="ch02lev1sec8.html#ch02lev1sec8" >63</a>) we began the definition of the <tt>Sales_item</tt> class used in solving the bookstore problem from <a class="docLink" href="ch01.html#ch01" >Chapter 1</a>. Now that we know how to define ordinary functions, we can continue to fill in our class by defining the member functions of this class.</p>
+        <p class="docText"><a class="docLink" href="ch02lev1sec8.html#ch02lev1sec8" >第 2.8 节</a>开始定义类 <tt>Sales_item</tt>，用于解决<a class="docLink" href="ch01.html#ch01" >第一章</a>的书店问题。至此，我们已经了解了如何定义普通函数，现在来定义类的成员函数，以继续完善这个类。</p>
+
+        <p class="docText">We define member functions similarly to how we define ordinary functions. As with any function, a member function consists of four parts:</p>
+        <p class="docText">成员函数的定义与普通函数的定义类似。和任何函数一样，成员函数也包含下面四个部分：</p>
+
+        <ul>
+          <li>
+            <p class="docList">A return type for the function</p>
+            <p class="docList">函数返回类型。</p>
+          </li>
+
+          <li>
+            <p class="docList">The function name</p>
+            <p class="docList">函数名。</p>
+          </li>
+
+          <li>
+            <p class="docList">A (possibly empty) comma-separated list of parameters</p>
+            <p class="docList">用逗号隔开的形参表（也可能是空的）。</p>
+          </li>
+
+          <li>
+            <p class="docList">The function body, which is contained between a pair of curly braces</p>
+            <p class="docList">包含在一对花括号里面的函数体。</p>
+          </li>
+        </ul>
+
+        <p class="docText">As we know, the first three of these parts constitute the function prototype. The function prototype defines all the type information related to the function: what its return type is, the function name, and what types of arguments may be passed to it. The function prototype <span class="docEmphasis">must</span> be defined within the class body. The body of the function, however, <span class="docEmphasis">may</span> be defined within the class itself or outside the class body.</p>
+        <p class="docText">正如我们知道的，前面三部分组成函数原型。函数原型定义了所有和函数相关的类型信息：函数返回类型是什么、函数的名字、应该给这个函数传递什么类型的实参。函数原型<span class="docEmphasis">必须</span>在类中定义。但是，函数体则既可以在类中也可以在类外定义。</p>
+
+        <p class="docText">With this knowledge, let's look at our expanded class definition, to which we've added two new members: the member functions <tt>avg_price</tt> and <tt>same_isbn</tt>. The <tt>avg_price</tt> function has an empty parameter list and returns a value of type <tt>double</tt>. The <tt>same_isbn</tt> function returns a <tt>bool</tt> and takes a single parameter of type reference to <tt>const Sales_item</tt>.</p>
+        <p class="docText">知道这些后，观察下面扩展的类定义，我们为这个类增加了两个新成员：成员函数 <tt>avg_price</tt> 和 <tt>same_isbn</tt>。其中 <tt>avg_price</tt> 函数的形参表是空的，返回 <tt>double</tt> 类型的值。而 <tt>same_isbn</tt> 函数则返回 <tt>bool</tt> 对象，有一个 <tt>const Sales_item</tt> 类型的引用形参。</p>
+        <pre>
+     class Sales_item {
+     public:
+         // <span class="docEmphItalicAlt">operations on</span> <span class="docEmphasis">Sales_item</span> <span class="docEmphItalicAlt">objects</span>
+         double avg_price() const;
+         bool same_isbn(const Sales_item &amp;rhs) const
+              { return isbn == rhs.isbn; }
+     // <span class="docEmphItalicAlt">private members as before</span>
+     private:
+         std::string isbn;
+         unsigned units_sold;
+         double revenue;
+     };
+</pre><br>
+
+<a name="idd1e53512"></a>
+        <p class="docText">We'll explain the meaning of the <tt>const</tt> that follows the parameter lists shortly, but first we need to explain how member functions are defined.</p>
+        <p class="docText">在解释跟在形参表后面的 <tt>const</tt> 之前，必须先说明成员函数是如何定义的。</p>
+
+<a name="ch07lev2sec22"></a>
+        <h4 class="docSection2Title">7.7.1. Defining the Body of a Member Function</h4>
+        <h4 class="docSection2Title">7.7.1. 定义成员函数的函数体</h4>
+
+        <p class="docText">We must declare all the members of a class within the curly braces that delimit the class definition. There is no way to subsequently add any members to the class. Members that are functions must be defined as well as declared. We can define a member function either inside or outside of the class definition. In <tt>Sales_item</tt>, we have one example of each: <tt>same_isbn</tt> is defined inside the <tt>Sales_item</tt> class, whereas <tt>avg_price</tt> is declared inside the class but defined elsewhere.</p>
+        <p class="docText">类的所有成员都必须在类定义的花括号里面声明，此后，就不能再为类增加任何成员。类的成员函数必须如声明的一般定义。类的成员函数既可以在类的定义内也可以在类的定义外定义。在类 <tt>Sales_item</tt> 中，这两种情况各有一例说明：函数 <tt>same_isbn</tt> 在类内定义，而函数 <tt>avg_price</tt> 则在类内声明，在类外定义。</p>
+
+        <p class="docText">A member function that is defined inside the class is implicitly treated as an inline function (<a class="docLink" href="ch07lev1sec6.html#ch07lev1sec6" >Section 7.6</a>, p. <a class="docLink" href="ch07lev1sec6.html#ch07lev1sec6" >256</a>).</p>
+        <p class="docText">编译器隐式地将在类内定义的成员函数当作内联函数（<a class="docLink" href="ch07lev1sec6.html#ch07lev1sec6" >第 7.6 节</a>）。</p>
+
+        <p class="docText">Let's look in more detail at the definition of <tt>same_isbn:</tt></p>
+        <p class="docText">再详细观察函数 <tt>same_isbn</tt> 的定义：</p>
+        <pre>
+     bool same_isbn(const Sales_item &amp;rhs) const
+         { return isbn == rhs.isbn; }
+</pre><br>
+
+        <p class="docText">As with any function, the body of this function is a block. In this case, the block contains a single statement that returns the result of comparing the value of the <tt>isbn</tt> data members of two <tt>Sales_item</tt> objects.</p>
+        <p class="docText">与任何函数一样，该函数的函数体也是一个块。在这个函数中，块中只有一个语句，比较两个 <tt>Sales_item</tt> 对象的数据成员 <tt>isbn</tt> 的值，并返回比较结果。</p>
+
+        <p class="docText">The first thing to note is that the <tt>isbn</tt> member is <tt>private</tt>. Even though these members are <tt>private</tt>, there is no error.</p>
+        <p class="docText">首先要注意的是：成员 <tt>isbn</tt> 是 <tt>private</tt> 的。尽管如此，上述语句却没有任何错误。</p>
+
+<a name="ch07note27"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">A member function may access the <tt>private</tt> members of its class.</p>
+                <p class="docText">类的成员函数可以访问该类的 <tt>private</tt> 成员。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">More interesting is understanding from which <tt>Sales_item</tt> objects does the function get the values that it compares. The function refers both to <tt>isbn</tt> and <tt>rhs.isbn</tt>. Fairly clearly, <tt>rhs.isbn</tt> uses the <tt>isbn</tt> member from the argument passed to the function. The unqualified use of <tt>isbn</tt> is more interesting. As we shall see, the unqualified <tt>isbn</tt> refers to the <tt>isbn</tt> member of the object on behalf of which the function is called.</p>
+        <p class="docText">更有意思的是，函数从哪个 <tt>Sales_item</tt> 类对象得到这个用于比较的值？函数涉及到 <tt>isbn</tt> 和 <tt>rhs.isbn</tt>。很明显，<tt>rhs.isbn</tt> 使用的是传递给此函数的实参的 <tt>isbn</tt> 成员。没有前缀的 <tt>isbn</tt> 的用法更加有意思。正如我们所看见的，这个没有前缀的 <tt>isbn</tt> 指的是用于调用函数的对象的 <tt>isbn</tt> 成员。</p>
+
+<a name="ch07lev3sec25"></a>
+        <h5 class="docSection3Title">Member Functions Have an Extra, Implicit Parameter</h5>
+        <h5 class="docSection3Title">成员函数含有额外的、隐含的形参</h5>
+
+	<a name="idd1e53631"></a><a name="idd1e53636"></a><a name="idd1e53642"></a><a name="idd1e53647"></a><a name="idd1e53654"></a>
+        <p class="docText">When we call a member function, we do so on behalf of an object. For example, when we called <tt>same_isbn</tt> in the bookstore program on page <a class="docLink" href="ch01lev1sec6.html#ch01sb14" >26</a>, we executed the <tt>same_isbn</tt> member on the object named <tt>total</tt>:</p>
+        <p class="docText">调用成员函数时，实际上是使用对象来调用的。例如，调用 <a class="docLink" href="ch01lev1sec6.html#ch01sb14" >第 1.6 节</a>书店程序中的函数 <tt>same_isbn</tt>，是通过名为 <tt>total</tt> 的对象来执行 <tt>same_isbn</tt> 函数的：</p>
+        <pre>
+     if (total.same_isbn(trans))
+</pre><br>
+
+        <p class="docText">In this call, we pass the object <tt>trans</tt>. As part of executing the call, the object <tt>trans</tt> is used to initialize the parameter <tt>rhs</tt>. Thus, in this call, <tt>rhs.isbn</tt> is a reference to <tt>trans.isbn</tt>.</p>
+        <p class="docText">在这个调用中，传递了对象 <tt>trans</tt>。作为执行调用的一部分，使用对象 <tt>trans</tt> 初始化形参 <tt>rhs</tt>。于是，<tt>rhs.isbn</tt> 是 <tt>trans.isbn</tt> 的引用。</p>
+
+        <p class="docText">The same argument-binding process is used to bind the unqualified use of <tt>isbn</tt> to the object named <tt>total</tt>. Each member function has an extra, implicit parameter that binds the function to the object on which the function was called. When we call <tt>same_isbn</tt> on the object named <tt>total</tt>, that object is also passed to the function. When <tt>same_isbn</tt> refers to <tt>isbn</tt>, it is implicitly referring to the <tt>isbn</tt> member of the object on which the function was called. The effect of this call is to compare <tt>total.isbn</tt> with <tt>Trans.isbn</tt>.</p>
+        <p class="docText">而没有前缀的 <tt>isbn</tt> 使用了相同的实参绑定过程，使之与名为 <tt>total</tt> 的对象绑定起来。每个成员函数都有一个额外的、隐含的形参将该成员函数与调用该函数的类对象捆绑在一起。当调用名为 <tt>total</tt> 的对象的 <tt>same_isbn</tt> 时，这个对象也传递给了函数。而 <tt>same_isbn</tt> 函数使用 <tt>isbn</tt> 时，就隐式地使用了调用该函数的对象的 <tt>isbn</tt> 成员。这个函数调用的效果是比较 <tt>total.isbn</tt> 和 <tt>trans.isbn</tt> 两个值。</p>
+
+<a name="ch07lev3sec26"></a>
+        <h5 class="docSection3Title">Introducing <tt>this</tt></h5>
+        <h5 class="docSection3Title"><tt>this</tt> 指针的引入</h5>
+
+        <p class="docText">Each member function (except for <tt>static</tt> member functions, which we cover in <a class="docLink" href="ch12lev1sec6.html#ch12lev1sec6" >Section 12.6</a> (p. <a class="docLink" href="ch12lev1sec6.html#ch12lev1sec6" >467</a>)) has an extra, implicit parameter named <span class="docEmphStrong"><tt>this</tt></span>. When a member function is called, the <tt>this</tt> parameter is initialized with the address of the object on which the function was invoked. To understand a member function call, we might think that when we write</p>
+        <p class="docText">每个成员函数（除了在<a class="docLink" href="ch12lev1sec6.html#ch12lev1sec6" >第 12.6 节</a>介绍的 <tt>static</tt> 成员函数外）都有一个额外的、隐含的形参 <span class="docEmphStrong"><tt>this</tt></span>。在调用成员函数时，形参 <tt>this</tt> 初始化为调用函数的对象的地址。为了理解成员函数的调用，可考虑下面的语句：</p>
+        <pre>
+     total.same_isbn(trans);
+</pre><br>
+
+        <p class="docText">it is as if the compiler rewrites the call as</p>
+        <p class="docText">就如编译器这样重写这个函数调用：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">pseudo-code illustration of how a call to a member function is translated</span>
+     Sales_item::same_isbn(&amp;total, trans);
+</pre><br>
+
+        <p class="docText">In this call, the data member <tt>isbn</tt> inside <tt>same_isbn</tt> is bound to the one belonging to <tt>total</tt>.</p>
+        <p class="docText">在这个调用中，函数 <tt>same_isbn</tt> 中的数据成员 <tt>isbn</tt> 属于对象 <tt>total</tt>。</p>
+
+<a name="ch07lev3sec27"></a>
+        <h5 class="docSection3Title">Introducing <tt>const</tt> Member Functions</h5>
+        <h5 class="docSection3Title"><tt>const</tt> 成员函数的引入</h5>
+
+        <p class="docText">We now can understand the role of the <tt>const</tt> that follows the parameter lists in the declarations of the <tt>Sales_item</tt> member functions: That <tt>const</tt> modifies the type of the implicit <tt>this</tt> parameter. When we call <tt>total.same_isbn(trans)</tt>, the implicit <tt>this</tt> parameter will be a <tt>const Sales_Item*</tt> that points to <tt>total</tt>. It is as if the body of <tt>same_isbn</tt> were written as</p>
+        <p class="docText">现在，可以理解跟在 <tt>Sales_item</tt> 成员函数声明的形参表后面的 <tt>const</tt> 所起的作用了：<tt>const</tt> 改变了隐含的 <tt>this</tt> 形参的类型。在调用 <tt>total.same_isbn(trans)</tt> 时，隐含的 <tt>this</tt> 形参将是一个指向 <tt>total</tt> 对象的 <tt>const Sales_Item*</tt> 类型的指针。就像如下编写 <tt>same_isbn</tt> 的函数体一样：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">pseudo-code illustration of how the implicit</span> <span class="docEmphasis">this</span> <span class="docEmphItalicAlt">pointer is used</span>
+     // <span class="docEmphItalicAlt">This code is illegal: We may not explicitly define the</span> <span class="docEmphasis">this</span> <span class="docEmphItalicAlt">pointer ourselves</span>
+     // <span class="docEmphItalicAlt">Note that</span> <span class="docEmphasis">this</span> <span class="docEmphItalicAlt">is a pointer to</span> <span class="docEmphasis">const</span> <span class="docEmphItalicAlt">because</span> <span class="docEmphasis">same_isbn</span> <span class="docEmphItalicAlt">is a</span> <span class="docEmphasis">const</span> <span class="docEmphItalicAlt">member</span>
+     bool Sales_item::same_isbn(const Sales_item *const this,
+                               const Sales_item &amp;rhs) const
+     { return (this-&gt;isbn == rhs.isbn); }
+</pre><br>
+
+<a name="idd1e53878"></a><a name="idd1e53883"></a><a name="idd1e53889"></a><a name="idd1e53894"></a>
+<a name="ch07term30"></a>
+        <p class="docText">A function that uses <tt>const</tt> in this way is called a <b><a class="docLink" href="ch07lev1sec11.html#gloss07_07" ><span class="docEmphStrong"><tt>const</tt></span> member function</a></b>. Because <tt>this</tt> is a pointer to <tt>const</tt>, a <tt>const</tt> member function cannot change the object on whose behalf the function is called. Thus, <tt>avg_price</tt> and <tt>same_isbn</tt> may read but not write to the data members of the objects on which they are called.</p>
+        <p class="docText">用这种方式使用 <tt>const</tt> 的函数称为<b><a class="docLink" href="ch07lev1sec11.html#gloss07_07" ><span class="docEmphStrong"><tt>常量</tt></span>成员函数</a></b>。由于 <tt>this</tt> 是指向 <tt>const</tt> 对象的指针，<tt>const</tt> 成员函数不能修改调用该函数的对象。因此，函数 <tt>avg_price</tt> 和函数 <tt>same_isbn</tt> 只能读取而不能修改调用它们的对象的数据成员。</p>
+
+<a name="ch07note28"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">A <tt>const</tt> object or a pointer or reference to a <tt>const</tt> object may be used to call only <tt>const</tt> member functions. It is an error to try to call a non<tt>const</tt> member function on a <tt>const</tt> object or through a pointer or reference to a <tt>const</tt> object.</p>
+                <p class="docText"><tt>const</tt> 对象、指向 <tt>const</tt> 对象的指针或引用只能用于调用其 <tt>const</tt> 成员函数，如果尝试用它们来调用非 <tt>const</tt> 成员函数，则是错误的。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch07lev3sec28"></a>
+
+        <h5 class="docSection3Title">Using the <tt>this</tt> Pointer</h5>
+        <h5 class="docSection3Title"><tt>this</tt> 指针的使用</h5>
+
+        <p class="docText">Inside a member function, we need not explicitly use the <tt>this</tt> pointer to access the members of the object on which the function was called. Any unqualified reference to a member of our class is assumed to be a reference through <tt>this</tt>:</p>
+        <p class="docText">在成员函数中，不必显式地使用 <tt>this</tt> 指针来访问被调用函数所属对象的成员。对这个类的成员的任何没有前缀的引用，都被假定为通过指针 <tt>this</tt> 实现的引用：</p>
+        <pre>
+     bool same_isbn(const Sales_item &amp;rhs) const
+         { return isbn == rhs.isbn; }
+</pre><br>
+
+        <p class="docText">The uses of <tt>isbn</tt> in this function are as if we had written <tt>this-&gt;units_sold</tt> or <tt>this-&gt;revenue</tt>.</p>
+        <p class="docText">在这个函数中 <tt>isbn</tt> 的用法与 <tt>this-&gt;units_sold</tt> 或 <tt>this-&gt;revenue</tt> 的用法一样。</p>
+
+        <p class="docText">The <tt>this</tt> parameter is defined implicitly, so it is unnecessary and in fact illegal to include the <tt>this</tt> pointer in the function's parameter list. However, in the body of the function we can refer to the <tt>this</tt> pointer explicitly. It is legal, although unnecessary, to define <tt>same_isbn</tt> as follows:</p>
+        <p class="docText">由于 <tt>this</tt> 指针是隐式定义的，因此不需要在函数的形参表中包含 <tt>this</tt> 指针，实际上，这样做也是非法的。但是，在函数体中可以显式地使用 <tt>this</tt> 指针。如下定义函数 <tt>same_isbn</tt> 尽管没有必要，但是却是合法的：</p>
+        <pre>
+     bool same_isbn(const Sales_item &amp;rhs) const
+         { return this-&gt;isbn == rhs.isbn; }
+</pre><br>
+        <a name="ch07lev2sec23"></a>
+
+        <h4 class="docSection2Title">7.7.2. Defining a Member Function Outside the Class</h4>
+        <h4 class="docSection2Title">7.7.2. 在类外定义成员函数</h4>
+
+        <p class="docText">Member functions defined outside the class definition must indicate that they are members of the class:</p>
+        <p class="docText">在类的定义外面定义成员函数必须指明它们是类的成员：</p>
+        <pre>
+     double Sales_item::avg_price() const
+     {
+         if (units_sold)
+             return revenue/units_sold;
+         else
+             return 0;
+     }
+</pre><br>
+
+        <p class="docText">This definition is like the other functions we've seen: It has a return type of <tt>double</tt> and an empty parameter list enclosed in parentheses after the function name. What is new is the <tt>const</tt> following the parameter list and the form of the function name. The function name</p>
+        <p class="docText">上述定义和其他函数一样：该函数返回类型为 <tt>double</tt>，在函数名后面的圆括号起了一个空的形参表。新的内容则包括跟在形参表后面的 <tt>const</tt> 和函数名的形式。函数名：</p>
+        <pre>
+     Sales_item::avg_price
+</pre><br>
+
+<a name="idd1e54044"></a><a name="idd1e54051"></a><a name="idd1e54056"></a><a name="idd1e54059"></a><a name="idd1e54064"></a><a name="idd1e54067"></a><a name="idd1e54073"></a><a name="idd1e54086"></a>
+        <p class="docText">uses the scope operator (<a class="docLink" href="ch01lev1sec2.html#ch01lev2sec3" >Section 1.2.2</a>, p. <a class="docLink" href="ch01lev1sec2.html#ch01lev2sec3" >8</a>) to say that we are defining the function named <tt>avg_price</tt> that is defined in the scope of the <tt>Sales_item</tt> class.</p>
+        <p class="docText">使用作用域操作符（<a class="docLink" href="ch01lev1sec2.html#ch01lev2sec3" >第 1.2.2 节</a>）指明函数 <tt>avg_price</tt> 是在类 <tt>Sales_item</tt> 的作用域范围内定义的。</p>
+
+        <p class="docText">The <tt>const</tt> that follows the parameter list reflects the way we declared the member funcion inside the <tt>Sales_item</tt> header. In any definition, the return type and parameter list must match the declaration, if any, of the function. In the case of a member function, the declaration is as it appears in the class definition. If the function is declared to be a <tt>const</tt> member function, then the <tt>const</tt> after the parameter list must be included in the definition as well.</p>
+        <p class="docText">形参表后面的 <tt>const</tt> 则反映了在类 <tt>Sales_item</tt> 中声明成员函数的形式。在任何函数定义中，返回类型和形参表必须和函数声明（如果有的话）一致。对于成员函数，函数声明必须与其定义一致。如果函数被声明为 <tt>const</tt> 成员函数，那么函数定义时形参表后面也必须有 <tt>const</tt>。</p>
+
+        <p class="docText">We can now fully understand the first line of this code: It says we are defining the <tt>avg_price</tt> function from the <tt>Sales_item</tt> class and that the function is a <tt>const</tt> member. The function takes no (explicit) parameters and returns a <tt>double</tt>.</p>
+        <p class="docText">现在可以完全理解第一行代码了：这行代码说明现在正在定义类 <tt>Sales_item</tt> 的函数 <tt>avg_price</tt>，而且这是一个 <tt>const</tt> 成员函数，这个函数没有（显式的）形参，返回 <tt>double</tt> 类型的值。</p>
+
+        <p class="docText">The body of the function is easier to understand: It tests whether <tt>units_sold</tt> is nonzero and, if so, <tt>return</tt>s the result of dividing <tt>revenue</tt> by <tt>units_sold</tt>. If <tt>units_sold</tt> is zero, we can't safely do the divisiondividing by zero has undefined behavior. In this program, we return 0, indicating that if there were no sales the average price would be zero. Depending on the sophistication of our error-handling strategy, we might instead throw an exception (<a class="docLink" href="ch06lev1sec13.html#ch06lev1sec13" >Section 6.13</a>, p. <a class="docLink" href="ch06lev1sec13.html#ch06lev1sec13" >215</a>).</p>
+        <p class="docText">函数体更加容易理解：检查 <tt>units_sold</tt> 是否为 0，如果不为 0，返回 <tt>revenue</tt> 除以 <tt>units_sold</tt> 的结果；如果 <tt>units_sold</tt> 是 0，不能安全地进行除法运算——除以 0 是未定义的行为。此时程序返回 0，表示没有任何销售时平均售价为 0。根据异常错误处理策略，也可以抛出异常来代替刚才的处理（<a class="docLink" href="ch06lev1sec13.html#ch06lev1sec13" >第 6.13 节</a>）。</p>
+
+<a name="ch07lev2sec24"></a>
+        <h4 class="docSection2Title">7.7.3. Writing the <tt>Sales_item</tt> Constructor</h4>
+        <h4 class="docSection2Title">7.7.3. 编写 <tt>Sales_item</tt> 类的构造函数</h4>
+
+        <p class="docText">There's one more member that we need to write: a constructor. As we learned in <a class="docLink" href="ch02lev1sec8.html#ch02lev1sec8" >Section 2.8</a> (p. <a class="docLink" href="ch02lev1sec8.html#ch02lev1sec8" >65</a>), class data members are not initialized when the class is defined. Instead, data members are initialized through a constructor.</p>
+        <p class="docText">还必须编写一个成员，那就是构造函数。正如在<a class="docLink" href="ch02lev1sec8.html#ch02lev1sec8" >第 2.8 节</a>所学习的，在定义类时没有初始化它的数据成员，而是通过构造函数来初始化其数据成员。</p>
+
+<a name="ch07lev3sec29"></a>
+        <h5 class="docSection3Title">Constructors Are Special Member Functions</h5>
+        <h5 class="docSection3Title">构造函数是特殊的成员函数</h5>
+
+<a name="ch07term8"></a>
+        <p class="docText">A <b><a class="docLink" href="ch07lev1sec11.html#gloss07_08" >constructor</a></b> is a special member function that is distinguished from other member functions by having the same name as its class. Unlike other member functions, constructors have no return type. Like other member functions they take a (possibly empty) parameter list and have a function body. A class can have multiple constructors. Each constructor must differ from the others in the number or types of its parameters.</p>
+        <p class="docText"><b><a class="docLink" href="ch07lev1sec11.html#gloss07_08" >构造函数</a></b>是特殊的成员函数，与其他成员函数不同，构造函数和类同名，而且没有返回类型。而与其他成员函数相同的是，构造函数也有形参表（可能为空）和函数体。一个类可以有多个构造函数，每个构造函数必须有与其他构造函数不同数目或类型的形参。</p>
+
+        <p class="docText">The constructor's parameters specify the initializers that may be used when creating objects of the class type. Ordinarily these initializers are used to initialize the data members of the newly created object. Constructors usually should ensure that every data member is initialized.</p>
+        <p class="docText">构造函数的形参指定了创建类类型对象时使用的初始化式。通常，这些初始化式会用于初始化新创建对象的数据成员。构造函数通常应确保其每个数据成员都完成了初始化。</p>
+
+<a name="ch07term10"></a>
+        <p class="docText">The <tt>Sales_item</tt> class needs to explicitly define only one constructor, the <b><a class="docLink" href="ch07lev1sec11.html#gloss07_10" >default constructor</a></b>, which is the one that takes no arguments. The default constructor says what happens when we define an object but do not supply an (explicit) initializer:</p>
+        <p class="docText"><tt>Sales_item</tt> 类只需要显式定义一个构造函数：没有形参的<b><a class="docLink" href="ch07lev1sec11.html#gloss07_10" >默认构造函数</a></b>。默认构造函数说明当定义对象却没有为它提供（显式的）初始化式时应该怎么办：</p>
+        <pre>
+     vector&lt;int&gt; vi;       // <span class="docEmphItalicAlt">default constructor: empty</span> <span class="docEmphasis">vector</span>
+     string s;             // <span class="docEmphItalicAlt">default constructor: empty</span> <span class="docEmphasis">string</span>
+     Sales_item item;      // <span class="docEmphItalicAlt">default constructor: ???</span>
+</pre><br>
+
+<a name="idd1e54235"></a><a name="idd1e54238"></a><a name="idd1e54244"></a><a name="idd1e54247"></a>
+        <p class="docText">We know the behavior of the <tt>string</tt> and <tt>vector</tt> default constructors: Each of these constructors initializes the object to a sensible default state. The default <tt>string</tt> constructor generates an empty string, the one that is equal to <tt>""</tt>. The default <tt>vector</tt> constructor generates a <tt>vector</tt> with no elements.</p>
+        <p class="docText">我们知道 <tt>string</tt> 和 <tt>vector</tt> 类默认构造函数的行为：这些构造函数会将对象初始化为合理的默认状态。<tt>string</tt> 的默认构造函数会产生空字符串上，相当于 <tt>""</tt>。<tt>vector</tt> 的默认构造函数则生成一个没有元素的 <tt>vector</tt> 向量对象。</p>
+
+        <p class="docText">Similarly, we'd like the default constructor for <tt>Sales_items</tt> to generate an empty <tt>Sales_item</tt>. Here "empty" means an object in which the <tt>isbn</tt> is the empty string and the <tt>units_sold</tt> and <tt>revenue</tt> members are initialized to zero.</p>
+        <p class="docText">同样地，我们希望类 <tt>Sales_items</tt> 的默认构造函数为它生成一个空的 <tt>Sales_item</tt> 对象。这里的“空”意味着对象中的 <tt>isbn</tt> 是空字符串，<tt>units_sold</tt> 和 <tt>revenue</tt> 则初始化为 0。</p>
+
+<a name="ch07lev3sec30"></a>
+        <h5 class="docSection3Title">Defining a Constructor</h5>
+        <h5 class="docSection3Title">构造函数的定义</h5>
+
+        <p class="docText">Like any other member function, a constructor is declared inside the class and may be defined there or outside the class. Our constructor is simple, so we will define it inside the class body:</p>
+        <p class="docText">和其他成员函数一样，构造函数也必须在类中声明，但是可以在类中或类外定义。由于我们的构造函数很简单，因此在类中定义它：</p>
+        <pre>
+     class Sales_item {
+     public:
+         // <span class="docEmphItalicAlt">operations on</span> <span class="docEmphasis">Sales_item</span> <span class="docEmphItalicAlt">objects</span>
+         double avg_price() const;
+         bool same_isbn(const Sales_item &amp;rhs) const
+             { return isbn == rhs.isbn; }
+         // <span class="docEmphItalicAlt">default constructor needed to initialize members of built-in type</span>
+         Sales_item(): units_sold(0), revenue(0.0) { }
+     // <span class="docEmphItalicAlt">private members as before</span>
+     private:
+         std::string isbn;
+         unsigned units_sold;
+         double revenue;
+     };
+</pre><br>
+
+        <p class="docText">Before we explain the constructor definition, note that we put the constructor in the <tt>public</tt> section of the class. Ordinarily, and certainly in this case, we want the constructor(s) to be part of the interface to the class. After all, we want code that uses the <tt>Sales_item</tt> type to be able to define and initialize <tt>Sales_item</tt> objects. Had we made the constructor <tt>private</tt>, it would not be possible to define <tt>Sales_item</tt> objects, which would make the class pretty useless.</p>
+        <p class="docText">在解释任何构造函数的定义之前，注意到构造函数是放在类的 <tt>public</tt> 部分的。通常构造函数会作为类的接口的一部分，这个例子也是这样。毕竟，我们希望使用类 <tt>Sales_item</tt> 的代码可以定义和初始化类 <tt>Sales_item</tt> 的对象。如果将构造函数定义为 <tt>private</tt> 的，则不能定义类 <tt>Sales_item</tt> 的对象，这样的话，这个类就没有什么用了。</p>
+
+        <p class="docText">As to the definition itself</p>
+        <p class="docText">对于定义本身：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">default constructor needed to initialize members of built-in type</span>
+     Sales_item(): units_sold(0), revenue(0.0) { }
+</pre><br>
+
+        <p class="docText">it says that we are defining a constructor for the <tt>Sales_item</tt> class that has an empty parameter list and an empty function body. The interesting part is the colon and the code between it and the curly braces that define the (empty) function body.</p>
+        <p class="docText">上述语句说明现在正在定义类 <tt>Sales_item</tt> 的构造函数，这个构造函数的形参表和函数体都为空。令人感兴趣的是冒号和冒号与定义（空）函数体的花括号之间的代码。</p>
+
+<a name="ch07lev3sec31"></a>
+        <h5 class="docSection3Title">Constructor Initialization List</h5>
+        <h5 class="docSection3Title">构造函数和初始化列表</h5>
+
+<a name="ch07term9"></a>
+        <p class="docText">The colon and the following text up to the open curly is the <b><a class="docLink" href="ch07lev1sec11.html#gloss07_09" >constructor initializer list</a></b>. A constructor initializer list specifies initial values for one or more data members of the class. It follows the constructor parameter list and begins with a colon. The constructor initializer is a list of member names, each of which is followed by that member's initial value in parentheses. Multiple member initializations are separated by commas.</p>
+        <p class="docText">在冒号和花括号之间的代码称为<b><a class="docLink" href="ch07lev1sec11.html#gloss07_09" >构造函数的初始化列表</a></b>。构造函数的初始化列表为类的一个或多个数据成员指定初值。它跟在构造函数的形参表之后，以冒号开关。构造函数的初始化式是一系列成员名，每个成员后面是括在圆括号中的初始值。多个成员的初始化用逗号分隔。</p>
+
+<a name="idd1e54363"></a><a name="idd1e54368"></a><a name="idd1e54375"></a><a name="idd1e54380"></a><a name="idd1e54385"></a><a name="idd1e54390"></a><a name="idd1e54395"></a><a name="idd1e54401"></a><a name="idd1e54404"></a><a name="idd1e54409"></a><a name="idd1e54414"></a><a name="idd1e54419"></a><a name="idd1e54424"></a><a name="idd1e54430"></a><a name="idd1e54435"></a>
+        <p class="docText">This initializer list says that both the <tt>units_sold</tt> and <tt>revenue</tt> members should be initialized to 0. Whenever a <tt>Sales_item</tt> object is created, these members will start out as 0. We need not specify an initial value for the <tt>isbn</tt> member. Unless we say otherwise in the constructor initializer list, members that are of class type are automatically initialized by that class' default constructor. Hence, <tt>isbn</tt> is initialized by the <tt>string</tt> default constructor, meaning that <tt>isbn</tt> initially is the empty string. Had we needed to, we could have specified a default value for <tt>isbn</tt> in the initializer list as well.</p>
+        <p class="docText">上述例题的初始化列表表明 <tt>units_sold</tt> 和 <tt>revenue</tt> 成员都应初始化为 0。每当创建 <tt>Sales_item</tt> 对象时，它的这两个成员都以初值 0 出现。而 <tt>isbn</tt> 成员可以不必准确指明其初值。除非在初始化列表中有其他表述，否则具有类类型的成员皆被其默认构造函数自动初始化。于是，<tt>isbn</tt> 由 <tt>string</tt> 类的默认构造函数初始化为空串。当然，如果有必要的话，也可以在初始化列表中指明 <tt>isbn</tt> 的默认初值。</p>
+
+        <p class="docText">Having explained the initializer list, we can now understand the constructor: Its parameter list and the function body are both empty. The parameter list is empty because we are defining the constructor that is run by default, when no initializer is present. The body is empty because there is no work to do other than initializing <tt>units_sold</tt> and <tt>revenue</tt>. The initializer list explicitly initializes <tt>units_sold</tt> and <tt>revenue</tt> to zero and implicitly initializes <tt>isbn</tt> to the empty <tt>string</tt>. Whenever we create a <tt>Sales_item</tt> object, the data members will start out with these values.</p>
+        <p class="docText">解释了初始化列表后，就可以深入地了解这个构造函数了：它的形参表和函数体都为空。形参表为空是因为正在定义的构造函数是默认调用的，无需提供任何初值。函数体为空是因为除了初始化 <tt>units_sold</tt> 和 <tt>revenue</tt> 成员外没有其他工作可做了。初始化列表显式地将 <tt>units_sold</tt> 和 <tt>revenue</tt> 初始化为 0，并隐式地将 <tt>isbn</tt> 初始化为空串。当创建新 <tt>Sales_item</tt> 对象时，数据成员将以这些值出现。</p>
+
+<a name="ch07lev3sec32"></a>
+        <h5 class="docSection3Title">Synthesized Default Constructor</h5>
+        <h5 class="docSection3Title">合成的默认构造函数</h5>
+
+<a name="ch07note29"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">If we do not explicitly define any constructors, then the compiler will generate the default constructor for us.</p>
+                <p class="docText">如果没有为一个类显式定义任何构造函数，编译器将自动为这个类生成默认构造函数。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+<a name="ch07term24"></a>
+        <p class="docText">The compiler-created default constructor is known as a <b><a class="docLink" href="ch07lev1sec11.html#gloss07_24" >synthesized default constructor</a></b>. It initializes each member using the same rules as are applied for variable initializations (<a class="docLink" href="ch02lev1sec3.html#ch02lev2sec13" >Section 2.3.4</a>, p. <a class="docLink" href="ch02lev1sec3.html#ch02lev2sec13" >50</a>). Members that are of class type, such as <tt>isbn</tt>, are initialized by using the default constructor of the member's own class. The initial value of members of built-in type depend on how the object is defined. If the object is defined at global scope (outside any function) or is a local static object, then these members will be initialized to 0. If the object is defined at local scope, these members are uninitialized. As usual, using an uninitialized member for any purpose other than giving it a value is undefined.</p>
+        <p class="docText">由编译器创建的默认构造函数通常称为<b><a class="docLink" href="ch07lev1sec11.html#gloss07_24" >默认构造函数</a></b>，它将依据如同变量初始化（<a class="docLink" href="ch02lev1sec3.html#ch02lev2sec13" >第 2.3.4 节</a>）的规则初始化类中所有成员。对于具有类类型的成员，如 <tt>isbn</tt>，则会调用该成员所属类自身的默认构造函数实现初始化。内置类型成员的初值依赖于对象如何定义。如果对象在全局作用域中定义（即不在任何函数中）或定义为静态局部对象，则这些成员将被初始化为 0。如果对象在局部作用域中定义，则这些成员没有初始化。除了给它们赋值之外，出于其他任何目的对未初始化成员的使用都没有定义。</p>
+
+<a name="ch07note30"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">The synthesized default constructor often suffices for classes that contain only members of class type. Classes with members of built-in or compound type should usually define their own default constructors to initialize those members.</p>
+                <p class="docText">合成的默认构造函数一般适用于仅包含类类型成员的类。而对于含有内置类型或复合类型成员的类，则通常应该定义他们自己的默认构造函数初始化这些成员。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">Because the synthesized constructor does not automatically initialize members of built-in type, we had to define the <tt>Sales_item</tt> default constructor explicitly.</p>
+        <p class="docText">由于合成的默认构造函数不会自动初始化内置类型的成员，所以必须明确定义 <tt>Sales_item</tt> 类的默认构造函数。</p>
+
+<a name="ch07lev2sec25"></a>
+        <h4 class="docSection2Title">7.7.4. Organizing Class Code Files</h4>
+        <h4 class="docSection2Title">7.7.4. 类代码文件的组织</h4>
+
+<a name="idd1e54565"></a><a name="idd1e54570"></a><a name="idd1e54573"></a>
+        <p class="docText">As we saw in <a class="docLink" href="ch02lev1sec9.html#ch02lev1sec9" >Section 2.9</a> (p. <a class="docLink" href="ch02lev1sec9.html#ch02lev1sec9" >67</a>), class declarations ordinarily are placed in headers. Usually, member functions defined outside the class are put in ordinary source files. C++ programmers tend to use a simple naming convention for headers and the associated class definition code. The class definition is put in a file named <span class="docEmphasis">type</span> <tt>.h</tt> or <span class="docEmphasis">type</span> <tt>.H</tt>, where <span class="docEmphasis">type</span> is the name of the class defined in the file. Member function definitions usually are stored in a source file whose name is the name of the class. Following this convention we put the <tt>Sales_item</tt> class definition in a file named <tt>Sales_item.h</tt>. Any program that wants to use the class must include that header. We should put the definition of our <tt>Sales_item</tt> functions in a file named <tt>Sales_item.cc</tt>. That file, like any other file that uses the <tt>Sales_item</tt> type, would include the <tt>Sales_item.h</tt> header.</p>
+        <p class="docText">正如在<a class="docLink" href="ch02lev1sec9.html#ch02lev1sec9" >第 2.9 节</a>提及的，通常将类的声明放置在头文件中。大多数情况下，在类外定义的成员函数则置于源文件中。C++ 程序员习惯使用一些简单的规则给头文件及其关联的类定义代码命名。类定义应置于名为 <span class="docEmphasis">type</span><tt>.h</tt> 或 <span class="docEmphasis">type</span><tt>.H</tt> 的文件中，<span class="docEmphasis">type</span> 指在该文件中定义的类的名字。成员函数的定义则一般存储在与类同名的源文件中。依照这些规则，我们将类 <tt>Sales_item</tt> 放在名为 <tt>Sales_item.h</tt> 的文件中定义。任何需使用这个类的程序，都必须包含这个头文件。而 <tt>Sales_item</tt> 的成员函数的定义则应该放在名为 <tt>Sales_item.cc</tt> 的文件中。这个文件同样也必须包含 <tt>Sales_item.h</tt> 头文件。</p>
+
+<a name="ch07sb12"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 7.7.4</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch07qa12q1"></a><b>Exercise 7.31:</b></td>
+
+                    <td>
+                      <p class="docText">Write your own version of the <tt>Sales_item</tt> class, adding two new <tt>public</tt> members to read and write <tt>Sales_item</tt> objects. These functions should operate similarly to the input and output operators used in <a class="docLink" href="ch01.html#ch01" >Chapter 1</a>. Transactions should look like the ones defined in that chapter as well. Use this class to read and write a set of transactions.</p>
+                      <p class="docText">编写你自己的 <tt>Sales_item</tt> 类，添加两个公用（<tt>public</tt>）成员用于读和写 <tt>Sales_item</tt> 对象。这两个成员函数的功能应类似于<a class="docLink" href="ch01.html#ch01" >第一章</a>介绍的输入输出操作符。交易也应类似于那一章所定义的。利用这个类读入并输出一组交易。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch07qa12q2"></a><b>Exercise 7.32:</b></td>
+
+                    <td>
+                      <p class="docText">Write a header file to contain your version of the <tt>Sales_item</tt> class. Use ordinary C++ conventions to name the header and any associated file needed to hold non-<tt>inline</tt> functions defined outside the class.</p>
+                      <p class="docText">编写一个头文件，包含你自己的 <tt>Sales_item</tt> 类。使用通用的 C++ 规则给这个头文件以及任何相关的文件命名，这些文件用于存储在类外定义的非内联函数。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch07qa12q3"></a><b>Exercise 7.33:</b></td>
+
+                    <td>
+                      <p class="docText">Add a member that adds two <tt>Sales_items</tt>. Use the revised class to reimplement your solution to the average price problem presented in <a class="docLink" href="ch01.html#ch01" >Chapter 1</a>.</p>
+		      <p class="docText">在 <tt>Sales_item</tt> 类中加入一个成员，用于添加两个 <tt>Sales_item</tt> 对象。使用修改后的类重新解决<a class="docLink" href="ch01.html#ch01" >第一章</a>给出的平均价格问题。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a href="21001535.html" ><img src="images/pixel.gif"  alt="" width="1" height="1" border="0"></a>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch07lev1sec6.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch07lev1sec8.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

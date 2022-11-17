@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Event.element - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>element</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">Event.element(event) -> Element</code></pre>
+			<p>返回触发事件的 DOM 元素。</p>
+		</div>
+		<div id="abody">
+			<p>注意：从 v1.5.1 开始，<code>Event.element</code> 返回的元素已经被扩展。</p>
+			<h3>样例</h3>
+			<p>
+				这里有一些简单的代码，当你在页面上进行点击时，如果点击的是段落，则将段落隐藏。
+			</p>
+			<pre><code class="javascript">Event.observe(document.body, 'click', function(event) { 
+	var element = Event.element(event); 
+	if ('P' == element.tagName) 
+		element.hide();
+}); </code></pre>
+			<h3>参见</h3>
+			<p><a href="findElement.htm" >findElement</a>，它和 <code>element</code> 间存在着一些微妙的区别。</p>
+			<h3>使用 Prototype 1.5.0 时的注意事项</h3>
+			<p>
+				注意：在 1.5.1 版之前，如果浏览器不支持 <em>原生的 DOM 扩展</em>（点击 <a href="http://www.prototypejs.org/learn/extensions" >这里</a>
+				获取更详细的信息），<code>Event.elemnet</code> 返回的元素可能不会被扩展。这时，如果想要在返回的元素上使用 <code>Element.Methods</code>，
+				请调用 <a href="../utility/dollar.htm" >$()</a> 对返回的元素进行封装，如下所示：
+			</p>
+			<pre><code class="javascript">Event.observe(document.body, 'click', function(event) { 
+	var element = $(Event.element(event)); 
+	/* ... */ 
+}); </code></pre>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

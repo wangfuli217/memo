@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Form.Element - Prototype JavaScript 框架</title>
+	<link href="../../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>focus</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">focus(element) -> HTMLElement</code></pre>
+			<p>设置键盘焦点到指定的元素。</p>
+		</div>
+		<div id="abody">
+			<p>
+				<strong>译注：</strong>该方法其实并未添加到已扩展的表单控件中，所以 <code>$('inputElement').focus()</code>
+				调用的并不是这个方法，而是 JavaScript 原生的 <code>focus()</code> 方法。<a href="select.htm" >Form.Element.select()</a>
+				方法也存在同样的问题。
+			</p>
+			<h3>样例</h3>
+			<pre><code class="javascript">Form.Element.focus('searchbox') 
+// 与下面一句基本上是等价的，但是下面的语句不会返回表单元素
+// 它调用的是原生的 focus() 方法:
+$('searchbox').focus()
+			</code></pre>
+			<p>
+				<strong>译注：</strong><code>在 Prototype 1.6.0.3 的源码中，Form.Element</code> 的 <code>focus</code> 和
+				<code>select</code> 方法将传入的参数 <code>element</code> 直接返回，并未做任何处理，所以若传入的
+				<code>element</code> 是一个字符串，则返回值也是一个字符串。<br />
+				为修正这个问题，请修改 Prototype 的源码，将<strong>第 3562 行和第 3567 行（如果你曾经修正过<a href="../../Element/relativize-1.htm" >
+				Element.relativize</a> 的问题，则为第 3564 行和第 3569 行）</strong>的代码：
+			</p>
+			<pre><code class="ebnf">	$(element).focus();</code></pre>
+			替换为：
+			<pre><code class="ebnf">	element = $(element);
+	element.focus();</code></pre>
+			<p><strong>注意：仅针对 Prototype 1.6.0.3，其它版本未知。</strong></p>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

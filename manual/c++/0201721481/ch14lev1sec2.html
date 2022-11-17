@@ -1,0 +1,387 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 14.2.  Input and Output Operators</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch14lev1sec1.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch14lev1sec3.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch14lev1sec2"></a>
+
+        <h3 class="docSection1Title" id="432172-936">14.2. Input and Output Operators</h3>
+        <h3 class="docSection1Title" id="432172-936">14.2. 输入和输出操作符</h3>
+
+        <p class="docText">Classes that support I/O ordinarily should do so by using the same interface as defined by the <tt>iostream</tt> library for the built-in types. Thus, many classes provide overloaded instances of the input and output operators.</p><a name="ch14lev2sec9"></a>
+        <p class="docText">支持 I/O 操作的类所提供的 I/O 操作接口，一般应该与标准库 <tt>iostream</tt> 为内置类型定义的接口相同，因此，许多类都需要重载输入和输出操作符。</p>
+
+        <h4 class="docSection2Title">14.2.1. Overloading the Output Operator <tt>&lt;&lt;</tt></h4><a name="ch14note05"></a>
+        <h4 class="docSection2Title">14.2.1. 输出操作符 <tt>&lt;&lt;</tt> 的重载</h4>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">To be consistent with the IO library, the operator should take an <tt>ostream&amp;</tt> as its first parameter and a reference to a <tt>const</tt> object of the class type as its second. The operator should return a reference to its <tt>ostream</tt> parameter.</p>
+                <p class="docText">为了与 IO 标准库一致，操作符应接受 <tt>ostream&amp;</tt> 作为第一个形参，对类类型 <tt>const</tt> 对象的引用作为第二个形参，并返回对 <tt>ostream</tt> 形参的引用。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">The general skeleton of an overloaded output operator is</p>
+        <p class="docText">重载输出操作符一般的简单定义如下：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">general skeleton of the overloaded output operator</span>
+     ostream&amp;
+     operator &lt;&lt;(ostream&amp; os, const ClassType &amp;object)
+     {
+         // <span class="docEmphItalicAlt">any special logic to prepare object</span>
+
+         // <span class="docEmphItalicAlt">actual output of members</span>
+         os &lt;&lt; // ...
+
+         // <span class="docEmphItalicAlt">return ostream object</span>
+         return os;
+     }
+</pre><br>
+
+        <p class="docText">The first parameter is a reference to an <tt>ostream</tt> object on which the output will be generated. The <tt>ostream</tt> is non<tt>const</tt> because writing to the stream changes its state. The parameter is a reference because we cannot copy an <tt>ostream</tt> object.</p>
+        <p class="docText">第一个形参是对 <tt>ostream</tt> 对象的引用，在该对象上将产生输出。<tt>ostream</tt> 为非 <tt>const</tt>，因为写入到流会改变流的状态。该形参是一个引用，因为不能复制 <tt>ostream</tt> 对象。</p>
+
+        <p class="docText"><a name="idd1e105309"></a><a name="idd1e105318"></a><a name="idd1e105325"></a><a name="idd1e105334"></a><a name="idd1e105342"></a><a name="idd1e105352"></a><a name="idd1e105362"></a><a name="idd1e105372"></a><a name="idd1e105382"></a><a name="idd1e105391"></a><a name="idd1e105400"></a><a name="idd1e105409"></a><a name="idd1e105420"></a>The second parameter ordinarily should be a <tt>const</tt> reference to the class type we want to print. The parameter is a reference to avoid copying the argument. It can be <tt>const</tt> because (ordinarily) printing an object should not change it. By making the parameter a <tt>const</tt> reference, we can use a single definition to print <tt>const</tt> and non<tt>const</tt> objects.</p>
+        <p class="docText">第二个形参一般应是对要输出的类类型的引用。该形参是一个引用以避免复制实参。它可以是 <tt>const</tt>，因为（一般而言）输出一个对象不应该改变对象。使形参成为 <tt>const</tt> 引用，就可以使用同一个定义来输出 <tt>const</tt> 和非 <tt>const</tt> 对象。</p>
+
+        <p class="docText">The return type is an <tt>ostream</tt> reference. Its value is usually the <tt>ostream</tt> object against which the output operator is applied.</p><a name="ch14lev3sec6"></a>
+        <p class="docText">返回类型是一个 <tt>ostream</tt> 引用，它的值通常是输出操作符所操作的 <tt>ostream</tt> 对象。</p>
+
+        <h5 class="docSection3Title">The <tt>Sales_item</tt> Output Operator</h5>
+        <h5 class="docSection3Title"><tt>Sales_item</tt> 输出操作符</h5>
+
+        <p class="docText">We can now write the <tt>Sales_item</tt> output operator:</p>
+        <p class="docText">现在可以编写 <tt>Sales_item</tt> 的输出操作符了：</p>
+        <pre>
+     ostream&amp;
+     operator&lt;&lt;(ostream&amp; out, const Sales_item&amp; s)
+     {
+         out &lt;&lt; s.isbn &lt;&lt; "\t" &lt;&lt; s.units_sold &lt;&lt; "\t"
+             &lt;&lt; s.revenue &lt;&lt; "\t" &lt;&lt; s.avg_price();
+         return out;
+     }
+</pre><br>
+
+        <p class="docText">Printing a <tt>Sales_item</tt> entails printing its three data elements and the computed average sales price. Each element is separated by a tab. After printing the values, the operator returns a reference to the <tt>ostream</tt> it just wrote.</p><a name="ch14lev3sec7"></a>
+        <p class="docText">输出 <tt>Sales_item</tt>，就需要输出它的三个数据成员以及计算得到的平均销售价格，每个成员用制表符间隔。输出值之后，该操作符返回对所写 <tt>ostream</tt> 对象的引用。</p>
+
+        <h5 class="docSection3Title">Output Operators Usually Do Minimal Formatting</h5>
+        <h5 class="docSection3Title">输出操作符通常所做格式化尽量少</h5>
+
+        <p class="docText">Class designers face one significant decision about output: whether and how much formatting to perform.</p><a name="ch14note06"></a>
+        <p class="docText">关于输出，类设计者面临一个重要决定：是否格式化以及进行多少格式化。</p>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="116" height="74" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/bestpractices.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Generally, output operators should print the contents of the object, with minimal formatting. They should not print a newline.</p>
+                <p class="docText">一般而言，输出操作符应输出对象的内容，进行最小限度的格式化，它们不应该输出换行符。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">The output operators for the built-in types do little if any formatting and do not print newlines. Given this treatment for the built-in types, users expect class output operators to behave similarly. By limiting the output operator to printing just the contents of the object, we let the users determine what if any additional formatting to perform. In particular, an output operator should not print a newline. If the operator does print a newline, then users would be unable to print descriptive text along with the object on the same line. By having the output operator perform minimal formatting, we let users control the details of their output.</p><a name="ch14lev3sec8"></a>
+        <p class="docText">用于内置类型的输出操作符所做格式化很少，并且不输出换行符。由于内置类型的这种既定处理，用户预期类输出操作符也有类似行为。通过限制输出操作符只输出对象的内容，如果需要执行任意额外的格式化，我们让用户决定该如何处理。尤其是，输出操作符不应该输出换行符，如果该操作符输出换行符，则用户就不能将说明文字与对象输出在同一行上。尽量减少操作符所做格式化，让用户自己控制输出细节。</p>
+
+        <h5 class="docSection3Title">IO Operators Must Be Nonmember Functions</h5>
+        <h5 class="docSection3Title">IO 操作符必须为非成员函数</h5>
+
+        <p class="docText">When we define an input or output operator that conforms to the conventions of the <tt>iostream</tt> library, we must make it a nonmember operator. Why?</p>
+        <p class="docText">当定义符合标准库 <tt>iostream</tt> 规范的输入或输出操作符的时候，必须使它成为非成员操作符，为什么需要这样做呢？</p>
+
+        <p class="docText">We cannot make the operator a member of our own class. If we did, then the left-hand operand would have to be an object of our class type:</p>
+        <p class="docText">我们不能将该操作符定义为类的成员，否则，左操作数将只能是该类类型的对象：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">if operator&lt;&lt; is a member of Sales_item</span>
+     Sales_item item;
+     item &lt;&lt; cout;
+</pre><br>
+
+        <p class="docText"><a name="idd1e105530"></a><a name="idd1e105537"></a><a name="idd1e105545"></a>This usage is the opposite of the normal way we use output operators defined for other types.</p>
+        <p class="docText">这个用法与为其他类型定义的输出操作符的正常使用方式相反。</p>
+
+        <p class="docText">If we want to support normal usage, then the left-hand operand must be of type <tt>ostream</tt>. That means that if the operator is to be a member of any class, it must be a member of class <tt>ostream</tt>. However, that class is part of the standard library. Weand anyone else who wants to define IO operatorscan't go adding members to a class in the library.</p>
+        <p class="docText">如果想要支持正常用法，则左操作数必须为 <tt>ostream</tt> 类型。这意味着，如果该操作符是类的成员，则它必须是 <tt>ostream</tt> 类的成员，然而，<tt>ostream</tt> 类是标准库的组成部分，我们（以及任何想要定义 IO 操作符的人）是不能为标准库中的类增加成员的。</p>
+
+        <p class="docText">Instead, if we want to use the overloaded operators to do IO for our types, we must define them as a nonmember functions. IO operators usually read or write the non<tt>public</tt> data members. As a consequence, classes often make the IO operators friends.</p><a name="ch14sb04"></a>
+        <p class="docText">相反，如果想要使用重载操作符为该类型提供 IO 操作，就必须将它们定义为非成员函数。IO 操作符通常对非公用数据成员进行读写，因此，类通常将 IO 操作符设为友元。</p>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 14.2.1</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch14qa3q1"></a><b>Exercise 14.7:</b></td>
+
+                    <td>
+                      <p class="docText">Define an output operator for the following <tt>CheckoutRecord</tt> class:</p>
+                      <p class="docText">为下面的 <tt>CheckoutRecord</tt> 类定义一个输出操作符：</p>
+                      <pre>
+     class CheckoutRecord {
+     public:
+         // ...
+     private:
+         double book_id;
+         string title;
+         Date date_borrowed;
+         Date date_due;
+         pair&lt;string,string&gt; borrower;
+         vector&lt; pair&lt;string,string&gt;* &gt; wait_list;
+     };
+</pre><br>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch14qa3q2"></a><b>Exercise 14.8:</b></td>
+
+                    <td>
+                      <p class="docText">In the exercises to <a class="docLink" href="ch12lev1sec4.html#ch12lev1sec4" >Section 12.4</a> (p. <a class="docLink" href="ch12lev1sec4.html#ch12lev1sec4" >451</a>) you wrote a sketch of one of the following classes:</p>
+                      <p class="docText"><a class="docLink" href="ch12lev1sec4.html#ch12lev1sec4" >第 12.4 节</a>的习题中，你编写了下面某个类的框架：</p>
+                      <pre>
+     (a) Book     (b) Date     (c) Employee
+     (d) Vehicle  (e) Object   (f) Tree
+</pre><br>
+
+                      <p class="docText">Write the output operator for the class you chose.</p>
+                      <p class="docText">为所选择的类编写输出操作符。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a name="ch14lev2sec10"></a>
+
+        <h4 class="docSection2Title">14.2.2. Overloading the Input Operator <tt>&gt;&gt;</tt></h4>
+        <h4 class="docSection2Title">14.2.2. 输入操作符 <tt>&gt;&gt;</tt> 的重载</h4>
+
+        <p class="docText">Similar to the output operator, the input operator takes a first parameter that is a reference to the stream from which it is to read, and returns a reference to that same stream. Its second parameter is a non<tt>const</tt> reference to the object into which to read. The second parameter must be non<tt>const</tt> because the purpose of an input operator is to read data into this object.</p><a name="ch14note07"></a>
+        <p class="docText">与输出操作符类似，输入操作符的第一个形参是一个引用，指向它要读的流，并且返回的也是对同一个流的引用。它的第二个形参是对要读入的对象的非 <tt>const</tt> 引用，该形参必须为非 <tt>const</tt>，因为输入操作符的目的是将数据读到这个对象中。</p>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">A more important, and less obvious, difference between input and output operators is that input operators must deal with the possibility of errors and end-of-file.</p>
+                <p class="docText">更重要但通常重视不够的是，输入和输出操作符有如下区别：输入操作符必须处理错误和文件结束的可能性。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch14lev3sec9"></a>
+
+        <h5 class="docSection3Title">The <tt>Sales_item</tt> Input Operator</h5>
+        <h5 class="docSection3Title"><tt>Sales_item</tt> 的输入操作符</h5>
+
+        <p class="docText"><a name="idd1e105662"></a><a name="idd1e105670"></a><a name="idd1e105679"></a><a name="idd1e105689"></a><a name="idd1e105699"></a><a name="idd1e105708"></a>The <tt>Sales_item</tt> input operator looks like:</p>
+        <p class="docText"><tt>Sales_item</tt> 的输入操作符如下：</p>
+        <pre>
+     istream&amp;
+     operator&gt;&gt;(istream&amp; in, Sales_item&amp; s)
+     {
+         double price;
+         in &gt;&gt; s.isbn &gt;&gt; s.units_sold &gt;&gt; price;
+         // <span class="docEmphItalicAlt">check that the inputs succeeded</span>
+         if (in)
+            s.revenue = s.units_sold * price;
+         else
+            s = Sales_item(); // <span class="docEmphItalicAlt">input failed: reset object to default state</span>
+         return in;
+     }
+</pre><br>
+
+        <p class="docText">This operator reads three values from its <tt>istream</tt> parameter: a <tt>string</tt> value, which it stores in the <tt>isbn</tt> member of its <tt>Sales_item</tt> parameter; an <tt>unsigned</tt>, which it stores in the <tt>units_sold</tt> member; and a <tt>double</tt>, which it stores in a local named <tt>price</tt>. Assuming the reads succeed, the operator uses <tt>price</tt> and <tt>units_sold</tt> to set the object's <tt>revenue</tt> member.</p><a name="ch14lev3sec10"></a>
+	<p class="docText">这个操作符从 <tt>istream</tt> 形参中读取三个值：一个 <tt>string</tt> 值，存储到 <tt>isbn</tt> 成员中；一个 <tt>unsigned</tt> 值，存储到 <tt>Sales_item</tt> 形参的 <tt>units_sold</tt> 成员中；一个 <tt>double</tt> 值，存储到 <tt>Sales_item</tt> 形参的 <tt>price</tt> 成员中。假定读取成功，操作符用 <tt>price</tt> 和 <tt>units_sold</tt> 来设置 <tt>Sales_item</tt> 对象的 <tt>revenue</tt> 成员。</p>
+
+        <h5 class="docSection3Title">Errors During Input</h5>
+        <h5 class="docSection3Title">输入期间的错误</h5>
+
+        <p class="docText">Our <tt>Sales_item</tt> input operator reads the expected values and checks whether an error occurred. The kinds of errors that might happen include:</p>
+        <p class="docText"><tt>Sales_item</tt> 的输入操作符将读入所期望的值并检查是否发生错误。可能发生的错误包括如下种类：</p>
+
+        <div style="font-weight:bold">
+          <ol class="docList" type="1">
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">Any of the read operations could fail because an incorrect value was provided. For example, after reading <tt>isbn</tt>, the input operator assumes that the next two items will be numeric data. If nonnumeric data is input, that read and any subsequent use of the stream will fail.</p>
+                <p class="docList">任何读操作都可能因为提供的值不正确而失败。例如，读入 <tt>isbn</tt> 之后，输入操作符将期望下两项是数值型数据。如果输入非数值型数据，这次的读入以及流的后续使用都将失败。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">Any of the reads could hit end-of-file or some other error on the input stream.</p>
+                <p class="docList">任何读入都可能碰到输入流中的文件结束或其他一些错误。</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+
+        <p class="docText">Rather than checking each read, we check once before using the data we read:</p>
+        <p class="docText">我们无需检查每次读入，只在使用读入数据之前检查一次即可：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">check that the inputs succeeded</span>
+     if (in)
+         s.revenue = s.units_sold * price;
+     else
+         s = Sales_item(); // <span class="docEmphItalicAlt">input failed: reset object to default state</span>
+</pre><br>
+
+        <p class="docText">If one of the reads failed, then <tt>price</tt> would be uninitialized. Hence, before using <tt>price</tt>, we check that the input stream is still valid. If it is, we do the calculation and store it in <tt>revenue</tt>. If there was an error, we do not worry about which input failed. Instead, we reset the entire object as if it were an empty <tt>Sales_item</tt>. We do so by creating a new, unnamed <tt>Sales_item</tt> constructed using the default constructor and assigning that value to <tt>s</tt>. After this assignment, <tt>s</tt> will have an empty <tt>string</tt> for its <tt>isbn</tt> member, and its <tt>revenue</tt> and <tt>units_sold</tt> members will be zero.</p><a name="ch14lev3sec11"></a>
+	<p class="docText">如果这些读入有一个失败了，则 <tt>price</tt> 可能没有初始化。因此，在使用 <tt>price</tt> 之前，我们需要检查输入流是否仍有效。如果有效，就进行计算并将结果存储到 <tt>revenue</tt> 中；如果出现了错误，我们不用关心是哪个输入失败了，相反，我们将整个对象复位，就好像它是一个空 <tt>Sales_item</tt> 对象，具体做法是创建一个新的、未命名的、用默认构造的 <tt>Sales_item</tt> 对象并将它赋值给 <tt>s</tt>。赋值之后，<tt>s</tt> 的 <tt>isbn</tt> 成员是一个空 <tt>string</tt>，它的 <tt>revenue</tt> 和 <tt>units_sold</tt> 成员为 0。</p>
+
+        <h5 class="docSection3Title">Handling Input Errors</h5>
+        <h5 class="docSection3Title">处理输入错误</h5>
+
+        <p class="docText"><a name="idd1e105856"></a><a name="idd1e105864"></a><a name="idd1e105873"></a><a name="idd1e105878"></a><a name="idd1e105889"></a><a name="idd1e105894"></a>If an input operator detects that the input failed, it is often a good idea to make sure that the object is in a usable and consistent state. Doing so is particularly important if the object might have been partially written before the error occurred.</p>
+        <p class="docText">如果输入操作符检测到输入失败了，则确保对象处于可用和一致的状态是个好做法。如果对象在错误发生之前已经写入了部分信息，这样做就特别重要。</p>
+
+        <p class="docText">For example, in the <tt>Sales_item</tt> input operator, we might successfully read a new <tt>isbn</tt>, and then encounter an error on the stream. An error after reading <tt>isbn</tt> would mean that the <tt>units_sold</tt> and <tt>revenue</tt> members of the old object were unchanged. The effect would be to associate a different <tt>isbn</tt> with that data.</p>
+        <p class="docText">例如，在 <tt>Sales_item</tt> 的输入操作符中，可能成功地读入了一个新的 <tt>isbn</tt>，然后遇到流错误。在读入 <tt>isbn</tt> 之后发生错误意味着旧对象的 <tt>units_sold</tt> 和 <tt>revenue</tt> 成员没变，结果会将另一个 <tt>isbn</tt> 与那个数据关联。</p>
+
+        <p class="docText">In this operator, we avoid giving the parameter an invalid state by resetting it to the empty <tt>Sales_item</tt> if an error occurs. A user who needs to know whether the input succeeded can test the stream. If the user ignores the possibility of an input error, the object is in a usable stateits members are all all defined. Similarly, the object won't generate misleading resultsits data are internally consistent.</p><a name="ch14note08"></a>
+        <p class="docText">在这个操作符中，如果发生了错误，就将形参恢复为空 <tt>Sales_item</tt> 对象，以避免给它一个无效状态。用户如果需要输入是否成功，可以测试流。即使用户忽略了输入可能错误，对象仍处于可用状态——它的成员都已经定义。类似地，对象将不会产生令人误解的结果——它的数据是内在一致的。</p>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="116" height="74" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/bestpractices.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">When designing an input operator, it is important to decide what to do about error-recovery, if anything.</p>
+                <p class="docText">设计输入操作符时，如果可能，要确定错误恢复措施，这很重要。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch14lev3sec12"></a>
+
+        <h5 class="docSection3Title">Indicating Errors</h5>
+        <h5 class="docSection3Title">指出错误</h5>
+
+        <p class="docText">In addition to handling any errors that might occur, an input operator might need to set the condition state (<a class="docLink" href="ch08lev1sec2.html#ch08lev1sec2" >Section 8.2</a>, p. <a class="docLink" href="ch08lev1sec2.html#ch08lev1sec2" >287</a>) of its input <tt>istream</tt> parameter. Our input operator is quite simplethe only errors we care about are those that could happen during the reads. If the reads succeed, then our input operator is correct and has no need to do additional checking.</p>
+        <p class="docText">除了处理可能发生的任何错误之外，输入操作符还可能需要设置输入形参的条件状态（<a class="docLink" href="ch08lev1sec2.html#ch08lev1sec2" >第 8.2 节</a>）。我们的输入操作符相当简单——我们只关心读入期间可能发生的错误。如果读入成功，则输入操作符就是正确的而且不需要进行附加检查。</p>
+
+        <p class="docText">Some input operators do need to do additional checking. For example, our input operator might check that the <tt>isbn</tt> we read is in an appropriate format. We might have read data successfully, but these data might not be suitable when interpreted as an ISBN. In such cases, the input operator might need to set the condition state to indicate failure, even though technically speaking the actual IO was successful. Usually an input operator needs to set only the <tt>failbit</tt>. Setting <tt>eofbit</tt> would imply that the file was exhausted, and setting <tt>badbit</tt> would indicate that the stream was corrupted. These errors are best left to the IO library itself to indicate.</p>
+        <p class="docText">有些输入操作符的确需要进行附加检查。例如，我们的输入操作符可以检查读到的 <tt>isbn</tt> 格式是否恰当。也许我们已成功读取了数据，但这些数据不能恰当解释为 ISBN，在这种情况下，尽管从技术上说实际的 IO 是成功的，但输入操作符仍可能需要设置条件状态以指出失败。通常输入操作符仅需设置 <tt>failbit</tt>。设置 <tt>eofbit</tt> 意思是文件耗尽，设置 <tt>badbit</tt> 可以指出流被破坏，这些错误最好留给 IO 标准库自己来指出。</p>
+      </td>
+    </tr>
+  </table>
+
+        <a name="ch14sb05"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 14.2.2</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch14qa4q1"></a><b>Exercise 14.9:</b></td>
+
+                    <td>
+                      <p class="docText"><a name="idd1e106040"></a><a name="idd1e106045"></a><a name="idd1e106053"></a>Describe the behavior of the <tt>Sales_item</tt> input operator if given the following input:</p>
+                      <p class="docText">给定下述输入，描述 <tt>Sales_item</tt> 输入操作符的行为。</p>
+                      <pre>
+     (a) 0-201-99999-9 10 24.95
+     (b) 10 24.95 0-210-99999-9
+</pre><br>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch14qa4q2"></a><b>Exercise 14.10:</b></td>
+
+                    <td>
+                      <p class="docText">What is wrong with the following Sales_item input operator?</p>
+		      <p class="docText">下述 <tt>Sales_item</tt> 输入操作符有什么错误？</p>
+                      <pre>
+     istream&amp; operator&gt;&gt;(istream&amp; in, Sales_item&amp; s)
+     {
+         double price;
+         in &gt;&gt; s.isbn &gt;&gt; s.units_sold &gt;&gt; price;
+         s.revenue = s.units_sold * price;
+         return in;
+     }
+</pre><br>
+
+                      <p class="docText">What would happen if we gave this operator the data in the previous exercise?</p>
+                      <p class="docText">如果将上题中的数据作为输入，将会发生什么？</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch14qa4q3"></a><b>Exercise 14.11:</b></td>
+
+                    <td>
+                      <p class="docText">Define an input operator for the <tt>CheckoutRecord</tt> class defined in the exercises for <a class="docLink" href="ch14lev1sec2.html#ch14sb04" >Section 14.2.1</a> (p. <a class="docLink" href="ch14lev1sec2.html#ch14sb04" >515</a>). Be sure the operator handles input errors.</p>
+                      <p class="docText">为<a class="docLink" href="ch14lev1sec2.html#ch14sb04" >第 14.2.1 节</a>习题中定义的 <tt>CheckoutRecord</tt> 类定义一个输入操作符，确保该操作符处理输入错误。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch14lev1sec1.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch14lev1sec3.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+    <!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+    <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+         <title>Managing High Availability</title> 
+        <link rel="shortcut icon" href="../../../static_star_theme/img/favicon.ico"/>
+        <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,700italic' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../static_star_theme/css/theme.css" type="text/css" /> 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+    </head>
+
+    <body class="wy-body-for-nav" role="document">
+
+    <div class="wy-grid-for-nav">
+
+        <div class="wy-full-navbar" data-swiftype-index="false">
+            <a href="http://www.memsql.com" class="logo">
+                <img src="../../../static_star_theme/img/memsql_logo_horizontal_white.svg" />
+            </a>
+            <div class="global nav">
+                <div class="pull-left left-links">
+                </div>
+                <div class="pull-right right-links">
+                    <a href="http://www.memsql.com/community/" style="word-spacing: 2px;">Community Edition</a>
+                    <a href="http://blog.memsql.com">Blog</a>
+                    <a href="http://www.memsql.com/memsql-partners">Partners</a>
+                    <a href="http://www.memsql.com/resources">Resources</a>
+                    <a href="../../../index.html">Documentation</a>
+                    <a href="http://www.memsql.com/contact">Contact</a>
+                </div>
+            </div>
+            <div class="nav-links">
+                <a href="http://www.memsql.com/product">Product</a>
+                <a href="http://www.memsql.com/solutions">Solutions</a>
+                <a href="http://www.memsql.com/case-studies">Case Studies</a>
+                <a href="http://www.memsql.com/company">Company</a>
+                <a class="download" href="http://www.memsql.com/download/">Download Now</a>
+            </div>
+        </div>
+
+        <nav data-toggle="wy-nav-shift" class="wy-nav-side" data-swiftype-index="false">
+            <div class="wy-side-nav-search">
+                <div role="search">
+  <form id="search-form" class="wy-form" method="get">
+    <input type="text" id="st-search-input" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+            </div>
+
+            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                
+                 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">MemSQL Docs Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro/index.html">How MemSQL Works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../setup/quick_start/index.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../setup/get_started/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../concepts/index.html">User Manual</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Operations Manual</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../upgrade/index.html">Upgrading MemSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_concepts/index.html">Administrator Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cluster/index.html">Administering a Cluster</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../security/index.html">Securing MemSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ssl/index.html">SSL Network Encryption</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="index.html">Managing High Availability</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="index.html#about-high-availability">About High Availability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#high-availability-scenarios">High Availability Scenarios</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#shutting-down-and-restarting-the-cluster">Shutting Down and Restarting the Cluster</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../durability_recovery/index.html">Using Durability and Recovery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../replication/index.html">Using Replication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../backup_restore/index.html">Backing Up and Restoring Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../data_export/index.html">Exporting Data From MemSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tracelog/index.html">Trace Log</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../from_mysql/index.html">Transitioning from MySQL to MemSQL</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../ref/commands_by_type/index.html">SQL Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../config/index.html">Configuration Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ops/index.html">MemSQL Ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../loader/index.html">MemSQL Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../archive/index.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../editions/index.html">MemSQL Editions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq/index.html">Frequently Asked Questions</a></li>
+</ul>
+ 
+            </div>
+            &nbsp;
+        </nav>
+
+        <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+            <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+                <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+                <a href="../../../index.html" class="logo">
+                    <img src="../../../static_star_theme/img/memsql_logo_horizontal_white.svg" />
+                    <span class="subtitle">Documentation</span>
+                </a>
+            </nav>
+
+            <div class="wy-nav-content">
+                <div class="rst-content">
+                    <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../index.html">MemSQL Documentation</a> &raquo;</li>
+      
+          <li><a href="../index.html">Operations Manual</a> &raquo;</li>
+      
+    <li>Managing High Availability</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+                    <div role="main" class="document">
+                        
+  <div class="section" id="managing-high-availability">
+<span id="high-availability"></span><h1>Managing High Availability<a class="headerlink" href="index.html#managing-high-availability" title="Permalink to this headline">¶</a></h1>
+<p>This topic describes MemSQL&#8217;s High Availability (HA) model and how to operate within it.</p>
+<div class="section" id="about-high-availability">
+<h2>About High Availability<a class="headerlink" href="index.html#about-high-availability" title="Permalink to this headline">¶</a></h2>
+<p>In MemSQL, the availability layer is responsible for mapping
+partitions to leaves (both masters and slaves) and is managed through a
+series of SQL commands that let you inspect and modify its state. You
+should familiarize yourself with <a class="reference internal" href="../../concepts/key_concepts/index.html"><em>Database Key Concepts</em></a> for an overview of
+leaf nodes and partitions before continuing.</p>
+<div class="section" id="high-availability-architecture">
+<span id="id1"></span><h3>High Availability Architecture<a class="headerlink" href="index.html#high-availability-architecture" title="Permalink to this headline">¶</a></h3>
+<p>MemSQL exposes two modes of operation: <em>redundancy-1</em> and <em>redundancy-2</em> (see <a class="reference internal" href="../cluster/index.html#redundancy-level"><em>Setting the Redundancy Level</em></a>). In
+redundancy-1, there are no extra online copies of your data (all partitions are
+masters). In the event of a leaf node failure, your data is offline until
+you reintroduce the leaf back into the system. If your leaf node is irrecoverably
+lost, you can use the <a class="reference internal" href="../../ref/REBALANCE_PARTITIONS/index.html"><em>REBALANCE PARTITIONS</em></a> <tt class="docutils literal"><span class="pre">...</span> <span class="pre">FORCE</span></tt> command to create empty replacement
+partitions instead of recovering your data. In redundancy-2, MemSQL handles
+node failures by promoting the appropriate slave partitions into masters so that
+your databases remain online. Of course, if all of your machines fail, then your
+data is unavailable until you recover enough machines or recreate the cluster from
+scratch. Each redundancy mode has an expected, <em>balanced</em> state.</p>
+<p>When you recover a leaf in <em>redundancy-1</em>, by default it will be reintroduced
+to the cluster, with all the data that was on it restored.</p>
+<p>Similarly, when you recover a leaf in <em>redundancy-2</em>, by default it will be
+reintroduced to the cluster. For each partition on that leaf one of the two
+things will happen:</p>
+<ul class="simple">
+<li>If that is the only instance of that partition (in other words, if the pair of this
+leaf is also down), the partition will be reintroduced to the cluster.</li>
+<li>If there&#8217;s another instance of that partition (usually on the pair of the leaf),
+then the partition on the newly recovered leaf will be discarded, and a new slave
+partition will be introduced, with data replicated from the existing copy.</li>
+</ul>
+<p>You can disable master aggregator from automatically attaching leaves that become visible
+by setting a global variable <tt class="docutils literal"><span class="pre">auto_attach</span></tt> to <tt class="docutils literal"><span class="pre">Off</span></tt>. In this case you will need to
+manually run <a class="reference internal" href="../../ref/ATTACH_LEAF/index.html"><em>ATTACH LEAF</em></a> to move that leaf into the online state once it is
+available. See <a class="reference internal" href="index.html#attach-leaf-examples"><em>Attaching Leaves - Examples</em></a> below to see both automatic and manual approaches
+in action.</p>
+<p>You administer availability in MemSQL in terms of simple SQL commands.
+MemSQL exposes two classes of HA commands: <em>low-level</em> and <em>high-level</em>
+commands. Each of the low-level commands operates on a single partition, while
+the high-level commands each run a series of low-level commands. In general,
+the goal of each high-level command is to converge the cluster towards a
+<em>balanced</em> state by running a series of low-level commands. This guide teaches
+you how to operate in terms of the high-level commands; however, the low-level
+commands are documented in <a class="reference internal" href="index.html#ha-advanced"><em>Low-level Commands</em></a>. We only recommend
+running the low-level commands for advanced troubleshooting under the guidance
+of MemSQL support.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Every high availability command in MemSQL, both high-level and low-level, is online. As the command
+runs, you can continue to read and write to your data.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">High availability commands can only be run on the master aggregator.</p>
+</div>
+</div>
+<div class="section" id="summary-of-high-availability-commands">
+<h3>Summary of High Availability Commands<a class="headerlink" href="index.html#summary-of-high-availability-commands" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="high-level-commands">
+<h4>High-level Commands<a class="headerlink" href="index.html#high-level-commands" title="Permalink to this headline">¶</a></h4>
+<p>Use the following commands to manage high availability in MemSQL.</p>
+<ul class="simple">
+<li><a class="reference internal" href="../../ref/ADD_LEAF/index.html"><em>ADD LEAF</em></a></li>
+<li><a class="reference internal" href="../../ref/REMOVE_LEAF/index.html"><em>REMOVE LEAF</em></a></li>
+<li><a class="reference internal" href="../../ref/ATTACH_LEAF/index.html"><em>ATTACH LEAF</em></a></li>
+<li><a class="reference internal" href="../../ref/DETACH_LEAF/index.html"><em>DETACH LEAF</em></a></li>
+<li><a class="reference internal" href="../../ref/REBALANCE_PARTITIONS/index.html"><em>REBALANCE PARTITIONS</em></a></li>
+<li><a class="reference internal" href="../../ref/EXPLAIN_REBALANCE_PARTITIONS/index.html"><em>EXPLAIN REBALANCE PARTITIONS</em></a></li>
+<li><a class="reference internal" href="../../ref/SHOW_REBALANCE_STATUS/index.html"><em>SHOW REBALANCE STATUS</em></a></li>
+</ul>
+<p>For more information, see <a class="reference internal" href="../cluster/index.html"><em>Administering a Cluster</em></a>.</p>
+</div>
+<div class="section" id="low-level-commands">
+<span id="ha-advanced"></span><h4>Low-level Commands<a class="headerlink" href="index.html#low-level-commands" title="Permalink to this headline">¶</a></h4>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">These commands are rarely meant to be used directly. The high-level commands provide a better interface for direct use.</p>
+</div>
+<p>MemSQL high availability functionality is implemented on top of the following low-level commands.</p>
+<ul class="simple">
+<li><a class="reference internal" href="../../ref/CREATE_PARTITION/index.html"><em>CREATE PARTITION</em></a></li>
+<li><a class="reference internal" href="../../ref/DROP_PARTITION/index.html"><em>DROP PARTITION</em></a></li>
+<li><a class="reference internal" href="../../ref/COPY_PARTITION/index.html"><em>COPY PARTITION</em></a></li>
+<li><a class="reference internal" href="../../ref/PROMOTE_PARTITION/index.html"><em>PROMOTE PARTITION</em></a></li>
+<li><a class="reference internal" href="../../ref/ATTACH_PARTITION/index.html"><em>ATTACH PARTITION</em></a></li>
+<li><a class="reference internal" href="../../ref/DETACH_PARTITION/index.html"><em>DETACH PARTITION</em></a></li>
+</ul>
+<p>To use these low-level commands:</p>
+<ul class="simple">
+<li>Run the command from the master aggregator.</li>
+<li><tt class="docutils literal"><span class="pre">partition_id</span></tt> has the form <tt class="docutils literal"><span class="pre">db_name:partition_ordinal</span></tt>.</li>
+<li><tt class="docutils literal"><span class="pre">physical</span> <span class="pre">partition</span></tt> refers to the database on a leaf that stores the partition&#8217;s data.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="working-with-leaves">
+<h3>Working with Leaves<a class="headerlink" href="index.html#working-with-leaves" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference internal" href="../../concepts/leaf/index.html#leaf"><em>Leaf Node</em></a> are responsible for storing slices of data in the distributed system. Each leaf
+is just a MemSQL single-box server consisting of several <a class="reference internal" href="../../concepts/partition/index.html#partition"><em>Partitions</em></a> &#8211; each partition
+is just a database on that server. If you have a database named <tt class="docutils literal"><span class="pre">test</span></tt> and run
+<a class="reference internal" href="../../ref/SHOW_DATABASES/index.html"><em>SHOW DATABASES</em></a> on a leaf, you will see names resembling <tt class="docutils literal"><span class="pre">test_5</span></tt> (this would be
+partition 5 for database <tt class="docutils literal"><span class="pre">test</span></tt>).</p>
+<p>Use the following commands to work with leaves:</p>
+<ul class="simple">
+<li><a class="reference internal" href="../../ref/ADD_LEAF/index.html"><em>ADD LEAF</em></a> adds previously unknown nodes into the cluster.</li>
+<li><a class="reference internal" href="../../ref/REMOVE_LEAF/index.html"><em>REMOVE LEAF</em></a> first rebalances away a leaf node&#8217;s partitions and then removes it from the list of leaves in <a class="reference internal" href="../../ref/SHOW_LEAVES/index.html"><em>SHOW LEAVES</em></a>.</li>
+<li><a class="reference internal" href="../../ref/ATTACH_LEAF/index.html"><em>ATTACH LEAF</em></a> transitions a <tt class="docutils literal"><span class="pre">detached</span></tt> node back into the <tt class="docutils literal"><span class="pre">online</span></tt> state (see <a class="reference internal" href="../../concepts/leaf/index.html#leaf-states"><em>Leaf States</em></a>). It can also be used to introduce a new, previously unknown node, to the cluster. In that case, unlike <a class="reference internal" href="../../ref/ADD_LEAF/index.html"><em>ADD LEAF</em></a>, <a class="reference internal" href="../../ref/ATTACH_LEAF/index.html"><em>ATTACH LEAF</em></a> will analyze the data present on the leaf node and try to reintroduce it back into the system if possible. In redundancy-2, <a class="reference internal" href="../../ref/ATTACH_LEAF/index.html"><em>ATTACH LEAF</em></a> will automatically rebalance partitions between a node and its pair to equalize the number of master and slave partitions across the pair. This is an example of an HA command converging the state of the cluster towards balance.</li>
+<li><a class="reference internal" href="../../ref/DETACH_LEAF/index.html"><em>DETACH LEAF</em></a> transitions the leaf to the <tt class="docutils literal"><span class="pre">detached</span></tt> state instead of removing it.</li>
+</ul>
+<p>You should run <a class="reference internal" href="../../ref/REMOVE_LEAF/index.html"><em>REMOVE LEAF</em></a> on leaves that you no longer wish to track as part of the distributed system.
+If you plan to run maintenance on a machine and want to temporarily relieve it from serving data, you should
+detach it first, perform the necessary maintenance, restart it, and then use <a class="reference internal" href="../../ref/ATTACH_LEAF/index.html"><em>ATTACH LEAF</em></a> to reintroduce it.
+<a class="reference internal" href="../../ref/ATTACH_LEAF/index.html"><em>ATTACH LEAF</em></a> will automatically recover what data it can from the machine and rebalance partitions with its
+pair to restore balance.</p>
+<p>During or after running <a class="reference internal" href="../../ref/ATTACH_LEAF/index.html"><em>ATTACH LEAF</em></a>, <a class="reference internal" href="../../ref/REMOVE_LEAF/index.html"><em>REMOVE LEAF</em></a>, or <a class="reference internal" href="../../ref/DETACH_LEAF/index.html"><em>DETACH LEAF</em></a>, you can run <a class="reference internal" href="../../ref/SHOW_REBALANCE_STATUS/index.html"><em>SHOW REBALANCE STATUS</em></a> <tt class="docutils literal"><span class="pre">ON</span> <span class="pre">db</span></tt> on any database to see what low-level partition operations the aggregator ran as part of the operation.</p>
+<div class="section" id="rebalancing-the-cluster">
+<h4>Rebalancing the Cluster<a class="headerlink" href="index.html#rebalancing-the-cluster" title="Permalink to this headline">¶</a></h4>
+<p>HA operations in MemSQL generate a <em>rebalance plan</em>: a series of low-level commands that converge the
+cluster towards a <em>balanced state</em>. A <tt class="docutils literal"><span class="pre">redundancy-1</span></tt> cluster is balanced if every <tt class="docutils literal"><span class="pre">online</span></tt> leaf has an
+equal number of partitions. A <tt class="docutils literal"><span class="pre">redundancy-2</span></tt> cluster is balanced if every pair of leaves has an equal number
+of partitions, and, within a pair, each leaf has an equal number of master and slave partitions.</p>
+<p>Since partitions are per-database, each rebalance plan is also per-database.
+<a class="reference internal" href="../../ref/ATTACH_LEAF/index.html"><em>ATTACH LEAF</em></a>, <a class="reference internal" href="../../ref/REMOVE_LEAF/index.html"><em>REMOVE LEAF</em></a>, <a class="reference internal" href="../../ref/DETACH_LEAF/index.html"><em>DETACH LEAF</em></a>, and <a class="reference internal" href="../../ref/REBALANCE_PARTITIONS/index.html"><em>REBALANCE PARTITIONS</em></a> all work this way.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">MemSQL will never auto-rebalance your data in the background. In the event of a failure, MemSQL will promote the
+partitions that it needs to bring the database back online. Once you&#8217;ve recovered or recreated the failed
+leaf nodes, you can proceed by running the relevant HA commands to rebalance the cluster. This model enables you
+to trigger a complex rebalance operation with a simple SQL command, and it also prevents expensive background work
+from affecting the performance of your application without your explicit administrative consent.</p>
+</div>
+<p>The <a class="reference internal" href="../../ref/REBALANCE_PARTITIONS/index.html"><em>REBALANCE PARTITIONS</em></a> command examines the state of partitions and leaves for a particular database,
+generates a plan to rebalance the partitions across the <tt class="docutils literal"><span class="pre">online</span></tt> leaves, and executes that plan.  You
+can use the <a class="reference internal" href="../../ref/EXPLAIN_REBALANCE_PARTITIONS/index.html"><em>EXPLAIN REBALANCE PARTITIONS</em></a> ON db to view the plan that <a class="reference internal" href="../../ref/REBALANCE_PARTITIONS/index.html"><em>REBALANCE PARTITIONS</em></a> ON db would
+execute. If this command returns an empty result, then the database is balanced. The following is an example
+output from <a class="reference internal" href="../../ref/EXPLAIN_REBALANCE_PARTITIONS/index.html"><em>EXPLAIN REBALANCE PARTITIONS</em></a> run on a small sample cluster:</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="k">EXPLAIN</span> <span class="n">REBALANCE</span> <span class="n">PARTITIONS</span> <span class="k">ON</span> <span class="n">test</span><span class="p">;</span>
+<span class="o">+-------------------+---------+-------------+-------------+-------+</span>
+<span class="o">|</span> <span class="n">Action</span>            <span class="o">|</span> <span class="n">Ordinal</span> <span class="o">|</span> <span class="n">Target_Host</span> <span class="o">|</span> <span class="n">Target_Port</span> <span class="o">|</span> <span class="n">Phase</span> <span class="o">|</span>
+<span class="o">+-------------------+---------+-------------+-------------+-------+</span>
+<span class="o">|</span> <span class="n">COPY</span> <span class="n">PARTITION</span>    <span class="o">|</span>       <span class="mi">1</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">6</span>      <span class="o">|</span>        <span class="mi">3306</span> <span class="o">|</span>     <span class="mi">2</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">COPY</span> <span class="n">PARTITION</span>    <span class="o">|</span>       <span class="mi">3</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">8</span>      <span class="o">|</span>        <span class="mi">3306</span> <span class="o">|</span>     <span class="mi">2</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">COPY</span> <span class="n">PARTITION</span>    <span class="o">|</span>       <span class="mi">5</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">6</span>      <span class="o">|</span>        <span class="mi">3306</span> <span class="o">|</span>     <span class="mi">2</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">COPY</span> <span class="n">PARTITION</span>    <span class="o">|</span>       <span class="mi">7</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">8</span>      <span class="o">|</span>        <span class="mi">3306</span> <span class="o">|</span>     <span class="mi">2</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">PROMOTE</span> <span class="n">PARTITION</span> <span class="o">|</span>       <span class="mi">1</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">6</span>      <span class="o">|</span>        <span class="mi">3306</span> <span class="o">|</span>     <span class="mi">6</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">PROMOTE</span> <span class="n">PARTITION</span> <span class="o">|</span>       <span class="mi">3</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">8</span>      <span class="o">|</span>        <span class="mi">3306</span> <span class="o">|</span>     <span class="mi">6</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">COPY</span> <span class="n">PARTITION</span>    <span class="o">|</span>       <span class="mi">1</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">2</span>      <span class="o">|</span>        <span class="mi">3306</span> <span class="o">|</span>     <span class="mi">7</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">COPY</span> <span class="n">PARTITION</span>    <span class="o">|</span>       <span class="mi">3</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">4</span>      <span class="o">|</span>        <span class="mi">3306</span> <span class="o">|</span>     <span class="mi">7</span> <span class="o">|</span>
+<span class="o">+-------------------+---------+-------------+-------------+-------+</span>
+<span class="mi">8</span> <span class="n">rows</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Each action corresponds to a low-level command described in <a class="reference internal" href="index.html#ha-advanced"><em>Low-level Commands</em></a>. The <cite>Ordinal</cite> is
+the target partition&#8217;s ordinal, and the <cite>Target_Host</cite> and <cite>Target_Port</cite> correspond to the destination leaf.
+Any two operations in the same <cite>Phase</cite> can be run in parallel and phases are run in order. For example, the
+aggregator can run <tt class="docutils literal"><span class="pre">COPY</span> <span class="pre">PARTITION</span></tt> on partitions <tt class="docutils literal"><span class="pre">test:1</span></tt> and <tt class="docutils literal"><span class="pre">test:3</span></tt> in parallel. The exact meaning
+of what each phase means is arbitrary and depends on the particular rebalance operation.</p>
+<p>To execute this plan (assuming the state of the cluster does not change before you proceed), you can run the
+<a class="reference internal" href="../../ref/REBALANCE_PARTITIONS/index.html"><em>REBALANCE PARTITIONS</em></a> command:</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="n">REBALANCE</span> <span class="n">PARTITIONS</span> <span class="k">ON</span> <span class="n">test</span><span class="p">;</span>
+<span class="n">Query</span> <span class="n">OK</span><span class="p">,</span> <span class="mi">1</span> <span class="n">row</span> <span class="nf">affected</span> <span class="p">(</span><span class="mi">9</span><span class="p">.</span><span class="mi">80</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The main use-case for the <a class="reference internal" href="../../ref/REBALANCE_PARTITIONS/index.html"><em>REBALANCE PARTITIONS</em></a> command is to rebalance data onto new leaf nodes in the cluster.
+This situation can arise from adding new leaf nodes to the cluster to expand capacity, or if leaf nodes terminate
+irrecoverably and you wish to replace them with new nodes. For common leaf-failure scenarios, <a class="reference internal" href="../../ref/ATTACH_LEAF/index.html"><em>ATTACH LEAF</em></a> will
+automatically perform the necessary rebalance operations on the affected leaf nodes.</p>
+<p>Although rebalance operations can take some time to complete, you can continue to read and write data to the database while
+it runs (the operation is online). While <a class="reference internal" href="../../ref/REBALANCE_PARTITIONS/index.html"><em>REBALANCE PARTITIONS</em></a> runs, use the <a class="reference internal" href="../../ref/SHOW_REBALANCE_STATUS/index.html"><em>SHOW REBALANCE STATUS</em></a>  command to examine its running state:</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="k">SHOW</span> <span class="n">REBALANCE</span> <span class="n">STATUS</span> <span class="k">ON</span> <span class="n">test</span><span class="p">;</span>
+<span class="o">+-------------------+---------+-------------+-------------+-------+-----------+--------------+</span>
+<span class="o">|</span> <span class="n">Action</span>            <span class="o">|</span> <span class="n">Ordinal</span> <span class="o">|</span> <span class="n">Target_Host</span> <span class="o">|</span> <span class="n">Target_Port</span> <span class="o">|</span> <span class="n">Phase</span> <span class="o">|</span> <span class="n">Status</span>    <span class="o">|</span> <span class="n">Running_Time</span> <span class="o">|</span>
+<span class="o">+-------------------+---------+-------------+-------------+-------+-----------+--------------+</span>
+<span class="o">|</span> <span class="n">COPY</span> <span class="n">PARTITION</span>    <span class="o">|</span>       <span class="mi">1</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">6</span>      <span class="o">|</span>        <span class="mi">3306</span> <span class="o">|</span>     <span class="mi">2</span> <span class="o">|</span> <span class="n">running</span>   <span class="o">|</span>         <span class="mi">1574</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">COPY</span> <span class="n">PARTITION</span>    <span class="o">|</span>       <span class="mi">3</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">8</span>      <span class="o">|</span>        <span class="mi">3306</span> <span class="o">|</span>     <span class="mi">2</span> <span class="o">|</span> <span class="n">running</span>   <span class="o">|</span>         <span class="mi">1574</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">COPY</span> <span class="n">PARTITION</span>    <span class="o">|</span>       <span class="mi">5</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">6</span>      <span class="o">|</span>        <span class="mi">3306</span> <span class="o">|</span>     <span class="mi">2</span> <span class="o">|</span> <span class="n">running</span>   <span class="o">|</span>         <span class="mi">1574</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">COPY</span> <span class="n">PARTITION</span>    <span class="o">|</span>       <span class="mi">7</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">8</span>      <span class="o">|</span>        <span class="mi">3306</span> <span class="o">|</span>     <span class="mi">2</span> <span class="o">|</span> <span class="n">running</span>   <span class="o">|</span>         <span class="mi">1574</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">PROMOTE</span> <span class="n">PARTITION</span> <span class="o">|</span>       <span class="mi">1</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">6</span>      <span class="o">|</span>        <span class="mi">3306</span> <span class="o">|</span>     <span class="mi">6</span> <span class="o">|</span> <span class="n">scheduled</span> <span class="o">|</span>         <span class="no">NULL</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">PROMOTE</span> <span class="n">PARTITION</span> <span class="o">|</span>       <span class="mi">3</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">8</span>      <span class="o">|</span>        <span class="mi">3306</span> <span class="o">|</span>     <span class="mi">6</span> <span class="o">|</span> <span class="n">scheduled</span> <span class="o">|</span>         <span class="no">NULL</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">COPY</span> <span class="n">PARTITION</span>    <span class="o">|</span>       <span class="mi">1</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">2</span>      <span class="o">|</span>        <span class="mi">3306</span> <span class="o">|</span>     <span class="mi">7</span> <span class="o">|</span> <span class="n">scheduled</span> <span class="o">|</span>         <span class="no">NULL</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">COPY</span> <span class="n">PARTITION</span>    <span class="o">|</span>       <span class="mi">3</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">4</span>      <span class="o">|</span>        <span class="mi">3306</span> <span class="o">|</span>     <span class="mi">7</span> <span class="o">|</span> <span class="n">scheduled</span> <span class="o">|</span>         <span class="no">NULL</span> <span class="o">|</span>
+<span class="o">+-------------------+---------+-------------+-------------+-------+-----------+--------------+</span>
+<span class="mi">8</span> <span class="n">rows</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The output is the same as <a class="reference internal" href="../../ref/EXPLAIN_REBALANCE_PARTITIONS/index.html"><em>EXPLAIN REBALANCE PARTITIONS</em></a> with the addition of two new columns. <tt class="docutils literal"><span class="pre">Status</span></tt> is one of
+<tt class="docutils literal"><span class="pre">scheduled</span></tt>, <tt class="docutils literal"><span class="pre">running</span></tt>, or <tt class="docutils literal"><span class="pre">completed</span></tt>. For <tt class="docutils literal"><span class="pre">running</span></tt> or <tt class="docutils literal"><span class="pre">completed</span></tt> commands, <tt class="docutils literal"><span class="pre">Running_Time</span></tt> indicates
+the time in milliseconds that has been spent running the particular low-level command.</p>
+<p>After <a class="reference internal" href="../../ref/REBALANCE_PARTITIONS/index.html"><em>REBALANCE PARTITIONS</em></a> completes, <a class="reference internal" href="../../ref/SHOW_REBALANCE_STATUS/index.html"><em>SHOW REBALANCE STATUS</em></a> displays a summary of the last rebalance operation
+until the next one is run.</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="k">SHOW</span> <span class="n">REBALANCE</span> <span class="n">STATUS</span> <span class="k">ON</span> <span class="n">test</span><span class="p">;</span>
+<span class="o">+-------------------+---------+-------------+-------------+-------+---------+--------------+</span>
+<span class="o">|</span> <span class="n">Action</span>            <span class="o">|</span> <span class="n">Ordinal</span> <span class="o">|</span> <span class="n">Target_Host</span> <span class="o">|</span> <span class="n">Target_Port</span> <span class="o">|</span> <span class="n">Phase</span> <span class="o">|</span> <span class="n">Status</span>  <span class="o">|</span> <span class="n">Running_Time</span> <span class="o">|</span>
+<span class="o">+-------------------+---------+-------------+-------------+-------+---------+--------------+</span>
+<span class="o">|</span> <span class="n">COPY</span> <span class="n">PARTITION</span>    <span class="o">|</span>       <span class="mi">1</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">6</span>      <span class="o">|</span>        <span class="mi">3306</span> <span class="o">|</span>     <span class="mi">2</span> <span class="o">|</span> <span class="n">success</span> <span class="o">|</span>         <span class="mi">2870</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">COPY</span> <span class="n">PARTITION</span>    <span class="o">|</span>       <span class="mi">3</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">8</span>      <span class="o">|</span>        <span class="mi">3306</span> <span class="o">|</span>     <span class="mi">2</span> <span class="o">|</span> <span class="n">success</span> <span class="o">|</span>         <span class="mi">2903</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">COPY</span> <span class="n">PARTITION</span>    <span class="o">|</span>       <span class="mi">5</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">6</span>      <span class="o">|</span>        <span class="mi">3306</span> <span class="o">|</span>     <span class="mi">2</span> <span class="o">|</span> <span class="n">success</span> <span class="o">|</span>         <span class="mi">2903</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">COPY</span> <span class="n">PARTITION</span>    <span class="o">|</span>       <span class="mi">7</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">8</span>      <span class="o">|</span>        <span class="mi">3306</span> <span class="o">|</span>     <span class="mi">2</span> <span class="o">|</span> <span class="n">success</span> <span class="o">|</span>         <span class="mi">2903</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">PROMOTE</span> <span class="n">PARTITION</span> <span class="o">|</span>       <span class="mi">1</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">6</span>      <span class="o">|</span>        <span class="mi">3306</span> <span class="o">|</span>     <span class="mi">6</span> <span class="o">|</span> <span class="n">success</span> <span class="o">|</span>         <span class="mi">4131</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">PROMOTE</span> <span class="n">PARTITION</span> <span class="o">|</span>       <span class="mi">3</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">8</span>      <span class="o">|</span>        <span class="mi">3306</span> <span class="o">|</span>     <span class="mi">6</span> <span class="o">|</span> <span class="n">success</span> <span class="o">|</span>         <span class="mi">4165</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">COPY</span> <span class="n">PARTITION</span>    <span class="o">|</span>       <span class="mi">1</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">2</span>      <span class="o">|</span>        <span class="mi">3306</span> <span class="o">|</span>     <span class="mi">7</span> <span class="o">|</span> <span class="n">success</span> <span class="o">|</span>         <span class="mi">2606</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">COPY</span> <span class="n">PARTITION</span>    <span class="o">|</span>       <span class="mi">3</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">4</span>      <span class="o">|</span>        <span class="mi">3306</span> <span class="o">|</span>     <span class="mi">7</span> <span class="o">|</span> <span class="n">success</span> <span class="o">|</span>         <span class="mi">2627</span> <span class="o">|</span>
+<span class="o">+-------------------+---------+-------------+-------------+-------+---------+--------------+</span>
+<span class="mi">8</span> <span class="n">rows</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="../../ref/ATTACH_LEAF/index.html"><em>ATTACH LEAF</em></a>, <a class="reference internal" href="../../ref/REMOVE_LEAF/index.html"><em>REMOVE LEAF</em></a>, and <a class="reference internal" href="../../ref/DETACH_LEAF/index.html"><em>DETACH LEAF</em></a> also generate and execute plans for every database relevant to the target leaf node.</p>
+</div>
+</div>
+<div class="section" id="attaching-leaves-examples">
+<span id="attach-leaf-examples"></span><h3>Attaching Leaves - Examples<a class="headerlink" href="index.html#attaching-leaves-examples" title="Permalink to this headline">¶</a></h3>
+<p>In this section, we will walk through a full example of running <a class="reference internal" href="../../ref/ATTACH_LEAF/index.html"><em>ATTACH LEAF</em></a> on redundancy-1 and redundancy-2 clusters. Redundancy-1 vs. redundancy-2 clusters are explained earlier in <a class="reference internal" href="index.html#high-availability-architecture"><em>High Availability Architecture</em></a>.</p>
+<div class="section" id="attach-leaf-in-redundancy-1">
+<h4><tt class="docutils literal"><span class="pre">ATTACH</span> <span class="pre">LEAF</span></tt> In Redundancy-1<a class="headerlink" href="index.html#attach-leaf-in-redundancy-1" title="Permalink to this headline">¶</a></h4>
+<p>Let&#8217;s walk through a full example in a redundancy-1 cluster. This cluster has four leaves <tt class="docutils literal"><span class="pre">leaf-1</span></tt> through <tt class="docutils literal"><span class="pre">leaf-4</span></tt> and
+a database named <tt class="docutils literal"><span class="pre">test</span></tt>. In this example, <tt class="docutils literal"><span class="pre">leaf-4</span></tt> will fail, and we will recover and reintroduce it into the
+system with <a class="reference internal" href="../../ref/ATTACH_LEAF/index.html"><em>ATTACH LEAF</em></a>.</p>
+<p>Here is the initial state of the cluster:</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="c1">-- SHOW LEAVES returns all the leaves in the cluster and their current states</span>
+<span class="n">memsql</span><span class="o">&gt;</span> <span class="k">SHOW</span> <span class="n">LEAVES</span><span class="p">;</span>
+<span class="o">+--------+-------+--------------------+-----------+-----------+--------+--------------------+---------------------------+</span>
+<span class="o">|</span> <span class="n">Host</span>   <span class="o">|</span> <span class="n">Port</span>  <span class="o">|</span> <span class="n">Availability_Group</span> <span class="o">|</span> <span class="n">Pair_Host</span> <span class="o">|</span> <span class="n">Pair_Port</span> <span class="o">|</span> <span class="n">State</span>  <span class="o">|</span> <span class="n">Opened_Connections</span> <span class="o">|</span> <span class="n">Average_Roundtrip_Latency</span> <span class="o">|</span>
+<span class="o">+--------+-------+--------------------+-----------+-----------+--------+--------------------+---------------------------+</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">1</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span> <span class="no">NULL</span>      <span class="o">|</span>      <span class="no">NULL</span> <span class="o">|</span> <span class="n">online</span> <span class="o">|</span>                  <span class="mi">2</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">397</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">2</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span> <span class="no">NULL</span>      <span class="o">|</span>      <span class="no">NULL</span> <span class="o">|</span> <span class="n">online</span> <span class="o">|</span>                  <span class="mi">2</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">397</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">3</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span> <span class="no">NULL</span>      <span class="o">|</span>      <span class="no">NULL</span> <span class="o">|</span> <span class="n">online</span> <span class="o">|</span>                  <span class="mi">2</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">349</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">4</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span> <span class="no">NULL</span>      <span class="o">|</span>      <span class="no">NULL</span> <span class="o">|</span> <span class="n">online</span> <span class="o">|</span>                  <span class="mi">2</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">363</span> <span class="o">|</span>
+<span class="o">+--------+-------+--------------------+-----------+-----------+--------+--------------------+---------------------------+</span>
+<span class="mi">4</span> <span class="n">rows</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+
+<span class="c1">-- SHOW PARTITIONS returns all the partitions on a given database.</span>
+<span class="n">memsql</span><span class="o">&gt;</span> <span class="k">SHOW</span> <span class="n">PARTITIONS</span> <span class="k">ON</span> <span class="n">test</span><span class="p">;</span>
+<span class="o">+---------+--------+-------+--------+</span>
+<span class="o">|</span> <span class="n">Ordinal</span> <span class="o">|</span> <span class="n">Host</span>   <span class="o">|</span> <span class="n">Port</span>  <span class="o">|</span> <span class="n">Role</span>   <span class="o">|</span>
+<span class="o">+---------+--------+-------+--------+</span>
+<span class="o">|</span>       <span class="mi">0</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">1</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span> <span class="n">Master</span> <span class="o">|</span>
+<span class="o">|</span>       <span class="mi">1</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">2</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span> <span class="n">Master</span> <span class="o">|</span>
+<span class="o">|</span>       <span class="mi">2</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">3</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span> <span class="n">Master</span> <span class="o">|</span>
+<span class="o">|</span>       <span class="mi">3</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">4</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span> <span class="n">Master</span> <span class="o">|</span>
+<span class="o">|</span>       <span class="mi">4</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">1</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span> <span class="n">Master</span> <span class="o">|</span>
+<span class="o">|</span>       <span class="mi">5</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">2</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span> <span class="n">Master</span> <span class="o">|</span>
+<span class="o">|</span>       <span class="mi">6</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">3</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span> <span class="n">Master</span> <span class="o">|</span>
+<span class="o">|</span>       <span class="mi">7</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">4</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span> <span class="n">Master</span> <span class="o">|</span>
+<span class="o">+---------+--------+-------+--------+</span>
+<span class="mi">8</span> <span class="n">rows</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+
+<span class="c1">-- You can query in INFORMATION_SCHEMA.DISTRIBUTED_PARTITIONS to slice</span>
+<span class="c1">-- and dice the partitions map</span>
+<span class="n">memsql</span><span class="o">&gt;</span> <span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">INFORMATION_SCHEMA</span><span class="p">.</span><span class="n">DISTRIBUTED_PARTITIONS</span>
+    <span class="o">-&gt;</span>    <span class="k">WHERE</span> <span class="n">DATABASE_NAME</span><span class="o">=</span><span class="s1">&#39;test&#39;</span> <span class="k">AND</span> <span class="n">Host</span><span class="o">=</span><span class="s1">&#39;leaf-4&#39;</span><span class="p">;</span>
+<span class="o">+---------------+---------+--------+------+--------+</span>
+<span class="o">|</span> <span class="n">DATABASE_NAME</span> <span class="o">|</span> <span class="n">ORDINAL</span> <span class="o">|</span> <span class="n">HOST</span>   <span class="o">|</span> <span class="n">PORT</span> <span class="o">|</span> <span class="n">ROLE</span>   <span class="o">|</span>
+<span class="o">+---------------+---------+--------+-------+--------+</span>
+<span class="o">|</span> <span class="n">test</span>          <span class="o">|</span>       <span class="mi">3</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">4</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">Master</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">test</span>          <span class="o">|</span>       <span class="mi">7</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">4</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">Master</span> <span class="o">|</span>
+<span class="o">+---------------+---------+--------+------+--------+</span>
+<span class="mi">2</span> <span class="n">rows</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">01</span> <span class="n">sec</span><span class="p">)</span>
+
+<span class="c1">-- test.x has 100 consecutive values from 1 to 100</span>
+<span class="n">memsql</span><span class="o">&gt;</span> <span class="k">SELECT</span> <span class="nf">MIN</span><span class="p">(</span><span class="n">id</span><span class="p">),</span> <span class="nf">MAX</span><span class="p">(</span><span class="n">id</span><span class="p">),</span> <span class="nf">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">test</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
+<span class="o">+---------+---------+----------+</span>
+<span class="o">|</span> <span class="nf">min</span><span class="p">(</span><span class="n">id</span><span class="p">)</span> <span class="o">|</span> <span class="nf">max</span><span class="p">(</span><span class="n">id</span><span class="p">)</span> <span class="o">|</span> <span class="nf">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="o">|</span>
+<span class="o">+---------+---------+----------+</span>
+<span class="o">|</span>       <span class="mi">1</span> <span class="o">|</span>     <span class="mi">100</span> <span class="o">|</span>      <span class="mi">100</span> <span class="o">|</span>
+<span class="o">+---------+---------+----------+</span>
+<span class="mi">1</span> <span class="n">row</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If we kill the MemSQL instance on <tt class="docutils literal"><span class="pre">leaf-4</span></tt>, then <tt class="docutils literal"><span class="pre">leaf-4</span></tt> will transition to <tt class="docutils literal"><span class="pre">offline</span></tt> in <a class="reference internal" href="../../ref/SHOW_LEAVES/index.html"><em>SHOW LEAVES</em></a>,
+and partitions 3 and 7 will be unmapped on <tt class="docutils literal"><span class="pre">test</span></tt>.</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="k">SHOW</span> <span class="n">LEAVES</span><span class="p">;</span>
+<span class="o">+--------+-------+--------------------+-----------+-----------+---------+--------------------+---------------------------+</span>
+<span class="o">|</span> <span class="n">Host</span>   <span class="o">|</span> <span class="n">Port</span>  <span class="o">|</span> <span class="n">Availability_Group</span> <span class="o">|</span> <span class="n">Pair_Host</span> <span class="o">|</span> <span class="n">Pair_Port</span> <span class="o">|</span> <span class="n">State</span>   <span class="o">|</span> <span class="n">Opened_Connections</span> <span class="o">|</span> <span class="n">Average_Roundtrip_Latency</span> <span class="o">|</span>
+<span class="o">+--------+-------+--------------------+-----------+-----------+---------+--------------------+---------------------------+</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">1</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span> <span class="no">NULL</span>      <span class="o">|</span>      <span class="no">NULL</span> <span class="o">|</span> <span class="n">online</span>  <span class="o">|</span>                  <span class="mi">2</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">414</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">2</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span> <span class="no">NULL</span>      <span class="o">|</span>      <span class="no">NULL</span> <span class="o">|</span> <span class="n">online</span>  <span class="o">|</span>                  <span class="mi">2</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">341</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">3</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span> <span class="no">NULL</span>      <span class="o">|</span>      <span class="no">NULL</span> <span class="o">|</span> <span class="n">online</span>  <span class="o">|</span>                  <span class="mi">2</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">358</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">4</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span> <span class="no">NULL</span>      <span class="o">|</span>      <span class="no">NULL</span> <span class="o">|</span> <span class="n">offline</span> <span class="o">|</span>                  <span class="mi">0</span> <span class="o">|</span>                      <span class="no">NULL</span> <span class="o">|</span>
+<span class="o">+--------+-------+--------------------+-----------+-----------+---------+--------------------+---------------------------+</span>
+<span class="mi">4</span> <span class="n">rows</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+
+<span class="n">memsql</span><span class="o">&gt;</span> <span class="k">SHOW</span> <span class="n">PARTITIONS</span> <span class="k">ON</span> <span class="n">test</span><span class="p">;</span>
+<span class="o">+---------+--------+-------+--------+</span>
+<span class="o">|</span> <span class="n">Ordinal</span> <span class="o">|</span> <span class="n">Host</span>   <span class="o">|</span> <span class="n">Port</span>  <span class="o">|</span> <span class="n">Role</span>   <span class="o">|</span>
+<span class="o">+---------+--------+-------+--------+</span>
+<span class="o">|</span>       <span class="mi">0</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">1</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span> <span class="n">Master</span> <span class="o">|</span>
+<span class="o">|</span>       <span class="mi">1</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">2</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span> <span class="n">Master</span> <span class="o">|</span>
+<span class="o">|</span>       <span class="mi">2</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">3</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span> <span class="n">Master</span> <span class="o">|</span>
+<span class="o">|</span>       <span class="mi">3</span> <span class="o">|</span> <span class="no">NULL</span>   <span class="o">|</span>  <span class="no">NULL</span> <span class="o">|</span> <span class="no">NULL</span>   <span class="o">|</span>
+<span class="o">|</span>       <span class="mi">4</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">1</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span> <span class="n">Master</span> <span class="o">|</span>
+<span class="o">|</span>       <span class="mi">5</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">2</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span> <span class="n">Master</span> <span class="o">|</span>
+<span class="o">|</span>       <span class="mi">6</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">3</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span> <span class="n">Master</span> <span class="o">|</span>
+<span class="o">|</span>       <span class="mi">7</span> <span class="o">|</span> <span class="no">NULL</span>   <span class="o">|</span>  <span class="no">NULL</span> <span class="o">|</span> <span class="no">NULL</span>   <span class="o">|</span>
+<span class="o">+---------+--------+-------+--------+</span>
+<span class="mi">8</span> <span class="n">rows</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The database is now offline for reads and writes:</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="k">SELECT</span> <span class="nf">MIN</span><span class="p">(</span><span class="n">id</span><span class="p">),</span> <span class="nf">MAX</span><span class="p">(</span><span class="n">id</span><span class="p">),</span> <span class="nf">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">test</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
+<span class="n">ERROR</span> <span class="mi">1777</span> <span class="p">(</span><span class="n">HY000</span><span class="p">):</span> <span class="n">Partition</span> <span class="n">test</span><span class="p">:</span><span class="mi">3</span> <span class="n">has</span> <span class="n">no</span> <span class="n">master</span> <span class="n">instance</span><span class="p">.</span>
+</pre></div>
+</div>
+<p>After restarting MemSQL on <tt class="docutils literal"><span class="pre">leaf-4</span></tt>, master aggregator will notice the leaf is reachable again and attach it back to
+the cluster. Leaf will automatically transition to the <tt class="docutils literal"><span class="pre">online</span></tt> state, and all the partitions on the leaf will be
+automatically imported.</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="k">SHOW</span> <span class="n">LEAVES</span><span class="p">;</span>
+<span class="o">+--------+-------+--------------------+-----------+-----------+--------+--------------------+---------------------------+</span>
+<span class="o">|</span> <span class="n">Host</span>   <span class="o">|</span> <span class="n">Port</span>  <span class="o">|</span> <span class="n">Availability_Group</span> <span class="o">|</span> <span class="n">Pair_Host</span> <span class="o">|</span> <span class="n">Pair_Port</span> <span class="o">|</span> <span class="n">State</span>  <span class="o">|</span> <span class="n">Opened_Connections</span> <span class="o">|</span> <span class="n">Average_Roundtrip_Latency</span> <span class="o">|</span>
+<span class="o">+--------+-------+--------------------+-----------+-----------+--------+--------------------+---------------------------+</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">1</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span> <span class="no">NULL</span>      <span class="o">|</span>      <span class="no">NULL</span> <span class="o">|</span> <span class="n">online</span> <span class="o">|</span>                  <span class="mi">4</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">437</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">2</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span> <span class="no">NULL</span>      <span class="o">|</span>      <span class="no">NULL</span> <span class="o">|</span> <span class="n">online</span> <span class="o">|</span>                  <span class="mi">4</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">411</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">3</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span> <span class="no">NULL</span>      <span class="o">|</span>      <span class="no">NULL</span> <span class="o">|</span> <span class="n">online</span> <span class="o">|</span>                  <span class="mi">4</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">366</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">4</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span> <span class="no">NULL</span>      <span class="o">|</span>      <span class="no">NULL</span> <span class="o">|</span> <span class="n">online</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">418</span> <span class="o">|</span>
+<span class="o">+--------+-------+--------------------+-----------+-----------+--------+--------------------+---------------------------+</span>
+<span class="mi">4</span> <span class="n">rows</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+
+<span class="c1">-- The data that was on leaf-4 is back!</span>
+<span class="n">memsql</span><span class="o">&gt;</span> <span class="k">SELECT</span> <span class="nf">MIN</span><span class="p">(</span><span class="n">id</span><span class="p">),</span> <span class="nf">MAX</span><span class="p">(</span><span class="n">id</span><span class="p">),</span> <span class="nf">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">test</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
+<span class="o">+---------+---------+----------+</span>
+<span class="o">|</span> <span class="nf">min</span><span class="p">(</span><span class="n">id</span><span class="p">)</span> <span class="o">|</span> <span class="nf">max</span><span class="p">(</span><span class="n">id</span><span class="p">)</span> <span class="o">|</span> <span class="nf">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="o">|</span>
+<span class="o">+---------+---------+----------+</span>
+<span class="o">|</span>       <span class="mi">1</span> <span class="o">|</span>     <span class="mi">100</span> <span class="o">|</span>      <span class="mi">100</span> <span class="o">|</span>
+<span class="o">+---------+---------+----------+</span>
+<span class="mi">1</span> <span class="n">row</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can disable master aggregator from automatically moving leaves that become visible to the <tt class="docutils literal"><span class="pre">online</span></tt> state by running:</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="kt">set</span> <span class="n">global</span> <span class="n">auto_attach</span> <span class="o">=</span> <span class="n">Off</span><span class="p">;</span>
+<span class="n">Query</span> <span class="n">OK</span><span class="p">,</span> <span class="mi">0</span> <span class="n">rows</span> <span class="nf">affected</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In this case, after restarting MemSQL on <tt class="docutils literal"><span class="pre">leaf-4</span></tt> and waiting for it to recover, instead of node being in <tt class="docutils literal"><span class="pre">offline</span></tt>
+state we will see it transitioning to a <tt class="docutils literal"><span class="pre">detached</span></tt> state:</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="c1">-- leaf-4 is in the detached state</span>
+<span class="n">memsql</span><span class="o">&gt;</span> <span class="k">SHOW</span> <span class="n">LEAVES</span><span class="p">;</span>
+<span class="o">+--------+-------+--------------------+-----------+-----------+----------+--------------------+---------------------------+</span>
+<span class="o">|</span> <span class="n">Host</span>   <span class="o">|</span> <span class="n">Port</span>  <span class="o">|</span> <span class="n">Availability_Group</span> <span class="o">|</span> <span class="n">Pair_Host</span> <span class="o">|</span> <span class="n">Pair_Port</span> <span class="o">|</span> <span class="n">State</span>    <span class="o">|</span> <span class="n">Opened_Connections</span> <span class="o">|</span> <span class="n">Average_Roundtrip_Latency</span> <span class="o">|</span>
+<span class="o">+--------+-------+--------------------+-----------+-----------+----------+--------------------+---------------------------+</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">1</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span> <span class="no">NULL</span>      <span class="o">|</span>      <span class="no">NULL</span> <span class="o">|</span> <span class="n">online</span>   <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">467</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">2</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span> <span class="no">NULL</span>      <span class="o">|</span>      <span class="no">NULL</span> <span class="o">|</span> <span class="n">online</span>   <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">359</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">3</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span> <span class="no">NULL</span>      <span class="o">|</span>      <span class="no">NULL</span> <span class="o">|</span> <span class="n">online</span>   <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">405</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">4</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span> <span class="no">NULL</span>      <span class="o">|</span>      <span class="no">NULL</span> <span class="o">|</span> <span class="n">detached</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">360</span> <span class="o">|</span>
+<span class="o">+--------+-------+--------------------+-----------+-----------+----------+--------------------+---------------------------+</span>
+<span class="mi">4</span> <span class="n">rows</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>After that you can manually attach the leaf using <a class="reference internal" href="../../ref/ATTACH_LEAF/index.html"><em>ATTACH LEAF</em></a>:</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="c1">-- This will reintroduce leaf-4 into the system</span>
+<span class="n">memsql</span><span class="o">&gt;</span> <span class="n">attach</span> <span class="n">leaf</span> <span class="s1">&#39;leaf-4&#39;</span><span class="p">:</span> <span class="mi">3306</span><span class="p">;</span>
+<span class="n">Query</span> <span class="n">OK</span><span class="p">,</span> <span class="mi">1</span> <span class="n">row</span> <span class="nf">affected</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">52</span> <span class="n">sec</span><span class="p">)</span>
+
+<span class="c1">-- leaf-4 is now online</span>
+<span class="n">memsql</span><span class="o">&gt;</span> <span class="k">SHOW</span> <span class="n">LEAVES</span><span class="p">;</span>
+<span class="o">+--------+-------+--------------------+-----------+-----------+--------+--------------------+---------------------------+</span>
+<span class="o">|</span> <span class="n">Host</span>   <span class="o">|</span> <span class="n">Port</span>  <span class="o">|</span> <span class="n">Availability_Group</span> <span class="o">|</span> <span class="n">Pair_Host</span> <span class="o">|</span> <span class="n">Pair_Port</span> <span class="o">|</span> <span class="n">State</span>  <span class="o">|</span> <span class="n">Opened_Connections</span> <span class="o">|</span> <span class="n">Average_Roundtrip_Latency</span> <span class="o">|</span>
+<span class="o">+--------+-------+--------------------+-----------+-----------+--------+--------------------+---------------------------+</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">1</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span> <span class="no">NULL</span>      <span class="o">|</span>      <span class="no">NULL</span> <span class="o">|</span> <span class="n">online</span> <span class="o">|</span>                  <span class="mi">4</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">437</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">2</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span> <span class="no">NULL</span>      <span class="o">|</span>      <span class="no">NULL</span> <span class="o">|</span> <span class="n">online</span> <span class="o">|</span>                  <span class="mi">4</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">411</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">3</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span> <span class="no">NULL</span>      <span class="o">|</span>      <span class="no">NULL</span> <span class="o">|</span> <span class="n">online</span> <span class="o">|</span>                  <span class="mi">4</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">366</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">4</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span> <span class="no">NULL</span>      <span class="o">|</span>      <span class="no">NULL</span> <span class="o">|</span> <span class="n">online</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">418</span> <span class="o">|</span>
+<span class="o">+--------+-------+--------------------+-----------+-----------+--------+--------------------+---------------------------+</span>
+<span class="mi">4</span> <span class="n">rows</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+
+<span class="c1">-- ATTACH LEAF imported partitions 3 and 7 from leaf-4</span>
+<span class="n">memsql</span><span class="o">&gt;</span> <span class="k">SHOW</span> <span class="n">REBALANCE</span> <span class="n">STATUS</span> <span class="k">ON</span> <span class="n">test</span><span class="p">;</span>
+<span class="o">+------------------+---------+-------------+-------------+-------+---------+--------------+</span>
+<span class="o">|</span> <span class="n">Action</span>           <span class="o">|</span> <span class="n">Ordinal</span> <span class="o">|</span> <span class="n">Target_Host</span> <span class="o">|</span> <span class="n">Target_Port</span> <span class="o">|</span> <span class="n">Phase</span> <span class="o">|</span> <span class="n">Status</span>  <span class="o">|</span> <span class="n">Running_Time</span> <span class="o">|</span>
+<span class="o">+------------------+---------+-------------+-------------+-------+---------+--------------+</span>
+<span class="o">|</span> <span class="n">ATTACH</span> <span class="n">PARTITION</span> <span class="o">|</span>       <span class="mi">3</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">4</span>      <span class="o">|</span>        <span class="mi">3306</span> <span class="o">|</span>     <span class="mi">1</span> <span class="o">|</span> <span class="n">success</span> <span class="o">|</span>            <span class="mi">1</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">ATTACH</span> <span class="n">PARTITION</span> <span class="o">|</span>       <span class="mi">7</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">4</span>      <span class="o">|</span>        <span class="mi">3306</span> <span class="o">|</span>     <span class="mi">1</span> <span class="o">|</span> <span class="n">success</span> <span class="o">|</span>            <span class="mi">3</span> <span class="o">|</span>
+<span class="o">+------------------+---------+-------------+-------------+-------+---------+--------------+</span>
+<span class="mi">2</span> <span class="n">rows</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+
+<span class="c1">-- The data that was on leaf-4 is back!</span>
+<span class="n">memsql</span><span class="o">&gt;</span> <span class="k">SELECT</span> <span class="nf">MIN</span><span class="p">(</span><span class="n">id</span><span class="p">),</span> <span class="nf">MAX</span><span class="p">(</span><span class="n">id</span><span class="p">),</span> <span class="nf">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">test</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
+<span class="o">+---------+---------+----------+</span>
+<span class="o">|</span> <span class="nf">min</span><span class="p">(</span><span class="n">id</span><span class="p">)</span> <span class="o">|</span> <span class="nf">max</span><span class="p">(</span><span class="n">id</span><span class="p">)</span> <span class="o">|</span> <span class="nf">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="o">|</span>
+<span class="o">+---------+---------+----------+</span>
+<span class="o">|</span>       <span class="mi">1</span> <span class="o">|</span>     <span class="mi">100</span> <span class="o">|</span>      <span class="mi">100</span> <span class="o">|</span>
+<span class="o">+---------+---------+----------+</span>
+<span class="mi">1</span> <span class="n">row</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="attach-leaf-in-redundancy-2">
+<h4><tt class="docutils literal"><span class="pre">ATTACH</span> <span class="pre">LEAF</span></tt> In Redundancy-2<a class="headerlink" href="index.html#attach-leaf-in-redundancy-2" title="Permalink to this headline">¶</a></h4>
+<p>Let&#8217;s work through a full example of attaching a leaf back into a redundancy-2 cluster. This cluster has
+eight leaves: <tt class="docutils literal"><span class="pre">leaf-1</span></tt> through <tt class="docutils literal"><span class="pre">leaf-8</span></tt>. You should understand leaf pairings before following along
+with this example: see <a class="reference internal" href="../../concepts/distributed_architecture/index.html#availability-groups"><em>Availability Groups</em></a> for details.</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="k">SHOW</span> <span class="n">LEAVES</span><span class="p">;</span>
+<span class="o">+--------+-------+--------------------+-----------+-----------+--------+--------------------+---------------------------+</span>
+<span class="o">|</span> <span class="n">Host</span>   <span class="o">|</span> <span class="n">Port</span>  <span class="o">|</span> <span class="n">Availability_Group</span> <span class="o">|</span> <span class="n">Pair_Host</span> <span class="o">|</span> <span class="n">Pair_Port</span> <span class="o">|</span> <span class="n">State</span>  <span class="o">|</span> <span class="n">Opened_Connections</span> <span class="o">|</span> <span class="n">Average_Roundtrip_Latency</span> <span class="o">|</span>
+<span class="o">+--------+-------+--------------------+-----------+-----------+--------+--------------------+---------------------------+</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">1</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">5</span>    <span class="o">|</span>      <span class="mi">3306</span> <span class="o">|</span> <span class="n">online</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">424</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">2</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">6</span>    <span class="o">|</span>      <span class="mi">3306</span> <span class="o">|</span> <span class="n">online</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">391</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">3</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">7</span>    <span class="o">|</span>      <span class="mi">3306</span> <span class="o">|</span> <span class="n">online</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">370</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">4</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">8</span>    <span class="o">|</span>      <span class="mi">3306</span> <span class="o">|</span> <span class="n">online</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">408</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">5</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">2</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">1</span>    <span class="o">|</span>      <span class="mi">3306</span> <span class="o">|</span> <span class="n">online</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">405</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">6</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">2</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">2</span>    <span class="o">|</span>      <span class="mi">3306</span> <span class="o">|</span> <span class="n">online</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">395</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">7</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">2</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">3</span>    <span class="o">|</span>      <span class="mi">3306</span> <span class="o">|</span> <span class="n">online</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">371</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">8</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">2</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">4</span>    <span class="o">|</span>      <span class="mi">3306</span> <span class="o">|</span> <span class="n">online</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">403</span> <span class="o">|</span>
+<span class="o">+--------+-------+--------------------+-----------+-----------+--------+--------------------+---------------------------+</span>
+<span class="mi">8</span> <span class="n">rows</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+
+<span class="c1">-- test.x has 100 consecutive values from 1 to 100</span>
+<span class="n">memsql</span><span class="o">&gt;</span> <span class="k">SELECT</span> <span class="nf">MIN</span><span class="p">(</span><span class="n">id</span><span class="p">),</span> <span class="nf">MAX</span><span class="p">(</span><span class="n">id</span><span class="p">),</span> <span class="nf">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">test</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
+<span class="o">+---------+---------+----------+</span>
+<span class="o">|</span> <span class="nf">min</span><span class="p">(</span><span class="n">id</span><span class="p">)</span> <span class="o">|</span> <span class="nf">max</span><span class="p">(</span><span class="n">id</span><span class="p">)</span> <span class="o">|</span> <span class="nf">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="o">|</span>
+<span class="o">+---------+---------+----------+</span>
+<span class="o">|</span>       <span class="mi">1</span> <span class="o">|</span>     <span class="mi">100</span> <span class="o">|</span>      <span class="mi">100</span> <span class="o">|</span>
+<span class="o">+---------+---------+----------+</span>
+<span class="mi">1</span> <span class="n">row</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This is what a partition map might look like on the master aggregator before <tt class="docutils literal"><span class="pre">leaf-8</span></tt> dies:</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="c1">-- leaf-8 owns the master partition for test:3.</span>
+<span class="n">memsql</span><span class="o">&gt;</span> <span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">INFORMATION_SCHEMA</span><span class="p">.</span><span class="n">DISTRIBUTED_PARTITIONS</span>
+    <span class="o">-&gt;</span>    <span class="k">WHERE</span> <span class="n">DATABASE_NAME</span><span class="o">=</span><span class="s1">&#39;test&#39;</span> <span class="k">AND</span> <span class="n">ORDINAL</span><span class="o">=</span><span class="mi">3</span><span class="p">;</span>
+<span class="o">+---------------+---------+--------+------+--------+</span>
+<span class="o">|</span> <span class="n">DATABASE_NAME</span> <span class="o">|</span> <span class="n">ORDINAL</span> <span class="o">|</span> <span class="n">HOST</span>   <span class="o">|</span> <span class="n">PORT</span> <span class="o">|</span> <span class="n">ROLE</span>   <span class="o">|</span>
+<span class="o">+---------------+---------+--------+------+--------+</span>
+<span class="o">|</span> <span class="n">test</span>          <span class="o">|</span>       <span class="mi">3</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">8</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">Master</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">test</span>          <span class="o">|</span>       <span class="mi">3</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">4</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">Slave</span>  <span class="o">|</span>
+<span class="o">+---------------+---------+--------+------+--------+</span>
+<span class="mi">2</span> <span class="n">rows</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>After <tt class="docutils literal"><span class="pre">leaf-8</span></tt> dies,</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="c1">-- leaf-8 has entered the offline state.</span>
+<span class="n">memsql</span><span class="o">&gt;</span> <span class="k">SHOW</span> <span class="n">LEAVES</span><span class="p">;</span>
+<span class="o">+--------+-------+--------------------+-----------+-----------+---------+--------------------+---------------------------+</span>
+<span class="o">|</span> <span class="n">Host</span>   <span class="o">|</span> <span class="n">Port</span>  <span class="o">|</span> <span class="n">Availability_Group</span> <span class="o">|</span> <span class="n">Pair_Host</span> <span class="o">|</span> <span class="n">Pair_Port</span> <span class="o">|</span> <span class="n">State</span>   <span class="o">|</span> <span class="n">Opened_Connections</span> <span class="o">|</span> <span class="n">Average_Roundtrip_Latency</span> <span class="o">|</span>
+<span class="o">+--------+-------+--------------------+-----------+-----------+---------+--------------------+---------------------------+</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">1</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">5</span>    <span class="o">|</span>      <span class="mi">3306</span> <span class="o">|</span> <span class="n">online</span>  <span class="o">|</span>                  <span class="mi">4</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">404</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">2</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">6</span>    <span class="o">|</span>      <span class="mi">3306</span> <span class="o">|</span> <span class="n">online</span>  <span class="o">|</span>                  <span class="mi">4</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">323</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">3</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">7</span>    <span class="o">|</span>      <span class="mi">3306</span> <span class="o">|</span> <span class="n">online</span>  <span class="o">|</span>                  <span class="mi">4</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">327</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">4</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">8</span>    <span class="o">|</span>      <span class="mi">3306</span> <span class="o">|</span> <span class="n">online</span>  <span class="o">|</span>                  <span class="mi">4</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">295</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">5</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">2</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">1</span>    <span class="o">|</span>      <span class="mi">3306</span> <span class="o">|</span> <span class="n">online</span>  <span class="o">|</span>                  <span class="mi">4</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">311</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">6</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">2</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">2</span>    <span class="o">|</span>      <span class="mi">3306</span> <span class="o">|</span> <span class="n">online</span>  <span class="o">|</span>                  <span class="mi">4</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">327</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">7</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">2</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">3</span>    <span class="o">|</span>      <span class="mi">3306</span> <span class="o">|</span> <span class="n">online</span>  <span class="o">|</span>                  <span class="mi">4</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">323</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">8</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">2</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">4</span>    <span class="o">|</span>      <span class="mi">3306</span> <span class="o">|</span> <span class="n">offline</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span>                      <span class="no">NULL</span> <span class="o">|</span>
+<span class="o">+--------+-------+--------------------+-----------+-----------+---------+--------------------+---------------------------+</span>
+<span class="mi">8</span> <span class="n">rows</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+
+<span class="c1">-- leaf-4 now owns the master partition for test:3.</span>
+<span class="n">memsql</span><span class="o">&gt;</span> <span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">INFORMATION_SCHEMA</span><span class="p">.</span><span class="n">DISTRIBUTED_PARTITIONS</span>
+    <span class="o">-&gt;</span>    <span class="k">WHERE</span> <span class="n">DATABASE_NAME</span><span class="o">=</span><span class="s1">&#39;test&#39;</span> <span class="k">AND</span> <span class="n">ORDINAL</span><span class="o">=</span><span class="mi">3</span><span class="p">;</span>
+<span class="o">+---------------+---------+--------+------+--------+</span>
+<span class="o">|</span> <span class="n">DATABASE_NAME</span> <span class="o">|</span> <span class="n">ORDINAL</span> <span class="o">|</span> <span class="n">HOST</span>   <span class="o">|</span> <span class="n">PORT</span> <span class="o">|</span> <span class="n">ROLE</span>   <span class="o">|</span>
+<span class="o">+---------------+---------+--------+------+--------+</span>
+<span class="o">|</span> <span class="n">test</span>          <span class="o">|</span>       <span class="mi">3</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">4</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">Master</span> <span class="o">|</span>
+<span class="o">+---------------+---------+--------+------+--------+</span>
+<span class="mi">1</span> <span class="n">row</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+
+<span class="c1">-- The data is still available because of the promotion on leaf-4.</span>
+<span class="n">memsql</span><span class="o">&gt;</span> <span class="k">SELECT</span> <span class="nf">MIN</span><span class="p">(</span><span class="n">id</span><span class="p">),</span> <span class="nf">MAX</span><span class="p">(</span><span class="n">id</span><span class="p">),</span> <span class="nf">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">test</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
+<span class="o">+---------+---------+----------+</span>
+<span class="o">|</span> <span class="nf">min</span><span class="p">(</span><span class="n">id</span><span class="p">)</span> <span class="o">|</span> <span class="nf">max</span><span class="p">(</span><span class="n">id</span><span class="p">)</span> <span class="o">|</span> <span class="nf">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="o">|</span>
+<span class="o">+---------+---------+----------+</span>
+<span class="o">|</span>       <span class="mi">1</span> <span class="o">|</span>     <span class="mi">100</span> <span class="o">|</span>      <span class="mi">100</span> <span class="o">|</span>
+<span class="o">+---------+---------+----------+</span>
+<span class="mi">1</span> <span class="n">row</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+
+<span class="c1">-- We can also write to the database (the ... is an abbreviation, not valid SQL).</span>
+<span class="n">memsql</span><span class="o">&gt;</span> <span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">test</span><span class="p">.</span><span class="n">x</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">101</span><span class="p">),</span> <span class="p">(</span><span class="mi">102</span><span class="p">),</span> <span class="p">...</span> <span class="p">(</span><span class="mi">200</span><span class="p">);</span>
+
+<span class="c1">-- The new count is 200.</span>
+<span class="n">memsql</span><span class="o">&gt;</span> <span class="k">SELECT</span> <span class="nf">MIN</span><span class="p">(</span><span class="n">id</span><span class="p">),</span> <span class="nf">MAX</span><span class="p">(</span><span class="n">id</span><span class="p">),</span> <span class="nf">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">test</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
+<span class="o">+---------+---------+----------+</span>
+<span class="o">|</span> <span class="nf">MIN</span><span class="p">(</span><span class="n">id</span><span class="p">)</span> <span class="o">|</span> <span class="nf">MAX</span><span class="p">(</span><span class="n">id</span><span class="p">)</span> <span class="o">|</span> <span class="nf">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="o">|</span>
+<span class="o">+---------+---------+----------+</span>
+<span class="o">|</span>       <span class="mi">1</span> <span class="o">|</span>     <span class="mi">200</span> <span class="o">|</span>      <span class="mi">200</span> <span class="o">|</span>
+<span class="o">+---------+---------+----------+</span>
+<span class="mi">1</span> <span class="n">row</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If MemSQL is configured to automatically attach leaves that become reachable (by default it is), then after <tt class="docutils literal"><span class="pre">leaf-8</span></tt>
+is restarted and recovered, it will automatically become online:</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="k">SHOW</span> <span class="n">LEAVES</span><span class="p">;</span>
+<span class="o">+--------+-------+--------------------+-----------+-----------+----------+--------------------+---------------------------+</span>
+<span class="o">|</span> <span class="n">Host</span>   <span class="o">|</span> <span class="n">Port</span>  <span class="o">|</span> <span class="n">Availability_Group</span> <span class="o">|</span> <span class="n">Pair_Host</span> <span class="o">|</span> <span class="n">Pair_Port</span> <span class="o">|</span> <span class="n">State</span>    <span class="o">|</span> <span class="n">Opened_Connections</span> <span class="o">|</span> <span class="n">Average_Roundtrip_Latency</span> <span class="o">|</span>
+<span class="o">+--------+-------+--------------------+-----------+-----------+----------+--------------------+---------------------------+</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">1</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">5</span>    <span class="o">|</span>      <span class="mi">3306</span> <span class="o">|</span> <span class="n">online</span>   <span class="o">|</span>                  <span class="mi">4</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">396</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">2</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">6</span>    <span class="o">|</span>      <span class="mi">3306</span> <span class="o">|</span> <span class="n">online</span>   <span class="o">|</span>                  <span class="mi">4</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">323</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">3</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">7</span>    <span class="o">|</span>      <span class="mi">3306</span> <span class="o">|</span> <span class="n">online</span>   <span class="o">|</span>                  <span class="mi">4</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">321</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">4</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">8</span>    <span class="o">|</span>      <span class="mi">3306</span> <span class="o">|</span> <span class="n">online</span>   <span class="o">|</span>                  <span class="mi">4</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">320</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">5</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">2</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">1</span>    <span class="o">|</span>      <span class="mi">3306</span> <span class="o">|</span> <span class="n">online</span>   <span class="o">|</span>                  <span class="mi">4</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">319</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">6</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">2</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">2</span>    <span class="o">|</span>      <span class="mi">3306</span> <span class="o">|</span> <span class="n">online</span>   <span class="o">|</span>                  <span class="mi">4</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">329</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">7</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">2</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">3</span>    <span class="o">|</span>      <span class="mi">3306</span> <span class="o">|</span> <span class="n">online</span>   <span class="o">|</span>                  <span class="mi">4</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">327</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">8</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">2</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">4</span>    <span class="o">|</span>      <span class="mi">3306</span> <span class="o">|</span> <span class="n">online</span>   <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">318</span> <span class="o">|</span>
+<span class="o">+--------+-------+--------------------+-----------+-----------+----------+--------------------+---------------------------+</span>
+<span class="mi">8</span> <span class="n">rows</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>And the database will become queriable.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">After <tt class="docutils literal"><span class="pre">leaf-8</span></tt> becomes visible, for some time it will be in the <tt class="docutils literal"><span class="pre">attaching</span></tt> state. During this period it is replicating
+new data for the partitions that are stored on <tt class="docutils literal"><span class="pre">leaf-4</span></tt>. As soon as it transitions to the <tt class="docutils literal"><span class="pre">online</span></tt> state,
+the redundancy is fully restored, however all the master partitions are still on <tt class="docutils literal"><span class="pre">leaf-4</span></tt>, meaning that it does all
+the work for the data stored on these partitions. Shortly after <tt class="docutils literal"><span class="pre">leaf-8</span></tt> transitions to <tt class="docutils literal"><span class="pre">online</span></tt> state, half of
+the slave partitions on it will be promoted to masters, and the load will be evenly distributed again.</p>
+</div>
+<p>You can disable master aggregator from automatically moving leaves that become visible to the <tt class="docutils literal"><span class="pre">online</span></tt> state by running:</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="kt">set</span> <span class="n">global</span> <span class="n">auto_attach</span> <span class="o">=</span> <span class="n">Off</span><span class="p">;</span>
+<span class="n">Query</span> <span class="n">OK</span><span class="p">,</span> <span class="mi">0</span> <span class="n">rows</span> <span class="nf">affected</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In this case if the leaf becomes visible, it transitions to the <tt class="docutils literal"><span class="pre">detached</span></tt> state instead, and one needs to run
+<a class="reference internal" href="../../ref/ATTACH_LEAF/index.html"><em>ATTACH LEAF</em></a> manually to move it to the <tt class="docutils literal"><span class="pre">online</span></tt> state.</p>
+<p><a class="reference internal" href="../../ref/ATTACH_LEAF/index.html"><em>ATTACH LEAF</em></a> examines every partition database on a leaf and tries to reintroduce it into the system. If
+a database on the leaf conflicts with one of the partitions in the system, then <a class="reference internal" href="../../ref/ATTACH_LEAF/index.html"><em>ATTACH LEAF</em></a> will return
+an error and request that you run it with the <tt class="docutils literal"><span class="pre">FORCE</span></tt> flag. For example, if partition 3 already has a master
+partition and the target leaf node has an online database matching partition 3, then <a class="reference internal" href="../../ref/ATTACH_LEAF/index.html"><em>ATTACH LEAF</em></a> will
+return an error. The <tt class="docutils literal"><span class="pre">FORCE</span></tt> flag overrides this condition and will ignore the database on the target node,
+preferring the existing partition. This situation is common in redundancy-2.</p>
+<p>After <tt class="docutils literal"><span class="pre">leaf-8</span></tt> is recovered, it still has an <tt class="docutils literal"><span class="pre">online</span></tt> database for <tt class="docutils literal"><span class="pre">test:3</span></tt>. We can examine this by running <tt class="docutils literal"><span class="pre">SHOW</span> <span class="pre">DATABASES</span> <span class="pre">EXTENDED</span></tt> directly
+on the leaf:</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="c1">-- This query is directly against the MemSQL instance on leaf-8.</span>
+<span class="n">memsql</span><span class="o">&gt;</span> <span class="k">SHOW</span> <span class="k">DATABASES</span> <span class="n">EXTENDED</span><span class="p">;</span>
+<span class="o">+--------------------+---------+-------------+-------------+----------+---------+-------------+------------+</span>
+<span class="o">|</span> <span class="k">Database</span>           <span class="o">|</span> <span class="n">Commits</span> <span class="o">|</span> <span class="n">Role</span>        <span class="o">|</span> <span class="n">State</span>       <span class="o">|</span> <span class="n">Position</span> <span class="o">|</span> <span class="n">Details</span> <span class="o">|</span> <span class="n">AsyncSlaves</span> <span class="o">|</span> <span class="n">SyncSlaves</span> <span class="o">|</span>
+<span class="o">+--------------------+---------+-------------+-------------+----------+---------+-------------+------------+</span>
+<span class="o">|</span> <span class="n">information_schema</span> <span class="o">|</span>    <span class="no">NULL</span> <span class="o">|</span> <span class="no">NULL</span>        <span class="o">|</span> <span class="no">NULL</span>        <span class="o">|</span> <span class="no">NULL</span>     <span class="o">|</span> <span class="no">NULL</span>    <span class="o">|</span> <span class="no">NULL</span>        <span class="o">|</span> <span class="no">NULL</span>       <span class="o">|</span>
+<span class="o">|</span> <span class="n">memsql</span>             <span class="o">|</span>      <span class="mi">35</span> <span class="o">|</span> <span class="n">master</span>      <span class="o">|</span> <span class="n">online</span>      <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2005</span>   <span class="o">|</span>         <span class="o">|</span> <span class="mi">0</span>           <span class="o">|</span> <span class="mi">0</span>          <span class="o">|</span>
+<span class="o">|</span> <span class="n">test</span>               <span class="o">|</span>      <span class="mi">40</span> <span class="o">|</span> <span class="n">async</span> <span class="n">slave</span> <span class="o">|</span> <span class="n">replicating</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">1723</span>   <span class="o">|</span>         <span class="o">|</span> <span class="mi">0</span>           <span class="o">|</span> <span class="mi">0</span>          <span class="o">|</span>
+<span class="o">|</span> <span class="n">test_11</span>            <span class="o">|</span>       <span class="mi">0</span> <span class="o">|</span> <span class="n">async</span> <span class="n">slave</span> <span class="o">|</span> <span class="n">replicating</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">10</span>     <span class="o">|</span>         <span class="o">|</span> <span class="mi">0</span>           <span class="o">|</span> <span class="mi">0</span>          <span class="o">|</span>
+<span class="o">|</span> <span class="n">test_15</span>            <span class="o">|</span>       <span class="mi">0</span> <span class="o">|</span> <span class="n">async</span> <span class="n">slave</span> <span class="o">|</span> <span class="n">replicating</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">10</span>     <span class="o">|</span>         <span class="o">|</span> <span class="mi">0</span>           <span class="o">|</span> <span class="mi">0</span>          <span class="o">|</span>
+<span class="o">|</span> <span class="n">test_3</span>             <span class="o">|</span>       <span class="mi">0</span> <span class="o">|</span> <span class="n">master</span>      <span class="o">|</span> <span class="n">online</span>      <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">10</span>     <span class="o">|</span>         <span class="o">|</span> <span class="mi">0</span>           <span class="o">|</span> <span class="mi">0</span>          <span class="o">|</span>
+<span class="o">|</span> <span class="n">test_7</span>             <span class="o">|</span>       <span class="mi">0</span> <span class="o">|</span> <span class="n">master</span>      <span class="o">|</span> <span class="n">online</span>      <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">10</span>     <span class="o">|</span>         <span class="o">|</span> <span class="mi">0</span>           <span class="o">|</span> <span class="mi">0</span>          <span class="o">|</span>
+<span class="o">+--------------------+---------+-------------+-------------+----------+---------+-------------+------------+</span>
+<span class="mi">7</span> <span class="n">rows</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Back on the master aggregator,</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="c1">-- leaf-8 is alive and is now in the detached state.</span>
+<span class="n">memsql</span><span class="o">&gt;</span> <span class="k">SHOW</span> <span class="n">LEAVES</span><span class="p">;</span>
+<span class="o">+--------+-------+--------------------+-----------+-----------+----------+--------------------+---------------------------+</span>
+<span class="o">|</span> <span class="n">Host</span>   <span class="o">|</span> <span class="n">Port</span>  <span class="o">|</span> <span class="n">Availability_Group</span> <span class="o">|</span> <span class="n">Pair_Host</span> <span class="o">|</span> <span class="n">Pair_Port</span> <span class="o">|</span> <span class="n">State</span>    <span class="o">|</span> <span class="n">Opened_Connections</span> <span class="o">|</span> <span class="n">Average_Roundtrip_Latency</span> <span class="o">|</span>
+<span class="o">+--------+-------+--------------------+-----------+-----------+----------+--------------------+---------------------------+</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">1</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">5</span>    <span class="o">|</span>      <span class="mi">3306</span> <span class="o">|</span> <span class="n">online</span>   <span class="o">|</span>                  <span class="mi">4</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">396</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">2</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">6</span>    <span class="o">|</span>      <span class="mi">3306</span> <span class="o">|</span> <span class="n">online</span>   <span class="o">|</span>                  <span class="mi">4</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">323</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">3</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">7</span>    <span class="o">|</span>      <span class="mi">3306</span> <span class="o">|</span> <span class="n">online</span>   <span class="o">|</span>                  <span class="mi">4</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">321</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">4</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">8</span>    <span class="o">|</span>      <span class="mi">3306</span> <span class="o">|</span> <span class="n">online</span>   <span class="o">|</span>                  <span class="mi">4</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">320</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">5</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">2</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">1</span>    <span class="o">|</span>      <span class="mi">3306</span> <span class="o">|</span> <span class="n">online</span>   <span class="o">|</span>                  <span class="mi">4</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">319</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">6</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">2</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">2</span>    <span class="o">|</span>      <span class="mi">3306</span> <span class="o">|</span> <span class="n">online</span>   <span class="o">|</span>                  <span class="mi">4</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">329</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">7</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">2</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">3</span>    <span class="o">|</span>      <span class="mi">3306</span> <span class="o">|</span> <span class="n">online</span>   <span class="o">|</span>                  <span class="mi">4</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">327</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">8</span> <span class="o">|</span>  <span class="mi">3306</span> <span class="o">|</span>                  <span class="mi">2</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">4</span>    <span class="o">|</span>      <span class="mi">3306</span> <span class="o">|</span> <span class="n">detached</span> <span class="o">|</span>                  <span class="mi">1</span> <span class="o">|</span>                     <span class="mi">0</span><span class="p">.</span><span class="mi">318</span> <span class="o">|</span>
+<span class="o">+--------+-------+--------------------+-----------+-----------+----------+--------------------+---------------------------+</span>
+<span class="mi">8</span> <span class="n">rows</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+
+<span class="c1">-- This command will fail because test_3 on leaf-8 conflicts with the master partition</span>
+<span class="c1">-- for test:3 on leaf-4.</span>
+<span class="n">memsql</span><span class="o">&gt;</span> <span class="n">attach</span> <span class="n">leaf</span> <span class="s1">&#39;leaf-8&#39;</span><span class="p">:</span><span class="mi">3306</span><span class="p">;</span>
+<span class="n">ERROR</span> <span class="mi">1811</span> <span class="p">(</span><span class="n">HY000</span><span class="p">):</span> <span class="n">Unable</span> <span class="k">to</span> <span class="n">attach</span> <span class="n">leaf</span> <span class="s1">&#39;leaf-8&#39;</span><span class="p">:</span><span class="mi">3306</span><span class="p">.</span> <span class="k">Database</span> <span class="ss">`test_3`</span> <span class="p">(</span><span class="n">which</span> <span class="k">is</span> <span class="k">in</span> <span class="n">the</span> <span class="s1">&#39;Online&#39;</span> <span class="n">state</span><span class="p">)</span> <span class="n">conflicts</span> <span class="k">with</span> <span class="n">an</span> <span class="n">existing</span> <span class="n">master</span> <span class="n">instance</span> <span class="n">of</span> <span class="ss">`test`</span><span class="p">:</span><span class="mi">3</span> <span class="k">on</span> <span class="s1">&#39;leaf-4&#39;</span><span class="p">:</span><span class="mi">3306</span><span class="p">.</span> <span class="k">Use</span> <span class="n">ATTACH</span> <span class="n">LEAF</span> <span class="p">...</span> <span class="k">FORCE</span> <span class="k">to</span> <span class="n">override</span> <span class="n">this</span> <span class="n">conflict</span><span class="p">.</span>
+
+<span class="c1">-- ATTACH LEAF ... FORCE will ignore the test_3 database on leaf-8. The FORCE means</span>
+<span class="c1">-- that you&#39;re okay with MemSQL potentially dropping the test_3 database on leaf-8</span>
+<span class="c1">-- in the process of attaching the leaf.</span>
+<span class="n">memsql</span><span class="o">&gt;</span> <span class="n">attach</span> <span class="n">leaf</span> <span class="s1">&#39;leaf-8&#39;</span><span class="p">:</span><span class="mi">3306</span> <span class="k">FORCE</span><span class="p">;</span>
+<span class="n">Query</span> <span class="n">OK</span><span class="p">,</span> <span class="mi">1</span> <span class="n">row</span> <span class="nf">affected</span> <span class="p">(</span><span class="mi">12</span><span class="p">.</span><span class="mi">92</span> <span class="n">sec</span><span class="p">)</span>
+
+<span class="c1">-- The master partition for test:3 is once again on leaf-8</span>
+<span class="n">memsql</span><span class="o">&gt;</span> <span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">INFORMATION_SCHEMA</span><span class="p">.</span><span class="n">DISTRIBUTED_PARTITIONS</span>
+    <span class="o">-&gt;</span>    <span class="k">WHERE</span> <span class="n">DATABASE_NAME</span><span class="o">=</span><span class="s1">&#39;test&#39;</span> <span class="k">AND</span> <span class="n">ORDINAL</span><span class="o">=</span><span class="mi">3</span><span class="p">;</span>
+<span class="o">+---------------+---------+--------+------+--------+</span>
+<span class="o">|</span> <span class="n">DATABASE_NAME</span> <span class="o">|</span> <span class="n">ORDINAL</span> <span class="o">|</span> <span class="n">HOST</span>   <span class="o">|</span> <span class="n">PORT</span> <span class="o">|</span> <span class="n">ROLE</span>   <span class="o">|</span>
+<span class="o">+---------------+---------+--------+------+--------+</span>
+<span class="o">|</span> <span class="n">test</span>          <span class="o">|</span>       <span class="mi">3</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">8</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">Master</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">test</span>          <span class="o">|</span>       <span class="mi">3</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">4</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">Slave</span>  <span class="o">|</span>
+<span class="o">+---------------+---------+--------+------+--------+</span>
+<span class="mi">2</span> <span class="n">rows</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+
+<span class="c1">-- After attaching leaf-8, the count remains at 200.</span>
+<span class="n">memsql</span><span class="o">&gt;</span> <span class="k">SELECT</span> <span class="nf">MIN</span><span class="p">(</span><span class="n">id</span><span class="p">),</span> <span class="nf">MAX</span><span class="p">(</span><span class="n">id</span><span class="p">),</span> <span class="nf">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">test</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
+<span class="o">+---------+---------+----------+</span>
+<span class="o">|</span> <span class="nf">MIN</span><span class="p">(</span><span class="n">id</span><span class="p">)</span> <span class="o">|</span> <span class="nf">MAX</span><span class="p">(</span><span class="n">id</span><span class="p">)</span> <span class="o">|</span> <span class="nf">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="o">|</span>
+<span class="o">+---------+---------+----------+</span>
+<span class="o">|</span>       <span class="mi">1</span> <span class="o">|</span>     <span class="mi">200</span> <span class="o">|</span>      <span class="mi">200</span> <span class="o">|</span>
+<span class="o">+---------+---------+----------+</span>
+<span class="mi">1</span> <span class="n">row</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">5</span><span class="p">.</span><span class="mi">65</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can examine what operations the master aggregator performed for <a class="reference internal" href="../../ref/ATTACH_LEAF/index.html"><em>ATTACH LEAF</em></a> with the <a class="reference internal" href="../../ref/SHOW_REBALANCE_STATUS/index.html"><em>SHOW REBALANCE STATUS</em></a>  command:</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="k">SHOW</span> <span class="n">REBALANCE</span> <span class="n">STATUS</span> <span class="k">ON</span> <span class="n">test</span><span class="p">;</span>
+<span class="o">+-------------------+---------+-------------+-------------+-------+---------+--------------+</span>
+<span class="o">|</span> <span class="n">Action</span>            <span class="o">|</span> <span class="n">Ordinal</span> <span class="o">|</span> <span class="n">Target_Host</span> <span class="o">|</span> <span class="n">Target_Port</span> <span class="o">|</span> <span class="n">Phase</span> <span class="o">|</span> <span class="n">Status</span>  <span class="o">|</span> <span class="n">Running_Time</span> <span class="o">|</span>
+<span class="o">+-------------------+---------+-------------+-------------+-------+---------+--------------+</span>
+<span class="o">|</span> <span class="n">ATTACH</span> <span class="n">PARTITION</span>  <span class="o">|</span>      <span class="mi">11</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">8</span>      <span class="o">|</span>        <span class="mi">3306</span> <span class="o">|</span>     <span class="mi">1</span> <span class="o">|</span> <span class="n">success</span> <span class="o">|</span>         <span class="mi">2185</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">ATTACH</span> <span class="n">PARTITION</span>  <span class="o">|</span>      <span class="mi">15</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">8</span>      <span class="o">|</span>        <span class="mi">3306</span> <span class="o">|</span>     <span class="mi">1</span> <span class="o">|</span> <span class="n">success</span> <span class="o">|</span>         <span class="mi">2226</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">COPY</span> <span class="n">PARTITION</span>    <span class="o">|</span>       <span class="mi">3</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">8</span>      <span class="o">|</span>        <span class="mi">3306</span> <span class="o">|</span>     <span class="mi">3</span> <span class="o">|</span> <span class="n">success</span> <span class="o">|</span>         <span class="mi">3096</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">COPY</span> <span class="n">PARTITION</span>    <span class="o">|</span>       <span class="mi">7</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">8</span>      <span class="o">|</span>        <span class="mi">3306</span> <span class="o">|</span>     <span class="mi">3</span> <span class="o">|</span> <span class="n">success</span> <span class="o">|</span>         <span class="mi">3097</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">PROMOTE</span> <span class="n">PARTITION</span> <span class="o">|</span>       <span class="mi">3</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">8</span>      <span class="o">|</span>        <span class="mi">3306</span> <span class="o">|</span>     <span class="mi">7</span> <span class="o">|</span> <span class="n">success</span> <span class="o">|</span>         <span class="mi">4178</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">PROMOTE</span> <span class="n">PARTITION</span> <span class="o">|</span>       <span class="mi">7</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">8</span>      <span class="o">|</span>        <span class="mi">3306</span> <span class="o">|</span>     <span class="mi">7</span> <span class="o">|</span> <span class="n">success</span> <span class="o">|</span>         <span class="mi">4181</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">COPY</span> <span class="n">PARTITION</span>    <span class="o">|</span>       <span class="mi">3</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">4</span>      <span class="o">|</span>        <span class="mi">3306</span> <span class="o">|</span>     <span class="mi">8</span> <span class="o">|</span> <span class="n">success</span> <span class="o">|</span>         <span class="mi">2768</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">COPY</span> <span class="n">PARTITION</span>    <span class="o">|</span>       <span class="mi">7</span> <span class="o">|</span> <span class="n">leaf</span><span class="o">-</span><span class="mi">4</span>      <span class="o">|</span>        <span class="mi">3306</span> <span class="o">|</span>     <span class="mi">8</span> <span class="o">|</span> <span class="n">success</span> <span class="o">|</span>         <span class="mi">2813</span> <span class="o">|</span>
+<span class="o">+-------------------+---------+-------------+-------------+-------+---------+--------------+</span>
+<span class="mi">8</span> <span class="n">rows</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">As mentioned above, the master aggregator will resolve the conflict on <tt class="docutils literal"><span class="pre">test:3</span></tt> by preferring the master partition on <tt class="docutils literal"><span class="pre">leaf-4</span></tt>. In this example,
+the master aggregator erased the <tt class="docutils literal"><span class="pre">test_3</span></tt> partition on <tt class="docutils literal"><span class="pre">leaf-8</span></tt>, copied over the data from <tt class="docutils literal"><span class="pre">leaf-4</span></tt>, and then promoted the partition on
+<tt class="docutils literal"><span class="pre">leaf-8</span></tt>.</p>
+</div>
+<p>A <a class="reference internal" href="../../ref/REBALANCE_PARTITIONS/index.html"><em>REBALANCE PARTITIONS</em></a> walkthrough is left as an exercise for the reader: try adding two new leaves after the redundancy-2 summary and then running <a class="reference internal" href="../../ref/EXPLAIN_REBALANCE_PARTITIONS/index.html"><em>EXPLAIN REBALANCE PARTITIONS</em></a>
+and <a class="reference internal" href="../../ref/REBALANCE_PARTITIONS/index.html"><em>REBALANCE PARTITIONS</em></a> to distribute data onto the new nodes. Use <a class="reference internal" href="../../ref/SHOW_PARTITIONS/index.html"><em>SHOW PARTITIONS</em></a> and <a class="reference internal" href="../../ref/SHOW_LEAVES/index.html"><em>SHOW LEAVES</em></a> along the way to see how the data
+distribution changes after you run <a class="reference internal" href="../../ref/REBALANCE_PARTITIONS/index.html"><em>REBALANCE PARTITIONS</em></a>.</p>
+</div>
+</div>
+</div>
+<div class="section" id="high-availability-scenarios">
+<h2>High Availability Scenarios<a class="headerlink" href="index.html#high-availability-scenarios" title="Permalink to this headline">¶</a></h2>
+<p>This is a guide to potential cluster failure scenarios and their resolutions.</p>
+<div class="section" id="leaf-failures-in-a-redundancy-1-cluster">
+<h3>Leaf Failures In a Redundancy-1 Cluster<a class="headerlink" href="index.html#leaf-failures-in-a-redundancy-1-cluster" title="Permalink to this headline">¶</a></h3>
+<p>When a leaf dies in a redundancy-1 cluster, all partitions hosted on that leaf will be offline to reads and writes.
+There are three potential resolutions: reintroduce the leaf, introduce a replacement leaf, or recreate the lost partitions on the remaining leaves.</p>
+<p>If the leaf machine is recoverable and you wish to reintroduce it to the cluster, restart MemSQL on the leaf and run <a class="reference internal" href="../../ref/ATTACH_LEAF/index.html"><em>ATTACH LEAF</em></a> to bring the leaf back into the cluster.
+This command will examine the state of each partition on the leaf and reintroduce those partitions into the cluster.</p>
+<p>If the leaf machine is unrecoverable, and you wish to introduce a replacement, start MemSQL on the new leaf and run <a class="reference internal" href="../../ref/ADD_LEAF/index.html"><em>ADD LEAF</em></a> to introduce it to the cluster.
+Then run <a class="reference internal" href="../../ref/REBALANCE_PARTITIONS/index.html"><em>REBALANCE PARTITIONS</em></a> <tt class="docutils literal"><span class="pre">...</span> <span class="pre">FORCE</span></tt>. MemSQL will create new (empty) partitions to replace those that were lost. You can use <a class="reference internal" href="../../ref/REMOVE_LEAF/index.html"><em>REMOVE LEAF</em></a> to remove the <tt class="docutils literal"><span class="pre">offline</span></tt>
+leaf&#8217;s entry in <a class="reference internal" href="../../ref/SHOW_LEAVES/index.html"><em>SHOW LEAVES</em></a>.</p>
+<p>If you wish to recreate the lost partitions on the remaining leaves, run <a class="reference internal" href="../../ref/REBALANCE_PARTITIONS/index.html"><em>REBALANCE PARTITIONS</em></a> <tt class="docutils literal"><span class="pre">...</span> <span class="pre">FORCE</span></tt>.
+MemSQL will distribute the replacement partitions across the remaining leaves.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last"><a class="reference internal" href="../../ref/REBALANCE_PARTITIONS/index.html"><em>REBALANCE PARTITIONS</em></a> <tt class="docutils literal"><span class="pre">...</span> <span class="pre">FORCE</span></tt> locks in data loss. After running it, you can no longer reintroduce the data from the lost machine&#8217;s partitions.</p>
+</div>
+</div>
+<div class="section" id="leaf-failures-in-a-redundancy-2-cluster">
+<h3>Leaf Failures In a Redundancy-2 Cluster<a class="headerlink" href="index.html#leaf-failures-in-a-redundancy-2-cluster" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="one-leaf-dies">
+<h4>One Leaf Dies<a class="headerlink" href="index.html#one-leaf-dies" title="Permalink to this headline">¶</a></h4>
+<p>Any partitions for which the dead leaf was the partition master will be promoted on the dead leaf&#8217;s pair.</p>
+<p>You can reintroduce the dead leaf, or add a new leaf to replace it. Reintroducing the leaf is the simplest solution- just run <a class="reference internal" href="../../ref/ATTACH_LEAF/index.html"><em>ATTACH LEAF</em></a> and you&#8217;re done.
+The command will transition the leaf from <tt class="docutils literal"><span class="pre">detached</span></tt> to <tt class="docutils literal"><span class="pre">online</span></tt> and rebalance the partitions for which it is responsible.</p>
+<p>If you decide to add a replacement leaf on a different host, run <a class="reference internal" href="../../ref/REMOVE_LEAF/index.html"><em>REMOVE LEAF</em></a> on the dead leaf first to remove it from
+<a class="reference internal" href="../../ref/SHOW_LEAVES/index.html"><em>SHOW LEAVES</em></a> and free up its pairing slot. This will enable the <a class="reference internal" href="../../ref/ADD_LEAF/index.html"><em>ADD LEAF</em></a> you run for its replacement to pair up with the dead leaf&#8217;s pair.
+In either case, the dead leaf&#8217;s partition databases will be discarded&#8211; the replacement leaf will replicate each partition from their respective surviving masters.</p>
+<p>To restore redundancy, run <a class="reference internal" href="../../ref/REBALANCE_PARTITIONS/index.html"><em>REBALANCE PARTITIONS</em></a> or <tt class="docutils literal"><span class="pre">RESTORE</span> <span class="pre">REDUNDANCY</span></tt>.
+<a class="reference internal" href="../../ref/REBALANCE_PARTITIONS/index.html"><em>REBALANCE PARTITIONS</em></a> is generally the correct choice; it will first restore redundancy by replicating any partitions with only one instance, and then move partitions around to ensure balance across all the leaves.
+<tt class="docutils literal"><span class="pre">RESTORE</span> <span class="pre">REDUNDANCY</span></tt> performs only the first step.</p>
+</div>
+<div class="section" id="a-pair-of-leaves-die">
+<h4>A Pair of Leaves Die<a class="headerlink" href="index.html#a-pair-of-leaves-die" title="Permalink to this headline">¶</a></h4>
+<p>In this case, the partitions that were hosted on the dead leaves have no remaining instances.
+This means that these partitions are offline to reads and writes.</p>
+<p>If either of the leaf machines is recoverable, you can reintroduce it and reattach its partitions, as in the <cite>Leaf Failures In a Redundancy-1 Cluster</cite> section. Simply
+use the <a class="reference internal" href="../../ref/ATTACH_LEAF/index.html"><em>ATTACH LEAF</em></a> command (the order does not matter if you are running multiple <tt class="docutils literal"><span class="pre">ATTACH</span></tt> commands).
+At this point, the partitions are online for reads and writes.
+The failure scenario is now the same as the <cite>One Leaf Dies</cite> scenario in a redundancy-2 cluster.</p>
+<p>If neither leaf machine is recoverable, then data loss has occurred.
+You can now add replacement leaves, after which you may run <a class="reference internal" href="../../ref/REBALANCE_PARTITIONS/index.html"><em>REBALANCE PARTITIONS</em></a> <tt class="docutils literal"><span class="pre">...</span> <span class="pre">FORCE</span></tt> to create new (empty) replacement partitions.</p>
+</div>
+<div class="section" id="many-unpaired-leaves-die">
+<h4>Many Unpaired Leaves Die<a class="headerlink" href="index.html#many-unpaired-leaves-die" title="Permalink to this headline">¶</a></h4>
+<p>As long as two paired leaves have not both died, all partitions are still available for reads and writes.</p>
+<p>As a special case of this scenario, all leaves in one availability group can be down.
+No data loss is incurred as long as redundancy is restored before an additional leaf from the remaining availability group dies.</p>
+</div>
+<div class="section" id="many-leaves-die-some-of-them-paired">
+<h4>Many Leaves Die, Some of Them Paired<a class="headerlink" href="index.html#many-leaves-die-some-of-them-paired" title="Permalink to this headline">¶</a></h4>
+<p>Every partition for which both leaves hosting it died is now offline to reads and writes.
+Partitions for which only one leaf in the relevant pair died remain online.</p>
+<p>Offline partitions should be handled as they are in the scenario  <cite>A pair of leaves die</cite>.
+However, <tt class="docutils literal"><span class="pre">RESTORE</span> <span class="pre">REDUNDANCY</span></tt> or <a class="reference internal" href="../../ref/REBALANCE_PARTITIONS/index.html"><em>REBALANCE PARTITIONS</em></a> should be run only after all partitions has either been either recovered or given up as lost data (because both leaves that were hosting its data are unrecoverable).</p>
+</div>
+</div>
+<div class="section" id="aggregator-failures">
+<h3>Aggregator Failures<a class="headerlink" href="index.html#aggregator-failures" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="master-aggregator-dies">
+<h4>Master Aggregator Dies<a class="headerlink" href="index.html#master-aggregator-dies" title="Permalink to this headline">¶</a></h4>
+<p>If the master aggregator dies and is recoverable, all that is necessary is to restart the MemSQL process.</p>
+<p>If it is not recoverable, then a child aggregator must be promoted to master with <a class="reference internal" href="../../ref/AGGREGATOR_SET/index.html"><em>AGGREGATOR SET AS MASTER</em></a>.</p>
+</div>
+<div class="section" id="one-child-aggregator-dies">
+<h4>One Child Aggregator Dies<a class="headerlink" href="index.html#one-child-aggregator-dies" title="Permalink to this headline">¶</a></h4>
+<p>If the aggregator is recoverable, all that is necessary is to restart the MemSQL process.
+Otherwise, simply start a new MemSQL instance as an aggregator.</p>
+</div>
+<div class="section" id="many-aggregators-die">
+<h4>Many Aggregators Die<a class="headerlink" href="index.html#many-aggregators-die" title="Permalink to this headline">¶</a></h4>
+<p>If more than one aggregator dies, they can be reintroduced or replaced one by one.
+An important caveat is that if half or more of the aggregators die at once, the others can shut down as well.
+This behavior is part of MemSQL&#8217;s network partition tolerance behavior.</p>
+</div>
+<div class="section" id="network-partitions">
+<h4>Network Partitions<a class="headerlink" href="index.html#network-partitions" title="Permalink to this headline">¶</a></h4>
+<p>If a network partition causes the aggregators to be split into some number of disjoint groups, all aggregators that cannot contact enough other aggregators will shut down.
+To avoid shutting down, an aggregator must either be able to contact a strict majority of all aggregators (including itself), or be able to contact exactly half of the aggregators, one of which is the master aggregator.
+For example, if 6 total aggregators are partitioned into groups of size 3, 2, and 1 (with the master aggregator in the group of size 2), all of them will shut down, since no aggregator in a group of size at least 4, and no aggregator is in a group containing the master aggregator as well as two others.
+This behavior is necessary to prevent losses of consistency.</p>
+</div>
+</div>
+</div>
+<div class="section" id="shutting-down-and-restarting-the-cluster">
+<h2>Shutting Down and Restarting the Cluster<a class="headerlink" href="index.html#shutting-down-and-restarting-the-cluster" title="Permalink to this headline">¶</a></h2>
+<p>To avoid triggering automatic failure detection while cleanly shutting down the server, shut off and restart MemSQL instances in the correct order.</p>
+<div class="section" id="shutting-down-the-cluster">
+<h3>Shutting Down the Cluster<a class="headerlink" href="index.html#shutting-down-the-cluster" title="Permalink to this headline">¶</a></h3>
+<p>To avoid triggering failover detection:</p>
+<ol class="arabic simple">
+<li>Shut down the master aggregator <em>first</em>.</li>
+<li>Shut down the remaining aggregators and leaves (in any order).</li>
+</ol>
+</div>
+<div class="section" id="restarting-the-cluster">
+<h3>Restarting the Cluster<a class="headerlink" href="index.html#restarting-the-cluster" title="Permalink to this headline">¶</a></h3>
+<p>To bring the cluster back up:</p>
+<ol class="arabic simple">
+<li>Restart all of the leaves.</li>
+<li>Verify that all the leaves are reachable (using a <tt class="docutils literal"><span class="pre">SELECT</span> <span class="pre">1</span></tt> query).</li>
+<li>Turn on the master aggregator.</li>
+<li>Turn on the remaining aggregators.</li>
+</ol>
+<p><strong>Related Topics</strong></p>
+<ul class="simple">
+<li><a class="reference internal" href="../index.html"><em>Operations Manual</em></a></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+                    </div>
+                    <footer data-swiftype-index="false">
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../durability_recovery/index.html" class="btn btn-neutral float-right" title="Using Durability and Recovery">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../ssl/index.html" class="btn btn-neutral" title="SSL Network Encryption"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&copy; Copyright 2015, MemSQL</p>
+  </div>
+</footer>
+                </div>
+            </div>
+
+        </section>
+    </div>
+
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/underscore-min.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery.ba-hashchange.min.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery.swiftype.search.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery.swiftype.autocomplete.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/theme.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/search.js"></script> 
+
+        <!-- Google Analytics -->
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-21693588-3', 'auto');
+            ga('send', 'pageview');
+        </script>
+        <!-- End Google Analytics -->
+
+        <script type="text/javascript">
+            $.ajax({
+                url: document.location.protocol + '//munchkin.marketo.net/munchkin.js',
+                dataType: 'script',
+                cache: true,
+                success: function() {
+                    Munchkin.init('759-YLI-316');
+                }
+            });
+        </script>
+    </body>
+</html>

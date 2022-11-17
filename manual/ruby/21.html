@@ -1,0 +1,117 @@
+<html><HEAD><TITLE>10、迭代器 - RUBY文档中心</TITLE>
+<STYLE type=text/css>
+<!--
+.code2 {font-size:14.7px;font-family:arial;color:#00009a;line-height:150%;background-color:#EFEFEF;height=25px;vertical-align=middle;margin-left: 20px;}
+.code {font-size:14.7px;font-family:arial;color:#00009a;background-color:#EFEFEF;line-height: 150%}
+.quote {font-size:14.7px;font-family:arial;color:#666666;line-height:150%;}
+-->
+</STYLE>
+
+<META http-equiv=Content-Type content="text/html; charset=gb2312"><LINK href="21_files/news[1].css"  rel=stylesheet></head>
+<BODY topMargin=0>
+<STYLE type=text/css>
+<!--
+body {
+	margin-top: 50px;
+}
+.style12 {font-size: 33px}
+.style15 {
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-weight: bold;
+}
+.style17 {font-family: "黑体", "楷体_GB2312", "新宋体"}
+.style18 {font-size: 12px}
+-->
+</STYLE>
+
+
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #929292 1px groove" cellSpacing=0 cellPadding=3 width=772 align=center bgColor=#ffffff border=0>
+<TBODY>
+<TR>
+<TD height=20></TD></TR>
+<TR>
+<TD bgColor=#8acd38 height=30>&nbsp;</TD></TR>
+<TR>
+<TD height=50></TD></TR></TBODY></TABLE>
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #ffffff 1px groove" borderColor=#ffffff cellSpacing=0 cellPadding=3 width=772 align=center bgColor=#ffffff border=0>
+<TBODY>
+<TR>
+<TD align=middle>
+<DIV class=moer-title><IMG src="51_files/logo_read[1].gif" > 10、迭代器</DIV>
+<P>转帖：oasis_me　　发表时间：2005-6-15 4:56:57　　点击次数：335 </P></TD></TR>
+<TR>
+<TD height=50></TD></TR></TBODY></TABLE>
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #ffffff 1px groove" borderColor=#ffffff cellSpacing=0 cellPadding=3 width=772 align=center bgColor=#ffffff border=0>
+<TBODY>
+<TR>
+<TD width="10%" bgColor=#ffffff>&nbsp;</TD>
+<TD class=moer-ask vAlign=top align=left width="5%" bgColor=#ffffff>&nbsp;</TD>
+<TD vAlign=top align=left width="75%">
+<TABLE cellSpacing=0 cellPadding=0>
+<TBODY>
+<TR>
+<TD class=moer-content vAlign=top align=left>迭代器并不是Ruby发明的.它广泛地运用于各种面向对象语言.在Lisp中也有,只是不这么叫罢了.尽管如此,迭代器的概念并不为许多人熟悉,因此我们将在此做较为详细的介绍.<BR><BR>你知道,动词&nbsp;iterate&nbsp;的意思是做同一件事许多遍,因此,iterator就是用来将同一件事做许多次的东西.<BR><BR>当我们写代码时,我们需要各种环境下的循环.在C里,我们用for或者while.比如,<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>char&nbsp;*str;<BR>for&nbsp;(str&nbsp;=&nbsp;"abcdefg";&nbsp;*str&nbsp;!=&nbsp;'\0';&nbsp;str++)&nbsp;{<BR>&nbsp;&nbsp;/*&nbsp;process&nbsp;a&nbsp;character&nbsp;here&nbsp;*/<BR>}</TD></TR></TBODY></TABLE><BR><BR>C的for(...)语法提供了一种写循环的抽象方法,但测试&nbsp;*str&nbsp;是否为空(null)字符需要程序员了解字符串内部结构的细节.这让C看起来像低级(low-level)语言.更高级的语言是通过它们更具弹性的迭代器支持来实现的.考虑下面的&nbsp;sh&nbsp;命令行脚本:<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>#!/bin/sh<BR>for&nbsp;i&nbsp;in&nbsp;*.[ch];&nbsp;do&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;...&nbsp;here&nbsp;would&nbsp;be&nbsp;something&nbsp;to&nbsp;do&nbsp;for&nbsp;each&nbsp;file<BR>done</TD></TR></TBODY></TABLE><BR><BR>当前目录下所有的C源文件和头文件都将被处理,由命令行shell来一个个地捡取文件名并处理其中的细节.我想这是在比&nbsp;C&nbsp;要高的级别上工作,你觉得呢?<BR><BR>但有更多值得我们考虑的:在一种语言能够很好的给内建的数据类型的提供迭代器的同时,我们却仍需要回去用低级别的循环语言来实现对自己定义的数据类型的迭代,这真是让人失望.在面对对象编程时,用户经常一个接一个地定义数据类型,因此这是一个很严重的问题.<BR><BR>因此,所有的OOP语言都包含了一定的迭代器机制.某些语言为此提供一种特殊的类;Ruby则允许我们直接定义迭代器.<BR><BR>Ruby的String类型有很多有用的迭代器:<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;"abc".each_byte{|c|&nbsp;printf&nbsp;"&lt;%c&gt;",&nbsp;c};&nbsp;print&nbsp;"\n"<BR>&lt;a&gt;&lt;b&gt;&lt;c&gt;<BR>&nbsp;&nbsp;&nbsp;nil</TD></TR></TBODY></TABLE><BR><BR>each_byte&nbsp;是个用于字符串中每个字符的迭代器.每个字符串由局部变量c代替.这可以翻译为类似C的代码...<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;s="abc";i=0<BR>&nbsp;&nbsp;&nbsp;0<BR>ruby&gt;&nbsp;while&nbsp;i&lt;s.length<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;printf&nbsp;"&lt;%c&gt;",&nbsp;s[i];&nbsp;i+=1<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;end;&nbsp;print&nbsp;"\n"<BR>&lt;a&gt;&lt;b&gt;&lt;c&gt;<BR>&nbsp;&nbsp;&nbsp;nil</TD></TR></TBODY></TABLE><BR><BR>...然而,&nbsp;each_byte&nbsp;迭代器在概念上要简单些,而且即使以后&nbsp;String&nbsp;类突然有所改变也应该可以照样工作.使用迭代器的一个好处便是在此类改变中仍然可以保持健壮;一般的,它的确是好代码的一个特点.(好,请有点儿耐心,我们将会马上谈到什么是类)<BR><BR>String的另一个迭代器是&nbsp;each_line.<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;"a\nb\nc\n".each_line{|l|&nbsp;print&nbsp;l}<BR>a<BR>b<BR>c<BR>&nbsp;&nbsp;&nbsp;nil</TD></TR></TBODY></TABLE><BR><BR>采用迭代器,这将很轻松的取代C的大多数编程效果(找换行符,生成子串等等)<BR><BR>前面出现的for语句通过each迭代器实现迭代功能.&nbsp;String的each和each_line的工作原理差不多,让我们用for重写上面的例子:<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;for&nbsp;l&nbsp;in&nbsp;"a\nb\nc\n"<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;print&nbsp;l&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;end<BR>a<BR>b<BR>c<BR>&nbsp;&nbsp;&nbsp;nil</TD></TR></TBODY></TABLE><BR><BR>我们可以用retry流程控制语句连接迭代循环,它会从头执行当前循环的迭代.<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;c=0<BR>&nbsp;&nbsp;&nbsp;0<BR>ruby&gt;&nbsp;for&nbsp;i&nbsp;in&nbsp;0..4<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;print&nbsp;i<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;if&nbsp;i&nbsp;==&nbsp;2&nbsp;and&nbsp;c&nbsp;==&nbsp;0<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c&nbsp;=&nbsp;1<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;"\n"<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;retry<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;end<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;end;&nbsp;print&nbsp;"\n"<BR>012<BR>01234<BR>&nbsp;&nbsp;&nbsp;nil</TD></TR></TBODY></TABLE><BR><BR>yield有时会在一个迭代器的定义中出现.&nbsp;yield将流程控制移至传递给迭代器的代码域(这将会在过程对象那一节介绍更多的细节).下面的例子定义了一个repeat迭代器,会依参数的设置执行多次代码域.<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;def&nbsp;repeat(num)<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;while&nbsp;num&nbsp;&gt;&nbsp;0<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;yield<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;num&nbsp;-=&nbsp;1<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;end<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;end<BR>&nbsp;&nbsp;&nbsp;nil<BR>ruby&gt;&nbsp;repeat(3)&nbsp;{&nbsp;print&nbsp;"foo\n"&nbsp;}<BR>foo<BR>foo<BR>foo<BR>&nbsp;&nbsp;&nbsp;nil</TD></TR></TBODY></TABLE><BR><BR>利用retry,我们可以定义一个有while相同作用的迭代器,虽然在实际应用中它太慢了.<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;def&nbsp;WHILE(cond)<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;return&nbsp;if&nbsp;not&nbsp;cond<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;yield<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;retry<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;end<BR>&nbsp;&nbsp;&nbsp;nil<BR>ruby&gt;&nbsp;i=0;&nbsp;WHILE(i&lt;3)&nbsp;{&nbsp;print&nbsp;i;&nbsp;i+=1&nbsp;}<BR>012&nbsp;&nbsp;&nbsp;nil</TD></TR></TBODY></TABLE><BR><BR>搞懂什么是迭代器了吗?有一些限制,但你可以写自己的迭代器;实际上,当你定义一个新的数据类型时,为它定义一个合适的迭代器经常也很方便.这样看来,上面的例子并不是很好用.在我们理解了类以后,我们可以讨论讨论更具实际意义的迭代器.</TD></TR>
+<TR>
+<TD class=moer-content vAlign=top align=left height=30></TD></TR>
+<TR>
+<TD vAlign=top align=left><SPAN style="FONT-WEIGHT: bold; FONT-SIZE: 12px">版权声明：</SPAN>RUBY文档中心的所有文章标明[<B>原创</B>]的均为本站作品，版权属RUBY中文化计划，若转载请注明；标明[<B>翻译</B>]的其外文版权归原作者，译文版权属RUBY中文化计划；标明[<B>转贴</B>]的，若原作者感到侵犯了他的著作权，那么请及时跟主持人联系，我们会尽快更正。</TD></TR></TBODY></TABLE></TD>
+<TD width="10%" bgColor=#ffffff>&nbsp;</TD></TR></TBODY></TABLE>
+<STYLE type=text/css>
+<!--
+body {
+	margin-bottom: 20px;
+}
+-->
+</STYLE>
+
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #929292 1px groove; BORDER-BOTTOM: #929292 1px groove" cellSpacing=0 cellPadding=0 width=772 align=center>
+<TBODY>
+<TR>
+<TD bgColor=#ffffff>
+<DIV align=center>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P><IMG height=11 src="55_files/logo_small[1].gif"  width=8> 版权所有(C) <A href="http://www.moer.net/ruby/index.asp" >RUBY中文化计划</A></P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></DIV></TD></TR></TBODY></TABLE>
+<DIV align=center></DIV>
+<div style="display:none;">
+<script type="text/javascript" src="http://shouce.jb51.net/js/stat.js" ></script>
+</div>
+</BODY>

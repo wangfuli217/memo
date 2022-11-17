@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Class.create - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>
+			create
+		</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">create([superclass][, methods...]) -> Class</code></pre>
+			<p>创建一个类。</p>
+		</div>
+		<div id="abody">
+			<p>
+				<code>Class.create</code> 返回一个函数，当该函数被调用时，会自动调用它自己的 <code>initialize</code> 方法。</p>
+			<p>
+				从 1.6 版开始，<code>Class.create</code> 接受两种类型的参数。如果第一个参数是 <code>Class</code>，则该类作为新类的基类，
+				新类将会继承基类中所有的方法。否则，任何参数都被认为是一个对象，新类会复制参数对象中的方法作为新类的实例方法。
+			</p>
+			<p>
+				即使在子类中重写了基类已有的实例方法，子类的方法仍然能够访问基类的原始方法。只需要按照通常的方式定义子类需要重写的方法，
+				但将第一个参数设为 <code>$super</code> ，即可在该函数中使用 <code>$super</code> 调用基类被重写的方法。<br />
+				<strong>译注：</strong>关于 <code>$super</code>，更详细的资料请参见<a href="../../Reference/super.htm" >这里</a>。
+			</p>
+			<p>如果要扩展已有的类，使用 <a href="addMethods.htm" >Class.addMethods</a> 方法。</p>
+			<h3>特殊属性</h3>
+			<p>类自身包含了一些特殊的属性：</p>
+			<ul>
+				<li><code>superclass</code> 属性指向该类的基类（如果没有基类，则为 <code>null</code>）。</li>
+				<li><code>subclasses</code> 属性是一个数组，该数组包含了该类的所有子类（如果没有子类，则是一个空数组）。</li>
+			</ul>
+			<p>另外，类的<em>实例</em>中包括了原生的 JavaScript <code>constructor</code> 属性，该属性指向创建该实例的类。</p>
+			<h3>样例</h3>
+			<pre><code class="javascript">var Animal = Class.create({
+	initialize: function(name, sound) {
+		this.name = name;
+		this.sound = sound;
+	}, 
+	speak: function() {
+		alert(this.name + " says: " + this.sound + "!");
+	}
+}); 
+// Animal 的子类
+var Snake = Class.create(Animal, {
+	initialize: function($super, name) {
+		$super(name, 'hissssssssss');
+	}
+});
+
+var ringneck = new Snake("Ringneck");
+ringneck.speak();
+//-> 提示："Ringneck says: hissssssssss!"
+
+var rattlesnake = new Snake("Rattler");
+rattlesnake.speak();
+//-> 提示："Rattler says: hissssssssss!" 
+
+// 混入 Enumerable 
+var AnimalPen = Class.create(Enumerable, {
+	initialize: function() {
+		var args = $A(arguments);
+		if (!args.all( function(arg) { return arg instanceof Animal }))
+			throw "Only animals in here!"
+		this.animals = args;
+	}, 
+	// 为使用 Enumerable 的方法，实现 _each 
+	_each: function(iterator) {
+		return this.animals._each(iterator);
+	}
+}); 
+
+var snakePen = new AnimalPen(ringneck, rattlesnake);
+snakePen.invoke('speak'); 
+//-> 提示："Ringneck says: hissssssssss!"
+//-> 提示："Rattler says: hissssssssss!" </code></pre>
+			<h3>1.6 之前</h3>
+			<p><em>以下的描述仅针对 Prototype 1.6 之前的版本。</em></p>
+			<p>
+				<code>Class.create</code> 返回一个函数，当该函数被调用时，会自动调用它自己的 <code>initialize</code> 方法。
+				这类似于 Ruby 风格的面向对象编程，同时也让你能够更容易的重写父类的构造器，以创建新的子类。
+			</p>
+			<h4>样例</h4>
+			<pre><code class="javascript">var Animal = Class.create();
+Animal.prototype = {
+	initialize: function(name, sound) {
+		this.name = name;
+		this.sound = sound;
+	},
+	speak: function() {
+		alert(name + " says: " + sound + "!");
+	}
+};
+
+var snake = new Animal("Ringneck", "hissssssssss");
+snake.speak();
+// -> 提示："Ringneck says: hissssssssss!"
+var Dog = Class.create();
+Dog.prototype = Object.extend(new Animal(), {
+	initialize: function(name) {
+		this.name = name;
+		this.sound = "woof";
+	}
+}); 
+
+var fido = new Dog("Fido");
+fido.speak();
+// -> 提示："Fido says: woof!" </code></pre>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

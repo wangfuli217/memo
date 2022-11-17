@@ -1,0 +1,295 @@
+﻿<html xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+    <META NAME="save" CONTENT="history" />
+    <title>如何：声明、实例化和使用委托（C# 编程指南）</title>
+    <link rel="stylesheet" type="text/css" href="../styles/presentation.css" />
+    <link rel="stylesheet" type="text/css" href="ms-help://Hx/HxRuntime/HxLink.css" />
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/EventUtilities.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/SplitScreen.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/Dropdown.js"> </script>
+    <script type="text/javascript" src="../scripts/script_manifold.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/script_feedBack.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CheckboxMenu.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CommonUtilities.js"> </script>
+    <xml>
+      <MSHelp:TOCTitle Title="如何：声明、实例化和使用委托" />
+      <MSHelp:Keyword Index="A" Term="61c4895f-f785-48f8-8bfe-db73b411c4ae" />
+      <MSHelp:Keyword Index="K" Term="委托 [C#], 声明和实例化" />
+      <MSHelp:Attr Name="RevisionNumber" Value="15" />
+      <MSHelp:Attr Name="AssetID" Value="61c4895f-f785-48f8-8bfe-db73b411c4ae" />
+      <MSHelp:Attr Name="Abstract" Value="&#xD;&#xA;                    在 C# 1.0 及更高版本中，可以按此处所示方式声明委托：&#xD;&#xA;                " />
+      <MSHelp:Attr Name="codelang" Value="CSharp" />
+      <MSHelp:Attr Name="CommunityContent" Value="1" />
+      <MSHelp:Attr Name="DevLang" Value="CSharp" />
+      <MSHelp:Attr Name="DevLangVers" Value="CSharp" />
+      <MSHelp:Attr Name="DocSet" Value="C#" />
+      <MSHelp:Attr Name="DocSet" Value="C# Lang" />
+      <MSHelp:Attr Name="DocSet" Value="ExpressLibVS" />
+      <MSHelp:Attr Name="ProgModel" Value="managed" />
+      <MSHelp:Attr Name="ShippedIn" Value="vs.90" />
+      <MSHelp:Attr Name="Technology" Value="ManagedCode" />
+      <MSHelp:Attr Name="TopicVersion" Value="09.00.08178.10000" />
+      <MSHelp:Attr Name="Catalog Container" Value="System_Default_Catalog" />
+      <MSHelp:Attr Name="Content Set Container" Value="System_Default_Content_Set" />
+      <MSHelp:Attr Name="TopicType" Value="kbHowTo" />
+      <MSHelp:Attr Name="Locale" Value="zh-chs" />
+    </xml>
+  </head>
+  <body>
+    <input type="hidden" id="userDataCache" class="userDataStyle" />
+    <input type="hidden" id="hiddenScrollOffset" />
+    <img id="collapseImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" title="“折叠”图像" />
+    <img id="expandImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" title="“展开”图像" />
+    <img id="collapseAllImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" />
+    <img id="expandAllImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" />
+    <img id="dropDownImage" style="display:none; height:0; width:0;" src="../icons/dropdown.gif" />
+    <img id="dropDownHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/dropdownHover.gif" />
+    <img id="copyImage" style="display:none; height:0; width:0;" src="../icons/copycode.gif" title="“复制”图像" />
+    <img id="copyHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/copycodeHighlight.gif" title="“复制悬停”图像" />
+    <div id="header">
+      <table id="topTable" cellspacing="0" cellpadding="0">
+        <tr>
+          <td>
+            <span onclick="ExpandCollapseAll(toggleAllImage)" style="cursor:default;" onkeypress="ExpandCollapseAll_CheckKey(toggleAllImage, event)" tabindex="0">
+              <img ID="toggleAllImage" class="toggleAll" src="../icons/collapse_all.gif" /> <label id="collapseAllLabel" for="toggleAllImage" style="display: none;">全部折叠</label><label id="expandAllLabel" for="toggleAllImage" style="display: none;">全部展开</label> </span>
+            <span>    </span>
+            <span id="devlangsDropdown" class="filter" tabindex="0">
+              <img id="devlangsDropdownImage" src="../icons/dropdown.gif" /> <label id="devlangsMenuAllLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：全部 </nobr></label><label id="devlangsMenuMultipleLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：多个 </nobr></label><label id="devlangsMenuVisualBasicLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual Basic </nobr></label><label id="devlangsMenuCSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：C# </nobr></label><label id="devlangsMenuManagedCPlusPlusLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual C++ </nobr></label><label id="devlangsMenuJSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：J# </nobr></label><label id="devlangsMenuJScriptLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：JScript </nobr></label></span>
+          </td>
+        </tr>
+      </table>
+      <div id="devlangsMenu">
+        <input id="VisualBasicCheckbox" type="checkbox" data="VisualBasic,vb,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="VisualBasicCheckbox">Visual Basic</label>
+        <br />
+        <input id="CSharpCheckbox" type="checkbox" data="CSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="CSharpCheckbox">C#</label>
+        <br />
+        <input id="ManagedCPlusPlusCheckbox" type="checkbox" data="ManagedCPlusPlus,cpp,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="ManagedCPlusPlusCheckbox">Visual C++</label>
+        <br />
+        <input id="JSharpCheckbox" type="checkbox" data="JSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JSharpCheckbox">J#</label>
+        <br />
+        <input id="JScriptCheckbox" type="checkbox" data="JScript,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JScriptCheckbox">JScript</label>
+        <br />
+      </div>
+      <table id="bottomTable" cellpadding="0" cellspacing="0">
+        <tr id="headerTableRow1">
+          <td align="left">
+            <span id="runningHeaderText">C# 编程指南</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow2">
+          <td align="left">
+            <span id="nsrTitle">如何：声明、实例化和使用委托（C# 编程指南）</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow3">
+          <td align="left">
+            <a href="61c4895f-f785-48f8-8bfe-db73b411c4ae.htm#exampleToggle" onclick="OpenSection(exampleToggle)">示例</a>  <a href="61c4895f-f785-48f8-8bfe-db73b411c4ae.htm#seeAlsoToggle" onclick="OpenSection(seeAlsoToggle)">另请参见</a>  
+<script type="text/javascript">
+var fbBody = '%b8%d0%d0%bb%c4%fa%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%bf%aa%b7%a2%b0%e6%b1%e0%d0%b4%cd%c5%b6%d3%bd%ab%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%d3%c3%d3%da%b8%c4%bd%f8%ce%c4%b5%b5%a1%a3%ce%d2%c3%c7%d4%da%c9%f3%d4%c4%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%ca%b1%a3%ac%bf%c9%c4%dc%bb%e1%b8%f8%c4%fa%b7%a2%cb%cd%b5%e7%d7%d3%d3%ca%bc%fe%a3%ac%d2%d4%c7%eb%c4%fa%cc%e1%b9%a9%bd%f8%d2%bb%b2%bd%b5%c4%bd%e2%ca%cd%cb%b5%c3%f7%bb%f2%d5%df%be%cd%bd%e2%be%f6%b7%bd%b0%b8%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%ce%d2%c3%c7%b2%bb%bb%e1%bd%ab%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%d3%c3%d3%da%c8%ce%ba%ce%c6%e4%cb%fb%d3%c3%cd%be%a3%ac%b2%a2%c7%d2%d4%da%c9%f3%d4%c4%cd%ea%d6%ae%ba%f3%a3%ac%ce%d2%c3%c7%b2%bb%bb%e1%d4%d9%b1%a3%c1%f4%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%a1%a3%0d%0a%d3%d0%b9%d8%20Microsoft%20%d2%fe%cb%bd%d5%fe%b2%df%b5%c4%bd%f8%d2%bb%b2%bd%d0%c5%cf%a2%a3%ac%c7%eb%b2%ce%bc%fb%20http%3a%2f%2fprivacy.microsoft.com%2fzh-cn%2fdefault.aspx%a1%a3';
+var fbSubject = 'Customer%20Feedback';
+</script>
+  <span id="headfeedbackarea" class="feedbackhead"><a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);"> 发送反馈意见</a></span>
+</td>
+        </tr>
+      </table>
+      <table id="gradientTable">
+        <tr>
+          <td class="nsrBottom" background="../icons/gradient.gif" />
+        </tr>
+      </table>
+    </div>
+    <div id="mainSection">
+      <div id="mainBody">
+        <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
+        <font color="DarkGray"></font>
+        <p /> <p><font color="DarkGray">更新：2007 年 11 月</font></p><div class="introduction"><p>
+                    在 C# 1.0 及更高版本中，可以按此处所示方式声明委托：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">delegate</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Del&lt;T&gt;(T item);
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Notify(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> i) { }
+
+</pre></td></tr></table></span></div></div><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>Del&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt; d1 = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Del&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt;(Notify);
+
+</pre></td></tr></table></span></div></div><p>
+                    在 C# 2.0 及更高版本中，还可以使用以下简化的语法，通过匿名方法来声明和初始化<mshelp:link keywords="0bb8cb6d-2f87-47c7-9d1f-d65c1cd01e9f" tabindex="0">委托</mshelp:link>：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>Del&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt; d2 = Notify;
+
+</pre></td></tr></table></span></div></div><p>
+                    在 C# 3.0 及更高版本中，还可以使用 Lambda 表达式来声明和实例化委托。有关更多信息，请参见 <span sdata="link"><a href="57e3ba27-9a82-4067-aca7-5ca446b7bf93.htm">Lambda 表达式（C# 编程指南）</a></span>。
+                </p><p>
+                    下面的示例阐释声明、实例化和使用委托。<span class="code">BookDB</span> 类封装一个书店数据库，它维护一个书籍数据库。它公开 <span class="code">ProcessPaperbackBooks</span> 方法，该方法在数据库中查找所有平装书，并对每本平装书调用一个委托。使用的 <span sdata="langKeyword" value="delegate"><span class="keyword">delegate</span></span> 类型名为 <span class="code">ProcessBookDelegate</span>。<span class="code">Test</span> 类使用该类打印平装书的书名和平均价格。
+                </p><p>
+                    委托的使用促进了书店数据库和客户代码之间功能的良好分隔。客户代码不知道书籍的存储方式和书店代码查找平装书的方式。书店代码也不知道找到平装书后将对平装书执行什么处理。
+                </p></div><h1 class="heading"><span onclick="ExpandCollapse(exampleToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(exampleToggle, event)" tabindex="0"><img id="exampleToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />示例</span></h1><div id="exampleSection" class="section" name="collapseableSection" style=""><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// A set of classes for handling a bookstore:</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">namespace</span> Bookstore
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">using</span> System.Collections;
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Describes a book in the book list:</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">struct</span> Book
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> Title;        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Title of the book.</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> Author;       <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Author of the book.</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">decimal</span> Price;       <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Price of the book.</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">bool</span> Paperback;      <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Is it paperback?</span>
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> Book(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> title, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> author, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">decimal</span> price, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">bool</span> paperBack)
+        {
+            Title = title;
+            Author = author;
+            Price = price;
+            Paperback = paperBack;
+        }
+    }
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Declare a delegate type for processing a book:</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">delegate</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> ProcessBookDelegate(Book book);
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Maintains a book database.</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> BookDB
+    {
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// List of all books in the database:</span>
+        ArrayList list = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> ArrayList();
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Add a book to the database:</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> AddBook(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> title, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> author, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">decimal</span> price, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">bool</span> paperBack)
+        {
+            list.Add(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Book(title, author, price, paperBack));
+        }
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Call a passed-in delegate on each paperback book to process it: </span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> ProcessPaperbackBooks(ProcessBookDelegate processBook)
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (Book b <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> list)
+            {
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> (b.Paperback)
+                    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Calling the delegate:</span>
+                    processBook(b);
+            }
+        }
+    }
+}
+
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Using the Bookstore classes:</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">namespace</span> BookTestClient
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">using</span> Bookstore;
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Class to total and average prices of books:</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> PriceTotaller
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> countBooks = 0;
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">decimal</span> priceBooks = 0.0m;
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">internal</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> AddBookToTotal(Book book)
+        {
+            countBooks += 1;
+            priceBooks += book.Price;
+        }
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">internal</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">decimal</span> AveragePrice()
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> priceBooks / countBooks;
+        }
+    }
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Class to test the book database:</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> TestBookDB
+    {
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Print the title of the book.</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> PrintTitle(Book b)
+        {
+            System.Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"   {0}"</span>, b.Title);
+        }
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Execution starts here.</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Main()
+        {
+            BookDB bookDB = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> BookDB();
+
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Initialize the database with some books:</span>
+            AddBooks(bookDB);
+
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Print all the titles of paperbacks:</span>
+            System.Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Paperback Book Titles:"</span>);
+
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Create a new delegate object associated with the static </span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// method Test.PrintTitle:</span>
+            bookDB.ProcessPaperbackBooks(PrintTitle);
+
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Get the average price of a paperback by using</span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// a PriceTotaller object:</span>
+            PriceTotaller totaller = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> PriceTotaller();
+
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Create a new delegate object associated with the nonstatic </span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// method AddBookToTotal on the object totaller:</span>
+            bookDB.ProcessPaperbackBooks(totaller.AddBookToTotal);
+
+            System.Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Average Paperback Book Price: ${0:#.##}"</span>,
+                    totaller.AveragePrice());
+        }
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Initialize the book database with some test books:</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> AddBooks(BookDB bookDB)
+        {
+            bookDB.AddBook(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"The C Programming Language"</span>, <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Brian W. Kernighan and Dennis M. Ritchie"</span>, 19.95m, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">true</span>);
+            bookDB.AddBook(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"The Unicode Standard 2.0"</span>, <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"The Unicode Consortium"</span>, 39.95m, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">true</span>);
+            bookDB.AddBook(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"The MS-DOS Encyclopedia"</span>, <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Ray Duncan"</span>, 129.95m, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">false</span>);
+            bookDB.AddBook(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Dogbert's Clues for the Clueless"</span>, <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Scott Adams"</span>, 12.00m, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">true</span>);
+        }
+    }
+}
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">/* Output:
+Paperback Book Titles:
+   The C Programming Language
+   The Unicode Standard 2.0
+   Dogbert's Clues for the Clueless
+Average Paperback Book Price: $23.97
+*/</span>
+
+</pre></td></tr></table></span></div></div></div><h1 class="heading"><span onclick="ExpandCollapse(robustProgrammingToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(robustProgrammingToggle, event)" tabindex="0"><img id="robustProgrammingToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />可靠编程</span></h1><div id="robustProgrammingSection" class="section" name="collapseableSection" style=""><ul><li><p>
+                    声明委托。
+                </p><p>
+                    下面的语句声明一个新的委托类型。
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">delegate</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> ProcessBookDelegate(Book book);
+
+</pre></td></tr></table></span></div></div><p>
+                    每个委托类型都描述参数的数目和类型，以及它可以封装的方法的返回值类型。每当需要一组新的参数类型或新的返回值类型时，都必须声明一个新的委托类型。
+                </p></li><li><p>
+                    实例化委托。
+                </p><p>
+                    声明了委托类型后，必须创建委托对象并使之与特定方法关联。在上一个示例中，您通过按下面示例中的方式将 <span class="code">PrintTitle</span> 方法传递到 <span class="code">ProcessPaperbackBooks</span> 方法来实现这一点：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>bookDB.ProcessPaperbackBooks(PrintTitle);
+
+</pre></td></tr></table></span></div></div><p>
+                    这将创建与<mshelp:link keywords="5509e215-2183-4da3-bab4-6b7e607a4fdf" tabindex="0">静态</mshelp:link>方法 <span class="code">Test.PrintTitle</span> 关联的新委托对象。类似地，对象 <span class="code">totaller</span> 的非静态方法 <span class="code">AddBookToTotal</span> 是按下面示例中的方式传递的：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>bookDB.ProcessPaperbackBooks(totaller.AddBookToTotal);
+
+</pre></td></tr></table></span></div></div><p>
+                    在两个示例中，都向 <span class="code">ProcessPaperbackBooks</span> 方法传递了一个新的委托对象。
+                </p><p>
+                    委托创建后，它的关联方法就不能更改；委托对象是不可变的。
+                </p></li><li><p>
+                    调用委托。
+                </p><p>
+                    创建委托对象后，通常将委托对象传递给将调用该委托的其他代码。通过委托对象的名称（后面跟着要传递给委托的参数，括在括号内）调用委托对象。下面是委托调用的示例：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>processBook(b);
+
+</pre></td></tr></table></span></div></div><p>
+                    与本例一样，可以通过使用 <b>BeginInvoke</b> 和 <b>EndInvoke</b> 方法同步或异步调用委托。
+                </p></li></ul></div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />请参见</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><h4 class="subHeading">概念</h4><div class="seeAlsoStyle"><span sdata="link"><a href="ac0f23a2-6bf3-4077-be99-538ae5fd3bc5.htm">C# 编程指南</a></span></div><h4 class="subHeading">参考</h4><div class="seeAlsoStyle"><span sdata="link"><a href="a8e51b22-d294-44fb-9539-0072f06c4cb3.htm">事件（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="97de039b-c76b-4b9c-a27d-8c1e1c8d93da.htm">委托（C# 编程指南）</a></span></div></div></div>
+      <div id="footer">
+        <div class="footerLine">
+          <img width="100%" height="3px" src="../icons/footer.gif" title="“页脚”图像" />
+        </div>
+<span id="feedbackarea">将有关本主题的<a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);">反馈意见</a>发送给 Microsoft。</span>
+</div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,249 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 4.4.  Multidimensioned Arrays</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch04lev1sec3.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch04lev1sec5.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch04lev1sec4"></a>
+
+        <h3 class="docSection1Title">4.4. Multidimensioned Arrays</h3>
+        <h3 class="docSection1Title">4.4. 多维数组</h3>
+
+<a name="ch04note23"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Strictly speaking, there are no multidimensioned arrays in C++. What is commonly referred to as a multidimensioned array is actually an array of arrays:</p>
+                <p class="docText">严格地说，C++ 中没有多维数组，通常所指的多维数组其实就是数组的数组：</p>
+              </td>
+            </tr>
+          </table><br>
+          <pre>
+          // <span class="docEmphItalicAlt">array of size 3, each element is an array of</span> <span class="docEmphasis">ints</span> <span class="docEmphItalicAlt">of size 4</span>
+          int ia[3][4];
+</pre><br>
+
+          <p class="docText">It can be helpful to keep this fact in mind when using what appears to be a multidimensioned array.</p>
+          <p class="docText">在使用多维数组时，记住这一点有利于理解其应用。</p>
+        </div><br>
+
+        <p class="docText">An array whose elements are an array is said to have two dimensions. Each dimension is referred to by its own subscript:</p>
+        <p class="docText">如果数组的元素又是数组，则称为二维数组，其每一维对应一个下标：</p>
+        <pre>
+     ia[2][3] // <span class="docEmphItalicAlt">fetches last element from the array in the last row</span>
+</pre><br>
+
+<a name="idd1e29577"></a><a name="idd1e29584"></a><a name="idd1e29591"></a><a name="idd1e29598"></a><a name="idd1e29605"></a><a name="idd1e29610"></a><a name="idd1e29615"></a><a name="idd1e29620"></a><a name="idd1e29625"></a><a name="idd1e29630"></a><a name="idd1e29643"></a>
+        <p class="docText">The first dimension is often referred to as the row and the second as the column. In C++ there is no limit on how many subscripts are used. That is, we could have an array whose elements are arrays of elements that are arrays, and so on.</p>
+        <p class="docText">第一维通常称为行（row），第二维则称为列（column）。C++ 中并未限制可用的下标个数，也就是说，我们可以定义元素是数组（其元素又是数组，如此类推）的数组。</p>
+
+<a name="ch04lev2sec16"></a>
+        <h4 class="docSection2Title">Initializing the Elements of a Multidimensioned Array</h4>
+        <h4 class="docSection2Title">多维数组的初始化</h4>
+
+        <p class="docText">As with any array, we can initialize the elements by providing a bracketed list of initializers. Multidimensioned arrays may be initialized by specifying bracketed values for each row:</p>
+        <p class="docText">和处理一维数组一样，程序员可以使用由花括号括起来的初始化式列表来初始化多维数组的元素。对于多维数组的每一行，可以再用花括号指定其元素的初始化式：</p>
+        <pre>
+     int ia[3][4] = {     /*  <span class="docEmphItalicAlt">3 elements, each element is an array of size 4</span> */
+         {0, 1, 2, 3} ,   /*  <span class="docEmphItalicAlt">initializers for row indexed by 0</span> */
+         {4, 5, 6, 7} ,   /*  <span class="docEmphItalicAlt">initializers for row indexed by 1</span> */
+         {8, 9, 10, 11}   /*  <span class="docEmphItalicAlt">initializers for row indexed by 2</span> */
+     };
+</pre>
+
+        <p class="docText">The nested braces, which indicate the intended row, are optional. The following initialization is equivalent, although considerably less clear.</p>
+        <p class="docText">其中用来标志每一行的内嵌的花括号是可选的。下面的初始化尽管有点不清楚，但与前面的声明完全等价：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">equivalent initialization without the optional nested braces for each row</span>
+     int ia[3][4] = {0,1,2,3,4,5,6,7,8,9,10,11};
+</pre>
+
+        <p class="docText">As is the case for single-dimension arrays, elements may be left out of the initializer list. We could initialize only the first element of each row as follows:</p>
+        <p class="docText">与一维数组一样，有些元素将不使用初始化列表提供的初始化式进行初始化。下面的声明只初始化了每行的第一个元素：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">explicitly initialize only element 0 in each row</span>
+     int ia[3][4] = {{ 0 } , { 4 } , { 8 } };
+</pre>
+
+        <p class="docText">The values of the remaining elements depend on the element type and follow the rules descibed on page <a class="docLink" href="ch04lev1sec1.html#page_112" >112</a>.</p>
+        <p class="docText">其余元素根据其元素类型用<a class="docLink" href="ch04lev1sec1.html#page_112" >第 4.1.1 节</a>描述的规则初始化。</p>
+
+        <p class="docText">If the nested braces were omitted, the results would be very different:</p>
+        <p class="docText">如果省略内嵌的花括号，结果会完全不同：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">explicitly initialize row 0</span>
+     int ia[3][4] = {0, 3, 6, 9};
+</pre>
+
+        <p class="docText">initializes the elements of the first row. The remaining elements are initialized to 0.</p>
+        <p class="docText">该声明初始化了第一行的元素，其余元素都被初始化为 0。</p>
+
+<a name="ch04lev2sec17"></a>
+        <h4 class="docSection2Title">Subscripting a Multidimensioned Array</h4>
+        <h4 class="docSection2Title">多维数组的下标引用</h4>
+
+        <p class="docText">Indexing a multidimensioned array requires a subscript for each dimension. As an example, the following pair of nested <tt>for</tt> loops initializes a two-dimensioned array:</p>
+	<p class="docText">为了对多维数组进行索引，每一维都需要一个下标。例如，下面的嵌套 <tt>for</tt> 循环初始化了一个二维数组：</p>
+        <pre>
+     const size_t rowSize = 3;
+     const size_t colSize = 4;
+     int ia [rowSize][colSize];   // <span class="docEmphItalicAlt">12 uninitialized elements</span>
+     // <span class="docEmphItalicAlt">for each row</span>
+     for (size_t i = 0; i != rowSize; ++i)
+         // <span class="docEmphItalicAlt">for each column within the row</span>
+         for (size_t j = 0; j != colSize; ++j)
+             // <span class="docEmphItalicAlt">initialize to its positional index</span>
+             ia[i][j] = i * colSize + j;
+</pre>
+
+<a name="idd1e29755"></a><a name="idd1e29762"></a><a name="idd1e29767"></a><a name="idd1e29772"></a><a name="idd1e29777"></a>
+        <p class="docText">When we want to access a particular element of the array, we must supply both a row and column index. The row index specifies which of the inner arrays we intend to access. The column index selects an element from that inner array. Remembering this fact can help in calculating proper subscript values and in understanding how multidimensioned arrays are initialized.</p>
+        <p class="docText">当需要访问数组中的特定元素时，必须提供其行下标和列下标。行下标指出需要哪个内部数组，列下标则选取该内部数组的指定元素。了解多维数组下标引用策略有助于正确计算其下标值，以及理解多维数组如何初始化。</p>
+
+        <p class="docText">If an expression provides only a single index, then the result is the inner-array element at that row index. Thus, <tt>ia[2]</tt> fetches the array that is the last row in <tt>ia</tt>. It does not fetch any element from that array; it fetches the array itself.</p>
+	<p class="docText">如果表达式只提供了一个下标，则结果获取的元素是该行下标索引的内层数组。如 <tt>ia[2]</tt> 将获得<tt>ia</tt> 数组的最后一行，即这一行的内层数组本身，而并非该数组中的任何元素。</p>
+
+<a name="ch04lev2sec18"></a>
+        <h4 class="docSection2Title">4.4.1. Pointers and Multidimensioned Arrays</h4>
+        <h4 class="docSection2Title">4.4.1. 指针和多维数组</h4>
+
+        <p class="docText">As with any array, when we use the name of a multidimensioned array, it is automatically converted to a pointer to the first element in the array.</p>
+        <p class="docText">与普通数组一样，使用多维数组名时，实际上将其自动转换为指向该数组第一个元素的指针。</p>
+
+<a name="ch04note24"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">When defining a pointer to a multidimensioned array, it is essential to remember that what we refer to as a multidimensioned array is really an array of arrays.</p>
+                <p class="docText">定义指向多维数组的指针时，千万别忘了该指针所指向的多维数组其实是数组的数组。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <p class="docText">Because a multidimensioned array is really an array of arrays, the pointer type to which the array converts is a pointer to the first inner array. Although conceptually straightforward, the syntax for declaring such a pointer can be confusing:</p>
+        <p class="docText">因为多维数组其实就是数组的数组，所以由多维数组转换而成的指针类型应是指向第一个内层数组的指针。尽管这个概念非常明了，但声明这种指针的语法还是不容易理解：</p>
+        <pre>
+     int ia[3][4];      // <span class="docEmphItalicAlt">array of size 3, each element is an array of</span> <span class="docEmphasis">ints</span> <span class="docEmphItalicAlt">of size 4</span>
+     int (*ip)[4] = ia; // <span class="docEmphasis">ip</span> <span class="docEmphItalicAlt">points to an array of 4</span> <span class="docEmphasis">ints</span>
+     ip = &amp;ia[2];       // <span class="docEmphasis">ia[2]</span> <span class="docEmphItalicAlt">is an array of 4</span> <span class="docEmphasis">ints</span>
+</pre><br>
+
+        <p class="docText">We define a pointer to an array similarly to how we would define the array itself: We start by declaring the element type followed by a name and a dimension. The trick is that the name is a pointer, so we must prepend <tt>*</tt> to the name. We can read the definition of <tt>ip</tt> from the inside out as saying that <tt>*ip</tt> has type <tt>int[4]</tt> that is, <tt>ip</tt> is a pointer to an <tt>int</tt> array of four elements.</p>
+	<p class="docText">定义指向数组的指针与如何定义数组本身类似：首先声明元素类型，后接（数组）变量名字和维数。窍门在于（数组）变量的名字其实是指针，因此需在标识符前加上 <tt>*</tt>。如果从内向外阅读 <tt>ip</tt> 的声明，则可理解为：<tt>*ip</tt> 是 <tt>int[4]</tt> 类型——即 <tt>ip</tt> 是一个指向含有 4 个元素的数组的指针。</p>
+
+<a name="ch04note25"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">The parentheses in this declaration are essential:</p>
+                <p class="docText">在下面的声明中，圆括号是必不可少的：</p>
+              </td>
+            </tr>
+          </table>
+          <pre>
+     int *ip[4]; // <span class="docEmphItalicAlt">array of pointers to</span> <span class="docEmphasis">int</span>
+     int (*ip)[4]; // <span class="docEmphItalicAlt">pointer to an array of</span> <span class="docEmphasis">4 ints</span>
+</pre>
+        </div>
+        <a name="ch04lev3sec33"></a>
+
+        <h5 class="docSection3Title">Typedefs Simplify Pointers to Multidimensioned Arrays</h5>
+        <h5 class="docSection3Title">用 typedef 简化指向多维数组的指针</h5>
+
+        <p class="docText">Typedefs (<a class="docLink" href="ch02lev1sec6.html#ch02lev1sec6" >Section 2.6</a>, p. <a class="docLink" href="ch02lev1sec6.html#ch02lev1sec6" >61</a>) can help make pointers to elements in multidimensioned arrays easier to write, read, and understand. We might write a typedef for the element type of <tt>ia</tt> as</p>
+	<p class="docText">typedef 类型定义（<a class="docLink" href="ch02lev1sec6.html#ch02lev1sec6" >第 2.6 节</a>）可使指向多维数组元素的指针更容易读、写和理解。以下程序用 typedef 为 <tt>ia</tt> 的元素类型定义新的类型名：</p>
+        <pre>
+     typedef int int_array[4];
+     int_array *ip = ia;
+</pre>
+
+        <p class="docText">We might use this typedef to print the elements of <tt>ia</tt>:</p>
+	<p class="docText">可使用 typedef 类型输出 <tt>ia</tt> 的元素：</p>
+        <pre>
+     for (int_array *p = ia; p != ia + 3; ++p)
+         for (int *q = *p; q != *p + 4; ++q)
+              cout &lt;&lt; *q &lt;&lt; endl;
+</pre>
+
+        <p class="docText">The outer <tt>for</tt> loop starts by initializing <tt>p</tt> to point to the first array in <tt>ia</tt>. That loop continues until we've processed all three rows in <tt>ia</tt>. The increment, <tt>++p</tt>, has the effect of moving <tt>p</tt> to point to the next row (e.g., the next element) in <tt>ia</tt>.</p>
+	<p class="docText">外层的 <tt>for</tt> 循环首先初始化 <tt>p</tt> 指向 <tt>ia</tt> 的第一个内部数组，然后一直循环到 <tt>ia</tt> 的三行数据都处理完为止。<tt>++p</tt> 使 <tt>p</tt> 加 1，等效于移动指针使其指向 <tt>ia</tt> 的下一行（例如：下一个元素）。</p>
+
+        <p class="docText">The inner <tt>for</tt> loop actually fetches the <tt>int</tt> values stored in the inner arrays. It starts by making <tt>q</tt> point to the first element in the array to which <tt>p</tt> points. When we dereference <tt>p</tt>, we get an array of four <tt>int</tt>s. As usual, when we use an array, it is converted automatically to a pointer to its first element. In this case, that first element is an <tt>int</tt>, and we point <tt>q</tt> at that <tt>int</tt>. The inner <tt>for</tt> loop runs until we've processed every element in the inner array. To obtain a pointer just off the end of the inner array, we again dereference <tt>p</tt> to get a pointer to the first element in that array. We then add <tt>4</tt> to that pointer to process the four elements in each inner array.</p>
+	<p class="docText">内层的 <tt>for</tt> 循环实际上处理的是存储在内部数组中的 <tt>int</tt> 型元素值。首先让 <tt>q</tt> 指向 <tt>p</tt> 所指向的数组的第一个元素。对 <tt>p</tt> 进行解引用获得一个有 4 个 <tt>int</tt> 型元素的数组，通常，使用这个数组时，系统会自动将它转换为指向该数组第一个元素的指针。在本例中，第一个元素是int型数据，q指向这个整数。系统执行内层的 <tt>for</tt> 循环直到处理完当前 <tt>p</tt> 指向的内部数组中所有的元素为止。当 <tt>q</tt> 指针刚达到该内部数组的超出末端位置时，再次对 <tt>p</tt> 进行解引用以获得指向下一个内部数组第一个元素的指针。在 <tt>p</tt> 指向的地址上加 4 使得系统可循环处理每一个内部数组的 4 个元素。</p>
+
+<a name="ch04sb15"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 4.4.1</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch04qa10q1"></a><b>Exercise 4.36:</b></td>
+
+                    <td>
+                      <p class="docText">Rewrite the program to print the contents of the array <tt>ia</tt> without using a typedef for the type of the pointer in the outer loop.</p>
+		      <p class="docText">重写程序输出 <tt>ia</tt> 数组的内容，要求在外层循环中不能使用 typedef 定义的类型。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a href="21001535.html" ><img src="images/pixel.gif"  alt="" width="1" height="1" border="0"></a>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch04lev1sec3.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch04lev1sec5.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

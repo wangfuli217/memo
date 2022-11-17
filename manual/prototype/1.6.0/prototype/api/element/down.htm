@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Element.down - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>down</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">down(element[, cssRule][, index = 0]) -> HTMLElement | undefined</code></pre>
+			<p>
+				返回 <code>element</code> 下与 <code>cssRule</code> 相匹配的第一个后代节点（如果指定 <code>index</code> 参数，则返回第
+				<em>index</em> 个）。如果未指定	<code>cssRule</code>，则默认匹配所有后代节点。如果没有符合条件的后代节点，返回
+				<code>undefined</code>。
+			</p>
+		</div>
+		<div id="abody">
+			<p>
+				<code>Element.down</code> 方法是 Prototype 最基本的 DOM 遍历工具之一（其余的还有 <a href="up.htm" >Element.up</a>、
+				<a href="next.htm" >Element.next</a> 和 <a href="previous.htm" >Element.previous</a>，这些方法体现了
+				Prototype 良好的编程风格）。它允许基于索引和/或 CSS 规则对元素的后代节点进行精确选择。
+			</p>
+			<p>因为它忽略了文本节点（仅返回元素），所以你不必担心空白节点。</p>
+			<p>还有一个额外的惊喜，所有返回的元素都已经过 <a href="extend.htm" >扩展</a>，支持链式的调用方式：</p>
+			<pre><code class="javascript">$(element).down(1).next('li', 2).hide(); </code></pre>
+			<p>遍历 DOM 从不曾像现在这么方便。</p>
+			<h3>参数</h3>
+			<p>
+				如果不传递任何参数，将返回 <code>element</code> 的第一个后代节点（这类似于调用 <code>firstChild</code>，只不过
+				<code>Element.down</code> 返回一个已 <a href="extend.htm" >扩展</a> 的元素。
+			</p>
+			<p>
+				如果 <code>index</code> 参数被传递，将返回 <code>element</code> 的具有相应索引的后代节点。（这等同于从方法
+				<a href="descendants.htm" >Element.descendants</a> 返回的元素数组中选择相应的成员。）注意，第一个元素的索引为 0。
+			</p>
+			<p>
+				如果定义了 <code>cssRule</code> 参数，<code>Element.down</code> 将返回匹配的第一个后代节点。如果要从一个列表中获取第一个项目，
+				这是一个非常好的方法（只要传递 &lt;li&gt; 作为方法的第一个参数就可以了）。
+			</p>
+			<p>
+				如果 <code>cssRule</code> 和 <code>index</code> 都被定义，<code>Element.down</code> 将会获取所有匹配指定 CSS 规则的元素集合，
+				然后返回指定索引处的元素。
+			</p>
+			<p><strong>在上述的所有情形中，如果没有找到相应的后代节点，将返回 <code>undefined</code>。</strong></p>
+			<h3>样例</h3>
+			<pre><code class="html">&lt;ul id="fruits"&gt;
+	&lt;li id="apples"&gt;
+		&lt;ul&gt;
+			&lt;li id="golden-delicious"&gt;Golden Delicious&lt;/li&gt;
+			&lt;li id="mutsu" class="yummy"&gt;Mutsu&lt;/li&gt;
+			&lt;li id="mcintosh" class="yummy"&gt;McIntosh&lt;/li&gt;
+			&lt;li id="ida-red"&gt;Ida Red&lt;/li&gt;
+		&lt;/ul&gt;
+	&lt;/li&gt;
+&lt;/ul&gt; </code></pre>
+			<pre><code class="javascript">$('fruits').down();
+// 等同于：$('fruits').down(0);
+// -> li#apple
+$('fruits').down(3);
+// -> li#golden-delicious
+$('apples').down('li');
+// -> li#golden-delicious
+$('apples').down('li.yummy');
+// -> li#mutsu
+$('fruits').down('.yummy', 1);
+// -> li#mcintosh
+$('fruits').down(99);
+// -> undefined </code></pre>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

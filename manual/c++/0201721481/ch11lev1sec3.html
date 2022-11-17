@@ -1,0 +1,1093 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 11.3.  Revisiting Iterators</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch11lev1sec2.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch11lev1sec4.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch11lev1sec3"></a>
+
+        <h3 class="docSection1Title" id="432172-806">11.3. Revisiting Iterators</h3>
+        <h3 class="docSection1Title" id="432172-806">11.3. 再谈迭代器</h3>
+
+        <p class="docText">In <a class="docLink" href="ch11lev1sec2.html#ch11lev2sec5" >Section 11.2.2</a> (p. <a class="docLink" href="ch11lev1sec2.html#ch11lev2sec5" >398</a>) we saw that the library defines iterators that are independent of a particular container. In fact, there are three additional kinds of iterators:</p>
+        <p class="docText"><a class="docLink" href="ch11lev1sec2.html#ch11lev2sec5" >第 11.2.2 节</a>已强调标准库所定义的迭代器不依赖于特定的容器。事实上，C++ 语言还提供了另外三种迭代器：</p>
+
+	<ul>
+		<li>
+		<p class="docText"><a name="idd1e86198"></a><span class="docEmphStrong">insert iterators:</span> These iterators are bound to a container and can be used to insert elements to the container.</p>
+		<p class="docText"><span class="docEmphStrong">插入迭代器</span>：这类迭代器与容器绑定在一起，实现在容器中插入元素的功能。</p>
+		</li>
+		<li>
+		<a name="idd1e86207"></a>
+		<p class="docText"><span class="docEmphStrong"><tt>iostream</tt> iterators:</span> These iterators can be bound to input or output streams and used to iterate through the associated IO stream.</p>
+		<p class="docText"><span class="docEmphStrong"><tt>iostream</tt> 迭代器</span>：这类迭代器可与输入或输出流绑定在一起，用于迭代遍历所关联的 IO 流。</p>
+		</li>
+		<li>
+		<a name="idd1e86218"></a><a name="ch11term16"></a>
+    		<p class="docText"><b><a class="docLink" href="ch11lev1sec7.html#gloss11_16" >reverse iterators:</a></b> These iterators move backward, rather than forward. Each container type defines its own <tt>reverse_iterator</tt> types, which are retuned by the <tt>rbegin</tt> and <tt>rend</tt> functions.</p>
+		<p class="docText"><b><a class="docLink" href="ch11lev1sec7.html#gloss11_16" >反向迭代器</a></b>：这类迭代器实现向后遍历，而不是向前遍历。所有容器类型都定义了自己的 <tt>reverse_iterator</tt> 类型，由 <tt>rbegin</tt> 和 <tt>rend</tt> 成员函数返回。</p>
+          </li>
+        </ul>
+
+        <p class="docText">These iterator types are defined in the <tt>iterator</tt> header.</p>
+        <p class="docText">上述迭代器类型都在 <tt>iterator</tt> 头文件中定义。</p>
+
+        <p class="docText">This section will look at each of these kinds of iterators and show how they can be used with the generic algorithms. We'll also take a look at how and when to use the container <tt>const_iterators</tt>.</p>
+        <p class="docText">本节将详细分析上述每种迭代器，并介绍在泛型算法中如何使用这些迭代器，还会了解什么时候应该使用和如何使用 <tt>const_iterator</tt> 容器</p>
+
+	<a name="ch11lev2sec7"></a>
+        <h4 class="docSection2Title">11.3.1. Insert Iterators</h4>
+        <h4 class="docSection2Title">11.3.1. 插入迭代器</h4>
+
+	<a name="idd1e86253"></a><a name="idd1e86257"></a><a name="idd1e86261"></a><a name="idd1e86269"></a><a name="idd1e86276"></a><a name="idd1e86279"></a><a name="idd1e86287"></a>
+        <p class="docText">In <a class="docLink" href="ch11lev1sec2.html#ch11lev2sec5" >Section 11.2.2</a> (p. <a class="docLink" href="ch11lev1sec2.html#ch11lev2sec5" >398</a>) we saw that we can use <tt>back_inserter</tt> to create an iterator that adds elements to a container. The <tt>back_inserter</tt> function is an example of an <b><a name="ch11term8"></a><a class="docLink" href="ch11lev1sec7.html#gloss11_08" >inserter</a></b>. An inserter is an iterator adaptor (<a class="docLink" href="ch09lev1sec7.html#ch09lev1sec7" >Section 9.7</a>, p. <a class="docLink" href="ch09lev1sec7.html#ch09lev1sec7" >348</a>) that takes a container and yields an iterator that inserts elements into the specified container. When we assign through an insert iterator, the iterator inserts a new element. There are three kinds of inserters, which differ as to where elements are inserted:</p>
+        <p class="docText"><a class="docLink" href="ch11lev1sec2.html#ch11lev2sec5" >第 11.2.2 节</a>使用 <tt>back_insert</tt> 创建一个迭代器，用来给容器添加元素。<tt>back_inserter</tt> 函数是一种插入器。插入器是一种迭代器适配器（<a class="docLink" href="ch09lev1sec7.html#ch09lev1sec7" >第 9.7 节</a>），带有一个容器参数，并生成一个迭代器，用于在指定容器中插入元素。通过插入迭代器赋值时，迭代器将会插入一个新的元素。C++ 语言提供了三种插入器，其差别在于插入元素的位置不同。</p>
+
+        <ul>
+          <li>
+            <p class="docList"><tt>back_inserter</tt>, which creates an iterator that uses <tt>push_back</tt>.</p>
+            <p class="docList"><tt>back_inserter</tt>，创建使用 <tt>push_back</tt> 实现插入的迭代器。</p>
+          </li>
+
+          <li>
+            <p class="docList"><tt>front_inserter</tt>, which uses <tt>push_front</tt>.</p>
+            <p class="docList"><tt>front_inserter</tt>，使用 <tt>push_front</tt> 实现插入。</p>
+          </li>
+
+          <li>
+            <p class="docList"><tt>inserter</tt>, which uses <tt>insert</tt>. In addition to a container, <tt>inserter</tt> takes a second argument: an iterator indicating the position ahead of which insertion should begin.</p>
+            <p class="docList"><tt>inserter</tt>，使用 <tt>insert</tt> 实现插入操作。除了所关联的容器外，<tt>inserter</tt> 还带有第二实参：指向插入起始位置的迭代器。</p>
+          </li>
+        </ul><a name="ch11lev3sec14"></a>
+
+        <h5 class="docSection3Title"><tt>front_inserter</tt> Requires <tt>push_front</tt></h5>
+        <h5 class="docSection3Title"><tt>front_inserter</tt> 需要使用 <tt>push_front</tt></h5>
+
+	<a name="ch11term4"></a>
+        <p class="docText"><b><a class="docLink" href="ch11lev1sec7.html#gloss11_04" ><span class="docEmphStrong"><tt>front_inserter</tt></span></a></b> operates similarly to <tt>back_inserter:</tt> It creates an iterator that treats assignment as a call to <tt>push_front</tt> on its underlying container.</p>
+        <p class="docText"><b><a class="docLink" href="ch11lev1sec7.html#gloss11_04" ><span class="docEmphStrong"><tt>front_inserter</tt></span></a></b> 的操作类似于 <tt>back_inserter</tt>：该函数将创建一个迭代器，调用它所关联的基础容器的 <tt>push_front</tt> 成员函数代替赋值操作。</p>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">We can use <tt>front_inserter</tt> <span class="docEmphasis">only</span> if the container has a <tt>push_front</tt> operation. Using <tt>front_inserter</tt> on a <tt>vector</tt>, or other container that does not have <tt>push_front</tt>, is an error.</p>
+		<p class="docText">只有当容器提供 <tt>push_front</tt> 操作时，才能使用 <tt>front_inserter</tt>。在 <tt>vector</tt> 或其他没有 <tt>push_front</tt> 运算的容器上使用 <tt>front_inserter</tt>，将产生错误。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <a name="ch11lev3sec15"></a>
+
+        <h5 class="docSection3Title"><tt>inserter</tt> Yields an Iterator that Inserts at a Given Place</h5>
+        <h5 class="docSection3Title"><tt>inserter</tt> 将产生在指定位置实现插入的迭代器</h5>
+
+        <p class="docText">The <tt>inserter</tt> adaptor provides a more general form. This adaptor takes both a container and an iterator denoting a position at which to do the insertion:</p>
+        <p class="docText"><tt>inserter</tt> 适配器提供更普通的插入形式。这种适配器带有两个实参：所关联的容器和指示起始插入位置的迭代器。</p>
+
+        <pre>
+     // <span class="docEmphItalicAlt">position an iterator into ilst</span>
+     list&lt;int&gt;::iterator it =
+                      find (ilst.begin(), ilst.end(), 42);
+     // <span class="docEmphItalicAlt">insert replaced copies of ivec at that point in ilst</span>
+     replace_copy (ivec.begin(), ivec.end(),
+                   inserter (ilst, it), 100, 0);
+</pre>
+
+        <p class="docText">We start by using <tt>find</tt> to locate an element in <tt>ilst</tt>. The call to <tt>replace_copy</tt> uses an <tt>inserter</tt> that will insert elements into <tt>ilst</tt> just before of the element denoted by the iterator returned from <tt>find</tt>. The effect of the call to <tt>replace_copy</tt> is to copy the elements from <tt>ivec</tt>, replacing each value of <tt>100</tt> by <tt>0</tt>. The elements are inserted just ahead of the element denoted by <tt>it</tt>.</p>
+        <p class="docText">首先用 <tt>find</tt> 定位 <tt>ilst</tt> 中的某个元素。使用 <tt>inserter</tt> 作为实参调用 <tt>replace_copy</tt>，<tt>inserter</tt> 将会在 <tt>ilst</tt> 中由 <tt>find</tt> 返回的迭代器所指向的元素前面插入新元素。而调用 <tt>replace_copy</tt> 的效果是从 <tt>ivec</tt> 中复制元素，并将其中值为 100 的元素替换为 0 值。<tt>ilst</tt> 的新元素在 <tt>it</tt> 所标明的元素前面插入。</p>
+
+        <p class="docText">When we create an <tt>inserter</tt>, we say where to insert new elements. Elements are always inserted in <span class="docEmphasis">front</span> of the position denoted by the iterator argument to <tt>inserter</tt>.</p>
+        <p class="docText">在创建 <tt>inserter</tt> 时，应指明新元素在何处插入。<tt>inserter</tt> 函数总是在它的迭代器实参所标明的位置前面插入新元素。</p>
+
+	<a name="idd1e86499"></a><a name="idd1e86504"></a><a name="idd1e86508"></a><a name="idd1e86513"></a><a name="idd1e86519"></a><a name="idd1e86525"></a>
+	<p class="docText">We might think that we could simulate the effect of <tt>front_inserter</tt> by using <tt>inserter</tt> and the <tt>begin</tt> iterator for the container. However, an <tt>inserter</tt> behaves quite differently from <tt>front_inserter</tt>. When we use <tt>front_inserter</tt>, the elements are always inserted ahead of the then first element in the container. When we use <tt>inserter</tt>, elements are inserted ahead of a specific position. Even if that position initially is the first element, as soon as we insert an element in front of that element, it is no longer the one at the beginning of the container:</p>
+        <p class="docText">也许我们会认为可使用 <tt>inserter</tt> 和容器的 <tt>begin</tt> 迭代器来模拟 <tt>front_inserter</tt> 的效果。然而，<tt>inserter</tt> 的行为与 <tt>front_inserter</tt> 的有很大差别。在使用 <tt>front_inserter</tt> 时，元素始终在容器的第一个元素前面插入。而使用 <tt>inserter</tt> 时，元素则在指定位置前面插入。即使此指定位置初始化为容器中的第一个元素，但是，一旦在该位置前插入一个新元素后，插入位置就不再是容器的首元素了：</p>
+
+        <pre>
+     list&lt;int&gt; ilst, ilst2, ilst3;     // <span class="docEmphItalicAlt">empty lists</span>
+     // <span class="docEmphItalicAlt">after this loop</span> <span class="docEmphasis">ilst</span> <span class="docEmphItalicAlt">contains:</span> <span class="docEmphasis">3 2 1 0</span>
+     for (list&lt;int&gt;::size_type i = 0; i != 4; ++i)
+          ilst.push_front(i);
+     // <span class="docEmphItalicAlt">after copy ilst2 contains:</span> <span class="docEmphItalicAlt">0 1 2 3</span>
+     copy (ilst.begin(), ilst.end(), front_inserter(ilst2));
+     // <span class="docEmphItalicAlt">after copy, ilst3 contains:</span> <span class="docEmphasis">3 2 1 0</span>
+     copy (ilst.begin(), ilst.end(),
+                  inserter (ilst3, ilst3.begin()));
+</pre>
+
+        <p class="docText">When we copy into <tt>ilst2</tt>, elements are always inserted ahead of any other element in the <tt>list</tt>. When we copy into <tt>ilst3</tt>, elements are inserted at a fixed point. That point started out as the head of the <tt>list</tt>, but as soon as even one element is added, it is no longer the first element.</p>
+        <p class="docText">在复制并创建 <tt>ilst2</tt> 的过程中，元素总是在这个 <tt>list</tt> 对象的所有元素之前插入。而在复制创建 <tt>ilst3</tt> 的过程中，元素则在 <tt>ilst3</tt> 中的固定位置插入。刚开始时，这个插入位置是此 <tt>list</tt> 对象的头部，但插入一个元素后，就不再是首元素了。</p>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Recalling the discussion in <a class="docLink" href="ch09lev1sec3.html#ch09lev2sec8" >Section 9.3.3</a> (p. <a class="docLink" href="ch09lev1sec3.html#ch09lev2sec8" >318</a>), it is important to understand that using <tt>front_inserter</tt> results in the elements appearing in the destination in reverse order.</p>
+        <p class="docText">回顾<a class="docLink" href="ch09lev1sec3.html#ch09lev2sec8" >第 9.3.3 节</a>的讨论，应该清楚理解 <tt>front_inserter</tt> 的使用将导致元素以相反的次序出现在目标对象中，这点非常重要。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <a name="ch11sb07"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 11.3.1</h2>
+
+              <blockquote>
+                <a name="ch11qa5q1"></a> <a name="ch11qa5q3"></a>
+
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><b>Exercise 11.13:</b></td>
+
+                    <td>
+                      <p class="docText">Explain the differences among the three insert iterators.</p>
+        <p class="docText">解释三种插入迭代器的区别。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch11qa5q2"></a><b>Exercise 11.14:</b></td>
+
+                    <td>
+                      <p class="docText">Write a program that uses <tt>replace_copy</tt> to copy a sequence from one container to another, replacing elements with a given value in the first sequence by the specified new value. Write the program to use an <tt>inserter</tt>, a <tt>back_inserter</tt> and a <tt>front_inserter</tt>. Discuss how the output sequence varies in each case.</p>
+        <p class="docText">编写程序使用 <tt>replace_copy</tt> 将一个容器中的序列复制给另一个容器，并将前一个序列中给定的值替换为指定的新值。分别使用 <tt>inserter</tt>、<tt>back_inserter</tt> 和 <tt>front_inserter</tt> 实现这个程序。讨论在不同情况下输出序列如何变化。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><b>Exercise 11.15:</b></td>
+
+                    <td>
+                      <p class="docText">The algorithms library defines a function named <tt>unique_copy</tt> that operates like <tt>unique</tt>, except that it takes a third iterator denoting a sequence into which to copy the unique elements. Write a program that uses <tt>unique_copy</tt> to copy the unique elements from a <tt>list</tt> into an initially empty <tt>vector</tt>.</p>
+        <p class="docText">算法标准库定义了一个名为 <tt>unique_copy</tt> 的函数，其操作与 <tt>unique</tt> 类似，唯一的区别在于：前者接受第三个迭代器实参，用于指定复制不重复元素的目标序列。编写程序使用 <tt>unique_copy</tt> 将一个 <tt>list</tt> 对象中不重复的元素复制到一个空的 <tt>vector</tt> 对象中。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table>
+        <a name="ch11lev2sec8"></a>
+
+        <h4 class="docSection2Title">11.3.2. <tt>iostream</tt> Iterators</h4>
+        <h4 class="docSection2Title">11.3.2. <tt>iostream</tt> 迭代器</h4>
+
+	<a name="ch11term9"></a><a name="ch11term12"></a><a name="ch11term17"></a>
+        <p class="docText">Even though the <tt>iostream</tt> types are not containers, there are iterators that can be used with <tt>iostream</tt> objects: An <b><a class="docLink" href="ch11lev1sec7.html#gloss11_09" ><span class="docEmphStrong"><tt>istream_iterator</tt></span></a></b> reads an input stream, and an <b><a class="docLink" href="ch11lev1sec7.html#gloss11_12" ><span class="docEmphStrong"><tt>ostream_iterator</tt></span></a></b> writes an output stream. These iterators treat their corresponding stream as a sequence of elements of a specified type. Using a <span class="docEmphRoman"><a class="docLink" href="ch11lev1sec7.html#gloss11_17" >stream iterator</a></span>, we can use the generic algorithms to read (or write) data to (or from) stream objects.</p>
+        <p class="docText">虽然 <tt>iostream</tt> 类型不是容器，但标准库同样提供了在 <tt>iostream</tt> 对象上使用的迭代器：<b><a class="docLink" href="ch11lev1sec7.html#gloss11_09" ><span class="docEmphStrong"><tt>istream_iterator</tt></span></a></b> 用于读取输入流，而 <b><a class="docLink" href="ch11lev1sec7.html#gloss11_12" ><span class="docEmphStrong"><tt>ostream_iterator</tt></span></a></b> 则用于写输出流（<a class="docLink" href="ch11lev1sec3.html#ch11table01">表 11.1</a>）。这些迭代器将它们所对应的流视为特定类型的元素序列。使用流迭代器时，可以用泛型算法从流对象中读数据（或将数据写到流对象中）。</p>
+
+
+	<a name="ch11table01"></a>
+        <h5 class="docTableTitle">Table 11.1. <tt>iostream</tt> Iterator Constructors</h5>
+	<h5 class="docTalbeTitle">表 11.1 <tt>iostream</tt> 迭代器的构造函数</h5>
+        <table cellspacing="0" class="allBorders" border="1" rules="none" cellpadding="5">
+          <colgroup>
+            <col width="225">
+            <col width="300">
+          </colgroup>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>istream_iterator&lt;T&gt; in(strm);</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Create <tt>istream_iterator</tt> that reads objects of type <tt>T</tt> from input stream <tt>strm</tt>.</p>
+              <p class="docText">创建从输入流 <tt>strm</tt> 中读取 <tt>T</tt> 类型对象的 <tt>istream_iterator</tt> 对象</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>istream_iterator&lt;T&gt; in;</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Off-the-end iterator for <tt>istream_iterator</tt>.</p>
+              <p class="docText"><tt>istream_iterator</tt> 对象的超出末端迭代器</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>ostream_iterator&lt;T&gt; in(strm);</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Create <tt>ostream_iterator</tt> that writes objects of type <tt>T</tt> to the output stream <tt>strm</tt>.</p>
+              <p class="docText">创建将 <tt>T</tt> 类型的对象写到输出流 <tt>strm</tt> 的 <tt>ostream_iterator</tt> 对象</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top" colspan="2">
+              <p class="docText"><tt>ostream_iterator&lt;T&gt; in(strm, delim);</tt></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top"> </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Create <tt>ostream_iterator</tt> that writes objects of type <tt>T</tt> to the output stream <tt>strm</tt> using <tt>delim</tt> as a separator between elements. <tt>delim</tt> is a null-terminated character array.</p>
+              <p class="docText">创建将 <tt>T</tt> 类型的对象写到输出流 <tt>strm</tt> 的 <tt>ostream_iterator</tt> 对象，在写入过程中使用 <tt>delim</tt> 作为元素的分隔符。<tt>delim</tt> 是以空字符结束的字符数组</p>
+            </td>
+          </tr>
+  </table>
+
+	<a name="idd1e86703"></a><a name="idd1e86711"></a><a name="idd1e86719"></a><a name="idd1e86728"></a><a name="idd1e86734"></a><a name="idd1e86743"></a><a name="idd1e86750"></a><a name="idd1e86760"></a><a name="idd1e86770"></a><a name="idd1e86777"></a><a name="idd1e86787"></a>
+        <p class="docText">The stream iterators define only the most basic of the iterator operations: increment, dereference, and assignment. In addition, we can compare two <tt>istream</tt> iterators for equality (or inequality). There is no comparison for <tt>ostream</tt> iterators.</p>
+	<p class="docText">流迭代器只定义了最基本的迭代器操作：自增、解引用和赋值。此外，可比较两个 <tt>istream</tt> 迭代器是否相等（或不等）。而 <tt>ostream</tt> 迭代器则不提供比较运算（<a class="docLink" href="ch11lev1sec3.html#ch11table02">表 11.2</a>）。</p>
+  
+	<a name="ch11table02"></a>
+        <h5 class="docTableTitle">Table 11.2. <tt>istream_iterator</tt> Operations</h5>
+	<h5 class="docTableTitle">表 11.2. <tt>istream_iterator</tt> 的操作</h5>
+
+        <table cellspacing="0" class="allBorders" border="1" rules="none" cellpadding="5">
+          <colgroup>
+            <col width="125">
+            <col width="375">
+          </colgroup>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><a name="idd1e87030"></a><tt>it1 == it2</tt>
+              <tt>it1 != it2</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Equality (inequality) between two <tt>istream_iterators</tt>. The iterators must read the same type. Two iterators are equal if they are both the end value. Two non-end-of-stream iterators are equal if they are constructed using the same input stream.</p>
+	      <p class="docText">比较两上 <tt>istream_iterator</tt> 对象是否相等（不等）。迭代器读取的必须是相同的类型。如果两个迭代器都是 <tt>end</tt> 值，则它们相等。对于两个都不指向流结束位置的迭代器，如果它们使用同一个输入流构造，则它们也相等</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>*it</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Returns the value read from the stream.</p>
+              <p class="docText">返回从流中读取的值</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>it-&gt;mem</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Synonym for <tt>(*it).mem</tt>. Returns member, <tt>mem</tt>, of the object read from the stream.</p>
+              <p class="docText">是 <tt>(*it).mem</tt> 的同义诩。返回从流中读取的对象的 mem 成员</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>++it it++</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Advances the iterator by reading the next value from the input stream using the <tt>&gt;&gt;</tt> operator for the element type. As usual, the prefix version advances the stream and returns a reference to the incremented iterator. The postfix version advances the stream but returns the old value.</p>
+              <p class="docText">通过使用元素类型提供的 <tt>&gt;&gt;</tt> 操作从输入流中读取下一个元素值，使迭代器向前移动。通常，前缀版本使用迭代器在流中向前移动，并返回对加 1 后的迭代器的引用。而后缀版本使迭代器在流中向前移动后，返回原值</p>
+            </td>
+          </tr>
+        </table>
+
+	<a name="ch11lev3sec16"></a>
+        <h5 class="docSection3Title">Defining Stream Iterators</h5>
+        <h5 class="docSection3Title">流迭代器的定义</h5>
+
+        <p class="docText">The stream iterators are class templates: An <tt>istream_iterator</tt> can be defined for any type for which the input operator (the <tt>&gt;&gt;</tt> operator) is defined. Similarly, an <tt>ostream_iterator</tt> can be defined for any type that has an output operator (the <tt>&lt;&lt;</tt> operator).</p>
+        <p class="docText">流迭代器都是类模板：任何已定义输入操作符（<tt>&gt;&gt;</tt> 操作符）的类型都可以定义 <tt>istream_iterator</tt>。类似地，任何已定义输出操作符（<tt>&lt;&lt;</tt> 操作符）的类型也可定义 <tt>ostream_iterator</tt>。</p>
+
+
+        <p class="docText">When we create a stream iterator, we must specify the type of objects that the iterator will read or write:</p>
+        <p class="docText">在创建流迭代器时，必须指定迭代器所读写的对象类型：</p>
+        <pre>
+     istream_iterator&lt;int&gt; cin_it(cin);    // <span class="docEmphItalicAlt">reads</span> <span class="docEmphasis">ints1</span> <span class="docEmphItalicAlt">from</span> <span class="docEmphasis">cin</span>
+     istream_iterator&lt;int&gt; end_of_stream;  // <span class="docEmphItalicAlt">end iterator value</span>
+     // <span class="docEmphItalicAlt">writes</span> <span class="docEmphasis">Sales_items</span> <span class="docEmphItalicAlt">from the</span> <span class="docEmphasis">ofstream</span> <span class="docEmphItalicAlt">named</span> <span class="docEmphasis">outfile</span>
+     // <span class="docEmphItalicAlt">each element is followed by a space</span>
+     ofstream outfile;
+     ostream_iterator&lt;Sales_item&gt; output(outfile, " ");
+</pre>
+
+        <p class="docText">We must bind an <tt>ostream_iterator</tt> to a specific stream. When we create an <tt>istream_iterator</tt>, we can bind it to a stream. Alternatively, we can supply no argument, which creates an iterator that we can use as the off-the-end value. There is no off-the-end iterator for <tt>ostream_iterator</tt>.</p>
+        <p class="docText"><tt>ostream_iterator</tt> 对象必须与特定的流绑定在一起。在创建 <tt>istream_iterator</tt> 时，可直接将它绑定到一个流上。另一种方法是在创建时不提供实参，则该迭代器指向超出末端位置。<tt>ostream_iterator</tt> 不提供超出末端迭代器。</p>
+
+        <p class="docText">When we create an <tt>ostream_iterator</tt>, we may (optionally) provide a second argument that specifies a delimiter to use when writing elements to the output stream. The delimiter must be a C-style character string. Because it is a C-style string, it must be null-terminated; otherwise, the behavior is undefined.</p>
+        <p class="docText">在创建 <tt>ostream_iterator</tt> 对象时，可提供第二个（可选的）实参，指定将元素写入输出流时使用的分隔符。分隔符必须是 C 风格字符串。因为它是 C 风格字符串，所以必须以空字符结束；否则，其行为将是未定义的。</p>
+
+        <a name="ch11lev3sec17"></a>
+        <h5 class="docSection3Title">Operations on <tt>istream_iterators</tt></h5>
+	<h5 class="docSection3Title"><tt>istream_iterator</tt> 对象上的操作</h5>
+
+        <p class="docText">Constructing an <tt>istream_iterator</tt> bound to a stream positions the iterator so that the first dereference reads the first value from the stream.</p>
+	<p class="docText">构造与流绑定在一起的 <tt>istream_iterator</tt> 对象时将对迭代器定位，以便第一次对该迭代器进行解引用时即可从流中读取第一个值。</p>	
+
+        <p class="docText">As an example, we could use an <tt>istream_iterator</tt> to read the standard input into a <tt>vector</tt>:</p>
+	<p class="docText">考虑下面例子，可使用 <tt>istream_iterator</tt> 对象将标准输入读到 <tt>vector</tt> 对象中。</p>
+        <pre>
+     istream_iterator&lt;int&gt; in_iter(cin); // <span class="docEmphItalicAlt">read ints from cin</span>
+     istream_iterator&lt;int&gt; eof; // <span class="docEmphItalicAlt">istream "end" iterator</span>
+     // <span class="docEmphItalicAlt">read until end of file, storing what was read in vec</span>
+     while (in_iter != eof)
+             // <span class="docEmphItalicAlt">increment advances the stream to the next value</span>
+             // <span class="docEmphItalicAlt">dereference reads next value from the</span> <span class="docEmphasis">istream</span>
+             vec.push_back(*in_iter++);
+</pre>
+
+        <p class="docText">This loop reads <tt>int</tt>s from <tt>cin</tt>, and stores what was read in <tt>vec</tt>. On each trip the loop checks whether <tt>in_iter</tt> is the same as <tt>eof</tt>. That iterator was defined as the empty <tt>istream_iterator</tt>, which is used as the end iterator. An iterator bound to a stream is equal to the end iterator once its associated stream hits end-of-file or encounters another error.</p>
+	<p class="docText">这个循环从 <tt>cin</tt> 中读取 <tt>int</tt> 型数据，并将读入的内容保存在 <tt>vec</tt> 中。每次循环都检查 <tt>in_iter</tt> 是否为 <tt>eof</tt>。其中 <tt>eof</tt> 迭代器定义为空的 <tt>istream_iterator</tt> 对象，用作结束迭代器。绑在流上的迭代器在遇到文件结束或某个错误时，将等于结束迭代器的值。</p>
+
+        <p class="docText">The hardest part of this program is the argument to <tt>push_back</tt>, which uses the dereference and postfix increment operators. Precedence rules (<a class="docLink" href="ch05lev1sec5.html#ch05lev1sec5" >Section 5.5</a>, p. <a class="docLink" href="ch05lev1sec5.html#ch05lev1sec5" >163</a>) say that the result of the increment is the operand to the dereference. Incrementing an <tt>istream_iterator</tt> advances the stream. However, the expression uses the postfix increment, which yields the <span class="docEmphasis">old</span> value of the iterator. The effect of the increment is to read the next value from the stream but return an iterator that refers to the previous value read. We dereference that iterator to obtain that value.</p>
+	<p class="docText">本程序最难理解的部分是传递给 <tt>push_back</tt> 的实参，该实参使用解引用和后自增操作符。根据优先级规则（<a class="docLink" href="ch05lev1sec5.html#ch05lev1sec5" >第 5.5 节</a>），自增运算的结果将是解引用运算的操作数。对 <tt>istream_iterator</tt> 对象做自增运算使该迭代器在流中向前移动。然而，使用后自增运算的表达式，其结果是迭代器原来的值。自增的效果是使迭代器的流中移动到下一个值，但返回指向前一个值的迭代器。对该迭代器进行解引用获取该值。</p>
+
+        <p class="docText">What is more interesting is that we could rewrite this program as:</p>
+              <p class="docText">更有趣的是可以这样重写程序：</p>
+
+        <pre>
+     istream_iterator&lt;int&gt; in_iter(cin); // <span class="docEmphItalicAlt">read</span> <span class="docEmphasis">ints</span> <span class="docEmphItalicAlt">from</span> <span class="docEmphasis">cin</span>
+     istream_iterator&lt;int&gt; eof;      // <span class="docEmphasis">istream</span> <span class="docEmphItalicAlt">"end" iterator</span>
+     vector&lt;int&gt; vec(in_iter, eof);  // <span class="docEmphItalicAlt">construct</span> <span class="docEmphasis">vec</span> <span class="docEmphItalicAlt">from an iterator range</span>
+</pre>
+
+        <p class="docText">Here we construct <tt>vec</tt> from a pair of iterators that denote a range of elements. Those iterators are <tt>istream_iterators</tt>, which means that the range is obtained by reading the associated stream. The effect of this constructor is to read <tt>cin</tt> until it hits end-of-file or encounters an input that is not an <tt>int</tt>. The elements that are read are used to construct <tt>vec</tt>.</p>
+              <p class="docText">这里，用一对标记元素范围的迭代器构造 vec 对象。这些迭代器是 istream_iterator 对象，这就意味着这段范围的元素是通过读取所关联的流来获得的。这个构造函数的效果是读 cin，直到到达文件结束或输入的不是 int 型数值为止。读取的元素将用于构造 vec 对象。</p>
+
+        <h5 class="docSection3Title">Using <tt>ostream_iterators</tt> and <tt>ostream_iterators</tt></h5>
+	<h5 class="docSection3Title"><tt>ostream_iterator</tt> 对象和 <tt>ostream_iterator</tt> 对象的使用</h5>
+
+        <p class="docText"><a name="idd1e87238"></a><a name="idd1e87244"></a><a name="idd1e87251"></a><a name="idd1e87258"></a>We can use an <tt>ostream_iterator</tt> to write a sequence of values to a stream in much the same way that we might use an iterator to assign a sequence of values to the elements of a container:</p>
+	<p class="docText">可使用 <tt>ostream_iterator</tt> 对象将一个值序列写入流中，其操作的过程与使用迭代器将一组值逐个赋给容器中的元素相同：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">write one string per line to the standard output</span>
+     ostream_iterator&lt;string&gt; out_iter(cout, "\n");
+     // <span class="docEmphItalicAlt">read strings from standard input and the end iterator</span>
+     istream_iterator&lt;string&gt; in_iter(cin), eof;
+     // <span class="docEmphItalicAlt">read until eof and write what was read to the standard output</span>
+     while (in_iter != eof)
+         // <span class="docEmphItalicAlt">write value of</span> <span class="docEmphasis">in_iter to</span> <span class="docEmphItalicAlt">standard output</span>
+         // <span class="docEmphItalicAlt">and then increment the iterator to get the next value from</span> <span class="docEmphasis">cin</span>
+        *out_iter++ = *in_iter++;
+</pre>
+
+        <p class="docText">This program reads <tt>cin</tt>, writing each word it reads on separate line on <tt>cout</tt>.</p>
+	<p class="docText">这个程序读 <tt>cin</tt>，并将每个读入的值依次写到 <tt>cout</tt> 中不同的行中。</p>
+
+        <p class="docText">We start by defining an <tt>ostream_iterator</tt> to write <tt>string</tt>s to <tt>cout</tt>, following each <tt>string</tt> by a newline. We define two <tt>istream_iterators</tt> that we'll use to read <tt>string</tt>s from <tt>cin</tt>. The <tt>while</tt> loop works similarly to our previous example. This time, instead of storing the values we read into a <tt>vector</tt>, we print them to <tt>cout</tt> by assigning the values we read to <tt>out_iter</tt>.</p>
+	<p class="docText">首先，定义一个 <tt>ostream_iterator</tt> 对象，用于将 <tt>string</tt> 类型的数据写到 <tt>cout</tt> 中，每个 <tt>string</tt> 对象后跟一个换行符。定义两个 <tt>istream_iterator</tt> 对象，用于从 <tt>cin</tt> 中读取 <tt>string</tt> 对象。<tt>while</tt> 循环类似前一个例子。但是这一次不是将读取的数据存储在 <tt>vector</tt> 对象中，而是将读取的数据赋给 <tt>out_iter</tt>，从而输出到 <tt>cout</tt> 上。</p>
+
+        <p class="docText">The assignment works similarly to the one in the program on page <a class="docLink" href="ch06lev1sec7.html#ch06sb03" >205</a> that copied one array into another. We dereference both iterators, assigning the right-hand value into the left, incrementing each iterator. The effect is to write what was read to <tt>cout</tt> and then increment each iterator, reading the next value from <tt>cin</tt>.</p>
+	<p class="docText">这个赋值类似于<a class="docLink" href="ch06lev1sec7.html#ch06sb03" >第 6.7 节</a>将一个数组复制给另一个数组的程序。对这两个迭代器进行解引用，将右边的值赋给左边的元素，然后两个迭代器都自增 1。其效果就是：将读取的数据输出到 <tt>cout</tt> 上，然后两个迭代器都加 1，再从 <tt>cin</tt> 中读取下一个值。</p>
+
+       <a name="ch11lev3sec19"></a>
+        <h5 class="docSection3Title">Using <tt>istream_iterators</tt> with Class Types</h5>
+	<h5 class="docSection3Title">在类类型上使用 <tt>istream_iterator</tt></h5>
+
+        <p class="docText">We can create an <tt>istream_iterator</tt> for any type for which an input operator (<tt>&gt;&gt;</tt>) exists. For example, we might use an <tt>istream_iterator</tt> to read a sequence of <tt>Sales_item</tt> objects to sum:</p>
+	<p class="docText">提供了输入操作符（<tt>&gt;&gt;</tt>）的任何类型都可以创建 <tt>istream_iterator</tt> 对象。例如，可如下使用 <tt>istream_iterator</tt> 对象读取一系列的 <tt>Sales_iter</tt> 对象，并求和：</p>
+        <pre>
+     istream_iterator&lt;Sales_item&gt; item_iter(cin), eof;
+     Sales_item sum; // <span class="docEmphItalicAlt">initially empty</span> <span class="docEmphasis">Sales_item</span>
+     sum = *item_iter++; // <span class="docEmphItalicAlt">read first transaction into sum and get next record</span>
+     while (item_iter != eof) {
+        if (item_iter-&gt;same_isbn(sum))
+            sum = sum + *item_iter;
+        else {
+            cout &lt;&lt; sum &lt;&lt; endl;
+            sum = *item_iter;
+        }
+        ++item_iter; // <span class="docEmphItalicAlt">read next transaction</span>
+     }
+     cout &lt;&lt; sum &lt;&lt; endl; // <span class="docEmphItalicAlt">remember to print last set of records</span>
+</pre>
+
+        <p class="docText">This program binds <tt>item_iter</tt> to <tt>cin</tt> and says that the iterator will read objects of type <tt>Sales_item</tt>. The program next reads the first record into <tt>sum</tt>:</p>
+	<p class="docText">该程序将迭代器 <tt>item_iter</tt> 与 <tt>cin</tt> 绑在一起，意味着迭代器将读取 <tt>Sales_item</tt> 类型的对象。然后给迭代器加 1，使流从标准输入中读取下一记录。</p>
+
+        <pre>
+     sum = *item_iter++; // <span class="docEmphItalicAlt">read first transaction into sum and get next record</span>
+</pre>
+
+	<a name="idd1e87427"></a><a name="idd1e87433"></a><a name="idd1e87439"></a><a name="idd1e87446"></a><a name="idd1e87453"></a><a name="idd1e87460"></a>
+        <p class="docText">This statement uses the dereference operator to fetch the first record from the standard input and assigns that value to <tt>sum</tt>. It increments the iterator, causing the stream to read the next record from the standard input.</p>
+	<p class="docText">这个语句使用解引用操作符获取标准输入的第一个记录，并将这个值赋给 <tt>sum</tt>。然后给迭代器加 1，使流从标准输入中读取下一记录。</p>
+
+        <p class="docText">The <tt>while</tt> loop executes until we hit end-of-file on <tt>cin</tt>. Inside the <tt>while</tt>, we compare the <tt>isbn</tt> of the record we just read with <tt>sum</tt>'s <tt>isbn</tt>. The first statement in the <tt>while</tt> uses the arrow operator to dereference the <tt>istream</tt> iterator and obtain the most recently read object. We then run the <tt>same_isbn</tt> member on that object and the object in <tt>sum</tt>.</p>
+        <p class="docText"><tt>while</tt> 循环反复执行直到到达 <tt>cin</tt> 的结束位置为止。在 <tt>while</tt> 循环中，将刚读入记录的 <tt>isbn</tt> 与 <tt>sum</tt> 的 <tt>isbn</tt> 比较。<tt>while</tt> 中的第一个语句使用了箭头操作符对 <tt>istream</tt> 迭代器进行解引用，获得最近读入的对象。然后在该对象和 <tt>sum</tt> 对象上调用 <tt>same_isbn</tt> 成员。</p>
+
+        <p class="docText">If the <tt>isbn</tt>s are the same, we increment the totals in <tt>sum</tt>. Otherwise, we print the current value of <tt>sum</tt> and reset it as a copy of the most recently read transaction. The last step in the loop is to increment the iterator, which in this case causes the next transaction to be read from the standard input. The loop continues until an error or end-of-file is encountered. Before exiting we remember to print the values associated with the last ISBN in the input.</p>
+        <p class="docText">如果 <tt>isbn</tt> 值相同，则增加总和 <tt>sum</tt>。否则，输出 <tt>sum</tt> 的当前值，并将它重设为最近读取对象的副本。循环的最后一步是给迭代器加 1，在本例中，将导致从标准输入中读入下一个 <tt>Sales_item</tt> 对象。循环持续直到遇到错误或结束位置为止。在结束程序之前，记住输出从输入中读入的最后一个 <tt>ISBN</tt> 所关联的值。</p>
+
+        <a name="ch11lev3sec20"></a>
+
+        <h5 class="docSection3Title">Limitations on Stream Iterators</h5>
+        <h5 class="docSection3Title">流迭代器的限制</h5>
+
+        <p class="docText">The stream iterators have several important limitations:</p>
+        <p class="docText">流迭代器有下面几个重要的限制：</p>
+
+        <ul>
+          <li>
+            <p class="docList">It is not possible to read from an <tt>ostream_iterator</tt>, and it is not possible to write to an <tt>istream_iterator</tt>.</p>
+	    <p class="docList">不可能从 <tt>ostream_iterator</tt> 对象读入，也不可能写到 <tt>istream_iterator</tt> 对象中。</p>
+          </li>
+
+          <li>
+            <p class="docList">Once we assign a value to an <tt>ostream_iterator</tt>, the write is committed. There is no way to subsequently change a value once it is assigned. Moreover, each distinct value of an <tt>ostream_iterator</tt> is expected to be used for output exactly once.</p>
+	    <p class="docList">一旦给 <tt>ostream_iterator</tt> 对象赋了一个值，写入就提交了。赋值后，没有办法再改变这个值。此外，<tt>ostream_iterator</tt> 对象中每个不同的值都只能正好输出一次。</p>
+          </li>
+
+          <li>
+	  <p class="docList">There is no <tt>-&gt;</tt> operator for <tt>ostream_iterator</tt>.</p>
+	  <p class="docList"><tt>ostream_iterator</tt> 没有 <tt>-&gt;</tt> 操作符。</p>	  
+          </li>
+        </ul><a name="ch11lev3sec21"></a>
+
+        <h5 class="docSection3Title">Using Stream Iterators with the Algorithms</h5>
+        <h5 class="docSection3Title">与算法一起使用流迭代器</h5>
+
+        <p class="docText">As we know, the algorithms operate in terms of iterator operations. And as we've seen, stream iterators define at least some of the iterator operations. Because the stream iterators support iterator operations, we can use them with at least some of the generic algorithms. As an example, we could read numbers from the standard input and write the unique numbers we read on the standard output:</p>
+        <p class="docText">正如大家所知，算法是基于迭代器操作实现的。如同前面所述，流迭代器至少定义了一些迭代器操作。由于流迭代器操作，因此，至少可在一些泛型算法上使用这类迭代器。考虑下面的例子，从标准输入读取一些数，再将读取的不重复的数写到标准输出：</p>
+
+        <pre>
+     istream_iterator&lt;int&gt; cin_it(cin);    // <span class="docEmphItalicAlt">reads</span> <span class="docEmphasis">ints</span> <span class="docEmphItalicAlt">from</span> <span class="docEmphasis">cin</span>
+     istream_iterator&lt;int&gt; end_of_stream;  // <span class="docEmphItalicAlt">end iterator value</span>
+     // <span class="docEmphItalicAlt">initialize</span> <span class="docEmphasis">vec</span> <span class="docEmphItalicAlt">from the standard input:</span>
+     vector&lt;int&gt; vec(cin_it, end_of_stream);
+     sort(vec.begin(), vec.end());
+
+     // <span class="docEmphItalicAlt">writes</span> <span class="docEmphasis">ints to cout</span> <span class="docEmphItalicAlt">using " " as the delimiter</span>
+     ostream_iterator&lt;int&gt; output(cout, " ");
+
+     // <span class="docEmphItalicAlt">write only the unique elements in</span> <span class="docEmphasis">vec</span> <span class="docEmphItalicAlt">to the standard output</span>
+     unique_copy(vec.begin(), vec.end(), output);
+</pre>
+
+        <p class="docText">If the input to this program is</p>
+        <p class="docText">如果程序的输入是：</p>
+
+        <pre>
+     <span class="docEmphStrong">23 109 45 89 6 34 12 90 34 23 56 23 8 89 23</span>
+</pre>
+        <a name="idd1e87632"></a><a name="idd1e87639"></a><a name="idd1e87646"></a><a name="idd1e87652"></a><a name="idd1e87658"></a><a name="idd1e87664"></a><a name="idd1e87668"></a><a name="idd1e87674"></a><a name="idd1e87680"></a><a name="idd1e87686"></a><a name="idd1e87694"></a><a name="idd1e87701"></a><a name="idd1e87708"></a><a name="idd1e87715"></a><a name="idd1e87723"></a><a name="idd1e87728"></a><a name="idd1e87735"></a><a name="idd1e87742"></a><a name="idd1e87749"></a><a name="idd1e87756"></a><a name="idd1e87763"></a><a name="idd1e87770"></a><a name="idd1e87777"></a><a name="idd1e87784"></a><a name="idd1e87791"></a><a name="idd1e87798"></a><a name="idd1e87805"></a><a name="idd1e87813"></a><a name="idd1e87823"></a><a name="idd1e87831"></a><a name="idd1e87836"></a><a name="idd1e87841"></a><a name="idd1e87844"></a><a name="idd1e87851"></a><a name="idd1e87858"></a><a name="idd1e87863"></a><a name="idd1e87869"></a><a name="idd1e87875"></a><a name="idd1e87881"></a><a name="idd1e87888"></a><a name="idd1e87895"></a><a name="idd1e87902"></a><a name="idd1e87906"></a><a name="idd1e87913"></a><a name="idd1e87920"></a>
+
+        <p class="docText">then the output would be</p>
+        <p class="docText">输出则是：</p>
+
+        <pre>
+     <span class="docEmphStrong">6 8 12 23 34 45 56 89 90 109</span>
+</pre>
+
+        <p class="docText">The program creates <tt>vec</tt> from the iterator pair, <tt>input</tt> and <tt>end_of_stream</tt>. The effect of this initializer is to read <tt>cin</tt> until end-of-file or an error occurs. The values read are stored in <tt>vec</tt>.</p>
+        <p class="docText">程序用一对迭代器 <tt>input</tt> 和 <tt>end_of_stream</tt> 创建了 <tt>vec</tt> 对象。这个初始化的效果是读取 <tt>cin</tt> 直到文件结束或者出现错误为止。读取的值保存在 <tt>vec</tt> 里。</p>
+
+        <p class="docText">Once the input is read and <tt>vec</tt> initialized, we call <tt>sort</tt> to sort the input. Duplicated items from the input will be adjacent after the call to <tt>sort</tt>.</p>
+        <p class="docText">读取输入和初始化 <tt>vec</tt> 后，调用 <tt>sort</tt> 对输入的数排序。<tt>sort</tt> 调用完成后，重复输入的数就会相邻存储。</p>
+
+        <p class="docText">The program uses <tt>unique_copy</tt>, which is a copying version of <tt>unique</tt>. It copies the unique values in its input range to the destination iterator. This call uses our output iterator as the destination. The effect is to copy the unique values from <tt>vec</tt> to <tt>cout</tt>, following each value by a space.</p>
+        <p class="docText">程序再使用 <tt>unique_copy</tt> 算法，这是 <tt>unique</tt> 的“复制”版本。该算法将输入范围中不重复的值复制到目标迭代器。该调用将输出迭代器用作目标。其效果是将 <tt>vec</tt> 中不重复的值复制给 <tt>cout</tt>，每个复制的值后面输出一个空格。</p>
+
+        <a name="ch11sb08"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 11.3.2</h2>
+
+              <blockquote>
+                <a name="ch11qa6q1"></a><a name="ch11qa6q2"></a><a name="ch11qa6q3"></a>
+
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><b>Exercise 11.16:</b></td>
+
+                    <td>
+                      <p class="docText">Rewrite the program on 410 to use the <tt>copy</tt> algorithm to write the contents of a file to the standard output.</p>
+		      <p class="docText">重写（第 11.3.2 节第 3 小节）的程序，使用 <tt>copy</tt> 算法将一个文件的内容写到标准输出中。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><b>Exercise 11.17:</b></td>
+
+                    <td>
+                      <p class="docText">Use a pair of <tt>istream_iterators</tt> to initialize a <tt>vector</tt> of <tt>int</tt>s.</p>
+		      <p class="docText">使用一对 <tt>istream_iterator</tt> 对象初始化一个 <tt>int</tt> 型的 <tt>vector</tt> 对象。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><b>Exercise 11.18:</b></td>
+
+                    <td>
+                      <p class="docText">Write a program to read a sequence of integer numbers from the standard input using an <tt>istream_iterator</tt>. Write the odd numbers into one file, using an <tt>ostream_iterator</tt>. Each value should be followed by a space. Write the even numbers into a second file, also using an <tt>ostream_iterator</tt>. Each of these values should be placed on a separate line.</p>
+		      <p class="docText">编写程序使用 <tt>istream_iterator</tt> 对象从标准输入读入一系列整数。使用 ostream_iterator 对象将其中的奇数写到一个文件中，并在每个写入的值后面加一个空格。同样使用 ostream_iterator 对象将偶数写到第二个文件，每个写入的值都存放在单独的行中。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table>
+        <a name="ch11lev2sec9"></a>
+
+        <h4 class="docSection2Title">11.3.3. Reverse Iterators</h4>
+        <h4 class="docSection2Title">11.3.3. 反向迭代器</h4>
+
+        <p class="docText">A reverse iterator is an iterator that traverses a container backward. That is, it traverses from the last element toward the first. A reverse iterator inverts the meaning of increment (and decrement): <tt>++</tt> on a reverse iterator accesses the previous element; <tt>--</tt> accesses the next element.</p>
+                      <p class="docText">反向迭代器是一种反向遍历容器的迭代器。也就是，从最后一个元素到第一个元素遍历容器。反向迭代器将自增（和自减）的含义反过来了：对于反向迭代器，<tt>++</tt> 运算将访问前一个元素，而 <tt>--</tt> 运算则访问下一个元素。</p>
+
+        <p class="docText">Recall that each container defines <tt>begin</tt> and <tt>end</tt> members. These members return respectively an iterator to the first element of the container and an iterator one past the last element of the container. The containers also define <tt>rbegin</tt> and <tt>rend</tt>, which return reverse iterators to the last element in the container and one "past" (that is, one before) the beginning of the container. As with ordinary iterators, there are both <tt>const</tt> and non<tt>const</tt> reverse iterators. <a class="docLink" href="ch11lev1sec3.html#ch11fig01">Figure 11.1</a> on the facing page illustrates the relationship between these four iterators on a hypothetical <tt>vector</tt> named <tt>vec</tt>.</p>
+	<p class="docText">回想一下，所有容器都定义了 <tt>begin</tt> 和 <tt>end</tt> 成员，分别返回指向容器首元素和尾元素下一位置的迭代器。容器还定义了 <tt>rbegin</tt> 和 <tt>rend</tt> 成员，分别返回指向容器尾元素和首元素前一位置的反向迭代器。与普通迭代器一样，反向迭代器也有常量（<tt>const</tt>）和非常量（<tt>nonconst</tt>）类型。<a class="docLink" href="ch11lev1sec3.html#ch11fig01">图 11.1</a> 使用一个假设名为 <tt>vec</tt> 的 <tt>vector</tt> 类型对象阐明了这四种迭代器之间的关系。</p>
+
+        <center>
+          <h5 class="docFigureTitle">Figure 11.1. Comparing <tt>begin</tt>/<tt>end</tt> and <tt>rbegin</tt>/<tt>rend</tt> Iterators</h5>
+          <h5 class="docFigureTitle">图 11.1 比较 <tt>begin</tt>/<tt>end</tt> 和 <tt>rbegin</tt>/<tt>rend</tt> 迭代器</h5>
+
+          <p class="docText"><img border="0" alt="" id="195131139046" width="450" height="126" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/11fig01.gif;400478" ></p>
+        </center>
+
+	<p class="docText">Given a <tt>vector</tt> that contains the numbers from 0 to 9 in ascending order</p>
+	<p class="docText">假设有一个 <tt>vector</tt> 容器对象，存储 0-9 这 10 个以升序排列的数字：</p>
+        <pre>
+     vector&lt;int&gt; vec;
+     for (vector&lt;int&gt;::size_type i = 0; i != 10; ++i)
+         vec.push_back(i); // <span class="docEmphasis">elements are 0,1,2,...9</span>
+</pre>
+
+	<p class="docText">the following <tt>for</tt> loop prints the elements in reverse order:</p>
+	<p class="docText">下面的 <tt>for</tt> 循环将以逆序输出这些元素：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">reverse iterator of vector from back to front</span>
+     vector&lt;int&gt;::reverse_iterator r_iter;
+     for (r_iter = vec.rbegin(); // <span class="docEmphItalicAlt">binds</span> <span class="docEmphasis">r_iter to</span> <span class="docEmphItalicAlt">last element</span>
+          r_iter != vec.rend();  // <span class="docEmphasis">rend</span> <span class="docEmphItalicAlt">refers 1 before 1st element</span>
+          ++r_iter)              // <span class="docEmphItalicAlt">decrements iterator one element</span>
+         cout &lt;&lt; *r_iter &lt;&lt; endl;    // <span class="docEmphItalicAlt">prints 9,8,7,...0</span>
+</pre>
+
+<a name="idd1e88170"></a><a name="idd1e88175"></a><a name="idd1e88180"></a>
+        <p class="docText">Although it may seem confusing to have the meaning of the increment and decrement operators reversed, doing so lets us use the algorithms transparently to process a container forward or backward. For example, we could sort our <tt>vector</tt> in descending order by passing <tt>sort</tt> a pair of reverse iterators:</p>
+        <p class="docText">虽然颠倒自增和自减这两个操作符的意义似乎容易使人迷惑，但是它让程序员可以透明地向前或向后处理容器。例如，为了以降序排列 <tt>vector</tt>，只需向 <tt>sort</tt> 传递一对反向迭代器：</p>
+
+        <pre>
+     // <span class="docEmphItalicAlt">sorts vec in "normal" order</span>
+     sort(vec.begin(), vec.end());
+     // <span class="docEmphItalicAlt">sorts in reverse: puts smallest element at the end of vec</span>
+     sort(vec.rbegin(), vec.rend());
+</pre>
+        <a name="ch11lev3sec22"></a>
+
+        <h5 class="docSection3Title">Reverse Iterators Require Decrement Operators</h5>
+        <h5 class="docSection3Title">反向迭代器需要使用自减操作符</h5>
+
+        <p class="docText">Not surprisingly, we can define a reverse iterator only from an iterator that supports <tt>--</tt> as well as <tt>++</tt>. After all, the purpose of a reverse iterator is to move the iterator backward through the sequence. The iterators on the standard containers all support decrement as well as increment. However, the stream iterators do not, because it is not possible to move backward through a stream. Therefore, it is not possible to create a reverse iterator from a stream iterator.</p>
+        <p class="docText">从一个既支持 <tt>--</tt> 也支持 <tt>++</tt> 的迭代器就可以定义反向迭代器，这不用感到吃惊。毕竟，反向迭代器的目的是移动迭代器反向遍历序列。标准容器上的迭代器既支持自增运算，也支持自减运算。但是，流迭代器却不然，由于不能反向遍历流，因此流迭代器不能创建反向迭代器。</p>
+
+	<a name="ch11lev3sec23"></a>
+        <h5 class="docSection3Title">Relationship between Reverse Iterators and Other Iterators</h5>
+        <h5 class="docSection3Title">反向迭代器与其他迭代器之间的关系</h5>
+
+        <p class="docText">Suppose we have a <tt>string</tt> named <tt>line</tt> that contains a comma-separated list of words, and we want to print the first word in <tt>line</tt>. Using <tt>find</tt>, this task is easy:</p>
+        <p class="docText">假设有一个名为 <tt>line</tt> 的 <tt>string</tt> 对象，存储以逗号分隔的单词列表。我们希望输出 <tt>line</tt> 中的第一个单词。使用 <tt>find</tt> 可很简单地实现这个任务：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">find first element in a comma-separated list</span>
+     string::iterator comma = find(line.begin(), line.end(), ',');
+     cout &lt;&lt; string(line.begin(), comma) &lt;&lt; endl;
+</pre>
+
+        <p class="docText">If there is a comma in <tt>line</tt>, then <tt>comma</tt> refers to that comma; otherwise it is <tt>line.end()</tt>. When we print the <tt>string</tt> from <tt>line.begin()</tt> to <tt>comma</tt> we print characters up to the comma, or the entire <tt>string</tt> if there is no comma.</p>
+	<p class="docText">如果在 <tt>line</tt> 中有一个逗号，则 <tt>comma</tt> 指向这个逗号；否则，<tt>comma</tt> 的值为 <tt>line.end()</tt>。在输出 <tt>string</tt> 对象中从 <tt>line.begin()</tt> 到 <tt>comma</tt> 的内容时，从头开始输出字符直到遇到逗号为止。如果该 <tt>string</tt> 对象中没有逗号，则输出整个 <tt>string</tt> 字符串。</p>
+
+        <a name="idd1e88277"></a><a name="idd1e88281"></a><a name="idd1e88284"></a><a name="idd1e88289"></a><a name="idd1e88294"></a><a name="idd1e88300"></a><a name="idd1e88305"></a>
+        <p class="docText">If we wanted the last word in the list, we could use reverse iterators instead:</p>
+        <p class="docText">如果要输出列表中最后一个单词，可使用反向迭代器：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">find last element in a comma-separated list</span>
+     string::reverse_iterator rcomma =
+                            find(line.rbegin(), line.rend(), ',');
+</pre>
+
+        <p class="docText">Because we pass <tt>rbegin()</tt> and <tt>rend()</tt>, this call starts with the last character in <tt>line</tt> and searches backward. When <tt>find</tt> completes, if there is a comma, then <tt>rcomma</tt> refers to the last comma in the linethat is it refers to the first comma found in the backward search. If there is no comma, then <tt>rcomma</tt> is <tt>line.rend()</tt>.</p>
+        <p class="docText">因为此时传递的是 <tt>rbegin()</tt> 和 <tt>rend()</tt>，这个函数调用从 <tt>line</tt> 的最后一个字符开始往回搜索。当 <tt>find</tt> 完成时，如果列表中有逗号，那么 <tt>rcomma</tt> 指向其最后一个逗号，即指向反向搜索找到的第一个逗号。如果没有逗号，则 <tt>rcomma</tt> 的值为 <tt>line.rend()</tt>。</p>
+
+        <p class="docText">The interesting part comes when we try to print the word we found. The direct attempt</p>
+        <p class="docText">在尝试输出所找到的单词时，有趣的事情发生了。直接尝试：</p>
+
+        <pre>
+     // <span class="docEmphItalicAlt">wrong: will generate the word in reverse order</span>
+     cout &lt;&lt; string(line.rbegin(), rcomma) &lt;&lt; endl;
+</pre>
+
+        <p class="docText">generates bogus output. For example, had our input been</p>
+        <p class="docText">会产生假的输出。例如，如果输入是：</p>
+
+        <pre>
+     <span class="docEmphStrong">FIRST,MIDDLE,LAST</span>
+</pre>
+
+        <p class="docText">then this statement would print <tt>TSAL</tt>!</p>
+        <p class="docText">则将输出 <tt>TSAL</tt>！</p>
+
+        <p class="docText"><a class="docLink" href="ch11lev1sec3.html#ch11fig02">Figure 11.2</a> illustrates the problem: We are using reverse iterators, and such iterators process the <tt>string</tt> backward. To get the right output, we need to transform the reverse iterators <tt>line.rbegin()</tt> and <tt>rcomma</tt> into normal iterators that go forward. There is no need to transform <tt>line.rbegin()</tt> as we already know that the result of that transformation would be <tt>line.end()</tt>. We can transform <tt>rcomma</tt> by calling <tt>base</tt>, which is a member of each reverse iterator type:</p> 
+	<p class="docText"><a class="docLink" href="ch11lev1sec3.html#ch11fig02">图 11.2</a> 阐明了这个问题：使用反向迭代器时，以逆序从后向前处理 <tt>string</tt> 对象。为了得到正确的输出，必须将反向迭代器 <tt>line.rbegin()</tt> 和 <tt>rcomma</tt> 转换为从前向后移动的普通迭代器。其实没必要转换 <tt>line.rbegin()</tt>，因为我们知道转换的结果必定是 <tt>line.end()</tt>。只需调用所有反向迭代器类型都提供的成员函数 <tt>base</tt> 转换 <tt>rcomma</tt> 即可：</p>
+	
+	<a name="ch11fig02"></a>
+        <center>
+          <h5 class="docFigureTitle">Figure 11.2. Relationship between Reverse and Ordinary Iterators</h5>
+          <h5 class="docFigureTitle">图 11.2. 反向迭代器与普通迭代器之间的区别</h5>
+
+          <p class="docText"><img border="0" alt="" id="195131139046" width="415" height="123" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/11fig02.gif;400478" ></p>
+        </center>
+        <pre>
+     // <span class="docEmphItalicAlt">ok: get a forward iterator and read to end of</span> <span class="docEmphasis">line</span>
+     cout &lt;&lt; string(rcomma.base(), line.end()) &lt;&lt; endl;
+</pre>
+
+        <p class="docText">Given the same preceeding input, this statement prints <tt>LAST</tt> as expected.</p>
+        <p class="docText">假设还是前面给出的输入，该语句将如愿输出 LAST。</p>
+
+        <p class="docText">The objects shown in <a class="docLink" href="ch11lev1sec3.html#ch11fig02">Figure 11.2</a> visually illustrate the relationship between ordinary and reverse iterators. For example, <tt>rcomma</tt> and <tt>rcomma.base()</tt> refer to different elements, as do <tt>line.rbegin()</tt> and <tt>line.end()</tt>. These differences are needed to ensure that the range of elements whether processed forward or backward is the same. Technically speaking, the relationship between <a name="idd1e88451"></a><a name="idd1e88456"></a><a name="idd1e88460"></a>normal and reverse iterators is designed to accommodate the properties of a left-inclusive range (<a class="docLink" href="ch09lev1sec2.html#ch09lev2sec4" >Section 9.2.1</a>, p. <a class="docLink" href="ch09lev1sec2.html#ch09lev2sec4" >314</a>), so that <tt>[line.rbegin(), rcomma)</tt> and <tt>[rcomma.base(), line.end())</tt> refer to the same elements in <tt>line</tt>.</p>
+	<p class="docText"><a class="docLink" href="ch11lev1sec3.html#ch11fig02">图 11.2</a> 显示的对象直观地解释了普通迭代器与反向迭代器之间的关系。例如，正如 <tt>line_rbegin</tt>() 和 <tt>line.end()</tt> 一样，<tt>rcomma</tt> 和 <tt>rcomma.base()</tt> 也指向不同的元素。为了确保正向和反向处理元素的范围相同，这些区别必要的。从技术上来说，设计普通迭代器与反向迭代器之间的关系是为了适应左闭合范围（<a class="docLink" href="ch09lev1sec2.html#ch09lev2sec4" >第 9.2.1 节</a>）这个性质的，所以，<tt>[line.rbegin(), rcomma)</tt> 和 <tt>[rcomma.base(), line.end())</tt> 标记的是 <tt>line</tt> 中的相同元素。</p>
+
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">The fact that reverse iterators are intended to represent ranges and that these ranges are asymmetric has an important consequence. When we initialize or assign a reverse iterator from a plain iterator, the resulting iterator does not refer to the same element as the original.</p>
+                <p class="docText">反向迭代器用于表示范围，而所表示的范围是不对称的，这个事实可推导出一个重要的结论：使用普通的迭代器对反向迭代器进行初始化或赋值时，所得到的迭代器并不是指向原迭代器所指向的元素。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <a name="ch11sb09"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 11.3.3</h2>
+
+              <blockquote>
+                <a name="ch11qa7q1"></a><a name="ch11qa7q2"></a><a name="ch11qa7q3"></a><a name="ch11qa7q4"></a>
+
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><b>Exercise 11.19:</b></td>
+
+                    <td>
+                      <p class="docText">Write a program that uses <tt>reverse_iterators</tt> to print the contents of a <tt>vector</tt> in reverse order.</p>
+		      <p class="docText">编写程序使用 <tt>reverse_iterator</tt> 对象以逆序输出 <tt>vector</tt> 容器对象的内容。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><b>Exercise 11.20:</b></td>
+
+                    <td>
+                      <p class="docText">Now print the elements in reverse order using ordinary iterators.</p>
+		      <p class="docText">现在，使用普通的迭代器逆序输出上题中对象的元素。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><b>Exercise 11.21:</b></td>
+
+                    <td>
+                      <p class="docText">Use <tt>find</tt> to find the last element in a <tt>list</tt> of <tt>int</tt>s with value 0.</p>
+		      <p class="docText">使用 <tt>find</tt> 在一个 <tt>int</tt> 型的 <tt>list</tt> 中寻找值为 0 的最后一个元素。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><b>Exercise 11.22:</b></td>
+
+                    <td>
+                      <p class="docText">Given a <tt>vector</tt> that has 10 elements, copy the elements from position 3 through 7 in reverse order to a <tt>list</tt>.</p>
+		      <p class="docText">假设有一个存储了 10 个元素的 <tt>vector</tt> 对象，将其中第 3 个至第 7 个位置上的元素以逆序复制给 <tt>list</tt> 对象。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table>
+        <a name="ch11lev2sec10"></a>
+
+        <h4 class="docSection2Title">11.3.4. <tt>const</tt> Iterators</h4>
+	<h4 class="docSection2Title">11.3.4. <tt>const</tt> 迭代器</h4>
+
+        <p class="docText">Careful readers will have noted that in the program on page <a class="docLink" href="ch11lev1sec1.html#ch11lev1sec1" >392</a> that used <tt>find</tt>, we defined <tt>result</tt> as a <tt>const_iterator</tt>. We did so because we did not intend to use the iterator to change a container element.</p>
+	<p class="docText">细心的读者可能已经注意到，在<a class="docLink" href="ch11lev1sec1.html#ch11lev1sec1" >第 11.1 节</a>使用 <tt>find</tt> 的程序中，我们将 <tt>result</tt> 定义为 <tt>const_iterator</tt> 类型。这样做是因为我们不希望使用这个迭代器来修改容器中的元素。</p>
+
+        <p class="docText">On the other hand, we used a plain, non<tt>const</tt> iterator to hold the return from <tt>find_first_of</tt> on page <a class="docLink" href="ch11lev1sec2.html#ch11sb03" >397</a>, even though we did not intend to change any container elements in that program either. The difference in treatment is subtle and deserves an explanation.</p>
+	<p class="docText">另一方面，虽然<a class="docLink" href="ch11lev1sec2.html#ch11sb03" >第 11.2.1 节</a>的程序也不打算改变容器内的任何元素，但是它却使用了普通的非 <tt>const</tt> 迭代器来保存 <tt>find_first_of</tt> 的返回值。这两种处理存在细微的差别，值得解释一下。</p>
+
+        <p class="docText">The reason is that in the second case, we use the iterator as an argument to <tt>find_first_of:</tt></p>
+	<p class="docText">原因是，在第二个例子中，程序将迭代器用作 <tt>find_first_of</tt> 的实参：</p>
+        <pre>
+     find_first_of(it, roster1.end(),
+                   roster2.begin(), roster2.end())
+</pre>
+
+        <p class="docText">The input range for this call is specified by <tt>it</tt> and the iterator returned from a call to <tt>roster1.end()</tt>. Algorithms require the iterators that denote a range to have <span class="docEmphasis">exactly</span> the same type. The iterator returned by <tt>roster1.end()</tt> depends on the type of <tt>roster1</tt>. If that container is a <tt>const</tt> object, then the iterator is <tt>const_iterator;</tt> otherwise, it is the plain <tt>iterator</tt> type. In this program, <tt>roster1</tt> was not <tt>const</tt>, and so <tt>end</tt> returns an <tt>iterator</tt>.</p>
+	<p class="docText">该函数调用的输入范围由 <tt>it</tt> 和调用 <tt>roster1.end()</tt> 返回的迭代器指定。算法要求用于指定范围的两个迭代器必须具有完全一样的类型。<tt>roster1.end()</tt> 返回的迭代器依赖于 <tt>roster1</tt> 的类型。如果该容器是 <tt>const</tt> 对象，则返回的迭代器是 <tt>const_iterator</tt> 类型；否则，就是普通的 <tt>iterator</tt> 类型。在这个程序中，<tt>roster1</tt> 不是 <tt>const</tt> 对象，因而 <tt>end</tt> 返回的只是一个普通的迭代器。</p>
+
+        <p class="docText">If we defined <tt>it</tt> as a <tt>const_iterator</tt>, the call to <tt>find_first_of</tt> would not compile. The types of the iterators used to denote the range would not have been identical. <tt>it</tt> would have been a <tt>const_iterator</tt>, and the iterator returned by <tt>roster1.end()</tt> would be <tt>iterator</tt>.</p>
+	<p class="docText">如果我们将 <tt>it</tt> 定义为 <tt>const_iterator</tt>，那么 <tt>find_first_of</tt> 的调用将无法编译。用来指定范围的两个迭代器的类型不相同。<tt>it</tt> 是 <tt>const_iterator</tt> 类型的对象，而 <tt>rotser1.end()</tt> 返回的则是一个 <tt>iterator</tt> 对象。</p>
+	
+	<a name="ch11lev2sec11"></a>
+        <h4 class="docSection2Title">11.3.5. The Five Iterator Categories</h4>
+	<h4 class="docSection2Title">11.3.5. 五种迭代器</h4>
+
+	<a name="idd1e88682"></a><a name="idd1e88687"></a><a name="idd1e88690"></a><a name="idd1e88695"></a><a name="idd1e88700"></a><a name="idd1e88703"></a><a name="idd1e88708"></a><a name="idd1e88713"></a><a name="idd1e88718"></a>
+        <p class="docText">Iterators define a common set of operations, but some iterators are more powerful than other iterators. For example, <tt>ostream_iterators</tt> support only increment, dereference, and assignment. Iterators on <tt>vector</tt>s support these operations and the decrement, relational, and arithmetic operators as well. As a result, we can classify iterators based on the set of operations they provide.</p>
+	<p class="docText">迭代器定义了常用的操作集，但有些迭代器具有比其他迭代器更强大的功能。例如 <tt>ostream_iterator</tt> 只支持自增、解引用和赋值运算，而 <tt>vector</tt> 容器提供的迭代器除了这些运算，还支持自减、关系和算术运算。因此，迭代器可根据所提供的操作集进行分类。</p>
+
+        <p class="docText">Similarly, we can categorize algorithms by the kinds of operations they require from their iterators. Some, such as <tt>find</tt>, require only the ability to read through the iterator and to increment it. Others, such as <tt>sort</tt>, require the ability to read, write, and randomly access elements. The iterator operations required by the algorithms are grouped into five categories. These five categories correspond to five categories of iterators, which are summarized in <a class="docLink" href="ch11lev1sec3.html#ch11table03">Table 11.3</a>.</p>
+	<p class="docText">类似地，还可根据算法要求它的迭代器提供什么类型的操作，对算法分类。有一些算法，例如 <tt>find</tt>，只要求迭代器提供读取所指向内容和自增的功能。另一些算法，，比如 <tt>sort</tt>，则要求其迭代器有读、写和随机访问元素的能力。算法要求的迭代器操作分为五个类别，分别对应<a class="docLink" href="ch11lev1sec3.html#ch11table03">表 11.3</a> 列出的五种迭代器。</p>
+	
+	<a name="ch11table03"></a>
+        <h5 class="docTableTitle">Table 11.3. Iterator Categories</h5>
+        <h5 class="docTableTitle">表 11.3. 迭代器种类</h5>
+
+        <table cellspacing="0" class="allBorders" border="1" rules="none" cellpadding="5">
+          <colgroup>
+            <col width="200">
+            <col width="300">
+          </colgroup>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Input iterator（输入迭代器）</p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Read, but not write; increment only</p>
+              <p class="docText">读，不能写；只支持自增运算</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Output iterator（输出迭代器）</p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Write, but not read; increment only</p>
+              <p class="docText">写，不能读；只支持自增运算</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Forward iterator（前向迭代器）</p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Read and write; increment only</p>
+              <p class="docText">读和写；只支持自增运算</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Bidirectional iterator（双向迭代器）</p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Read and write; increment and decrement</p>
+              <p class="docText">读和写；支持自增和自减运算</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Random access iterator（随机访问迭代器）</p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Read and write; full iterator arithmetic</p>
+              <p class="docText">读和写；支持完整的迭代器算术运算</p>
+            </td>
+          </tr>
+        </table>
+
+        <div style="font-weight:bold">
+          <ol class="docList" type="1">
+            <li>
+              <div style="font-weight:normal">
+<a name="ch11term6"></a>
+                <p class="docList"><b><a class="docLink" href="ch11lev1sec7.html#gloss11_06" >Input iterators</a></b> can read the elements of a container but are not guaranteed to be able to write into a container. An input iterator must provide the following minimum support:</p>
+                <p class="docList"><b><a class="docLink" href="ch11lev1sec7.html#gloss11_06" >输入迭代器</a></b>可用于读取容器中的元素，但是不保证能支持容器的写入操作。输入迭代器必须至少提供下列支持。</p>
+
+                <ul>
+                  <li>
+                    <p class="docList">Equality and inequality operators (<tt>==, !=</tt>) to compare two iterators.</p>
+                    <p class="docList">相等和不等操作符（<tt>==</tt>，<tt>!=</tt>），比较两个迭代器。</p>
+                  </li>
+
+                  <li>
+                    <p class="docList">Prefix and postfix increment (<tt>++</tt>) to advance the iterator.</p>
+                    <p class="docList">前置和后置的自增运算（<tt>++</tt>），使迭代器向前递进指向下一个元素。</p>
+                  </li>
+
+                  <li>
+                    <p class="docList">Dereference operator (<tt>*</tt>) to read an element; dereference may appear only on the right-hand side of an assignment.</p>
+                    <p class="docList">用于读取元素的解引用操作符（<tt>*</tt>），此操作符只能出现在赋值运算的右操作数上。</p>
+                  </li>
+
+                  <li>
+                    <p class="docList">The arrow operator (<tt>-&gt;</tt>) as a synonym for <tt>(*it).member</tt> that is, dereference the iterator and fetch a member from the underlying object.</p>
+                    <p class="docList">箭头操作符（<tt>-&gt;</tt>），这是 <tt>(*it).member</tt> 的同义语，也就是说，对迭代器进行解引用来获取其所关联的对象的成员。</p>
+                  </li>
+                </ul>
+
+                <p class="docList">Input iterators may be used only sequentially; there is no way to examine an element once the input iterator has been incremented. Generic algorithms requiring only this level of support include <tt>find</tt> and <tt>accumulate</tt>. The library <tt>istream_iterator</tt> type is an input iterator.</p>
+                    <p class="docList">输入迭代器只能顺序使用；一旦输入迭代器自增了，就无法再用它检查之前的元素。要求在这个层次上提供支持的泛型算法包括 <tt>find</tt> 和 <tt>accumulate</tt>。标准库 <tt>istream_iterator</tt> 类型输入迭代器。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList"><b><a name="ch11term13"></a><a class="docLink" href="ch11lev1sec7.html#gloss11_13" >Output iterators</a></b> can be thought of as having complementary functionality to input iterators; An output iterator can be used to write an element but it is not guaranteed to support reading. Output iterators require:</p>
+                    <p class="docList"><b><a class="docLink" href="ch11lev1sec7.html#gloss11_13" >输出迭代器</a></b>　可视为与输入迭代器功能互补的迭代器；输出迭代器可用于向容器写入元素，但是不保证能支持读取容器内容。输出迭代器要求：</p>
+
+                <ul>
+                  <li>
+                    <p class="docList">Prefix and postfix increment (<tt>++</tt>) to advance the iterator.</p>
+                    <p class="docList">前置和后置的自增运算（<tt>++</tt>），使迭代器向前递进指向下一个元素。</p>
+                  </li>
+
+                  <li>
+                    <p class="docList">Dereference (<tt>*</tt>), which may appear only as the left-hand side of an assignment. Assigning to a dereferenced output iterator writes to the underlying element.</p>
+                    <p class="docList">解引用操作符（<tt>*</tt>），引操作符只能出现在赋值运算的左操作数上。给解引用的输出迭代器赋值，将对该迭代器所指向的元素做写入操作。</p>
+                  </li>
+	  </ul>
+	  
+	  <a name="idd1e88898"></a><a name="idd1e88901"></a><a name="idd1e88909"></a><a name="idd1e88917"></a><a name="idd1e88925"></a><a name="idd1e88930"></a><a name="idd1e88936"></a><a name="idd1e88939"></a><a name="idd1e88945"></a><a name="idd1e88950"></a><a name="idd1e88955"></a><a name="idd1e88960"></a><a name="idd1e88965"></a><a name="idd1e88970"></a><a name="idd1e88975"></a><a name="idd1e88980"></a><a name="idd1e88986"></a><a name="idd1e88992"></a><a name="idd1e88999"></a><a name="idd1e89002"></a><a name="idd1e89008"></a><a name="idd1e89014"></a><a name="idd1e89020"></a><a name="idd1e89026"></a><a name="idd1e89032"></a>
+
+                <p class="docList">Output iterators may require that each iterator value must be written exactly once. When using an output iterator, we should use <tt>*</tt> once and only once on a given iterator value. Output iterators are generally used as a third argument to an algorithm and mark the position where writing should begin. For example, the <tt>copy</tt> algorithm takes an output iterator as its third parameter and copies elements from its input range to the destination indicated by the output iterator. The <tt>ostream_iterator</tt> type is an output iterator.</p>
+                    <p class="docList">输出迭代器可以要求每个迭代器的值必须正好写入一次。使用输出迭代器时，对于指定的迭代器值应该使用一次 <tt>*</tt> 运算，而且只能用一次。输出迭代器一般用作算法的第三个实参，标记起始写入的位置。例如，<tt>copy</tt> 算法使用一个输出迭代器作为它的第三个实参，将输入范围内的元素复制到输出迭代器指定的目标位置。标准库 <tt>ostream_iterator</tt> 类型输出迭代器。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList"><b><a name="ch11term3"></a><a class="docLink" href="ch11lev1sec7.html#gloss11_03" >Forward iterators</a></b> read from and write to a given container. They move in only one direction through the sequence. Forward iterators support all the operations of both input iterators and output iterators. In addition, they can read or write the same element multiple times. We can copy a forward iterator to remember a place in the sequence so as to return to that place later. Generic algorithms that require a forward iterator include <tt>replace</tt>.</p>
+		<p class="docList"><b><a class="docLink" href="ch11lev1sec7.html#gloss11_03" >前向迭代器</a></b> 用于读写指定的容器。这类迭代器只会以一个方向遍历序列。前向迭代器支持输入迭代器和输出迭代器提供的所有操作，除此之外，还支持对同一个元素的多次读写。可复制前向迭代器来记录序列中的一个位置，以便将来返回此处。需要前向迭代器的泛型算法包括 <tt>replace</tt>。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList"><b><a name="ch11term2"></a><a class="docLink" href="ch11lev1sec7.html#gloss11_02" >Bidirectional iterators</a></b> read from and write to a container in both directions. In addition to supporting all the operations of a forward iterator, a bidirectional iterator also supports the prefix and postfix decrement (<tt>--</tt>) operators. Generic algorithms requiring a bidirectional iterator include <tt>reverse</tt>. All the library containers supply iterators that at a minimum meet the requirements for a bidirectional iterator.</p>
+		<p class="docList"><b><a class="docLink" href="ch11lev1sec7.html#gloss11_02" >双向迭代器</a></b>　从两个方向读写容器。除了提供前向迭代器的全部操作之外，双向迭代器还提供前置和后置的自减运算（<tt>--</tt>）。需要使用双向迭代器的泛型算法包括 <tt>reverse</tt>。所有标准库容器提供的迭代器都至少达到双向迭代器的要求。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList"><b><a name="ch11term15"></a><a class="docLink" href="ch11lev1sec7.html#gloss11_15" >Random-access iterators</a></b> provide access to any position within the container in constant time. These iterators support all the functionality of bidirectional iterators. In addition, random-access iterators support:</p>
+                    <p class="docList"><b><a name="ch11term15"></a><a class="docLink" href="ch11lev1sec7.html#gloss11_15" >随机访问迭代器</a></b>　提供在常量时间内访问容器任意位置的功能。这种迭代器除了支持双向迭代器的所有功能之外，还支持下面的操作：</p>
+
+                <ul>
+                  <li>
+                    <p class="docList">The relational operators <tt>&lt;, &lt;=, &gt;</tt>, and <tt>&gt;=</tt> to compare the relative positions of two iterators.</p>
+                    <p class="docList">关系操作符 <tt>&lt;</tt>、<tt>&lt;=</tt>、<tt>&gt;</tt> 和 <tt>&gt;=</tt>，比较两个迭代器的相对位置。</p>
+                  </li>
+
+                  <li>
+                    <p class="docList">Addition and subtraction operators <tt>+, +=, -</tt>, and <tt>-=</tt> between an iterator and an integral value. The result is the iterator advanced (or retreated) the integral number of elements within the container.</p>
+                    <p class="docList">迭代器与整型数值 n 之间的加法和减法操作符 <tt>+</tt>、<tt>+=</tt>、<tt>-</tt> 和 <tt>-=</tt>，结果是迭代器在容器中向前（或退回）n 个元素。</p>
+                  </li>
+
+                  <li>
+                    <p class="docList">The subtraction operator <tt>-</tt> when applied to two iterators, which yields the distance between two iterators.</p>
+                    <p class="docList">两个迭代器之间的减法操作符（<tt>--</tt>），得到两个迭代器间的距离。</p>
+                  </li>
+
+                  <li>
+                    <p class="docList">The subscript operator <tt>iter[n]</tt> as a synonym for <tt>*(iter + n)</tt>.</p>
+                    <p class="docList">下标操作符 <tt>iter[n]</tt>，这是 <tt>*(iter + n)</tt> 的同义词。</p>
+                  </li>
+                </ul>
+
+                <p class="docList">Generic algorithms requiring a random-access iterator include the <tt>sort</tt> algorithms. The <tt>vector, deque</tt>, and <tt>string</tt> iterators are random-access iterators, as are pointers when used to access elements of a built-in array.</p>
+                    <p class="docList">需要随机访问迭代器的泛型算法包括 <tt>sort</tt> 算法。<tt>vector</tt>、<tt>deque</tt> 和 <tt>string</tt> 迭代器是随机访问迭代器，用作访问内置数组元素的指针也是随机访问迭代器。</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+
+        <p class="docText">With the exception of output iterators, the <span class="docEmphRoman"><a name="ch11term10"></a><a class="docLink" href="ch11lev1sec7.html#gloss11_10" >iterator categories</a></span> form a sort of hierarchy: Any iterator of a higher category can be used where an iterator of lesser power is required. We can call an algorithm requiring an input iterator with an input iterator or a forward, bidirectional, or random-access iterator. Only a random-access iterator may be passed to an algorithm requiring a random-access iterator.</p>
+        <p class="docText">除了输出迭代器，其他类别的迭代器形成了一个层次结构：需要低级类别迭代器的地方，可使用任意一种更高级的迭代器。对于需要输入迭代器的算法，可传递前向、双向或随机访问迭代器调用该算法。调用需要随机访问迭代器的算法时，必须传递随机访问迭代器。</p>
+
+        <p class="docText">The <tt>map, set</tt>, and <tt>list</tt> types provide bidirectional iterators. Iterators on <tt>string, vector</tt>, and <tt>deque</tt> are random-access iterators, as are pointers bound to arrays. An <tt>istream_iterator</tt> is an input iterator, and an <tt>ostream_iterator</tt> is an output iterator.</p>
+        <p class="docText"><tt>map</tt>、<tt>set</tt> 和 <tt>list</tt> 类型提供双向迭代器，而 <tt>string</tt>、<tt>vector</tt> 和 <tt>deque</tt> 容器上定义的迭代器都是随机访问迭代器都是随机访问迭代器，用作访问内置数组元素的指针也是随机访问迭代器。<tt>istream_iterator</tt> 是输入迭代器，而 <tt>ostream_iterator</tt> 则是输出迭代器。</p>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Key Concept: Associative Containers and the Algorithms</h2>
+              <h2 class="docSidebarTitle">关键概念：关联容器与算法</h2>
+
+	<a name="idd1e89170"></a><a name="idd1e89175"></a>
+              <p class="docText"><span class="docEmphStrong">Although the <tt>map</tt> and <tt>set</tt> types provide bidirectional iterators, we can use only a subset of the algorithms on associative containers. The problem is that the key in an associative container is <tt>const</tt></span><span class="docEmphStrong">. Hence, any algorithm that writes to elements in the sequence cannot be used on an associative container. We may use iterators bound to associative containers only to supply arguments that will be read.</span></p>
+	      <p class="docText">尽管 <tt>map</tt> 和 <tt>set</tt> 类型提供双向迭代器，但关联容器只能使用算法的一个子集。问题在于：关联容器的键是 <tt>const</tt> 对象。因此，关联容器不能使用任何写序列元素的算法。只能使用与关联容器绑在一起的迭代器来提供用于读操作的实参。</p>
+
+              <div class="docNote">
+                <table width="90%" border="0" cellspacing="0" cellpadding="1">
+                  <tr>
+                    <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="84" height="51" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/tip.jpg;400478" ></td>
+
+                    <td valign="top">
+                      <p class="docText"><span class="docEmphStrong">When dealing with the algorithms, it is best to think of the iterators on associative containers as if they were input iterators that also support decrement, not as full bidirectional iterators.</span></p>
+        <p class="docText">在处理算法时，最好将关联容器上的迭代器视为支持自减运算的输入迭代器，而不是完整的双向迭代器。</p>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </td>
+          </tr>
+        </table>
+
+        <p class="docText">The C++ standard specifies the minimum iterator category for each iterator parameter of the generic and numeric algorithms. For example, <tt>find</tt>which implements a one-pass, read-only traversal over a containerminimally requires an input iterator. The <tt>replace</tt> function requires a pair of iterators that are at least forward iterators. The first two iterators to <tt>replace_copy</tt> must be at least forward. The third, which represents a destination, must be at least an output iterator.</p>
+        <p class="docText">C++ 标准为所有泛型和算术算法的每一个迭代器形参指定了范围最小的迭代器种类。例如，<tt>find</tt>（以只读方式单步遍历容器）至少需要一个输入迭代器。<tt>replace</tt> 函数至少需要一对前向迭代器。<tt>replace_copy</tt> 函数的头两个迭代器必须至少是前向迭代器，第三个参数代表输出目标，必须至少是输出迭代器。</p>
+
+        <p class="docText">For each parameter, the iterator must be at least as powerful as the stipulated minimum. Passing an iterator of a lesser power results in an error; passing an stronger iterator type is okay.</p>
+	<p class="docText">对于每一个形参，迭代器必须保证最低功能。将支持更少功能的迭代器传递给函数是错误的；而传递更强功能的迭代器则没问题。</p>
+	
+	<a name="ch11note08"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Errors in passing an invalid category of iterator to an algorithm are not guaranteed to be caught at compile-time.</p>
+                <p class="docText">向算法传递无效的迭代器类别所引起的错误，无法保证会在编译时被捕获到。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <a name="ch11sb11"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 11.3.5</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch11qa8q1"></a><b>Exercise 11.23:</b></td>
+
+                    <td>
+                      <p class="docText">List the five iterator categories and the operations that each supports.</p>
+                <p class="docText">列出五种迭代器类型及其各自支持的操作。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch11qa8q2"></a><b>Exercise 11.24:</b></td>
+
+                    <td>
+                      <p class="docText">What kind of iterator does a <tt>list</tt> have? What about a <tt>vector</tt>?</p>
+                <p class="docText"><tt>list</tt> 容器拥有什么类型的迭代器？而 <tt>vector</tt> 呢？</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch11qa8q3"></a><b>Exercise 11.25:</b></td>
+
+                    <td>
+                      <p class="docText">What kinds of iterators do you think <tt>copy</tt> requires? What about <tt>reverse</tt> or <tt>unique</tt>?</p>
+                <p class="docText">你认为 <tt>copy</tt> 算法需要使用哪种迭代器？而 <tt>reverse</tt> 和 <tt>unique</tt> 呢？</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch11qa8q4"></a><b>Exercise 11.26:</b></td>
+
+                    <td>
+                      <p class="docText">Explain why each of the following is incorrect. Identify which errors should be caught during compilation.</p>
+                <p class="docText">解释下列代码错误的原因，指出哪些错误可以在编译时捕获。</p>
+                      <pre>
+     (a) string sa[10];
+         const vector&lt;string&gt; file_names(sa, sa+6);
+         vector&lt;string&gt;::iterator it = file_names.begin()+2;
+
+     (b) const vector&lt;int&gt; ivec;
+         fill(ivec.begin(), ivec.end(), ival);
+
+     (c) sort(ivec.begin(), ivec.rend());
+
+     (d) sort(ivec1.begin(), ivec2.end());
+</pre>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch11lev1sec2.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch11lev1sec4.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

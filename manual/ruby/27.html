@@ -1,0 +1,96 @@
+<html><HEAD><TITLE>16、访问控制 - RUBY文档中心</TITLE>
+<STYLE type=text/css>
+<!--
+.code2 {font-size:14.7px;font-family:arial;color:#00009a;line-height:150%;background-color:#EFEFEF;height=25px;vertical-align=middle;margin-left: 20px;}
+.code {font-size:14.7px;font-family:arial;color:#00009a;background-color:#EFEFEF;line-height: 150%}
+.quote {font-size:14.7px;font-family:arial;color:#666666;line-height:150%;}
+-->
+</STYLE>
+
+<META http-equiv=Content-Type content="text/html; charset=gb2312"><LINK href="27_files/news[1].css"  rel=stylesheet></head>
+<BODY topMargin=0>
+<STYLE type=text/css>
+<!--
+body {
+	margin-top: 50px;
+}
+.style12 {font-size: 33px}
+.style15 {
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-weight: bold;
+}
+.style17 {font-family: "黑体", "楷体_GB2312", "新宋体"}
+.style18 {font-size: 12px}
+-->
+</STYLE>
+
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #929292 1px groove" cellSpacing=0 cellPadding=3 width=772 align=center bgColor=#ffffff border=0>
+<TBODY>
+<TR>
+<TD height=20></TD></TR>
+<TR>
+<TD bgColor=#8acd38 height=30>&nbsp;</TD></TR>
+<TR>
+<TD height=50></TD></TR></TBODY></TABLE>
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #ffffff 1px groove" borderColor=#ffffff cellSpacing=0 cellPadding=3 width=772 align=center bgColor=#ffffff border=0>
+<TBODY>
+<TR>
+<TD align=middle>
+<DIV class=moer-title><IMG src="51_files/logo_read[1].gif" > 16、访问控制</DIV>
+<P>转帖：oasis_me　　发表时间：2005-6-15 21:20:22　　点击次数：300 </P></TD></TR>
+<TR>
+<TD height=50></TD></TR></TBODY></TABLE>
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #ffffff 1px groove" borderColor=#ffffff cellSpacing=0 cellPadding=3 width=772 align=center bgColor=#ffffff border=0>
+<TBODY>
+<TR>
+<TD width="10%" bgColor=#ffffff>&nbsp;</TD>
+<TD class=moer-ask vAlign=top align=left width="5%" bgColor=#ffffff>&nbsp;</TD>
+<TD vAlign=top align=left width="75%">
+<TABLE cellSpacing=0 cellPadding=0>
+<TBODY>
+<TR>
+<TD class=moer-content vAlign=top align=left>前面,我们说Ruby没有函数,只有方法.而且实际上有不止一种方法.这一节我们介绍访问控制(access&nbsp;controls).&nbsp;<BR><BR>想想当我们在"最高层"而不是在一个类的定义里定义一个方法时会发生什么.我们可以把这样的方法设想为在像C那样的传统语言中的函数的类似物.<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;def&nbsp;square(n)<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;n&nbsp;*&nbsp;n<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;end<BR>&nbsp;&nbsp;&nbsp;nil<BR>ruby&gt;&nbsp;square(5)<BR>&nbsp;&nbsp;&nbsp;25&nbsp;</TD></TR></TBODY></TABLE><BR><BR>我们的新方法看起来不属于任何类,但实际上Ruby将其分给Object类,也就是所有其它类的父类.因此,所有对象现在都可以使用这一方法.这本应是正确的,但有个小陷阱:它是所有类的私有(private)方法.我们将在下面讨论这是什么意思,但一个结果是它只能以函数的风格调用,像这样:<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;class&nbsp;Foo<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;def&nbsp;fourth_power_of(x)<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;square(x)&nbsp;*&nbsp;square(x)<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;end<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;end<BR>&nbsp;&nbsp;nil<BR>ruby&gt;&nbsp;Foo.new.fourth_power_of&nbsp;10<BR>&nbsp;&nbsp;10000&nbsp;</TD></TR></TBODY></TABLE><BR><BR>我们不允许向一个对象明确地运用这一方法:<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;"fish".square(5)<BR>ERR:&nbsp;(eval):1:&nbsp;private&nbsp;method&nbsp;`square'&nbsp;called&nbsp;for&nbsp;"fish":String&nbsp;</TD></TR></TBODY></TABLE><BR><BR>这一聪明的做法在&nbsp;ruby&nbsp;使得提供可以像在传统语言中那样运用函数的同时保持了&nbsp;ruby&nbsp;的纯OO性质(函数仍是对象方法,但接受者隐式的为self).<BR><BR>在OO编程里,有一个不成文的习惯,我们在前面的章节里有所暗示的,即有关规格(specification)和实现(implementation)的区别,或者说对象被要求完成什么任务和实际上它是怎样完成的.对象的内部工作应该对用户保持隐蔽;他们应该只关心输入什么和输出什么,并相信对象知道它在内部是在做什么.如此,某些外面世界看不见但却在内部使用(并可以由程序员在任何需要的时候改进,而不用改变用户看到的类的对象)的方法将很有用.在下面这个普通的例子里,你可以把engine看作类的内部隐式方法.<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;class&nbsp;Test<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;def&nbsp;times_two(a)<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;a,"&nbsp;times&nbsp;two&nbsp;is&nbsp;",engine(a),"\n"<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;end<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;def&nbsp;engine(b)<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b*2<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;end<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;private:engine&nbsp;&nbsp;#&nbsp;this&nbsp;hides&nbsp;engine&nbsp;from&nbsp;users<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;end<BR>&nbsp;&nbsp;&nbsp;Test<BR>ruby&gt;&nbsp;test&nbsp;=&nbsp;Test.new<BR>&nbsp;&nbsp;&nbsp;#&lt;Test:0x4017181c&gt;<BR>ruby&gt;&nbsp;test.engine(6)<BR>ERR:&nbsp;(eval):1:&nbsp;private&nbsp;method&nbsp;`engine'&nbsp;called&nbsp;for&nbsp;#&lt;Test:0x4017181c&gt;<BR>ruby&gt;&nbsp;test.times_two(6)<BR>6&nbsp;times&nbsp;two&nbsp;is&nbsp;12.<BR>&nbsp;&nbsp;&nbsp;nil&nbsp;</TD></TR></TBODY></TABLE><BR><BR>开始时,我们本希望test.engine(6)返回12,但随后当我们扮演一个Test对象用户时我们了解到engine是不可访问的(inaccessible).只有Test的其它方法,像&nbsp;times_two可以使用&nbsp;engine.我们被要求保持程序的外部接口,也就是&nbsp;times_two这些方法.管理此类的程序员可以自由的更改engine(这里,可能把b*2改为b+b,假设这样可以提高性能)而不影响用户与&nbsp;Test&nbsp;对象打交道.这个例子当然过于简单;访问控制的优点只有当我们开始写更复杂和有趣的类时方能显现出来.</TD></TR>
+<TR>
+<TD class=moer-content vAlign=top align=left height=30></TD></TR>
+<TR>
+<TD vAlign=top align=left><SPAN style="FONT-WEIGHT: bold; FONT-SIZE: 12px">版权声明：</SPAN>RUBY文档中心的所有文章标明[<B>原创</B>]的均为本站作品，版权属RUBY中文化计划，若转载请注明；标明[<B>翻译</B>]的其外文版权归原作者，译文版权属RUBY中文化计划；标明[<B>转贴</B>]的，若原作者感到侵犯了他的著作权，那么请及时跟主持人联系，我们会尽快更正。</TD></TR></TBODY></TABLE></TD>
+<TD width="10%" bgColor=#ffffff>&nbsp;</TD></TR></TBODY></TABLE>
+<STYLE type=text/css>
+<!--
+body {
+	margin-bottom: 20px;
+}
+-->
+</STYLE>
+
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #929292 1px groove; BORDER-BOTTOM: #929292 1px groove" cellSpacing=0 cellPadding=0 width=772 align=center>
+<TBODY>
+<TR>
+<TD bgColor=#ffffff>
+<DIV align=center>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P><IMG height=11 src="55_files/logo_small[1].gif"  width=8> 版权所有(C) <A href="http://www.moer.net/ruby/index.asp" >RUBY中文化计划</A></P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></DIV></TD></TR></TBODY></TABLE>
+<DIV align=center></DIV>
+<div style="display:none;">
+<script type="text/javascript" src="http://shouce.jb51.net/js/stat.js" ></script>
+</div>
+</BODY>

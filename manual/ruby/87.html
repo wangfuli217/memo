@@ -1,0 +1,2251 @@
+<html><HEAD><TITLE>Ruby参考手册 - ruby 1.7 特性</TITLE>
+<META http-equiv=Content-type content="text/html; charset=gb2312">
+<META http-equiv=Content-Style-Type content=text/css><LINK href="87_files/style[2].css"  type=text/css rel=stylesheet></head>
+<BODY>
+<DIV class=navi><A id=header-navi name=head-navi></A><SPAN class=navi>[<A href="61.html" >Ruby首页</A>]</SPAN>  <SPAN class=navi>[<A href="85.html" >Ruby变更记录</A>] </SPAN></DIV>
+<DIV class=body>
+<H1><A id=ruby.201.2e7.20feature name=ruby.201.2e7.20feature>ruby 1.7 特性</A><!-- RDLabel: "ruby 1.7 特性" --></H1>
+<P>ruby version 1.7是开发版。将来可能会删除下列中的部分内容，也可能因为兼容性问题而对其进行修改。</P>
+<H2><A id=a1.2e7.2e3.20-.3e.201.2e8.2e0.20preview1.20.282002-12-24.29 name=a1.2e7.2e3.20-.3e.201.2e8.2e0.20preview1.20.282002-12-24.29>1.7.3 -&gt; 1.8.0 preview1 (2002-12-24)</A><!-- RDLabel: "1.7.3 -> 1.8.0 preview1 (2002-12-24)" --></H2>
+<H3><A id=a2002-12-20 name=a2002-12-20>2002-12-20</A><!-- RDLabel: "2002-12-20" --></H3>
+<DL>
+<DT><A class=modified-old id=profiler.2erb.20.5blib.5d.20.5bnew.5d title="profiler.rb (598d)" name=profiler.2erb.20.5blib.5d.20.5bnew.5d>profiler.rb</A> [lib] [new]<!-- RDLabel: "profiler.rb [lib] [new]" --> 
+<DD>
+<P>新增。作为<A class=modified-old title="profile.rb (854d)">profile.rb</A>的实体将其分离出来。</P>
+<DT><A id=rb_define_alloc_func.28.29.20.5bapi.5d.20.5bnew.5d name=rb_define_alloc_func.28.29.20.5bapi.5d.20.5bnew.5d>rb_define_alloc_func() [api] [new]</A><!-- RDLabel: "rb_define_alloc_func() [api] [new]" --> 
+<DT><A id=rb_undef_alloc_func.28.29.20.5bapi.5d.20.5bnew.5d name=rb_undef_alloc_func.28.29.20.5bapi.5d.20.5bnew.5d>rb_undef_alloc_func() [api] [new]</A><!-- RDLabel: "rb_undef_alloc_func() [api] [new]" --> 
+<DD>
+<P>新增。用在<A class=modified-old title="Class (661d)">allocate</A>方法的定义中。 <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/19116" >[ruby-dev:19116]</A></P></DD></DL>
+<H3><A id=a2002-12-18 name=a2002-12-18>2002-12-18</A><!-- RDLabel: "2002-12-18" --></H3>
+<DL>
+<DT><A class=modified-year id=a.3d.3d.3d.20.5bcompat.5d title="Regexp (171d)" name=a.3d.3d.3d.20.5bcompat.5d>Regexp#===</A> [compat]<!-- RDLabel: "=== [compat]" --> 
+<DD>
+<P>返回布尔值。</P><PRE>p(/foo/ === "foo")
+
+=&gt; ruby 1.6.8 (2002-12-24) [i586-linux]
+   0
+=&gt; ruby 1.8.0 (2003-03-12) [i586-linux]
+   true
+</PRE></DD></DL>
+<H3><A id=a2002-12-17 name=a2002-12-17>2002-12-17</A><!-- RDLabel: "2002-12-17" --></H3>
+<DL>
+<DT><A id=defined.3f.20.5bcompat.5d name=defined.3f.20.5bcompat.5d>defined? [compat]</A><!-- RDLabel: "defined? [compat]" --> 
+<DD>
+<P>遇到对属性赋值或对数组元素进行赋值的情况时，返回"assignment"而非"method"。</P><PRE>class Foo
+  attr_accessor :foo
+end
+p defined? Foo.new.foo = 1
+
+ary = []
+p defined? ary[2] = 1
+
+=&gt; ruby 1.6.8 (2002-12-24) [i586-linux]
+   "method"
+   "method"
+=&gt; ruby 1.8.0 (2003-03-12) [i586-linux]
+   "assignment"
+   "assignment"
+</PRE></DD></DL>
+<H3><A id=a2002-12-17_2 name=a2002-12-17_2>2002-12-17</A><!-- RDLabel: "2002-12-17" --></H3>
+<DL>
+<DT><A class=modified-year id=open-uri.2erb.20.5blib.5d.20.5bnew.5d title="open-uri.rb (325d)" name=open-uri.2erb.20.5blib.5d.20.5bnew.5d>open-uri.rb</A> [lib] [new]<!-- RDLabel: "open-uri.rb [lib] [new]" --> 
+<DD>
+<P>新增</P></DD></DL>
+<H3><A id=a2002-12-14 name=a2002-12-14>2002-12-14</A><!-- RDLabel: "2002-12-14" --></H3>
+<DL>
+<DT><A id=WindowsCE.20.5bplatform.5d name=WindowsCE.20.5bplatform.5d>WindowsCE [platform]</A><!-- RDLabel: "WindowsCE [platform]" --> 
+<DD>
+<P>加入了<A class=modified-old title="WindowsCE (731d)">WindowsCE</A>的支持补丁。</P></DD></DL>
+<H3><A id=a2002-12-11 name=a2002-12-11>2002-12-11</A><!-- RDLabel: "2002-12-11" --></H3>
+<DL>
+<DT><A class=modified-year id=read.20.5bcompat.5d title="IO (145d)" name=read.20.5bcompat.5d>IO#read</A> [compat]<!-- RDLabel: "read [compat]" --> 
+<DT><A class=modified-year id=sysread.20.5bcompat.5d title="IO (145d)" name=sysread.20.5bcompat.5d>IO#sysread</A> [compat]<!-- RDLabel: "sysread [compat]" --> 
+<DD>
+<P>向IO#read, IO#sysread新增了第二参数(指定了预先分配好的读入缓冲)</P></DD></DL>
+<H3><A id=a2002-12-10 name=a2002-12-10>2002-12-10</A><!-- RDLabel: "2002-12-10" --></H3>
+<DL>
+<DT><A class=modified-year id=terminate.20.5bnew.5d title="Thread (259d)" name=terminate.20.5bnew.5d>Thread#terminate</A> [new]<!-- RDLabel: "terminate [new]" --> 
+<DD>
+<P>新增。与Thread#kill 相同。</P></DD></DL>
+<H3><A id=a2002-12-07 name=a2002-12-07>2002-12-07</A><!-- RDLabel: "2002-12-07" --></H3>
+<DL>
+<DT><A class=modified-month id=Process.2eabort.20.5bnew.5d title="Process (7d)" name=Process.2eabort.20.5bnew.5d>Process.abort</A> [new]<!-- RDLabel: "Process.abort [new]" --> 
+<DT><A class=modified-month id=Process.2eexit.20.5bnew.5d title="Process (7d)" name=Process.2eexit.20.5bnew.5d>Process.exit</A> [new]<!-- RDLabel: "Process.exit [new]" --> 
+<DD>
+<P>新增。与abort, exit函数相同。</P></DD></DL>
+<H3><A id=a2002-12-06 name=a2002-12-06>2002-12-06</A><!-- RDLabel: "2002-12-06" --></H3>
+<DL>
+<DT><A class=modified-year id=pid.20.5bnew.5d title="Process::Status (311d)" name=pid.20.5bnew.5d>Process::Status#pid</A> [new]<!-- RDLabel: "pid [new]" --> 
+<DD>
+<P>新增</P></DD></DL>
+<H3><A id=a2002-12-04 name=a2002-12-04>2002-12-04</A><!-- RDLabel: "2002-12-04" --></H3>
+<DL>
+<DT><A id=Object.23copy_object name=Object.23copy_object>Object#copy_object</A><!-- RDLabel: "Object#copy_object" --> 
+<DD>
+<P>改名了，原名为become。(此后，在1.8中又改名为initialize_copy)</P></DD></DL>
+<H3><A id=a2002-11-27 name=a2002-11-27>2002-11-27</A><!-- RDLabel: "2002-11-27" --></H3>
+<DL>
+<DT><A class=modified-year id=SystemExit.2enew.20.5bcompat.5d title="SystemExit (172d)" name=SystemExit.2enew.20.5bcompat.5d>SystemExit#initialize</A> [compat]<!-- RDLabel: "SystemExit.new [compat]" --> 
+<DD>
+<P>增加了参数。</P><PRE>ruby -e 'raise SystemExit.new(2)'
+echo $?
+# =&gt; 2
+</PRE></DD></DL>
+<H3><A id=a2002-11-19 name=a2002-11-19>2002-11-19</A><!-- RDLabel: "2002-11-19" --></H3>
+<DL>
+<DT><A class=modified-month id=transpose.20.5bnew.5d title="Array (11d)" name=transpose.20.5bnew.5d>Array#transpose</A> [new]<!-- RDLabel: "transpose [new]" --> 
+<DD>
+<P>新增</P><PRE>p [[1,2,3],
+   [4,5,6],
+   [7,8,9]].transpose
+=&gt; ruby 1.7.3 (2002-12-11) [i586-linux]
+   [[1, 4, 7], [2, 5, 8], [3, 6, 9]]
+</PRE></DD></DL>
+<H3><A id=a2002-11-08 name=a2002-11-08>2002-11-08</A><!-- RDLabel: "2002-11-08" --></H3>
+<DL>
+<DT><A id=a.5bparser.5d.20.5bexperimental.5d name=a.5bparser.5d.20.5bexperimental.5d>[parser] [experimental]</A><!-- RDLabel: "[parser] [experimental]" --> 
+<DD>
+<P>试验性的修改。</P><PRE>a = 1
+p a / 5
+  =&gt; ruby 1.6.8 (2002-12-24) [i586-linux]
+     0
+  =&gt; ruby 1.8.0 (2003-03-12) [i586-linux]
+     0
+
+a = 1
+p a /5
+  =&gt; -:2: warning: ambiguous first argument; make sure
+     -:2: unterminated regexp meets end of file
+     ruby 1.6.8 (2002-12-24) [i586-linux]
+  =&gt; ruby 1.8.0 (2003-03-12) [i586-linux]
+     0
+</PRE></DD></DL>
+<H3><A id=a2002-11-02 name=a2002-11-02>2002-11-02</A><!-- RDLabel: "2002-11-02" --></H3>
+<DL>
+<DT><A class=modified-year id=object_id.20.5bnew.5d title="Object (171d)" name=object_id.20.5bnew.5d>Object#object_id</A> [new]<!-- RDLabel: "object_id [new]" --> 
+<DD>
+<P>新增 (Object#id是obsolete)</P><PRE>p Object.new.id
+
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   537730140
+=&gt; -:1: warning: Object#id will be deprecated; use Object#object_id
+   ruby 1.7.3 (2002-12-04) [i586-linux]
+   537723790
+</PRE></DD></DL>
+<H3><A id=a2002-11-02_2 name=a2002-11-02_2>2002-11-02</A><!-- RDLabel: "2002-11-02" --></H3>
+<DL>
+<DT><A class=modified-old id=to_sym.20.5bnew.5d title="Fixnum (687d)" name=to_sym.20.5bnew.5d>Fixnum#to_sym</A> [new]<!-- RDLabel: "to_sym [new]" --> 
+<DT><A class=modified-year id=to_sym.20.5bnew.5d_2 title="String (104d)" name=to_sym.20.5bnew.5d_2>String#to_sym</A> [new]<!-- RDLabel: "to_sym [new]" --> 
+<DD>
+<P>新增(取消了Symbol#intern)</P></DD></DL>
+<H3><A id=a2002-11-01 name=a2002-11-01>2002-11-01</A><!-- RDLabel: "2002-11-01" --></H3>
+<DL>
+<DT><A class=modified-year id=zip.20.5bnew.5d title="Enumerable (105d)" name=zip.20.5bnew.5d>Array#zip</A> [new]<!-- RDLabel: "zip [new]" --> 
+<DT><A class=modified-year id=zip.20.5bnew.5d_2 title="Enumerable (105d)" name=zip.20.5bnew.5d_2>Enumerable#zip</A> [new]<!-- RDLabel: "zip [new]" --> 
+<DD>
+<P>新增</P><PRE>p [1,2,3].zip([4,5,6], [7,8,9])
+
+=&gt; ruby 1.7.3 (2002-12-11) [i586-linux]
+   [[1, 4, 7], [2, 5, 8], [3, 6, 9]]
+
+p [1,2,3].zip([4,5,6], [7,8,9]) {|v| p v}
+
+=&gt; ruby 1.7.3 (2002-12-11) [i586-linux]
+   [1, 4, 7]
+   [2, 5, 8]
+   [3, 6, 9]
+   nil
+</PRE></DD></DL>
+<H3><A id=a2002-10-30 name=a2002-10-30>2002-10-30</A><!-- RDLabel: "2002-10-30" --></H3>
+<DL>
+<DT><A class=modified-year id=private_method_defined.3f.20.5bnew.5d title="Module (120d)" name=private_method_defined.3f.20.5bnew.5d>Module#private_method_defined?</A> [new]<!-- RDLabel: "private_method_defined? [new]" --> 
+<DT><A class=modified-year id=protected_method_defined.3f.20.5bnew.5d title="Module (120d)" name=protected_method_defined.3f.20.5bnew.5d>Module#protected_method_defined?</A> [new]<!-- RDLabel: "protected_method_defined? [new]" --> 
+<DT><A class=modified-year id=public_method_defined.3f.20.5bnew.5d title="Module (120d)" name=public_method_defined.3f.20.5bnew.5d>Module#public_method_defined?</A> [new]<!-- RDLabel: "public_method_defined? [new]" --> 
+<DT><A class=modified-year id=methods.20.5bchange.5d title="Object (171d)" name=methods.20.5bchange.5d>Object#methods</A> [change]<!-- RDLabel: "methods [change]" --> 
+<DT><A class=modified-year id=instance_methods.20.5bchange.5d title="Module (120d)" name=instance_methods.20.5bchange.5d>Module#instance_methods</A> [change]<!-- RDLabel: "instance_methods [change]" --> 
+<DD>
+<P><A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/18606" >[ruby-dev:18606]</A></P>
+<P>增加了Module#private_method_defined?，Module#protected_method_defined?，Module#public_method_defined?</P>
+<P>修改了<A class=modified-year title="Object (171d)">Object#methods</A>, <A class=modified-year title="Module (120d)">Module#instance_methods</A>(为了与 Module#method_defined?和Module#instance_methods的关系 取得一致)</P><PRE>class Foo
+  def public_m; end
+private
+  def private_m; end
+protected
+  def protected_m; end
+end
+
+foo = Foo.new
+
+m = %w(public_m private_m protected_m)
+
+p m.collect {|_| Foo.method_defined?(_)}
+if Foo.respond_to? :public_method_defined?
+  p m.collect {|_| Foo.public_method_defined?(_)}
+  p m.collect {|_| Foo.private_method_defined?(_)}
+  p m.collect {|_| Foo.protected_method_defined?(_)}
+end
+puts '---'
+p m.collect {|_| Foo.instance_methods.member?(_)}
+p m.collect {|_| Foo.public_instance_methods.member?(_)}
+p m.collect {|_| Foo.private_instance_methods.member?(_)}
+p m.collect {|_| Foo.protected_instance_methods.member?(_)}
+puts '---'
+p m.collect {|_| foo.methods.member?(_)}
+p m.collect {|_| foo.public_methods.member?(_)}
+p m.collect {|_| foo.private_methods.member?(_)}
+p m.collect {|_| foo.protected_methods.member?(_)}
+
+=&gt; ruby 1.6.8 (2002-12-24) [i586-linux]
+   [true, false, true]
+   ---
+   [true, false, false]
+   [true, false, false]
+   [false, true, false]
+   [false, false, true]
+   ---
+   [true, false, false]
+   [true, false, false]
+   [false, true, false]
+   [false, false, true]
+=&gt; ruby 1.8.0 (2003-03-09) [i586-linux]
+   [true, false, true]
+   [true, false, false]
+   [false, true, false]
+   [false, false, true]
+   ---
+   [true, false, true]
+   [true, false, false]
+   [false, true, false]
+   [false, false, true]
+   ---
+   [true, false, true]
+   [true, false, false]
+   [false, true, false]
+   [false, false, true]
+</PRE></DD></DL>
+<H3><A id=a2002-10-23 name=a2002-10-23>2002-10-23</A><!-- RDLabel: "2002-10-23" --></H3>
+<DL>
+<DT><A id=a.5bparser.5d.20.5bnew.5d name=a.5bparser.5d.20.5bnew.5d>[parser] [new]</A><!-- RDLabel: "[parser] [new]" --> 
+<DD>
+<P>采用了符号的扩展表示法。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/18537" >[ruby-dev:18537]</A></P><PRE>p :"foo#{"bar"}"
+p :'foo#{"bar"}'
+p %s{foo#{"bar"}}
+
+=&gt; ruby 1.7.3 (2002-11-14) [i586-linux]
+   :foobar
+   :"foo\#{\"bar\"}"
+   :"foo\#{\"bar\"}"
+</PRE></DD></DL>
+<H3><A id=a2002-10-11 name=a2002-10-11>2002-10-11</A><!-- RDLabel: "2002-10-11" --></H3>
+<DL>
+<DT><A id=rescue.bd.a4.be.fe.bc.b0.20.5bparser.5d.20.5bchange.5d name=rescue.bd.a4.be.fe.bc.b0.20.5bparser.5d.20.5bchange.5d>rescue修饰部分 [parser] [change]</A><!-- RDLabel: "rescue修饰部分 [parser] [change]" --> 
+<DD>
+<P>修改了rescue修饰部分的优先级。好像是试验性的修改。 (在1.8版本中正式采用了这个修改)。因此</P><PRE>a = b rescue c
+</PRE>
+<P>不会被解释成</P><PRE>(a = b) rescue c
+</PRE>
+<P>而是被解释为</P><PRE>a = (b rescue c)
+</PRE>
+<P>虽然与if修饰部分的优先级有所不同，但它有个好处：如果b发生异常时可以使用c的值。</P><PRE># 若在以前的版本(1.6)中执行下列代码时，则不会进行赋值
+# 只是对变量进行了定义，结果是v等于nil。
+
+v = raise rescue true
+p v
+
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   nil
+=&gt; ruby 1.7.3 (2002-10-18) [i586-linux]
+   true
+</PRE></DD></DL>
+<H3><A id=a2002-10-02 name=a2002-10-02>2002-10-02</A><!-- RDLabel: "2002-10-02" --></H3>
+<DL>
+<DT><A class=modified-year id=type.20.5bobsolete.5d title="Object (171d)" name=type.20.5bobsolete.5d>Object#type</A> [obsolete]<!-- RDLabel: "type [obsolete]" --> 
+<DD>
+<P>使用它就会出现警告。请您使用Object#class来代替它。</P><PRE>p Object.new.type
+=&gt; -:1: warning: Object#type is deprecated; use Object#class
+   ruby 1.7.3 (2002-10-08) [i586-linux]
+   Object
+</PRE></DD></DL>
+<H3><A id=a2002-09-27 name=a2002-09-27>2002-09-27</A><!-- RDLabel: "2002-09-27" --></H3>
+<DL>
+<DT><A class=modified-old id=inherited.20.5bchange.5d title="Class (661d)" name=inherited.20.5bchange.5d>Class#inherited</A> [change]<!-- RDLabel: "inherited [change]" --> 
+<DD>
+<P>在类定义表达式的末尾才会调用inherited方法。 <A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs-ja?selectid=342" >[ruby-bugs-ja:PR#342]</A></P><PRE>def Object.inherited(c)
+  p "inherited!"
+end
+class Foo
+  p "defining Foo"
+end
+
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   "inherited!"
+   "defining Foo"
+=&gt; ruby 1.7.3 (2002-10-04) [i586-linux]
+   "defining Foo"
+   "inherited!"
+</PRE></DD></DL>
+<H3><A id=a2002-09-26 name=a2002-09-26>2002-09-26</A><!-- RDLabel: "2002-09-26" --></H3>
+<DL>
+<DT><A id=a.5bparser.5d.20.5bcompat.5d name=a.5bparser.5d.20.5bcompat.5d>[parser] [compat]</A><!-- RDLabel: "[parser] [compat]" --> 
+<DD>
+<P>若在方法定义的外侧调用return的话，则会在运行时而非编译时引发错误。</P><PRE>p :doing
+return
+=&gt; -:2: return appeared outside of method
+   ruby 1.6.7 (2002-03-01) [i586-linux]
+=&gt; ruby 1.7.3 (2002-10-04) [i586-linux]
+   :doing
+   -:2: unexpected return
+</PRE></DD></DL>
+<H3><A id=a2002-09-13 name=a2002-09-13>2002-09-13</A><!-- RDLabel: "2002-09-13" --></H3>
+<DL>
+<DT><A class=modified-year id=a.b1.e9.bb.bb.bb.d2.bc.b0.20.5bbug.5d title="操作符表达式 (365d)" href="http://www.ruby-lang.org/ja/man/index.cgi?cmd=view;name=±é???ò?°"  name=a.b1.e9.bb.bb.bb.d2.bc.b0.20.5bbug.5d>||=</A> [bug]<!-- RDLabel: "操作符表达式 [bug]" --> 
+<DD>
+<P>以前，使用||=对未定义的变量进行赋值时，会在全局变量中出现警告。另外，在类变量中会引发错误。 <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/18278" >[ruby-dev:18278]</A></P><PRE>local ||= 1
+@instance ||= 1
+$global ||= 1
+@@class ||= 1
+
+=&gt; -:3: warning: global variable `$global' not initialized
+   -:4: uninitialized class variable @@class in Object (NameError)
+   ruby 1.6.7 (2002-03-01) [i586-linux]
+=&gt; ruby 1.7.3 (2002-09-13) [i586-linux]
+</PRE></DD></DL>
+<H3><A id=a2002-09-11 name=a2002-09-11>2002-09-11</A><!-- RDLabel: "2002-09-11" --></H3>
+<DL>
+<DT><A class=modified-month id=Process.2epid.20.28win.29.20.5bchange.5d title="Process (7d)" name=Process.2epid.20.28win.29.20.5bchange.5d>Process.pid</A> (win) [change]<!-- RDLabel: "Process.pid (win) [change]" --> 
+<DD>
+<P>在mswin32版和mingw32版中，ruby会在内部将进程ID变为正数。虽然在NT系列的OS中没有什么变化，但在Win9x系列的OS中，由OS控制的进程ID是负数，所以才将其变为正数。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/18263" >[ruby-dev:18263]</A></P></DD></DL>
+<H3><A id=a2002-09-11_2 name=a2002-09-11_2>2002-09-11</A><!-- RDLabel: "2002-09-11" --></H3>
+<DL>
+<DT><A id=IO.23read.2c.20gets.20.2e.2e.2e.2c.20etc.2e.20.5bbug.5d name=IO.23read.2c.20gets.20.2e.2e.2e.2c.20etc.2e.20.5bbug.5d>IO#read, gets ..., etc. [bug]</A><!-- RDLabel: "IO#read, gets ..., etc. [bug]" --> 
+<DD>
+<P>在对File::NONBLOCK模式的IO进行读入操作时，如果发生EWOULDBLOCK的话，可能会导致读入数据丢失。 <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/17855" >[ruby-dev:17855]</A></P>
+<P>在使用Thread的程序中，如果从文件中读出数据并写入socket时，可能会在Socket#write中引发Errno::EINTR，但这种情况极少出现。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/17878" >[ruby-dev:17878]</A>, <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-core/444" >[ruby-core:00444]</A></P></DD></DL>
+<H3><A id=a2002-09-05 name=a2002-09-05>2002-09-05</A><!-- RDLabel: "2002-09-05" --></H3>
+<DL>
+<DT><A class=modified-old id=Marshal.2edump.20.5bmarshal.5d.20.5bchange.5d title="Marshal (519d)" name=Marshal.2edump.20.5bmarshal.5d.20.5bchange.5d>Marshal.dump</A> [marshal] [change]<!-- RDLabel: "Marshal.dump [marshal] [change]" --> 
+<DD>
+<P>无法对包含(include)了无名模块的对象进行dump。 <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/18186" >[ruby-dev:18186]</A></P><PRE>class &lt;&lt; obj = Object.new
+  include Module.new
+end
+Marshal.dump(obj)
+
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+=&gt; -:4:in `dump': can't dump anonymous class #&lt;Module:0x401a871c&gt; (ArgumentError)
+        from -:4
+   ruby 1.7.3 (2002-09-06) [i586-linux]
+</PRE>
+<P>可以dump包含(include)了有名模块的对象，此时模块的信息被保存到dump format之中。</P><PRE>module M
+  def foo
+    p :foo
+  end
+end
+class &lt;&lt; obj = Object.new
+  include M
+end
+p dump = Marshal.dump(obj)
+p obj2 = Marshal.load(dump)
+class &lt;&lt; obj2
+   p included_modules
+end
+obj2.foo
+
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   "\004\006o:\vObject\000"
+   #&lt;Object:0x401a9630&gt;
+   [Kernel]
+   -:14: undefined method `foo' for #&lt;Object:0x401a9630&gt; (NameError)
+=&gt; ruby 1.7.3 (2002-09-06) [i586-linux]
+   "\004\ae:\006Mo:\vObject\000"
+   #&lt;Object:0x401a821c&gt;
+   [M, Kernel]
+   :foo
+</PRE>
+<P>因此将format version由4.7提升到4.8。 (2002-09-17)</P></DD></DL>
+<H3><A id=a2002-09-03 name=a2002-09-03>2002-09-03</A><!-- RDLabel: "2002-09-03" --></H3>
+<DL>
+<DT><A class=modified-year id=mkmf.2erb.2c.20extmk.2erb.20.5blib.5d.20.5bcompat.5d title="mkmf.rb (36d)" href="http://www.ruby-lang.org/ja/man/index.cgi?cmd=view;name=mkmf.rb"  name=mkmf.2erb.2c.20extmk.2erb.20.5blib.5d.20.5bcompat.5d>mkmf.rb</A>, extmk.rb [lib] [compat]<!-- RDLabel: "mkmf.rb, extmk.rb [lib] [compat]" --> 
+<DD>
+<P>开始着手合并extmk.rb和mkmf.rb。extmk.rb将会用到mkmf.rb。相应地对mkmf.rb也作出调整。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/18109" >[ruby-dev:18109]</A></P></DD></DL>
+<H3><A id=a2002-08-31 name=a2002-08-31>2002-08-31</A><!-- RDLabel: "2002-08-31" --></H3>
+<DL>
+<DT><A id=ruby.20interpreter.20.5bruby.5d.20.5bchange.5d name=ruby.20interpreter.20.5bruby.5d.20.5bchange.5d>ruby interpreter [ruby] [change]</A><!-- RDLabel: "ruby interpreter [ruby] [change]" --> 
+<DD>
+<P>定义规定：类的特殊类的特殊类，就是特殊类本身<A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs-ja?selectid=313" >[ruby-bugs-ja:PR#313]</A>。不太明白(^^;</P><PRE>class &lt;&lt; Object
+  p [self.id, self]
+  class &lt;&lt; self
+    p [self.id, self]
+  end
+end
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   [537771634, Class]
+   [537742484, Class]
+=&gt; ruby 1.7.3 (2002-09-05) [i586-linux]
+   [537771634, #&lt;Class:Object&gt;]
+   [537771634, #&lt;Class:Object&gt;]
+</PRE>
+<P>另外好像说，对象的特殊类的超类的特殊类 和 对象的特殊类的特殊类的超类是一回事儿<A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs-ja?selectid=324" >[ruby-bugs-ja:PR#324]</A>。更不明白了(^^;;</P><PRE>class &lt;&lt; Object.new
+  class &lt;&lt; self.superclass
+    p [self.id, self]
+  end
+  class &lt;&lt; self
+    p [self.superclass.id, self.superclass]
+  end
+end
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   [537771634, Class]
+   [537771644, Class]
+=&gt; ruby 1.7.3 (2002-09-05) [i586-linux]
+   [537771634, #&lt;Class:Object&gt;]
+   [537771634, #&lt;Class:Object&gt;]
+</PRE>
+<P><A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs-ja?selectid=336" >[ruby-bugs-ja:PR#336]</A>中好像还有些变化 (请参考2002-09-21的ChangeLog。)</P></DD></DL>
+<H3><A id=a2002-08-30 name=a2002-08-30>2002-08-30</A><!-- RDLabel: "2002-08-30" --></H3>
+<DL>
+<DT><A class=modified-old id=set.2erb.20.5blib.5d.20.5bnew.5d title="set.rb (859d)" name=set.2erb.20.5blib.5d.20.5bnew.5d>set.rb</A> [lib] [new]<!-- RDLabel: "set.rb [lib] [new]" --> 
+<DD>
+<P>新增</P></DD></DL>
+<H3><A id=a2002-08-27 name=a2002-08-27>2002-08-27</A><!-- RDLabel: "2002-08-27" --></H3>
+<DL>
+<DT><A id=Object.23become name=Object.23become>Object#become</A><!-- RDLabel: "Object#become" --> 
+<DD>
+<P>新增(后来改名为copy_object。再后来又改名为initialize_copy)</P><PRE>ary = [1,2,3]
+p ary, ary.id
+ary.become [3,2,1]
+p ary, ary.id
+
+=&gt; ruby 1.7.3 (2002-08-30) [i586-linux]
+   [1, 2, 3]
+   537743354
+   [3, 2, 1]
+   537743354
+
+ary = [1,2,3]
+p ary, ary.id
+ary.replace [3,2,1]
+p ary, ary.id
+=&gt; ruby 1.7.3 (2002-08-30) [i586-linux]
+   [1, 2, 3]
+   537743354
+   [3, 2, 1]
+   537743354
+
+obj = Object.new
+p obj, obj.id
+obj.become Object.new
+p obj, obj.id
+=&gt; ruby 1.7.3 (2002-08-30) [i586-linux]
+   #&lt;Object:0x401a9ff4&gt;
+   537743354
+   #&lt;Object:0x401a9ff4&gt;
+   537743354
+</PRE></DD></DL>
+<H3><A id=a2002-08-23 name=a2002-08-23>2002-08-23</A><!-- RDLabel: "2002-08-23" --></H3>
+<DL>
+<DT><A id=ruby.20interpreter.20.28win32.2c.20MinGW.29.20.5bruby.5d.20.5bchange.5d name=ruby.20interpreter.20.28win32.2c.20MinGW.29.20.5bruby.5d.20.5bchange.5d>ruby interpreter (win32, MinGW) [ruby] [change]</A><!-- RDLabel: "ruby interpreter (win32, MinGW) [ruby] [change]" --> 
+<DD>
+<P>保证了<A class=modified-old title="mswin32 (1020d)">mswin32</A>版ruby 和 <A class=modified-old title="MinGW (399d)">MinGW</A>版ruby中的扩展库的兼容性。分别把Config::CONFIG['RUBY_SO_NAME']变更为msvcrt-ruby<VAR>XX</VAR>(成为DLL名)，把Config::CONFIG['sitearch'](扩展库所在地的路径元素)变更为"i386-msvcrt"。 <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/17144" >[ruby-dev:17144]</A>, <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/18047" >[ruby-dev:18047]</A></P>
+<P>在这次修改中，新增了sitearch(在其他环境中，则与CONFIG['arch']相同)</P>
+<P>另外请参考<A class=modified-old title="Win32 native版 (399d)">Win32 native版</A>的脚注</P></DD></DL>
+<H3><A id=a2002-08-20 name=a2002-08-20>2002-08-20</A><!-- RDLabel: "2002-08-20" --></H3>
+<DL>
+<DT><A class=modified-year id=putc.20.5bcompat.5d title="IO (145d)" name=putc.20.5bcompat.5d>IO#putc</A> [compat]<!-- RDLabel: "putc [compat]" --> 
+<DD>
+<P>在各输出方法中，只有putc不使用write方法。 <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/18038" >[ruby-dev:18038]</A></P><PRE>class &lt;&lt; foo = STDOUT.dup
+  def write(s)
+    p "foo"
+  end
+end
+
+foo.putc("bar")
+puts
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   b
+=&gt; ruby 1.7.3 (2002-09-05) [i586-linux]
+   "foo"
+</PRE></DD></DL>
+<H3><A id=a2002-08-13 name=a2002-08-13>2002-08-13</A><!-- RDLabel: "2002-08-13" --></H3>
+<DL>
+<DT><A class=modified-year id=default_proc.20.5bnew.5d title="Hash (173d)" name=default_proc.20.5bnew.5d>Hash#default_proc</A> [new]<!-- RDLabel: "default_proc [new]" --> 
+<DD>
+<P>新增 <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/17966" >[ruby-dev:17966]</A></P></DD></DL>
+<H3><A id=a2002-08-11 name=a2002-08-11>2002-08-11</A><!-- RDLabel: "2002-08-11" --></H3>
+<DL>
+<DT><A class=modified-year id=to_s.20.5bcompat.5d title="Proc (166d)" name=to_s.20.5bcompat.5d>Proc#to_s</A> [compat]<!-- RDLabel: "to_s [compat]" --> 
+<DD>
+<P>在Proc#to_s 的结果中新增了脚本的源文件名和行号。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/17968" >[ruby-dev:17968]</A></P><PRE>p Proc.new {
+   2
+   3
+}.to_s
+=&gt; -:2: warning: useless use of a literal in void context
+   ruby 1.6.7 (2002-03-01) [i586-linux]
+   "#&lt;Proc:0x401ab8b8&gt;"
+=&gt; -:2: warning: useless use of a literal in void context
+   ruby 1.7.3 (2002-09-05) [i586-linux]
+   "#&lt;Proc:0x0x401a87d0@-:2&gt;"
+</PRE></DD></DL>
+<H3><A id=a2002-08-01 name=a2002-08-01>2002-08-01</A><!-- RDLabel: "2002-08-01" --></H3>
+<DL>
+<DT><A class=modified-year id=find.20.5bchange.5d title="Enumerable (105d)" name=find.20.5bchange.5d>Enumerable#find</A> [change]<!-- RDLabel: "find [change]" --> 
+<DD>
+<P>不能将字符串指定给参数了。</P><PRE>[1,2,3].find("p :nothing") {|v| v &gt; 5}
+
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   :nothing
+
+=&gt; -:1:in `find': undefined method `call' for "p :nothing":String (NoMethodError)
+        from -:1
+   ruby 1.7.2 (2002-08-01) [i586-linux]
+</PRE>
+<P>另外，若没有找到元素的话，就返回ifnone 的结果。</P><PRE>p [1,2,3].find(proc {:nothing}) {|v| v &gt; 5}
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   nil
+=&gt; ruby 1.7.2 (2002-08-01) [i586-linux]
+   :nothing
+</PRE></DD></DL>
+<H3><A id=a2002-07-27 name=a2002-07-27>2002-07-27</A><!-- RDLabel: "2002-07-27" --></H3>
+<DL>
+<DT><A class=modified-old id=to_int.20.5bnew.5d title="Numeric (518d)" name=to_int.20.5bnew.5d>Numeric#to_int</A> [new]<!-- RDLabel: "to_int [new]" --> 
+<DT><A class=modified-old id=to_int.20.5bnew.5d_2 title="Numeric (518d)" name=to_int.20.5bnew.5d_2>Float#to_int</A> [new]<!-- RDLabel: "to_int [new]" --> 
+<DD>
+<P>新增。</P></DD></DL>
+<H3><A id=a2002-07-26 name=a2002-07-26>2002-07-26</A><!-- RDLabel: "2002-07-26" --></H3>
+<DL>
+<DT><A class=modified-year id=rand.20.5bcompat.5d title="内部函数 (172d)" name=rand.20.5bcompat.5d>rand</A> [compat]<!-- RDLabel: "rand [compat]" --> 
+<DD>
+<P>在生成随机数的算法中使用了<A>Mersenne Twister</A>。</P></DD></DL>
+<H3><A id=a2002-07-24 name=a2002-07-24>2002-07-24</A><!-- RDLabel: "2002-07-24" --></H3>
+<DL>
+<DT><A id=a.5bparser.5d.20.5bcompat.5d_2 name=a.5bparser.5d.20.5bcompat.5d_2>[parser] [compat]</A><!-- RDLabel: "[parser] [compat]" --> 
+<DD>
+<P>允许对方法定义进行嵌套。</P><PRE>def func1
+  def func2
+    p :func2
+  end
+end
+func1
+func2
+
+=&gt; -:2: nested method definition
+   ruby 1.6.7 (2002-03-01) [i586-linux]
+=&gt; ruby 1.7.3 (2002-09-05) [i586-linux]
+   :func2
+</PRE>
+<P>允许在方法定义中出现alias, undef。</P><PRE>def bar
+end
+def foo
+  p :foo
+  undef bar
+end
+
+foo
+
+def bar
+  p :bar
+  alias foo bar
+end
+
+bar
+foo
+=&gt; -:5: undef within method
+   -:12: alias within method
+   ruby 1.6.7 (2002-03-01) [i586-linux]
+=&gt; ruby 1.7.3 (2002-09-05) [i586-linux]
+   :foo
+   -:10: warning: method redefined; discarding old bar
+   -:10: warning: overriding global function `bar'
+   :bar
+   :bar
+</PRE>
+<P>在方法定义外侧调用super时，将会在运行时而不是编译时引发错误。</P><PRE>p 1
+super
+=&gt; -:2: super called outside of method
+   ruby 1.6.7 (2002-03-01) [i586-linux]
+=&gt; ruby 1.7.3 (2002-09-05) [i586-linux]
+   1
+   -:2: super called outside of method (NoMethodError)
+</PRE>
+<P>也许<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/16969" >[ruby-dev:16969]</A>中给出了变更的理由。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/17882" >[ruby-dev:17882]</A></P></DD></DL>
+<H3><A id=a2002-07-19 name=a2002-07-19>2002-07-19</A><!-- RDLabel: "2002-07-19" --></H3>
+<DL>
+<DT><A class=modified-year id=a.bf.f4.c3.cd.a5.ea.a5.c6.a5.e9.a5.eb.20.5bcompat.5d title="字面值 (41d)" name=a.bf.f4.c3.cd.a5.ea.a5.c6.a5.e9.a5.eb.20.5bcompat.5d>数值字面值</A> [compat]<!-- RDLabel: "数值字面值 [compat]" --> 
+<DD>
+<P>新增了10进制<EM>整数</EM>字面值的0d前缀。</P><PRE>p 0d10
+=&gt; ruby 1.7.3 (2002-09-04) [i586-linux]
+   10
+
+p 0d10.1
+=&gt; -:1: parse error
+   ruby 1.7.3 (2002-09-04) [i586-linux]
+</PRE>
+<P>允许使用大写字母。</P><PRE>p 0D10
+=&gt; ruby 1.7.3 (2002-09-04) [i586-linux]
+   10
+</PRE>
+<P>但不能像下面这样。</P><PRE>p(/\d10/)
+p "\d10"
+=&gt; ruby 1.7.3 (2002-09-04) [i586-linux]
+   /\d10/
+   "d10"
+</PRE>
+<P>只要字面值允许，Integer()也就允许。</P><PRE>p Integer("0d010")
+=&gt; ruby 1.7.3 (2002-09-04) [i586-linux]
+   10
+
+p Integer("0d010.1")
+=&gt; -:1:in `Integer': invalid value for Integer: "0d010.1" (ArgumentError)
+        from -:1
+   ruby 1.7.3 (2002-09-04) [i586-linux]
+</PRE>
+<P>String#to_i、String#oct也是如此</P><PRE>p "0d010".to_i
+p "0d010".oct
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   0
+   0
+=&gt; ruby 1.7.3 (2002-09-04) [i586-linux]
+   10
+   10
+</PRE></DD></DL>
+<H3><A id=a2002-07-18 name=a2002-07-18>2002-07-18</A><!-- RDLabel: "2002-07-18" --></H3>
+<DL>
+<DT><A class=modified-year id=net.2fftp.2erb.20.5bnew.5d title="net/ftp.rb (85d)" name=net.2fftp.2erb.20.5bnew.5d>net/ftp.rb</A> [new]<!-- RDLabel: "net/ftp.rb [new]" --> 
+<DD>
+<P>新增set_socket方法</P></DD></DL>
+<H3><A id=a2002-07-17 name=a2002-07-17>2002-07-17</A><!-- RDLabel: "2002-07-17" --></H3>
+<DL>
+<DT><A class=modified-year id=a.bf.f4.c3.cd.a5.ea.a5.c6.a5.e9.a5.eb.20.5bcompat.5d_2 title="字面值 (41d)" name=a.bf.f4.c3.cd.a5.ea.a5.c6.a5.e9.a5.eb.20.5bcompat.5d_2>数值字面值</A> [compat]<!-- RDLabel: "数值字面值 [compat]" --> 
+<DD>
+<P>新增了8进制字面值的0和0o前缀。</P><PRE>p 0o377
+=&gt; ruby 1.7.3 (2002-09-04) [i586-linux]
+   255
+</PRE>
+<P>可以使用大写字母。</P><PRE>p 0O377
+=&gt; ruby 1.7.3 (2002-09-04) [i586-linux]
+   255
+</PRE>
+<P>不能像下面这样。</P><PRE>p(/\o377/)
+p "\o377"
+=&gt; ruby 1.7.3 (2002-09-04) [i586-linux]
+   /\o377/
+   "o377"
+</PRE>
+<P>只要字面值允许，Integer()也没问题。</P><PRE>p Integer("0o377")
+=&gt; -:1:in `Integer': invalid value for Integer: "0o377" (ArgumentError)
+        from -:1
+   ruby 1.6.7 (2002-03-01) [i586-linux]
+=&gt; ruby 1.7.3 (2002-09-04) [i586-linux]
+   255
+</PRE>
+<P>String#to_i、String#oct也是如此</P><PRE>p "0o377".oct
+p "0o377".to_i(8)
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   0
+   -:2:in `to_i': wrong # of arguments(1 for 0) (ArgumentError)
+        from -:2
+=&gt; ruby 1.7.3 (2002-09-04) [i586-linux]
+   255
+   255
+</PRE></DD></DL>
+<H3><A id=a2002-07-11 name=a2002-07-11>2002-07-11</A><!-- RDLabel: "2002-07-11" --></H3>
+<DL>
+<DT><A class=modified-year id=scan.20.5bchange.5d title="String (104d)" name=scan.20.5bchange.5d>String#scan</A> [change]<!-- RDLabel: "scan [change]" --> 
+<DT><A class=modified-year id=split.20.5bchange.5d title="String (104d)" name=split.20.5bchange.5d>String#split</A> [change]<!-- RDLabel: "split [change]" --> 
+<DT><A class=modified-year id=sub.2c.20sub.21.20.5bchange.5d title="String (104d)" name=sub.2c.20sub.21.20.5bchange.5d>String#sub</A>, <A class=modified-year title="String (104d)">String#sub!</A> [change]<!-- RDLabel: "sub, sub! [change]" --> 
+<DT><A class=modified-year id=gsub.2c.20gsub.21.20.5bchange.5d title="String (104d)" name=gsub.2c.20gsub.21.20.5bchange.5d>String#gsub</A>, <A class=modified-year title="String (104d)">String#gsub!</A> [change]<!-- RDLabel: "gsub, gsub! [change]" --> 
+<DT><A class=modified-year id=a.7e.20.5bchange.5d title="String (104d)" name=a.7e.20.5bchange.5d>String#~</A> [change]<!-- RDLabel: "~ [change]" --> 
+<DT><A class=modified-year id=a.3d.7e.20.5bchange.5d title="String (104d)" name=a.3d.7e.20.5bchange.5d>String#=~</A> [change]<!-- RDLabel: "=~ [change]" --> 
+<DD>
+<P>若将字符串而非正则表达式传给pattern的话，就直接把它用作匹配模型，而不会将其编译成正则表达式。(准确地讲，不会Regexp.compile(arg)这样处理，而是Regexp.compile(Regexp.quote(arg))这样)</P>
+<P>只有str =~ arg中的arg是字符串时，才会执行str.index(arg)，它等价于Regexp.compile(Regexp.quote(arg)) =~ str(所以没有设定$~)。</P><PRE>p "aaaa*".scan("a*")
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   ["aaaa", "", ""]
+=&gt; -:1: warning: string pattern instead of regexp; metacharacters no longer effective
+   ruby 1.7.3 (2002-09-04) [i586-linux]
+   ["a*"]
+
+p "aa*aa*aa*".split("a*")
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   ["", "*", "*", "*"]
+=&gt; -:1: warning: string pattern instead of regexp; metacharacters no longer effective
+   ruby 1.7.3 (2002-09-04) [i586-linux]
+   ["a", "a", "a"]
+
+p "aa*".sub('a*', '')
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   "*"
+=&gt; -:1: warning: string pattern instead of regexp; metacharacters no longer effective
+   ruby 1.7.3 (2002-09-04) [i586-linux]
+   "a"
+
+p "aa*aa*aa*aa*".gsub('a*', '')
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   "****"
+=&gt; -:1: warning: string pattern instead of regexp; metacharacters no longer effective
+   ruby 1.7.3 (2002-09-04) [i586-linux]
+   "aaaa"
+
+$_ = "aa*"
+p ~"a*"
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   0
+=&gt; ruby 1.7.3 (2002-09-04) [i586-linux]
+   1
+</PRE></DD></DL>
+<H3><A id=a2002-07-03 name=a2002-07-03>2002-07-03</A><!-- RDLabel: "2002-07-03" --></H3>
+<DL>
+<DT><A class=modified-year id=net.2fftp.2erb.20.5bcompat.5d title="net/ftp.rb (85d)" name=net.2fftp.2erb.20.5bcompat.5d>net/ftp.rb</A> [compat]<!-- RDLabel: "net/ftp.rb [compat]" --> 
+<DD>
+<P>getbinaryfile() 的第二参数(本地文件名)变为可选参数。新增get(), put(), binary(),binary = 方法</P></DD></DL>
+<H3><A id=a2002-06-29 name=a2002-06-29>2002-06-29</A><!-- RDLabel: "2002-06-29" --></H3>
+<DL>
+<DT><A id=a.c1.d0.ca.fd.b8.fe.a5.d1.a5.a4.a5.d7.20.28win.29.20.5bcompat.5d name=a.c1.d0.ca.fd.b8.fe.a5.d1.a5.a4.a5.d7.20.28win.29.20.5bcompat.5d>双向管道 (win) [compat]</A> 
+<DD>
+<P>听说加入了支持Win32用的双向管道的补丁 <A href="http://www.moonwolf.com/~arcml/cgi-bin/arcml/arcml.cgi?rm=view;list_id=1;ml_count=185" >[ruby-win32:185]</A></P></DD></DL>
+<H3><A id=a2002-06-26 name=a2002-06-26>2002-06-26</A><!-- RDLabel: "2002-06-26" --></H3>
+<DL>
+<DT><A class=modified-year id=to_a.20.5bobsolete.5d title="Object (171d)" href="http://www.ruby-lang.org/ja/man/index.cgi?cmd=view;name=Object#to_a"  name=to_a.20.5bobsolete.5d>Object#to_a</A> [obsolete]<!-- RDLabel: "to_a [obsolete]" --> 
+<DD>
+<P>使用它的话会出现警告消息。(听说已经变成<A class=modified-year title="obsolete (172d)">obsolete</A>)</P><PRE>p Object.new.to_a
+
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   [#&lt;Object:0x401ab8b8&gt;]
+=&gt; -:1: warning: default `to_a' will be obsolete
+   ruby 1.7.3 (2002-09-02) [i586-linux]
+   [#&lt;Object:0x401a88ac&gt;]
+</PRE></DD></DL>
+<H3><A id=a2002-06-26_2 name=a2002-06-26_2>2002-06-26</A><!-- RDLabel: "2002-06-26" --></H3>
+<DL>
+<DT><A class=modified-year id=Array.28.29.20.5bchange.5d title="内部函数 (172d)" name=Array.28.29.20.5bchange.5d>Array</A>() [change]<!-- RDLabel: "Array() [change]" --> 
+<DD>
+<P>Array()的参数不再接受nil。 (在ruby 1.8.0 (2003-05-29)中，又开始接受nil了)</P><PRE>p Array(nil)
+
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   []
+=&gt; -:1:in `Array': cannot convert nil into Array (TypeError)
+        from -:1
+   ruby 1.7.3 (2002-09-02) [i586-linux]
+
+=&gt; ruby 1.8.0 (2003-05-29) [i586-linux]
+   []
+</PRE></DD></DL>
+<H3><A id=a2002-06-26_3 name=a2002-06-26_3>2002-06-26</A><!-- RDLabel: "2002-06-26" --></H3>
+<DL>
+<DT><A class=modified-year id=a.25.b5.ad.cb.a1.20.5bparser.5d title="字面值 (41d)" name=a.25.b5.ad.cb.a1.20.5bparser.5d>%W()</A> [parser]<!-- RDLabel: "%表示法 [parser]" --> 
+<DD>
+<P>新增了%W(...) 数组字面值。与%w()不同的是，它可以使用反斜线表示法和展开式。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/15988" >[ruby-dev:15988]</A></P><PRE>v = "b c"
+p %W(a #{v}d\se)
+
+=&gt; ruby 1.7.3 (2002-09-04) [i586-linux]
+   ["a", "b cd e"]
+</PRE></DD></DL>
+<H3><A id=a2002-06-25 name=a2002-06-25>2002-06-25</A><!-- RDLabel: "2002-06-25" --></H3>
+<DL>
+<DT><A class=modified-year id=Integer.28.29.20.5bchange.5d title="内部函数 (172d)" name=Integer.28.29.20.5bchange.5d>Integer</A>() [change]<!-- RDLabel: "Integer() [change]" --> 
+<DD>
+<P>在把数值或字符串以外的对象变换为整数时，不再使用to_i，而是使用to_int进行变换。</P><PRE>class &lt;&lt; obj = Object.new
+  def to_i()   0 end
+  def to_int() 1 end
+end
+
+p Integer(obj)
+
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   0
+=&gt; ruby 1.7.3 (2002-09-02) [i586-linux]
+   1
+</PRE></DD></DL>
+<H3><A id=a2002-06-25_2 name=a2002-06-25_2>2002-06-25</A><!-- RDLabel: "2002-06-25" --></H3>
+<DL>
+<DT><A class=modified-old id=to_f.20.5bnew.5d title="NilClass (852d)" name=to_f.20.5bnew.5d>NilClass#to_f</A> [new]<!-- RDLabel: "to_f [new]" --> 
+<DD>
+<P>新增</P><PRE>p nil.to_f
+
+=&gt; -:1: undefined method `to_f' for nil (NameError)
+   ruby 1.6.7 (2002-03-01) [i586-linux]
+=&gt; ruby 1.7.3 (2002-09-02) [i586-linux]
+   0.0
+</PRE></DD></DL>
+<H3><A id=a2002-06-25_3 name=a2002-06-25_3>2002-06-25</A><!-- RDLabel: "2002-06-25" --></H3>
+<DL>
+<DT><A class=modified-year id=Float.28.29.20.5bchange.5d title="内部函数 (172d)" name=Float.28.29.20.5bchange.5d>Float</A>() [change]<!-- RDLabel: "Float() [change]" --> 
+<DD>
+<P>Float()的参数不再接受nil。</P><PRE>p Float(nil)
+
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   0.0
+=&gt; -:1:in `Float': cannot convert nil into Float (TypeError)
+        from -:1
+   ruby 1.7.3 (2002-09-02) [i586-linux]
+</PRE></DD></DL>
+<H3><A id=a2002-06-24 name=a2002-06-24>2002-06-24</A><!-- RDLabel: "2002-06-24" --></H3>
+<DL>
+<DT><A class=modified-year id=a.bc.b0.c5.b8.b3.ab.20.5bparser.5d title="字面值 (41d)" name=a.bc.b0.c5.b8.b3.ab.20.5bparser.5d>展开式</A> [parser]<!-- RDLabel: "展开式 [parser]" --> 
+<DD>
+<P>在#{ ... }展开式中，可以书写任何ruby程序，包括字符串分隔符在内。虽然以前也是如此，但此次则明确了规则。也就是说，展开式中的语法规则与外面相同。ruby程序会被正确解析。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/17422" >[ruby-dev:17422]</A></P>
+<P>(1.6 版本中，曾出现过异常的举动)</P><PRE>p "#{ "foo" }"
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   "foo"
+=&gt; -:1: warning: bad substitution in string
+   -:1: parse error
+           p "#{ "foo" }"
+                     ^
+   ruby 1.6.7 (2002-08-21) [i586-linux]
+=&gt; ruby 1.6.8 (2002-12-24) [i586-linux]
+   "foo"
+=&gt; ruby 1.7.3 (2002-09-02) [i586-linux]
+   "foo"
+</PRE>
+<P>不应该对下列分隔符进行转义。</P><PRE>p "#{ \"foo\" }"
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   "foo"
+=&gt; ruby 1.6.7 (2002-08-21) [i586-linux]
+   "foo"
+=&gt; -:1: warning: escaped terminator '"' inside string interpolation
+   ruby 1.7.3 (2002-09-02) [i586-linux]
+   "foo"
+</PRE>
+<P>请注意：展开式中注释并不是从 # 到 } ，而是从 # 到换行。</P><PRE>p "#{ "foo" # comment }"
+
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   "foo"
+=&gt; -:1: parse error
+   ruby 1.7.3 (2002-09-02) [i586-linux]
+
+
+p "#{ "foo" # comment
+   }"
+
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   "foo"
+=&gt; ruby 1.7.3 (2002-09-02) [i586-linux]
+   "foo"
+</PRE></DD></DL>
+<H3><A id=a2002-06-21 name=a2002-06-21>2002-06-21</A><!-- RDLabel: "2002-06-21" --></H3>
+<DL>
+<DT><A id=a.5bparser.5d.20.5bcompat.5d_3 name=a.5bparser.5d.20.5bcompat.5d_3>[parser] [compat]</A><!-- RDLabel: "[parser] [compat]" --> 
+<DD>
+<P>字符串字面值中的行首的 __END__ 不再被当作脚本的结束标志了。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/17513" >[ruby-dev:17513]</A></P><PRE># p "
+#__END__
+#"
+p eval(%Q(p "\n__END__\n"))
+=&gt; -:1: compile error (SyntaxError)
+   (eval):1: unterminated string meets end of file
+   ruby 1.6.7 (2002-03-01) [i586-linux]
+=&gt; ruby 1.7.3 (2002-09-02) [i586-linux]
+   "\n__END__\n"
+   nil
+</PRE></DD></DL>
+<H3><A id=a2002-06-15 name=a2002-06-15>2002-06-15</A><!-- RDLabel: "2002-06-15" --></H3>
+<DL>
+<DT><A class=modified-year id=a.bf.f4.c3.cd.a5.ea.a5.c6.a5.e9.a5.eb.20.5bparser.5d.20.5bchange.5d title="字面值 (41d)" name=a.bf.f4.c3.cd.a5.ea.a5.c6.a5.e9.a5.eb.20.5bparser.5d.20.5bchange.5d>?&lt;whitespace&gt;</A> [parser] [change]<!-- RDLabel: "数值字面值 [parser] [change]" --> 
+<DD>
+<P>?空格、?换行、?TAB 等不再是字面值。若必须使用的话，可以写成 ?\s, ?\n, ?\t 。(请注意，下例中的前半部分使用了双引号) <A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs-ja?selectid=261" >[ruby-bugs-ja:PR#261]</A>, <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/17446" >[ruby-dev:17446]</A></P><PRE>p eval("?\t")
+p eval("?\n")
+p eval("?\v")
+p eval("?\f")
+p eval("?\r")
+p eval("? ")
+
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   9
+   10
+   11
+   12
+   13
+   32
+
+=&gt; -:1: compile error (SyntaxError)
+   (eval):1: parse error
+   ruby 1.7.3 (2002-09-02) [i586-linux]
+
+p eval('?\t')
+p eval('?\n')
+p eval('?\v')
+p eval('?\f')
+p eval('?\r')
+p eval('?\s')
+
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   9
+   10
+   11
+   12
+   13
+   32
+=&gt; ruby 1.7.3 (2002-09-02) [i586-linux]
+   9
+   10
+   11
+   12
+   13
+   32
+</PRE></DD></DL>
+<H3><A id=a2002-06-11 name=a2002-06-11>2002-06-11</A><!-- RDLabel: "2002-06-11" --></H3>
+<DL>
+<DT><A id=Borland.20C.2b.2b.20.a5.b5.a5.dd.a1.bc.a5.c8.20.5bplatform.5d name=Borland.20C.2b.2b.20.a5.b5.a5.dd.a1.bc.a5.c8.20.5bplatform.5d>Borland C++ 支持 [platform]</A><!-- RDLabel: "Borland C++ 支持 [platform]" --> 
+<DD>
+<P>合并了支持在bcc中编译ruby解释器的补丁。</P></DD></DL>
+<H3><A id=a2002-06-04 name=a2002-06-04>2002-06-04</A><!-- RDLabel: "2002-06-04" --></H3>
+<DL>
+<DT><A class=modified-old id=max.20.5bchange.5d title="Range (423d)" name=max.20.5bchange.5d>Range#max</A> [change]<!-- RDLabel: "max [change]" --> 
+<DT><A class=modified-old id=min.20.5bchange.5d title="Range (423d)" name=min.20.5bchange.5d>Range#min</A> [change]<!-- RDLabel: "min [change]" --> 
+<DT><A class=modified-old id=include.3f.20.5bchange.5d title="Range (423d)" name=include.3f.20.5bchange.5d>Range#include?</A> [change]<!-- RDLabel: "include? [change]" --> 
+<DT><A class=modified-old id=member.3f.20.5bchange.5d title="Range (423d)" name=member.3f.20.5bchange.5d>Range#member?</A> [change]<!-- RDLabel: "member? [change]" --> 
+<DD>
+<P>Range#max, Range#min, Range#include? 使用 &lt;=&gt; 方法进行范围计算。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-list/35253" >[ruby-list:35253]</A>, <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/17228" >[ruby-dev:17228]</A> (2003-03-18: min, max 变回原样。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/19837" >[ruby-dev:19837]</A>)</P>
+<P>Range#member? 使用 each 来遍历所有元素并确认是否有member。(与Enumerable#member?相同)</P>
+<P>截止1.6，max, min, member? include? 是 Enumerable 的方法，=== 是 Range的方法。在1.7中，max, min, member?, include?, === 都是 Range 的方法，include? 成了 === 的别名。(在1.8中，max, min重新成为 Enumerable 的方法)</P>
+<P>因为这些变动导致下列不同。</P><PRE>p((0.1 .. 2.0).include?(1.1))
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   false
+=&gt; ruby 1.7.3 (2002-09-02) [i586-linux]
+   true
+
+p((0.1 .. 2.0).member?(1.0))
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   true
+=&gt; -:1:in `member?': cannot iterate from Float (TypeError)
+        from -:1
+   ruby 1.7.3 (2002-09-02) [i586-linux]
+
+p "b" &lt; "ba"
+p(("a"..."bc").max)
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   true
+   "b"
+=&gt; ruby 1.7.3 (2002-09-05) [i586-linux]
+   true
+   "bc"
+
+=&gt; ruby 1.8.0 (2003-03-20) [i586-linux]
+   true
+   "b"
+</PRE></DD></DL>
+<H3><A id=a2002-06-01 name=a2002-06-01>2002-06-01</A><!-- RDLabel: "2002-06-01" --></H3>
+<DL>
+<DT><A class=modified-old id=win32ole.2eso.20.5blib.5d.20.5bnew.5d title="win32ole.so (599d)" name=win32ole.2eso.20.5blib.5d.20.5bnew.5d>win32ole.so</A> [lib] [new]<!-- RDLabel: "win32ole.so [lib] [new]" --> 
+<DD>
+<P>新增</P></DD></DL>
+<H3><A id=a2002-05-30 name=a2002-05-30>2002-05-30</A><!-- RDLabel: "2002-05-30" --></H3>
+<DL>
+<DT><A class=modified-old id=each.20.5bchange.5d title="Range (423d)" name=each.20.5bchange.5d>Range#each</A> [change]<!-- RDLabel: "each [change]" --> 
+<DD>
+<P>Range#each 使用各元素的 succ 方法进行迭代操作。</P><PRE>(1.0 .. 2.0).each {|v| p v}
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   1
+   2
+=&gt; -:1:in `each': cannot iterate from Float (TypeError)
+        from -:1
+   ruby 1.7.3 (2002-09-02) [i586-linux]
+
+class Float
+  def succ
+   self + 1.0
+  end
+end
+(1.0 .. 2.0).each {|v| p v}
+
+=&gt; ruby 1.7.3 (2002-09-02) [i586-linux]
+   1.0
+   2.0
+</PRE></DD></DL>
+<H3><A id=a2002-05-30_2 name=a2002-05-30_2>2002-05-30</A><!-- RDLabel: "2002-05-30" --></H3>
+<DL>
+<DT><A class=modified-old id=size.20.20.20.20.20.5bobsolete.5d title="Range (423d)" name=size.20.20.20.20.20.5bobsolete.5d>Range#size</A> [obsolete]<!-- RDLabel: "size     [obsolete]" --> 
+<DT><A class=modified-old id=length.20.5bobsolete.5d title="Range (423d)" name=length.20.5bobsolete.5d>Range#length</A> [obsolete]<!-- RDLabel: "length [obsolete]" --> 
+<DD>
+<P>该方法也被删除。 <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/64479" >[ruby-talk:64479]</A>, <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/72133" >[ruby-talk:72133]</A></P><PRE>p(("a".."z").size)
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   26
+=&gt; -:1: undefined method `size' for #&lt;Range:0x401aa780&gt; (NoMethodError)
+   ruby 1.7.2 (2002-08-01) [i586-linux]
+</PRE>
+<P>若想得到Range的元素数量，必须这样</P><PRE>p(("a".."z").to_a.size)
+
+=&gt; ruby 1.7.2 (2002-08-01) [i586-linux]
+   26
+</PRE>
+<P>才行。</P></DD></DL>
+<H3><A id=a2002-05-29 name=a2002-05-29>2002-05-29</A><!-- RDLabel: "2002-05-29" --></H3>
+<DL>
+<DT><A class=modified-year id=binding.20.5bnew.5d title="Proc (166d)" name=binding.20.5bnew.5d>Proc#binding</A> [new]<!-- RDLabel: "binding [new]" --> 
+<DD>
+<P>新增</P></DD></DL>
+<H3><A id=a2002-05-28 name=a2002-05-28>2002-05-28</A><!-- RDLabel: "2002-05-28" --></H3>
+<DL>
+<DT><A class=modified-year id=a.bf.f4.c3.cd.a5.ea.a5.c6.a5.e9.a5.eb title="字面值 (41d)" name=a.bf.f4.c3.cd.a5.ea.a5.c6.a5.e9.a5.eb>负的数值字面值</A><!-- RDLabel: "数值字面值" --> 
+<DD>
+<P><EM>2003-01-21: 该修改好像是变回原来的样子</EM></P>
+<P>对 -数值 的字面值的解释发生了变化，-数值 总是被当作一个字面值来处理。</P>
+<P>例如，下面的表达式的结果就各不相同。</P><PRE>p -2**2
+=&gt; -:1: warning: ambiguous first argument; make sure
+   ruby 1.6.7 (2002-03-01) [i586-linux]
+   -4
+=&gt; -:1: warning: ambiguous first argument; make sure
+   ruby 1.7.2 (2002-08-01) [i586-linux]
+   4
+
+=&gt; -:1: warning: ambiguous first argument; make sure
+   ruby 1.8.0 (2003-03-12) [i586-linux]
+   -4
+</PRE>
+<P>以前-2**2 被解释成-(2**2)。这是由于操作符的优先级不同所致 (真的如此吗？)。在1.7中则被解释成(-2)**2。另外，若在 - 和数值之间插入空格的话， - 会被当作单项操作符(方法)。(这与以前相同)</P><PRE>p(- 2**2)
+
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   -4
+=&gt; ruby 1.7.2 (2002-08-01) [i586-linux]
+   -4
+
+=&gt; ruby 1.8.0 (2003-03-12) [i586-linux]
+   -4
+
+class Fixnum
+  def -@
+      1
+  end
+end
+
+p(- 2**2)
+=&gt; -:2: warning: discarding old -@
+   ruby 1.6.7 (2002-03-01) [i586-linux]
+   1
+=&gt; -:2: warning: method redefined; discarding old -@
+   ruby 1.7.2 (2002-08-01) [i586-linux]
+   1
+
+=&gt; -:2: warning: method redefined; discarding old -@
+   ruby 1.8.0 (2003-03-12) [i586-linux]
+   1
+</PRE></DD></DL>
+<H3><A id=a2002-05-23 name=a2002-05-23>2002-05-23</A><!-- RDLabel: "2002-05-23" --></H3>
+<DL>
+<DT><A class=modified-year id=IO.2esysopen.20.5bnew.5d title="IO (145d)" name=IO.2esysopen.20.5bnew.5d>IO.sysopen</A> [new]<!-- RDLabel: "IO.sysopen [new]" --> 
+<DT><A class=modified-old id=sysaccept.20.5bnew.5d title="Socket (371d)" name=sysaccept.20.5bnew.5d>Socket#sysaccept</A> [new]<!-- RDLabel: "sysaccept [new]" --> 
+<DT><A class=modified-old id=sysaccept.20.5bnew.5d_2 title="TCPServer (887d)" name=sysaccept.20.5bnew.5d_2>TCPServer#sysaccept</A> [new]<!-- RDLabel: "sysaccept [new]" --> 
+<DT><A class=modified-old id=sysaccept.20.5bnew.5d_3 title="UNIXServer (887d)" name=sysaccept.20.5bnew.5d_3>UNIXServer#sysaccept</A> [new]<!-- RDLabel: "sysaccept [new]" --> 
+<DD>
+<P>新增</P></DD></DL>
+<H3><A id=a2002-05-13 name=a2002-05-13>2002-05-13</A><!-- RDLabel: "2002-05-13" --></H3>
+<DL>
+<DT><A id=a.5bparser.5d.20.5bchange.5d name=a.5bparser.5d.20.5bchange.5d>[parser] [change]</A><!-- RDLabel: "[parser] [change]" --> 
+<DT><A class=modified-year id=to_f.20.5bchange.5d title="String (104d)" name=to_f.20.5bchange.5d>String#to_f</A> [change]<!-- RDLabel: "to_f [change]" --> 
+<DT><A class=modified-year id=Float.28.29.20.5bchange.5d_2 title="内部函数 (172d)" name=Float.28.29.20.5bchange.5d_2>Float</A>() [change]<!-- RDLabel: "Float() [change]" --> 
+<DD>
+<P>在将字符串变为浮点数时，不再依赖库函数 strtod(3)了。这样，即使修改了库的内容，也不会影响到它的运作。</P><PRE>p "0xa.a".to_f
+
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   10.625
+=&gt; ruby 1.7.2 (2002-08-01) [i586-linux]
+   0.0
+</PRE></DD></DL>
+<H3><A id=a2002-05-13_2 name=a2002-05-13_2>2002-05-13</A><!-- RDLabel: "2002-05-13" --></H3>
+<DL>
+<DT><A class=modified-old id=to_s.20.5bcompat.5d_2 title="Float (492d)" name=to_s.20.5bcompat.5d_2>Float#to_s</A> [compat]<!-- RDLabel: "to_s [compat]" --> 
+<DD>
+<P>表示最大精度的格式由"%.10g"变为"%.16g"。(2003-03-20: 其后又变为"%.15g" <A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs-ja?selectid=406" >[ruby-bugs-ja:PR#406]</A>)</P><PRE>p 1.0/3
+p 99.6
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   0.3333333333
+   99.6
+
+=&gt; ruby 1.7.2 (2002-08-01) [i586-linux]
+   0.3333333333333333
+   99.59999999999999
+
+=&gt; ruby 1.8.0 (2003-03-20) [i586-linux]
+   0.333333333333333
+   99.6
+</PRE></DD></DL>
+<H3><A id=a2002-05-10 name=a2002-05-10>2002-05-10</A><!-- RDLabel: "2002-05-10" --></H3>
+<DL>
+<DT><A class=modified-year id=join.20.20.5bcompat.5d title="Thread (259d)" name=join.20.20.5bcompat.5d>Thread#join</A> [compat]<!-- RDLabel: "join  [compat]" --> 
+<DD>
+<P>可以使用limit来指定等待线程的时间。</P></DD></DL>
+<H3><A id=a2002-04-26 name=a2002-04-26>2002-04-26</A><!-- RDLabel: "2002-04-26" --></H3>
+<DL>
+<DT><A class=modified-year id=partition.20.5bnew.5d title="Enumerable (105d)" name=partition.20.5bnew.5d>Enumerable#partition</A> [new]<!-- RDLabel: "partition [new]" --> 
+<DD>
+<P>新增</P></DD></DL>
+<H3><A id=a2002-04-22 name=a2002-04-22>2002-04-22</A><!-- RDLabel: "2002-04-22" --></H3>
+<DL>
+<DT><A class=modified-year id=a.a5.a4.a5.c6.a5.ec.a1.bc.a5.bf.20.5bcompat.5d title="方法调用 (104d)" name=a.a5.a4.a5.c6.a5.ec.a1.bc.a5.bf.20.5bcompat.5d>方法的参数中的 &amp;</A> [compat]<!-- RDLabel: "迭代器 [compat]" --> 
+<DT><A class=modified-year id=to_proc.20.5bnew.5d title="Proc (166d)" name=to_proc.20.5bnew.5d>Proc#to_proc</A> [new]<!-- RDLabel: "to_proc [new]" --> 
+<DD>
+<P>在使用 &amp; 来修饰方法的参数时，若传给参数的对象中包含to_proc 方法就调用它，并把结果当作块来传给方法。以前，&amp; 就只能修饰Proc, Method对象。另外，还新增了Proc#to_proc。</P><PRE>class Foo
+  def to_proc
+    p "should generate Proc object"
+  end
+end
+
+def foo
+end
+
+foo(&amp;Foo.new)
+
+=&gt; ruby 1.7.2 (2002-04-24) [i586-linux]
+   "should generate Proc object"
+   -:10: wrong argument type Foo (expected Proc) (TypeError)
+</PRE></DD></DL>
+<H3><A id=a2002-04-19 name=a2002-04-19>2002-04-19</A><!-- RDLabel: "2002-04-19" --></H3>
+<DL>
+<DT><A class=modified-old id=step.20.5bcompat.5d title="Numeric (518d)" name=step.20.5bcompat.5d>Numeric#step</A> [compat]<!-- RDLabel: "step [compat]" --> 
+<DD>
+<P>从<A class=modified-old title="Fixnum (687d)">Fixnum</A>, <A class=modified-old title="Integer (618d)">Integer</A>移动到这里。</P></DD></DL>
+<H3><A id=a2002-04-18 name=a2002-04-18>2002-04-18</A><!-- RDLabel: "2002-04-18" --></H3>
+<DL>
+<DT><A class=modified-year id=to_s.20.5bnew.5d title="Regexp (171d)" name=to_s.20.5bnew.5d>Regexp#to_s</A> [new]<!-- RDLabel: "to_s [new]" --> 
+<DD>
+<P>新增。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/16909" >[ruby-dev:16909]</A></P><PRE>p /foo(bar)*/.to_s
+=&gt; "(?-mix:foo(bar)*)"
+</PRE></DD></DL>
+<H3><A id=a2002-04-09 name=a2002-04-09>2002-04-09</A><!-- RDLabel: "2002-04-09" --></H3>
+<DL>
+<DT><A class=modified-year id=File.2eextname.20.5bnew.5d title="File (316d)" name=File.2eextname.20.5bnew.5d>File.extname</A> [new]<!-- RDLabel: "File.extname [new]" --> 
+<DD>
+<P>新增。返回文件名中的扩展名。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/37617" >[ruby-talk:37617]</A></P></DD></DL>
+<H3><A id=a2002-04-08 name=a2002-04-08>2002-04-08</A><!-- RDLabel: "2002-04-08" --></H3>
+<DL>
+<DT><A class=modified-old id=each_pair.20.5bnew.5d title="Struct (612d)" name=each_pair.20.5bnew.5d>each_pair</A> [new]<!-- RDLabel: "each_pair [new]" --> 
+<DD>
+<P>新增。</P></DD></DL>
+<H3><A id=a2002-04-06 name=a2002-04-06>2002-04-06</A><!-- RDLabel: "2002-04-06" --></H3>
+<DL>
+<DT><A class=modified-old id=Bignum.20.5bbug.5d title="Bignum (1089d)" href="http://www.ruby-lang.org/ja/man/index.cgi?cmd=view;name=Bignum"  name=Bignum.20.5bbug.5d>Bignum</A> [bug]<!-- RDLabel: "Bignum [bug]" --> 
+<DD>
+<P>以前，若遇到比-2147483648还小的数值时，其2进制、8进制、16进制的表示形式就会出问题 <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-list/34828" >[ruby-list:34828]</A></P><PRE>p "%b" % -2147483648
+p "%b" % -2147483649
+p "%b" % -2147483650
+
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   "..10000000000000000000000000000000"
+   "..1"
+   "..10"
+
+=&gt; ruby 1.7.2 (2002-04-11) [i586-linux]
+   "..10000000000000000000000000000000"
+   "..101111111111111111111111111111111"
+   "..101111111111111111111111111111110"
+</PRE></DD></DL>
+<H3><A id=a2002-04-08_2 name=a2002-04-08_2>2002-04-08</A><!-- RDLabel: "2002-04-08" --></H3>
+<DL>
+<DT><A id=a.bd.aa.ce.bb.a5.b9.a5.c6.a1.bc.a5.bf.a5.b9.20.5bcompat.5d name=a.bd.aa.ce.bb.a5.b9.a5.c6.a1.bc.a5.bf.a5.b9.20.5bcompat.5d>结束状态值 [compat]</A><!-- RDLabel: "结束状态值 [compat]" --> 
+<DD>
+<P>raise SystemExit时，会使用结束状态值 1 。 <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/16776" >[ruby-dev:16776]</A></P></DD></DL>
+<H3><A id=a2002-04-02 name=a2002-04-02>2002-04-02</A><!-- RDLabel: "2002-04-02" --></H3>
+<DL>
+<DT><A class=modified-old id=dl.2eso.20.5blib.5d.20.5bnew.5d title="dl.so (790d)" name=dl.2eso.20.5blib.5d.20.5bnew.5d>dl.so</A> [lib] [new]<!-- RDLabel: "dl.so [lib] [new]" --> 
+<DD>
+<P>新增</P></DD></DL>
+<H3><A id=a2002-03-27 name=a2002-03-27>2002-03-27</A><!-- RDLabel: "2002-03-27" --></H3>
+<DL>
+<DT><A class=modified-year id=sysseek.28offset.2c.20whence.29.20.20.5bnew.5d title="IO (145d)" name=sysseek.28offset.2c.20whence.29.20.20.5bnew.5d>IO#sysseek</A>(offset, whence) [new]<!-- RDLabel: "sysseek(offset, whence)  [new]" --> 
+<DD>
+<P>新增 <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/21612" >[ruby-talk:21612]</A>, <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/36703" >[ruby-talk:36703]</A></P></DD></DL>
+<H3><A id=a2002-03-26 name=a2002-03-26>2002-03-26</A><!-- RDLabel: "2002-03-26" --></H3>
+<DL>
+<DT><A class=modified-month id=net.2fhttp.2erb.20.5bcompat.5d title="net/http.rb (5d)" name=net.2fhttp.2erb.20.5bcompat.5d>net/http.rb</A> [compat]<!-- RDLabel: "net/http.rb [compat]" --> 
+<DD>
+<P>在Net::HTTP 的类方法中，可以使用<A class=modified-year title="URI (65d)">URI</A>对象了。</P><PRE>Net::HTTP.get_print(URI.parse('http://www.ruby-lang.org/ja/'))
+</PRE>
+<P>请注意，在实例方法中则无法使用。</P></DD></DL>
+<H3><A id=a2002-03-26_2 name=a2002-03-26_2>2002-03-26</A><!-- RDLabel: "2002-03-26" --></H3>
+<DL>
+<DT><A class=modified-year id=while.20.bd.a4.be.fe.bb.d2.20.5bcompat.5d name=while.20.bd.a4.be.fe.bb.d2.20.5bcompat.5d>rescue/ensure on begin .. end while</A> [compat] 
+<DD>
+<P>在包含rescue/ensure的begin语句中，也可以使用while/until来进行修饰了。</P>
+<P>以前在包含rescue/ensure的while/until修饰表达式中，并没有最先执行主体部分(与C语言中的do ... while语法相同)。 <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-list/34618" >[ruby-list:34618]</A></P><PRE>i = 0
+begin
+  p i
+  i += 1
+rescue
+end while i &lt; 0
+
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+
+=&gt; ruby 1.7.2 (2002-03-29) [i586-linux]
+   0
+</PRE></DD></DL>
+<H3><A id=a2002-03-26_3 name=a2002-03-26_3>2002-03-26</A><!-- RDLabel: "2002-03-26" --></H3>
+<DL>
+<DT><A class=modified-year id=a.a5.af.a5.e9.a5.b9.c4.ea.b5.c1.20.5bcompat.5d title="类／方法的定义 (115d)" name=a.a5.af.a5.e9.a5.b9.c4.ea.b5.c1.20.5bcompat.5d>rescue/ensure on class/module</A> [compat]<!-- RDLabel: "类定义 [compat]" --> 
+<DD>
+<P>不仅可以在方法定义中使用rescue/ensure，在类定义或模块定义中也可以如此。</P><PRE>class Foo
+  hogehoge
+rescue
+  p $!
+end
+
+=&gt; -:3: parse error
+   ruby 1.6.7 (2002-03-01) [i586-linux]
+=&gt; ruby 1.7.2 (2002-03-29) [i586-linux]
+   #&lt;NameError: undefined local variable or method `hogehoge' for Foo:Class&gt;
+</PRE></DD></DL>
+<H3><A id=a2002-03-25 name=a2002-03-25>2002-03-25</A><!-- RDLabel: "2002-03-25" --></H3>
+<DL>
+<DT><A class=modified-year id=Thread.2elist.20.5bcompat.5d title="Thread (259d)" name=Thread.2elist.20.5bcompat.5d>Thread.list</A> [compat]<!-- RDLabel: "Thread.list [compat]" --> 
+<DT><A class=modified-old id=list.20.5bcompat.5d title="ThreadGroup (522d)" name=list.20.5bcompat.5d>ThreadGroup#list</A> [compat]<!-- RDLabel: "list [compat]" --> 
+<DD>
+<P>已结束(aborting)的线程也被包含到列表中。 <A href="http://www.freeml.com/message/rubyist@freeml.com/0001282" >[rubyist:1282]</A></P><PRE>th = Thread.new {sleep}
+Thread.critical = true
+th.kill
+
+p Thread.list
+
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   [#&lt;Thread:0x401ba5c8 run&gt;]
+
+=&gt; ruby 1.7.2 (2002-03-29) [i586-linux]
+   [#&lt;Thread:0x401b0618 aborting&gt;, #&lt;Thread:0x401ba0b4 run&gt;]
+</PRE></DD></DL>
+<H3><A id=a2002-03-25_2 name=a2002-03-25_2>2002-03-25</A><!-- RDLabel: "2002-03-25" --></H3>
+<DL>
+<DT><A class=modified-year id=wakeup.20.5bbug.5d title="Thread (259d)" name=wakeup.20.5bbug.5d>Thread#wakeup</A> [bug]<!-- RDLabel: "wakeup [bug]" --> 
+<DT><A class=modified-year id=run.20.5bbug.5d title="Thread (259d)" name=run.20.5bbug.5d>Thread#run</A> [bug]<!-- RDLabel: "run [bug]" --> 
+<DD>
+<P>若对已结束(aborting)的线程使用上述方法时，该线程就会起死回生。现在已经修复了这个bug。 <A href="http://www.freeml.com/message/rubyist@freeml.com/0001282" >[rubyist:1282]</A></P></DD></DL>
+<H3><A id=a2002-03-22 name=a2002-03-22>2002-03-22</A><!-- RDLabel: "2002-03-22" --></H3>
+<DL>
+<DT><A class=modified-year id=sprintf.28.27.25u.27.29.20.5bcompat.5d title="内部函数 (172d)" name=sprintf.28.27.25u.27.29.20.5bcompat.5d>sprintf</A>('%u') [compat]<!-- RDLabel: "sprintf('%u') [compat]" --> 
+<DD>
+<P>在sprintf 的 '%u' 中，不再新增".."了。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/16522" >[ruby-dev:16522]</A></P><PRE>p sprintf("%u", -1)
+
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   "..4294967295"
+
+=&gt; -:1: warning: negative number for %u specifier
+   ruby 1.7.2 (2002-03-29) [i586-linux]
+   "4294967295"
+</PRE></DD></DL>
+<H3><A id=a2002-03-22_2 name=a2002-03-22_2>2002-03-22</A><!-- RDLabel: "2002-03-22" --></H3>
+<DL>
+<DT><A class=modified-year id=VMS.20support.20.5bplatform.5d title="VMS (148d)" name=VMS.20support.20.5bplatform.5d>VMS</A> support [platform]<!-- RDLabel: "VMS support [platform]" --> 
+<DD>
+<P>打上了支持<A class=modified-year title="VMS (148d)">VMS</A>的补丁。</P>
+<DT><A id=a.c5.ba.c9.d5.a5.e9.a5.a4.a5.d6.a5.e9.a5.ea.20.5blib.5d.20.5bnew.5d name=a.c5.ba.c9.d5.a5.e9.a5.a4.a5.d6.a5.e9.a5.ea.20.5blib.5d.20.5bnew.5d>附加库 [lib] [new]</A><!-- RDLabel: "附加库 [lib] [new]" --> 
+<DD>
+<P>新增了下列各库。 <A class=modified-month title="iconv.so (25d)">iconv.so</A>, <A class=modified-old title="tsort.rb (858d)">tsort.rb</A>, <A class=modified-old title="stringio.so (851d)">stringio.so</A>, <A class=modified-year title="strscan.so (54d)">strscan.so</A>, <A class=modified-month title="fileutils.rb (25d)">fileutils.rb</A>, racc/*</P>
+<DT><A class=modified-old id=Dir.2eglob.20.5bcompat.5d title="Dir (449d)" name=Dir.2eglob.20.5bcompat.5d>Dir.glob</A> [compat]<!-- RDLabel: "Dir.glob [compat]" --> 
+<DD>
+<P>可以指定Dir.glob的第2参数(决定匹配方式的标识)了。在Dir[] 中则无法使用该标识。</P>
+<P>新增了相关的常数 File::FNM_DOTMATCH (表示 与FNM_PERIOD相反)。</P><PRE>p Dir.glob("/*")
+=&gt; ruby 1.7.2 (2002-03-15) [i586-linux]
+   ["/lost+found", "/root", ...]
+
+p Dir.glob("/*", File::FNM_DOTMATCH)
+
+=&gt; ruby 1.7.2 (2002-03-15) [i586-linux]
+   ["/.", "/..", "/lost+found", "/root", "/boot", ...]
+</PRE>
+<DT><A id=large.20file.20.5bbug.5d name=large.20file.20.5bbug.5d>large file [bug]</A><!-- RDLabel: "large file [bug]" --> 
+<DD>
+<P>可以正确处理large file(大小超过4G bytes的文件)了(真的？) <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/35316" >[ruby-talk:35316]</A>, <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/35470" >[ruby-talk:35470]</A></P>
+<DT><A class=modified-month id=Process.2ekill.20.20.20.20.5bcompat.5d title="Process (7d)" name=Process.2ekill.20.20.20.20.5bcompat.5d>Process.kill</A> [compat]<!-- RDLabel: "Process.kill    [compat]" --> 
+<DD>
+<P>在<A class=modified-old title="mswin32 (1020d)">mswin32</A>, <A class=modified-old title="mingw32 (1022d)">mingw32</A>中，也可以使用Process.kill(9, pid)来强制结束进程(TerminateProcess)。(好像Process.kill("KILL", pid)就不行???2002-08-28 以后好像可以使用 "KILL" 了)</P>
+<DT><A class=modified-month id=benchmark.2erb.20.5bnew.5d title="benchmark.rb (30d)" name=benchmark.2erb.20.5bnew.5d>benchmark.rb</A> [new]<!-- RDLabel: "benchmark.rb [new]" --> 
+<DD>
+<P>新增</P>
+<DT><A class=modified-year id=abort.20.5bcompat.5d title="内部函数 (172d)" name=abort.20.5bcompat.5d>abort</A> [compat]<!-- RDLabel: "abort [compat]" --> 
+<DD>
+<P>可以指定结束消息了。</P><PRE>abort("abort!")
+=&gt; abort!
+   ruby 1.7.2 (2002-03-15) [i586-linux]
+</PRE>
+<P>您所指定的消息会被设置给异常SystemExit对象的message 属性。</P><PRE>begin
+  abort("abort!")
+rescue SystemExit
+  p $!.message
+end
+
+=&gt; abort!
+   ruby 1.7.2 (2002-03-29) [i586-linux]
+   "abort!"
+</PRE>
+<DT><A class=modified-year id=GDBM.20.20.20.20.5blib.5d.20.5bchange.5d title="GDBM (266d)" name=GDBM.20.20.20.20.5blib.5d.20.5bchange.5d>GDBM</A> [lib] [change]<!-- RDLabel: "GDBM    [lib] [change]" --> 
+<DT><A class=modified-year id=DBM.20.20.20.20.20.5blib.5d.20.5bchange.5d title="DBM (165d)" name=DBM.20.20.20.20.20.5blib.5d.20.5bchange.5d>DBM</A> [lib] [change]<!-- RDLabel: "DBM     [lib] [change]" --> 
+<DT><A class=modified-old id=SDBM.20.20.20.20.5blib.5d.20.5bchange.5d title="SDBM (1019d)" name=SDBM.20.20.20.20.5blib.5d.20.5bchange.5d>SDBM</A> [lib] [change]<!-- RDLabel: "SDBM    [lib] [change]" --> 
+<DD>
+<P><EM>文档中没有提到</EM> <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/16126" >[ruby-dev:16126]</A></P>
+<DT><A class=modified-year id=include.20.5bchange.5d title="Module (120d)" name=include.20.5bchange.5d>Module#include</A> [change]<!-- RDLabel: "include [change]" --> 
+<DT><A class=modified-year id=extend.20.20.5bchange.5d title="Object (171d)" name=extend.20.20.5bchange.5d>Object#extend</A> [change]<!-- RDLabel: "extend  [change]" --> 
+<DD>
+<P>传递若干个模块时，include的顺序有所改变。好像<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/16035" >[ruby-dev:16035]</A> extend 也是如此。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/16183" >[ruby-dev:16183]</A></P><PRE>module Foo; end
+module Bar; end
+module Baz; end
+
+include Foo, Bar, Baz
+p Object.ancestors
+
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   [Object, Baz, Bar, Foo, Kernel]
+
+=&gt; ruby 1.7.2 (2002-03-01) [i586-linux]
+   [Object, Foo, Bar, Baz, Kernel]
+
+obj = Object.new
+module Foo; end
+module Bar; end
+module Baz; end
+
+obj.extend Foo, Bar, Baz
+class &lt;&lt; obj
+  p ancestors
+end
+
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   [Baz, Bar, Foo, Object, Kernel]
+
+=&gt; ruby 1.7.2 (2002-03-08) [i586-linux]
+   [Foo, Bar, Baz, Object, Kernel]
+</PRE>
+<P>这与一个一个地include时的顺序相反。</P><PRE>module Foo; end
+module Bar; end
+module Baz; end
+
+include Foo
+include Bar
+include Baz
+p Object.ancestors
+
+=&gt; ruby 1.7.2 (2002-03-01) [i586-linux]
+   [Object, Baz, Bar, Foo, Kernel]
+</PRE>
+<DT><A class=modified-old id=UNIXSocket.2epair.20.20.20.20.20.20.20.20.20.20.20.20.20.20.5bnew.5d title="UNIXSocket (1021d)" name=UNIXSocket.2epair.20.20.20.20.20.20.20.20.20.20.20.20.20.20.5bnew.5d>UNIXSocket.pair</A> [new]<!-- RDLabel: "UNIXSocket.pair              [new]" --> 
+<DT><A class=modified-old id=UNIXSocket.2esocketpair.20.20.20.20.20.20.20.20.5bnew.5d title="UNIXSocket (1021d)" name=UNIXSocket.2esocketpair.20.20.20.20.20.20.20.20.5bnew.5d>UNIXSocket.socketpair</A> [new]<!-- RDLabel: "UNIXSocket.socketpair        [new]" --> 
+<DT><A class=modified-old id=recv_io.20.20.20.5bnew.5d title="UNIXSocket (1021d)" name=recv_io.20.20.20.5bnew.5d>UNIXSocket#recv_io</A> [new]<!-- RDLabel: "recv_io   [new]" --> 
+<DT><A class=modified-old id=send_io.20.20.20.5bnew.5d title="UNIXSocket (1021d)" name=send_io.20.20.20.5bnew.5d>UNIXSocket#send_io</A> [new]<!-- RDLabel: "send_io   [new]" --> 
+<DD>
+<P>新增</P>
+<DT><A id=Proc.23yield name=Proc.23yield>Proc#yield</A><!-- RDLabel: "Proc#yield" --> 
+<DD>
+<P><A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs-ja?selectid=98" >[ruby-bugs-ja:PR#98]</A> (2003-03-11: 该修改被取消 <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/19799" >[ruby-dev:19799]</A>) (其后Proc#yield也被取消)</P><PRE>Proc.new { break }.call
+Proc.new { break }.yield
+
+=&gt; -:2:in `yield': break from proc-closure (LocalJumpError)
+        from -:2
+   ruby 1.7.3 (2002-09-05) [i586-linux]
+
+=&gt; ruby 1.8.0 (2003-03-12) [i586-linux]
+</PRE>
+<DT><A class=modified-month id=pack.20.20.20.20.20.20.20.20.20.5bcompat.5d title="Array (11d)" name=pack.20.20.20.20.20.20.20.20.20.5bcompat.5d>Array#pack</A> [compat]<!-- RDLabel: "pack         [compat]" --> 
+<DT><A class=modified-year id=unpack.20.20.20.5bcompat.5d title="String (104d)" name=unpack.20.20.20.5bcompat.5d>String#unpack</A> [compat]<!-- RDLabel: "unpack   [compat]" --> 
+<DD>
+<P>可以在pack/unpack 的模板中写入注释了。</P><PRE>p [1,2,3,4].pack("s  # short (fixed 2 bytes)
+                  i  # int (machine dependent)
+                  l  # long (fixed 4 bytes)
+                  q  # quad (fixed 8 bytes)")
+=&gt; ruby 1.7.2 (2002-02-21) [i586-linux]
+   "\001\000\002\000\000\000\003\000\000\000\004\000\000\000\000\000\000\000"
+</PRE>
+<DT><A id=LocalJumpError.23exitstatus.20.5bnew.5d name=LocalJumpError.23exitstatus.20.5bnew.5d>LocalJumpError#exitstatus [new]</A><!-- RDLabel: "LocalJumpError#exitstatus [new]" --> 
+<DD>
+<P>新增(其后变为exit_value)</P><PRE>def foo
+  proc { return 10 }
+end
+
+begin
+  foo.call
+rescue LocalJumpError
+  p $!.exitstatus
+end
+
+=&gt; ruby 1.7.2 (2002-02-14) [i586-linux]
+   10
+</PRE>
+<DT><A class=modified-old id=listen.20.20.20.20.20.5bnew.5d title="UNIXServer (887d)" name=listen.20.20.20.20.20.5bnew.5d>UNIXServer#listen</A> [new]<!-- RDLabel: "listen     [new]" --> 
+<DT><A class=modified-old id=listen.20.20.20.20.20.20.20.5bnew.5d title="TCPServer (887d)" name=listen.20.20.20.20.20.20.20.5bnew.5d>TCPServer#listen</A> [new]<!-- RDLabel: "listen       [new]" --> 
+<DD>
+<P>新增。与Socket#<A class=modified-old title="Socket (371d)">listen</A>相同。</P>
+<DT><A class=modified-year id=getgm.20.20.20.20.20.20.20.20.20.20.20.5bnew.5d title="Time (172d)" name=getgm.20.20.20.20.20.20.20.20.20.20.20.5bnew.5d>Time#getgm</A> [new]<!-- RDLabel: "getgm           [new]" --> 
+<DT><A class=modified-year id=getlocal.20.20.20.20.20.5bnew.5d title="Time (172d)" name=getlocal.20.20.20.20.20.5bnew.5d>Time#getlocal</A> [new]<!-- RDLabel: "getlocal     [new]" --> 
+<DT><A class=modified-year id=getutc.20.20.20.20.20.20.20.20.20.5bnew.5d title="Time (172d)" name=getutc.20.20.20.20.20.20.20.20.20.5bnew.5d>Time#getutc</A> [new]<!-- RDLabel: "getutc         [new]" --> 
+<DT><A class=modified-year id=gmt_offset.20.5bnew.5d title="Time (172d)" name=gmt_offset.20.5bnew.5d>Time#gmt_offset</A> [new]<!-- RDLabel: "gmt_offset [new]" --> 
+<DT><A class=modified-year id=gmtoff.20.20.20.20.20.20.20.20.20.5bnew.5d title="Time (172d)" name=gmtoff.20.20.20.20.20.20.20.20.20.5bnew.5d>Time#gmtoff</A> [new]<!-- RDLabel: "gmtoff         [new]" --> 
+<DT><A class=modified-year id=utc_offset.20.5bnew.5d title="Time (172d)" name=utc_offset.20.5bnew.5d>Time#utc_offset</A> [new]<!-- RDLabel: "utc_offset [new]" --> 
+<DD>
+<P>新增</P></DD></DL>
+<H3><A id=a2002-05-21 name=a2002-05-21>2002-05-21</A><!-- RDLabel: "2002-05-21" --></H3>
+<DL>
+<DT><A class=modified-year id=a.3c.3d.3e.20.20.20.20.20.20.20.20.20.20.20.20.5bchange.5d title="Module (120d)" name=a.3c.3d.3e.20.20.20.20.20.20.20.20.20.20.20.20.5bchange.5d>Module#&lt;=&gt;</A> [change]<!-- RDLabel: "<=>            [change]" --> 
+<DD>
+<P>比较两个没有继承关系的类/模块时，将返回nil。</P><PRE>p Array &lt;=&gt; String
+
+=&gt; ruby 1.6.7 (2002-03-01) [i586-linux]
+   1
+=&gt; ruby 1.7.3 (2002-09-13) [i586-linux]
+   nil
+</PRE>
+<DT><A class=modified-year id=fsync.20.20.20.20.20.5bnew.5d title="IO (145d)" name=fsync.20.20.20.20.20.5bnew.5d>IO#fsync</A> [new]<!-- RDLabel: "fsync     [new]" --> 
+<DD>
+<P>新增</P>
+<DT><A class=modified-month id=pack.20.20.20.20.20.20.20.20.20.5bcompat.5d_2 title="Array (11d)" name=pack.20.20.20.20.20.20.20.20.20.5bcompat.5d_2>Array#pack</A> [compat]<!-- RDLabel: "pack         [compat]" --> 
+<DT><A class=modified-year id=unpack.20.20.20.5bcompat.5d_2 title="String (104d)" name=unpack.20.20.20.5bcompat.5d_2>String#unpack</A> [compat]<!-- RDLabel: "unpack   [compat]" --> 
+<DD>
+<P>新征了64 bit 整数的模板字符 Q/q (表示Quad之意)。 Q表示unsigned，而q表示signed。 与perl不同的是，即使在不支持64 bit 整数的平台上，仍然可以使用。</P><PRE>p [ 1].pack("Q")
+p [-1].pack("Q")
+p [ 1].pack("q")
+p [-1].pack("q")
+
+p [ 1].pack("Q").unpack("Q")
+p [-1].pack("Q").unpack("Q")
+p [ 1].pack("q").unpack("q")
+p [-1].pack("q").unpack("q")
+
+=&gt; ruby 1.7.2 (2002-02-13) [i586-linux]
+   "\001\000\000\000\000\000\000\000"
+   "\377\377\377\377\377\377\377\377"
+   "\001\000\000\000\000\000\000\000"
+   "\377\377\377\377\377\377\377\377"
+   [1]
+   [18446744073709551615]
+   [1]
+   [-1]
+</PRE>
+<DT><A class=modified-old id=inspect.20.20.20.5bcompat.5d title="Method (463d)" name=inspect.20.20.20.5bcompat.5d>Method#inspect</A> [compat]<!-- RDLabel: "inspect   [compat]" --> 
+<DD>
+<P>特殊方法的输出形式更具实际意义了。 <A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs-ja?selectid=193" >[ruby-bugs-ja:PR#193]</A></P><PRE>obj = []
+def obj.foo
+end
+p obj.method(:foo)
+
+=&gt; ruby 1.6.6 (2001-12-26) [i586-linux]
+   #&lt;Method: Array(Array)#foo&gt;
+
+=&gt; ruby 1.7.2 (2002-02-05) [i586-linux]
+   #&lt;Method: [].foo&gt;
+</PRE></DD></DL>
+<H3><A id=a2002-01-28 name=a2002-01-28>2002-01-28</A><!-- RDLabel: "2002-01-28" --></H3>
+<DL>
+<DT><A class=modified-month id=Array.2enew.20.20.20.20.20.20.20.20.20.5bcompat.5d title="Array (11d)" name=Array.2enew.20.20.20.20.20.20.20.20.20.5bcompat.5d>Array.new</A> [compat]<!-- RDLabel: "Array.new         [compat]" --> 
+<DT><A class=modified-month id=fill.20.20.20.5bcompat.5d title="Array (11d)" name=fill.20.20.20.5bcompat.5d>Array#fill</A> [compat]<!-- RDLabel: "fill   [compat]" --> 
+<DD>
+<P>可以将块的计算结果指定为fill值。依次为各个元素计算块的内容，所以下列中每次都会生成"val"</P><PRE>ary = Array.new(3, "val")
+p ary.collect {|v| v.id }       # =&gt; [537774036, 537774036, 537774036]
+ary = Array.new(3) { "val" }
+p ary.collect {|v| v.id }       # =&gt; [537770040, 537770028, 537770016]
+</PRE></DD></DL>
+<H3><A id=a2002-01-28_2 name=a2002-01-28_2>2002-01-28</A><!-- RDLabel: "2002-01-28" --></H3>
+<DL>
+<DT><A class=modified-year id=rdev_major.20.5bnew.5d title="File::Stat (171d)" name=rdev_major.20.5bnew.5d>File::Stat#rdev_major</A> [new]<!-- RDLabel: "rdev_major [new]" --> 
+<DT><A class=modified-year id=rdev_minor.20.5bnew.5d title="File::Stat (171d)" name=rdev_minor.20.5bnew.5d>File::Stat#rdev_minor</A> [new]<!-- RDLabel: "rdev_minor [new]" --> 
+<DD>
+<P>新增</P><PRE>s = File.stat("/dev/null")
+p s.rdev_major
+p s.rdev_minor
+
+=&gt; ruby 1.7.2 (2002-01-28) [i686-linux]
+   1
+   3
+</PRE></DD></DL>
+<H3><A id=a2002-01-24 name=a2002-01-24>2002-01-24</A><!-- RDLabel: "2002-01-24" --></H3>
+<DL>
+<DT><A class=modified-year id=update.20.5bcompat.5d title="Hash (173d)" name=update.20.5bcompat.5d>Hash#update</A> [compat]<!-- RDLabel: "update [compat]" --> 
+<DD>
+<P>可以指定块了。还可以控制重复键的处理方式。</P></DD></DL>
+<H3><A id=a2002-01-18 name=a2002-01-18>2002-01-18</A><!-- RDLabel: "2002-01-18" --></H3>
+<DL>
+<DT><A class=modified-year id=IO.2eopen.20.20.5bnew.5d title="IO (145d)" name=IO.2eopen.20.20.5bnew.5d>IO.open</A> [new]<!-- RDLabel: "IO.open  [new]" --> 
+<DD>
+<P>新增</P></DD></DL>
+<H3><A id=a2002-01-14 name=a2002-01-14>2002-01-14</A><!-- RDLabel: "2002-01-14" --></H3>
+<DL>
+<DT><A class=modified-year id=Proc.20.5bbug.5d title="Proc (166d)" name=Proc.20.5bbug.5d>Proc</A> [bug]<!-- RDLabel: "Proc [bug]" --> 
+<DD>
+<P>当$SAFE为1或2时，被污染的Proc将无法变成块 <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/15682" >[ruby-dev:15682]</A> </P><PRE>$SAFE = 1
+proc = proc {}
+proc.taint
+p proc.tainted?
+def foo(&amp;b)
+  p b.tainted?
+end
+foo(&amp;proc)
+
+=&gt; ruby 1.6.8 (2003-08-03) [i586-linux]
+   true
+   true
+=&gt; ruby 1.7.2 (2002-01-23) [i586-linux]
+   true
+   true
+</PRE></DD></DL>
+<H3><A id=a2002-01-08 name=a2002-01-08>2002-01-08</A><!-- RDLabel: "2002-01-08" --></H3>
+<DL>
+<DT><A class=modified-year id=to_i.20.5bcompat.5d title="String (104d)" name=to_i.20.5bcompat.5d>String#to_i</A> [compat]<!-- RDLabel: "to_i [compat]" --> 
+<DD>
+<P>可以将基数(2,8,10,16)指定给参数。(2002-01-26: 当参数为0时，用prefix来判定基数)</P><PRE>p "010".to_i(16)
+=&gt; ruby 1.7.2 (2002-01-11) [i586-linux]
+   16
+</PRE></DD></DL>
+<H3><A id=a2001-12-08 name=a2001-12-08>2001-12-08</A><!-- RDLabel: "2001-12-08" --></H3>
+<DL>
+<DT><A class=modified-year id=Hash.2enew.20.20.20.5bcompat.5d title="Hash (173d)" name=Hash.2enew.20.20.20.5bcompat.5d>Hash.new</A> [compat]<!-- RDLabel: "Hash.new   [compat]" --> 
+<DD>
+<P>可以把块当作哈希的默认值了。指定块之后，每次使用空的哈希元素时都会执行块的内容，并返回其结果。此时会把 哈希本身 和 使用哈希时的键 传给块。</P><PRE>h = Hash.new("foo")
+p h.default.id
+p h.default(0).id    # Hash#default 可以指定传给块的键
+p h[0].id
+p h[0].id
+p h[1].id
+
+=&gt; ruby 1.7.2 (2001-12-10) [i586-linux]
+   537774276
+   537774276
+   537774276
+   537774276
+
+h = Hash.new { "foo" }
+p h.default.id
+p h.default(0).id
+p h[0].id
+p h[0].id
+p h[1].id
+
+=&gt; ruby 1.7.2 (2001-12-10) [i586-linux]
+   537770616
+   537770352
+   537770316
+   537770280
+
+h = Hash.new { raise IndexError, "undefined!!" }
+p h[0]
+
+=&gt; -:1: undefined!! (IndexError)
+        from -:1:in `yield'
+        from -:2:in `default'
+        from -:2:in `[]'
+        from -:2
+   ruby 1.7.2 (2001-12-10) [i586-linux]
+</PRE></DD></DL>
+<H3><A id=a2001-12-11 name=a2001-12-11>2001-12-11</A><!-- RDLabel: "2001-12-11" --></H3>
+<DL>
+<DT><A id=Array.23select name=Array.23select>Array#select</A><!-- RDLabel: "Array#select" --> 
+<DT><A id=Hash.23select name=Hash.23select>Hash#select</A><!-- RDLabel: "Hash#select" --> 
+<DT><A id=ENV.2eselect name=ENV.2eselect>ENV.select</A><!-- RDLabel: "ENV.select" --> 
+<DT><A id=MatchData.23select name=MatchData.23select>MatchData#select</A><!-- RDLabel: "MatchData#select" --> 
+<DT><A id=Struct.3a.3aXXX.23select name=Struct.3a.3aXXX.23select>Struct::XXX#select</A><!-- RDLabel: "Struct::XXX#select" --> 
+<DD>
+<P>新增(此后被values_at方法所取代)</P><PRE># 没有给出块的话，则与indexes/indicies 相同。
+# (注: indexes/indicies已变为obsolete)
+
+p [1,2,3].select(0,1,2,3)
+p [1,2,3].select(-4,-3,-2,-1)
+
+p( {1=&gt;"a", 2=&gt;"b", 3=&gt;"c"}.select(3,2,1) )
+
+
+=&gt; ruby 1.7.2 (2001-12-10) [i586-linux]
+   [1, 2, 3, nil]
+   [nil, 1, 2, 3]
+   ["c", "b", "a"]
+
+# 若给出了块的话，则与Enumerable#select 相同。
+
+p [1,2,3,4,5].select {|v| v % 2 == 1}
+p( {1=&gt;"a", 2=&gt;"b", 3=&gt;"c"}.select {|k,v| k % 2 == 1} )
+
+=&gt; ruby 1.6.6 (2001-12-04) [i586-linux]
+   [1, 3, 5]
+   [[1, "a"], [3, "c"]]
+
+=&gt; ruby 1.7.2 (2001-12-10) [i586-linux]
+   [1, 3, 5]
+   [[1, "a"], [3, "c"]]
+
+m = /(foo)(bar)(baz)/.match("foobarbaz")
+p m.select(0,1,2,3,4)   # same as m.to_a.indexes(...)
+p m.select(-1,-2,-3)
+
+=&gt; ruby 1.7.2 (2001-12-10) [i586-linux]
+   ["foobarbaz", "foo", "bar", "baz", nil]
+   ["baz", "bar", "foo"]
+</PRE></DD></DL>
+<H3><A id=a2001-12-11_2 name=a2001-12-11_2>2001-12-11</A><!-- RDLabel: "2001-12-11" --></H3>
+<DL>
+<DT><A id=String.23match.28re.29.20.20.20.20.20.20.5bnew.5d name=String.23match.28re.29.20.20.20.20.20.20.5bnew.5d>String#match(re) [new]</A><!-- RDLabel: "String#match(re)      [new]" --> 
+<DD>
+<P>新增。与 re.match(str) 相同。</P></DD></DL>
+<H3><A id=a2001-11-17 name=a2001-11-17>2001-11-17</A><!-- RDLabel: "2001-11-17" --></H3>
+<DL>
+<DT><A class=modified-old id=Marshal.20.20.20.20.20.20.20.20.20.5bmarshal.5d.20.5bchange.5d title="Marshal (519d)" name=Marshal.20.20.20.20.20.20.20.20.20.5bmarshal.5d.20.5bchange.5d>Marshal</A> [marshal] [change]<!-- RDLabel: "Marshal         [marshal] [change]" --> 
+<DD>
+<P>对Float进行dump时，不再依赖sprintf(3)了。format version由4.6升到4.7。 (此后，由于把strtod(3)收入了语言本身，即使进行读入时也不再依赖strtod(3)了)</P></DD></DL>
+<H3><A id=a2001-11-12 name=a2001-11-12>2001-11-12</A><!-- RDLabel: "2001-11-12" --></H3>
+<DL>
+<DT><A class=modified-year id=trap.20.20.20.20.20.20.20.5bbug.5d title="内部函数 (172d)" name=trap.20.20.20.20.20.20.20.5bbug.5d>trap</A> [bug]<!-- RDLabel: "trap       [bug]" --> 
+<DT><A class=modified-year id=trace_var.20.20.5bbug.5d title="内部函数 (172d)" name=trace_var.20.20.5bbug.5d>trace_var</A> [bug]<!-- RDLabel: "trace_var  [bug]" --> 
+<DD>
+<P>如将受污染的字符串传给第二参数的话，就会引发<A class=modified-old title="SecurityError (1088d)">SecurityError</A>异常。在1.6中，若安全级别为4则会计算受污染的字符串。 <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-list/32215" >[ruby-list:32215]</A></P></DD></DL>
+<H3><A id=a2001-10-16 name=a2001-10-16>2001-10-16</A><!-- RDLabel: "2001-10-16" --></H3>
+<DL>
+<DT><A class=modified-year id=Module.2enew.20.20.20.20.20.20.20.5bcompat.5d title="Module (120d)" name=Module.2enew.20.20.20.20.20.20.20.5bcompat.5d>Module.new</A> [compat]<!-- RDLabel: "Module.new       [compat]" --> 
+<DT><A class=modified-old id=Class.2enew.20.20.20.20.20.20.20.20.20.5bcompat.5d title="Class (661d)" name=Class.2enew.20.20.20.20.20.20.20.20.20.5bcompat.5d>Class.new</A> [compat]<!-- RDLabel: "Class.new         [compat]" --> 
+<DD>
+<P>在Module.new, Class.new中，若给出了块的话，则在生成的模块/类的上下文中计算块的内容。</P><PRE>Module.new {|m| p m}
+
+=&gt; ruby 1.7.1 (2001-10-15) [i586-linux]
+   #&lt;Module:0x401afd5c&gt;
+</PRE></DD></DL>
+<H3><A id=a2001-10-10 name=a2001-10-10>2001-10-10</A><!-- RDLabel: "2001-10-10" --></H3>
+<DL>
+<DT><A class=modified-year id=clone.20.5bchange.5d title="Object (171d)" name=clone.20.5bchange.5d>Object#clone</A> [change]<!-- RDLabel: "clone [change]" --> 
+<DD>
+<P>不能对Numeric这种immutable对象进行clone。 <A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs-ja?selectid=94" >[ruby-bugs-ja:PR#94]</A>, <A href="http://www.freeml.com/message/rubyist@freeml.com/0000831" >[rubyist:0831]</A></P><PRE>$DEBUG=true
+true.clone     rescue nil
+false.clone    rescue nil
+nil.clone      rescue nil
+:sym.clone     rescue nil
+(10**10).clone rescue nil
+0.clone        rescue nil
+
+=&gt; Exception `TypeError' at -:2 - can't clone true
+   Exception `TypeError' at -:3 - can't clone false
+   Exception `TypeError' at -:4 - can't clone nil
+   Exception `TypeError' at -:5 - can't clone Symbol
+   ruby 1.6.6 (2001-12-26) [i586-linux]
+
+=&gt; Exception `TypeError' at -:2 - can't clone TrueClass
+   Exception `TypeError' at -:3 - can't clone FalseClass
+   Exception `TypeError' at -:4 - can't clone NilClass
+   Exception `TypeError' at -:5 - can't clone Symbol
+   Exception `TypeError' at -:6 - can't clone Bignum
+   Exception `TypeError' at -:7 - can't clone Fixnum
+   ruby 1.7.1 (2001-10-10) [i586-linux]
+</PRE>
+<DT><A id=puts name=puts>puts</A><!-- RDLabel: "puts" --> 
+<DT><A id=Array.23to_s name=Array.23to_s>Array#to_s</A><!-- RDLabel: "Array#to_s" --> 
+<DD>
+<P>puts不再对数组进行特殊处理了，而是输出<A class=modified-month title="Array (11d)">Array#to_s</A>。<A class=modified-month title="Array (11d)">Array#to_s</A>在默认情况下会输出带换行的字符串，所以从其输出形式看来是没有什么变化的(但要受到<A class=modified-year title="内部变量 (139d)">$,</A>的值的影响)。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/15043" >[ruby-dev:15043]</A></P>
+<P>该修改尚处于试验阶段，又可能会改回原样。。。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/15313" >[ruby-dev:15313]</A></P><PRE>$, = ","
+puts %w(foo bar baz)
+=&gt; ruby 1.6.5 (2001-11-01) [i586-linux]
+   foo
+   bar
+   baz
+=&gt; ruby 1.7.2 (2001-11-25) [i586-linux]
+   foo,bar,baz
+</PRE>
+<P>???好像是改回原样了。</P><PRE>=&gt; ruby 1.7.2 (2001-12-10) [i586-linux]
+   foo
+   bar
+   baz
+</PRE>
+<DT><A class=modified-old id=to_s.20.20.20.20.20.20.20.5bcompat.5d title="Integer (618d)" name=to_s.20.20.20.20.20.20.20.5bcompat.5d>Integer#to_s</A> [compat]<!-- RDLabel: "to_s       [compat]" --> 
+<DD>
+<P>可以将基数指定给参数了。</P><PRE>p 10.to_s(16)
+=&gt; ruby 1.7.2 (2001-11-25) [i586-linux]
+   "a"
+</PRE>
+<DT><A class=modified-year id=chomp.20.20.20.20.20.20.20.5bchange.5d title="String (104d)" name=chomp.20.20.20.20.20.20.20.5bchange.5d>String#chomp</A> [change]<!-- RDLabel: "chomp       [change]" --> 
+<DT><A class=modified-year id=chomp.21.20.20.20.20.20.5bchange.5d title="String (104d)" name=chomp.21.20.20.20.20.20.5bchange.5d>String#chomp!</A> [change]<!-- RDLabel: "chomp!     [change]" --> 
+<DT><A class=modified-year id=chomp.20.20.20.20.20.20.20.20.20.20.20.20.20.20.5bchange.5d title="内部函数 (172d)" name=chomp.20.20.20.20.20.20.20.20.20.20.20.20.20.20.5bchange.5d>chomp</A> [change]<!-- RDLabel: "chomp              [change]" --> 
+<DT><A class=modified-year id=chomp.21.20.20.20.20.20.20.20.20.20.20.20.20.20.5bchange.5d title="内部函数 (172d)" name=chomp.21.20.20.20.20.20.20.20.20.20.20.20.20.20.5bchange.5d>chomp!</A> [change]<!-- RDLabel: "chomp!             [change]" --> 
+<DD>
+<P>只要$/ 的值为"\n" (默认)，不管是哪种行尾("\r\n", "\r"或"\n")都可以清除干净。</P><PRE>p "aaa\r\n".chomp
+=&gt; ruby 1.6.5 (2001-11-01) [i586-linux]
+   "aaa\r"
+=&gt; ruby 1.7.2 (2001-11-25) [i586-linux]
+   "aaa"
+</PRE>
+<DT><A id=Complex.23to_i.20.20.20.20.20.20.20.20.20.20.5blib.5d.20.5bobsolete.5d name=Complex.23to_i.20.20.20.20.20.20.20.20.20.20.5blib.5d.20.5bobsolete.5d>Complex#to_i [lib] [obsolete]</A><!-- RDLabel: "Complex#to_i          [lib] [obsolete]" --> 
+<DT><A id=Complex.23to_f.20.20.20.20.20.20.20.20.20.20.5blib.5d.20.5bobsolete.5d name=Complex.23to_f.20.20.20.20.20.20.20.20.20.20.5blib.5d.20.5bobsolete.5d>Complex#to_f [lib] [obsolete]</A><!-- RDLabel: "Complex#to_f          [lib] [obsolete]" --> 
+<DT><A id=Complex.23to_r.20.20.20.20.20.20.20.20.20.20.5blib.5d.20.5bobsolete.5d name=Complex.23to_r.20.20.20.20.20.20.20.20.20.20.5blib.5d.20.5bobsolete.5d>Complex#to_r [lib] [obsolete]</A><!-- RDLabel: "Complex#to_r          [lib] [obsolete]" --> 
+<DD>
+<P>Complex#to_i, #to_f, #to_r已被取消。 <A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs-ja?selectid=102" >[ruby-bugs-ja:PR#102]</A>, <A href="http://www.freeml.com/message/rubyist@freeml.com/0000879" >[rubyist:0879]</A></P>
+<DT><A id=a.a5.e1.a5.bd.a5.c3.a5.c9.b8.c6.a4.d3.bd.d0.a4.b7.20.20.20.20.20.20.5bparser.5d.20.5bchange.5d name=a.a5.e1.a5.bd.a5.c3.a5.c9.b8.c6.a4.d3.bd.d0.a4.b7.20.20.20.20.20.20.5bparser.5d.20.5bchange.5d>方法调用 [parser] [change]</A><!-- RDLabel: "方法调用      [parser] [change]" --> 
+<DD>
+<P>若方法名和括弧之间有空格，则该括号不会为当作是包含参数的括号，而会被当作表达式中的括号。</P><PRE>p (1+2)*3
+
+=&gt; -:1: warning: p (...) interpreted as method call
+   -:1: warning: useless use of * in void context
+   ruby 1.6.5 (2001-09-19) [i586-linux]
+   3
+   -:1: undefined method `*' for nil (NameError)
+
+=&gt; -:1: warning: p (...) interpreted as command call
+   ruby 1.7.1 (2001-06-05) [i586-linux]
+   9
+</PRE>
+<DT><A class=modified-old id=Marshal.20.20.20.20.20.20.20.5bmarshal.5d.20.5bbug.5d title="Marshal (519d)" name=Marshal.20.20.20.20.20.20.20.5bmarshal.5d.20.5bbug.5d>Marshal</A> [marshal] [bug]<!-- RDLabel: "Marshal       [marshal] [bug]" --> 
+<DD>
+<P>若对结构体类的子类进行dump的话，则无法读出。<A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs-ja?selectid=104" >[ruby-bugs-ja:PR#104]</A></P><PRE>S = Struct.new("S", :a)
+class C &lt; S
+end
+p Marshal.load(Marshal.dump(C.new))
+
+=&gt; -:4: warning: instance variable __member__ not initialized
+   -:4:in `dump': uninitialized struct (TypeError)
+        from -:4
+   ruby 1.6.5 (2001-09-19) [i586-linux]
+
+=&gt; ruby 1.7.1 (2001-10-19) [i586-linux]
+   #&lt;C a=nil&gt;
+</PRE>
+<DT><A id=alias.20.20.20.20.20.20.20.20.20.5bbug.5d name=alias.20.20.20.20.20.20.20.20.20.5bbug.5d>alias [bug]</A><!-- RDLabel: "alias         [bug]" --> 
+<DD>
+<P>全局变量的别名无效。 <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/14922" >[ruby-dev:14922]</A></P><PRE>$g2 = 1
+alias $g1 $g2
+p [$g1, $g2]
+$g2 = 2
+p [$g1, $g2]
+=&gt; ruby 1.6.5 (2001-09-19) [i586-linux]
+   [1, 1]
+   [1, 2]
+
+=&gt; ruby 1.7.1 (2001-10-19) [i586-linux]
+   [1, 1]
+   [2, 2]
+</PRE></DD></DL>
+<H3><A id=a2001-10-03 name=a2001-10-03>2001-10-03</A><!-- RDLabel: "2001-10-03" --></H3>
+<DL>
+<DT><A class=modified-year id=a.5b.5d.20.20.20.20.20.5bnew.5d title="String (104d)" name=a.5b.5d.20.20.20.20.20.5bnew.5d>String#[]</A> [new]<!-- RDLabel: "[]     [new]" --> 
+<DT><A class=modified-year id=a.5b.5d.3d.20.20.20.5bnew.5d title="String (104d)" name=a.5b.5d.3d.20.20.20.5bnew.5d>String#[]=</A> [new]<!-- RDLabel: "[]=   [new]" --> 
+<DD>
+<P>新增</P><PRE>String#[re, idx]
+String#[re, idx] = val
+</PRE>
+<P>新增第二个可选参数idx。</P><PRE>p "foobarbaz"[/(foo)(bar)(baz)/, 1]
+p /(foo)(bar)(baz)/.match("foobarbaz").to_a[1]
+=&gt; -:2: warning: ambiguous first argument; make sure
+   ruby 1.7.1 (2001-10-05) [i586-linux]
+   "foo"
+   "foo"
+
+str = "foobarbaz"
+p str[/(foo)(bar)(baz)/, 2] = "BAR"  # =&gt; "BAR"
+p str                                # =&gt; "fooBARbaz"
+</PRE>
+<P>str[/re/, 0] 与 str[/re/] 相同。</P></DD></DL>
+<H3><A id=a2001-10-02 name=a2001-10-02>2001-10-02</A><!-- RDLabel: "2001-10-02" --></H3>
+<DL>
+<DT><A class=modified-old id=allocate.20.20.20.20.5bnew.5d title="Class (661d)" name=allocate.20.20.20.20.5bnew.5d>Class#allocate</A> [new]<!-- RDLabel: "allocate    [new]" --> 
+<DD>
+<P>由allocate 和 initialize 这两个方法来生成对象。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/14847" >[ruby-dev:14847]</A> 请参考 rb_define_alloc_func() 。</P></DD></DL>
+<H3><A id=a2001-09-24 name=a2001-09-24>2001-09-24</A><!-- RDLabel: "2001-09-24" --></H3>
+<DL>
+<DT><A class=modified-month id=Array.2enew.20.20.20.20.20.20.20.5bcompat.5d title="Array (11d)" name=Array.2enew.20.20.20.20.20.20.20.5bcompat.5d>Array.new</A> [compat]<!-- RDLabel: "Array.new       [compat]" --> 
+<DD>
+<P>若将数组传给Array.new 的参数时，将会生成该数组的拷贝。</P><PRE>ary = [1,2,3]
+ary2 = Array.new ary
+p ary, ary2
+p ary.id, ary2.id
+
+=&gt; ruby 1.7.1 (2001-10-05) [i586-linux]
+   [1, 2, 3]
+   [1, 2, 3]
+   537758120
+   537755360
+</PRE></DD></DL>
+<H3><A id=a2001-09-18 name=a2001-09-18>2001-09-18</A><!-- RDLabel: "2001-09-18" --></H3>
+<DL>
+<DT><A class=modified-year id=String.2enew.20.20.20.20.20.20.5bcompat.5d title="String (104d)" name=String.2enew.20.20.20.20.20.20.5bcompat.5d>String.new</A> [compat]<!-- RDLabel: "String.new      [compat]" --> 
+<DD>
+<P>可以省略String.new 的参数了。</P><PRE>p String.new
+=&gt; -:1:in `initialize': wrong # of arguments(0 for 1) (ArgumentError)
+        from -:1:in `new'
+        from -:1
+   ruby 1.7.1 (2001-08-29) [i586-linux]
+
+=&gt; ruby 1.7.1 (2001-10-05) [i586-linux]
+   ""
+</PRE></DD></DL>
+<H3><A id=a2001-09-11 name=a2001-09-11>2001-09-11</A><!-- RDLabel: "2001-09-11" --></H3>
+<DL>
+<DT><A class=modified-old id=path.20.20.20.20.20.20.20.5bnew.5d title="Dir (449d)" name=path.20.20.20.20.20.20.20.5bnew.5d>Dir#path</A> [new]<!-- RDLabel: "path       [new]" --> 
+<DD>
+<P>新增</P><PRE>p Dir.open(".").path
+=&gt; ruby 1.7.1 (2001-10-05) [i586-linux]
+   "."
+</PRE></DD></DL>
+<H3><A id=a2001-08-26 name=a2001-08-26>2001-08-26</A><!-- RDLabel: "2001-08-26" --></H3>
+<DL>
+<DT><A class=modified-old id=Readline.20.20.20.20.20.20.20.20.20.20.20.20.20.20.20.20.5bchange.5d title="Readline (1108d)" href="http://www.ruby-lang.org/ja/man/index.cgi?cmd=view;name=Readline"  name=Readline.20.20.20.20.20.20.20.20.20.20.20.20.20.20.20.20.5bchange.5d>Readline</A> [change]<!-- RDLabel: "Readline                [change]" --> 
+<DD>
+<P>在Readline.readline的执行过程中使用Ctrl-C进行中断之后，还可以恢复终端状态。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/14574" >[ruby-dev:14574]</A></P></DD></DL>
+<H3><A id=a2001-08-29 name=a2001-08-29>2001-08-29</A><!-- RDLabel: "2001-08-29" --></H3>
+<DL>
+<DT><A class=modified-old id=Precision.2eincluded.20.20.20.20.20.20.5bnew.5d title="Precision (1088d)" name=Precision.2eincluded.20.20.20.20.20.20.5bnew.5d>Precision</A>.included [new]<!-- RDLabel: "Precision.included      [new]" --> 
+<DD>
+<P>新增(<A class=modified-year title="Module (120d)">Module#included</A>的重定义)</P></DD></DL>
+<H3><A id=a2001-08-23 name=a2001-08-23>2001-08-23</A><!-- RDLabel: "2001-08-23" --></H3>
+<DL>
+<DT><A class=modified-old id=Signal.20.a5.e2.a5.b8.a5.e5.a1.bc.a5.eb.20.20.20.20.20.20.20.5bnew.5d title="Signal (368d)" name=Signal.20.a5.e2.a5.b8.a5.e5.a1.bc.a5.eb.20.20.20.20.20.20.20.5bnew.5d>Signal</A> 模块 [new] 
+<DD>
+<P>新增。</P>
+<DT><A id=while.2c.20until.2c.20class.2c.20def.20.a4.ce.c3.cd.20.20.20.20.20.20.20.20.20.5bruby.5d.20.5bchange.5d name=while.2c.20until.2c.20class.2c.20def.20.a4.ce.c3.cd.20.20.20.20.20.20.20.20.20.5bruby.5d.20.5bchange.5d>while, until, class, def 的值 [ruby] [change]</A><!-- RDLabel: "while, until, class, def 的值         [ruby] [change]" --> 
+<DD>
+<P>while, until, class, def能返回值了。</P>
+<P>class/module 返回最后计算的表达式的值。def返回nil。while/until通常返回 nil，若使用带参数的break的话，则可以返回任何值。</P><PRE>p(while false; p nil end)
+p(while true; break "bar" end)
+p(class Foo; true end)
+p(module Bar; true end)
+p(def foo; true end)
+=&gt; -:1: void value expression
+   -:2: void value expression
+   -:3: void value expression
+   -:4: void value expression
+   -:5: void value expression
+   ruby 1.7.1 (2001-08-20) [i586-linux]
+=&gt; -:1: warning: void value expression
+   -:2: warning: void value expression
+   -:3: warning: void value expression
+   -:4: warning: void value expression
+   -:5: warning: void value expression
+   ruby 1.7.1 (2001-08-23) [i586-linux]
+   false
+   "bar"
+   true
+   true
+   nil
+</PRE>
+<P>修正后，while/until会在途中返回nil。 <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/15909" >[ruby-dev:15909]</A></P><PRE>=&gt; -:1: warning: void value expression
+   -:2: warning: void value expression
+   -:3: warning: void value expression
+   -:4: warning: void value expression
+   -:5: warning: void value expression
+   ruby 1.7.2 (2002-02-20) [i586-linux]
+   nil
+   "bar"
+   true
+   true
+   nil
+</PRE>
+<DT><A class=modified-old id=Range.23.3d.3d.3d title="Range (423d)" name=Range.23.3d.3d.3d>Range</A>#===<!-- RDLabel: "Range#===" --> 
+<DD>
+<P>以前在对 字符串的范围对象 和 字符串 进行比较时，只会与范围的两段作比较。而现在则使用String#upto来和每个元素进行比较。</P>
+<P>(2002-06-04: 之后作的修改)</P><PRE>p(("a" .. "ab") === "aa")
+=&gt; ruby 1.7.1 (2001-08-20) [i586-linux]
+   true
+=&gt; ruby 1.7.1 (2001-08-23) [i586-linux]
+   false
+</PRE>
+<DT><A class=modified-year id=Enumerable.23sort_by.20.20.20.20.20.20.5bnew.5d title="Enumerable (105d)" name=Enumerable.23sort_by.20.20.20.20.20.20.5bnew.5d>Enumerable</A>#sort_by [new]<!-- RDLabel: "Enumerable#sort_by      [new]" --> 
+<DD>
+<P>新增。这是为处理<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/8986" >[ruby-dev:8986]</A>之后提到的Schwartzian transform而准备的sort。</P>
+<DT><A id=Curses.20.20.20.20.20.20.20.20.5blib.5d.20.5bcompat.5d name=Curses.20.20.20.20.20.20.20.20.5blib.5d.20.5bcompat.5d>Curses [lib] [compat]</A><!-- RDLabel: "Curses        [lib] [compat]" --> 
+<DD>
+<P>Updated. New methods and constants for using the mouse, character attributes, colors and key codes have been added.</P>
+<DT><A class=modified-old id=Range.23step.28.5bstep.3d1.5d.29.20.20.20.20.5bnew.5d title="Range (423d)" name=Range.23step.28.5bstep.3d1.5d.29.20.20.20.20.5bnew.5d>Range</A>#step([step=1]) [new]<!-- RDLabel: "Range#step([step=1])    [new]" --> 
+<DD>
+<P>新增。每隔step就使用对应元素进行迭代。</P>
+<DT><A id=a.be.f2.b7.ef.bc.b0.c3.e6.a4.ce.c0.b5.b5.ac.c9.bd.b8.bd.a5.ea.a5.c6.a5.e9.a5.eb.20.20.20.20.5bparser.5d.20.5bchange.5d name=a.be.f2.b7.ef.bc.b0.c3.e6.a4.ce.c0.b5.b5.ac.c9.bd.b8.bd.a5.ea.a5.c6.a5.e9.a5.eb.20.20.20.20.5bparser.5d.20.5bchange.5d>条件式中的正则表达式字面值 [parser] [change]</A><!-- RDLabel: "条件式中的正则表达式字面值    [parser] [change]" --> 
+<DD>
+<P>条件式中的正则表达式字面值 会给出警告。</P>
+<P>在于$_ 进行正则表达式匹配时，推荐您这样显式地处理 ~/re/ (单项的 <A class=modified-year title="Regexp (171d)">~</A>方法)。</P><PRE>$_ = "foo"
+p $_ if /foo/
+p $_ if /bar/
+
+=&gt; -:2: warning: regex literal in condition
+   -:3: warning: regex literal in condition
+   ruby 1.7.1 (2001-08-14) [i586-linux]
+   "foo"
+</PRE>
+<DT><A class=modified-year id=lstrip.20.20.20.20.20.5bnew.5d title="String (104d)" name=lstrip.20.20.20.20.20.5bnew.5d>String#lstrip</A> [new]<!-- RDLabel: "lstrip     [new]" --> 
+<DT><A class=modified-year id=rstrip.20.20.20.20.20.5bnew.5d title="String (104d)" name=rstrip.20.20.20.20.20.5bnew.5d>String#rstrip</A> [new]<!-- RDLabel: "rstrip     [new]" --> 
+<DT><A class=modified-year id=lstrip.21.20.20.20.20.20.5bnew.5d title="String (104d)" name=lstrip.21.20.20.20.20.20.5bnew.5d>String#lstrip!</A> [new]<!-- RDLabel: "lstrip!     [new]" --> 
+<DT><A class=modified-year id=rstrip.21.20.20.20.20.20.5bnew.5d title="String (104d)" name=rstrip.21.20.20.20.20.20.5bnew.5d>String#rstrip!</A> [new]<!-- RDLabel: "rstrip!     [new]" --> 
+<DD>
+<P>新增。去除左端或右端的空格。</P>
+<DT><A class=modified-old id=Socket.2epack_sockaddr_in.20.20.20.20.20.20.20.20.20.20.5bnew.5d title="Socket (371d)" name=Socket.2epack_sockaddr_in.20.20.20.20.20.20.20.20.20.20.5bnew.5d>Socket.pack_sockaddr_in</A> [new]<!-- RDLabel: "Socket.pack_sockaddr_in          [new]" --> 
+<DT><A class=modified-old id=Socket.2eunpack_sockaddr_in.20.20.20.20.20.20.20.20.5bnew.5d title="Socket (371d)" name=Socket.2eunpack_sockaddr_in.20.20.20.20.20.20.20.20.5bnew.5d>Socket.unpack_sockaddr_in</A> [new]<!-- RDLabel: "Socket.unpack_sockaddr_in        [new]" --> 
+<DD>
+<P>新增。套接字地址结构体(INET domain)的pack/unpack。</P>
+<DT><A class=modified-old id=Socket.2epack_sockaddr_un.20.20.20.20.20.20.5bnew.5d title="Socket (371d)" name=Socket.2epack_sockaddr_un.20.20.20.20.20.20.5bnew.5d>Socket.pack_sockaddr_un</A> [new]<!-- RDLabel: "Socket.pack_sockaddr_un      [new]" --> 
+<DT><A class=modified-old id=Socket.2eunpack_sockaddr_un.20.20.20.20.5bnew.5d title="Socket (371d)" name=Socket.2eunpack_sockaddr_un.20.20.20.20.5bnew.5d>Socket.unpack_sockaddr_un</A> [new]<!-- RDLabel: "Socket.unpack_sockaddr_un    [new]" --> 
+<DD>
+<P>新增。套接字地址结构体(UNIX domain)的pack/unpack。</P>
+<DT><A class=modified-year id=casecmp.20.20.20.5bnew.5d title="String (104d)" name=casecmp.20.20.20.5bnew.5d>String#casecmp</A> [new]<!-- RDLabel: "casecmp   [new]" --> 
+<DD>
+<P>新增。忽略字母的大小写区别来比较字符串。</P>
+<DT><A class=modified-year id=eql.3f.20.20.20.20.20.20.20.20.20.5bchange.5d title="String (104d)" name=eql.3f.20.20.20.20.20.20.20.20.20.5bchange.5d>String#eql?</A> [change]<!-- RDLabel: "eql?         [change]" --> 
+<DD>
+<P>不管<A class=modified-year title="内部变量 (139d)">$=</A>的值如何，总是区分字母的大小写。</P>
+<DT><A class=modified-year id=include.3f.20.5bnew.5d title="Module (120d)" name=include.3f.20.5bnew.5d>Module#include?</A> [new]<!-- RDLabel: "include? [new]" --> 
+<DD>
+<P>新增 <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/13941" >[ruby-dev:13941]</A></P>
+<DT><A class=modified-old id=Dir.2echdir.20.20.20.20.20.20.5bbug.5d title="Dir (449d)" name=Dir.2echdir.20.20.20.20.20.20.5bbug.5d>Dir.chdir</A> [bug]<!-- RDLabel: "Dir.chdir      [bug]" --> 
+<DD>
+<P>Changed to warn only when invoked from multiple threads or no block is given. <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/13823" >[ruby-dev:13823]</A></P><PRE>Dir.chdir("/tmp")
+
+pwd = Dir.pwd       #=&gt; "/tmp"
+puts pwd
+
+Dir.chdir("foo") {
+  pwd = Dir.pwd     #=&gt; "/tmp/foo"
+  puts pwd
+
+  Dir.chdir("bar") {        # &lt;-- previously warned
+    pwd = Dir.pwd   #=&gt; "/tmp/foo/bar"
+    puts pwd
+  }
+
+  pwd = Dir.pwd     #=&gt; "/tmp/foo"
+  puts pwd
+}
+
+pwd = Dir.pwd       #=&gt; "/tmp"
+puts pwd
+</PRE>
+<DT><A id=Proc.23yield_2 name=Proc.23yield_2>Proc#yield</A><!-- RDLabel: "Proc#yield" --> 
+<DD>
+<P>新增 <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/13597" >[ruby-dev:13597]</A> (之后又被删除了)</P>
+<P>除去它不检查参数的个数之外，其他则与Proc#call 相同。</P>
+<DT><A class=modified-year id=File.2efnmatch.20.20.20.20.20.5bnew.5d title="File (316d)" name=File.2efnmatch.20.20.20.20.20.5bnew.5d>File.fnmatch</A> [new]<!-- RDLabel: "File.fnmatch     [new]" --> 
+<DT><A class=modified-year id=File.2efnmatch.3f.20.20.20.20.5bnew.5d title="File (316d)" name=File.2efnmatch.3f.20.20.20.20.5bnew.5d>File.fnmatch?</A> [new]<!-- RDLabel: "File.fnmatch?    [new]" --> 
+<DD>
+<P>新增</P>
+<P>在<A class=modified-old title="File::Constants (1026d)">File::Constants</A>模块中定义了该方法所用的FNM_NOESCAPE, FNM_PATHNAME, FNM_PERIOD, FNM_CASEFOLD标识。</P><PRE>p %w(foo bar bar.bak).reject! { |fn| File::fnmatch?("*.bak", fn) }
+=&gt; ruby 1.7.1 (2001-06-12) [i586-linux]
+   ["foo", "bar"]
+</PRE></DD></DL>
+<H3><A id=a2001-06-12 name=a2001-06-12>2001-06-12</A><!-- RDLabel: "2001-06-12" --></H3>
+<DL>
+<DT><A class=modified-old id=a.3d.3d.20.5bnew.5d title="Method (463d)" name=a.3d.3d.20.5bnew.5d>Method#==</A> [new]<!-- RDLabel: "== [new]" --> 
+<DD>
+<P>新增</P></DD></DL>
+<H3><A id=a2001-06-12.28.3f.29 name=a2001-06-12.28.3f.29>2001-06-12(?)</A><!-- RDLabel: "2001-06-12(?)" --></H3>
+<DL>
+<DT><A id=a.c2.bf.bd.c5.c2.e5.c6.fe.20.5bchange.5d name=a.c2.bf.bd.c5.c2.e5.c6.fe.20.5bchange.5d>多重赋值 [change]</A> 
+<DD>
+<P>修改了多重赋值的规则。变更如下。</P><PRE>#
+*a = nil
+p a
+=&gt; ruby 1.7.1 (2001-06-05) [i586-linux]
+   [nil]
+=&gt; ruby 1.7.1 (2001-06-12) [i586-linux]
+   []
+=&gt; ruby 1.8.0 (2003-01-18) [i586-linux]
+   [nil]
+</PRE>
+<P>但好像是又改回去了。与2003-01-07 的 eval.c的块参数比较起来，它应该是正确的。</P><PRE>def foo
+  yield nil
+  yield
+end
+foo {|*a| p a}
+
+=&gt; ruby 1.6.8 (2002-12-24) [i586-linux]
+   [nil]
+   [nil]
+=&gt; ruby 1.8.0 (2003-08-04) [i586-linux]
+   [nil]
+   []
+</PRE></DD></DL>
+<H3><A id=a2001-06-05.28.3f.29 name=a2001-06-05.28.3f.29>2001-06-05(?)</A><!-- RDLabel: "2001-06-05(?)" --></H3>
+<DL>
+<DT><A id=a.c7.db.ce.f3.c5.b8.b3.ab.20.5bchange.5d name=a.c7.db.ce.f3.c5.b8.b3.ab.20.5bchange.5d>展开数组 [change]</A> 
+<DD>
+<P>修正了下列问题。现在，只包含1元素的数组也能被正常展开。</P><PRE>a = *[1]
+p a #=&gt; [1]
+
+=&gt; ruby 1.6.8 (2002-12-24) [i586-linux]
+   [1]
+=&gt; ruby 1.7.1 (2001-06-05) [i586-linux]
+   1
+</PRE>
+<DT><A class=modified-old id=NameError.20.26.20NoMethodError.20.5bchange.5d title="NameError (574d)" name=NameError.20.26.20NoMethodError.20.5bchange.5d>NameError</A> &amp; <A class=modified-old title="NoMethodError (517d)">NoMethodError</A> [change]<!-- RDLabel: "NameError & NoMethodError [change]" --> 
+<DD>
+<P>重新回到NameError を StandardError 的子类中去。类的层次关系如下。</P><PRE>NoMethodError &lt; NameError &lt; StandardError.
+</PRE>
+<DT><A class=modified-year id=File.2eopen.20.20.20.20.20.20.20.5bbug.5d title="File (316d)" name=File.2eopen.20.20.20.20.20.20.20.5bbug.5d>File.open</A> [bug]<!-- RDLabel: "File.open       [bug]" --> 
+<DD>
+<P>以前，只有将第2参数指定为数值(File::RDONLY|File::CREAT等)时，才会使用第3参数。现在只要给出了第3参数，就总是有效的。<A href="http://www.ruby-lang.org/cgi-bin/ruby-bugs-ja?selectid=54" >[ruby-bugs-ja:PR#54]</A></P>
+<DT><A id=a.5bruby.5d.20.5bcompat.5d name=a.5bruby.5d.20.5bcompat.5d>[ruby] [compat]</A><!-- RDLabel: "[ruby] [compat]" --> 
+<DD>
+<P>由于使用了内部的哈希表，所以使用常数的速度有所提升。(对应于ChangeLog的</P><PRE>Tue Jun  5 16:15:58 2001  Yukihiro Matsumoto  &lt;matz@ruby-lang.org&gt;
+</PRE>
+<P>部分)</P>
+<DT><A id=a.ca.b8.cb.a1.20.20.5bparser.5d.20.5bchange.5d name=a.ca.b8.cb.a1.20.20.5bparser.5d.20.5bchange.5d>语法 [parser] [change]</A><!-- RDLabel: "语法  [parser] [change]" --> 
+<DD>
+<P>下列代码(请注意p后面的空格)</P><PRE>p ("xx"*2).to_i
+</PRE>
+<P>不会被解生成</P><PRE>(p("xx"*2)).to_i
+</PRE>
+<P>而是</P><PRE>p (("xx"*2).to_i)
+</PRE>
+<P>这样(这只是试验性的修改)。</P>
+<DT><A class=modified-old id=to_ary title="Range (423d)" name=to_ary>Range#to_ary</A><!-- RDLabel: "to_ary" --> 
+<DD>
+<P>新增。现在(因为会自动进行数组变换，所以)可以写成这样。(2003-03-29: 此后Range#to_ary就被删除了)</P><PRE>a, b, c = 1..3
+p [a, b, c]
+
+=&gt; ruby 1.6.8 (2002-12-24) [i586-linux]
+   [1..3, nil, nil]
+
+=&gt; ruby 1.7.3 (2002-12-11) [i586-linux]
+   [1, 2, 3]
+
+=&gt; ruby 1.8.0 (2003-03-29) [i586-linux]
+   [1..3, nil, nil]
+</PRE>
+<DT><A id=break.20and.20next.20.20.20.20.20.20.20.20.5bcompat.5d name=break.20and.20next.20.20.20.20.20.20.20.20.5bcompat.5d>break and next [compat]</A><!-- RDLabel: "break and next        [compat]" --> 
+<DD>
+<P>使用参数之后，break, next就可以返回 迭代器 或 yield 的值了。(该功能尚处于试验阶段)</P>
+<P>break [n]会终止迭代器，n就是迭代器的返回值。 而next [n]会跳到块的外面，n就是yield的返回值。</P><PRE>def foo
+  p yield
+end
+
+foo { next 1 }
+
+def bar
+  yield
+end
+
+p bar { break "foo" }
+
+=&gt; ruby 1.7.1 (2001-08-20) [i586-linux]
+   1
+   "foo"
+</PRE>
+<DT><A id=to_str.20.20.20.20.20.20.20.20.5bcompat.5d name=to_str.20.20.20.20.20.20.20.20.5bcompat.5d>to_str [compat]</A><!-- RDLabel: "to_str        [compat]" --> 
+<DD>
+<P>定义了to_str的对象将在更大的空间内扮演String的角色。</P>
+<P>大部分将字符串作为参数的内部方法都在尝试调用to_str进行隐式的类型变换。</P><PRE>foo = Object.new
+class &lt;&lt;foo
+  def to_str
+    "foo"
+  end
+end
+p File.open(foo)
+=&gt; -:7:in `open': wrong argument type Object (expected String) (TypeError)
+   ruby 1.6.4 (2001-04-19) [i586-linux]
+=&gt; -:7:in `open': No such file or directory - "foo" (Errno::ENOENT)
+   ruby 1.7.0 (2001-05-02) [i586-linux]
+</PRE>
+<DT><A id=a.b3.c8.c4.a5.a5.e9.a5.a4.a5.d6.a5.e9.a5.eaAPI.28STR2CSTR.28.29.29.20.5bapi.5d.20.5bnew.5d name=a.b3.c8.c4.a5.a5.e9.a5.a4.a5.d6.a5.e9.a5.eaAPI.28STR2CSTR.28.29.29.20.5bapi.5d.20.5bnew.5d>扩展库API(STR2CSTR()) [api] [new]</A><!-- RDLabel: "扩展库API(STR2CSTR()) [api] [new]" --> 
+<DD>
+<P>如果把一个包含to_str方法的非字符串对象传给扩展库的API--STR2CSTR()的话，它就会在内部调用to_str，进行隐式的类型转换。此时虽然能返回变换结果所保持的字符串指针，但在该API中，这个隐式变换的结果不会被任何对象所使用，因此可能会被GC回收掉。 <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/12731" >[ruby-dev:12731]</A></P>
+<P>version 1.7以后，使用StringValuePtr()来替代它。此时，参数所用的对象会被隐式转换结果所替代，因此变换结果不会被GC所回收。(在version 1.7中，STR2CSTR()变成obsolete)</P>
+<P>另外还准备了一个新的API--StringValue()。在需要对参数进行to_str的隐式类型变换时使用它。若参数是字符串的话，则不进行任何操作。把它用在处理字符串的方法的前面则会相当方便。</P>
+<P>目前还没有开发出替代str2cstr() (返回C指针和字符串长度)的安全的API。(在<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/15644" >[ruby-dev:15644]</A>中有一些建议)</P>
+<DT><A id=a.c8.cf.b0.cf.b1.e9.bb.bb.bb.d2.bc.b0.c3.e6.a4.ce.a5.ea.a5.c6.a5.e9.a5.eb.20.5bruby.5d.20.5bchange.5d name=a.c8.cf.b0.cf.b1.e9.bb.bb.bb.d2.bc.b0.c3.e6.a4.ce.a5.ea.a5.c6.a5.e9.a5.eb.20.5bruby.5d.20.5bchange.5d>范围操作符表达式中的字面值 [ruby] [change]</A><!-- RDLabel: "范围操作符表达式中的字面值 [ruby] [change]" --> 
+<DD>
+<P>只有在使用-e选项的单行脚本中，才能对 范围操作符表达式中的单个数值字面值 和 <CODE>$.</CODE> 进行比较。</P>
+<DT><A id=rescue.20.c0.e1.a4.ce.ce.e3.b3.b0.a5.af.a5.e9.a5.b9.a4.c8.c8.af.c0.b8.a4.b7.a4.bf.ce.e3.b3.b0.a5.aa.a5.d6.a5.b8.a5.a7.a5.af.a5.c8.a4.ce.c8.e6.b3.d3.20.5bruby.5d.20.5bchange.5d name=rescue.20.c0.e1.a4.ce.ce.e3.b3.b0.a5.af.a5.e9.a5.b9.a4.c8.c8.af.c0.b8.a4.b7.a4.bf.ce.e3.b3.b0.a5.aa.a5.d6.a5.b8.a5.a7.a5.af.a5.c8.a4.ce.c8.e6.b3.d3.20.5bruby.5d.20.5bchange.5d>rescue中的异常类 和 发生的异常对象 之间的比较 [ruby] [change]</A> 
+<DD>
+<P>使用<A>Module#===</A>来比较 发生的异常$! 和 rescue中的异常类。</P>
+<P>以前使用kind_of?来进行比较时，基本上也没有什么问题。这里主要是对SystemCallError.===进行了重定义，只要两个异常的errno相同就把它们看作是同一个异常。因此，若Errno::EWOULDBLOCK 和 Errno::EAGAIN的意义相同(相同的errno)时，不管指定哪个，都可以进行rescue。</P>
+<P>后来，只要两个Errno::XXX对象的errno相同，就被看作是相同的异常，因此这个修改也就失效了，但却一直保留下来。 (或许在用户定义异常类时还能用到) <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/19589" >[ruby-dev:19589]</A></P>
+<DT><A class=modified-month id=collect.20.20.20.5bbug.5d title="Array (11d)" name=collect.20.20.20.5bbug.5d>Array#collect</A> [bug]<!-- RDLabel: "collect   [bug]" --> 
+<DT><A class=modified-month id=map.20.20.20.20.20.20.20.5bbug.5d title="Array (11d)" name=map.20.20.20.20.20.20.20.5bbug.5d>Array#map</A> [bug]<!-- RDLabel: "map       [bug]" --> 
+<DD>
+<P>在不带块的时候，Array#collect会返回self.dup。因此可能会返回Array以外的对象<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-list/30480" >[ruby-list:30480]</A>。</P><PRE>Foo = Class.new Array
+
+a = Foo.new
+p a.map.class
+p a.collect.class
+
+=&gt; ruby 1.7.1 (2001-06-12) [i586-linux]
+   Array
+   Foo
+
+=&gt; ruby 1.7.1 (2001-07-31) [i586-linux]
+   Array
+   Array
+</PRE>
+<DT><A class=modified-month id=dup title="Array (11d)" href="http://www.ruby-lang.org/ja/man/index.cgi?cmd=view;name=Array#dup"  name=dup>Array#dup</A><!-- RDLabel: "dup" --> 
+<DD>
+<P>修正了dup中的bug <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-list/30481" >[ruby-list:30481]</A> (1.6 中也进行了修正)</P><PRE>class Foo &lt; Array
+  attr_accessor :foo
+end
+
+a = Foo.new
+a.foo = 1
+b = a.dup
+b.foo
+b.foo = 99
+p b.foo
+
+# =&gt; ruby 1.6.4 (2001-06-04) [i586-linux]
+     nil
+
+# =&gt; ruby 1.6.4 (2001-07-31) [i586-linux]
+     99
+</PRE>
+<DT><A class=modified-month id=fetch.20.20.20.20.20.5bnew.5d title="Array (11d)" name=fetch.20.20.20.20.20.5bnew.5d>Array#fetch</A> [new]<!-- RDLabel: "fetch     [new]" --> 
+<DD>
+<P>新增</P>
+<DT><A class=modified-month id=insert.20.20.20.20.20.5bnew.5d title="Array (11d)" name=insert.20.20.20.20.20.5bnew.5d>Array#insert</A> [new]<!-- RDLabel: "insert     [new]" --> 
+<DD>
+<P>新增 <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/14289" >[ruby-talk:14289]</A></P>
+<P>与<CODE>ary[n,0] = [other,...]</CODE> 相同(但却返回self)</P><PRE>ary = [0,1,2,3]
+ary[2, 0] = [4, 5, 6]
+p ary
+
+ary = [0,1,2,3]
+ary.insert(2, 4, 5, 6)
+p ary
+</PRE>
+<DT><A class=modified-month id=pack.20.20.20.20.20.20.5bchange.5d title="Array (11d)" name=pack.20.20.20.20.20.20.5bchange.5d>Array#pack</A> [change]<!-- RDLabel: "pack      [change]" --> 
+<DT><A class=modified-year id=unpack.20.20.20.5bchange.5d title="String (104d)" name=unpack.20.20.20.5bchange.5d>String#unpack</A> [change]<!-- RDLabel: "unpack   [change]" --> 
+<DD>
+<P>Array#pack, String#unpack 的模板字符"p", "P"可以对nil和NULL指针进行互换了。<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/13017" >[ruby-dev:13017]</A>。</P><PRE>p [nil].pack("p")
+p "\0\0\0\0".unpack("p")
+
+=&gt; ruby 1.7.0 (2001-05-17) [i586-linux]
+   "\000\000\000\000"
+   [nil]
+</PRE>
+<DT><A class=modified-month id=sort.21.20.20.20.20.20.5bchange.5d title="Array (11d)" name=sort.21.20.20.20.20.20.5bchange.5d>Array#sort!</A> [change]<!-- RDLabel: "sort!     [change]" --> 
+<DD>
+<P>总是返回self。</P>
+<P>不能保证将来一直如此 <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/12506" >[ruby-dev:12506]</A>。</P>
+<DT><A class=modified-old id=Class.2einherited.20.5bcompat.5d title="Class (661d)" name=Class.2einherited.20.5bcompat.5d>Class.inherited</A> [compat]<!-- RDLabel: "Class.inherited [compat]" --> 
+<DD>
+<P>(注: 并非Class#inherited)</P>
+<P>以前为了禁止类定义子类而设立该方法，(其作用是引发<A class=modified-old title="TypeError (1208d)">TypeError</A>异常)现在由Class.new来完成这个任务，所以Class.inherited方法就被删除了。</P><PRE>class SubClass &lt; Class
+end
+
+#=&gt; -:1:in `inherited': can't make subclass of Class (TypeError)
+            from -:1
+    ruby 1.7.1 (2001-06-12) [i586-linux]
+
+#=&gt; -:1: can't make subclass of Class (TypeError)
+    ruby 1.7.1 (2001-07-31) [i586-linux]
+</PRE>
+<DT><A class=modified-old id=Dir.2eopen.20.20.20.20.20.20.20.20.5bchange.5d title="Dir (449d)" name=Dir.2eopen.20.20.20.20.20.20.20.20.5bchange.5d>Dir.open</A> [change]<!-- RDLabel: "Dir.open        [change]" --> 
+<DD>
+<P>若带块的话，则与<A class=modified-year title="File (316d)">File</A>.open相同，块的结果成为方法的返回值。(在1.6以前，其返回值恒为<CODE>nil</CODE>)</P>
+<DT><A class=modified-old id=Dir.2echdir.20.20.20.20.20.20.20.5bcompat.5d title="Dir (449d)" name=Dir.2echdir.20.20.20.20.20.20.20.5bcompat.5d>Dir.chdir</A> [compat]<!-- RDLabel: "Dir.chdir       [compat]" --> 
+<DD>
+<P>可以指定块了。</P>
+<DT><A class=modified-old id=Dir.2eglob.20.20.20.20.20.20.20.20.5bchange.5d title="Dir (449d)" name=Dir.2eglob.20.20.20.20.20.20.20.20.5bchange.5d>Dir.glob</A> [change]<!-- RDLabel: "Dir.glob        [change]" --> 
+<DD>
+<P>可以使用前面的反斜线来对通配符进行转义处理。另外，空格也不再具有特殊意义('\0'依然有效)。</P>
+<DT><A class=modified-year id=all.3f.20.20.20.20.20.20.20.20.20.5bnew.5d title="Enumerable (105d)" name=all.3f.20.20.20.20.20.20.20.20.20.5bnew.5d>Enumerable#all?</A> [new]<!-- RDLabel: "all?         [new]" --> 
+<DT><A class=modified-year id=any.3f.20.20.20.20.20.20.20.20.20.5bnew.5d title="Enumerable (105d)" name=any.3f.20.20.20.20.20.20.20.20.20.5bnew.5d>Enumerable#any?</A> [new]<!-- RDLabel: "any?         [new]" --> 
+<DT><A class=modified-year id=inject.20.20.20.20.20.20.20.5bnew.5d title="Enumerable (105d)" name=inject.20.20.20.20.20.20.20.5bnew.5d>Enumerable#inject</A> [new]<!-- RDLabel: "inject       [new]" --> 
+<DD>
+<P>新增</P>
+<DT><A class=modified-year id=File.2elchmod.20.20.20.20.20.5bnew.5d title="File (316d)" name=File.2elchmod.20.20.20.20.20.5bnew.5d>File.lchmod</A> [new]<!-- RDLabel: "File.lchmod     [new]" --> 
+<DT><A class=modified-year id=File.2elchown.20.20.20.20.20.5bnew.5d title="File (316d)" name=File.2elchown.20.20.20.20.20.5bnew.5d>File.lchown</A> [new]<!-- RDLabel: "File.lchown     [new]" --> 
+<DD>
+<P>新增</P>
+<DT><A class=modified-year id=IO.2efor_fd.20.20.20.20.20.20.20.5bnew.5d title="IO (145d)" name=IO.2efor_fd.20.20.20.20.20.20.20.5bnew.5d>IO.for_fd</A> [new]<!-- RDLabel: "IO.for_fd       [new]" --> 
+<DD>
+<P>新增</P>
+<DT><A class=modified-year id=IO.2eread.20.20.20.20.20.20.20.20.20.5bnew.5d title="IO (145d)" name=IO.2eread.20.20.20.20.20.20.20.20.20.5bnew.5d>IO.read</A> [new]<!-- RDLabel: "IO.read         [new]" --> 
+<DD>
+<P>新增。主要是实现了<A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/9460" >[ruby-talk:9460]</A>中提到的功能</P>
+<DT><A class=modified-old id=Interrupt.20.20.20.20.20.20.20.20.20.20.20.20.20.20.20.20.20.20.20.20.20.20.20.5bchange.5d title="Interrupt (599d)" name=Interrupt.20.20.20.20.20.20.20.20.20.20.20.20.20.20.20.20.20.20.20.20.20.20.20.5bchange.5d>Interrupt</A> [change]<!-- RDLabel: "Interrupt                       [change]" --> 
+<DD>
+<P>Interrupt 成为<A class=modified-old title="SignalException (599d)">SignalException</A>的子类。(在1.6以前，它是Exception的子类)</P>
+<DT><A class=modified-old id=MAJOR_VERSION.20.20.20.20.20.20.20.20.20.20.5bnew.5d title="Marshal (519d)" name=MAJOR_VERSION.20.20.20.20.20.20.20.20.20.20.5bnew.5d>Marshal::MAJOR_VERSION</A> [new]<!-- RDLabel: "MAJOR_VERSION          [new]" --> 
+<DT><A class=modified-old id=MINOR_VERSION.20.20.20.20.20.20.20.20.20.20.5bnew.5d title="Marshal (519d)" name=MINOR_VERSION.20.20.20.20.20.20.20.20.20.20.5bnew.5d>Marshal::MINOR_VERSION</A> [new]<!-- RDLabel: "MINOR_VERSION          [new]" --> 
+<DD>
+<P>新增。Marshal输出的dump format的版本号。 <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/14172" >[ruby-dev:14172]</A></P>
+<DT><A class=modified-old id=to_ary_2 title="MatchData (538d)" name=to_ary_2>MatchData#to_ary</A><!-- RDLabel: "to_ary" --> 
+<DD>
+<P>新增 <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/12766" >[ruby-dev:12766]</A> (2003-03-28: 后来又消失了)</P>
+<P>为了方便Regexp#match而设。以前必须得</P><PRE>foo, bar, baz = /(\w+?)\s+(\w+?)\s+(\w+)/.match("foo bar baz").to_a[1..-1]
+p [foo, bar, baz]
+</PRE>
+<P>这样才行。现在可以</P><PRE>_, foo, bar, baz = /(\w+?)\s+(\w+?)\s+(\w+)/.match("foo bar baz")
+p [foo, bar, baz]
+</PRE>
+<P>这样。</P>
+<DT><A class=modified-old id=Math.2eacos.20.20.20.20.20.20.20.20.20.20.5bnew.5d title="Math (543d)" name=Math.2eacos.20.20.20.20.20.20.20.20.20.20.5bnew.5d>Math.acos</A> [new]<!-- RDLabel: "Math.acos          [new]" --> 
+<DT><A class=modified-old id=Math.2easin.20.20.20.20.20.20.20.20.20.20.5bnew.5d title="Math (543d)" name=Math.2easin.20.20.20.20.20.20.20.20.20.20.5bnew.5d>Math.asin</A> [new]<!-- RDLabel: "Math.asin          [new]" --> 
+<DT><A class=modified-old id=Math.2eatan.20.20.20.20.20.20.20.20.20.20.5bnew.5d title="Math (543d)" name=Math.2eatan.20.20.20.20.20.20.20.20.20.20.5bnew.5d>Math.atan</A> [new]<!-- RDLabel: "Math.atan          [new]" --> 
+<DT><A class=modified-old id=Math.2ecosh.20.20.20.20.20.20.20.20.20.20.5bnew.5d title="Math (543d)" name=Math.2ecosh.20.20.20.20.20.20.20.20.20.20.5bnew.5d>Math.cosh</A> [new]<!-- RDLabel: "Math.cosh          [new]" --> 
+<DT><A class=modified-old id=Math.2esinh.20.20.20.20.20.20.20.20.20.20.5bnew.5d title="Math (543d)" name=Math.2esinh.20.20.20.20.20.20.20.20.20.20.5bnew.5d>Math.sinh</A> [new]<!-- RDLabel: "Math.sinh          [new]" --> 
+<DT><A class=modified-old id=Math.2etanh.20.20.20.20.20.20.20.20.20.20.5bnew.5d title="Math (543d)" name=Math.2etanh.20.20.20.20.20.20.20.20.20.20.5bnew.5d>Math.tanh</A> [new]<!-- RDLabel: "Math.tanh          [new]" --> 
+<DT><A class=modified-old id=Math.2ehypot.20.20.20.20.20.20.20.20.20.5bnew.5d title="Math (543d)" name=Math.2ehypot.20.20.20.20.20.20.20.20.20.5bnew.5d>Math.hypot</A> [new]<!-- RDLabel: "Math.hypot         [new]" --> 
+<DD>
+<P>新增</P>
+<DT><A class=modified-year id=included.20.20.20.20.20.20.20.20.20.5bnew.5d title="Module (120d)" name=included.20.20.20.20.20.20.20.20.20.5bnew.5d>Module#included</A> [new]<!-- RDLabel: "included         [new]" --> 
+<DD>
+<P>新增。在Module#append_feature后调用的hook</P>
+<DT><A class=modified-year id=method_removed.20.20.20.5bnew.5d title="Module (120d)" name=method_removed.20.20.20.5bnew.5d>Module#method_removed</A> [new]<!-- RDLabel: "method_removed   [new]" --> 
+<DT><A class=modified-year id=method_undefined.20.5bnew.5d title="Module (120d)" name=method_undefined.20.5bnew.5d>Module#method_undefined</A> [new]<!-- RDLabel: "method_undefined [new]" --> 
+<DD>
+<P>新增</P>
+<DT><A id=Numeric.23.2f name=Numeric.23.2f>Numeric#/</A><!-- RDLabel: "Numeric#/" --> 
+<DD>
+<P>新增。返回商。</P>
+<P>(之后变成div(?))</P>
+<DT><A class=modified-old id=NoMethodError.20.20.20.5bnew.5d title="NoMethodError (517d)" name=NoMethodError.20.20.20.5bnew.5d>NoMethodError</A> [new]<!-- RDLabel: "NoMethodError   [new]" --> 
+<DD>
+<P>新增 <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/12763" >[ruby-dev:12763]</A></P>
+<DT><A id=NotImplementError.20.20.20.20.20.20.20.20.20.20.20.20.20.5bobsolete.5d name=NotImplementError.20.20.20.20.20.20.20.20.20.20.20.20.20.5bobsolete.5d>NotImplementError [obsolete]</A><!-- RDLabel: "NotImplementError             [obsolete]" --> 
+<DD>
+<P>旧称被删除。请使用<A class=modified-old title="NotImplementedError (1088d)">NotImplementedError</A></P>
+<DT><A class=modified-year id=singleton_method_removed.20.5bnew.5d title="Object (171d)" name=singleton_method_removed.20.5bnew.5d>Object#singleton_method_removed</A> [new]<!-- RDLabel: "singleton_method_removed [new]" --> 
+<DT><A class=modified-year id=singleton_method_undefined.20.5bnew.5d title="Object (171d)" name=singleton_method_undefined.20.5bnew.5d>Object#singleton_method_undefined</A> [new]<!-- RDLabel: "singleton_method_undefined [new]" --> 
+<DD>
+<P>新增</P>
+<DT><A class=modified-year id=singleton_methods.20.20.20.20.20.20.20.20.20.5bcompat.5d title="Object (171d)" href="http://www.ruby-lang.org/ja/man/index.cgi?cmd=view;name=Object#singleton_methods"  name=singleton_methods.20.20.20.20.20.20.20.20.20.5bcompat.5d>Object#singleton_methods</A> [compat]<!-- RDLabel: "singleton_methods         [compat]" --> 
+<DD>
+<P>新增了可选参数all。</P><PRE>class Foo
+  def foo
+  end
+end
+obj = Foo.new
+
+module Bar
+  def bar
+  end
+end
+
+class &lt;&lt;obj
+  include Bar
+  def baz
+  end
+end
+p obj.singleton_methods      #=&gt; ["baz"]
+p obj.singleton_methods true #=&gt; ["baz", "bar"]
+</PRE>
+<DT><A class=modified-month id=Process.2etimes.20.20.20.20.20.20.20.20.20.20.20.5bchange.5d title="Process (7d)" name=Process.2etimes.20.20.20.20.20.20.20.20.20.20.20.5bchange.5d>Process.times</A> [change]<!-- RDLabel: "Process.times           [change]" --> 
+<DD>
+<P>从<A class=modified-year title="Time (172d)">Time.times</A>移到这里。(Time.times还在，但会出现warning)</P>
+<DT><A class=modified-year id=Process.3a.3aStatus.20.20.20.20.20.20.20.20.20.5bnew.5d title="Process::Status (311d)" name=Process.3a.3aStatus.20.20.20.20.20.20.20.20.20.5bnew.5d>Process::Status</A> [new]<!-- RDLabel: "Process::Status         [new]" --> 
+<DD>
+<P>新增。<CODE>$?</CODE> 的值从整数中分离出来，变成该类的实例。</P>
+<DT><A class=modified-month id=Process.2ewaitall.20.20.20.20.20.20.20.20.20.5bnew.5d title="Process (7d)" name=Process.2ewaitall.20.20.20.20.20.20.20.20.20.5bnew.5d>Process.waitall</A> [new]<!-- RDLabel: "Process.waitall         [new]" --> 
+<DD>
+<P>新增</P>
+<DT><A class=modified-old id=include.3f.20.20.20.20.20.20.20.20.20.20.5bnew.5d title="Range (423d)" name=include.3f.20.20.20.20.20.20.20.20.20.20.5bnew.5d>Range#include?</A> [new]<!-- RDLabel: "include?          [new]" --> 
+<DT><A class=modified-old id=member.3f.20.20.20.20.20.20.20.20.20.20.20.5bnew.5d title="Range (423d)" name=member.3f.20.20.20.20.20.20.20.20.20.20.20.5bnew.5d>Range#member?</A> [new]<!-- RDLabel: "member?           [new]" --> 
+<DD>
+<P>新增</P>
+<DT><A class=modified-year id=Regexp.2elast_match.20.20.20.20.5bcompat.5d title="Regexp (171d)" href="http://www.ruby-lang.org/ja/man/index.cgi?cmd=view;name=Regexp#Regexp.2elast_match"  name=Regexp.2elast_match.20.20.20.20.5bcompat.5d>Regexp.last_match</A> [compat]<!-- RDLabel: "Regexp.last_match    [compat]" --> 
+<DD>
+<P>新增了可选参数。</P>
+<DT><A class=modified-year id=options.20.20.20.20.20.20.20.20.20.20.5bnew.5d title="Regexp (171d)" name=options.20.20.20.20.20.20.20.20.20.20.5bnew.5d>Regexp#options</A> [new]<!-- RDLabel: "options          [new]" --> 
+<DD>
+<P>新增</P>
+<DT><A class=modified-year id=casecmp.20.20.20.5bnew.5d_2 title="String (104d)" name=casecmp.20.20.20.5bnew.5d_2>String#casecmp</A> [new]<!-- RDLabel: "casecmp   [new]" --> 
+<DD>
+<P>新增。比较字符串而不区分大小写。</P>
+<DT><A class=modified-year id=insert.20.5bnew.5d title="String (104d)" name=insert.20.5bnew.5d>String#insert</A> [new]<!-- RDLabel: "insert [new]" --> 
+<DD>
+<P>新增</P>
+<P>与<CODE>str[n, 0] = other</CODE> 相同(但会返回 self)</P>
+<DT><A class=modified-old id=Symbol.2eall_symbols.20.20.20.20.20.20.5bnew.5d title="Symbol (500d)" name=Symbol.2eall_symbols.20.20.20.20.20.20.5bnew.5d>Symbol.all_symbols</A> [new]<!-- RDLabel: "Symbol.all_symbols      [new]" --> 
+<DD>
+<P>新增 <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/12921" >[ruby-dev:12921]</A></P>
+<DT><A class=modified-old id=intern title="Symbol (500d)" name=intern>Symbol#intern</A><!-- RDLabel: "intern" --> 
+<DD>
+<P>新增(???之后又被删除)</P>
+<DT><A class=modified-old id=SystemCallError.2e.3d.3d.3d.20.20.20.20.20.5bnew.5d title="SystemCallError (574d)" name=SystemCallError.2e.3d.3d.3d.20.20.20.20.20.5bnew.5d>SystemCallError.===</A> [new]<!-- RDLabel: "SystemCallError.===     [new]" --> 
+<DD>
+<P>新增 (请参考上面的「rescue 节的...」内容) <A href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/12670" >[ruby-dev:12670]</A></P>
+<DT><A class=modified-year id=status.20.20.20.20.20.20.20.5bnew.5d title="SystemExit (172d)" name=status.20.20.20.20.20.20.20.5bnew.5d>SystemExit#status</A> [new]<!-- RDLabel: "status       [new]" --> 
+<DD>
+<P>新增</P>
+<DT><A class=modified-year id=TCPSocket.2enew.20.20.20.5bcompat.5d title="TCPSocket (250d)" name=TCPSocket.2enew.20.20.20.5bcompat.5d>TCPSocket.new</A> [compat]<!-- RDLabel: "TCPSocket.new   [compat]" --> 
+<DT><A class=modified-year id=TCPSocket.2eopen.20.20.5bcompat.5d title="TCPSocket (250d)" name=TCPSocket.2eopen.20.20.5bcompat.5d>TCPSocket.open</A> [compat]<!-- RDLabel: "TCPSocket.open  [compat]" --> 
+<DD>
+<P>可使用第3,4参数来进行指定。</P>
+<DT><A class=modified-year id=keys.20.20.20.20.20.5bnew.5d title="Thread (259d)" name=keys.20.20.20.20.20.5bnew.5d>Thread#keys</A> [new]<!-- RDLabel: "keys     [new]" --> 
+<DD>
+<P>新增。返回Thread固有数据的键的数组。</P>
+<DT><A class=modified-year id=Time.20.20.20.20.20.20.20.20.20.20.20.20.5bcompat.5d title="Time (172d)" name=Time.20.20.20.20.20.20.20.20.20.20.20.20.5bcompat.5d>Time</A> [compat]<!-- RDLabel: "Time            [compat]" --> 
+<DD>
+<P>可以处理负的 time_t (仅限于OS支持的场合)</P><PRE>p Time.at(-1)
+=&gt; Thu Jan 01 08:59:59 JST 1970
+</PRE>
+<DT><A class=modified-year id=to_a.20.20.20.20.20.20.20.5bchange.5d title="Time (172d)" name=to_a.20.20.20.20.20.20.20.5bchange.5d>Time#to_a</A> [change]<!-- RDLabel: "to_a       [change]" --> 
+<DT><A class=modified-year id=zone.20.20.20.20.20.20.20.5bchange.5d title="Time (172d)" name=zone.20.20.20.20.20.20.20.5bchange.5d>Time#zone</A> [change]<!-- RDLabel: "zone       [change]" --> 
+<DD>
+<P>对gmtime 时区返回UTC" (以前取决于系统环境，大部分场合返回"GMT")</P></DD></DL>
+<HR>
+
+<DIV class=footer>Originally Written by webmaster@ruby-lang.org<BR>Translated by <A href="http://cn.ce-lab.net/" >Community Engine China</A> (<A href="mailto:rubycn@ce-lab.net">Mail</A>)<BR>Last update on 2005-01-24 </DIV></DIV></BODY>

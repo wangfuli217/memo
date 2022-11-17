@@ -1,0 +1,275 @@
+﻿<html xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+    <META NAME="save" CONTENT="history" />
+    <title>如何：复制、删除和移动文件和文件夹（C# 编程指南）</title>
+    <link rel="stylesheet" type="text/css" href="../styles/presentation.css" />
+    <link rel="stylesheet" type="text/css" href="ms-help://Hx/HxRuntime/HxLink.css" />
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/EventUtilities.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/SplitScreen.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/Dropdown.js"> </script>
+    <script type="text/javascript" src="../scripts/script_manifold.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/script_feedBack.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CheckboxMenu.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CommonUtilities.js"> </script>
+    <xml>
+      <MSHelp:TOCTitle Title="如何：复制、删除和移动文件和文件夹" />
+      <MSHelp:Keyword Index="A" Term="62e52cd7-9597-4e4a-acf9-1315f5cdbf05" />
+      <MSHelp:Keyword Index="K" Term="I/O [C#]" />
+      <MSHelp:Attr Name="RevisionNumber" Value="10" />
+      <MSHelp:Attr Name="AssetID" Value="62e52cd7-9597-4e4a-acf9-1315f5cdbf05" />
+      <MSHelp:Attr Name="Abstract" Value="以下示例说明如何使用 N:System.IO 命名空间中的 T:System.IO.File、T:System.IO.Directory、T:System.IO.FileInfo 和 T:System.IO.DirectoryInfo 类以同步方式复制、移动和删除文件和文件夹。这些示例没有提供进度栏或其他任何用户界面。如果您想提供一个标准进度对话框，请参见How to: Display a Progress Dialog for File Operations (C# Programming G ..." />
+      <MSHelp:Attr Name="codelang" Value="CSharp" />
+      <MSHelp:Attr Name="CommunityContent" Value="1" />
+      <MSHelp:Attr Name="DevLang" Value="CSharp" />
+      <MSHelp:Attr Name="DevLangVers" Value="CSharp" />
+      <MSHelp:Attr Name="DocSet" Value="C#" />
+      <MSHelp:Attr Name="DocSet" Value="C# Lang" />
+      <MSHelp:Attr Name="DocSet" Value="ExpressLibVS" />
+      <MSHelp:Attr Name="ProgModel" Value="managed" />
+      <MSHelp:Attr Name="ShippedIn" Value="vs.90" />
+      <MSHelp:Attr Name="Technology" Value="ManagedCode" />
+      <MSHelp:Attr Name="TopicVersion" Value="09.00.08178.10000" />
+      <MSHelp:Attr Name="Catalog Container" Value="System_Default_Catalog" />
+      <MSHelp:Attr Name="Content Set Container" Value="System_Default_Content_Set" />
+      <MSHelp:Attr Name="TopicType" Value="kbHowTo" />
+      <MSHelp:Attr Name="Locale" Value="zh-chs" />
+    </xml>
+  </head>
+  <body>
+    <input type="hidden" id="userDataCache" class="userDataStyle" />
+    <input type="hidden" id="hiddenScrollOffset" />
+    <img id="collapseImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" title="“折叠”图像" />
+    <img id="expandImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" title="“展开”图像" />
+    <img id="collapseAllImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" />
+    <img id="expandAllImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" />
+    <img id="dropDownImage" style="display:none; height:0; width:0;" src="../icons/dropdown.gif" />
+    <img id="dropDownHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/dropdownHover.gif" />
+    <img id="copyImage" style="display:none; height:0; width:0;" src="../icons/copycode.gif" title="“复制”图像" />
+    <img id="copyHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/copycodeHighlight.gif" title="“复制悬停”图像" />
+    <div id="header">
+      <table id="topTable" cellspacing="0" cellpadding="0">
+        <tr>
+          <td>
+            <span onclick="ExpandCollapseAll(toggleAllImage)" style="cursor:default;" onkeypress="ExpandCollapseAll_CheckKey(toggleAllImage, event)" tabindex="0">
+              <img ID="toggleAllImage" class="toggleAll" src="../icons/collapse_all.gif" /> <label id="collapseAllLabel" for="toggleAllImage" style="display: none;">全部折叠</label><label id="expandAllLabel" for="toggleAllImage" style="display: none;">全部展开</label> </span>
+            <span>    </span>
+            <span id="devlangsDropdown" class="filter" tabindex="0">
+              <img id="devlangsDropdownImage" src="../icons/dropdown.gif" /> <label id="devlangsMenuAllLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：全部 </nobr></label><label id="devlangsMenuMultipleLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：多个 </nobr></label><label id="devlangsMenuVisualBasicLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual Basic </nobr></label><label id="devlangsMenuCSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：C# </nobr></label><label id="devlangsMenuManagedCPlusPlusLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual C++ </nobr></label><label id="devlangsMenuJSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：J# </nobr></label><label id="devlangsMenuJScriptLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：JScript </nobr></label></span>
+          </td>
+        </tr>
+      </table>
+      <div id="devlangsMenu">
+        <input id="VisualBasicCheckbox" type="checkbox" data="VisualBasic,vb,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="VisualBasicCheckbox">Visual Basic</label>
+        <br />
+        <input id="CSharpCheckbox" type="checkbox" data="CSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="CSharpCheckbox">C#</label>
+        <br />
+        <input id="ManagedCPlusPlusCheckbox" type="checkbox" data="ManagedCPlusPlus,cpp,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="ManagedCPlusPlusCheckbox">Visual C++</label>
+        <br />
+        <input id="JSharpCheckbox" type="checkbox" data="JSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JSharpCheckbox">J#</label>
+        <br />
+        <input id="JScriptCheckbox" type="checkbox" data="JScript,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JScriptCheckbox">JScript</label>
+        <br />
+      </div>
+      <table id="bottomTable" cellpadding="0" cellspacing="0">
+        <tr id="headerTableRow1">
+          <td align="left">
+            <span id="runningHeaderText">C# 编程指南</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow2">
+          <td align="left">
+            <span id="nsrTitle">如何：复制、删除和移动文件和文件夹（C# 编程指南）</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow3">
+          <td align="left">
+            <a href="62e52cd7-9597-4e4a-acf9-1315f5cdbf05.htm#exampleToggle" onclick="OpenSection(exampleToggle)">示例</a>  <a href="62e52cd7-9597-4e4a-acf9-1315f5cdbf05.htm#seeAlsoToggle" onclick="OpenSection(seeAlsoToggle)">另请参见</a>  
+<script type="text/javascript">
+var fbBody = '%b8%d0%d0%bb%c4%fa%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%bf%aa%b7%a2%b0%e6%b1%e0%d0%b4%cd%c5%b6%d3%bd%ab%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%d3%c3%d3%da%b8%c4%bd%f8%ce%c4%b5%b5%a1%a3%ce%d2%c3%c7%d4%da%c9%f3%d4%c4%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%ca%b1%a3%ac%bf%c9%c4%dc%bb%e1%b8%f8%c4%fa%b7%a2%cb%cd%b5%e7%d7%d3%d3%ca%bc%fe%a3%ac%d2%d4%c7%eb%c4%fa%cc%e1%b9%a9%bd%f8%d2%bb%b2%bd%b5%c4%bd%e2%ca%cd%cb%b5%c3%f7%bb%f2%d5%df%be%cd%bd%e2%be%f6%b7%bd%b0%b8%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%ce%d2%c3%c7%b2%bb%bb%e1%bd%ab%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%d3%c3%d3%da%c8%ce%ba%ce%c6%e4%cb%fb%d3%c3%cd%be%a3%ac%b2%a2%c7%d2%d4%da%c9%f3%d4%c4%cd%ea%d6%ae%ba%f3%a3%ac%ce%d2%c3%c7%b2%bb%bb%e1%d4%d9%b1%a3%c1%f4%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%a1%a3%0d%0a%d3%d0%b9%d8%20Microsoft%20%d2%fe%cb%bd%d5%fe%b2%df%b5%c4%bd%f8%d2%bb%b2%bd%d0%c5%cf%a2%a3%ac%c7%eb%b2%ce%bc%fb%20http%3a%2f%2fprivacy.microsoft.com%2fzh-cn%2fdefault.aspx%a1%a3';
+var fbSubject = 'Customer%20Feedback';
+</script>
+  <span id="headfeedbackarea" class="feedbackhead"><a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);"> 发送反馈意见</a></span>
+</td>
+        </tr>
+      </table>
+      <table id="gradientTable">
+        <tr>
+          <td class="nsrBottom" background="../icons/gradient.gif" />
+        </tr>
+      </table>
+    </div>
+    <div id="mainSection">
+      <div id="mainBody">
+        <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
+        <font color="DarkGray"></font>
+        <p /> <p><font color="DarkGray">更新：2007 年 11 月</font></p><div class="introduction"><p>以下示例说明如何使用 <span sdata="cer" target="N:System.IO"><mshelp:link keywords="N:System.IO" tabindex="0">System.IO</mshelp:link></span> 命名空间中的 <span sdata="cer" target="T:System.IO.File"><mshelp:link keywords="T:System.IO.File" tabindex="0">System.IO<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span></span>File</mshelp:link></span>、<span sdata="cer" target="T:System.IO.Directory"><mshelp:link keywords="T:System.IO.Directory" tabindex="0">System.IO<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span></span>Directory</mshelp:link></span>、<span sdata="cer" target="T:System.IO.FileInfo"><mshelp:link keywords="T:System.IO.FileInfo" tabindex="0">System.IO<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span></span>FileInfo</mshelp:link></span> 和 <span sdata="cer" target="T:System.IO.DirectoryInfo"><mshelp:link keywords="T:System.IO.DirectoryInfo" tabindex="0">System.IO<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span></span>DirectoryInfo</mshelp:link></span> 类以同步方式复制、移动和删除文件和文件夹。这些示例没有提供进度栏或其他任何用户界面。如果您想提供一个标准进度对话框，请参见<span sdata="link"><a href="01b71fe7-8178-4dc8-aeb1-12053be7b51c.htm">如何：提供文件操作进度对话框（C# 编程指南）</a></span>。</p><p>在操作多个文件时，请使用 <span sdata="cer" target="T:System.IO.FileSystemWatcher"><mshelp:link keywords="T:System.IO.FileSystemWatcher" tabindex="0">System.IO<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span></span>FileSystemWatcher</mshelp:link></span> 提供一些事件，以便可以利用这些事件计算进度。另一种方法是使用平台调用来调用 Windows Shell 中相应的文件相关方法。有关如何异步执行这些文件操作的信息，请参见<span sdata="link"><mshelp:link keywords="dbdd55e7-d6b9-4f9e-8abb-ab0edd4457f7" tabindex="0">异步文件 I/O</mshelp:link></span>。</p></div><h1 class="heading"><span onclick="ExpandCollapse(exampleToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(exampleToggle, event)" tabindex="0"><img id="exampleToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />示例</span></h1><div id="exampleSection" class="section" name="collapseableSection" style=""><p>下面的示例演示如何复制文件和目录。</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Simple synchronous file copy operations with no user interface.</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// To run this sample, first create the following directories and files:</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// C:\Users\Public\TestFolder</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// C:\Users\Public\TestFolder\test.txt</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// C:\Users\Public\TestFolder\SubDir\test.txt</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> SimpleFileCopy
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Main()
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> fileName = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"test.txt"</span>;
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> sourcePath = @<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"C:\Users\Public\TestFolder"</span>;
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> targetPath =  @<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"C:\Users\Public\TestFolder\SubDir"</span>;
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Use Path class to manipulate file and directory paths.</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> sourceFile = System.IO.Path.Combine(sourcePath, fileName);
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> destFile = System.IO.Path.Combine(targetPath, fileName);
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// To copy a folder's contents to a new location:</span>
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Create a new target folder, if necessary.</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> (!System.IO.Directory.Exists(targetPath))
+        {
+            System.IO.Directory.CreateDirectory(targetPath);
+        }
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// To copy a file to another location and </span>
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// overwrite the destination file if it already exists.</span>
+        System.IO.File.Copy(sourceFile, destFile, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">true</span>);
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// To copy all the files in one directory to another directory.</span>
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Get the files in the source folder. (To recursively iterate through</span>
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// all subfolders under the current directory, see</span>
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// </span><span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"How to: Iterate Through a Directory Tree."</span>)
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Note: Check for target path was performed previously</span>
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//       in this code example.</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> (System.IO.Directory.Exists(sourcePath))
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span>[] files = System.IO.Directory.GetFiles(sourcePath);
+
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Copy the files and overwrite destination files if they already exist.</span>
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> s <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> files)
+            {
+                <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Use static Path methods to extract only the file name from the path.</span>
+                fileName = System.IO.Path.GetFileName(s);
+                destFile = System.IO.Path.Combine(targetPath, fileName);
+                System.IO.File.Copy(s, destFile, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">true</span>);
+            }
+        }
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">else</span>
+        {
+            Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Source path does not exist!"</span>);
+        }
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Keep console window open in debug mode.</span>
+        Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Press any key to exit."</span>);
+        Console.ReadKey();
+    }
+}
+
+</pre></td></tr></table></span></div></div><p>下面的示例演示如何移动文件和目录。</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Simple synchronous file move operations with no user interface.</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> SimpleFileMove
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Main()
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> sourceFile = @<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"C:\Users\Public\public\test.txt"</span>;
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> destinationFile = @<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"C:\Users\Public\private\test.txt"</span>;
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// To move a file or folder to a new location:</span>
+        System.IO.File.Move(sourceFile, destinationFile);
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// To move an entire directory. To programmatically modify or combine</span>
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// path strings, use the System.IO.Path class.</span>
+        System.IO.Directory.Move(@<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"C:\Users\Public\public\test\"</span>, @<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"C:\Users\Public\private"</span>);
+    }
+}
+
+</pre></td></tr></table></span></div></div><p>下面的示例演示如何删除文件和目录。</p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Simple synchronous file deletion operations with no user interface.</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// To run this sample, create the following files on your drive:</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// C:\Users\Public\DeleteTest\test1.txt</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// C:\Users\Public\DeleteTest\test2.txt</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// C:\Users\Public\DeleteTest\SubDir\test2.txt</span>
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> SimpleFileDelete
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Main()
+    {
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Delete a file by using File class static method...</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span>(System.IO.File.Exists(@<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"C:\Users\Public\DeleteTest\test.txt"</span>))
+        {
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Use a try block to catch IOExceptions, to</span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// handle the case of the file already being</span>
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// opened by another process.</span>
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">try</span>
+            {
+                System.IO.File.Delete(@<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"C:\Users\Public\DeleteTest\test.txt"</span>);
+            }
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">catch</span> (System.IO.IOException e)
+            {
+                Console.WriteLine(e.Message);
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span>;
+            }
+        }
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// ...or by using FileInfo instance method.</span>
+        System.IO.FileInfo fi = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> System.IO.FileInfo(@<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"C:\Users\Public\DeleteTest\test2.txt"</span>);
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">try</span>
+        {
+            fi.Delete();
+        }
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">catch</span> (System.IO.IOException e)
+        {
+            Console.WriteLine(e.Message);
+        }
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Delete a directory. Must be writable or empty.</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">try</span>
+        {
+            System.IO.Directory.Delete(@<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"C:\Users\Public\DeleteTest"</span>);
+        }
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">catch</span> (System.IO.IOException e)
+        {
+            Console.WriteLine(e.Message);
+        }
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Delete a directory and all subdirectories with Directory static method...</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span>(System.IO.Directory.Exists(@<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"C:\Users\Public\DeleteTest"</span>))
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">try</span>
+            {
+                System.IO.Directory.Delete(@<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"C:\Users\Public\DeleteTest"</span>, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">true</span>);
+            }
+
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">catch</span> (System.IO.IOException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// ...or with DirectoryInfo instance method.</span>
+        System.IO.DirectoryInfo di = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> System.IO.DirectoryInfo(@<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"C:\Users\Public\public"</span>);
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Delete this dir and all subdirs.</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">try</span>
+        {
+            di.Delete(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">true</span>);
+        }
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">catch</span> (System.IO.IOException e)
+        {
+            Console.WriteLine(e.Message);
+        }
+
+    }
+}
+
+</pre></td></tr></table></span></div></div></div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />请参见</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><h4 class="subHeading">任务</h4><div class="seeAlsoStyle"><span sdata="link"><a href="01b71fe7-8178-4dc8-aeb1-12053be7b51c.htm">如何：提供文件操作进度对话框（C# 编程指南）</a></span></div><h4 class="subHeading">概念</h4><div class="seeAlsoStyle"><span sdata="link"><a href="ac0f23a2-6bf3-4077-be99-538ae5fd3bc5.htm">C# 编程指南</a></span></div><div class="seeAlsoStyle"><span sdata="link"><mshelp:link keywords="bf00c380-706a-4e38-b829-454a480629fc" tabindex="0">通用 I/O 任务</mshelp:link></span></div><h4 class="subHeading">参考</h4><div class="seeAlsoStyle"><span sdata="cer" target="N:System.IO"><mshelp:link keywords="N:System.IO" tabindex="0">System.IO</mshelp:link></span></div><h4 class="subHeading">其他资源</h4><div class="seeAlsoStyle"><span sdata="link"><a href="0f2511cf-2b02-4b41-b001-b1754677c38f.htm">文件系统和注册表（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><mshelp:link keywords="4f4a33a9-66b7-4cd7-a285-4ad3e4276cd2" tabindex="0">文件和流 I/O</mshelp:link></span></div></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle0)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle0, event)" tabindex="0"><img id="sectionToggle0" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />修订记录</span></h1><div id="sectionSection0" class="section" name="collapseableSection" style=""><div class="caption"></div><div class="tableSection"><table width="50%" cellspacing="2" cellpadding="5" frame="lhs"><tr><th><p>日期</p></th><th><p>修订</p></th><th><p>原因</p></th></tr><tr><td><p>
+    <p>2008 年 7 月</p>
+  </p></td><td><p>新增主题。</p></td><td><p>
+    <p>内容 Bug 修复</p>
+  </p></td></tr></table></div></div></div>
+      <div id="footer">
+        <div class="footerLine">
+          <img width="100%" height="3px" src="../icons/footer.gif" title="“页脚”图像" />
+        </div>
+<span id="feedbackarea">将有关本主题的<a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);">反馈意见</a>发送给 Microsoft。</span>
+</div>
+    </div>
+  </body>
+</html>

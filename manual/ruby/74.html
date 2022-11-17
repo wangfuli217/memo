@@ -1,0 +1,195 @@
+<html><HEAD><TITLE>Ruby参考手册 - 变量和常数</TITLE>
+<META http-equiv=Content-type content="text/html; charset=gb2312">
+<META http-equiv=Content-Style-Type content=text/css><LINK href="74_files/style[1].css"  type=text/css rel=stylesheet></head>
+<BODY>
+<DIV class=navi><A id=header-navi name=head-navi></A><SPAN class=navi>[<A href="61.html" >Ruby首页</A>]</SPAN>  </DIV>
+<DIV class=body>
+<H1><A id=a.ca.d1.bf.f4.a4.c8.c4.ea.bf.f4 name=a.ca.d1.bf.f4.a4.c8.c4.ea.bf.f4>变量和常数</A><!-- RDLabel: "变量和常数" --></H1>
+<UL>
+<LI><A class=modified-year title="变量和常数 (292d)" href="74.html#a.a5.ed.a1.bc.a5.ab.a5.eb.ca.d1.bf.f4">局部变量</A> 
+<LI><A class=modified-year title="变量和常数 (292d)" href="74.html#a.a5.a4.a5.f3.a5.b9.a5.bf.a5.f3.a5.b9.ca.d1.bf.f4">实例变量</A> 
+<LI><A class=modified-year title="变量和常数 (292d)" href="74.html#a.a5.af.a5.e9.a5.b9.ca.d1.bf.f4">类变量</A> 
+<LI><A class=modified-year title="变量和常数 (292d)" href="74.html#a.a5.b0.a5.ed.a1.bc.a5.d0.a5.eb.ca.d1.bf.f4">全局变量</A> 
+<LI><A class=modified-year title="变量和常数 (292d)" href="74.html#a.b5.bf.bb.f7.ca.d1.bf.f4">伪变量</A> 
+<LI><A class=modified-year title="变量和常数 (292d)" href="74.html#a.c4.ea.bf.f4">常数</A> 
+<UL>
+<LI><A class=modified-year title="变量和常数 (292d)" href="74.html#a.c4.ea.bf.f4.bb.b2.be.c8.a4.ce.cd.a5.c0.e8.bd.e7.b0.cc">引用常数的优先顺序</A> </LI></UL></LI></UL>
+<P>您可以通过区分Ruby变量名的首位字符来确定它是局部变量、实例变量、类变量、全局变量还是常数。通常情况下，变量名的第二位字符以后是数字、字母或下划线，但有的内部变量名比较特殊，如“'$'+1个符号”(请参考<FONT color=blue>内部变量</FONT>)。变量名长度只受内存大小的限制。</P>
+<H2><A id=a.a5.ed.a1.bc.a5.ab.a5.eb.ca.d1.bf.f4 name=a.a5.ed.a1.bc.a5.ab.a5.eb.ca.d1.bf.f4>局部变量</A><!-- RDLabel: "局部变量" --></H2>
+<P>例:</P><PRE>foobar
+</PRE>
+<P>若标识符首位是小写字母或“_”，则该标识符就是局部变量或方法调用。在局部变量的作用域(类、模块、方法的定义部分)内，若对一个首位是小写字母的标识符进行首次赋值的话，也就意味着声明了一个属于该作用域的局部变量。若引用尚未被声明的标识符的话，就会被解释成一个无参数的方法调用。</P>
+<P>局部变量的作用域起始于<B><I>声明处</I></B>，结束于该声明所在的块、方法定义、类／模块定义的结尾。随着块的消亡，局部变量也将寿终正寝(顶层局部变量则一直持续到程序终结)，但也有例外。若块已经变成过程对象的话，则局部变量将一直持续到该过程对象终结为止。若多个过程对象引用同一个作用域的话，局部变量将被这些对象所共享。</P><PRE># (A)的部分位于作用域之外
+2.times {
+  p defined?(v)    # (A)
+  v = 1            # 从(开始声明)起
+  p v              # 到(块的终结)是 v 的作用域
+}
+
+# =&gt; nil
+     1
+     nil           &lt;- 请注意这里是 nil
+     1
+</PRE>
+<P>即使声明部分未被执行仍将有效。</P><PRE>v = 1 if false # 虽未赋值，但声明有效
+p defined?(v)  # =&gt; "local-variable"
+p v            # =&gt; nil
+</PRE>
+<P>若使用了 <FONT color=blue>-K</FONT> 选项的话就可以使用日语标识符，日语标识符被当作局部变量处理。实际上，我们并不推荐您这样做。</P>
+<H2><A id=a.a5.a4.a5.f3.a5.b9.a5.bf.a5.f3.a5.b9.ca.d1.bf.f4 name=a.a5.a4.a5.f3.a5.b9.a5.bf.a5.f3.a5.b9.ca.d1.bf.f4>实例变量</A><!-- RDLabel: "实例变量" --></H2>
+<P>例：</P><PRE>@foobar
+</PRE>
+<P>以@</CODE>开始的变量是实例变量，它属于特定的对象。可以在类或子类的方法中引用实例变量。若引用尚未被初始化的实例变量的话，其值为nil。</P>
+<H2><A id=a.a5.af.a5.e9.a5.b9.ca.d1.bf.f4 name=a.a5.af.a5.e9.a5.b9.ca.d1.bf.f4>类变量</A><!-- RDLabel: "类变量" --></H2>
+<P>例：</P><PRE>class Foo
+  @@foo = 1
+  def bar
+    puts @@foo
+  end
+end
+</PRE>
+<P>以@@开始的变量是类变量。在类的定义中定义类变量，可以在类的特殊方法、实例方法等处对类变量进行引用／赋值。</P>
+<P>类变量与<A class=modified-year title="变量和常数 (292d)" href="74.html#a.c4.ea.bf.f4">常数</A>的区别如下。</P>
+<UL>
+<LI>可以重复赋值(常数则会发出警告) 
+<LI>不能在类的外部直接引用(在继承类中则可以引用／赋值) </LI></UL>
+<P>类变量与类的实例变量的区别如下。</P>
+<UL>
+<LI>可在子类中引用／赋值 
+<LI>可在实例方法中引用／赋值 </LI></UL>
+<P>可以把类变量看作一种被类、子类以及它们的实例所共享的全局变量。</P><PRE>class Foo
+  @@foo = 1
+end
+class Bar &lt; Foo
+  p @@foo += 1          # =&gt; 2
+end
+class Baz &lt; Bar
+  p @@foo += 1          # =&gt; 3
+end
+</PRE>
+<P>模块中定义的类变量(模块变量)被所有包含该模块的类所共享。</P><PRE>module Foo
+  @@foo = 1
+end
+class Bar
+  include Foo
+  p @@foo += 1          # =&gt; 2
+end
+class Baz
+  include Foo
+  p @@foo += 1          # =&gt; 3
+end
+</PRE>
+<H2><A id=a.a5.b0.a5.ed.a1.bc.a5.d0.a5.eb.ca.d1.bf.f4 name=a.a5.b0.a5.ed.a1.bc.a5.d0.a5.eb.ca.d1.bf.f4>全局变量</A><!-- RDLabel: "全局变量" --></H2>
+<P>例：</P><PRE>$foobar
+$/
+</PRE>
+<P>以$开始的变量是全局变量，可以在程序的任何地方加以引用(因此需要特别留意)。全局变量无需变量声明。引用尚未初始化的全局变量时，其值为 nil。</P>
+<H2><A id=a.b5.bf.bb.f7.ca.d1.bf.f4 name=a.b5.bf.bb.f7.ca.d1.bf.f4>伪变量</A><!-- RDLabel: "伪变量" --></H2>
+<P>除普通的变量之外，还有一种叫做伪变量的特殊变量。</P>
+<DL>
+<DT><A id=self name=self><CODE>self</CODE></A><!-- RDLabel: "self" --> 
+<DD>
+<P>当前方法的执行主体</P>
+<DT><A id=nil name=nil><CODE>nil</CODE></A><!-- RDLabel: "nil" --> 
+<DD>
+<P><FONT color=blue>NilClass</FONT>类的唯一实例</P>
+<DT><A id=true name=true><CODE>true</CODE></A><!-- RDLabel: "true" --> 
+<DD>
+<P><FONT color=blue>TrueClass</FONT>类的唯一实例</P>
+<DT><A id=false name=false><CODE>false</CODE></A><!-- RDLabel: "false" --> 
+<DD>
+<P><FONT color=blue>FalseClass</FONT>类的唯一实例。nil 和 false 表示“伪”。</P>
+<DT><A id=a__FILE__ name=a__FILE__><CODE>__FILE__</CODE></A><!-- RDLabel: "__FILE__" --> 
+<DD>
+<P>当前源文件名</P>
+<DT><A id=a__LINE__ name=a__LINE__><CODE>__LINE__</CODE></A><!-- RDLabel: "__LINE__" --> 
+<DD>
+<P>当前源文件中的行号</P></DD></DL>
+<P>伪变量的值不可改变，若对伪变量赋值将引发语法错误。</P>
+<H2><A id=a.c4.ea.bf.f4 name=a.c4.ea.bf.f4>常数</A><!-- RDLabel: "常数" --></H2>
+<P>例：</P><PRE>FOOBAR
+</PRE>
+<P>以大写字母([A-Z])开始的标识符是常数.常数的定义(和初始化)由赋值过程完成.不能在方法中对常数进行定义.若对已定义的常数进行赋值的话,会出现警告信息.若引用未定义的常数的话,则会引发<FONT color=blue>NameError</FONT>异常.</P>
+<P>可以在下列地方引用常数,如,定义常数的类/模块的定义句(也包括方法正文以及嵌套类/模块的定义句)中,继承该类的子类中,以及包含模块的类/模块中等等.在类定义之外(顶层)定义的常数属于<FONT color=blue>Object</FONT>.</P>
+<P>例：</P><PRE>class Foo
+  FOO = 'FOO'       # 定义Foo类的常数FOO(Foo::FOO)
+end
+
+class Bar &lt; Foo
+  BAR = 'BAR'       # 定义Bar类的常数BAR(Bar::BAR)
+
+  # 可直接引用父类的常数
+  p FOO             # =&gt; "FOO"
+  class Baz
+
+    # 虽然嵌套类与该类间不存在继承关系
+    # 但还是可以直接引用嵌套外部的常数
+    p BAR           # =&gt; "BAR"
+  end
+end
+</PRE>
+<P>另外,在<FONT color=blue>类定义</FONT>表达式生成类对象的同时,还会将类对象赋值给一个与该类同名的常数.从语法上讲,引用类名也就是引用该常数.</P><PRE>class C
+end
+p C    # =&gt; C
+</PRE>
+<P>若想在外部访问类或模块中的常数时,要使用"::"操作符.若想准确地访问Object类中的常数(顶层的常数)时,也需要也使用"::"操作符,但操作符左边为空.另外,不能使用该操作符对常数进行赋值.</P>
+<P><FONT color=blue>ruby 1.8 特性</FONT>: 可以使用"::"对常数进行赋值.</P>
+<P>例：</P><PRE>module M
+  I = 35
+  class C
+  end
+end
+p M::I   #=&gt; 35
+p M::C   #=&gt; M::C
+p ::M    #=&gt; M
+
+M::NewConst = 777   # error--&gt; parse error
+</PRE>
+<H3><A id=a.c4.ea.bf.f4.bb.b2.be.c8.a4.ce.cd.a5.c0.e8.bd.e7.b0.cc name=a.c4.ea.bf.f4.bb.b2.be.c8.a4.ce.cd.a5.c0.e8.bd.e7.b0.cc>引用常数的优先顺序</A><!-- RDLabel: "引用常数的优先顺序" --></H3>
+<P>若在父类和嵌套外侧存在同名常数时,会先引用嵌套外侧的常数.也就是说,引用常数时会先搜索嵌套关系的外侧,然后才会按照继承关系向上搜索.</P>
+<P>例：</P><PRE>class Foo
+  CONST = 'Foo'
+end
+
+class Bar
+  CONST = 'Bar'
+  class Baz &lt; Foo
+    p CONST             # =&gt; "Bar"      外侧的常数
+    # 此时,若不显式地指定父类中的常数的话,则无法找到该常数
+    p Foo::CONST        # =&gt; "Foo"
+  end
+end
+</PRE>
+<P>一般认为顶层常数定义并不是位于嵌套外侧,所以在搜索了继承关系之后才能找到它.可见顶层常数的优先度很低.</P>
+<P>例：</P><PRE>class Foo
+  CONST = 'Foo'
+end
+
+CONST = 'Object'
+
+class Bar &lt; Foo
+  p CONST               # =&gt; "Foo"
+end
+
+# 若能明显看出是嵌套关系的话,按规则来说
+# 首先搜索到的是Object的常数(位于嵌套外侧)
+class Object
+  class Bar &lt; Foo
+    p CONST             # =&gt; "Object"
+  end
+end
+</PRE>
+<P>若对与父类常数同名的常数进行赋值的话,则意味着在该类中定义一个新常数,而并不会对父类常数进行赋值.</P>
+<P>例：</P><PRE>class Foo
+  CONST = 'Foo'
+end
+class Bar &lt; Foo
+  p CONST               # =&gt; "Foo"
+  CONST = 'Bar'         # *定义*Bar的常数CONST
+  p CONST               # =&gt; "Bar"  (Foo::CONST 被屏蔽了)
+  p Foo::CONST          # =&gt; "Foo"  (若使用:: 的话就可以了)
+end
+</PRE></DIV>
+<HR>
+
+<DIV class=footer>Originally Written by webmaster@ruby-lang.org<BR>Translated by <A href="http://cn.ce-lab.net/" >Community Engine China</A> (<A href="mailto:rubycn@ce-lab.net">Mail</A>)<BR>Last update on 2004-12-22 </DIV></BODY>

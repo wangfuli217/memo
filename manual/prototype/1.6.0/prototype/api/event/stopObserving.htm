@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Event.stopObserving - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>stopObserving</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">Event.stopObserving(element, eventName, handler[, useCapture = false])</code></pre>
+			<p>注销事件处理程序。</p>
+		</div>
+		<div id="abody">
+			<p>
+				该方法具有与 <a href="observe.htm" >observe</a> 在语义上完全一致的参数。它用于注销一个事件处理程序，
+				注销后这个元素事件的组合将不会被再次调用。
+			</p>
+			<h3>为什么不会停止调用？</h3>
+			<p>
+				为使 <code>stopObserving</code> 正常工作，必须传入与调用相关的 <code>observe</code> 注册事件时 <em>完全相同的参数</em>。
+				这看起来似乎很简单，但是编写代码时经常会出现类似下面的一种常见错误：
+			</p>
+			<pre><code class="javascript">var obj = { 
+	&#8230; 
+	fx: function(event) { 
+		&#8230; 
+	} 
+};
+
+Event.observe(elt, 'click', obj.fx.bindAsEventListener(obj)); 
+&#8230; 
+
+// 这是错误的，不能这样做 
+Event.stopObserving(elt, 'click', obj.fx.bindAsEventListener(obj)); // 不会工作 </code></pre>
+			<p>
+				这里，乍看起来似乎非常正确，但是你必须记住，<a href="../function/bindAsEventListener.htm" >bindAsEventListener</a>
+				会返回一个封装了你的方法的全新的匿名函数。这就是说每次调用 <code>bindAsEventListener</code> 都会返回一个新的函数。
+				因此，上面的代码是在另一个函数上请求停止事件处理程序，而不是在注册事件时的初始函数上。找不到相匹配的函数，
+				自然不会解除当初所注册的事件处理程序。
+			</p>
+			<p>
+				为避免发生这种情况，你需要“缓存”绑定的函数（就像 <a href="http://script.aculo.us/" >script.aculo.us</a>
+				库在许多类上所做的一样），类似于下面的代码：
+			</p>
+			<pre><code class="javascript">var obj = { 
+	&#8230; 
+	fx: function(event) { 
+		&#8230; 
+	} 
+};
+
+obj.bfx = obj.fx.bindAsEventListener(obj); 
+Event.observe(elt, 'click', obj.bfx);
+&#8230; 
+Event.stopObserving(elt, 'click', obj.bfx); </code></pre>
+			<h3>参见</h3>
+			<p><a href="unloadCache.htm" >unloadCache</a></p>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

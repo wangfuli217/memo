@@ -1,0 +1,532 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 15.5.  Class Scope under Inheritance</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch15lev1sec4.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch15lev1sec6.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch15lev1sec5"></a>
+
+        <h3 class="docSection1Title">15.5. Class Scope under Inheritance</h3>
+        <h3 class="docSection1Title">15.5. 继承情况下的类作用域</h3>
+
+        <p class="docText">Each class maintains its own scope (<a class="docLink" href="ch12lev1sec3.html#ch12lev1sec3" >Section 12.3</a>, p. <a class="docLink" href="ch12lev1sec3.html#ch12lev1sec3" >444</a>) within which the names of its members are defined. Under inheritance, the scope of the derived class is nested within the scope of its base classes. If a name is unresolved within the scope of the derived class, the enclosing base-class scope(s) are searched for a definition of that name.</p>
+	<p class="docText">每个类都保持着自己的作用域（<a class="docLink" href="ch12lev1sec3.html#ch12lev1sec3" >第 12.3 节</a>），在该作用域中定义了成员的名字。在继承情况下，派生类的作用域嵌套在基类作用域中。如果不能在派生类作用域中确定名字，就在外围基类作用域中查找该名字的定义。</p>
+
+        <p class="docText">It is this hierarchical nesting of class scopes under inheritance that allows the members of the base class to be accessed directly as if they are members of the derived class. When we write</p>
+        <p class="docText">正是这种类作用域的层次嵌套使我们能够直接访问基类的成员，就好象这些成员是派生类成员一样。如果编写如下代码：</p>
+        <pre>
+     Bulk_item bulk;
+     cout &lt;&lt; bulk.book();
+</pre><br>
+
+        <p class="docText">the use of the name <tt>book</tt> is resolved as follows:</p>
+	<p class="docText">名字 <tt>book</tt> 的使用将这样确定：</p>
+
+        <div style="font-weight:bold">
+          <ol class="docList" type="1">
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList"><tt>bulk</tt> is an object of the <tt>Bulk_item</tt> class. The <tt>Bulk_item</tt> class is searched for <tt>book</tt>. That name is not found.</p>
+		<p class="docList"><tt>bulk</tt> 是 <tt>Bulk_item</tt> 类对象，在 <tt>Bulk_item</tt> 类中查找，找不到名字 <tt>book</tt>。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">Because <tt>Bulk_item</tt> is derived from <tt>Item_Base</tt>, the <tt>Item_Base</tt> class is searched next. The name <tt>book</tt> is found in the <tt>Item_base</tt> class. The reference is resolved successfully.</p>
+		<p class="docList">因为从 <tt>Item_base</tt> 派生 <tt>Bulk_item</tt>，所以接着在 <tt>Item_base</tt> 类中查找，找到名字 <tt>book</tt>，引用成功地确定了。</p>
+              </div>
+            </li>
+          </ol>
+        </div><a name="ch15lev2sec17"></a>
+
+        <h4 class="docSection2Title">15.5.1. Name Lookup Happens at Compile Time</h4>
+        <h4 class="docSection2Title">15.5.1. 名字查找在编译时发生</h4>
+
+        <p class="docText">The static type of an object, reference, or pointer determines the actions that the object can perform. Even when the static and dynamic types might differ, as can happen when a reference or pointer to a base type is used, the static type determines what members can be used. As an example, we might add a member to the <tt>Disc_item</tt> class that returns a <tt>pair</tt> holding the minimum (or maximum) quantity and the discounted price:</p>
+	<p class="docText">对象、引用或指针的静态类型决定了对象能够完成的行为。甚至当静态类型和动态类型可能不同的时候，就像使用基类类型的引用或指针时可能会发生的，静态类型仍然决定着可以使用什么成员。例如，可以给 <tt>Disc_item</tt> 类增加一个成员，该成员返回一个保存最小（或最大）数量和折扣价格的 <tt>pair</tt> 对象：</p>
+        <pre>
+     class Disc_item : public Item_base {
+     public:
+         std::pair&lt;size_t, double&gt; discount_policy() const
+             { return std::make_pair(quantity, discount); }
+         // <span class="docEmphItalicAlt">other members as before</span>
+     };
+</pre><br>
+
+        <p class="docText">We can access <tt>discount_policy</tt> only through an object, pointer, or reference of type <tt>Disc_item</tt> or a class derived from <tt>Disc_item:</tt></p>
+	<p class="docText">只能通过 <tt>Disc_item</tt> 类型或 <tt>Disc_item</tt> 派生类型的对象、指针或引用访问 <tt>discount_policy</tt>：</p>
+        <pre>
+     Bulk_item bulk;
+     Bulk_item *bulkP = &amp;bulk;  // <span class="docEmphItalicAlt">ok: static and dynamic types are the same</span>
+     Item_base *itemP = &amp;bulk;  // <span class="docEmphItalicAlt">ok: static and dynamic types differ</span>
+     bulkP-&gt;discount_policy();  // <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">bulkP</span> <span class="docEmphItalicAlt">has type</span> <span class="docEmphasis">Bulk_item</span>*
+     itemP-&gt;discount_policy();  // <span class="docEmphItalicAlt">error:</span> <span class="docEmphasis">itemP</span> <span class="docEmphItalicAlt">has type</span> <span class="docEmphasis">Item_base</span>*
+</pre><br>
+
+	<a name="idd1e117688"></a><a name="idd1e117693"></a>
+        <p class="docText">The call through <tt>itemP</tt> is an error because a pointer (reference or object) to a base type can access only the base parts of an object and there is no <tt>discount_policy</tt> member defined in the base class.</p>
+	<p class="docText">重新定义 <tt>itemP</tt> 的访问是错误的，因为基类类型的指针（引用或对象）只能访问对象的基类部分，而在基类中没有定义 <tt>discount_policy</tt> 成员。</p>
+
+	<a name="ch15sb13"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 15.5.1</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch15qa8q1"></a><b>Exercise 15.21:</b></td>
+
+                    <td>
+                      <p class="docText">Redefine your <tt>Item_base</tt> hierarchy to include a <tt>Disc_item</tt> class.</p>
+		      <p class="docText">重新定义 <tt>Item_base</tt> 层次以包含 <tt>Disc_item</tt> 类。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch15qa8q2"></a><b>Exercise 15.22:</b></td>
+
+                    <td>
+                      <p class="docText">Redefine <tt>Bulk_item</tt> and the class you implemented in the exercises from <a class="docLink" href="ch15lev1sec2.html#ch15lev2sec5" >Section 15.2.3</a> (p. <a class="docLink" href="ch15lev1sec2.html#ch15lev2sec5" >567</a>) that represents a limited discount strategy to inherit from <tt>Disc_item</tt>.</p>
+		      <p class="docText">重新定义 <tt>Bulk_item</tt> 和你在 <a class="docLink" href="ch15lev1sec2.html#ch15lev2sec5" >第 15.2.3 节</a>习题中实现的那个继承 <tt>Disc_item</tt> 的表示有限折扣策略的类。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+
+        <a name="ch15lev2sec18"></a>
+        <h4 class="docSection2Title">15.5.2. Name Collisions and Inheritance</h4>
+        <h4 class="docSection2Title">15.5.2. 名字冲突与继承</h4>
+
+        <p class="docText">Although a base-class member can be accessed directly as if it were a member of the derived class, the member retains its base-class membership. Normally we do not care which actual class contains the member. We usually need to care only when a base- and derived-class member share the same name.</p>
+	<p class="docText">虽然可以直接访问基类成员，就像它是派生类成员一样，但是成员保留了它的基类成员资格。一般我们并不关心是哪个实际类包含成员，通常只在基类和派生类共享同一名字时才需要注意。</p>
+
+	<a name="ch15note23"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">A derived-class member with the same name as a member of the base class hides direct access to the base-class member.</p>
+                <p class="docText">与基类成员同名的派生类成员将屏蔽对基类成员的直接访问。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <pre>
+     struct Base {
+         Base(): mem(0) { }
+     protected:
+         int mem;
+     };
+     struct Derived : Base {
+         Derived(int i): mem(i) { }    // <span class="docEmphItalicAlt">initializes</span> <span class="docEmphasis">Derived::mem</span>
+         int get_mem() { return mem; } // <span class="docEmphItalicAlt">returns</span> <span class="docEmphasis">Derived::mem</span>
+     protected:
+         int mem;   // <span class="docEmphItalicAlt">hides</span> <span class="docEmphasis">mem</span> <span class="docEmphItalicAlt">in the base</span>
+      };
+</pre><br>
+
+        <p class="docText">The reference to <tt>mem</tt> inside <tt>get_mem</tt> is resolved to the name inside <tt>Derived</tt>. Were we to write</p>
+	<p class="docText"><tt>get_mem</tt> 中对 <tt>mem</tt> 的引用被确定为使用 <tt>Derived</tt> 中的名字。如果编写如下代码：</p>
+        <pre>
+     Derived d(42);
+     cout &lt;&lt; d.get_mem() &lt;&lt; endl;   // <span class="docEmphItalicAlt">prints 42</span>
+</pre><br>
+
+        <p class="docText">then the output would be <tt>42</tt>.</p>
+	<p class="docText">则输出将是 <tt>42</tt>。</p>
+
+	<a name="ch15lev3sec30"></a>
+        <h5 class="docSection3Title">Using the Scope Operator to Access Hidden Members</h5>
+        <h5 class="docSection3Title">使用作用域操作符访问被屏蔽成员</h5>
+
+	<a name="idd1e117833"></a>
+        <p class="docText">We can access a hidden base-class member by using the scope operator:</p>
+        <p class="docText">可以使用作用域操作符访问被屏蔽的基类成员：</p>
+        <pre>
+     struct Derived : Base {
+         int get_base_mem() { return Base::mem; }
+     };
+</pre><br>
+
+        <p class="docText">The scope operator directs the compiler to look for <tt>mem</tt> starting in <tt>Base</tt>.</p>
+	<p class="docText">作用域操作符指示编译器在 <tt>Base</tt> 中查找 <tt>mem</tt>。</p>
+
+	<a name="ch15note24"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="116" height="74" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/bestpractices.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">When designing a derived class, it is best to avoid name collisions with members of the base class whenever possible.</p>
+                <p class="docText">设计派生类时，只要可能，最好避免与基类成员的名字冲突。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch15sb15"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 15.5.2</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch15qa9q1"></a><b>Exercise 15.23:</b></td>
+
+                    <td>
+                      <p class="docText">Given the following base- and derived-class definitions</p>
+                      <p class="docText">对于下面的基类和派生类定义：</p>
+                      <pre>
+     struct Base {
+         foo(int);
+     protected:
+         int bar;
+         double foo_bar;
+     };
+
+     struct Derived : public Base {
+         foo(string);
+         bool bar(Base *pb);
+         void foobar();
+     protected:
+         string bar;
+     };
+</pre><br>
+
+                      <p class="docText">identify the errors in each of the following examples and how each might be fixed:</p>
+                      <p class="docText">找出下述每个例子中的错误并说明怎样改正：</p>
+                      <pre>
+     (a) Derived d; d.foo(1024);
+     (b) void Derived::foobar() { bar = 1024; }
+     (c) bool Derived::bar(Base *pb)
+              { return foo_bar == pb-&gt;foo_bar; }
+</pre><br>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+
+        <a name="ch15lev2sec19"></a>
+        <h4 class="docSection2Title">15.5.3. Scope and Member Functions</h4>
+        <h4 class="docSection2Title">15.5.3. 作用域与成员函数</h4>
+
+        <p class="docText">A member function with the same name in the base and derived class behaves the same way as a data member: The derived-class member hides the base-class member within the scope of the derived class. The base member is hidden, <span class="docEmphasis">even if the prototypes of the functions differ</span>:</p>
+        <p class="docText">在基类和派生类中使用同一名字的成员函数，其行为与数据成员一样：在派生类作用域中派生类成员将屏蔽基类成员。即使函数原型不同，基类成员也会被屏蔽：</p>
+        <pre>
+     struct Base {
+         int memfcn();
+     };
+     struct Derived : Base {
+         int memfcn(int); // <span class="docEmphItalicAlt">hides</span> <span class="docEmphasis">memfcn</span> <span class="docEmphItalicAlt">in the base</span>
+     };
+     Derived d; Base b;
+     b.memfcn();        // <span class="docEmphItalicAlt">calls</span> <span class="docEmphasis">Base::memfcn</span>
+     d.memfcn(10);      // <span class="docEmphItalicAlt">calls</span> <span class="docEmphItalicAlt">Derived::memfcn</span>
+     d.memfcn();        // <span class="docEmphItalicAlt">error:</span> <span class="docEmphasis">memfcn</span> <span class="docEmphItalicAlt">with no arguments is hidden</span>
+     d.Base::memfcn();  // <span class="docEmphItalicAlt">ok: calls</span> <span class="docEmphItalicAlt">Base::memfcn</span>
+</pre><br>
+
+	<a name="idd1e117955"></a><a name="idd1e117960"></a><a name="idd1e117968"></a><a name="idd1e117973"></a><a name="idd1e117982"></a><a name="idd1e117989"></a><a name="idd1e117994"></a><a name="idd1e117999"></a><a name="idd1e118004"></a><a name="idd1e118009"></a><a name="idd1e118014"></a><a name="idd1e118019"></a><a name="idd1e118024"></a><a name="idd1e118031"></a>
+        <p class="docText">The declaration of <tt>memfcn</tt> in <tt>Derived</tt> hides the declaration in <tt>Base</tt>. Not surprisingly, the first call through <tt>b</tt>, which is a<tt>Base</tt> object, calls the version in the base class. Similarly, the second call through <tt>d</tt> calls the one from <tt>Derived</tt>. What can be surprising is the third call:</p>
+	<p class="docText"><tt>Derived</tt> 中的 <tt>memfcn</tt> 声明隐藏了 <tt>Base</tt> 中的声明。这并不奇怪，第一个调用通过 <tt>Base</tt> 对象 <tt>b</tt> 调用基类中的版本，同样，第二个调用通过 <tt>d</tt> 调用 <tt>Derived</tt> 中的版本。可能比较奇怪的是第三个调用：</p>
+        <pre>
+     d.memfcn(); // <span class="docEmphItalicAlt">error:</span> <span class="docEmphasis">Derived</span> <span class="docEmphItalicAlt">has no</span> <span class="docEmphasis">memfcn</span> <span class="docEmphItalicAlt">that takes no arguments</span>
+</pre><br>
+
+        <p class="docText">To resolve this call, the compiler looks for the name <tt>memfcn</tt>, which it finds in the class <tt>Derived</tt>. Once the name is found, the compiler looks no further. This call does not match the definition of <tt>memfcn</tt> in <tt>Derived</tt>, which expects an <tt>int</tt> argument. The call provides no such argument and so is in error.</p>
+	<p class="docText">要确定这个调用，编译器需要查找名字 <tt>memfcn</tt>，并在 <tt>Derived</tt> 类中找到。一旦找到了名字，编译器就不再继续查找了。这个调用与 <tt>Derived</tt> 中的 <tt>memfcn</tt> 定义不匹配，该定义希望接受 <tt>int</tt> 实参，而这个函数调用没有提供那样的实参，因此出错。</p>
+
+	<a name="ch15note25"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Recall that functions declared in a local scope do not overload functions defined at global scope (<a class="docLink" href="ch07lev1sec8.html#ch07lev2sec27" >Section 7.8.1</a>, p. <a class="docLink" href="ch07lev1sec8.html#ch07lev2sec27" >268</a>). Similarly, functions defined in a derived class do <span class="docEmphasis">not</span> overload members defined in the base. When the function is called through a derived object, the arguments must match a version of the function defined in the derived class. The base class functions are considered only if the derived does not define the function at all.</p>
+		<p class="docText">回忆一下，局部作用域中声明的函数不会重载全局作用域中定义的函数（<a class="docLink" href="ch07lev1sec8.html#ch07lev2sec27" >第 7.8.1 节</a>），同样，派生类中定义的函数也不重载基类中定义的成员。通过派生类对象调用函数时，实参必须与派生类中定义的版本相匹配，只有在派生类根本没有定义该函数时，才考虑基类函数。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <a name="ch15lev3sec31"></a>
+        <h5 class="docSection3Title">Overloaded Functions</h5>
+        <h5 class="docSection3Title">重载函数</h5>
+
+        <p class="docText">As with any other function, a member function (virtual or otherwise) can be over-loaded. A derived class can redefine zero or more of the versions it inherits.</p>
+        <p class="docText">像其他任意函数一样，成员函数（无论虚还是非虚）也可以重载。派生类可以重定义所继承的 0 个或多个版本。</p>
+
+	<a name="ch15note26"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">If the derived class redefines any of the overloaded members, then only the one(s) redefined in the derived class are accessible through the derived type.</p>
+                <p class="docText">如果派生类重定义了重载成员，则通过派生类型只能访问派生类中重定义的那些成员。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">If a derived class wants to make all the overloaded versions available through its type, then it must either redefine all of them or none of them.</p>
+        <p class="docText">如果派生类想通过自身类型使用的重载版本，则派生类必须要么重定义所有重载版本，要么一个也不重定义。</p>
+
+        <p class="docText">Sometimes a class needs to redefine the behavior of only some of the versions in an overloaded set, and wants to inherit the meaning for others. It would be tedious in such cases to have to redefine every base-class version in order to redefine the ones that the class needs to specialize.</p>
+        <p class="docText">有时类需要仅仅重定义一个重载集中某些版本的行为，并且想要继承其他版本的含义，在这种情况下，为了重定义需要特化的某个版本而不得不重定义每一个基类版本，可能会令人厌烦。<tt</p>
+
+	<a name="idd1e118158"></a><a name="idd1e118163"></a><a name="idd1e118168"></a>
+	<a name="ch15lev2sec20"></a>
+        <p class="docText">Instead of redefining every base-class version that it inherits, a derived class can provide a <tt>using</tt> declaration (<a class="docLink" href="ch15lev1sec2.html#ch15lev2sec7" >Section 15.2.5</a>, p. <a class="docLink" href="ch15lev1sec2.html#ch15lev2sec7" >574</a>) for the overloaded member. A <tt>using</tt> declaration specifies only a name; it may not specify a parameter list. Thus, a <tt>using</tt> declaration for a base-class member function name adds all the overloaded instances of that function to the scope of the derived-class. Having brought all the names into its scope, the derived class need redefine only those functions that it truly must define for its type. It can use the inherited definitions for the others.</p>
+	<p class="docText">派生类不用重定义所继承的每一个基类版本，它可以为重载成员提供 <tt>using</tt> 声明（<a class="docLink" href="ch15lev1sec2.html#ch15lev2sec7" >第 15.2.5 节</a>）。一个 <tt>using</tt> 声明只能指定一个名字，不能指定形参表，因此，为基类成员函数名称而作的 <tt>using</tt> 声明将该函数的所有重载实例加到派生类的作用域。将所有名字加入作用域之后，派生类只需要重定义本类型确实必须定义的那些函数，对其他版本可以使用继承的定义。</p>
+
+        <h4 class="docSection2Title">15.5.4. Virtual Functions and Scope</h4>
+        <h4 class="docSection2Title">15.5.4. 虚函数与作用域</h4>
+
+        <p class="docText">Recall that to obtain dynamic binding, we must call a virtual member through a reference or a pointer to a base class. When we do so, the compiler looks for the function in the base class. Assuming the name is found, the compiler checks that the arguments match the parameters.</p>
+        <p class="docText">还记得吗，要获得动态绑定，必须通过基类的引用或指针调用虚成员。当我们这样做时，编译器器将在基类中查找函数。假定找到了名字，编译器就检查实参是否与形参匹配。</p>
+
+        <p class="docText">We can now understand why virtual functions must have the same prototype in the base and derived classes. If the base member took different arguments than the derived-class member, there would be no way to call the derived function from a reference or pointer to the base type. Consider the following (artificial) collection of classes:</p>
+        <p class="docText">现在可以理解虚函数为什么必须在基类和派生类中拥有同一原型了。如果基类成员与派生类成员接受的实参不同，就没有办法通过基类类型的引用或指针调用派生类函数。考虑如下（人为的）为集合：</p>
+        <pre>
+     class Base {
+     public:
+         virtual int fcn();
+     };
+     class D1 : public Base {
+     public:
+          // <span class="docEmphItalicAlt">hides</span> <span class="docEmphasis">fcn</span> <span class="docEmphItalicAlt">in the base; this</span> <span class="docEmphasis">fcn</span> <span class="docEmphItalicAlt">is not virtual</span>
+          int fcn(int); // <span class="docEmphItalicAlt">parameter list differs from</span> <span class="docEmphasis">fcn</span> <span class="docEmphItalicAlt">in</span> <span class="docEmphasis">Base</span>
+          // <span class="docEmphasis">D1</span> <span class="docEmphItalicAlt">inherits definition of</span> <span class="docEmphItalicAlt">Base::fcn()</span>
+     };
+     class D2 : public D1 {
+     public:
+         int fcn(int); // <span class="docEmphItalicAlt">nonvirtual function hides</span> <span class="docEmphasis">D1::fcn(int)</span>
+         int fcn();    // <span class="docEmphItalicAlt">redefines virtual</span> <span class="docEmphasis">fcn</span> <span class="docEmphItalicAlt">from</span> <span class="docEmphasis">Base</span>
+     };
+</pre><br>
+
+        <p class="docText">The version of <tt>fcn</tt> in <tt>D1</tt> does not redefine the virtual <tt>fcn</tt> from <tt>Base</tt>. Instead, it hides <tt>fcn</tt> from the base. Effectively, <tt>D1</tt> has two functions named <tt>fcn</tt>: The class inherits a virtual named <tt>fcn</tt> from the <tt>Base</tt> and defines its own, nonvirtual member named <tt>fcn</tt> that takes an <tt>int</tt> parameter. However, the virtual from the <tt>Base</tt> cannot be called from a <tt>D1</tt> object (or reference or pointer to <tt>D1</tt>) because that function is hidden by the definition of <tt>fcn(int)</tt>.</p>
+	<p class="docText"><tt>D1</tt> 中的 <tt>fcn</tt> 版本没有重定义 <tt>Base</tt> 的虚函数 <tt>fcn</tt>，相反，它屏蔽了基类的 <tt>fcn</tt>。结果 <tt>D1</tt> 有两个名为 <tt>fcn</tt> 的函数：类从 <tt>Base</tt> 继承了一个名为 <tt>fcn</tt> 的虚函数，类又定义了自己的名为 <tt>fcn</tt> 的非虚成员函数，该函数接受一个 <tt>int</tt> 形参。但是，从 <tt>Base</tt> 继承的虚函数不能通过 <tt>D1</tt> 对象（或 <tt>D1</tt> 的引用或指针）调用，因为该函数被 <tt>fcn(int)</tt> 的定义屏蔽了。</p>
+
+        <p class="docText">The class <tt>D2</tt> redefines both functions that it inherits. It redefines the virtual version of <tt>fcn</tt> originally defined in <tt>Base</tt> and the nonvirtual defined in <tt>D1</tt>.</p>
+	<p class="docText">类 <tt>D2</tt> 重定义了它继承的两个函数，它重定义了 <tt>Base</tt> 中定义的 <tt>fcn</tt> 的原始版本并重定义了 <tt>D1</tt> 中定义的非虚版本。</p>
+
+	<a name="ch15lev3sec32"></a>
+        <h5 class="docSection3Title">Calling a Hidden Virtual through the Base Class</h5>
+        <h5 class="docSection3Title">通过基类调用被屏蔽的虚函数</h5>
+
+        <p class="docText">When we call a function through a base-type reference or pointer, the compiler looks for that function in the base class and ignores the derived classes:</p>
+        <p class="docText">通过基类类型的引用或指针调用函数时，编译器将在基类中查找该函数而忽略派生类：</p>
+        <pre>
+     Base bobj;  D1 d1obj;  D2 d2obj;
+     Base *bp1 = &amp;bobj, *bp2 = &amp;d1obj, *bp3 = &amp;d2obj;
+     bp1-&gt;fcn();   // <span class="docEmphItalicAlt">ok: virtual call, will call</span> <span class="docEmphasis">Base::fcnat</span> <span class="docEmphItalicAlt">run time</span>
+     bp2-&gt;fcn();   // <span class="docEmphItalicAlt">ok: virtual call, will call</span> <span class="docEmphasis">Base::fcnat</span> <span class="docEmphItalicAlt">run time</span>
+     bp3-&gt;fcn();   // <span class="docEmphItalicAlt">ok: virtual call, will call</span> <span class="docEmphasis">D2::fcnat</span> <span class="docEmphItalicAlt">run time</span>
+</pre><br>
+
+	<a name="idd1e118353"></a><a name="idd1e118358"></a>
+        <p class="docText">All three pointers are pointers to the base type, so all three calls are resolved by looking in <tt>Base</tt> to see if <tt>fcn</tt> is defined. It is, so the calls are legal. Next, because <tt>fcn</tt> is virtual, the compiler generates code to make the call at run time based on the actual type of the object to which the reference or pointer is bound. In the case of <tt>bp2</tt>, the underlying object is a <tt>D1</tt>. That class did not redefine the virtual version of <tt>fcn</tt> that takes no arguments. The call through <tt>bp2</tt> is made (at run time) to the version defined in <tt>Base</tt>.</p>
+	<p class="docText">三个指针都是基类类型的指针，因此通过在 <tt>Base</tt> 中查找 <tt>fcn</tt> 来确定这三个调用，所以这些调用是合法的。另外，因为 <tt>fcn</tt> 是虚函数，所以编译器会生成代码，在运行时基于引用指针所绑定的对象的实际类型进行调用。在 <tt>bp2</tt> 的情况，基本对象是 <tt>D1</tt> 类的，<tt>D1</tt> 类没有重定义不接受实参的虚函数版本，通过 <tt>bp2</tt> 的函数调用（在运行时）调用 <tt>Base</tt> 中定义的版本。</p>
+
+	<a name="ch15sb16"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Key Concept: Name Lookup and Inheritance</h2>
+              <h2 class="docSidebarTitle">关键概念：名字查找与继承</h2>
+
+              <p class="docText"><span class="docEmphStrong">Understanding how function calls are resolved is crucial to understanding inheritance hierarchies in C++. The following four steps are followed:</span></p>
+	      <p class="docText"><span class="docEmphStrong">理解 C++ 中继承层次的关键在于理解如何确定函数调用。确定函数调用遵循以下四个步骤：</span></p>
+
+		<a name="ch15pro02"></a>
+              <table border="0" class="docText">
+                <tr>
+                  <td width="25" valign="top">
+                    <div class="docText">
+                      <b>1.</b>
+                    </div>
+                  </td>
+
+                  <td>
+                    <div class="docText">
+                      <span class="docEmphStrong">Start by determining the static type of the object, reference, or pointer through which the function is called.</span><br>
+		      <span class="docEmphStrong">首先确定进行函数调用的对象、引用或指针的静态类型。</span><br>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td width="25" valign="top">
+                    <div class="docText">
+                      <b>2.</b>
+                    </div>
+                  </td>
+
+                  <td>
+                    <div class="docText">
+                      <span class="docEmphStrong">Look for the function in that class. If it is not found, look in the immediate base class and continue up the chain of classes until either the function is found or the last class is searched. If the name is not found in the class or its enclosing base classes, then the call is in error.</span><br>
+                      <span class="docEmphStrong">在该类中查找函数，如果找不到，就在直接基类中查找，如此循着类的继承链往上找，直到找到该函数或者查找完最后一个类。如果不能在类或其相关基类中找到该名字，则调用是错误的。</span><br>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td width="25" valign="top">
+                    <div class="docText">
+                      <b>3.</b>
+                    </div>
+                  </td>
+
+                  <td>
+                    <div class="docText">
+                      <span class="docEmphStrong">Once the name is found, do normal type-checking (<a class="docLink" href="ch07lev1sec1.html#ch07lev2sec5" >Section 7.1.2</a>, p. <a class="docLink" href="ch07lev1sec1.html#ch07lev2sec5" >229</a>) to see if this call is legal given the definition that was found.</span><br>
+		      <span class="docEmphStrong">一旦找到了该名字，就进行常规类型检查（<a class="docLink" href="ch07lev1sec1.html#ch07lev2sec5" >第 7.1.2 节</a>），查看如果给定找到的定义，该函数调用是否合法。</span><br>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td width="25" valign="top">
+                    <div class="docText">
+                      <b>4.</b>
+                    </div>
+                  </td>
+
+                  <td>
+                    <div class="docText">
+                      <span class="docEmphStrong">Assuming the call is legal, the compiler generates code. If the function is virtual and the call is through a reference or pointer, then the compiler generates code to determine which version to run based on the dynamic type of the object. Otherwise, the compiler generates code to call the function directly.</span><br>
+		      <span class="docEmphStrong">假定函数调用合法，编译器就生成代码。如果函数是虚函数且通过引用或指针调用，则编译器生成代码以确定根据对象的动态类型运行哪个函数版本，否则，编译器生成代码直接调用函数。</span><br>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table><br>
+        <a href="21001535.html" ><img src="images/pixel.gif"  alt="" width="1" height="1" border="0"></a>
+      </td>
+    </tr>
+  </table>
+
+	<a name="ch15sb17"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 15.5.4</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch15qa10q1"></a><b>Exercise 15.24:</b></td>
+
+                    <td>
+			<a name="idd1e118507"></a><a name="idd1e118510"></a><a name="idd1e118515"></a><a name="idd1e118520"></a><a name="idd1e118523"></a>
+                      <p class="docText">Why is it that, given</p>
+                      <p class="docText">对于如下代码：</p>
+                      <pre>
+     Bulk_item bulk;
+     Item_base item(bulk);
+     Item_base *p = &amp;bulk;
+</pre><br>
+
+                      <p class="docText">the expression</p>
+                      <p class="docText">为什么表达式</p>
+                      <pre>
+     p-&gt;net_price(10);
+</pre><br>
+
+                      <p class="docText">invokes the <tt>Bulk_item</tt> instance of <tt>net_price</tt>, whereas</p>
+		      <p class="docText">调用 <tt>net_price</tt> 的 <tt>Bulk_item</tt> 实例，而表达式</p>
+                      <pre>
+     item.net_price(10);
+</pre><br>
+
+                      <p class="docText">invokes the <tt>Item_base</tt> instance?</p>
+		      <p class="docText">调用 <tt>Item_base</tt> 实例？</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch15qa10q2"></a><b>Exercise 15.25:</b></td>
+
+                    <td>
+                      <p class="docText">Assume <tt>Derived</tt> inherits from <tt>Base</tt> and that <tt>Base</tt> defines each of the following functions as virtual. Assuming <tt>Derived</tt> intends to define its own version of the virtual, determine which declarations in <tt>Derived</tt> are in error and specify what's wrong.</p>
+		      <p class="docText">假定 <tt>Derived</tt> 继承 <tt>Base</tt>，并且 <tt>Base</tt> 将下面的函数定义为虚函数，假定 <tt>Derived</tt> 打算定义自己的这个虚函数的版本，确定在 <tt>Derived</tt> 中哪个声明是错误的，并指出为什么错。</p>
+                      <pre>
+     (a) Base* Base::copy(Base*);
+         Base* Derived::copy(Derived*);
+     (b) Base* Base::copy(Base*);
+         Derived* Derived::copy(Base*);
+     (c) ostream&amp; Base::print(int, ostream&amp;=cout);
+         ostream&amp; Derived::print(int, ostream&amp;);
+     (d) void Base::eval() const;
+         void Derived::eval();
+</pre><br>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch15lev1sec4.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch15lev1sec6.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

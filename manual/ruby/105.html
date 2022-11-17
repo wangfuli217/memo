@@ -1,0 +1,281 @@
+<html><HEAD><TITLE>Programming Ruby: The Pragmatic Programmer's Guide</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=iso-8859-1"><LINK media=screen href="105_files/pr_style[1].css"  type=text/css rel=StyleSheet></head>
+<BODY bgColor=white>
+<TABLE cellSpacing=0 cellPadding=3 width="100%" bgColor=#c09090 border=0>
+<TBODY>
+<TR>
+<TD colSpan=3>
+<TABLE cellPadding=20 width="100%" bgColor=#701a1a>
+<TBODY>
+<TR>
+<TD width=6>
+<H1 class=header>Programming Ruby</H1>
+<H3 class=subheader>The Pragmatic Programmer's Guide</H3></TD></TR></TBODY></TABLE></TD></TR>
+<TR>
+<TD align=left width="33%"><A class=subheader href="104.html" >Previous &lt;</A> </TD>
+<TD vAlign=center align=middle width="33%"><A class=subheader href="95.html" >Contents ^</A> <BR></TD>
+<TD align=right width="33%"><A class=subheader href="106.html" >Next &gt;</A> <BR></TD></TR></TBODY></TABLE><!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<H1>Exceptions, Catch, and Throw</H1>
+<HR>
+<BR>
+<P></P>So far we're been developing code in Pleasantville, a wonderful place where nothing ever, ever goes wrong. Every library call succeeds, users never enter incorrect data, and resources are plentiful and cheap. Well, that's about to change. Welcome to the real world! 
+<P></P>In the real world, errors happen. Good programs (and programmers) anticipate them and arrange to handle them gracefully. This isn't always as easy as it might be. Often the code that detects an error does not have the context to know what to do about it. For example, attempting to open a file that doesn't exist is acceptable in some circumstances and is a fatal error at other times. What's your file-handling module to do? 
+<P></P>The traditional approach is to use return codes. The <CODE>open</CODE> method returns some specific value to say it failed. This value is then propagated back through the layers of calling routines until someone wants to take responsibility for it. 
+<P></P>The problem with this approach is that managing all these error codes can be a pain. If a function calls <CODE>open</CODE>, then <CODE>read</CODE>, and finally <CODE>close</CODE>, and each can return an error indication, how can the function distinguish these error codes in the value it returns to <EM>its</EM> caller? 
+<P></P>To a large extent, exceptions solve this problem. Exceptions let you package up information about an error into an object. That exception object is then propagated back up the calling stack automatically until the runtime system finds code that explicitly declares that it knows how to handle that type of exception. 
+<H2><A name=S1>The Exception Class</A></H2>
+<P></P>The package that contains the information about an exception is an object of class <CODE>Exception</CODE>, or one of class <CODE>Exception</CODE>'s children. Ruby predefines a tidy hierarchy of exceptions, shown in Figure 8.1 on page 91. As we'll see later, this hierarchy makes handling exceptions considerably easier. 
+<P></P>
+<TABLE width=500 bgColor=#ffe0e0 border=2>
+<TBODY>
+<TR>
+<TD>Figure not available...</TD></TR></TBODY></TABLE>
+<P></P>When you need to raise an exception, you can use one of the built-in <CODE>Exception</CODE> classes, or you can create one of your own. If you create your own, you might want to make it a subclass of <CODE>StandardError</CODE> or one of its children. If you don't, your exception won't be caught by default. 
+<P></P>Every <CODE>Exception</CODE> has associated with it a message string and a stack backtrace. If you define your own exceptions, you can add additional information. 
+<H2><A name=S2>Handling Exceptions</A></H2>
+<P></P>Our jukebox downloads songs from the Internet using a TCP socket. The basic code is simple: 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>opFile&nbsp;=&nbsp;File.open(opName,&nbsp;"w")
+while&nbsp;data&nbsp;=&nbsp;socket.read(512)
+&nbsp;&nbsp;opFile.write(data)
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>What happens if we get a fatal error halfway through the download? We certainly don't want to store an incomplete song in the song list. ``I Did It My *click*''. 
+<P></P>Let's add some exception handling code and see how it helps. We enclose the code that could raise an exception in a <CODE>begin</CODE>/<CODE>end</CODE> block and use <CODE>rescue</CODE> clauses to tell Ruby the types of exceptions we want to handle. In this case we're interested in trapping <CODE>SystemCallError</CODE> exceptions (and, by implication, any exceptions that are subclasses of <CODE>SystemCallError</CODE>), so that's what appears on the <CODE>rescue</CODE> line. In the error handling block, we report the error, close and delete the output file, and then reraise the exception. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>opFile&nbsp;=&nbsp;File.open(opName,&nbsp;"w")
+begin
+&nbsp;&nbsp;#&nbsp;Exceptions&nbsp;raised&nbsp;by&nbsp;this&nbsp;code&nbsp;will
+&nbsp;&nbsp;#&nbsp;be&nbsp;caught&nbsp;by&nbsp;the&nbsp;following&nbsp;rescue&nbsp;clause
+&nbsp;&nbsp;while&nbsp;data&nbsp;=&nbsp;socket.read(512)
+&nbsp;&nbsp;&nbsp;&nbsp;opFile.write(data)
+&nbsp;&nbsp;end
+<P></P>
+rescue&nbsp;SystemCallError
+&nbsp;&nbsp;$stderr.print&nbsp;"IO&nbsp;failed:&nbsp;"&nbsp;+&nbsp;$!
+&nbsp;&nbsp;opFile.close
+&nbsp;&nbsp;File.delete(opName)
+&nbsp;&nbsp;raise
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>When an exception is raised, and independent of any subsequent exception handling, Ruby places a reference to the <CODE>Exception</CODE> object associated with the exception in the global variable <CODE>$!</CODE> (the exclamation point presumably mirroring our surprise that any of <EM>our</EM> code could cause errors). In the previous example, we used this variable to format our error message. 
+<P></P>After closing and deleting the file, we call <CODE>raise</CODE> with no parameters, which reraises the exception in <CODE>$!</CODE>. This is a useful technique, as it allows you to write code that filters exceptions, passing on those you can't handle to higher levels. It's almost like implementing an inheritance hierarchy for error processing. 
+<P></P>You can have multiple <CODE>rescue</CODE> clauses in a <CODE>begin</CODE> block, and each <CODE>rescue</CODE> clause can specify multiple exceptions to catch. At the end of each rescue clause you can give Ruby the name of a local variable to receive the matched exception. Many people find this more readable than using <CODE>$!</CODE> all over the place. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>begin
+&nbsp;&nbsp;eval&nbsp;string
+rescue&nbsp;SyntaxError,&nbsp;NameError&nbsp;=&gt;&nbsp;boom
+&nbsp;&nbsp;print&nbsp;"String&nbsp;doesn't&nbsp;compile:&nbsp;"&nbsp;+&nbsp;boom
+rescue&nbsp;StandardError&nbsp;=&gt;&nbsp;bang
+&nbsp;&nbsp;print&nbsp;"Error&nbsp;running&nbsp;script:&nbsp;"&nbsp;+&nbsp;bang
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>How does Ruby decide which rescue clause to execute? It turns out that the processing is pretty similar to that used by the <CODE>case</CODE> statement. For each <CODE>rescue</CODE> clause in the <CODE>begin</CODE> block, Ruby compares the raised exception against each of the parameters in turn. If the raised exception matches a parameter, Ruby executes the body of the <CODE>rescue</CODE> and stops looking. The match is made using <CODE>$!.kind_of?(<EM>parameter</EM>)</CODE>, and so will succeed if the parameter has the same class as the exception or is an ancestor of the exception. If you write a <CODE>rescue</CODE> clause with no parameter list, the parameter defaults to <CODE>StandardError</CODE>. 
+<P></P>If no <CODE>rescue</CODE> clause matches, or if an exception is raised outside a <CODE>begin</CODE>/<CODE>end</CODE> block, Ruby moves up the stack and looks for an exception handler in the caller, then in the caller's caller, and so on. 
+<P></P>Although the parameters to the <CODE>rescue</CODE> clause are typically the names of <CODE>Exception</CODE> classes, they can actually be arbitrary expressions (including method calls) that return an <CODE>Exception</CODE> class. 
+<H3><A name=UA>Tidying Up</A></H3>
+<P></P>Sometimes you need to guarantee that some processing is done at the end of a block of code, regardless of whether an exception was raised. For example, you may have a file open on entry to the block, and you need to make sure it gets closed as the block exits. 
+<P></P>The <CODE>ensure</CODE> clause does just this. <CODE>ensure</CODE> goes after the last <CODE>rescue</CODE> clause and contains a chunk of code that will always be executed as the block terminates. It doesn't matter if the block exits normally, if it raises and rescues an exception, or if it is terminated by an uncaught exception---the <CODE>ensure</CODE> block will get run. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>f&nbsp;=&nbsp;File.open("testfile")
+begin
+&nbsp;&nbsp;#&nbsp;..&nbsp;process
+rescue
+&nbsp;&nbsp;#&nbsp;..&nbsp;handle&nbsp;error
+ensure
+&nbsp;&nbsp;f.close&nbsp;unless&nbsp;f.nil?
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>The <CODE>else</CODE> clause is a similar, although less useful, construct. If present, it goes after the <CODE>rescue</CODE> clauses and before any <CODE>ensure</CODE>. The body of an <CODE>else</CODE> clause is executed only if no exceptions are raised by the main body of code. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>f&nbsp;=&nbsp;File.open("testfile")
+begin
+&nbsp;&nbsp;#&nbsp;..&nbsp;process
+rescue
+&nbsp;&nbsp;#&nbsp;..&nbsp;handle&nbsp;error
+else
+&nbsp;&nbsp;puts&nbsp;"Congratulations--&nbsp;no&nbsp;errors!"
+ensure
+&nbsp;&nbsp;f.close&nbsp;unless&nbsp;f.nil?
+end
+</PRE></TD></TR></TBODY></TABLE>
+<H3><A name=UB>Play It Again</A></H3>
+<P></P>Sometimes you may be able to correct the cause of an exception. In those cases, you can use the <CODE>retry</CODE> statement within a <CODE>rescue</CODE> clause to repeat the entire <CODE>begin</CODE>/<CODE>end</CODE> block. Clearly there is tremendous scope for infinite loops here, so this is a feature to use with caution (and with a finger resting lightly on the interrupt key). 
+<P></P>As an example of code that retries on exceptions, have a look at the following, adapted from Minero Aoki's <CODE>net/smtp.rb</CODE> library. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>@esmtp&nbsp;=&nbsp;true
+<P></P>
+begin
+&nbsp;&nbsp;#&nbsp;First&nbsp;try&nbsp;an&nbsp;extended&nbsp;login.&nbsp;If&nbsp;it&nbsp;fails&nbsp;because&nbsp;the
+&nbsp;&nbsp;#&nbsp;server&nbsp;doesn't&nbsp;support&nbsp;it,&nbsp;fall&nbsp;back&nbsp;to&nbsp;a&nbsp;normal&nbsp;login
+<P></P>
+&nbsp;&nbsp;if&nbsp;@esmtp&nbsp;then
+&nbsp;&nbsp;&nbsp;&nbsp;@command.ehlo(helodom)
+&nbsp;&nbsp;else
+&nbsp;&nbsp;&nbsp;&nbsp;@command.helo(helodom)
+&nbsp;&nbsp;end
+<P></P>
+rescue&nbsp;ProtocolError
+&nbsp;&nbsp;if&nbsp;@esmtp&nbsp;then
+&nbsp;&nbsp;&nbsp;&nbsp;@esmtp&nbsp;=&nbsp;false
+&nbsp;&nbsp;&nbsp;&nbsp;retry
+&nbsp;&nbsp;else
+&nbsp;&nbsp;&nbsp;&nbsp;raise
+&nbsp;&nbsp;end
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>This code tries first to connect to an SMTP server using the <CODE>EHLO</CODE> command, which is not universally supported. If the connection attempt fails, the code sets the <CODE>@esmtp</CODE> variable to <CODE>false</CODE> and retries the connection. If this fails again, the exception is reraised up to the caller. 
+<H2><A name=S3>Raising Exceptions</A></H2>
+<P></P>So far we've been on the defensive, handling exceptions raised by others. It's time to turn the tables and go on the offensive. (There are those that say your gentle authors are always offensive, but that's a different book.) 
+<P></P>You can raise exceptions in your code with the <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_m_kernel.html#Kernel.raise" ><CODE>Kernel::raise</CODE> </A>method. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>raise
+raise&nbsp;"bad&nbsp;mp3&nbsp;encoding"
+raise&nbsp;InterfaceException,&nbsp;"Keyboard&nbsp;failure",&nbsp;caller
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>The first form simply reraises the current exception (or a <CODE>RuntimeError</CODE> if there is no current exception). This is used in exception handlers that need to intercept an exception before passing it on. 
+<P></P>The second form creates a new <CODE>RuntimeError</CODE> exception, setting its message to the given string. This exception is then raised up the call stack. 
+<P></P>The third form uses the first argument to create an exception and then sets the associated message to the second argument and the stack trace to the third argument. Typically the first argument will be either the name of a class in the <CODE>Exception</CODE> hierarchy or a reference to an object instance of one of these classes.<EM>[Technically, this argument can be any object that responds to the message <CODE>exception</CODE> by returning an object such that <CODE>object.kind_of?(Exception)</CODE> is true.]</EM> The stack trace is normally produced using the <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_m_kernel.html#Kernel.caller" ><CODE>Kernel::caller</CODE> </A>method. 
+<P></P>Here are some typical examples of <CODE>raise</CODE> in action. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>raise
+<P></P>
+raise&nbsp;"Missing&nbsp;name"&nbsp;if&nbsp;name.nil?
+<P></P>
+if&nbsp;i&nbsp;&gt;=&nbsp;myNames.size
+&nbsp;&nbsp;raise&nbsp;IndexError,&nbsp;"#{i}&nbsp;&gt;=&nbsp;size&nbsp;(#{myNames.size})"
+end
+<P></P>
+raise&nbsp;ArgumentError,&nbsp;"Name&nbsp;too&nbsp;big",&nbsp;caller
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>In the last example, we remove the current routine from the stack backtrace, which is often useful in library modules. We can take this further: the following code removes two routines from the backtrace. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>raise&nbsp;ArgumentError,&nbsp;"Name&nbsp;too&nbsp;big",&nbsp;caller[1..-1]
+</PRE></TD></TR></TBODY></TABLE>
+<H3><A name=UC>Adding Information to Exceptions</A></H3>
+<P></P>You can define your own exceptions to hold any information that you need to pass out from the site of an error. For example, certain types of network errors might be transient depending on the circumstances. If such an error occurs, and the circumstances are right, you could set a flag in the exception to tell the handler that it might be worth retrying the operation. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>class&nbsp;RetryException&nbsp;&lt;&nbsp;RuntimeError
+&nbsp;&nbsp;attr&nbsp;:okToRetry
+&nbsp;&nbsp;def&nbsp;initialize(okToRetry)
+&nbsp;&nbsp;&nbsp;&nbsp;@okToRetry&nbsp;=&nbsp;okToRetry
+&nbsp;&nbsp;end
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>Somewhere down in the depths of the code, a transient error occurs. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>def&nbsp;readData(socket)
+&nbsp;&nbsp;data&nbsp;=&nbsp;socket.read(512)
+&nbsp;&nbsp;if&nbsp;data.nil?
+&nbsp;&nbsp;&nbsp;&nbsp;raise&nbsp;RetryException.new(true),&nbsp;"transient&nbsp;read&nbsp;error"
+&nbsp;&nbsp;end
+&nbsp;&nbsp;#&nbsp;..&nbsp;normal&nbsp;processing
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>Higher up the call stack, we handle the exception. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>begin
+&nbsp;&nbsp;stuff&nbsp;=&nbsp;readData(socket)
+&nbsp;&nbsp;#&nbsp;..&nbsp;process&nbsp;stuff
+rescue&nbsp;RetryException&nbsp;=&gt;&nbsp;detail
+&nbsp;&nbsp;retry&nbsp;if&nbsp;detail.okToRetry
+&nbsp;&nbsp;raise
+end
+</PRE></TD></TR></TBODY></TABLE>
+<H2><A name=S4>Catch and Throw</A></H2>
+<P></P>While the exception mechanism of <CODE>raise</CODE> and <CODE>rescue</CODE> is great for abandoning execution when things go wrong, it's sometimes nice to be able to jump out of some deeply nested construct during normal processing. This is where <CODE>catch</CODE> and <CODE>throw</CODE> come in handy. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>catch&nbsp;(:done)&nbsp;&nbsp;do
+&nbsp;&nbsp;while&nbsp;gets
+&nbsp;&nbsp;&nbsp;&nbsp;throw&nbsp;:done&nbsp;unless&nbsp;fields&nbsp;=&nbsp;split(/\t/)
+&nbsp;&nbsp;&nbsp;&nbsp;songList.add(Song.new(*fields))
+&nbsp;&nbsp;end
+&nbsp;&nbsp;songList.play
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P><CODE>catch</CODE> defines a block that is labeled with the given name (which may be a <CODE>Symbol</CODE> or a <CODE>String</CODE>). The block is executed normally until a <CODE>throw</CODE> is encountered. 
+<P></P>When Ruby encounters a <CODE>throw</CODE>, it zips back up the call stack looking for a <CODE>catch</CODE> block with a matching symbol. When it finds it, Ruby unwinds the stack to that point and terminates the block. If the <CODE>throw</CODE> is called with the optional second parameter, that value is returned as the value of the <CODE>catch</CODE>. So, in the previous example, if the input does not contain correctly formatted lines, the <CODE>throw</CODE> will skip to the end of the corresponding <CODE>catch</CODE>, not only terminating the <CODE>while</CODE> loop but also skipping the playing of the song list. 
+<P></P>The following example uses a <CODE>throw</CODE> to terminate interaction with the user if ``!'' is typed in response to any prompt. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>def&nbsp;promptAndGet(prompt)
+&nbsp;&nbsp;print&nbsp;prompt
+&nbsp;&nbsp;res&nbsp;=&nbsp;readline.chomp
+&nbsp;&nbsp;throw&nbsp;:quitRequested&nbsp;if&nbsp;res&nbsp;==&nbsp;"!"
+&nbsp;&nbsp;return&nbsp;res
+end
+<P></P>
+catch&nbsp;:quitRequested&nbsp;do
+&nbsp;&nbsp;name&nbsp;=&nbsp;promptAndGet("Name:&nbsp;")
+&nbsp;&nbsp;age&nbsp;&nbsp;=&nbsp;promptAndGet("Age:&nbsp;&nbsp;")
+&nbsp;&nbsp;sex&nbsp;&nbsp;=&nbsp;promptAndGet("Sex:&nbsp;&nbsp;")
+&nbsp;&nbsp;#&nbsp;..
+&nbsp;&nbsp;#&nbsp;process&nbsp;information
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>As this example illustrates, the <CODE>throw</CODE> does not have to appear within the static scope of the <CODE>catch</CODE>. 
+<P></P>
+<HR>
+
+<TABLE cellSpacing=0 cellPadding=10 bgColor=#a03030 border=0>
+<TBODY>
+<TR>
+<TD align=left width="33%"><A class=subheader href="104.html" >Previous &lt;</A> </TD>
+<TD vAlign=center align=middle width="33%"><A class=subheader href="95.html" >Contents ^</A> <BR></TD>
+<TD align=right width="33%"><A class=subheader href="106.html" >Next &gt;</A> <BR></TD></TR></TBODY></TABLE>
+<P></P><FONT size=-1>Extracted from the book "Programming Ruby - The Pragmatic Programmer's Guide"</FONT> <BR><FONT size=-3>Copyright © 2001 by Addison Wesley Longman, Inc. This material may be distributed only subject to the terms and conditions set forth in the Open Publication License, v1.0 or later (the latest version is presently available at <A href="http://www.opencontent.org/openpub/" >http://www.opencontent.org/openpub/</A>)). 
+<P></P>Distribution of substantively modified versions of this document is prohibited without the explicit permission of the copyright holder. 
+<P></P>Distribution of the work or derivative of the work in any standard (paper) book form is prohibited unless prior permission is obtained from the copyright holder. <BR></FONT></BODY>

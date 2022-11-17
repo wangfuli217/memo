@@ -1,0 +1,696 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 14.1.  Defining an Overloaded Operator</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch14.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch14lev1sec2.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch14lev1sec1"></a>
+
+        <h3 class="docSection1Title">14.1. Defining an Overloaded Operator</h3>
+        <h3 class="docSection1Title">14.1. 重载操作符的定义</h3>
+
+        <p class="docText">Overloaded operators are functions with special names: the keyword <tt>operator</tt> followed by the symbol for the operator being defined. Like any other function, an overloaded operator has a return type and a parameter list.</p>
+        <p class="docText">重载操作符是具有特殊名称的函数：保留字 <tt>operator</tt> 后接需定义的操作符号。像任意其他函数一样，重载操作符具有返回类型和形参表，如下语句：</p>
+
+        <pre>
+     Sales_item operator+(const Sales_item&amp;, const Sales_item&amp;);
+</pre><br>
+
+        <p class="docText">declares the addition operator that can be used to "add" two <tt>Sales_item</tt> objects and yields a copy of a <tt>Sales_item</tt> object.</p>
+        <p class="docText">声明了加号操作符，可用于将两个 <tt>Sales_item</tt> 对象“相加”并获得一个 <tt>Sales_item</tt> 对象的副本。</p>
+
+        <p class="docText">With the exception of the function-call operator, an overloaded operator has the same number of parameters (including the implicit <tt>this</tt> pointer for member functions) as the operator has operands. The function-call operator takes any number of operands.</p><a name="ch14lev2sec1"></a>
+        <p class="docText">除了函数调用操作符之外，重载操作符的形参数目（包括成员函数的隐式 <tt>this</tt> 指针）与操作符的操作数数目相同。函数调用操作符可以接受任意数目的操作数。</p>
+
+        <h4 class="docSection2Title">Overloaded Operator Names</h4>
+        <h4 class="docSection2Title">重载的操作名</h4>
+
+        <p class="docText"><a class="docLink" href="ch14lev1sec1.html#ch14table01">Table 14.1</a> on the next page lists the operators that may be overloaded. Those that may not be overloaded are listed in <a class="docLink" href="ch14lev1sec1.html#ch14table02">Table 14.2</a>.</p><a name="ch14table01"></a>
+        <p class="docText"><a class="docLink" href="ch14lev1sec1.html#ch14table01">表 14.1</a> 列出了可以重载的操作符，不能重载的在<a class="docLink" href="ch14lev1sec1.html#ch14table02">表 14.2</a> 列出。</p>
+
+        <h5 class="docTableTitle">Table 14.1. Overloadable Operators</h5>
+        <h5 class="docTableTitle">表 14.1. 可重载的操作符</h5>
+
+        <table cellspacing="0" class="allBorders" border="1" rules="none" cellpadding="5">
+          <colgroup>
+            <col width="75">
+            <col width="75">
+            <col width="75">
+            <col width="75">
+            <col width="75">
+            <col width="75">
+          </colgroup>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>+</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>-</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>*</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>/</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>%</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>^</tt></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>&amp;</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>|</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>~</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>!</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>,</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>=</tt></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>&lt;</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>&gt;</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>&lt;=</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>&gt;=</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>++</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>--</tt></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>&lt;&lt;</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>&gt;&gt;</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>==</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>!=</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>&amp;&amp;</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>||</tt></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>+=</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>-=</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>/=</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>%=</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>^=</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>&amp;=</tt></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>|=</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>*=</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>&lt;&lt;=</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>&gt;&gt;=</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>[]</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>()</tt></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>-&gt;</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>-&gt;*</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>new</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>new []</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>delete</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>delete []</tt></p>
+            </td>
+          </tr>
+        </table><br>
+        <a name="ch14table02"></a>
+
+        <h5 class="docTableTitle">Table 14.2. Operators That Cannot Be Overloaded</h5>
+        <h5 class="docTableTitle">表 14.2. 不能重载的操作符</h5>
+
+        <table cellspacing="0" class="allBorders" border="1" rules="none" cellpadding="5">
+          <colgroup>
+            <col width="125">
+            <col width="125">
+            <col width="125">
+            <col width="125">
+          </colgroup>
+
+          <tr>
+            <td class="docTableCell" align="center" valign="top">
+              <p class="docText"><tt>::</tt></p>
+            </td>
+
+            <td class="docTableCell" align="center" valign="top">
+              <p class="docText"><tt>.*</tt></p>
+            </td>
+
+            <td class="docTableCell" align="center" valign="top">
+              <p class="docText"><tt>.</tt></p>
+            </td>
+
+            <td class="docTableCell" align="center" valign="top">
+              <p class="docText"><tt>?:</tt></p>
+            </td>
+          </tr>
+        </table><br>
+
+        <p class="docText">New operators may not be created by concatenating other legal symbols. For example, it would be illegal to attempt to define an <tt>operator**</tt> to provide exponentiation. Overloading <tt>new</tt> and <tt>delete</tt> is described in <a class="docLink" href="ch18.html#ch18" >Chapter 18</a> (p. <a class="docLink" href="ch18.html#ch18" >753</a>).</p><a name="ch14lev2sec2"></a>
+        <p class="docText">通过连接其他合法符号可以创建新的操作符。例如，定义一个 <tt>operator**</tt> 以提供求幂运算是合法的。<a class="docLink" href="ch18.html#ch18" >第十八章</a>将介绍重载 <tt>new</tt> 和 <tt>delete</tt>。</p>
+
+        <h4 class="docSection2Title">Overloaded Operators Must Have an Operand of Class Type</h4>
+        <h4 class="docSection2Title">重载操作符必须具有一个类类型操作数</h4>
+
+        <p class="docText"><a name="idd1e104241"></a><a name="idd1e104246"></a><a name="idd1e104251"></a><a name="idd1e104256"></a><a name="idd1e104261"></a>The meaning of an operator for the built-in types may not be changed. For example, the built-in integer addition operation cannot be redefined:</p>
+        <p class="docText">用于内置类型的操作符，其含义不能改变。例如，内置的整型加号操作符不能重定义：</p>
+        <pre>
+     // <span class="docEmphasis">error: cannot redefine built-in operator for ints</span>
+     int operator+(int, int);
+</pre><br>
+
+        <p class="docText">Nor may additional operators be defined for the built-in data types. For example, an <tt>operator+</tt> taking two operands of array types cannot be defined.</p><a name="ch14note01"></a>
+        <p class="docText">也不能为内置数据类型重定义加号操作符。例如，不能定义接受两个数组类型操作数的 <tt>operator+</tt>。</p>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">An overloaded operator must have at least one operand of class or enumeration (<a class="docLink" href="ch02lev1sec7.html#ch02lev1sec7" >Section 2.7</a>, p. <a class="docLink" href="ch02lev1sec7.html#ch02lev1sec7" >62</a>) type. This rule enforces the requirement that an overloaded operator may not redefine the meaning of the operators when applied to objects of built-in type.</p>
+                <p class="docText">重载操作符必须具有至少一个类类型或枚举类型（<a class="docLink" href="ch02lev1sec7.html#ch02lev1sec7" >第 2.7 节</a>）的操作数。这条规则强制重载操作符不能重新定义用于内置类型对象的操作符的含义。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch14lev2sec3"></a>
+
+        <h4 class="docSection2Title">Precedence and Associativity Are Fixed</h4>
+        <h4 class="docSection2Title">优先级和结合性是固定的</h4>
+
+        <p class="docText">The precedence (<a class="docLink" href="ch05lev1sec10.html#ch05lev2sec14" >Section 5.10.1</a>, p. <a class="docLink" href="ch05lev1sec10.html#ch05lev2sec14" >168</a>), associativity, or number of operands of an operator cannot be changed. Regardless of the type of the operands and regardless of the definition of what the operations do, this expression</p>
+        <p class="docText">操作符的优先级（<a class="docLink" href="ch05lev1sec10.html#ch05lev2sec14" >第 5.10.1 节</a>）、结合性或操作数目不能改变。不管操作数的类型和操作符的功能定义如何，表达式</p>
+        <pre>
+     x == y +z;
+</pre><br>
+
+        <p class="docText">always binds the arguments <tt>y</tt> and <tt>z</tt> to <tt>operator+</tt> and uses that result as the right-hand operand to <tt>operator==</tt>.</p>
+        <p class="docText">总是将实参 <tt>y</tt> 和 <tt>z</tt> 绑定到 <tt>operator+</tt>，并且将结果用作 <tt>operator==</tt> 右操作数。</p>
+
+        <p class="docText">Four symbols (<tt>+, -, *</tt>, and <tt>&amp;)</tt> serve as both unary and binary operators. Either or both of these operators can be overloaded. Which operator is being defined is controlled by the number of operands. Default arguments for overloaded operators are illegal, except for <tt>operator()</tt>, the function-call operator.</p><a name="ch14lev2sec4"></a>
+        <p class="docText">有四个符号（<tt>+, -, *</tt> 和 <tt>&amp;</tt>）既可作一元操作符又可作二元操作符，这些操作符有的在其中一种情况下可以重载，有的两种都可以，定义的是哪个操作符由操作数数目控制。除了函数调用操作符 <tt>operator()</tt> 之外，重载操作符时使用默认实参是非法的。</p>
+
+        <h4 class="docSection2Title">Short-Ciruit Evaluation Is Not Preserved</h4>
+        <h4 class="docSection2Title">不再具备短路求值特性</h4>
+
+        <p class="docText"><a name="idd1e104355"></a><a name="idd1e104361"></a><a name="idd1e104366"></a><a name="idd1e104371"></a><a name="idd1e104376"></a><a name="idd1e104381"></a><a name="idd1e104388"></a>Overloaded operators make no guarantees about the order in which operands are evaluated. In particular, the operand-evaluation guarantees of the built-in logical AND, logical OR (<a class="docLink" href="ch05lev1sec2.html#ch05lev1sec2" >Section 5.2</a>, p. <a class="docLink" href="ch05lev1sec2.html#ch05lev1sec2" >152</a>), and comma (<a class="docLink" href="ch05lev1sec9.html#ch05lev1sec9" >Section 5.9</a>, p. <a class="docLink" href="ch05lev1sec9.html#ch05lev1sec9" >168</a>) operators are not preserved. Both operands to an overloaded version of <tt>&amp;&amp;</tt> or <tt>||</tt> are always evaluated. The order in which those operands are evaluated is not stipulated. The order in which the operands to the comma are evaluated is also not defined. For this reason, it is usually a bad idea to overload <tt>&amp;&amp;, ||</tt>, or the comma operator.</p><a name="ch14lev2sec5"></a>
+        <p class="docText">重载操作符并不保证操作数的求值顺序，尤其是，不会保证内置逻辑 AND、逻辑 OR（<a class="docLink" href="ch05lev1sec2.html#ch05lev1sec2" >第 5.2 节</a>）和逗号操作符（<a class="docLink" href="ch05lev1sec9.html#ch05lev1sec9" >第 5.9 节</a>）的操作数求值。在 <tt>&amp;&amp;</tt> 和 <tt>||</tt> 的重载版本中，两个操作数都要进行求值，而且对操作数的求值顺序不做规定。因此，重载 <tt>&amp;&amp;、||</tt> 或逗号操作符不是一种好的做法。</p>
+
+        <h4 class="docSection2Title">Class Member versus Nonmember</h4>
+        <h4 class="docSection2Title">类成员与非成员</h4>
+
+        <p class="docText">Most overloaded operators may be defined as ordinary nonmember functions or as class member functions.</p><a name="ch14note02"></a>
+        <p class="docText">大多数重载操作符可以定义为普通非成员函数或类的成员函数。</p>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Overloaded functions that are members of a class may appear to have one less parameter than the number of operands. Operators that are member functions have an implicit <tt>this</tt> parameter that is bound to the first operand.</p>
+                <p class="docText">作为类成员的重载函数，其形参看起来比操作数数目少 1。作为成员函数的操作符有一个隐含的 <tt>this</tt> 形参，限定为第一个操作数。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">An overloaded unary operator has no (explicit) parameter if it is a member function and one parameter if it is a nonmember function. Similarly, an overloaded binary operator would have one parameter when defined as a member and two parameters when defined as a nonmember function.</p>
+        <p class="docText">重载一元操作符如果作为成员函数就没有（显式）形参，如果作为非成员函数就有一个形参。类似地，重载二元操作符定义为成员时有一个形参，定义为非成员函数时有两个形参。</p>
+
+        <p class="docText">The <tt>Sales_item</tt> class offers a good example of member and nonmember binary operators. We know that the class has an addition operator. Because it has an addition operator, we ought to define a compound-assignment (<tt>+=</tt>) operator as well. This operator will add the value of one <tt>Sales_item</tt> object into another.</p>
+        <p class="docText">类 <tt>Sales_item</tt> 中给出了成员和非成员二元操作符的良好例子。我们知道该类有一个加号操作符。因为它有一个加号操作符，所以也应该定义一个复合赋值（<tt>+=</tt>）操作符，该操作符将一个 <tt>Sales_item</tt> 对象的值加至另一个 <tt>Sales_item</tt> 对象。</p>
+
+        <p class="docText">Ordinarily we define the arithmetic and relational operators as nonmember functions and we define assignment operators as members:</p>
+        <p class="docText">一般将算术和关系操作符定义非成员函数，而将赋值操作符定义为成员：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">member binary operator: left-hand operand bound to implicit this pointer</span>
+     Sales_item&amp; Sales_item::operator+=(const Sales_item&amp;);
+     // <span class="docEmphItalicAlt">nonmember binary operator: must declare a parameter for each operand</span>
+     Sales_item operator+(const Sales_item&amp;, const Sales_item&amp;);
+</pre><br>
+
+        <p class="docText">Both addition and compound assignment are binary operators, yet these functions define a different number of parameters. The reason for the discrepancy is the <tt>this</tt> pointer.</p>
+        <p class="docText">加和复合赋值都是二元操作符，但这些函数定义了不同数目的形参，差异的原因在于 <tt>this</tt> 指针。</p>
+
+        <p class="docText">When an operator is a member function, <tt>this</tt> points to the left-hand operand. Thus, the nonmember <tt>operator+</tt> defines two parameters, both references to <tt>const Sales_item</tt> objects. Even though compound assignment is a binary operator, the member compound-assignment operator takes only one (explicit) parameter. When the operator is used, a pointer to the left-hand operand is automatically bound to <tt>this</tt> and the right-hand operand is bound to the function's sole parameter.</p>
+        <p class="docText">当操作符为成员函数，<tt>this</tt> 指向左操作数，因此，非成员 <tt>operator+</tt> 定义两个形参，都引用 <tt>const Sales_item</tt> 对象。即使复合赋值是二元操作符，成员复合赋值操作符也只接受一个（显式的）形参。使用操作符时，一个指向左操作数的指针自动绑定到 <tt>this</tt>，而右操作符限定为函数的唯一形参。</p>
+
+        <p class="docText">It is also worth noting that compound assignment returns a reference and the addition operator returns a <tt>Sales_item</tt> object. This difference matches the return types of these operators when applied to arithmetic types: Addition yields an rvalue and compound assignment returns a reference to the left-hand operand.</p><a name="ch14lev2sec6"></a>
+        <p class="docText">复合赋值返回一个引用而加操作符返回一个 <tt>Sales_item</tt> 对象，这也没什么。当应用于算术类型时，这一区别与操作符的返回类型相匹配：加返回一个右值，而复合赋值返回对左操作数的引用。</p>
+
+        <h4 class="docSection2Title">Operator Overloading and Friendship</h4>
+        <h4 class="docSection2Title">操作符重载和友元关系</h4>
+
+        <p class="docText"><a name="idd1e104505"></a><a name="idd1e104510"></a><a name="idd1e104515"></a>When operators are defined as nonmember functions, they often must be made friends (<a class="docLink" href="ch12lev1sec5.html#ch12lev1sec5" >Section 12.5</a>, p. <a class="docLink" href="ch12lev1sec5.html#ch12lev1sec5" >465</a>) of the class(es) on which they operate. We'll see later in this chapter two reasons why operators might be defined as nonmembers. In such cases, the operator often needs access to the private parts of the class.</p>
+        <p class="docText">操作符定义为非成员函数时，通常必须将它们设置为所操作类的<a class="docLink" href="ch12lev1sec5.html#ch12lev1sec5" >友元</a>（<a class="docLink" href="ch12lev1sec5.html#ch12lev1sec5" >12.5 节</a>）。在本章的后面部分，将给出操作符可以定义为非成员的两个原因。在这种情况下，操作符通常需要访问类的私有部分。</p>
+
+        <p class="docText">Our <tt>Sales_item</tt> class is again a good example of why some operators need to be friends. It defines one member operator and has three nonmember operators. Those nonmember operators, which need access to the private data members, are declared as friends:</p>
+        <p class="docText"><tt>Sales_item</tt> 类也是说明为何有些操作符需要设置为友元的一个好例子。它定义了一个成员操作符，并且有三个非成员操作符。这些非成员操作符需要访问私有数据成员，声明为友元：</p>
+        <pre>
+     class Sales_item {
+         friend std::istream&amp; operator&gt;&gt;
+                       (std::istream&amp;, Sales_item&amp;);
+         friend std::ostream&amp; operator&lt;&lt;
+                       (std::ostream&amp;, const Sales_item&amp;);
+     public:
+         Sales_item&amp; operator+=(const Sales_item&amp;);
+     };
+         Sales_item operator+(const Sales_item&amp;, const Sales_item&amp;);
+</pre><br>
+
+        <p class="docText">That the input and output operators need access to the <tt>private</tt> data should not be surprising. After all, they read and write those members. On the other hand, there is no need to make the addition operator a friend. It can be implemented using the <tt>public</tt> member <tt>operator+=</tt>.</p><a name="ch14lev2sec7"></a>
+        <p class="docText">输入和输出操作符需要访问 <tt>private</tt> 数据不会令人惊讶，毕竟，它们的作用是读入和写出那些成员。另一方面，不需要将加操作符设置为友元，它可以用 <tt>public</tt> 成员 <tt>operator+=</tt> 实现。</p>
+
+        <h4 class="docSection2Title">Using Overloaded Operators</h4>
+        <h4 class="docSection2Title">使用重载操作符</h4>
+
+        <p class="docText">We can use an overloaded operator in the same way that we'd use the operator on operands of built-in type. Assuming <tt>item1</tt> and <tt>item2</tt> are <tt>Sales_item</tt> objects, we might print their sum in the same way that we'd print the sum of two <tt>int</tt>s:</p>
+        <p class="docText">使用重载操作符的方式，与内置类型操作数上使用操作符的方式一样。假定 <tt>item1</tt> 和 <tt>item2</tt> 是 <tt>Sales_item</tt> 对象，可以打印它们的和，就像打印两个 <tt>int</tt> 的和一样：</p>
+        <pre>
+     cout &lt;&lt; item1 + item2 &lt;&lt; endl;
+</pre><br>
+
+        <p class="docText">This expression implicitly calls the <tt>operator+</tt> that we defined for <tt>Sales_items</tt>.</p>
+        <p class="docText">这个表达式隐式调用为 <tt>Sales_items</tt> 类而定义的 <tt>operator+</tt>。</p>
+
+        <p class="docText">We also can call an overloaded operator function in the same way that we call an ordinary function: We name the function and pass an appropriate number of arguments of the appropriate type:</p>
+        <p class="docText">也可以像调用普通函数一样调用重载操作符函数，指定函数并传递适当类型适当数目的形参：</p>
+        <pre>
+     // <span class="docEmphasis">equivalent direct call to nonmember operator function</span>
+     cout &lt;&lt; operator+(item1, item2) &lt;&lt; endl;
+</pre><br>
+
+        <p class="docText">This call has the same effect as the expression that added <tt>item1</tt> and <tt>item2</tt>.</p>
+        <p class="docText">这个调用与 <tt>item1</tt> 和 <tt>item2</tt> 相加的表达式等效。</p>
+
+        <p class="docText">We call a member operator function the same way we call any other member function: We name an object on which to run the function and then use the dot or arrow operator to fetch the function we wish to call passing the required number and type of arguments. In the case of a binary member operator function, we must pass a single operand:</p>
+        <p class="docText">调用成员操作符函数与调用任意其他函数是一样的：指定运行函数的对象，然后使用点或箭头操作符获取希望调用的函数，同时传递所需数目和类型的实参。对于二元成员操作符函数的情况，我们必须传递一个操作数：</p>
+        <pre>
+     item1 += item2;            // <span class="docEmphasis">expression based "call"</span>
+     item1.operator+=(item2);   // <span class="docEmphasis">equivalent call to member operator function</span>
+</pre><br>
+
+        <p class="docText"><a name="idd1e104626"></a><a name="idd1e104631"></a>Each of these statements adds the value of <tt>item2</tt> into <tt>item1</tt>. In the first case, we implicitly call the overloaded operator function using expression syntax. In the second, we call the member operator function on the object <tt>item1</tt>.</p><a name="ch14sb01"></a>
+        <p class="docText">两个语句都将 <tt>item2</tt> 的值加至 <tt>item1</tt>。第一种情况下，使用表达式语法隐式调用重载操作符函数：第二种情况下，在 <tt>item1</tt> 对象上调用成员操作符函数。</p>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 14.1</h2>
+              <h2 class="docSidebarTitle">习题 14.1</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch14qa1q1"></a><b>Exercise 14.1:</b></td>
+
+                    <td>
+                      <p class="docText">In what ways does an overloaded operator differ from a built-in operator? In what ways are overloaded operators the same as the built-in operators?</p>
+                      <p class="docText">在什么情况下重载操作符与内置操作符不同？在什么情况下重载操作符与内置操作符相同？</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch14qa1q2"></a><b>Exercise 14.2:</b></td>
+
+                    <td>
+                      <p class="docText">Write declarations for the overloaded input, output, addition and compound-assignment operators for <tt>Sales_item</tt>.</p>
+                      <p class="docText">为 <tt>Sales_item</tt> 编写输入、输出、加以及复合赋值操作符的重载声明。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch14qa1q3"></a><b>Exercise 14.3:</b></td>
+
+                    <td>
+                      <p class="docText">Explain the following program, assuming that the <tt>Sales_item</tt> constructor that takes a <tt>string</tt> is not <tt>explicit</tt>. Explain what happens if that constructor is <tt>explicit</tt>.</p>
+                      <p class="docText">解释如下程序，假定 <tt>Sales_item</tt> 构造函数的参数是一个 <tt>string</tt>，且不为 <tt>explicit</tt>。解释如果构造函数 <tt>explicit</tt> 怎样。</p>
+                      <pre>
+     string null_book = "9-999-99999-9";
+     Sales_item item(cin);
+     item += null_book;
+</pre><br>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch14qa1q4"></a><b>Exercise 14.4:</b></td>
+
+                    <td>
+                      <p class="docText">Both the <tt>string</tt> and <tt>vector</tt> types define an overloaded <tt>==</tt> that can be used to compare objects of those types. Identify which version of <tt>==</tt> is applied in each of the following expressions:</p>
+                      <p class="docText"><tt>string</tt> 和 <tt>vector</tt> 类都定义了一个重载的 <tt>==</tt>，可用于比较这些类的对象。指出下面表达式中应用了哪个 <tt>==</tt> 版本：</p>
+                      <pre>
+     string s; vector&lt;string&gt; svec1, svec2;
+     "cobble" == "stone"
+     svec1[0] == svec2[0];
+     svec1 == svec2
+</pre><br>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a name="ch14lev2sec8"></a>
+
+        <h4 class="docSection2Title">14.1.1. Overloaded Operator Design</h4>
+        <h4 class="docSection2Title">14.1.1. 重载操作符的设计</h4>
+
+        <p class="docText">When designing a class there are some useful rules of thumb to keep in mind when deciding which, if any, overloaded operators to provide.</p><a name="ch14lev3sec1"></a>
+        <p class="docText">设计类的时候，需要记住一些有用的经验原则，可以有助于确定应该提供哪些重载操作符（如果需要提供）。</p>
+
+        <h5 class="docSection3Title">Don't Overload Operators with Built-in Meanings</h5>
+        <h5 class="docSection3Title">不要重载具有内置含义的操作符</h5>
+
+        <p class="docText">The assignment, address of, and comma operators have default meanings for operands of class types. If there is no overloaded version specified, the compiler defines its own version of these operators:</p>
+        <p class="docText">赋值操作符、取地址操作符和逗号操作符对类类型操作数有默认含义。如果没有特定重载版本，编译器就自己定义以下这些操作符。</p>
+
+        <ul>
+          <li>
+            <p class="docList">The synthesized assignment operator (<a class="docLink" href="ch13lev1sec2.html#ch13lev1sec2" >Section 13.2</a>, p. <a class="docLink" href="ch13lev1sec2.html#ch13lev1sec2" >482</a>) does memberwise assignment: It uses each member's own assignment operator to assign each member in turn.</p>
+            <p class="docList">合成赋值操作符（<a class="docLink" href="ch13lev1sec2.html#ch13lev1sec2" >第 13.2 节</a>）进行逐个成员赋值：使用成员自己的赋值：使用成员自己的赋值操作依次对每个成员进行赋值。</p>
+          </li>
+
+          <li>
+            <p class="docList">By default the address of (<tt>&amp;</tt>) and comma (<tt>,</tt>) operators execute on class type objects the same way they do on objects of built-in type. The address of operator returns the address in memory of the object to which it is applied. The comma operator evaluates each expression from left to right and returns the value of its rightmost operand.</p>
+            <p class="docList">默认情况下，取地址操作符（<tt>&amp;</tt>）和逗号操作符（<tt>,</tt>）在类类型对象上的执行，与在内置类型对象上的执行一样。取地址操作符返回对象的内存地址，逗号操作符从左至右计算每个表达式的值，并返回最右边操作数的值。</p>
+          </li>
+
+          <li>
+            <p class="docList"><a name="idd1e104782"></a><a name="idd1e104787"></a><a name="idd1e104794"></a><a name="idd1e104801"></a><a name="idd1e104808"></a><a name="idd1e104815"></a><a name="idd1e104823"></a><a name="idd1e104831"></a><a name="idd1e104836"></a><a name="idd1e104844"></a><a name="idd1e104852"></a><a name="idd1e104859"></a><a name="idd1e104866"></a><a name="idd1e104873"></a><a name="idd1e104880"></a><a name="idd1e104888"></a><a name="idd1e104893"></a>The built-in logical AND (<tt>&amp;&amp;</tt>) and OR(<tt>||)</tt> operators apply short-circuit evaluation (<a class="docLink" href="ch05lev1sec2.html#ch05lev1sec2" >Section 5.2</a>, p. <a class="docLink" href="ch05lev1sec2.html#ch05lev1sec2" >152</a>). If the operator is redefined, the short-circuit nature of the operators is lost.</p>
+            <p class="docList">内置逻辑与（<tt>&amp;&amp;</tt>）和逻辑或（<tt>||</tt>）操作符使用短路求值（<a class="docLink" href="ch05lev1sec2.html#ch05lev1sec2" >第 5.2 节</a>）。如果重新定义该操作符，将失去操作符的短路求值特征。</p>
+          </li>
+        </ul>
+
+        <p class="docText">The meaning of these operators can be changed by redefining them for operands of a given class type.</p><a name="ch14note03"></a>
+        <p class="docText">通过为给定类类型的操作数重定义操作符，可以改变这些操作符的含义。</p>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="116" height="74" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/bestpractices.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">It is usually <span class="docEmphasis">not</span> a good idea to overload the comma, address-of, logical AND, or logical OR operators. These operators have built-in meanings that are useful and become inaccessible if we define our own versions.</p>
+		<p class="docText">重载逗号、取地址、逻辑与、逻辑或等等操作符通常<span class="docEmphasis">不是</span>好做法。这些操作符具有有用的内置含义，如果我们定义了自己的版本，就不能再使用这些内置含义。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">We sometimes must define our own version of assignment. When we do so, it should behave analogously to the synthesized operators: After an assignment, the values in the left-hand and right-hand operands should be the same and the operator should return a reference to its left-hand operand. Overloaded assignment should customize the built-in meaning of assignment, not circumvent it.</p><a name="ch14lev3sec2"></a>
+        <p class="docText">有时我们需要定义自己的赋值运算。这样做时，它应表现得类似于合成操作符：赋值之后，左右操作数的值应是相同的，并且操作符应返回对左操作数的引用。重载的赋值运算应在赋值的内置含义基础上进行定制，而不是完全绕开。</p>
+
+        <h5 class="docSection3Title">Most Operators Have No Meaning for Class Objects</h5>
+        <h5 class="docSection3Title">大多数操作符对类对象没有意义</h5>
+
+        <p class="docText">Operators other than assignment, address-of, and comma have no meaning when applied to an operand of class type unless an overloaded definition is provided. When designing a class, we decide which, if any, operators to support.</p>
+        <p class="docText">除非提供了重载定义，赋值、取地址和逗号操作符对于类类型操作数没有意义。设计类的时候，应该确定要支持哪些操作符。</p>
+
+        <p class="docText">The best way to design operators for a class is first to design the class' public interface. Once the interface is defined, it is possible to think about which operations should be defined as overloaded operators. Those operations with a logical mapping to an operator are good candidates. For example,</p>
+        <p class="docText">为类设计操作符，最好的方式是首先设计类的公用接口。定义了接口之后，就可以考虑应将哪些操作符定义为重载操作符。那些逻辑上可以映射到某个操作符的操作可以考虑作为候选的重载操作符。例如：</p>
+
+        <ul>
+          <li>
+            <p class="docList">An operation to test for equality should use <tt>operator==</tt>.</p>
+            <p class="docList">相等测试操作应使用 <tt>operator==</tt>。</p>
+          </li>
+
+          <li>
+            <p class="docList">Input and output are normally done by overloading the shift operators.</p>
+            <p class="docList">一般通过重载移位操作符进行输入和输出。</p>
+          </li>
+
+          <li>
+            <p class="docList">An operation to test whether the object is empty could be represented by the logical NOT operator, <tt>operator!</tt>.</p>
+            <p class="docList">测试对象是否为空的操作可用逻辑非操作符 <tt>operator!</tt> 表示。</p>
+          </li>
+        </ul><a name="ch14lev3sec3"></a>
+
+        <h5 class="docSection3Title">Compound Assignment Operators</h5>
+        <h5 class="docSection3Title">复合赋值操作符</h5>
+
+        <p class="docText">If a class has an arithmetic (<a class="docLink" href="ch05lev1sec1.html#ch05lev1sec1" >Section 5.1</a>, p. <a class="docLink" href="ch05lev1sec1.html#ch05lev1sec1" >149</a>) or bitwise (<a class="docLink" href="ch05lev1sec3.html#ch05lev1sec3" >Section 5.3</a>, p. <a class="docLink" href="ch05lev1sec3.html#ch05lev1sec3" >154</a>) operator, then it is usually a good idea to provide the corresponding compound-assignment operator as well. For example, our <tt>Sales_item</tt> class defined the <tt>+</tt> operator. Logically, it also should define <tt>+=</tt>. Needless to say, the <tt>+=</tt> operator should be defined to behave the same way the built-in operators do: Compound assignment should behave as <tt>+</tt> followed by <tt>=</tt>.</p><a name="ch14lev3sec4"></a>
+        <p class="docText">如果一个类有算术操作符（<a class="docLink" href="ch05lev1sec1.html#ch05lev1sec1" >第 5.1 节</a>）或位操作符（<a class="docLink" href="ch05lev1sec3.html#ch05lev1sec3" >第 5.3 节</a>），那么，提供相应的复合赋值操作符一般是个好的做法。例如，<tt>Sales_item</tt> 类定义了 <tt>+</tt> 操作符，逻辑上，它也应该定义 <tt>+=</tt>。不用说，操作符的行为应定义为与内置操作符一样：复合赋值的行为应与 <tt>+</tt> 之后接着 <tt>=</tt> 类似。</p>
+
+        <h5 class="docSection3Title">Equality and Relational Operators</h5>
+        <h5 class="docSection3Title">相等和关系操作符</h5>
+
+        <p class="docText">Classes that will be used as the key type of an associative container should define the <tt>&lt;</tt> operator. The associative containers by default use the <tt>&lt;</tt> operator of the key type. Even if the type will be stored only in a sequential container, the class ordinarily should define the equality (<tt>==</tt>) and less-than (<tt>&lt;</tt>) operators. The reason <a name="idd1e105030"></a><a name="idd1e105038"></a><a name="idd1e105046"></a><a name="idd1e105051"></a>is that many algorithms assume that these operators exist. As an example, the <tt>sort</tt> algorithm uses <tt>&lt;</tt> and <tt>find</tt> uses <tt>==</tt>.</p><a name="ch14sb02"></a>
+        <p class="docText">将要用作关联容器键类型的类应定义 <tt>&lt;</tt> 操作符。关联容器默认使用键类型的 <tt>&lt;</tt> 操作符。即使该类型将只存储在顺序容器中，类通常也应该定义相等（<tt>==</tt>）和小于（<tt>&lt;</tt>）操作符，理由是许多算法假定这个操作符存在。例如 <tt>sort</tt> 算法使用 <tt>&lt;</tt> 操作符，而 <tt>find</tt> 算法使用 <tt>==</tt> 操作符。</p>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Caution: Use Operator Overloading Judiciously</h2>
+              <h2 class="docSidebarTitle">警告：审慎使用操作符重载</h2>
+
+              <p class="docText"><span class="docEmphStrong">Each operator has an associated meaning from its use on the built-in types. Binary <tt>+</tt>, for example, is strongly identified with addition. Mapping binary <tt>+</tt> to an analogous operation for a class type can provide a convenient notational shorthand. For example, the library <tt>string</tt> type, following a convention common to many programming languages, uses <tt>+</tt> to represent concatenation"adding" one string to the other.</span></p>
+              <p class="docText"><span class="docEmphStrong">每个操作符用于内置类型都有关联的含义。例如，二元 <tt>+</tt> 与加法是完全相同的。将二元 <tt>+</tt> 对应到一个类类型的类似操作可提供方便的简写方法。例如，标准库的类型 <tt>string</tt>，遵循许多程序设计语言的通用规范，使用 <tt>+</tt> 表示连接——将一个串“加”至另一个串。</span></p>
+
+              <p class="docText"><span class="docEmphStrong">Operator overloading is most useful when there is a logical mapping of a built-in operator to an operation on our type. Using overloaded operators rather than inventing named operations can make our programs more natural and intuitive. Overuse or outright abuse of operator overloading can make our classes incomprehensible.</span></p>
+              <p class="docText"><span class="docEmphStrong">当内置操作符和类型上的操作存在逻辑对应关系时，操作符重载最有用。使用重载操作符而不是创造命名操作，可以令程序更自然、更直观，而滥用操作符重载使得我们的类难以理解。</span></p>
+
+              <p class="docText"><span class="docEmphStrong">Obvious abuses of operator overloading rarely happen in practice. As an example, no responsible programmer would define <tt>operator+</tt> to perform subtraction. More common, but still inadvisable, are uses that contort an operator's "normal" meaning to force a fit to a given type. Operators should be used only for operations that are likely to be unambiguous to users. An operator with ambiguous meaning, in this sense, is one that supports equally well a number of different interpretations.</span></p><a name="ch14note04"></a>
+              <p class="docText"><span class="docEmphStrong">在实践中很少发生明显的操作符重载滥用。例如，不负责任的程序员可能会定义 <tt>operator+</tt> 来执行减法。更常见但仍不可取的是，改变操作符的“正常”含义以强行适应给定类型。操作符应该只用于对用户而言无二义的操作。在这里所谓有二义的操作符，就是指具有多个不同解释的操作符。</span></p>
+
+              <div class="docNote">
+                <table width="90%" border="0" cellspacing="0" cellpadding="1">
+                  <tr>
+                    <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="116" height="74" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/bestpractices.jpg;400478" ></td>
+
+                    <td valign="top">
+                      <p class="docText"><span class="docEmphStrong">When the meaning of an overloaded operator is not obvious, it is better to give the operation a name. It is also usually better to use a named function rather than an operator for operations that are rarely done. If the operation is unusual, the brevity of using an operator is unnecessary.</span></p>
+                      <p class="docText"><span class="docEmphStrong">当一个重载操作符的含义不明显时，给操作取一个名字更好。对于很少用的操作，使用命名函数通常也比用操作符更好。如果不是普通操作，没有必要为简洁而使用操作符。</span></p>
+                    </td>
+                  </tr>
+                </table><br>
+              </div><br>
+            </td>
+          </tr>
+        </table><br>
+
+        <p class="docText">If the class defines the equality operator, it should also define <tt>!=</tt>. Users of the class will assume that if they can compare for equality, they can also compare for inequality. The same argument applies to the other relational operators as well. If the class defines <tt>&lt;</tt>, then it probably should define all four relational operators (<tt>&gt;, &gt;=, &lt;</tt>, and <tt>&lt;=)</tt>.</p><a name="ch14lev3sec5"></a>
+        <p class="docText">如果类定义了相等操作符，它也应该定义不等操作符 <tt>!=</tt>。类用户会假设如果可以进行相等比较，则也可以进行不等比较。同样的规则也应用于其他关系操作符。如果类定义了 <tt>&lt;</tt>，则它可能应该定义全部的四个关系操作符（<tt>&gt;，&gt;=，&lt;，&lt;=</tt>）。</p>
+
+        <h5 class="docSection3Title">Choosing Member or Nonmember Implementation</h5>
+        <h5 class="docSection3Title">选择成员或非成员实现</h5>
+
+        <p class="docText">When designing the overloaded operators for a class, we must choose whether to make each operator a class member or an ordinary nonmember function. In some cases, the programmer has no choice; the operator must be a member. In other cases, there are some rules of thumb that can help guide the decision. The following guidelines can be of help when deciding whether to make an operator a member or an ordinary nonmember function:</p>
+        <p class="docText">为类设计重载操作符的时候，必须选择是将操作符设置为类成员还是普通非成员函数。在某些情况下，程序员没有选择，操作符必须是成员；在另一些情况下，有些经验原则可指导我们做出决定。下面是一些指导原则，有助于决定将操作符设置为类成员还是普通非成员函数：</p>
+
+        <ul>
+          <li>
+            <p class="docList">The assignment (<tt>=</tt>), subscript (<tt>[]</tt>), call (<tt>()</tt>), and member access arrow (<tt>-&gt;</tt>) operators must be defined as members. Defining any of these operators as a nonmember function is flagged at compile time as an error.</p>
+            <p class="docList">赋值（<tt>=</tt>）、下标（<tt>[]</tt>）、调用（<tt>()</tt>）和成员访问箭头（<tt>-&gt;</tt>）等操作符必须定义为成员，将这些操作符定义为非成员函数将在编译时标记为错误。</p>
+          </li>
+
+          <li>
+            <p class="docList">Like assignment, the compound-assignment operators ordinarily ought to be members of the class. Unlike assignment, they are not required to be so and the compiler will not complain if a nonmember compound-assignment operator is defined.</p>
+            <p class="docList">像赋值一样，复合赋值操作符通常应定义为类的成员，与赋值不同的是，不一定非得这样做，如果定义非成员复合赋值操作符，不会出现编译错误。</p>
+          </li>
+
+          <li>
+            <p class="docList"><a name="idd1e105164"></a><a name="idd1e105171"></a><a name="idd1e105179"></a>Other operators that change the state of their object or that are closely tied to their given typesuch as increment, decrement, and dereferenceusually should be members of the class.</p>
+            <p class="docList">改变对象状态或与给定类型紧密联系的其他一些操作符，如自增、自减和解引用，通常就定义为类成员。</p>
+          </li>
+
+          <li>
+            <p class="docList">Symmetric operators, such as the arithmetic, equality, relational, and bitwise operators, are best defined as ordinary nonmember functions.</p>
+            <p class="docList">对称的操作符，如算术操作符、相等操作符、关系操作符和位操作符，最好定义为普通非成员函数。</p>
+          </li>
+        </ul><a name="ch14sb03"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 14.1.1</h2>
+              <h2 class="docSidebarTitle"></h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch14qa2q1"></a><b>Exercise 14.5:</b></td>
+                    <td align="right" class="docText" width="50"><b></b></td>
+
+                    <td>
+                      <p class="docText">List the operators that must be members of a class.</p>
+                      <p class="docText">列出必须定义为在类成员的操作符。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch14qa2q2"></a><b>Exercise 14.6:</b></td>
+                    <td align="right" class="docText" width="50"><b></b></td>
+
+                    <td>
+                      <p class="docText">Explain why and whether each of the following operators should be class members:</p>
+                      <p class="docText">解释下面操作符是否应该为类成员，为什么？</p>
+                      <pre>
+     (a) + (b) += (c) ++ (d) -&gt; (e) &lt;&lt; (f) &amp;&amp; (g) == (h) ()
+</pre><br>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a href="21001535.html" ><img src="images/pixel.gif"  alt="" width="1" height="1" border="0"></a>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch14.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch14lev1sec2.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

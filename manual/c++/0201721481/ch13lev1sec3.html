@@ -1,0 +1,257 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 13.3.  The Destructor</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch13lev1sec2.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch13lev1sec4.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch13lev1sec3"></a>
+
+        <h3 class="docSection1Title" id="432172-880">13.3. The Destructor</h3>
+        <h3 class="docSection1Title" id="432172-880">13.3. 析构函数</h3>
+
+        <p class="docText">One purpose of a constructor is to provide for the automatic acquisition of a resource. For example, a constructor might allocate a buffer or open a file. Having allocated the resource in the constructor, we need a corresponding operation that automatically deallocates or otherwise releases the resource. The destructor is a special member function that can be used to do whatever resource deallocation is needed. It serves as the complement to the constructors of the class.</p>
+        <p class="docText">构造函数的一个用途是自动获取资源。例如，构造函数可以分配一个缓冲区或打开一个文件，在构造函数中分配了资源之后，需要一个对应操作自动回收或释放资源。析构函数就是这样的一个特殊函数，它可以完成所需的资源回收，作为类构造函数的补充。</p>
+
+	<a name="ch13lev2sec11"></a>
+        <h4 class="docSection2Title">When a Destructor Is Called</h4>
+        <h4 class="docSection2Title">何时调用析构函数</h4>
+
+        <p class="docText">The destructor is called automatically whenever an object of its class is destroyed:</p>
+        <p class="docText">撤销类对象时会自动调用析构函数：</p>
+        <pre>
+     // <span class="docEmphasis">p points to default constructed object</span>
+     Sales_item *p = new Sales_item;
+     {
+                               // <span class="docEmphItalicAlt">new scope</span>
+         Sales_item item(*p);  // <span class="docEmphItalicAlt">copy constructor copies</span> <span class="docEmphasis">*p</span> <span class="docEmphItalicAlt">into item</span>
+         delete p;             // <span class="docEmphItalicAlt">destructor called on object pointed to by</span> <span class="docEmphasis">p</span>
+     }                         // <span class="docEmphItalicAlt">exit local scope; destructor called on</span> <span class="docEmphasis">item</span>
+</pre><br>
+
+	<a name="idd1e100256"></a><a name="idd1e100265"></a><a name="idd1e100270"></a><a name="idd1e100278"></a><a name="idd1e100283"></a><a name="idd1e100288"></a><a name="idd1e100293"></a><a name="idd1e100299"></a><a name="idd1e100305"></a><a name="idd1e100310"></a><a name="idd1e100315"></a><a name="idd1e100320"></a><a name="idd1e100325"></a><a name="idd1e100330"></a><a name="idd1e100335"></a><a name="idd1e100338"></a><a name="idd1e100343"></a><a name="idd1e100348"></a><a name="idd1e100351"></a><a name="idd1e100360"></a><a name="idd1e100367"></a><a name="idd1e100370"></a><a name="idd1e100373"></a>
+        <p class="docText">Variables such as <tt>item</tt> are destroyed automatically when they go out of scope. Hence, the destructor on <tt>item</tt> is run when the close curly is encountered.</p>
+        <p class="docText">变量（如 <tt>item</tt>）在超出作用域时应该自动撤销。因此，当遇到右花括号时，将运行 <tt>item</tt> 的析构函数。</p>
+
+        <p class="docText">An object that is dynamically allocated is destroyed only when a pointer pointing to the object is <tt>delete</tt> d. If we do not <tt>delete</tt> a pointer to a dynamically allocated object, then the destructor is never run on that object. The object will persist forever, leading to a memory leak. Moreover, any resources used inside the object will also not be released.</p>
+        <p class="docText">动态分配的对象只有在指向该对象的指针被删除时才撤销。如果没有删除指向动态对象的指针，则不会运行该对象的析构函数，对象就一直存在，从而导致内存泄漏，而且，对象内部使用的任何资源也不会释放。</p>
+
+	<a name="ch13note06"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">The destructor is <span class="docEmphasis">not</span> run when a reference or a pointer to an object goes out of scope. The destructor is run only when a pointer to a dynamically allocated object is <tt>delete</tt>d or when an actual object (not a reference to the object) goes out of scope.</p>
+                <p class="docText">当对象的引用或指针超出作用域时，<span class="docEmphasis">不会</span>运行析构函数。只有删除指向动态分配对象的指针或实际对象（而不是对象的引用）超出作用域时，才会运行析构函数。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">Destructors are also run on the elements of class type in a containerwhether a library container or built-in arraywhen the container is destroyed:</p>
+        <p class="docText">撤销一个容器（不管是标准库容器还是内置数组）时，也会运行容器中的类类型元素的析构函数：</p>
+        <pre>
+     {
+         Sales_item *p = new Sales_item[10]; // <span class="docEmphItalicAlt">dynamically allocated</span>
+         vector&lt;Sales_item&gt; vec(p, p + 10);  // <span class="docEmphItalicAlt">local object</span>
+         // ...
+         delete [] p; // <span class="docEmphItalicAlt">array is freed; destructor run on each element</span>
+      }   // <span class="docEmphItalicAlt">vec goes out of scope; destructor run on each element</span>
+</pre><br>
+
+        <p class="docText">The elements in the container are always destroyed in reverse order: The element indexed by <tt>size() - 1</tt> is destroyed first, followed by the one indexed by <tt>size() - 2</tt> and so on until element <tt>[0]</tt>, which is destroyed last.</p>
+        <p class="docText">容器中的元素总是按逆序撤销：首先撤销下标为 <tt>size() - 1</tt> 的元素，然后是下标为 <tt>size() - 2</tt> 的元素……直到最后撤销下标为 <tt>[0]</tt> 的元素。</p>
+
+	<a name="ch13lev2sec12"></a>
+        <h4 class="docSection2Title">When to Write an Explicit Destructor</h4>
+        <h4 class="docSection2Title">何时编写显式析构函数</h4>
+
+        <p class="docText">Many classes do not require an explicit destructor. In particular, a class that has a constructor does not necessarily need to define its own destructor. Destructors are needed only if there is work for them to do. Ordinarily they are used to relinquish resources acquired in the constructor or during the lifetime of the object.</p>
+        <p class="docText">许多类不需要显式析构函数，尤其是具有构造函数的类不一定需要定义自己的析构函数。仅在有些工作需要析构函数完成时，才需要析构函数。析构函数通常用于释放在构造函数或在对象生命期内获取的资源。</p>
+
+	<a name="ch13note07"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="84" height="51" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/tip.jpg;400478" ></td>
+
+              <td valign="top">
+		<a name="ch13term9"></a>
+                <p class="docText">A useful rule of thumb is that if a class needs a destructor, it will also need the assignment operator and a copy constructor. This rule is often referred to as the <b><a class="docLink" href="ch13lev1sec7.html#gloss13_09" >Rule of Three</a></b>, indicating that if you need a destructor, then you need all three copy-control members.</p>
+                <p class="docText">如果类需要析构函数，则它也需要赋值操作符和复制构造函数，这是一个有用的经验法则。这个规则常称为<b><a class="docLink" href="ch13lev1sec7.html#gloss13_09" >三法则</a></b>，指的是如果需要析构函数，则需要所有这三个复制控制成员。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">A destructor is not limited only to relinquishing resources. A destructor, in general, can perform any operation that the class designer wishes to have executed subsequent to the last use of an object of that class.</p>
+        <p class="docText">析构函数并不仅限于用来释放资源。一般而言，析构函数可以执行任意操作，该操作是类设计者希望在该类对象的使用完毕之后执行的。</p>
+
+	<a name="ch13lev2sec13"></a>
+        <h4 class="docSection2Title">The Synthesized Destructor</h4>
+        <h4 class="docSection2Title">合成析构函数</h4>
+
+        <p class="docText">Unlike the copy constructor or assignment operator, the compiler always synthesizes a destructor for us. The synthesized destructor destroys each non<tt>static</tt> member in the reverse order from that in which the object was created. In consequence, it destroys the members in reverse order from which they are declared in the class. For each member that is of class type, the synthesized destructor invokes that member's destructor to destroy the object.</p>
+        <p class="docText">与复制构造函数或赋值操作符不同，编译器总是会为我们合成一个析构函数。合成析构函数按对象创建时的逆序撤销每个非 <tt>static</tt> 成员，因此，它按成员在类中声明次序的逆序撤销成员。对于类类型的每个成员，合成析构函数调用该成员的析构函数来撤销对象。</p>
+
+	<a name="ch13note08"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+		<a name="idd1e100480"></a><a name="idd1e100485"></a><a name="idd1e100490"></a><a name="idd1e100497"></a><a name="idd1e100502"></a><a name="idd1e100507"></a><a name="idd1e100514"></a><a name="idd1e100518"></a><a name="idd1e100524"></a><a name="idd1e100529"></a>
+                <p class="docText">Destroying a member of built-in or compound type has no effect. In particular, the synthesized destructor does <span class="docEmphasis">not</span> <tt>delete</tt> the object pointed to by a pointer member.</p>
+                <p class="docText">撤销内置类型成员或复合类型的成员没什么影响。尤其是，合成析构函数并不删除指针成员所指向的对象。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <a name="ch13lev2sec14"></a>
+        <h4 class="docSection2Title">How to Write a Destructor</h4>
+        <h4 class="docSection2Title">如何编写析构函数</h4>
+
+        <p class="docText">Our <tt>Sales_item</tt> class is an example of a class that allocates no resources and so does not need its own destructor. Classes that do allocate resources usually need to define a destructor to free those resources. The destructor is a member function with the name of the class prefixed by a tilde (<tt>~</tt>). It has no return value and takes no parameters. Because it cannot specify any parameters, it cannot be overloaded. Although we can define multiple class constructors, we can provide only a single destructor to be applied to all objects of our class.</p>
+        <p class="docText"><tt>Sales_item</tt> 类是类没有分配资源因此不需要自己的析构函数的一个例子。分配了资源的类一般需要定义析构函数以释放那些资源。析构函数是个成员函数，它的名字是在类名字之前加上一个代字号（<tt>~</tt>），它没有返回值，没有形参。因为不能指定任何形参，所以不能重载析构函数。虽然可以为一个类定义多个构造函数，但只能提供一个析构函数，应用于类的所有对象。</p>
+
+        <p class="docText">An important difference between the destructor and the copy constructor or assignment operator is that even if we write our own destructor, the synthesized destructor is still run. For example, we might write the following empty destructor for class <tt>Sales_item:</tt></p>
+        <p class="docText">析构函数与复制构造函数或赋值操作符之间的一个重要区别是，即使我们编写了自己的析构函数，合成析构函数仍然运行。例如，可以为 <tt>Sales_item:</tt> 类编写如下的空析构函数：</p>
+        <pre>
+     class Sales_item {
+     public:
+        // <span class="docEmphItalicAlt">empty; no work to do other than destroying the members,</span>
+        // <span class="docEmphItalicAlt">which happens automatically</span>
+         ~Sales_item() { }
+        // <span class="docEmphItalicAlt">other members as before</span>
+     };
+</pre><br>
+
+        <p class="docText">When objects of type <tt>Sales_item</tt> are destroyed, this destructor, which does nothing, would be run. After it completes, the synthesized destructor would also be run to destroy the members of the class. The synthesized destructor destroys the <tt>string</tt> member by calling the <tt>string</tt> destructor, which frees the memory used to hold the <tt>isbn</tt>. The <tt>units_sold</tt> and <tt>revenue</tt> members are of built-in type, so the synthesized destructor does nothing to destroy them.</p>
+	<p class="docText">撤销 <tt>Sales_item</tt> 类型的对象时，将运行这个什么也不做的析构函数，它执行完毕后，将运行合成析构函数以撤销类的成员。合成析构函数调用 <tt>string</tt> 析构函数来撤销 <tt>string</tt> 成员，<tt>string</tt> 析构函数释放了保存 <tt>isbn</tt> 的内存。<tt>units_sold</tt> 和 <tt>revenue</tt> 成员是内置类型，所以合成析构函数撤销它们不需要做什么。</p>
+      </td>
+    </tr>
+  </table>
+
+	<a name="ch13sb04"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 13.3</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch13qa4q1"></a><b>Exercise 13.11:</b></td>
+
+                    <td>
+                      <p class="docText">What is a destructor? What does the synthesized destructor do? When is a destructor synthesized? When must a class define its own destructor?</p>
+                      <p class="docText">什么是析构函数？合成析构函数有什么用？什么时候会合成析构函数？什么时候一个类必须定义自己的析构函数？</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch13qa4q2"></a><b>Exercise 13.12:</b></td>
+
+                    <td>
+                      <p class="docText">Determine whether the <tt>NoName</tt> class skteched in the exercises on page <a class="docLink" href="ch13lev1sec1.html#ch13lev2sec6" >481</a>, is likely to need a destructor. If so, implement it.</p>
+                      <p class="docText">确定在<a class="docLink" href="ch13lev1sec1.html#ch13lev2sec6" >第 13.1.2 节</a>习题 13.4 中概略定义的 <tt>NoName</tt> 类是否需要析构函数，如果需要，实现它。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch13qa4q3"></a><b>Exercise 13.13:</b></td>
+
+                    <td>
+                      <p class="docText">Determine whether the <tt>Employee</tt> class, defined in the exercises on page <a class="docLink" href="ch13lev1sec2.html#ch13sb03" >484</a>, needs a destructor. If so, implement it.</p>
+                      <p class="docText">确定在<a class="docLink" href="ch13lev1sec2.html#ch13sb03" >第 13.2 节</a>习题 13.10 中定义的 <tt>Employee</tt> 类是否需要析构函数，如果需要，实现它。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch13qa4q4"></a><b>Exercise 13.14:</b></td>
+
+                    <td>
+                      <p class="docText">A good way to understand copy-control members and constructors is to define a simple class with these members in which each member prints its name:</p>
+                      <p class="docText">理解复制控制成员和构造函数的一个良好方式是定义一个简单类，该类具有这些成员，每个成员打印自己的名字：</p>
+                      <pre>
+     struct Exmpl {
+         Exmpl() { std::cout &lt;&lt; "Exmpl()" &lt;&lt; std::endl; }
+         Exmpl(const Exmpl&amp;)
+           { std::cout &lt;&lt; "Exmpl(const Exmpl&amp;)" &lt;&lt; std::endl; }
+     // ...
+     };
+</pre><br>
+
+                      <p class="docText">Write a class like <tt>Exmpl</tt>, giving it the copy-control members and other constructors. Now write a program using objects of type <tt>Exmpl</tt> in various ways: pass them as non-reference and reference parameters; dynamically allocate them; put them in containers, and so forth. Studying which constructors and copy-control members are executed and when can be helpful in cementing your understanding of these concepts.</p>
+                      <p class="docText">编写一个像 <tt>Exmpl</tt> 这样的类，给出复制控制成员和其他构造函数。然后写一个程序，用不同方式使用 <tt>Exmpl</tt> 类型的对象：作为非引用形参和引用形参传递，动态分配，放在容器中，等等。研究何时执行哪个构造函数和复制构造函数，可以帮助你融会贯通地理解这些概念。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch13qa4q5"></a><b>Exercise 13.15:</b></td>
+
+                    <td>
+                      <p class="docText">How many destructor calls occur in the following code fragment?</p>
+                      <p class="docText">下面的代码段中发生了多少次析构函数的调用？</p>
+                      <pre>
+     void fcn(const Sales_item *trans, Sales_item accum)
+     {
+         Sales_item item1(*trans), item2(accum);
+         if (!item1.same_isbn(item2)) return;
+         if (item1.avg_price() &lt;= 99) return;
+         else if (item2.avg_price() &lt;= 99) return;
+         // ...
+     }
+</pre><br>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch13lev1sec2.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch13lev1sec4.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

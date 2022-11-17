@@ -1,0 +1,211 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 6.7.  The while Statement</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch06lev1sec6.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch06lev1sec8.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch06lev1sec7"></a>
+
+        <h3 class="docSection1Title" id="432172-890">6.7. The <tt>while</tt> Statement</h3>
+        <h3 class="docSection1Title" id="432172-890">6.7. <tt>while</tt> 语句</h3>
+
+        <p class="docText">A <span class="docEmphStrong"><tt>while</tt> statement</span> repeatedly executes a target statement as long as a condition is true. Its syntactic form is</p>
+        <p class="docText">当条件为真时，<span class="docEmphStrong"><tt>while</tt> 语句</span>反复执行目标语句。它的语法形式如下：</p>
+        <pre>
+     while <span class="docEmphasis">(condition)</span>
+              <span class="docEmphasis">statement</span>
+</pre><br>
+
+        <p class="docText">The <span class="docEmphasis">statement</span> (which is often a block) is executed as long as the <span class="docEmphasis">condition</span> evaluates as <tt>true</tt>. The <span class="docEmphasis">condition</span> may not be empty. If the first evaluation of <span class="docEmphasis">condition</span> yields <tt>false</tt>, <span class="docEmphasis">statement</span> is not executed.</p>
+	<p class="docText">只要条件 <span class="docEmphasis">condition</span> 的值为 <tt>true</tt>，执行语句 <span class="docEmphasis">statement</span>（通常是一个块语句）。<span class="docEmphasis">condition</span> 不能为空。如果第一次求解 <span class="docEmphasis">condition</span> 就产生 <tt>false</tt> 值，则不执行 <span class="docEmphasis">statement</span>。</p>
+
+        <p class="docText">The condition can be an expression or an initialized variable definition:</p>
+	<p class="docText">循环条件 <tt>condition</tt> 可以是一个表达式，或者是提供初始化的变量定义。</p>
+        <pre>
+     bool quit = false;
+     while (!quit) {                  // <span class="docEmphItalicAlt">expression as condition</span>
+         quit = do_something();
+     }
+     while (int loc = search(name)) { // <span class="docEmphItalicAlt">initialized variable as condition</span>
+             // <span class="docEmphItalicAlt">do something</span>
+     }
+</pre><br>
+
+        <p class="docText">Any variable defined in the condition is visible only within the block associated with the <tt>while</tt>. On each trip through the loop, the initialized value is converted to <tt>bool</tt> (<a class="docLink" href="ch05lev1sec12.html#ch05lev2sec27" >Section 5.12.3</a>, p. <a class="docLink" href="ch05lev1sec12.html#ch05lev2sec27" >182</a>). If the value evaluates as <tt>true</tt>, the <tt>while</tt> body is executed. Ordinarily, the condition itself or the loop body must do something to change the value of the expression. Otherwise, the loop might never terminate.</p>
+        <p class="docText">在循环条件中定义的任意变量都只在与 <tt>while</tt> 关联的块语句中可见。每一次循环都将该变量的初值转换为 <tt>bool</tt>（<a class="docLink" href="ch05lev1sec12.html#ch05lev2sec27" >第 5.12.3 节</a>）。如果求得的值为 <tt>true</tt>，则执行 <tt>while</tt> 的循环体。通常，循环条件自身或者在循环体内必须做一些相关操作来改变循环条件表达式的值。否则，循环可能永远不会结束。</p>
+
+<a name="ch06note15"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Variables defined in the condition are created and destroyed on each trip through the loop.</p>
+                <p class="docText">在循环条件中定义的变量在每次循环里都要经历创建和撤销的过程。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch06lev2sec9"></a>
+
+        <h4 class="docSection2Title">Using a <tt>while</tt> Loop</h4>
+        <h4 class="docSection2Title"><tt>while</tt> 循环的使用</h4>
+
+        <p class="docText">We have already seen a number of <tt>while</tt> loops, but for completeness, here is an example that copies the contents of one array into another:</p>
+        <p class="docText">前面的章节已经用过很多 <tt>while</tt> 循环，但为更完整地了解该结构，考虑下面将一个数组的内容复制到另一个数组的例子：</p>
+        <pre>
+     // <span class="docEmphasis">arr1</span> <span class="docEmphItalicAlt">is an array of</span> <span class="docEmphasis">ints</span>
+     int *source = arr1;
+     size_t sz = sizeof(arr1)/sizeof(*arr1); // <span class="docEmphItalicAlt">number of elements</span>
+     int *dest = new int[sz];                // <span class="docEmphItalicAlt">uninitialized elements</span>
+     while (source != arr1 + sz)
+         *dest++ = *source++; //  <span class="docEmphItalicAlt">copy element and increment pointers</span>
+</pre><br>
+
+
+<a name="idd1e44021"></a><a name="idd1e44029"></a><a name="idd1e44034"></a><a name="idd1e44041"></a><a name="idd1e44048"></a><a name="idd1e44057"></a><a name="idd1e44064"></a>
+        <p class="docText">We start by initializing <tt>source</tt> and <tt>dest</tt> to point to the first element of their respective arrays. The condition in the <tt>while</tt> tests whether we've reached the end of the array from which we are copying. If not, we execute the body of the loop. The body contains only a single statement, which copies the element and increments both pointers so that they point to the next element in their corresponding arrays.</p>
+        <p class="docText">首先初始化 <tt>source</tt> 和 <tt>dest</tt>，并使它们各自指向所关联的数组的第一个元素。<tt>while</tt> 循环条件判断是否已经到达要复制的数组的末尾。如果没有，继续执行循环。循环体只有单个语句，实现元素的复制，并对两个指针做自增操作，使它们指向对应数组的下一个元素。</p>
+
+        <p class="docText">As we saw in the "Advice" box on page <a class="docLink" href="ch05lev1sec5.html#ch05sb08" >164</a>, C++ programmers tend to write terse expressions. The statement in the body of the <tt>while</tt></p>
+        <p class="docText">正如 <a class="docLink" href="ch05lev1sec5.html#ch05sb08" >第 5.5. 节</a>提出的关于“简洁即是美”的建议，C++ 程序员应尝试编写简洁的表达式。<tt>while</tt> 循环体中的语句：</p>
+        <pre>
+     *dest++ = *source++;
+</pre><br>
+
+        <p class="docText">is a classic example. This expression is equivalent to</p>
+        <p class="docText">是一个经典的例子。这个表达式等价于：</p>
+        <pre>
+     {
+         *dest = *source; // <span class="docEmphItalicAlt">copy element</span>
+         ++dest;  // <span class="docEmphItalicAlt">increment the pointers</span>
+         ++source;
+     }
+</pre><br>
+        <a name="ch06note16"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="84" height="51" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/tip.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">The assignment in the <tt>while</tt> loop represents a very common usage. Because such code is widespread, it is important to study this expression until its meaning is immediately clear.</p>
+                <p class="docText"><tt>while</tt> 循环内的赋值操作是一种常见的用法。因为这类代码广为流传，所以学习这种表达式非常重要，要一眼就能看出其含义来。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+      </td>
+    </tr>
+  </table>
+
+<a name="ch06sb05"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 6.7</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch06qa4q1"></a><b>Exercise 6.11:</b></td>
+
+                    <td>
+<a name="idd1e44234"></a>
+                      <p class="docText">Explain each of the following loops. Correct any problems you detect.</p>
+                      <p class="docText">解释下面的循环，更正你发现的问题。</p>
+                      <pre>
+     (a) string bufString, word;
+         while (cin &gt;&gt; bufString &gt;&gt; word) { /* ... */ }
+
+     (b) while (vector&lt;int&gt;::iterator iter != ivec.end())
+         {/*... */ }
+
+     (c) while (ptr = 0)
+             ptr = find_a_value();
+
+     (d) while (bool status = find(word))
+         { word = get_next_word(); }
+         if (!status)
+              cout &lt;&lt; "Did not find any words\n";
+</pre><br>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+			  <a name="ch06qa4q2"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 6.12:</b></td>
+
+                    <td>
+                      <p class="docText">Write a small program to read a sequence of <tt>string</tt>s from standard input looking for duplicated words. The program should find places in the input where one word is followed immediately by itself. Keep track of the largest number of times a single repetition occurs and which word is repeated. Print the maximum number of duplicates, or else print a message saying that no word was repeated. For example, if the input is</p>
+                      <p class="docText">编写一个小程序，从标准输入读入一系列 <tt>string</tt> 对象，寻找连续重复出现的单词。程序应该找出满足以下条件的单词的输入位置：该单词的后面紧跟着再次出现自己本身。跟踪重复次数最多的单词及其重复次数。输出重复次数的最大值，若没有单词重复则输出说明信息。例如，如果输入是：</p>
+                      <pre>
+     how, now now now brown cow cow
+</pre><br>
+
+                      <p class="docText">the output should indicate that the word "now" occurred three times.</p>
+                      <p class="docText">则输出应表明“now”这个单词出现了三次。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+<a name="ch06qa4q3"></a>
+                    <td align="right" class="docText" width="50"><b>Exercise 6.13:</b></td>
+
+                    <td>
+                      <p class="docText">Explain in detail how the statement in the <tt>while</tt> loop is executed:</p>
+                      <p class="docText">详细解释下面 <tt>while</tt> 循环中的语句是如何执行的：</p>
+                      <pre>
+     *dest++ = *source++;
+</pre><br>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch06lev1sec6.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch06lev1sec8.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

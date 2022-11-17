@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml">
+<HEAD><TITLE>GeoIP模块（GeoIP）</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=GB2312">
+<STYLE type=text/css>PRE {
+	BACKGROUND-COLOR: #cccccc
+}
+.STYLE1 {
+	COLOR: #ff0000
+}
+</STYLE>
+
+<META content="MSHTML 6.00.6000.16809" name=GENERATOR></HEAD>
+<BODY>
+<H2>GeoIP模块（GeoIP）</H2><BR>
+
+<H3>·摘要</H3>
+<H4>这个模块基于客户端的IP地址创建一些ngx_http_geoip_module变量，并与<A href="http://www.maxmind.com/" >MaxMind</A>GeoIP文件进行匹配，该模块仅用于0.7.63和0.8.6版本之后。<BR></H4>
+<H3>使用前提</H3>
+<H4>这个模块需要geo数据库和读取数据库的库文件。<BR>
+<PRE>#Get the free database of geo_city
+wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz
+#Get the free database of geo_coundty
+wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz
+#Get the libgeoip. In debian you can do like this:
+sudo apt-get install libgeoip-dev
+#In other systems, you can download the source and compile it youself.
+wget http://geolite.maxmind.com/download/geoip/api/c/GeoIP.tar.gz
+</PRE>
+CentOS中可以使用yum：<BR>
+<PRE>yum install geoip-devel</PRE>
+编译：<BR>
+<PRE>./configure --with-http_geoip_module</PRE>
+示例配置：<BR>
+<PRE>http {
+    geoip_country  GeoIP.dat;
+    geoip_city     GeoLiteCity.dat;
+    ...</PRE></H4>
+<H3>·指令</H3>
+<H3>geoip_country </H3>
+<H4>语法：geoip_country path/to/db.dat; <BR>
+默认值：none <BR>
+使用字段：http <BR>
+这个指令决定参观者IP所在国家需要使用的.dat文件，设置后该模块会创建以下变量：<BR>
+<H5>·$geoip_country_code; - 两个字母的国家代码，如："RU", "US"。<BR>
+·$geoip_country_code3; - 三个字母的国家代码，如："RUS", "USA"。<BR>
+·$geoip_country_name; - 国家的完整名称，如："Russian Federation", "United States"。<BR></H5>
+如果只需要国家名，则可以使用geoip_country数据库(1.1M)，因为geoip_city数据库大小为43M，并且它们在进行查找时是完全缓存到内存中的。</H4>
+<H3> geoip_city </H3>
+<H4>语法：geoip_city path/to/db.dat; <BR>
+默认值：none <BR>
+使用字段：http <BR>
+这个指令决定参观者IP所在国家、地区和城市需要使用的.dat文件，设置后该模块会创建以下变量：<BR>
+<H5>·$geoip_country_code - 两个字母的国家代码，如："RU", "US"。<BR>
+·$geoip_country_code3 - 三个字母的国家代码，如："RUS", "USA"。<BR>
+·$geoip_country_name - 国家的完整名称，如："Russian Federation", "United States"（如果可用）。<BR>
+·$geoip_region - 地区的名称（类似于省，地区，州，行政区，联邦土地等），如："Moscow City", "DC"（如果可用）。<BR>
+·$geoip_city - 城市名称，如"Moscow", "Washington"（如果可用）。<BR>
+·$geoip_postal_code - 邮政编码（如果可用）。<BR>
+·$geoip_city_continent_code（如果可用）。<BR>
+·$geoip_latitude - 所在维度（如果可用）。<BR>
+·$geoip_longitude - 所在经度（如果可用）。</H5></H4>
+<H3>·参考文档</H3>
+<H4><A href="http://sysoev.ru/nginx/docs/http/ngx_http_geoip_module.html" >Original Documentation</A><BR>
+<A href="http://wiki.nginx.org/NginxHttpGeoIPModule/" >Nginx Http GeoIP Module</A><BR></H4>
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://179401.cn/analytics/" : "http://179401.cn/analytics/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://shouce.jb51.net/179401.cn/analytics/piwik.php-idsite=1"  style="border:0" alt=""/></p></noscript>
+<!-- End Piwik Tag -->
+</BODY>
+</HTML>
+<H3><A href="RealIP.html" >前进->Real IP模块（Real IP）</A></H3>

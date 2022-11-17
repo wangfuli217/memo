@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Ajax Ajax.Response - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>Ajax.Response<div class="box">1.6</div></h2>
+		<div id="excerpt">
+			<p>该对象被传递到所有 Ajax 请求回调中作为第一个参数。</p>
+		</div>
+		<div id="abody">
+			<p>
+				这是一个针对原始 <code>XmlHttpRequest</code> 对象（或与之相对应的 <code>ActiveX</code> 控件）的封装。
+				它解决了跨浏览器的问题，并且通过 <code>responseJSON</code> 和 <code>headerJSON</code> 属性增加了对
+				JSON 的支持。<br />
+				<strong>译注：</strong><code>Ajax.Request</code> 其实也是封装 <code>XmlHttpRequest</code>。从命名上可以看出，
+				<code>Ajax.Request</code> 用于处理请求，而 <code>Ajax.Response</code> 用于	处理响应。
+			</p>
+			<h3><code>Ajax.Response</code> 对象的属性</h3>
+			<table class="data" cellspacing="0" cellpadding="0">
+				<thead><tr><th>属性</th><th>类型</th><th>描述</th></tr></thead>
+				<tbody>
+					<tr>
+						<td><code>status</code></td>
+						<td><code>Number</code></td>
+						<td>服务器发回的状态代码。</td>
+					</tr>
+					<tr>
+						<td><code>statusText</code></td>
+						<td><code>String</code></td>
+						<td>服务器发回的 HTTP 状态文本。</td>
+					</tr>
+					<tr>
+						<td><code>readyState </code></td>
+						<td><code>Number</code></td>
+						<td>
+							<p>请求的当前状态。<code>0</code> 对应 <code>"Uninitialized"</code>，<code>1</code> 对应
+							<code>"Loading"</code>，<code>2</code> 对应 <code>"Loaded"</code>，<code>3</code> 对应
+							<code>"Interactive"</code>，<code>4</code> 对应 <code>"Complete"</code>。</p>
+							<strong>译注：</strong>详细描述见：<a href="../../Reference/Status.htm" >状态代码</a>
+						</td>
+					</tr>
+					<tr>
+						<td><code>responseText</code></td>
+						<td><code>String</code></td>
+						<td>响应的文本主体内容。</td>
+					</tr>
+					<tr>
+						<td><code>responseXML</code></td>
+						<td><code>document 对象</code>或 <code>null</code></td>
+						<td>
+							如果请求的 content-type 值被设置为 <code>application/xml</code>，该属性获取响应文本内容作为 XML
+							呈现，否则为 <code>null</code>。
+						</td>
+					</tr>
+					<tr>
+						<td><code>responseJSON</code></td>
+						<td><code>Object</code>, <code>Array</code> 或 <code>null</code></td>
+						<td>
+							如果请求的 content-type 值被设置为 <code>application/json</code>，该属性获取响应文本内容并转换为相应的数组或对象。
+							否则为 <code>null</code>。
+						</td>
+					</tr>
+					<tr>
+						<td><code>headerJSON</code></td>
+						<td><code>Object</code>, <code>Array</code> 或 <code>null</code></td>
+						<td>
+							如果响应头中包含 <code>X-JSON</code> 头，则自动将其内容转换为对象或数组。否则为
+							<code>null</code>。这个属性常用于少量数据的处理。
+						</td>
+					</tr>
+					<tr>
+						<td><code>request</code></td>
+						<td><code>Object</code></td>
+						<td>
+							请求对象本身（一个 <code>Ajax.Request</code> 或 <code>Ajax.Updater</code> 的实例）。
+						</td>
+					</tr>
+					<tr>
+						<td><code>transport</code></td>
+						<td>
+							<code>Object</code>
+						</td>
+						<td>原始的 <code>xmlHttpRequest</code> 对象引用。</td>
+					</tr>
+				</tbody>
+			</table>
+			<h3><code>Ajax.Response</code> 对象的方法</h3>
+			<table class="data" cellspacing="0" cellpadding="0">
+				<thead><tr><th>方法</th><th>返回类型</th><th>描述</th></tr></thead>
+				<tbody>
+					<tr>
+						<td><code>getHeader(name)</code></td>
+						<td><code>String</code> 或 <code>null</code></td>
+						<td>
+							如果存在指定的头，则返回其值，否则为 <code>null</code>。未定义头时，它<em>不会</em>像原生的
+							XHR 对象一样抛出异常。
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<code>getAllHeaders()</code>
+						</td>
+						<td>
+							<code>String</code> 或 <code>null</code>
+						</td>
+						<td>							
+							返回包含所有响应头的字符串，头与头之间用换行符（<code>\r\n</code>）分隔（<strong>译注：</strong>每个 Http
+							头名称和值用冒号分隔）。当不存在响应头时，它<em>不会</em>像原生的 XHR 对象一样抛出异常。
+						</td>
+					</tr>
+					<tr>
+						<td><code>getResponseHeader(name)</code></td>
+						<td><code>String</code></td>
+						<td>
+							如果存在指定的头，则返回其值。否则抛出一个异常。这仅只是对 <code>XmlHttpRequest</code> 对象
+							<code>getResponseHeader</code> 方法的简单封装。推荐使用更简捷的 <code>getHeader</code> 方法。
+						</td>
+					</tr>
+					<tr>
+						<td><code>getAllResponseHeaders()</code></td>
+						<td><code>String</code></td>
+						<td>
+							返回包含所有响应头的字符串，头与头之间用换行符（<code>\r\n</code>）分隔。当不存在任何响应头时，抛出异常。
+							这仅只是对 <code>XmlHttpRequest</code> 对象	<code>getAllResponseHeaders</code> 方法的简单封装。推荐使用更简捷的
+							<code>getAllHeaders</code> 方法。
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

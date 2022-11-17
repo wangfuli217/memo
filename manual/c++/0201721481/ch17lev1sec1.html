@@ -1,0 +1,1776 @@
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<head>
+<title>Section 17.1.&nbsp; Exception Handling</title>
+<link rel="STYLESHEET" type="text/css" href="images/style.css" >
+<link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+<body>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+	<td>
+		<div STYLE="MARGIN-LEFT: 0.15in;">
+			<a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle"  alt="Team LiB"></a>
+		</div>
+	</td>
+	<td align="right">
+		<div STYLE="MARGIN-LEFT: 0.15in;">
+			<a href="ch17.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a>
+			<a href="ch17lev1sec2.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+		</div>
+	</td>
+</tr>
+</table><br>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+		<td valign="top">
+			<a name="ch17lev1sec1"></a>
+			
+			<h3 class="docSection1Title">17.1. Exception Handling</h3>
+			<h3 class="docSection1Title">17.1. 异常处理</h3>
+			
+			<p class="docText">Exception handling allows independently developed parts of a program to communicate about and handle problems that arise during execution of the program. One part of the program can detect a problem that that part of the program cannot resolve. The problem-detecting part can pass the problem along to another part that is prepared to handle what went wrong.</P>
+			<p class="docText">使用异常处理，程序中独立开发的各部分能够就程序执行期间出现的问题相互通信，并处理这些问题。程序的一个部分能够检测出本部分无法解决的问题，这个问题检测部分可以将问题传递给准备处理问题的其他部分。</P>
+			
+			<a name="ch17note01"></a>
+			<div class="docNote"><P>
+				<table width="90%" border="0" cellspacing="0" cellpadding="1">
+					<tr>
+						<TD width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+						<td valign="top">
+							<p class="docText"> Exceptions let us separate problem detection from problem resolution. The part of the program that detects a problem need not know how to deal with it.</P>
+							<p class="docText">通过异常我们能够将问题的检测和问题的解决分离，这样程序的问题检测部分可以不必了解如何处理问题。</P>
+						</td>
+					</tr>
+				</table><br>
+</p></div><br>
+
+<p class="docText">In C++, exception handling relies on the problem-detecting part throwing an object to a handler. The type and contents of that object allow the two parts to communicate about what went wrong.</p>
+<p class="docText">C++ 的异常处理中，需要由问题检测部分抛出一个对象给处理代码，通过这个对象的类型和内容，两个部分能够就出现了什么错误进行通信。</p>
+
+<p class="docText"><a class="docLink" href="ch06lev1sec13.html#ch06lev1sec13" >Section 6.13</a> (p. <a class="docLink" href="ch06lev1sec13.html#ch06lev1sec13" >215</a>) introduced the basic concepts and mechanics of using exceptions in C++. In that section, we hypothesized that a more complex bookstore application might use exceptions to communicate about problems. For example, the <tt>Sales_item</tt> addition operator might throw an exception if the <tt>isbn</tt> members of its operands didn't match:</P>
+<p class="docText"><a class="docLink" href="ch06lev1sec13.html#ch06lev1sec13" >第 6.13 节</a>介绍了在 C++ 中使用异常的基本概念和基本机制，在该本节中，假定更复杂的书店应用程序可以通过异常就出现的问题进行通信。例如，如果操作数的 <tt>isbn</tt> 成员不匹配，<tt>Sales_item</tt> 的加操作符可以抛出一个异常：</P>
+
+<pre>
+<a name="PLID0"></a>
+	<div class="v1">
+		<a href="ch17lev1sec1.html#PLID0" >[View full width]</a>
+	</div>
+     // <span class="docEmphItalicAlt">throws exception if both objects do not refer to the same</span> <span class="docEmphasis">isbn</span>
+     Sales_item
+     operator+(const Sales_item&amp; lhs, const Sales_item&amp; rhs)
+     {
+         if (!lhs.same_isbn(rhs))
+             throw runtime_error("Data must refer to same ISBN");
+         // <span class="docEmphItalicAlt">ok, if we're still here the ISBNs are the same so it's okay to do the addition</span>
+         Sales_item ret(lhs);                   // <span class="docEmphItalicAlt">copy</span> <span class="docEmphasis">lhs</span> <span class="docEmphItalicAlt">into a local object that we'll
+<img border="0" width="14" height="9" alt="" align="left" src="images/ccc.gif" > return</span>
+         ret += rhs;                            // <span class="docEmphItalicAlt">add in the contents of</span> <span class="docEmphasis">rhs</span>
+         return ret;                            // <span class="docEmphItalicAlt">return a copy of</span> <span class="docEmphasis">ret</span>
+     }
+</pre><br>
+
+<a name="idd1e134546"></a><a name="idd1e134551"></a><a name="idd1e134556"></a><a name="idd1e134562"></a>
+<p class="docText">Those parts of the program that added <tt>Sales_item</tt> objects would use a <tt>try</tt> block in order to catch an exception if one occured:</p>
+<p class="docText">程序中将 <tt>Sales_item</tt> 对象相加的那些部分可以使用一个 <tt>try</tt> 块，以便在异常发生时捕获异常：</p>
+<pre>
+     // <span class="docEmphItalicAlt">part of the application that interacts with the user</span>
+     Sales_item item1, item2, sum;
+     while (cin &gt;&gt; item1 &gt;&gt; item2) {       // <span class="docEmphItalicAlt">read two transactions</span>
+         try {
+             sum = item1 + item2;         // <span class="docEmphItalicAlt">calculate their sum</span>
+             // <span class="docEmphItalicAlt">use</span> <span class="docEmphasis">sum</span>
+         } catch (const runtime_error &amp;e) {
+           cerr &lt;&lt; e.what() &lt;&lt; " Try again.\n"
+                &lt;&lt; endl;
+         }
+     }
+</pre><br>
+<p class="docText">In this section we'll expand our coverage of these basics and cover some additional exception-handling facilities. Effective use of exception handling requires understanding what happens when an exception is thrown, what happens when it is caught, and the meanings of the objects used to communicate what went wrong.</p>
+<p class="docText">本节将扩展对这些基础知识的讨论并涵盖另外一些异常处理设施。有效使用异常处理需要理解：在抛出异常时会发生什么，在捕获异常时又会发生什么，还有用来传递错误的对象的含义。</p>
+
+<a name="ch17lev2sec1"></a>
+<h4 class="docSection2Title">17.1.1. Throwing an Exception of Class Type</H4>
+<h4 class="docSection2Title">17.1.1. 抛出类类型的异常</H4>
+
+<a name="ch17term20"></a><a name="ch17term25"></a>
+<p class="docText">An exception is <B><a class="docLink" href="ch17lev1sec5.html#gloss17_20" >raised</a></b> by <b><a class="docLink" href="ch17lev1sec5.html#gloss17_25" >throwing</a></b> an object. The type of that object determines which handler will be invoked. The selected handler is the one nearest in the call chain that matches the type of the object.</p>
+<p class="docText">异常是通过<b><a class="docLink" href="ch17lev1sec5.html#gloss17_25" >抛出</a></b>对象而<b><a class="docLink" href="ch17lev1sec5.html#gloss17_20" >引发</a></b>的。该对象的类型决定应该激活哪个处理代码。被选中的处理代码是调用链中与该对象类型匹配且离抛出异常位置最近的那个。</p>
+
+<p class="docText">Exceptions are thrown and caught in ways that are similar to how arguments are passed to functions. An exception can be an object of any type that can be passed to a nonreference parameter, meaning that it must be possible to copy objects of that type.</p>
+<p class="docText">异常以类似于将实参传递给函数的方式抛出和捕获。异常可以是可传给非引用形参的任意类型的对象，这意味着必须能够复制该类型的对象。</p>
+
+<p class="docText">Recall that when we pass an argument of array or function type, that argument is automatically converted to an pointer. The same automatic conversion happens for objects that are thrown. As a consequence, there are no exceptions of array or function types. Instead, if we <tt>throw</tt> an array, the thrown object is converted to a pointer to the first element in the array. Similarly, if we throw a function, the function is converted to a pointer to the function (<a class="docLink" href="ch07lev1sec9.html#ch07lev1sec9" >Section 7.9</a>, p. <a class="docLink" href="ch07lev1sec9.html#ch07lev1sec9" >276</a>).</P>
+<p class="docText">回忆一下，传递数组或函数类型实参的时候，该实参自动转换为一个指针。被抛出的对象将发生同样的自动转换，因此，不存在数组或函数类型的异常。相反。相反，如果抛出一个数组，被抛出的对象转换为指向数组首元素的指针，类似地，如果抛出一个函数，函数被转换为指向该函数的指针<a class="docLink" href="ch07lev1sec9.html#ch07lev1sec9" >第 7.9 节</a></a>。</P>
+
+<p class="docText">When a <tt>throw</tt> is executed, the statement(s) following the <tt>throw</tt> are not executed. Instead, control is transferred from the <tt>tHRow</tt> to the matching <tt>catch</tt>. That <tt>catch</tt> might be local to the same function or might be in a function that directly or indirectly called the function in which the exception occurred. The fact that control passes from one location to another has two important implications:</p>
+<p class="docText">执行 <tt>throw</tt> 的时候，不会执行跟在 <tt>throw</tt> 后面的语句，而是将控制从 <tt>throw</tt> 转移到匹配的 <tt>catch</tt>，该 <tt>catch</tt> 可以是同一函数中局部的 <tt>catch</tt>，也可以在直接或间接调用发生异常的函数的另一个函数中。控制从一个地方传到另一地方，这有两个重要含义：</p>
+
+<div style="font-weight:bold">
+	<ol class="docList" type="1">
+		<li>
+		<div style="font-weight:normal">
+			<p class="docList">Functions along the call chain are prematurely exited. <a class="docLink" href="ch17lev1sec1.html#ch17lev2sec2">Section 17.1.2</a> (p. <a class="docLink" href="ch17lev1sec1.html#ch17lev2sec2">691</a>) discusses what happens when functions are exited due to an exception.</P>
+			<p class="docList">沿着调用链的函数提早退出。<a class="docLink" href="ch17lev1sec1.html#ch17lev2sec2">第 17.1.2 节</a>将讨论函数因异常而退出时会发生什么。</P>
+		</div>
+		</li>
+		<li>
+		<div style="font-weight:normal">
+			<p class="docList">In general, the storage that is local to a block that throws an exception is not around when the exception is handled.</p>
+			<p class="docList">一般而言，在处理异常的时候，抛出异常的块中的局部存储不存在了。</p>
+		</div>
+		</li>
+	</ol>
+</div>
+
+<a name="idd1e134671"></a><a name="idd1e134674"></a><a name="idd1e134679"></a>
+<a name="ch17term9"></a>
+<p class="docText">Because local storage is freed while handling an exception, the object that is thrown is not stored locally. Instead, the <tt>throw</tt> expression is used to initialize a special object referred to as the <b><a class="docLink" href="ch17lev1sec5.html#gloss17_09" >exception object</a></b>. The exception object is managed by the compiler and is guaranteed to reside in space that will be accessible to whatever <tt>catch</tt> is invoked. This object is created by a <tt>throw</tt>, and is initialized as a copy of the expression that is thrown. The exception object is passed to the corresponding <tt>catch</tt> and is destroyed after the exception is completely handled.</p>
+<p class="docText">因为在处理异常的时候会释放局部存储，所以被抛出的对象就不能再局部存储，而是用 <tt>throw</tt> 表达式初始化一个称为<b><a class="docLink" href="ch17lev1sec5.html#gloss17_09" >异常对象</a></b>的特殊对象。异常对象由编译器管理，而且保证驻留在可能被激活的任意 <tt>catch</tt> 都可以访问的空间。这个对象由 <tt>throw</tt> 创建，并被初始化为被抛出的表达式的副本。异常对象将传给对应的 <tt>catch</tt>，并且在完全处理了异常之后撤销。</p>
+
+<a name="ch17note02"></a>
+<div class="docNote">
+	<p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" align="LEFT" width="57" height="96" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" >
+				</td>
+				<td valign="top">
+					<p class="docText"> The exception object is created by copying the result of the thrown expression; that result must be of a type that can be copied.</p>
+					<p class="docText">异常对象通过复制被抛出表达式的结果创建，该结果必须是可以复制的类型。</p>
+			</td>
+		</tr>
+	</table><br>
+	</p>
+</div>
+<br>
+
+<a name="ch17lev3sec1"></a>
+<h5 class="docSection3Title">Exception Objects and Inheritance</h5>
+<h5 class="docSection3Title">异常对象与继承</h5>
+
+<p class="docText">In practice, many applications throw expressions whose type comes from an inheritance hierarchy. As we'll see in <a class="docLink" href="ch17lev1sec1.html#ch17lev2sec7">Section 17.1.7</a> (p. <a class="docLink" href="ch17lev1sec1.html#ch17lev2sec7">697</a>), the standard exceptions (<a class="docLink" href="ch06lev1sec13.html#ch06lev1sec13" >Section 6.13</a>, p. <a class="docLink" href="ch06lev1sec13.html#ch06lev1sec13" >215</a>) are defined in an inheritance hierarchy. What's important to know at this point is how the form of the <tt>tHRow</tt> expression interacts with types related by inheritance.</P>
+<p class="docText">在实践中，许多应用程序所抛出的表达式，基类型都来自某个继承层次。正如<a class="docLink" href="ch17lev1sec1.html#ch17lev2sec7">第 17.1.7 节</a>将介绍的，标准异常（<a class="docLink" href="ch06lev1sec13.html#ch06lev1sec13" >第 6.13 节</a>）定义在一个继承层次中。目前重要的是，知道 <tt>throw</tt> 表达式的形式如何与因继承而相关的类型相互影响。</P>
+
+<a name="ch17note03"></a>
+<div class="docNote">
+	<p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" align="LEFT" width="50" height="54" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" >
+			</td>
+			<td valign="top">
+				<p class="docText">When an exception is thrown, the static, compile-time type of the thrown object determines the type of the exception object.</p>
+				<p class="docText">当抛出一个表达式的时候，被抛出对象的静态编译时类型将决定异常对象的类型。</p>
+			</td>
+		</tr>
+	</table>
+	<br>
+	</p>
+</div><br>
+
+<p class="docText">Ordinarily, the fact that the object is thrown using its static type is not an issue. When we throw an exception, we usually construct the object we are going to throw at the throw point. That object represents what went wrong, so we know the precise exception type.</p>
+<p class="docText">通常，使用静态类型抛出对象不成问题。当抛出一个异常的时候，通常在抛出点构造将抛出的对象，该对象表示出了什么问题，所以我们知道确切的异常类型。</p>
+
+<a name="ch17lev3sec2"></a>
+<h5 class="docSection3Title">Exceptions and Pointers</h5>
+<h5 class="docSection3Title">异常与指针</h5>
+
+<p class="docText">The one case where it matters that a throw expression throws the static type is if we dereference a pointer in a throw. The result of dereferencing a pointer is an object whose type matches the type of the pointer. If the pointer points to a type from an inheritance hierarchy, it is possible that the type of the object to which the pointer points is different from the type of the pointer. Regardless of the object's actual type, the type of the exception object matches the static type of the pointer. If that pointer is a base-class type pointer that points to a derived-type object, then that object is sliced down (<a class="docLink" href="ch15lev1sec3.html#ch15lev2sec10" >Section 15.3.1</a>, p. <a class="docLink" href="ch15lev1sec3.html#ch15lev2sec10" >577</a>); only the base-class part is thrown.</p>
+<p class="docText">用抛出表达式抛出静态类型时，比较麻烦的一种情况是，在抛出中对指针解引用。对指针解引用的结果是一个对象，其类型与指针的类型匹配。如果指针指向继承层次中的一种类型，指针所指对象的类型就有可能与指针的类型不同。无论对象的实际类型是什么，异常对象的类型都与指针的静态类型相匹配。如果该指针是一个指向派生类对象的基类类型指针，则那个对象将被分割（<a class="docLink" href="ch15lev1sec3.html#ch15lev2sec10" >第 15.3.1 节</a>），只抛出基类部分。</p>
+
+<p class="docText">A problem more serious than slicing the object may arise if we <tt>throw</tt> the pointer itself. In particular, it is always an error to <tt>throw</tt> a pointer to a local object for the same reasons as it is an error to return a pointer to a local object (<a class="docLink" href="ch07lev1sec3.html#ch07lev2sec14" >Section 7.3.2</a>, p. <a class="docLink" href="ch07lev1sec3.html#ch07lev2sec14" >249</a>) from a function. When we <tt>throw</tt> a pointer, we must be certain that the object to which the pointer points will exist when the handler is entered.</P>
+<p class="docText">如果抛出指针本身，可能会引发比分割对象更严重的问题。具体而言，抛出指向局部对象的指针总是错误的，其理由与从函数返回指向局部对象的指针是错误的一样（<a class="docLink" href="ch07lev1sec3.html#ch07lev2sec14" >第 7.3.2 节</a>）抛出指针的时候，必须确定进入处理代码时指针所指向的对象存在。</p>
+
+<p class="docText">If we <tt>throw</tt> a pointer to a local object and the handler is in another function, then the object to which the pointer points will no longer exist when the handler is executed. Even if the handler is in the same function, we must be sure that the object to which the pointer points exists at the site of the <tt>catch</tt>. If the pointer points to an object in a block that is exited before the <tt>catch</tt>, then that local object will have been destroyed before the <tt>catch</tt>.</p>
+<p class="docText">如果抛出指向局部对象的指针，而且处理代码在另一函数中，则执行处理代码时指针所指向的对象将不再存在。即使处理代码在同一函数中，也必须确信指针所指向的对象在 <tt>catch</tt> 处存在。如果指针指向某个在 <tt>catch</tt> 之前退出的块中的对象，那么，将在 <tt>catch</tt> 之前撤销该局部对象。</p>
+
+<a name="ch17note04"></a>
+<div class="docNote">
+	<p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" align="LEFT" width="57" height="96" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" >
+			</td>
+			<td valign="top">
+				<a name="idd1e134798"></a><a name="idd1e134803"></a><a name="idd1e134808"></a><a name="idd1e134813"></a><a name="idd1e134816"></a><a name="idd1e134822"></a>
+				<p class="docText">It is usually a bad idea to <tt>throw</tt> a pointer: Throwing a pointer requires that the object to which the pointer points exist wherever the corresponding handler resides.</p>
+				<p class="docText">抛出指针通常是个坏主意：抛出指针要求在对应处理代码存在的任意地方存在指针所指向的对象。</p>
+			</td>
+		</tr>
+	</table><br>
+	</p>
+</div><br>
+
+<a name="ch17sb01"></a>
+<p>
+<table cellspacing="0" width="90%" border="1" cellpadding="5">
+	<tr>
+		<td>
+			<h2 class="docSidebarTitle">Exercises Section 17.1.1</h2>
+			<blockquote>
+				<p>
+				<table border="0" cellspacing="16" cellpadding="0">
+					<tr valign="top">
+						<a name="ch17qa1q1"></a>
+						<td align="right" class="docText" width="50">
+							<b>Exercise 17.1:</b>
+						</td>
+						<td>
+							<p class="docText">What is the type of the exception object in the following <tt>throw</tt>s:</p>
+							<p class="docText">下面的 <tt>throw</tt> 语句中，异常对象的类型是什么？</p>
+<pre>
+     (a) range_error r("error");  (b) exception *p = &amp;r;
+         throw r;                     throw *p;
+</pre><br>
+							</td>
+					</tr>
+					<tr valign="top">
+						<a name="ch17qa1q2"></a>
+						<td align="right" class="docText" width="50">
+							<b>Exercise 17.2:</b>
+						</td>
+						<td>
+							<p class="docText">What would happen if the second <tt>throw</tt> were written as <tt>throw p</tt>?</p>
+							<p class="docText">如果第二个 <tt>throw</tt> 语句写成 <tt>throw p</tt>，会发生什么情况？</p>
+						</td>
+					</tr>
+				</table>
+				</p>
+			</blockquote>
+		</td>
+	</tr>
+</table>
+</p><br>
+
+
+<a name="ch17lev2sec2"></a>
+<h4 class="docSection2Title">17.1.2. Stack Unwinding</h4>
+<h4 class="docSection2Title">17.1.2. 栈展开</h4>
+
+<p class="docText">When an exception is thrown, execution of the current function is suspended and the search begins for a matching <tt>catch</tt> clause. The search starts by checking whether the <tt>throw</tt> itself is located inside a <tt>try</tt> block. If so, the <tt>catch</tt> clauses associated with that <tt>try</tt> are examined to see if one of them matches the thrown object. If a matching <tt>catch</tt> is found, the exception is handled. If no <tt>catch</tt> is found, the current function is exitedits memory is freed and local objects are destroyedand the search continues in the calling function.</P>
+<p class="docText">抛出异常的时候，将暂停当前函数的执行，开始查找匹配的 <tt>catch</tt> 子句。首先检查 <tt>throw</tt> 本身是否在 <tt>try</tt> 块内部，如果是，检查与该 <tt>catch</tt> 相关的 <tt>catch</tt> 子句，看是否其中之一与抛出对象相匹配。如果找到匹配的 <tt>catch</tt>，就处理异常；如果找不到，就退出当前函数（释放当前函数的内在并撤销局部对象），并且继续在调用函数中查找。</P>
+
+<p class="docText">If the call to the function that threw is in a <tt>try</tt> block, then the <tt>catch</tt> clauses associated with that <tt>try</tt> are examined. If a matching <tt>catch</tt> is found, the exception is handled. If no matching <tt>catch</tt> is found, the calling function is also exited, and the search continues in the function that called this one.</P>
+<p class="docText">如果对抛出异常的函数的调用是在 <tt>try</tt> 块中，则检查与该 <tt>try</tt> 相关的 <tt>catch</tt> 子句。如果找到匹配的 <tt>catch</tt>，就处理异常；如果找不到匹配的 <tt>catch</tt>，调用函数也退出，并且继续在调用这个函数的函数中查找。</p>
+
+<a name="ch17term23"></a>
+<p class="docText">This process, known as <b><a class="docLink" href="ch17lev1sec5.html#gloss17_23" >stack unwinding</a></b>, continues up the chain of nested function calls until a <tt>catch</tt> clause for the exception is found. As soon as a <tt>catch</tt> clause that can handle the exception is found, that <tt>catch</tt> is entered, and execution continues within this handler. When the <tt>catch</tt> completes, execution continues at the point immediately after the last <tt>catch</tt> clause associated with that <tt>try</tt> block.</p>
+<p class="docText">这个过程，称之为<b><a class="docLink" href="ch17lev1sec5.html#gloss17_23" >栈展开（stack unwinding）</a></b>，沿嵌套函数调用链继续向上，直到为异常找到一个 <tt>catch</tt> 子句。只要找到能够处理异常的 <tt>catch</tt> 子句，就进入该 <tt>catch</tt> 子句，并在该处理代码中继续执行。当 <tt>catch</tt> 结束的时候，在紧接在与该 <tt>try</tt> 块相关的最后一个 <tt>catch</tt> 子句之后的点继续执行。</p>
+
+<a name="ch17lev3sec3"></a>
+<h5 class="docSection3Title">Destructors Are Called for Local Objects</h5>
+<h5 class="docSection3Title">为局部对象调用析构函数</h5>
+
+<p class="docText">During stack unwinding, the function containing the <tt>throw</tt>, and possibly other functions in the call chain, are exited prematurely. In general, these functions will have created local objects that ordinarily would be destroyed when the function exited. When a function is exited due to an exception, the compiler guarantees that the local objects are properly destroyed. As each function exits, its local storage is freed. Before releasing the memory, any local object that was created before the exception occurred is destroyed. If the local object is of class type, the destructor for this object is called automatically. As usual, the compiler does no work to destroy an object of built-in type.</p>
+<p class="docText">栈展开期间，提早退出包含 <tt>throw</tt> 的函数和调用链中可能的其他函数。一般而言，这些函数已经创建了可以在退出函数时撤销的局部对象。因异常而退出函数时，编译器保证适当地撤销局部对象。每个函数退出的时候，它的局部存储都被释放，在释放内存之前，撤销在异常发生之前创建的所有对象。如果局部对象是类类型的，就自动调用该对象的析构函数。通常，编译器不撤销内置类型的对象。</p>
+
+<a name="ch17note05"></a>
+<div class="docNote">
+	<p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" align="LEFT" width="57" height="96" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" >
+			</td>
+			<td valign="top">
+				<a name="idd1e134967"></a><a name="idd1e134971"></a><a name="idd1e134976"></a><a name="idd1e134981"></a><a name="idd1e134986"></a><a name="idd1e134990"></a>
+				<p class="docText">During stack unwinding, the memory used by local objects is freed and destructors for local objects of class type are run.</p>
+				<p class="docText">栈展开期间，释放局部对象所用的内存并运行类类型局部对象的析构函数。</p>
+			</td>
+		</tr>
+	</table>
+	<br>
+	</p>
+</div>
+<br>
+
+<p class="docText">If a block directly allocates a resource, and the exception occurs before that resource is freed, that resource will not be freed during stack unwinding. For example, a block might dynamically allocate memory through a call to <tt>new</tt>. If the block exits due to an exception, the compiler does not <tt>delete</tt> the pointer. The allocated memory will not be freed.</p>
+<p class="docText">如果一个块直接分配资源，而且在释放资源之前发生异常，在栈展开期间将不会释放该资源。例如，一个块可以通过调用 <tt>new</tt> 动态分配内存，如果该块因异常而退出，编译器不会删除该指针，已分配的内在将不会释放。</p>
+
+<p class="docText">Resources allocated by an object of class type generally will be properly freed. Destructors for local objects are run; resources allocated by class-type objects ordinarily are freed by their destructor. <a class="docLink" href="ch17lev1sec1.html#ch17lev2sec8">Section 17.1.8</a> (p. <a class="docLink" href="ch17lev1sec1.html#ch17lev2sec8">700</a>) describes a programming technique that uses classes to manage resource allocation in the face of exceptions.</p>
+<p class="docText">由类类型对象分配的资源一般会被适当地释放。运行局部对象的析构函数，由类类型对象分配的资源通常由它们的析构函数释放。<a class="docLink" href="ch17lev1sec1.html#ch17lev2sec8">第 17.1.8 节</a>说明面对异常使用类管理资源分配的编程技术。</p>
+
+<a name="ch17lev3sec4"></a>
+<h5 class="docSection3Title">Destructors Should Never <tt>throw</tt> Exceptions</H5>
+<h5 class="docSection3Title">析构函数应该从不抛出异常</H5>
+
+<p class="docText">Destructors are often executed during stack unwinding. When destructors are executing, the exception has been raised but not yet handled. It is unclear what should happen if a destructor itself throws a new exception during this process. Should the new exception supersede the earlier exception that has not yet been handled? Should the exception in the destructor be ignored?</p>
+<p class="docText">栈展开期间会经常执行析构函数。在执行析构函数的时候，已经引发了异常但还没有处理它。如果在这个过程中析构函数本身抛出新的异常，又会发生什么呢？新的异常应该取代仍未处理的早先的异常吗？应该忽略析构函数中的异常吗？</p>
+
+<a name="ch17term24"></a><a name="ch17term1"></a>
+<p class="docText">The answer is that while stack unwinding is in progress for an exception, a destructor that throws another exception of its own that it does not also handle, causes the library <b><a class="docLink" href="ch17lev1sec5.html#gloss17_24" ><span class="docEmphStrong"><tt>terminate</tt></span></a></b> function is called. Ordinarily, <tt>terminate</tt> calls <b><a class="docLink" href="ch17lev1sec5.html#gloss17_01" ><span class="docEmphStrong"><tt>abort</tt></span></a></b>, forcing an abnormal exit from the entire program.</p>
+<p class="docText">答案是：在为某个异常进行栈展开的时候，析构函数如果又抛出自己的未经处理的另一个异常，将会导致调用标准库 <b><a class="docLink" href="ch17lev1sec5.html#gloss17_24" ><span class="docEmphStrong"><tt>terminate</tt></span></a></b> 函数。一般而言，<tt>terminate</tt> 函数将调用 <b><a class="docLink" href="ch17lev1sec5.html#gloss17_01" ><span class="docEmphStrong"><tt>abort</tt></span></a></b> 函数，强制从整个程序非正常退出。</p>
+
+<p class="docText">Because <tt>terminate</tt> ends the program, it is usually a very bad idea for a destructor to do anything that might cause an exception. In practice, because destructors free resources, it is unlikely that they throw exceptions. The standard library types all guarantee that their destructors will not raise an exception.</p>
+<p class="docText">因为 <tt>terminate</tt> 函数结束程序，所以析构函数做任何可能导致异常的事情通常都是非常糟糕的主意。在实践中，因为析构函数释放资源，所以它不太可能抛出异常。标准库类型都保证它们的析构函数不会引发异常。</p>
+
+<a name="ch17lev3sec5"></a>
+<h5 class="docSection3Title">Exceptions and Constructors</h5>
+<h5 class="docSection3Title">异常与构造函数</h5>
+
+<p class="docText">Unlike destructors, it is often the case that something done inside a constructor might throw an exception. If an exception occurs while constructing an object, then the object might be only partially constructed. Some of its members might have been initialized, and others might not have been initialized before the exception occurs. Even if the object is only partially constructed, we are guaranteed that the constructed members will be properly destroyed.</P>
+<p class="docText">与析构函数不同，构造函数内部所做的事情经常会抛出异常。如果在构造函数对象的时候发生异常，则该对象可能只是部分被构造，它的一些成员可能已经初始化，而另一些成员在异常发生之前还没有初始化。即使对象只是部分被构造了，也要保证将会适当地撤销已构造的成员。</P>
+
+<p class="docText">Similarly, an exception might occur when initializing the elements of an array or other container type. Again, we are guaranteed that the constructed elements will be destroyed.</P>
+<p class="docText">类似地，在初始化数组或其他容器类型的元素的时候，也可能发生异常，同样，也要保证将会适当地撤销已构造的元素。</P>
+
+<a name="ch17lev3sec6"></a>
+<h5 class="docSection3Title">Uncaught Exceptions Terminate the Program</h5>
+<h5 class="docSection3Title">未捕获的异常终止程序</h5>
+
+<p class="docText">An exception cannot remain unhandled. An exception is an important enough event that the program cannot continue executing normally. If no matching <tt>catch</tt> is found, then the program calls the library <tt>terminate</tt> function.</p>
+<p class="docText">不能不处理异常。异常是足够重要的、使程序不能继续正常执行的事件。如果找不到匹配的 <tt>catch</tt>，程序就调用库函数 <tt>terminate</tt>。</p>
+
+<a name="ch17lev2sec3"></a>
+<H4 class="docSection2Title">17.1.3. Catching an Exception</H4>
+<H4 class="docSection2Title">17.1.3. 捕获异常</H4>
+
+<a name="idd1e135087"></a><a name="idd1e135092"></a><a name="idd1e135099"></a><a name="idd1e135106"></a><a name="idd1e135113"></a><a name="idd1e135121"></a><a name="idd1e135126"></a><a name="idd1e135133"></a><a name="idd1e135141"></a><a name="ch17term12"></a>
+<a name="ch17term4"></a>
+<p class="docText">The <b><a class="docLink" href="ch17lev1sec5.html#gloss17_12" >exception specifier</a></b> in a <b><a class="docLink" href="ch17lev1sec5.html#gloss17_04" >catch clause</a></b> looks like a parameter list that contains exactly one parameter. The exception specifier is a type name followed by an optional parameter name.</p>
+<p class="docText"><b><a class="docLink" href="ch17lev1sec5.html#gloss17_04" >catch 子句</a></b>中的<b><a class="docLink" href="ch17lev1sec5.html#gloss17_12" >异常说明符</a></b>看起来像只包含一个形参的形参表，异常说明符是在其后跟一个（可选）形参名的类型名。</p>
+
+<p class="docText">The type of the specifier determines what kinds of exceptions the handler can <tt>catch</tt>. The type must be a complete type: It must either be a built-in type or a programmer-defined type that has already been defined. A forward declaration for the type is not sufficient.</p>
+<p class="docText">说明符的类型决定了处理代码能够捕获的异常种类。类型必须是完全类型，即必须是内置类型或者是已经定义的程序员自定义类型。类型的前向声明不行。</p>
+
+<p class="docText">An exception specifier can omit the parameter name when a <tt>catch</tt> needs to know only the type of the exception in order to handle it. If the handler needs information beyond what type of exception occurred, then its exception specifier will include a parameter name. The <tt>catch</tt> uses the name to get access to the exception object.</p>
+<p class="docText">当 <tt>catch</tt> 为了处理异常只需要了解异常的类型的时候，异常说明符可以省略形参名；如果处理代码需要已发生异常的类型之外的信息，则异常说明符就包含形参名，<tt>catch</tt> 使用这个名字访问异常对象。</p>
+
+<a name="ch17lev3sec7"></a>
+<h5 class="docSection3Title">Finding a Matching Handler</h5>
+<h5 class="docSection3Title">查找匹配的处理代码</h5>
+
+<p class="docText">During the search for a matching <tt>catch</tt>, the<tt>catch</tt> that is found is not necessarily the one that matches the exception best. Instead, the <tt>catch</tt> that is selected is the first <tt>catch</tt> found that can handle the exception. As a consequence, in a list of <tt>catch</tt> clauses, the most specialized <tt>catch</tt> must appear first.</P>
+<p class="docText">在查找匹配的 <tt>catch</tt> 期间，找到的 <tt>catch</tt> 不必是与异常最匹配的那个 <tt>catch</tt>，相反，将选中第一个找到的可以处理该异常的 <tt>catch</tt>。因此，在 <tt>catch</tt> 子句列表中，最特殊的 <tt>catch</tt> 必须最先出现。</P>
+
+<p class="docText">The rules for when an exception matches a <tt>catch</tt> exception specifier are much more restrictive than the rules used for matching arguments with parameter types. Most conversions are not allowedthe types of the exception and the <tt>catch</tt> specifier must match exactly with only a few possible differences:</p>
+<p class="docText">异常与 <tt>catch</tt> 异常说明符匹配的规则比匹配实参和形参类型的规则更严格，大多数转换都不允许——除下面几种可能的区别之外，异常的类型与 <tt>catch</tt> 说明符的类型必须完全匹配：</p>
+
+<ul>
+	<li>
+	<p class="docList">Conversions from non<tt>const</tt> to <tt>const</tt> are allowed. That is, a <tt>throw</tt> of a non<tt>const</tt> object can match a <tt>catch</tt> specified to take a <tt>const</tt> reference.</p>
+	<p class="docList">允许从非 <tt>const</tt> 到 <tt>const</tt> 的转换。也就是说，非 <tt>const</tt> 对象的 <tt>throw</tt> 可以与指定接受 <tt>const</tt> 引用的 <tt>catch</tt> 匹配。</p>
+	</li>
+	<li>
+	<p class="docList">Conversions from derived type to base type are allowed.</p>
+	<p class="docList">允许从派生类型型到基类类型的转换。</p>
+	</li>
+	<li>
+	<p class="docList">An array is converted to a pointer to the type of the array; a function is converted to the appropriate pointer to function type.</p>
+	<p class="docList">将数组转换为指向数组类型的指针，将函数转换为指向函数类型的适当指针。</p>
+	</li>
+</ul>
+
+<p class="docText">No other conversions are allowed when looking for a matching <tt>catch</tt>. In particular, neither the standard arithmetic conversions nor conversions defined for class types are permitted.</p>
+<p class="docText">在查找匹配 <tt>catch</tt> 的时候，不允许其他转换。具体而言，既不允许标准算术转换，也不允许为类类型定义的转换。</p>
+
+<a name="ch17lev3sec8"></a>
+<h5 class="docSection3Title">Exception Specifiers</h5>
+<h5 class="docSection3Title">异常说明符</h5>
+
+<p class="docText">When a <tt>catch</tt> is entered, the <tt>catch</tt> parameter is initialized from the exception object. As with a function parameter, the exception-specifier type might be a reference. The exception object itself is a copy of the object that was thrown. Whether the exception object is copied again into the <tt>catch</tt> site depends on the exception-specifier type.</p>
+<p class="docText">进入 <tt>catch</tt> 的时候，用异常对象初始化 <tt>catch</tt> 的形参。像函数形参一样，异常说明符类型可以是引用。异常对象本身是被抛出对象的副本。是否再次将异常对象复制到 <tt>catch</tt> 位置取决于异常说明符类型。</p>
+
+<a name="idd1e135275"></a><a name="idd1e135282"></a><a name="idd1e135289"></a>
+<p class="docText">If the specifier is not a reference, then the exception object is copied into the <tt>catch</tt> parameter. The <tt>catch</tt> operates on a local copy of the exception object. Any changes made to the <tt>catch</tt> parameter are made to the copy, not to the exception object itself. If the specifier is a reference, then like a reference parameter, there is no separate <tt>catch</tt> object; the <tt>catch</tt> parameter is just another name for the exception object. Changes made to the <tt>catch</tt> parameter are made to the exception object.</p>
+<p class="docText">如果说明符不是引用，就将异常对象复制到 <tt>catch</tt> 形参中，<tt>catch</tt> 操作异常对象的不可一世，对形参所做的任何改变都只作用于副本，不会作用于异常对象本身。如果说明符是引用，则像引用形参一样，不存在单独的 <tt>catch</tt> 对象，<tt>catch</tt> 形参只是异常对象的另一名字。对 <tt>catch</tt> 形参所做的改变作用于异常对象。</p>
+
+<a name="ch17lev3sec9"></a>
+<H5 class="docSection3Title">Exception Specifiers and Inheritance</H5>
+<H5 class="docSection3Title">异常说明符与继承</H5>
+
+<p class="docText">Like a parameter declaration, an exception specifier for a base class can be used to <tt>catch</tt> an exception object of a derived type. Again, like a parameter declaration, the static type of the exception specifier determines the actions that the <tt>catch</tt> clause may perform. If the exception object thrown is of derived-class type but is handled by a <tt>catch</tt> that takes a base-class type, then the <tt>catch</tt> cannot use any members that are unique to the derived type.</p>
+<p class="docText">像形参声明一样，基类的异常说明符可以用于捕获派生类型的异常对象，而且，异常说明符的静态类型决定 <tt>catch</tt> 子句可以执行的动作。如果被抛出的异常对象是派生类类型的，但由接受基类类型的 <tt>catch</tt> 处理，那么，<tt>catch</tt> 不能使用派生类特有的任何成员。</p>
+
+<a name="ch17note06"></a>
+<div class="docNote">
+	<p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" align="LEFT" width="116" height="74" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/bestpractices.jpg;400478" >
+			</td>
+			<td valign="top">
+				<p class="docText"> Usually, a <tt>catch</tt> clause that handles an exception of a type related by inheritance ought to define its parameter as a reference.</p>
+				<p class="docText">通常，如果 <tt>catch</tt> 子句处理因继承而相关的类型的异常，它就应该将自己的形参定义为引用。</p>
+			</td>
+		</tr>
+	</table>
+	<br>
+	</p>
+</div><br>
+
+<p class="docText">If the <tt>catch</tt> parameter is a reference type, then the <tt>catch</tt> object accesses the exception object directly. The static type of the <tt>catch</tt> object and the dynamic type of the exception object to which it refers might differ. If the specifier is not a reference, then the <tt>catch</tt> object is a copy of the exception object. If the <tt>catch</tt> object in an object of the base type and the exception object has derived type, then the exception object is sliced down (<a class="docLink" href="ch15lev1sec3.html#ch15lev2sec10" >Section 15.3.1</a>, p. <a class="docLink" href="ch15lev1sec3.html#ch15lev2sec10" >577</a>) to its base-class subobject.</p>
+<p class="docText">如果 <tt>catch</tt> 形参是引用类型，<tt>catch</tt> 对象就直接访问异常对象，<tt>catch</tt> 对象的静态类型可以与 <tt>catch</tt> 对象所引用的异常对象的动态类型不同。如果异常说明符不是引用，则 <tt>catch</tt> 对象是异常对象的副本，如果 <tt>catch</tt> 对象是基类类型对象而异常对象是派生类型的，就将异常对象分割（<a class="docLink" href="ch15lev1sec3.html#ch15lev2sec10" >第 15.3.1 节</a>）为它的基类子对象。</p>
+
+<p class="docText">Moreover, as we saw in <a class="docLink" href="ch15lev1sec2.html#ch15lev2sec6" >Section 15.2.4</a> (p. <a class="docLink" href="ch15lev1sec2.html#ch15lev2sec6" >566</a>), objects (as opposed to references) are not polymorphic. When we use a virtual function on an object rather than through a reference, the object's static and dynamic type are the same; the fact that the function is virtual makes no difference. Dynamic binding happens only for calls through a reference or pointer, not calls on an object.</P>
+<p class="docText">而且，正如<a class="docLink" href="ch15lev1sec2.html#ch15lev2sec6" >第 15.2.4 节</a>所介绍的，对象（相对于引用）不是多态的。当通过对象而不是引用使用虚函数的时候，对象的静态类型和动态类型相同，函数是虚函数也一样。只有通过引用或指针调用时才发生动态绑定，通过对象调用不进行动态绑定。</p>
+
+<a name="ch17lev3sec10"></a>
+<H5 class="docSection3Title">Ordering of Catch Clauses Must Reflect Type Hierarchy</h5>
+<H5 class="docSection3Title"><tt>catch</tt> 子句的次序必须反映类型层次</h5>
+
+<a name="ch17term26"></a>
+<p class="docText">When exception types are organized in class hierarchies, users may choose the level of granularity with which their applications will deal with an exception. For example, an application that merely wants to do cleanup and exit might define a single <span class="docEmphRoman"><a class="docLink" href="ch17lev1sec5.html#gloss17_26" >try block</a></span> that encloses the code in <tt>main</tt> with a <tt>catch</tt> such as the following:</p>
+<p class="docText">将异常类型组织成类层次的时候，用户可以选择应用程序处理异常的粒度级别。例如，只希望清除并退出的应用程序可以定义一个 <span class="docEmphRoman"><a class="docLink" href="ch17lev1sec5.html#gloss17_26" >try 块</a></span>，该 <tt>try</tt> 块包围 <tt>main</tt> 函数中带有如下 <tt>catch</tt> 代码：</p>
+
+<pre>
+    catch(exception &amp;e) {
+        // <span class="docEmphItalicAlt">do cleanup</span>
+        // <span class="docEmphItalicAlt">print a message</span>
+        cerr &lt;&lt; "Exiting: " &lt;&lt; e.what() &lt;&lt; endl;
+        size_t status_indicator = 42;  // <span class="docEmphItalicAlt">set and return an</span>
+        return(status_indicator);      // <span class="docEmphItalicAlt">error indicator</span>
+    }
+</pre><br>
+
+<p class="docText">Other programs with more rigorous uptime requirements might need finer control over exceptions. Such applications will clear whatever caused the exception and continue processing.</P>
+<p class="docText">有更严格实时需求的程序可能需要更好的异常控制，这样的应用程序将清除导致异常的一切并继续执行。</P>
+
+<p class="docText">Because <tt>catch</tt> clauses are matched in the order in which they appear, programs that use exceptions from an inheritance hierarchy must order their <tt>catch</tt> clauses so that handlers for a derived type occurs before a <tt>catch</tt> for its base type.</P>
+<p class="docText">因为 <tt>catch</tt> 子句按出现次序匹配，所以使用来自继承层次的异常的程序必须将它们的 <tt>catch</tt> 子句排序，以便 派生类型的处理代码出现在其基类类型的 <tt>catch</tt> 之前。</P>
+
+<a name="ch17note07"></a>
+<div class="docNote">
+	<p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" align="LEFT" width="50" height="54" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" >
+			</td>
+			<td valign="top">
+				<a name="idd1e135429"></a><a name="idd1e135434"></a><a name="idd1e135437"></a>
+				<p class="docText">Multiple <tt>catch</tt> clauses with types related by inheritance must be ordered from most derived type to least derived.</p>
+				<p class="docText">带有因继承而相关的类型的多个 <tt>catch</tt> 子句，必须从最低派生类类到最高派生类型排序。</p>
+			</td></tr>
+	</table><br>
+	</p>
+</div><br>
+
+<a name="ch17sb02"></a>
+<p>
+<table cellspacing="0" width="90%" border="1" cellpadding="5">
+	<tr>
+		<td>
+			<h2 class="docSidebarTitle">Exercises Section 17.1.3</h2>
+			<blockquote>
+				<p>
+				<table border="0" cellspacing="16" cellpadding="0">
+					<tr valign="top">
+						<td align="right" class="docText" width="50">
+							<a name="ch17qa2q1"></a>
+							<b>Exercise 17.3:</b>
+						</td>
+						<td>
+							<p class="docText">Explain why this <tt>try</tt> block is incorrect. Correct it.</p>
+							<p class="docText">解释下面这个 <tt>try</tt> 块为什么不正确，并改正它。</p>
+<pre>
+          try {
+              // <span class="docEmphItalicAlt">use of the C++ standard library</span>
+          } catch(exception) {
+              // ...
+          } catch(const runtime_error &amp;re) {
+              // ...
+          } catch(overflow_error eobj) { /* ... */ }
+</pre><br>
+						</td>
+					</tr>
+				</table>
+				</p>
+			</blockquote>
+		</td>
+	</tr>
+</table>
+</p>
+<br>
+
+
+<a name="ch17lev2sec4"></a>
+<H4 class="docSection2Title">17.1.4. Rethrow</H4>
+<H4 class="docSection2Title">17.1.4. 重新抛出</H4>
+
+<a name="ch17term21"></a>
+<p class="docText">It is possible that a single <tt>catch</tt> cannot completely handle an exception. After some corrective actions, a <tt>catch</tt> may decide that the exception must be handled by a function further up the chain of function calls. A <tt>catch</tt> can pass the exception out to another <tt>catch</tt> further up the list of function calls by <b><a class="docLink" href="ch17lev1sec5.html#gloss17_21" >rethrowing</a></b> the exception. A rethrow is a <tt>throw</tt> that is not followed by a type or an expression:</p>
+<p class="docText">有可能单个 <tt>catch</tt> 不能完全处理一个异常。在进行了一些校正行动之后，<tt>catch</tt> 可能确定该异常必须由函数调用链中更上层的函数来处理，<tt>catch</tt> 可以通过<b><a class="docLink" href="ch17lev1sec5.html#gloss17_21" >重新抛出</a></b>将异常传递函数调用链中更上层的函数。重新抛出是后面不跟类型或表达式的一个 <tt>throw</tt>：</p>
+
+<pre>
+    throw;
+</pre><br>
+
+<p class="docText">An empty <tt>throw</tt> rethrows the exception object. An empty <tt>throw</tt> can appear only in a <tt>catch</tt> or in a function called (directly or indirectly) from a <tt>catch</tt>. If an empty <tt>throw</tt> is encountered when a handler is not active, <tt>terminate</tt> is called.</P>
+<p class="docText">空 <tt>throw</tt> 语句将重新抛出异常对象，它只能出现在 <tt>catch</tt> 或者从 <tt>catch</tt> 调用的函数中。如果在处理代码不活动时碰到空 <tt>throw</tt>，就调用 <tt>terminate</tt> 函数。</P>
+
+<p class="docText">Although the rethrow does not specify its own exception, an exception object is still passed up the chain. The exception that is thrown is the original exception object, not the <tt>catch</tt> parameter. When a <tt>catch</tt> parameter is a base type, then we cannot know the actual type thrown by a rethrow expression. That type depends on the dynamic type of the exception object, not the static type of the <tt>catch</tt> parameter. For example, a rethrow from a <tt>catch</tt> with a parameter of base type might actually <tt>throw</tt> an object of the derived type.</p>
+<p class="docText">虽然重新抛出不指定自己的异常，但仍然将一个异常对象沿链向上传递，被抛出的异常是原来的异常对象，而不是 <tt>catch</tt> 形参。当 <tt>catch</tt> 形参是基类类型的时候，我们不知道由重新抛出表达式抛出的实际类型，该类型取决于异常对象的动态类型，而不是 <tt>catch</tt> 形参的静态类型。例如，来自带基类类型形参 <tt>catch</tt> 的重新抛出，可能实际抛出一个派生类型的对象。</p>
+
+<p class="docText">In general, a <tt>catch</tt> might change its parameter. If, after changing its parameter, the <tt>catch</tt> rethrows the exception, then those changes will be propagated only if the exception specifier is a reference:</p>
+<p class="docText">一般而言，<tt>catch</tt> 可以改变它的形参。在改变它的形参之后，如果 <tt>catch</tt> 重新抛出异常，那么，只有当异常说明符是引用的时候，才会传播那些改变。</p>
+<pre>
+    catch (my_error &amp;eObj) {        // <span class="docEmphItalicAlt">specifier is a reference type</span>
+        eObj.status = severeErr;    // <span class="docEmphItalicAlt">modifies the exception object</span>
+        throw; // <span class="docEmphItalicAlt">the</span> <span class="docEmphasis">status</span> <span class="docEmphItalicAlt">member of the exception object is</span> <span class="docEmphasis">severeErr</span>
+    } catch (other_error eObj) {    // <span class="docEmphItalicAlt">specifier is a nonreference type</span>
+        eObj.status = badErr;       // <span class="docEmphItalicAlt">modifies local copy only</span>
+        throw; // <span class="docEmphItalicAlt">the</span> <span class="docEmphasis">status</span> <span class="docEmphItalicAlt">member of the exception rethrown is unchanged</span>
+    }
+</pre><br>
+
+<a name="ch17lev2sec5"></a>
+<H4 class="docSection2Title">17.1.5. The Catch-All Handler</H4>
+<H4 class="docSection2Title">17.1.5. 捕获所有异常的处理代码</H4>
+
+<a name="idd1e135614"></a><a name="idd1e135622"></a><a name="idd1e135630"></a><a name="idd1e135638"></a><a name="idd1e135646"></a>
+<a name="ch17term3"></a>
+<p class="docText">A function may want to perform some action before it exits with a thrown exception, even though it cannot handle the exception that is thrown. Rather than provide a specific <tt>catch</tt> clause for every possible exception, and because we can't know all the exceptions that might be thrown, we can use a <b><a class="docLink" href="ch17lev1sec5.html#gloss17_03" >catch-all</a></b> <tt>catch</tt> clause. A catch-all clause has the form <tt>(...)</tt>. For example:</p>
+<p class="docText">即使函数不能处理被抛出的异常，它也可能想要在随抛出异常退出之前执行一些动作。除了为每个可能的异常提供特定 <tt>catch</tt> 子句之外，因为不可能知道可能被抛出的所有异常，所以可以使用<b><a class="docLink" href="ch17lev1sec5.html#gloss17_03" >捕获所有异常</a></b> <tt>catch</tt> 子句的。捕获所有异常的 <tt>catch</tt> 子句形式为 <tt>(...)</tt>。例如：</p>
+
+<pre>
+     // <span class="docEmphItalicAlt">matches any exception that might be thrown</span>
+     catch (...) {
+         // <span class="docEmphItalicAlt">place our code here</span>
+     }
+</pre><br>
+
+<p class="docText">A catch-all clause matches any type of exception.</p>
+<p class="docText">捕获所有异常的 <tt>catch</tt> 子句与任意类型的异常都匹配。</p>
+
+<p class="docText">A <tt>catch(...)</tt> is often used in combination with a rethrow expression. The <tt>catch</tt> does whatever local work can be done and then rethrows the exception:</P>
+<p class="docText"><tt>catch(...)</tt> 经常与重新抛出表达式结合使用，<tt>catch</tt> 完成可做的所有局部工作，然后重新抛出异常：</P>
+
+<pre>
+    void manip() {
+       try {
+           // <span class="docEmphItalicAlt">actions that cause an exception to be thrown</span>
+       }
+       catch (...) {
+           // <span class="docEmphItalicAlt">work to partially handle the exception</span>
+           throw;
+       }
+    }
+</pre><br>
+
+<p class="docText">A <tt>catch(...)</tt> clause can be used by itself or as one of several catch clauses.</p>
+<p class="docText"><tt>catch(...)</tt> 子句可以单独使用，也可以用在几个 <tt>catch</tt> 子句中间。</p>
+
+<a name="ch17note08"></a>
+<div class="docNote">
+	<P>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" align="LEFT" width="50" height="54" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+			<td valign="top">
+				<p class="docText"> If a <tt>catch(...)</tt> is used in combination with other <tt>catch</tt> clauses, it must be last; otherwise, any <tt>catch</tt> clause that followed it could never be matched.</p>
+				<p class="docText">如果 <tt>catch(...)</tt> 与其他 <tt>catch</tt> 子句结合使用，它必须是最后一个，否则，任何跟在它后面的 <tt>catch</tt> 子句都将不能被匹配。</p>
+			</td>
+		</tr>
+	</table>
+	<br>
+	</p>
+</div><br>
+
+<a name="ch17lev2sec6"></a>
+<h4 class="docSection2Title">17.1.6. Function Try Blocks and Constructors</h4>
+<h4 class="docSection2Title">17.1.6. 函数测试块与构造函数</h4>
+
+<p class="docText">In general, exceptions can occur at any point in the program's execution. In particular, an exception might occur in a constructor, or while processing a constructor initializer. Constructor initializers are processed before the constructor body is entered. A <tt>catch</tt> clause inside the constructor body cannot handle an exception that might occur while processing a constructor initializer.</p>
+<p class="docText">一般而言，异常可能发生在程序执行的任何一点。具体而言，异常可能发生在构造函数中，或者发生在处理构造函数初始化式的时候。在进入构造函数函数体之前处理构造函数初始化式，构造函数函数体内部的 <tt>catch</tt> 子句不能处理在处理构造函数初始化时可能发生的异常。</p>
+
+<a name="ch17term14"></a>
+<p class="docText">To handle an exception from a constructor initializer, we must write the constructor as a <b><a class="docLink" href="ch17lev1sec5.html#gloss17_14" >function <span class="docEmphStrong"><tt>try</tt></span> block</a></b>. A function try block lets us associate a group of <tt>catch</tt> clauses with the function as a whole. As an example, we might wrap our <tt>Handle</tt> constructor from <a class="docLink" href="ch16.html#ch16" >Chapter 16</a> in a try block to detect a failure in <tt>new</tt>:</p>
+<p class="docText">为了处理来自构造函数初始化式的异常，必须将构造函数编写为<b><a class="docLink" href="ch17lev1sec5.html#gloss17_14" >函数 <span class="docEmphStrong"><tt>try</tt></span> 块</a></b>。可以使用函数测试块将一组 <tt>catch</tt> 子句与函数联成一个整体。作为例子，可以将<a class="docLink" href="ch16.html#ch16" >第十六章</a>的 <tt>Handle</tt> 构造函数包装在一个用来检测 <tt>new</tt> 中失败的测试块当中：</p>
+
+<pre>
+    template &lt;class T&gt; Handle&lt;T&gt;::Handle(T *p)
+    try : ptr(p), use(new size_t(1))
+    {
+         // <span class="docEmphItalicAlt">empty function body</span>
+    }  catch(const std::bad_alloc &amp;e)
+           { handle_out_of_memory(e); }
+</pre><br>
+
+<a name="ch17sb03"></a>
+
+<p>
+<table cellspacing="0" width="90%" border="1" cellpadding="5">
+	<tr>
+		<td>
+			<h2 class="docSidebarTitle">Exercises Section 17.1.5</H2>
+			<blockquote>
+				<p>
+				<table border="0" cellspacing="16" cellpadding="0">
+					<tr valign="top">
+						<td align="right" class="docText" width="50">
+							<a name="ch17qa3q1"></a>
+							<b>Exercise 17.4:</b>
+						</td>
+						<td>
+							<a name="idd1e135785"></a><a name="idd1e135791"></a>
+							<p class="docText">Given a basic C++ program,</p>
+							<p class="docText">对于如下的基本 C++ 程序</p>
+<pre>
+     int main() {
+         // <span class="docEmphItalicAlt">use of the C++ standard library</span>
+     }
+</pre><br>
+							<p class="docText">modify <tt>main</tt> to catch any exception thrown by functions in the C++ standard library. The handlers should print the error message associated with the exception before calling <tt>abort</tt> (defined in the header <tt>cstdlib</tt>) to terminate <tt>main</tt>.</p>
+							<p class="docText">修改 <tt>main</tt> 函数以捕获由 C++ 标准库中函数抛出的任何异常。处理代码应该在调用 <tt>abort</tt> 函数（在头文件 <tt>cstdlib</tt> 中定义）终止 <tt>main</tt> 函数之前显示与异常相关的错误作息。</p>
+						</td>
+					</tr>
+					<tr valign="top">
+						<td align="right" class="docText" width="50">
+							<a name="ch17qa3q2"></a>
+							<b>Exercise 17.5:</b>
+						</td>
+						<td>
+							<p class="docText">Given the following exception types and <tt>catch</tt> clauses, write a <tt>tHRow</tt> expression that creates an exception object that could be caught by each <tt>catch</tt> clause.</P>
+							<p class="docText">对于下面的异常类型以及 <tt>catch</tt> 子句，编写一个 <tt>throw</tt> 表达式，该表达式创建一个可被每个 <tt>catch</tt> 子句捕获的异常对象。</P>
+<pre>
+    (a) class exceptionType { };
+        catch(exceptionType *pet) { }
+    (b) catch(...) { }
+    (c) enum mathErr { overflow, underflow, zeroDivide };
+        catch(mathErr &amp;ref) { }
+    (d) typedef int EXCPTYPE;
+        catch(EXCPTYPE) { }
+</pre><br>
+						</td>
+					</tr>
+				</table></p>
+			</blockquote>
+		</td>
+	</tr>
+</table>
+</p>
+<br>
+
+<p class="docText">Notice that the keyword <tt>try</tt> precedes the member initialization list, and the compound statement of the try block encompasses the constructor function body. The <tt>catch</tt> clause can handle exceptions thrown either from within the member initialization list or from within the constructor body.</p>
+<p class="docText">注意，关键字 <tt>try</tt> 出现在成员初始化列表之前，并且测试块的复合语句包围了构造函数的函数体。<tt>catch</tt> 子句既可以处理从成员初始化列表中抛出的异常，也可以处理从构造函数函数体中抛出的异常。</p>
+
+<a name="ch17note09"></a>
+<div class="docNote">
+	<P>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" align="LEFT" width="50" height="54" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" >
+			</td>
+			<td valign="top">
+				<p class="docText"> The only way for a constructor to handle an exception from a constructor initializer is to write the constructor as a function try block.</p>
+				<p class="docText">构造函数要处理来自构造函数初始化式的异常，唯一的方法是将构造函数编写为函数测试块。</p>
+			</td>
+		</tr>
+	</table><br>
+	</p>
+</div><br>
+
+<a name="ch17lev2sec7"></a>
+<h4 class="docSection2Title">17.1.7. Exception Class Hierarchies</h4>
+<h4 class="docSection2Title">17.1.7. 异常类层次</h4>
+
+<p class="docText"><a class="docLink" href="ch06lev1sec13.html#ch06lev1sec13" >Section 6.13</a> (p. <a class="docLink" href="ch06lev1sec13.html#ch06lev1sec13" >215</a>) introduced the standard-library exception classes. What that section did not cover is that these classes are related by inheritance. The inheritance hierarchy is portrayed in <a class="docLink" href="ch17lev1sec1.html#ch17fig01">Figure 17.1</a> on the following page.</p>
+<p class="docText"><a class="docLink" href="ch06lev1sec13.html#ch06lev1sec13" >第 6.13 节</a>介绍过标准库异常类，但该节没有涵盖的是这些类是因继承而相关的，<a class="docLink" href="ch17lev1sec1.html#ch17fig01">图 17.1</a> 描绘了这个继承层次。</p>
+
+<a name="ch17fig01"></a>
+<p><center>
+	<h5 class="docFigureTitle">Figure 17.1. Standard <tt>exception</tt> Class Hierarchy</H5>
+	<h5 class="docFigureTitle">图 17.1. 标准 <tt>exception</tt> 类层次</H5>
+
+	<p class="docText">
+	<img border="0" alt="" width="475" height="331" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/17fig01.gif;400478" ></P>
+</center></p><br>
+
+<p class="docText">The only operation the <tt>exception</tt> types define is a virtual member named <tt>what</tt>. That function returns a <tt>const char*</tt>. It typically returns the message used when constructing the exception object at the throw site. Because <tt>what</tt> is virtual if we catch a base-type reference, a call to the <tt>what</tt> function will execute the version appropriate to the dynamic type of the exception object.</p>
+<p class="docText"><tt>exception</tt> 类型所定义的唯一操作是一个名为 <tt>what</tt> 的虚成员，该函数返回 <tt>const char*</tt> 对象，它一般返回用来在抛出位置构造异常对象的信息。因为 <tt>what</tt> 是虚函数，如果捕获了基类类型引用，对 <tt>what</tt> 函数的调用将执行适合异常对象的动态类型的版本。</p>
+
+<a name="ch17lev3sec11"></a>
+<h5 class="docSection3Title">Exception Classes for a Bookstore Application</H5>
+<h5 class="docSection3Title">用于书店应用程序的异常类</H5>
+
+<p class="docText">The standard exception classes can be used for quite a number of applications. In addition, applications often extend the <tt>exception</tt> hierarchy by deriving additional types from <tt>exception</tt> or one of the intermediate base classes. These newly derived classes can represent exception types specific to the application domain.</P>
+<p class="docText">标准异常类可以用于许多应用程序，此外，应用程序还经常通过从 <tt>exception</tt> 类或者中间基类派生附加类型来扩充 <tt>exception</tt> 层次。这些新派生的类可以表示特定于应用程序领域的异常类型。</p>
+
+<a name="idd1e135941"></a><a name="idd1e135946"></a><a name="idd1e135952"></a>
+<p class="docText">If we were building a real bookstore application, our classes would have been much more complex than the ones presented in this primer. One way in which they might be more elaborate would be in their handling of exceptions. In fact, we probably would have defined our own hierarchy of exceptions to represent application-specific problems that might arise. Our design might include classes such as</p>
+<p class="docText">如果正在建立一个实际的书店应用程序，我们的类也许比本书给出的复杂得多，使它们更为精细的一个方法可能在于它们的异常处理。事实上，我们可能已经定义了自己的异常层次来表示可能出现的特定于应用程序的问题。我们的设计可能包括下面这样的类：</p>
+
+<pre>
+    // <span class="docEmphItalicAlt">hypothetical exception classes for a bookstore application</span>
+    class out_of_stock: public std::runtime_error {
+    public:
+        explicit out_of_stock(const std::string &amp;s):
+                           std::runtime_error(s) { }
+    };
+    class isbn_mismatch: public std::logic_error {
+    public:
+        explicit isbn_mismatch(const std::string &amp;s):
+                              std::logic_error(s) { }
+        isbn_mismatch(const std::string &amp;s,
+            const std::string &amp;lhs, const std::string &amp;rhs):
+            std::logic_error(s), left(lhs), right(rhs) { }
+        const std::string left, right;
+        // <span class="docEmphItalicAlt"><a class="docLink" href="ch17lev1sec1.html#ch17lev2sec10">Section 17.1.10</a> (p. <a class="docLink" href="ch17lev1sec1.html#ch17lev2sec10">706</a>) explains the destructor and why we need one</span>
+        virtual ~isbn_mismatch() throw() { }
+    };
+</pre><br>
+
+<a name="idd1e135978"></a><a name="idd1e135982"></a><a name="idd1e135987"></a>
+<p class="docText">Here we defined our application-specific exception types by deriving them from the standard exception classes. As with any hierarchy, we can think of the exception classes as being organized into layers. As the hierarchy becomes deeper, each layer becomes a more specific exception. For example, the first and most general layer of the hierarchy is represented by class <tt>exception</tt>. All we know when we catch an object of this type is that something has gone wrong.</p>
+<p class="docText">在这里，通过从标准异常类派生，定义了特定于应用程序的异常类型。像任何层次一样，可以认为异常类按层组织。随着层次的加深，每一层变得更特殊的异常。例如，层次中第一层即最一般的层由 <tt>exception</tt> 类代表，当捕获这一类型的对象时，我们所知道的只是有些地方出错了。</p>
+
+<p class="docText">The second layer specializes <tt>exception</tt> into two broad categories: run-time or logic errors. Our bookstore exception classes represent an even more specialized layer. The class <tt>out_of_stock</tt> represents something that can go wrong at run time that is particular to our application. It would be used to signal that an order cannot be fulfilled. The <tt>isbn_mismatch</tt> exception is a more particular form of <tt>logic_error</tt>. In principle, a program could detect that the ISBNs don't match by calling <tt>same_isbn</tt>.</p>
+<p class="docText">第二层将 <tt>exception</tt> 特化为两个大类：运行时错误和逻辑错误。我们的书店异常类表示更特化的层中的事件。<tt>out_of_stock</tt> 类表示可能在运行时出现问题的特定于应用程序的事情，可以用它发出不能履行某个订单的信号。<tt>isbn_mismatch</tt>　异常是从 <tt>logic_error</tt> 派生的更特殊的异常，原则上，程序可以通过调用 <tt>same_isbn</tt> 检测到不匹配的 ISBN。</p>
+
+<a name="ch17lev3sec12"></a>
+<h5 class="docSection3Title">Using Programmer-Defined Exception Types</H5>
+<h5 class="docSection3Title">使用程序员定义的异常类型</H5>
+
+<p class="docText">We use our own exception classes in the same way that we use one of the standard library classes. One part of the program throws an object of one of these types, and another part catches and handles the indicated problem. As an example, we might define the overloaded addition operator for our <tt>Sales_item</tt> class to <tt>throw</tt> an error of type <tt>isbn_mismatch</tt> if it detected that the ISBNs didn't match:</P>
+<p class="docText">用和使用标准库类相同的方法使用自己的异常类。程序的一个部分抛出某个这些类型的对象，程序的另一部分捕获并处理指出的问题。例如，可以为 <tt>Sales_item</tt> 类定义重载加操作符，以便如果它检测到 ISBN 不匹配就抛出一个 <tt>isbn_mismatch</tt> 类型的错误：</P>
+<pre>
+     // <span class="docEmphItalicAlt">throws exception if both objects do not refer to the same</span> <span class="docEmphasis">isbn</span>
+     Sales_item
+     operator+(const Sales_item&amp; lhs, const Sales_item&amp; rhs)
+     {
+         if (!lhs.same_isbn(rhs))
+             throw isbn_mismatch("isbn mismatch",
+                                 lhs.book(), rhs.book());
+         Sales_item ret(lhs);  // <span class="docEmphItalicAlt">copy</span> <span class="docEmphasis">lhs</span> <span class="docEmphItalicAlt">into a local object that we'll return</span>
+         ret += rhs;           // <span class="docEmphItalicAlt">add in the contents of</span> <span class="docEmphasis">rhs</span>
+         return ret;           // <span class="docEmphItalicAlt">return</span> <span class="docEmphasis">ret</span> <span class="docEmphItalicAlt">by value</span>
+     }
+</pre><BR>
+
+<p class="docText">Code that uses the addition operator could then detect this error, write an appropriate error message, and continue:</p>
+<p class="docText">然后，使用加操作符的代码可以检测这个错误，写出适当的错误消息，并继续：</p>
+
+<pre>
+     // <span class="docEmphItalicAlt">use hypothetical bookstore exceptions</span>
+     Sales_item item1, item2, sum;
+     while (cin &gt;&gt; item1 &gt;&gt; item2) {    // <span class="docEmphItalicAlt">read two transactions</span>
+         try {
+             sum = item1 + item2;       // <span class="docEmphItalicAlt">calculate their sum</span>
+             // <span class="docEmphItalicAlt">use</span> <span class="docEmphasis">sum</span>
+         } catch (const isbn_mismatch &amp;e) {
+           cerr &lt;&lt; e.what() &lt;&lt; ": left isbn(" &lt;&lt; e.left
+                &lt;&lt; ") right isbn(" &lt;&lt; e.right &lt;&lt; ")"
+                &lt;&lt; endl;
+         }
+</pre><br>
+
+
+<a name="ch17lev2sec8"></a>
+<h4 class="docSection2Title">17.1.8. Automatic Resource Deallocation</H4>
+<h4 class="docSection2Title">17.1.8. 自动资源释放</H4>
+
+<a name="idd1e136107"></a><a name="idd1e136112"></a><a name="idd1e136117"></a><a name="idd1e136122"></a><a name="idd1e136127"></a><a name="idd1e136130"></a><a name="idd1e136135"></a><a name="idd1e136140"></a><a name="idd1e136144"></a><a name="idd1e136147"></a>
+<p class="docText">In <a class="docLink" href="ch17lev1sec1.html#ch17lev2sec2">Section 17.1.2</a> (p. <a class="docLink" href="ch17lev1sec1.html#ch17lev2sec2">691</a>) we saw that local objects are automatically destroyed when an exception occurs. The fact that destructors are run has important implication for the design of applications. It also is one (among many) reasons why we encourage the use of the standard library classes. Consider the following function:</P>
+<p class="docText"><a class="docLink" href="ch17lev1sec1.html#ch17lev2sec2">第 17.1.2 节</a>介绍过，在发生异常时自动撤销局部对象。运行析构函数这一事实对应用程序的设计具有重要含义，这也是为什么我们鼓励使用标准库类的原因。考虑下面的函数：</P>
+
+<pre>
+     void f()
+     {
+         vector&lt;string&gt; v;                   // <span class="docEmphItalicAlt">local</span> <span class="docEmphasis">vector</span>
+         string s;
+         while (cin &gt;&gt; s)
+             v.push_back(s);                 // <span class="docEmphItalicAlt">populate the</span> <span class="docEmphasis">vector</span>
+         string *p = new string[v.size()];   // <span class="docEmphItalicAlt">dynamic array</span>
+         // <span class="docEmphItalicAlt">remaining processing</span>
+         // <span class="docEmphItalicAlt">it is possible that an exception occurs in this code</span>
+         // <span class="docEmphItalicAlt">function cleanup is bypassed if an exception occurs</span>
+         delete [] p;
+     }   // <span class="docEmphasis">v</span> <span class="docEmphItalicAlt">destroyed automatically when the function exits</span>
+</pre><br>
+
+<p class="docText">This function defines a local <tt>vector</tt> and dynamically allocates an array. Under normal execution, both the array and the <tt>vector</tt> are destroyed before the function exits. The array is freed by the last statement in the function, and the <tt>vector</tt> is automatically destroyed when the function ends.</p>
+<p class="docText">这个函数定义了一个局部 <tt>vector</tt> 并动态分配了一个数组。在正常执行的情况下，数组和 <tt>vector</tt> 都在退出函数之前被撤销，函数中最后一个语句释放数组，在函数结束时自动撤销 <tt>vector</tt>。</p>
+
+<p class="docText">However, if an exception occurs inside the function, then the <tt>vector</tt> will be destroyed but the array will not be freed. The problem is that the array is not freed automatically. An exception that occurs after the <tt>new</tt> but before the corresponding <tt>delete</tt> leaves the array undestroyed. No matter when an exception occurs, we are guaranteed that the <tt>vector</tt> destructor is run.</p>
+<p class="docText">但是，如果在函数内部发生异常，则将撤销 <tt>vector</tt> 而不会释放数组。问题在于数组不是自动释放的。在 <tt>new</tt> 之后但在 <tt>delete</tt> 之前发生的异常使得数组没有被撤销。不管何时发生异常，都保证运行 <tt>vector</tt> 析构函数。</p>
+
+<a name="ch17lev3sec13"></a>
+<h5 class="docSection3Title">Using Classes to Manage Resource Allocation</H5>
+<h5 class="docSection3Title">用类管理资源分配</H5>
+
+<a name="ch17term10"></a>
+<p class="docText">The fact that destructors are run leads to an important programming technique that makes programs more <b><a class="docLink" href="ch17lev1sec5.html#gloss17_10" >exception safe</a></b>. By exception safe, we mean that the programs operate correctly even if an exception occurs. In this case, the &quot;safety&quot; comes from ensuring that any resouce that is allocated is properly freed if an exception occurs.</p>
+<p class="docText">对析构函数的运行导致一个重要的编程技术的出现，它使程序更为<b><a class="docLink" href="ch17lev1sec5.html#gloss17_10" >异常安全的</a></b>。异常安全的意味着，即使发生异常，程序也能正确操作。在这种情况下，“安全”来自于保证“如果发生异常，被分配的任何资源都适当地释放”。</p>
+
+<p class="docText">We can guarantee that resources are properly freed by defining a class to encapsulate the acquisition and release of a resource. This technique is often referred to as &quot;resource allocation is initialization,&quot; often abreviated as RAII.</P>
+<p class="docText">通过定义一个类来封闭资源的分配和释放，可以保证正确释放资源。这一技术常称为“资源分配即初始化”，简称 RAII。</P>
+
+<p class="docText">The resource-managing class should be designed so that the constructor acquires the resource and the destructor frees it. When we want to allocate the resource, we define an object of that class type. If no exception occurs, then the resource will be freed when the object that acquired the resource goes out of scope. More importantly, if an exception occurs after the object is created but before it goes out of scope, then the compiler ensures that the object is destroyed as part of unwinding the scope in which the object was defined.</p>
+<p class="docText">应该设计资源管理类，以便　构造函数分配资源而析构函数释放资源。想要分配资源的时候，就定义该类类型的对象。如果不发生异常，就在获得资源的对象超出作用域的进修释放资源。更为重要的是，如果在创建了对象之后但在它超出作用域之前发生异常，那么，编译器保证撤销该对象，作为展开定义对象的作用域的一部分。</p>
+
+<p class="docText">The following class is a prototypical example in which the constructor acquires a resource and the destructor releases it:</p>
+<p class="docText">下面的类是一个原型例子，其中构造函数分配资源而析构函数释放资源：</p>
+
+<pre>
+    class Resource {
+    public:
+        Resource(parms p): r(allocate(p)) { }
+        ~Resource() { release(r); }
+        // <span class="docEmphItalicAlt">also need to define copy and assignment</span>
+    private:
+        resource_type *r;           // <span class="docEmphItalicAlt">resource managed by this type</span>
+        resource_type *allocate(parms p);     // <span class="docEmphItalicAlt">allocate this resource</span>
+        void release(resource_type*);         // <span class="docEmphItalicAlt">free this resource</span>
+    };
+</pre><br>
+
+<p class="docText">The <tt>Resource</tt> class is a type that allocates and deallocates a resource. It holds data member(s) that represent that resource. The constructor for <tt>Resource</tt> allocates the resource, and the destructor frees it. When we use this class</p>
+<p class="docText"><tt>Resource</tt> 类是分配资源和回收资源的类型，它保存表示该资源的数据成员。<tt>Resource</tt> 的构造函数分配资源，而析构函数释放它。当使用这个类的时候</p>
+
+<pre>
+    void fcn()
+    {
+       Resource res(args);   // <span class="docEmphItalicAlt">allocates</span> <span class="docEmphasis">resource_type</span>
+       // <span class="docEmphItalicAlt">code that might throw an exception</span>
+       // <span class="docEmphItalicAlt">if exception occurs, destructor for</span> <span class="docEmphasis">res</span> <span class="docEmphItalicAlt">is run automatically</span>
+       // ...
+    }  // <span class="docEmphasis">res</span> <span class="docEmphItalicAlt">goes out of scope and is destroyed automatically</span>
+</pre><BR>
+
+<p class="docText">the resource is automatically freed. If the function terminates normally, then the resource is freed when the <tt>Resource</tt> object goes out of scope. If the function is exited prematurely by an exception, the destructor for <tt>Resource</tt> is run by the compiler as part of the exception handling process.</p>
+<p class="docText">自动释放资源。如果函数正常终止，就在 <tt>Resource</tt> 对象超出作用域时释放资源；如果函数因异常而提早退出，编译器就运行 <tt>Resource</tt> 的析构函数作为异常处理过程的一部分。</p>
+
+<a name="ch17note10"></a>
+<div class="docNote"><p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" align="LEFT" width="116" height="74" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/bestpractices.jpg;400478" >
+			</td>
+			<td valign="top">
+				<p class="docText"> Programs in which exceptions are possible and that allocate resources should use classes to manage those resources. As described in this section, using classes to manage acquisition and deallocation ensures that resources are freed if an exception occurs.</p>
+				<p class="docText">可能存在异常的程序以及分配资源的程序应该使用类来管理那些资源。如本节所述，使用类管理分配和回收可以保证如果发生异常就释放资源。</p>
+			</td>
+		</tr>
+	</table><br>
+</p></div><br>
+
+<a name="ch17sb04"></a>
+<p>
+<table cellspacing="0" width="90%" border="1" cellpadding="5">
+	<tr>
+		<td>
+			<h2 class="docSidebarTitle">Exercises Section 17.1.8</H2>
+			<blockquote>
+				<p>
+				<table border="0" cellspacing="16" cellpadding="0">
+					<tr valign="top">
+						<a name="ch17qa4q1"></a>
+						<td align="right" class="docText" width="50">
+							<b>Exercise 17.6:</b>
+						</td>
+						<td>
+							<p class="docText">Given the following function, explain what happens when the exception occurs.</p>
+							<p class="docText">给定下面的函数，解释当发生异常时会发生什么。</p>
+<pre>
+     void exercise(int *b, int *e)
+     {
+         vector&lt;int&gt; v(b, e);
+         int *p = new int[v.size()];
+         ifstream in("ints");
+         // <span class="docEmphItalicAlt">exception occurs here</span>
+         // ...
+     }
+</pre><br>
+						</td>
+					</tr>
+					<tr valign="top">
+						<td align="right" class="docText" width="50">
+							<a name="ch17qa4q2"></a>
+							<B>Exercise 17.7:</b>
+						</td>
+						<td>
+							<p class="docText">There are two ways to make the previous code exception-safe. Describe them and implement them.</p>
+							<p class="docText">有两种方法可以使上面的代码是异常安全的，描述并实现它们。</p>
+						</td>
+					</tr>
+				</table></p>
+			</blockquote>
+		</td>
+	</tr>
+</table>
+</p><br>
+
+
+<a name="ch17lev2sec9"></a>
+<h4 class="docSection2Title">17.1.9. The <tt>auto_ptr</tt> Class</h4>
+<h4 class="docSection2Title">17.1.9. <tt>auto_ptr</tt> 类</h4>
+
+<a name="idd1e136371"></a><a name="idd1e136379"></a><a name="idd1e136385"></a>
+<a name="ch17term2"></a>
+<p class="docText">The standard-library <B><a class="docLink" href="ch17lev1sec5.html#gloss17_02" ><span class="docEmphStrong"><tt>auto_ptr</tt></span></a></b> class is an example of the exception-safe &quot;resource allocation is initialization&quot; technique described in the previous subsection. The <tt>auto_ptr</tt> class is a template that takes a single type parameter. It provides exception safety for dynamically allocated objects. The <tt>auto_ptr</tt> class is defined in the <tt>memory</tt> header.</p>
+<p class="docText">标准库的 <b><a class="docLink" href="ch17lev1sec5.html#gloss17_02" ><span class="docEmphStrong"><tt>auto_ptr</tt></span></a></b> 类是上一节中介绍的异常安全的“资源分配即初始化”技术的例子。<tt>auto_ptr</tt> 类是接受一个类型形参的模板，它为动态分配的对象提供异常安全。<tt>auto_ptr</tt> 类在头文件 <tt>memory</tt> 中定义。</p>
+
+<a name="ch17table01"></a>
+<p>
+<table cellspacing="0" class="allBorders" border="1" RULES="none" cellpadding="5">
+	<caption>
+		<H5 class="docTableTitle">Table 17.1. Class <tt>auto_ptr</tt></H5>
+		<H5 class="docTableTitle">表 17.1. <tt>auto_ptr</tt> 类</H5>
+	</caption>
+	<colgroup>
+		<col width="150">
+		<col width="350">
+	</colgroup>
+	<thead>
+	</thead>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">
+			<tt>auto_ptr&lt;T&gt; ap;</tt>
+			</p>
+		</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Create an unbound <tt>auto_ptr</tt> named <tt>ap</tt>.</P>
+			<p class="docText">创建名为 <tt>ap</tt> 的未绑定的 <tt>auto_ptr</tt> 对象</P>
+		</td>
+	</TR>
+	<TR>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>auto_ptr&lt;T&gt; ap(p);</tt></p>
+		</td>
+		<TD class="docTableCell" align="left" valign="top">
+			<p class="docText">Create an <tt>auto_ptr</tt> named <tt>ap</tt> that owns the object pointed to by the pointer <tt>p</tt>. This constructor is <tt>explicit</tt>.</P>
+			<p class="docText">创建名为 <tt>ap</tt> 的 <tt>auto_ptr</tt> 对象，<tt>ap</tt> 拥有指针 <tt>p</tt> 指向的对象。该构造函数为 <tt>explicit</tt></P>
+		</td>
+	</tr>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>auto_ptr&lt;T&gt; ap1(ap2);</tt></P>
+		</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Create an <tt>auto_ptr</tt> named <tt>ap1</tt> that holds the pointer originally stored in <tt>ap2</tt>. TRansfers ownership to <tt>ap1</tt>; <tt>ap2</tt> becomes an unbound <tt>auto_ptr</tt>.</p>
+			<p class="docText">创建名为 <tt>ap1</tt> 的 <tt>auto_ptr</tt> 对象，<tt>ap1</tt> 保存原来存储在 <tt>ap2</tt> 中的指针。将所有权转给 <tt>ap1</tt>，<tt>ap2</tt> 成为未绑定的 <tt>auto_ptr</tt> 对象</p>
+		</td>
+	</tr>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>ap1 = ap2</tt></p>
+		</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Transfers ownership from <tt>ap2</tt> to <tt>ap1</tt>. Deletes the object to which <tt>ap1</tt> points and makes <tt>ap1</tt> point to the object to which <tt>ap2</tt> points, making <tt>ap2</tt> unbound.</p>
+			<p class="docText">将所有权 <tt>ap2</tt> 转给 <tt>ap1</tt>。删除 <tt>ap1</tt> 指向的对象并且使 <tt>ap1</tt> 指向 <tt>ap2</tt> 指向的对象，使 <tt>ap2</tt> 成为未绑定的</p>
+		</td>
+	</tr>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>~ap</tt></p>
+		</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Destructor. Deletes the object to which <tt>ap</tt> points.</p>
+			<p class="docText">析构函数。删除 <tt>ap</tt> 指向的对象</p>
+		</td>
+	</tr>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>*ap</tt></p>
+		</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Returns a reference to the object to which <tt>ap</tt> is bound.</p>
+			<p class="docText">返回对 <tt>ap</tt> 所绑定的对象的引用</p>
+		</td>
+	</tr>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>ap-&gt;</tt></p>
+		</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Returns the pointer that <tt>ap</tt> holds.</p>
+			<p class="docText">返回 <tt>ap</tt> 保存的指针</p>
+		</td>
+	</tr>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>ap.reset(p)</tt></p>
+		</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">If the pointer <tt>p</tt> is not the same value as <tt>ap</tt> holds, then it deletes the object to which <tt>ap</tt> points and binds <tt>ap</tt> to <tt>p</tt>.</p>
+			<p class="docText">如果 <tt>p</tt> 与 <tt>ap</tt> 的值不同，则删除 <tt>ap</tt> 指向的对象并且将 <tt>ap</tt> 绑定到 <tt>p</tt></p>
+		</td>
+	</tr>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>ap.release()</tt></p>
+		</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Returns the pointer that <tt>ap</tt> had held and makes <tt>ap</tt> unbound.</p>
+			<p class="docText">返回 <tt>ap</tt> 所保存的指针并且使 <tt>ap</tt> 成为未绑定的</p>
+		</td>
+	</tr>
+	<tr>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText"><tt>ap.get()</tt></p>
+		</td>
+		<td class="docTableCell" align="left" valign="top">
+			<p class="docText">Returns the pointer that <tt>ap</tt> holds.</p>
+			<p class="docText">返回 <tt>ap</tt> 保存的指针</p>
+		</td>
+	</tr>
+</table>
+</p>
+<br>
+
+
+<a name="ch17note11"></a>
+<div class="docNote">
+	<p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" align="LEFT" width="57" height="96" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" >
+			</td>
+			<td valign="top">
+				<p class="docText"> <tt>auto_ptr</tt> can be used only to manage single objects returned from <tt>new</tt>. It does not manage dynamically allocated arrays.</p>
+				<p class="docText"><tt>auto_ptr</tt> 只能用于管理从 <tt>new</tt> 返回的一个对象，它不能管理动态分配的数组。</p>
+			</td>
+		</tr>
+	</table><br>
+</div><br>
+
+<p class="docText">As we'll see, <tt>auto_ptr</tt> has unusual behavior when copied or assigned. As a result, <tt>auto_ptrs</tt> may not be stored in the library container types.</p>
+<p class="docText">正如我们所见，当 <tt>auto_ptr</tt> 被复制或赋值的时候，有不寻常的行为，因此，不能将 <tt>auto_ptrs</tt> 存储在标准库容器类型中。</p>
+
+
+<p class="docText">An <tt>auto_ptr</tt> may hold only a pointer to an object and may not be used to point to a dynamically allocated array. Using an <tt>auto_ptr</tt> to point to a dynamically allocated array results in undefined run-time behavior.</p>
+<p class="docText"><tt>auto_ptr</tt> 对象只能保存一个指向对象的指针，并且不能用于指向动态分配的数组，使用 <tt>auto_ptr</tt> 对象指向动态分配的数组会导致未定义的运行时行为。</p>
+
+<p class="docText">Each <tt>auto_ptr</tt> is either unbound or it points to an object. When an <tt>auto_ptr</tt> points to an object, it can be said to &quot;own&quot; that object. When the <tt>auto_ptr</tt> goes out of scope or is otherwise destroyed, then the dynamically allocated object to which the <tt>auto_ptr</tt> points is automatically deallocated.</p>
+<p class="docText">每个 <tt>auto_ptr</tt> 对象绑定到一个对象或者指向一个对象。当 <tt>auto_ptr</tt> 对象指向一个对象的时候，可以说它“拥有”该对象。当 <tt>auto_ptr</tt> 对象超出作用域或者另外撤销的时候，就自动回收 <tt>auto_ptr</tt> 所指向的动态分配对象。</p>
+
+<a name="ch17lev3sec14"></a>
+
+<h5 class="docSection3Title">Using <tt>auto_ptr</tt> for Exception-Safe Memory Allocation</h5>
+<h5 class="docSection3Title">为异常安全的内存分配使用 <tt>auto_ptr</tt></h5>
+
+<p class="docText">If memory is acquired through a normal pointer and an exception occurs before a <tt>delete</tt> is executed, then that memory won't be freed automatically:</p>
+<p class="docText">如果通过常规指针分配内在，而且在执行 <tt>delete</tt> 之前发生异常，就不会自动释放该内存：</p>
+
+<pre>
+     void f()
+     {
+        int *ip = new int(42);     // <span class="docEmphItalicAlt">dynamically allocate a new object</span>
+        // <span class="docEmphItalicAlt">code that throws an exception that is not caught inside</span> <span class="docEmphasis">f</span>
+        delete ip;                 // <span class="docEmphItalicAlt">return the memory before exiting</span>
+     }
+</pre><BR>
+
+<p class="docText">If an exception happens between the <tt>new</tt> and the <tt>delete</tt>, and if that exception is not caught locally, then the <tt>delete</tt> will not be executed. The memory will never be returned.</P>
+<p class="docText">如果在 <tt>new</tt> 和 <tt>delete</tt> 之间发生异常，并且该异常不被局部捕获，就不会执行 <tt>delete</tt>，则永不回收该内存。</P>
+
+<p class="docText">If we use an <tt>auto_ptr</tt> instead, the memory will be freed automatically, even if the block is exited prematurely:</p>
+<p class="docText">如果使用一个 <tt>auto_ptr</tt> 对象来代替，将会自动释放内存，即使提早退出这个块也是这样：</p>
+
+<pre>
+     void f()
+     {
+        auto_ptr&lt;int&gt; ap(new int(42)); // <span class="docEmphItalicAlt">allocate a new object</span>
+        // <span class="docEmphItalicAlt">code that throws an exception that is not caught inside</span> <span class="docEmphasis">f</span>
+     }
+              // <span class="docEmphasis">auto_ptr</span> <span class="docEmphItalicAlt">freed automatically when function ends</span>
+</pre><BR>
+
+<p class="docText">In this case, the compiler ensures that the destructor for <tt>ap</tt> is run before the stack is unwound past <tt>f</tt>.</p>
+<p class="docText">在这个例子中，编译器保证在展开栈越过 <tt>f</tt> 之前运行 <tt>ap</tt> 的析构函数。</p>
+
+
+<a name="ch17lev3sec15"></a>
+<h5 class="docSection3Title"><tt>auto_ptr</tt> Is a Template and Can Hold Pointers of Any Type</h5>
+<h5 class="docSection3Title"><tt>auto_ptr</tt> 是可以保存任何类型指针的模板</h5>
+
+<a name="idd1e136770"></a><a name="idd1e136777"></a>
+<p class="docText">The <tt>auto_ptr</tt> class is a template taking a single type parameter. That type names the type of the object to which the <tt>auto_ptr</tt> may be bound. Thus, we can create <tt>auto_ptrs</tt> of any type:</p>
+<p class="docText"><tt>auto_ptr</tt> 类是接受单个类型形参的模板，该类型指定 <tt>auto_ptr</tt> 可以绑定的对象的类型，因此，可以创建任何类型的 <tt>auto_ptrs</tt>：</p>
+
+<pre>
+    auto_ptr&lt;string&gt; ap1(new string("Brontosaurus"));
+</pre><br>
+
+<a name="ch17lev3sec16"></a>
+<h5 class="docSection3Title">Binding an <tt>auto_ptr</tt> to a Pointer</H5>
+<h5 class="docSection3Title">将 <tt>auto_ptr</tt> 绑定到指针</H5>
+
+<p class="docText">In the most common case, we initialize an <tt>auto_ptr</tt> to the address of an object returned by a <tt>new</tt> expression:</P>
+<p class="docText">在最常见的情况下，将 <tt>auto_ptr</tt> 对象初始化为由 <tt>new</tt> 表达式返回的对象的地址：</P>
+
+<pre>
+    auto_ptr&lt;int&gt; pi(new int(1024));
+</pre><br>
+
+<p class="docText">This statement initializes <tt>pi</tt> to the address of the object created by the <tt>new</tt> expression. This <tt>new</tt> expression initializes that <tt>int</tt> to the value 1,024.</P>
+<p class="docText">这个语句将 <tt>pi</tt> 初始化为由 <tt>new</tt> 表达式创建的对象的地址，这个 <tt>new</tt> 表达式将对象初始化为 1024。</P>
+
+<p class="docText">The constructor that takes a pointer is an <tt>explicit</tt> (<a class="docLink" href="ch12lev1sec4.html#ch12lev2sec23" >Section 12.4.4</a>, p. <a class="docLink" href="ch12lev1sec4.html#ch12lev2sec23" >462</a>) constructor, so we must use the direct form of initialization to create an <tt>auto_ptr:</tt></p>
+<p class="docText">接受指针的构造函数为 <tt>explicit</tt>（<a class="docLink" href="ch12lev1sec4.html#ch12lev2sec23" >第 12.4.4 节</a>）构造函数，所以必须使用初始化的直接形式来创建 <tt>auto_ptr</tt> 对象：</p>
+
+<pre>
+    // <span class="docEmphItalicAlt">error: constructor that takes a pointer is explicit and can't be used implicitly</span>
+    auto_ptr&lt;int&gt; pi = new int(1024);
+    auto_ptr&lt;int&gt; pi(new int(1024)); // <span class="docEmphItalicAlt">ok: uses direct initialization</span>
+</pre><br>
+
+<a name="idd1e136893"></a><a name="idd1e136902"></a><a name="idd1e136909"></a>
+<p class="docText">The object created by the <tt>new</tt> expression to which <tt>pi</tt> refers is deleted automatically when <tt>pi</tt> goes out of scope. If <tt>pi</tt> is a local object, the object to which <tt>pi</tt> refers is deleted at the end of the block in which <tt>pi</tt> is defined. If an exception occurs, then <tt>pi</tt> also goes out of scope. The destructor for <tt>pi</tt> will be run automatically as part of handling the exception. If <tt>pi</tt> is a global object, the object to which <tt>pi</tt> refers is deleted at the end of the program.</P>
+<p class="docText"><tt>pi</tt> 所指的由 <tt>new</tt> 表达式创建的对象在超出作用域时自动删除。如果 <tt>pi</tt> 是局部对象，<tt>pi</tt>　所指对象在定义 <tt>pi</tt> 的块的末尾删除；如果发生异常，则 <tt>pi</tt> 也超出作用域，析构函数将自动运行 <tt>pi</tt> 的析构函数作为异常处理的一部分；如果 <tt>pi</tt> 是全局对象，就在程序末尾删除 <tt>pi</tt> 引用的对象。</P>
+
+<a name="ch17lev3sec17"></a>
+<H5 class="docSection3Title">Using an <tt>auto_ptr</tt></h5>
+<H5 class="docSection3Title">使用 <tt>auto_ptr</tt> 对象</h5>
+
+<p class="docText">Suppose we wish to access a <tt>string</tt> operation. With an ordinary <tt>string</tt> pointer, we'd do the following:</p>
+<p class="docText">假设希望访问 <tt>string</tt> 操作。用普通 <tt>string</tt> 指针，像下面这样做：</p>
+
+<pre>
+    string *pstr_type = new string("Brontosaurus");
+    if (pstr_type-&gt;empty())
+        // <span class="docEmphItalicAlt">oops, something wrong</span>
+</pre><br>
+
+<p class="docText">The <tt>auto_ptr</tt> class defines overloaded versions of the dereference (<tt>*</tt>) and arrow (<tt>-&gt;</tt>) operators (<a class="docLink" href="ch14lev1sec6.html#ch14lev1sec6" >Section 14.6</a>, p. <a class="docLink" href="ch14lev1sec6.html#ch14lev1sec6" >523</a>). Because <tt>auto_ptr</tt> defines these operators, we can use an <tt>auto_ptr</tt> in some ways that are similar to using a built-in pointer:</p>
+<p class="docText"><tt>auto_ptr</tt> 类定义了解引用操作符（<tt>*</tt>）和箭头操作符（<tt>-&gt;</tt>）的重载版本（<a class="docLink" href="ch14lev1sec6.html#ch14lev1sec6" >第 14.6 节</a>），因为 <tt>auto_ptr</tt> 定义了这些操作符，所以可以用类似于使用内置指针的方式使用 <tt>auto_ptr</tt> 对象：</p>
+
+<pre>
+     // <span class="docEmphItalicAlt">normal pointer operations for dereference and arrow</span>
+     *ap1 = "TRex";       // <span class="docEmphItalicAlt">assigns a new value to the object to which</span> <span class="docEmphasis">ap1</span> <span class="docEmphasis">points</span>
+     string s = *ap1;     // <span class="docEmphItalicAlt">initializes s as a copy of the object to which</span> <span class="docEmphasis">ap1</span> <span class="docEmphItalicAlt">points</span>
+     if (ap1-&gt;empty())    // <span class="docEmphItalicAlt">runs</span> <span class="docEmphasis">empty</span> <span class="docEmphItalicAlt">on the</span> <span class="docEmphasis">string</span> <span class="docEmphItalicAlt">to which</span> <span class="docEmphasis">ap1</span> <span class="docEmphItalicAlt">points</span>
+</pre><br>
+
+<p class="docText">The primary purpose of <tt>auto_ptr</tt> is to support ordinary pointerlike behavior while ensuring that the object to which an <tt>auto_ptr</tt> object refers is automatically deleted. As we'll see, the fact that objects are automatically deleted leads to significant differences between <tt>auto_ptrs</tt> and ordinary pointers with respect to how we copy and access their address value.</P>
+<p class="docText"><tt>auto_ptr</tt> 的主要目的，在保证自动删除 <tt>auto_ptr</tt> 对象引用的对象的同时，支持普通指针式行为。正如我们所见，自动删除该对象这一事实导致在怎样复制和访问它们的地址值方面，<tt>auto_ptrs</tt> 与普通指针明显不同。</P>
+
+<a name="ch17lev3sec18"></a>
+<h5 class="docSection3Title">Copy and Assignment on <tt>auto_ptr</tt> Are Destructive Operations</H5>
+<h5 class="docSection3Title"><tt>auto_ptr</tt> 对象的复制和赋值是破坏性操作</H5>
+
+<a name="ch17note12"></a>
+<div class="docNote">
+	<P>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" align="LEFT" width="50" height="54" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+			<td valign="top">
+				<p class="docText"> There is a crucially important difference between how <tt>auto_ptr</tt> and built-in pointers treat copy and assignment. When we copy an <tt>auto_ptr</tt> or assign its value to another <tt>auto_ptr</tt>, ownership of the underlying object is transferred from the original to the copy. The original <tt>auto_ptr</tt> is reset to an unbound state.</p>
+				<p class="docText"><tt>auto_ptr</tt> 和内置指针对待复制和赋值有非常关键的重要区别。当复制 <tt>auto_ptr</tt> 对象或者将它的值赋给其他 <tt>auto_ptr</tt> 对象的时候，将基础对象的所有权从原来的 <tt>auto_ptr</tt> 对象转给副本，原来的 <tt>auto_ptr</tt> 对象重置为未绑定状态。</p>
+			</td>
+		</tr>
+	</table><br>
+	</p>
+</div>
+<br>
+
+<p class="docText">Copying (or assigning) ordinary pointers copies (assigns) the address. After the copy (assignment), both pointers point to the same object. After copying (or assigning) <tt>auto_ptrs</tt>, the original points to no object and the new <tt>auto_ptr</tt> (left-hand <tt>auto_ptr)</tt> owns the underlying object:</p>
+<p class="docText">复制（或者赋值）普通指针是复制（或者赋值）地址，在复制（或者赋值）之后，两个指针指向同一对象。在复制（或者赋值）<tt>auto_ptrs</tt> 对象之后，原来的 <tt>auto_ptr</tt> 对象不指向对象而新的 <tt>auto_ptr</tt>（左边的 <tt>auto_ptr</tt> 对象）拥有基础对象：</p>
+
+<pre>
+     auto_ptr&lt;string&gt; ap1(new string("Stegosaurus"));
+     // <span class="docEmphItalicAlt">after the copy</span> <span class="docEmphasis">ap1</span> <span class="docEmphItalicAlt">is unbound</span>
+     auto_ptr&lt;string&gt; ap2(ap1);  // <span class="docEmphItalicAlt">ownership transferred from</span> <span class="docEmphasis">ap1</span> <span class="docEmphItalicAlt">to</span> <span class="docEmphasis">ap2</span>
+</pre><br>
+
+<p class="docText">When we copy or assign an <tt>auto_ptr</tt>, the right-hand <tt>auto_ptr</tt> relinquishes all responsibility for the underlying object and is reset to be an unbound <tt>auto_ptr</tt>. In our example, it is <tt>ap2</tt> that deletes the <tt>string</tt> object, and not <tt>ap1</tt>. After the copy, <tt>ap1</tt> no longer refers to any object.</P>
+<p class="docText">当复制 <tt>auto_ptr</tt> 对象或者对 <tt>auto_ptr</tt> 对象赋值的时候，右边的 <tt>auto_ptr</tt> 对象让出对基础对象的所有职责并重置为未绑定的 <tt>auto_ptr</tt> 对象之后，在上例中，删除 <tt>string</tt> 对象的是 <tt>ap2</tt> 而不是 <tt>ap1</tt>，在复制之后，<tt>ap1</tt> 不再指向任何对象。</P>
+
+<a name="idd1e137131"></a><a name="idd1e137138"></a><a name="idd1e137147"></a><a name="idd1e137154"></a>
+<p class="docText">Unlike other copy or assignment operations, <tt>auto_ptr</tt> copy and assignment change the right-hand operand. As a result, both the left- and right-hand operands to assignment must be modifiable lvalues.</p>
+<p class="docText">与其他复制或赋值操作不同，<tt>auto_ptr</tt> 的复制和赋值改变右操作数，因此，赋值的左右操作数必须都是可修改的左值。</p>
+
+<a name="ch17lev3sec19"></a>
+<h5 class="docSection3Title">Assignment Deletes the Object Pointed To by the Left Operand</H5>
+<h5 class="docSection3Title">赋值删除左操作数指向的对象</H5>
+
+<p class="docText">In addition to transferring ownership from the right-hand to the left-hand operand, assignment also deletes the object to which the left-hand operand originally referredprovided that the two objects are different. As usual, self-assignment has no effect.</p>
+<p class="docText">除了将所有权从右操作数转给左操作数之外，赋值还删除左操作数原来指向的对象——假如两个对象不同。通常自身赋值没有效果。</p>
+
+<pre>
+     auto_ptr&lt;string&gt; ap3(new string("Pterodactyl"));
+     // <span class="docEmphItalicAlt">object pointed to by</span> <span class="docEmphasis">ap3</span> <span class="docEmphItalicAlt">is deleted and ownership transferred from</span> <span class="docEmphasis">ap2</span> <span class="docEmphItalicAlt">to</span> <span class="docEmphasis">ap3;</span>
+     ap3 = ap2;  // <span class="docEmphItalicAlt">after the assignment,</span> <span class="docEmphasis">ap2</span> <span class="docEmphItalicAlt">is unbound</span>
+</pre><BR>
+
+<p class="docText">After the assignment of <tt>ap2</tt> to <tt>ap3</tt>,</p>
+<p class="docText">将 <tt>ap2</tt> 赋给 <tt>ap3</tt> 之后：</p>
+
+<ul>
+	<li>
+	<p class="docList">the object to which <tt>ap3</tt> had pointed is deleted;</p>
+	<p class="docList">删除了 <tt>ap3</tt> 指向的对象。</p>
+	</li>
+	<li>
+	<p class="docList"><tt>ap3</tt> is set to point to the object to which <tt>ap2</tt> pointed; and</p>
+	<p class="docList">将 <tt>ap3</tt> 置为指向 <tt>ap2</tt> 所指的对象。</p>
+	</li>
+	<li>
+	<p class="docList"><tt>ap2</tt> is an unbound <tt>auto_ptr</tt>.</p>
+	<p class="docList"><tt>ap2</tt> 是未绑定的 <tt>auto_ptr</tt> 对象。</p>
+	</li>
+</ul>
+
+<a name="ch17note13"></a>
+<div class="docNote"><p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" align="LEFT" width="57" height="96" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" >
+			</td>
+			<td valign="top">
+				<p class="docText"> Because copy and assignment are destructive operations, <tt>auto_ptrs</tt> <span class="docEmphasis">cannot</span> be stored in the standard containers. The library container classes require that two objects be equal after a copy or assignment. This requirement is not met by <tt>auto_ptr</tt>. If we assign <tt>ap2</tt> to <tt>ap1</tt>, then after the assignment <tt>ap1 != ap2</tt>. Similarly for copy.</p>
+				<p class="docText">因为复制和赋值是破坏性操作，所以<tt>auto_ptrs</tt>不能<span class="docEmphasis"></span>将 <tt>auto_ptr</tt> 对象存储在标准容器中。标准库的容器类要求在复制或赋值之后两个对象相等，<tt>auto_ptr</tt> 不满足这一要求，如果将 <tt>ap2</tt> 赋给 <tt>ap1</tt>，则在赋值之后 <tt>ap1 != ap2</tt>，复制也类似。</p>
+			</td>
+		</tr>
+	</table><br>
+	</p>
+</div>
+<br>
+
+<a name="ch17lev3sec20"></a>
+<h5 class="docSection3Title">The Default <tt>auto_ptr</tt> Constructor</h5>
+<h5 class="docSection3Title"><tt>auto_ptr</tt> 的默认构造函数</h5>
+
+<p class="docText">If no initializer is given, the <tt>auto_ptr</tt> is <span class="docEmphasis">unbound</span>; it doesn'trefertoanobject:</p>
+<p class="docText">如果不给定初始式，<tt>auto_ptr</tt> 对象是<span class="docEmphasis">未绑定</span>的，它不指向对象：</p>
+
+<pre>
+     auto_ptr&lt;int&gt; p_auto;  // <span class="docEmphasis">p_auto</span><span class="docEmphItalicAlt">doesn't refer to any object</span>
+</pre><BR>
+
+<p class="docText">By default, the internal pointer value of an <tt>auto_ptr</tt> is set to 0. Dereferencing an unbound <tt>auto_ptr</tt> has the same effect as dereferencing an unbound pointerthe program is in error and what happens is undefined:</p>
+<p class="docText">默认情况下，<tt>auto_ptr</tt> 的内部指针值置为 0。对未绑定的 <tt>auto_ptr</tt> 对象解引用，其效果与对未绑定的指针解引用相同——程序出错并且没有定义会发生什么：</p>
+
+<pre>
+    *p_auto = 1024;  // <span class="docEmphItalicAlt">error: dereference</span> <span class="docEmphasis">auto_ptr</span> <span class="docEmphItalicAlt">that doesn't point to an object</span>
+</pre><BR>
+
+<a name="ch17lev3sec21"></a>
+<H5 class="docSection3Title">Testing an <tt>auto_ptr</tt></h5>
+<H5 class="docSection3Title">测试 <tt>auto_ptr</tt> 对象</h5>
+
+<p class="docText">To check whether a pointer is unbound, we can test the pointer directly in a condition, which has the effect of determining whether the pointer is 0. In contrast, we cannot test an <tt>auto_ptr</tt> directly.</p>
+<p class="docText">为了检查指针是否未绑定，可以在条件中直接测试指针，效果是确定指针是否为 0。相反，不能直接测试 <tt>auto_ptr</tt> 对象：</p>
+
+<pre>
+    // <span class="docEmphItalicAlt">error: cannot use an</span> <span class="docEmphasis">auto_ptr</span> <span class="docEmphItalicAlt">as a condition</span>
+    if (p_auto)
+        *p_auto = 1024;
+</pre><br>
+
+<a name="idd1e137357"></a><a name="idd1e137366"></a>
+<p class="docText">The <tt>auto_ptr</tt> type does not define a conversion to a type that can be used as a condition. Instead, to test the <tt>auto_ptr</tt>, we must use its <tt>get</tt> member, which returns the underlying pointer contained in the <tt>auto_ptr:</tt></P>
+<p class="docText"><tt>auto_ptr</tt> 类型没有定义到可用作条件的类型的转换，相反，要测试 <tt>auto_ptr</tt> 对象，必须使用它的 <tt>get</tt> 成员，该成员返回包含在 <tt>auto_ptr</tt> 对象中的基础指针：</P>
+
+<pre>
+    // <span class="docEmphItalicAlt">revised test to guarantee</span> <span class="docEmphasis">p_auto</span> <span class="docEmphItalicAlt">refers to an object</span>
+    if (p_auto.get())
+        *p_auto = 1024;
+</pre><BR>
+
+<p class="docText">To determine whether the <tt>auto_ptr</tt> object refers to an object, we can compare the return from <tt>get</tt> with 0.</p>
+<p class="docText">为了确定 <tt>auto_ptr</tt> 是否指向一个对象，可以将 <tt>get</tt> 的返回值与 0 比较。</p>
+
+<a name="ch17note14"></a>
+<div class="docNote"><p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" align="LEFT" width="57" height="96" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" >
+			</td>
+			<td valign="top">
+				<p class="docText"> <tt>get</tt> should be used only to interrogate an <tt>auto_ptr</tt> or to use the returned pointer value. <tt>get</tt> should not be used as an argument to create another <tt>auto_ptr</tt>.</p>
+				<p class="docText">应该只用 <tt>get</tt> 询问 <tt>auto_ptr</tt> 对象或者使用返回的指针值，不能用 <tt>get</tt> 作为创建其他 <tt>auto_ptr</tt> 对象的实参。</p>
+			</td>
+		</tr>
+	</table><br>
+</p></div><br>
+
+<p class="docText">Using <tt>get</tt> member to initialize another <tt>auto_ptr</tt> violates the class design principle that only one <tt>auto_ptr</tt> holds a given pointer at any one time. If two <tt>auto_ptrs</tt> hold the same pointer, then the pointer will be <tt>delete</tt>d twice.</P>
+<p class="docText">使用 <tt>get</tt> 成员初始化其他 <tt>auto_ptr</tt> 对象违反 <tt>auto_ptr</tt> 类设计原则：在任意时刻只有一个 <tt>auto_ptrs</tt> 对象保存给定指针，如果两个 <tt>auto_ptrs</tt> 对象保存相同的指针，该指针就会被 <tt>delete</tt> 两次。</P>
+
+<a name="ch17lev3sec22"></a>
+<h5 class="docSection3Title">The <tt>reset</tt> Operation</h5>
+<h5 class="docSection3Title"><tt>reset</tt> 操作</h5>
+
+<p class="docText">Another difference between <tt>auto_ptr</tt> and a built-in pointer is that we cannot assign an address (or other pointer) directly to an <tt>auto_ptr:</tt></p>
+<p class="docText"><tt>auto_ptr</tt> 对象与内置指针的另一个区别是，不能直接将一个地址（或者其他指针）赋给 <tt>auto_ptr</tt> 对象：</p>
+
+<pre>
+     p_auto = new int(1024); // <span class="docEmphItalicAlt">error: cannot assign a pointer to an</span> <span class="docEmphasis">auto_ptr</span>
+</pre><br>
+
+<p class="docText">Instead, we must call <tt>reset</tt> to change the pointer:</p>
+<p class="docText">相反，必须调用 <tt>reset</tt> 函数来改变指针：</p>
+
+<pre>
+     // <span class="docEmphItalicAlt">revised test to guarantee</span> <span class="docEmphasis">p_auto</span> <span class="docEmphItalicAlt">refers to an object</span>
+     if (p_auto.get())
+         *p_auto = 1024;
+     else
+         // <span class="docEmphItalicAlt">reset</span> <span class="docEmphasis">p_auto</span> <span class="docEmphItalicAlt">to a new object</span>
+         p_auto.reset(new int(1024));
+</pre><br>
+
+<p class="docText">To unset the <tt>auto_ptr</tt> object, we could pass 0 to <tt>reset</tt>.</p>
+<p class="docText">要复位 <tt>auto_ptr</tt> 对象，可以将 0 传给 <tt>reset</tt> 函数。</p>
+
+<a name="ch17note15"></a>
+<div class="docNote">
+	<p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" align="LEFT" width="57" height="96" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" >
+			</td>
+			<td valign="top">
+				<p class="docText"> Calling <tt>reset</tt> on an <tt>auto_ptr</tt> deletes the object (if any) to which the <tt>auto_ptr</tt> refers before binding the <tt>auto_ptr</tt> to another object. However, just as self-assignment has no effect, if we call <tt>reset</tt> on the same pointer that the <tt>auto_ptr</tt> already holds, then there is no effect; the object is not deleted.</p>
+				<p class="docText">调用 <tt>auto_ptr</tt> 对象的 <tt>reset</tt> 函数时，在将 <tt>auto_ptr</tt> 对象绑定到其他对象之前，会删除 <tt>auto_ptr</tt> 对象所指向的对象（如果存在）。但是，正如自身赋值是没有效果的一样，如果调用该 <tt>auto_ptr</tt> 对象已经保存的同一指针的 <tt>reset</tt> 函数，也没有效果，不会删除对象。</p>
+			</td>
+		</tr>
+	</table><br>
+	</p>
+</div><br>
+
+<a name="ch17sb06"></a>
+<p>
+<table cellspacing="0" width="90%" border="1" cellpadding="5">
+	<tr>
+		<td>
+			<H2 class="docSidebarTitle">Exercises Section 17.1.9</h2>
+			<blockquote>
+				<p>
+				<table border="0" cellspacing="16" cellpadding="0">
+					<tr valign="top">
+						<td align="right" class="docText" width="50">
+							<a name="ch17qa5q1"></a>
+							<b>Exercise 17.8:</b>
+						</td>
+						<td>
+							<p class="docText">Which of the following <tt>auto_ptr</tt> declarations are illegal or likely to result in subsequent program error? Explain what the problem is with each one.</p>
+							<p class="docText">下面 <tt>auto_ptr</tt> 声明中，哪些是不合法的或者可能导致随后的程序错误？解释每个声明的问题。</p>
+<pre>
+     int ix = 1024, *pi = &amp;ix, *pi2 = new int(2048);
+     typedef auto_ptr&lt;int&gt; IntP;
+     (a) IntP p0(ix);               (b) IntP p1(pi);
+     (c) IntP p2(pi2);              (d) IntP p3(&amp;ix);
+     (e) IntP p4(new int(2048));    (f) IntP p5(p2.get());
+</pre><br>
+						</td>
+					</tr>
+					<tr valign="top">
+						<td align="right" class="docText" width="50">
+							<a name="ch17qa5q2"></a>
+							<B>Exercise 17.9:</b>
+						</TD>
+						<td>
+							<p class="docText">Assuming <tt>ps</tt> is a pointer to <tt>string</tt>, what is the difference, if any, between the following two invocations of <tt>assign</tt> (<a class="docLink" href="ch09lev1sec6.html#ch09lev2sec19" >Section 9.6.2</a>, p. <a class="docLink" href="ch09lev1sec6.html#ch09lev2sec19" >339</a>)? Which do you think is preferable? Why?</P>
+							<p class="docText">假定 <tt>ps</tt> 是一个指向 <tt>string</tt> 的指针，如果有的话，下面两个 <tt>assign</tt>（<a class="docLink" href="ch09lev1sec6.html#ch09lev2sec19" >第 9.6.2 节</a>）调用有什么不同？你认为哪个更好，为什么？</P>
+
+<pre>
+     (a) ps.get()-&gt;assign("Danny");  (b) ps-&gt;assign("Danny");
+</pre><br>
+						</td>
+					</tr>
+				</table>
+				</p>
+			</blockquote>
+		</td>
+	</tr>
+</table>
+</p>
+<br>
+
+
+
+
+<a name="ch17lev2sec10"></a>
+<h4 class="docSection2Title">17.1.10. Exception Specifications</H4>
+<h4 class="docSection2Title">17.1.10. 异常说明</H4>
+
+<a name="ch17term11"></a>
+<p class="docText">When looking at an ordinary function declaration, it is not possible to determine what exceptions the function might throw. However, it can be useful to know whether and which exceptions a function might throw in order to write appropriate <tt>catch</tt> clauses. An <B><a class="docLink" href="ch17lev1sec5.html#gloss17_11" >exception specification</a></b> specifies that if the function throws an exception, the exception it throws will be one of the exceptions included in the specification, or it will be a type derived from one of the listed exceptions.</p>
+<p class="docText">查看普通函数声明的时候，不可能确定该函数会抛出什么异常，但是，为了编写适当的 <tt>catch</tt> 子句，了解函数是否抛出异常以及会抛出哪种异常是很有用的。<B><a class="docLink" href="ch17lev1sec5.html#gloss17_11" >异常说明</a></b>指定，如果函数抛出异常，被抛出的异常将是包含在该说明中的一种，或者是从列出的异常中派生的类型。</p>
+
+<a name="ch17sb05"></a>
+<p>
+<table cellspacing="0" width="90%" border="1" cellpadding="5">
+	<tr>
+		<td>
+			<h2 class="docSidebarTitle">Caution: <tt>Auto_ptr</tt> Pitfalls</H2>
+			<h2 class="docSidebarTitle">警告：<tt>Auto_ptr</tt> 缺陷</H2>
+
+			<a name="idd1e137566"></a>
+			<p class="docText"><span class="docEmphStrong">The <tt>auto_ptr</tt> class template provides a measure of safety and convenience for handling dynamically allocated memory. To use <tt>auto_ptr</tt> correctly, we must adhere to the restrictions that the class imposes:</span></p>
+			<p class="docText"><span class="docEmphStrong"><tt>auto_ptr</tt> 炻模板为处理动态分配的内存提供了安全性和便利性的尺度。要正确地使用 <tt>auto_ptr</tt> 类，必须坚持该类强加的下列限制：</span></p>
+
+			<div style="font-weight:bold">
+				<ol class="docList" type="1">
+					<LI>
+					<div style="font-weight:normal">
+						<p class="docList"><span class="docEmphStrong">Do not use an <tt>auto_ptr</tt> to hold a pointer to a statically allocated object. Otherwise, when the <tt>auto_ptr</tt> itself is destroyed, it will attempt to delete a pointer to a nondynamically allocated object, resulting in undefined behavior.</span></P>
+						<p class="docList"><span class="docEmphStrong">不要使用 <tt>auto_ptr</tt> 对象保存指向静态分配对象的指针，否则，当 <tt>auto_ptr</tt> 对象本身被撤销的时候，它将试图删除指向非动态分配对象的指针，导致未定义的行为。</span></P>
+					</div>
+					</li>
+					<li>
+					<div style="font-weight:normal">
+						<p class="docList"><span class="docEmphStrong">Never use two <tt>auto_ptrs</tt> to refer to the same object. One obvious way to make this mistake is to use the same pointer to initialize or to <tt>reset</tt> two different <tt>auto_ptr</tt> objects. A more subtle way to make this mistake would be to use the result from <tt>get</tt> on one <tt>auto_ptr</tt> to initialize or <tt>reset</tt> another.</span></p>
+						<p class="docList"><span class="docEmphStrong">永远不要使用两个 <tt>auto_ptrs</tt> 对象指向同一对象，导致这个错误的一种明显方式是，使用同一指针来初始化或者 <tt>reset</tt> 两个不同的 <tt>auto_ptr</tt> 对象。另一种导致这个错误的微妙方式可能是，使用一个 <tt>auto_ptr</tt> 对象的 <tt>get</tt> 函数的结果来初始化或者 <tt>reset</tt> 另一个 <tt>auto_ptr</tt> 对象。</span></p>
+					</div>
+					</li>
+					<LI>
+					<div style="font-weight:normal">
+						<p class="docList"><span class="docEmphStrong">Do not use an <tt>auto_ptr</tt> to hold a pointer to a dynamically allocated array. When the <tt>auto_ptr</tt> is destroyed, it frees only a single objectit uses the plain <tt>delete</tt> operator, not the array <tt>delete []</tt> operator.</span></p>
+						<p class="docList"><span class="docEmphStrong">不要使用 <tt>auto_ptr</tt> 对象保存指向动态分配数组的指针。当 <tt>auto_ptr</tt> 对象被删除的时候，它只释放一个对象——它使用普通 <tt>delete</tt> 操作符，而不用数组的 <tt>delete []</tt> 操作符。</span></p>
+					</div>
+					</li>
+					<li>
+					<div style="font-weight:normal">
+						<p class="docList"><span class="docEmphStrong">Do not store an <tt>auto_ptr</tt> in a container. Containers require that the types they hold define copy and assignment to behave similarly to how those operations behave on the built-in types: After the copy (or assignment), the two objects must have the same value. <tt>auto_ptr</tt> does not meet this requirement.</span></p>
+						<p class="docList"><span class="docEmphStrong">不要将 <tt>auto_ptr</tt> 对象存储在容器中。容器要求所保存的类型定义复制和赋值操作符，使它们表现得类似于内置类型的操作符：在复制（或者赋值）之后，两个对象必须具有相同值，<tt>auto_ptr</tt> 类不满足这个要求。</span></p>
+					</div>
+					</li>
+				</ol>
+			</div>
+		</td>
+	</tr>
+</table>
+</p>
+<br>
+
+
+<a name="ch17lev3sec23"></a>
+<h5 class="docSection3Title">Defining an Exception Specification</H5>
+<h5 class="docSection3Title">定义异常说明</H5>
+
+<p class="docText">An exception specification follows the function parameter list. An exception specification is the keyword <tt>throw</tt> followed by a (possibly empty) list of exception types enclosed in parentheses:</P>
+<p class="docText">异常说明跟在函数形参表之后。一个异常说明在关键字 <tt>throw</tt> 之后跟着一个（可能为空的）由圆括号括住的异常类型列表：</P>
+
+<pre>
+     void recoup(int) throw(runtime_error);
+</pre><BR>
+
+<p class="docText">This declaration says that <tt>recoup</tt> is a function taking an <tt>int</tt>, and returning<tt>void</tt>. If <tt>recoup</tt> throws an exception, that exception will be a <tt>runtime_error</tt> or an exception of a type derived from <tt>runtime_error</tt>.</p>
+<p class="docText">这个声明指出，<tt>recoup</tt> 是接受 <tt>int</tt> 值的函数，并返回 <tt>void</tt>。如果 <tt>recoup</tt> 抛出一个异常，该异常将是 <tt>runtime_error</tt> 对象，或者是由 <tt>runtime_error</tt> 派生的类型的异常。</p>
+
+
+<a name="idd1e137754"></a><a name="idd1e137761"></a><a name="idd1e137767"></a><a name="idd1e137773"></a><a name="idd1e137778"></a><a name="idd1e137783"></a>
+<p class="docText">An empty specification list says that the function does not throw any exception:</p>
+<p class="docText">空说明列表指出函数不抛出任何异常：</p>
+
+<pre>
+     void no_problem() throw();
+</pre><BR>
+
+<p class="docText">An exception specification is part of the function's interface. The function definition and any declarations of the function must have the same specification.</P>
+<p class="docText">异常说明是函数接口的一部分，函数定义以及该函数的任意声明必须具有相同的异常说明。</P>
+
+<a name="ch17note16"></a>
+<div class="docNote">
+	<p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" align="LEFT" width="50" height="54" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" >
+			</td>
+			<td valign="top">
+				<p class="docText"> If a function declaration does not specify an exception specification, the function can throw exceptions of any type.</p>
+				<p class="docText">如果一个函数声明没有指定异常说明，则该函数可以抛出任意类型的异常。</p>
+			</td>
+		</tr>
+	</table><br>
+</p></div><BR>
+
+<a name="ch17lev3sec24"></a>
+<h5 class="docSection3Title">Violating the Exception Specification</H5>
+<h5 class="docSection3Title">违反异常说明</H5>
+
+<p class="docText">Unfortunately, it is not possible to know at compile time whether or which exceptions a program will throw. Violations of a function's exception specification can be detected only at run time.</p>
+<p class="docText">但是，不可能在编译时知道程序是否抛出异常以及会抛出哪些异常，只有在运行时才能检测是否违反函数异常说明。</p>
+
+<a name="ch17term27"></a>
+<p class="docText">If a function throws an exception not listed in its specification, the library function <b><a class="docLink" href="ch17lev1sec5.html#gloss17_27" ><span class="docEmphStrong"><tt>unexpected</tt></span></a></b> is invoked. By default, <tt>unexpected</tt> calls <tt>terminate</tt>, which ordinarily aborts the program.</p>
+<p class="docText">如果函数抛出了没有在其异常说明中列出的异常，就调用标准库函数 <b><a class="docLink" href="ch17lev1sec5.html#gloss17_27" ><span class="docEmphStrong"><tt>unexpected</tt></span></a></b>。默认情况下，<tt>unexpected</tt> 函数调用 <tt>terminate</tt> 函数，<tt>terminate</tt> 函数一般会终止程序。</p>
+
+<a name="ch17note17"></a>
+<div class="docNote">
+	<p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" align="LEFT" width="57" height="96" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" >
+			</td>
+			<td valign="top">
+				<p class="docText"> The compiler cannot and does not attempt to verify exception specifications at compile time.</p>
+				<p class="docText">在编译的时候，编译器不能也不会试图验证异常说明。</p>
+			</td>
+		</tr>
+	</table>
+	<br>
+	</p>
+</div>
+<BR>
+
+<p class="docText">Even if a casual reading of a function's code indicates that it <span class="docEmphasis">might</span> throw an exception missing from the specification, the compiler will not complain:</P>
+<p class="docText">即使对函数代码的偶然阅读指明，它可能抛出异常说明中没有的异常，编译器也不会给出提示：</P>
+
+<pre>
+     void f() throw()          // <span class="docEmphItalicAlt">promise not to throw any exception</span>
+     {
+         throw exception();    // <span class="docEmphItalicAlt">violates exception specification</span>
+     }
+</pre><br>
+
+<p class="docText">Instead, the compiler generates code to ensure that <tt>unexpected</tt> is called if an exception violating the exception specification is thrown.</P>
+<p class="docText">相反，编译器会产生代码以便保证：如果抛出了一个违反异常说明的异常，就调用 <tt>unexpected</tt> 函数。</P>
+
+<a name="ch17lev3sec25"></a>
+<h5 class="docSection3Title">Specifying that the Function Does Not Throw</h5>
+<h5 class="docSection3Title">确定函数不抛出异常</h5>
+
+<p class="docText">Because an exception specification cannot be checked at compile time, the practical utility of exception specifications is often limited.</P>
+<p class="docText">因为不能在编译时检查异常说明，异常说明的应用通常是有限的。</P>
+
+<a name="ch17note18"></a>
+<div class="docNote">
+	<p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" align="LEFT" width="116" height="74" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/bestpractices.jpg;400478" >
+			</td>
+			<td valign="top">
+				<p class="docText"> One important case when an exception specification is useful is if a function can guarantee that it will not throw any exceptions.</p>
+				<p class="docText">异常说服有用的一种重要情况是，如果函数可以保证不会抛出任何异常。</p>
+			</td>
+		</tr>
+	</table>
+	<br>
+	</P>
+</div>
+<br>
+
+<p class="docText">Specifying that a function will not <tt>throw</tt> any exceptions can be helpful both to users of the function and to the compiler: Knowing that a function will not <tt>throw</tt> simplifies the task of writing exception-safe code that calls that function. We can know that we need not worry about exceptions when calling it. Moreover, if the compiler knows that no exceptions will be thrown, it can perform optimizations that are suppressed for code that might throw.</P>
+<p class="docText">确定函数将不抛出任何异常，对函数的用户和编译器都有所帮助：知道函数不抛出异常会简化编写调用该函数的异常安全的代码的工作，我们可以知道在调用函数时不必担心异常，而且，如果编译器知道不会抛出异常，它就可以执行被可能抛出异常的代码所抑制的优化。</P>
+
+<a name="ch17lev3sec26"></a>
+<H5 class="docSection3Title">Exception Specifications and Member Functions</h5>
+<H5 class="docSection3Title">异常说明与成员函数</h5>
+
+<a name="idd1e137897"></a><a name="idd1e137902"></a><a name="idd1e137907"></a>
+<p class="docText">As with nonmember functions, an exception specification on a member function declaration follows the function parameter list. For example, the class <tt>bad_alloc</tt> from the C++ standard library is defined so that all its member functions have an empty exception specification. These members promise not to throw an exception:</p>
+<p class="docText">像非成员函数一样，成员函数声明的异常说明跟在函数形参表之后。例如，C++ 标准库中的 <tt>bad_alloc</tt> 类定义为所有成员都有空异常说明，这些成员承诺不抛出异常：</p>
+
+<pre>
+     // <span class="docEmphItalicAlt">ilustrative definition of library</span> <span class="docEmphasis">bad_alloc</span> <span class="docEmphItalicAlt">class</span>
+     class bad_alloc : public exception {
+     public:
+         bad_alloc() throw();
+         bad_alloc(const bad_alloc &amp;) throw();
+         bad_alloc &amp; operator=(const
+         bad_alloc &amp;) throw();
+         virtual ~bad_alloc() throw();
+         virtual const char* what() const throw();
+     };
+</pre><br>
+
+<p class="docText">Notice that the exception specification follows the <tt>const</tt> qualifier in <tt>const</tt> member function declarations.</p>
+<p class="docText">注意，在 <tt>const</tt> 成员函数声明中，异常说明跟在 <tt>const</tt> 限定符之后。</p>
+
+<a name="ch17lev3sec27"></a>
+<H5 class="docSection3Title">Exception Specifications and Destructors</h5>
+<H5 class="docSection3Title">异常说明与析构函数</h5>
+
+<p class="docText">In <a class="docLink" href="ch17lev1sec1.html#ch17lev2sec7">Section 17.1.7</a> (p. <a class="docLink" href="ch17lev1sec1.html#ch17lev2sec7">697</a>) we showed two hypothetical bookstore application exception classes. The <tt>isbn_mismatch</tt> class defines its destructor as</p>
+<p class="docText"><a class="docLink" href="ch17lev1sec1.html#ch17lev2sec7">第 17.1.7 节</a>介绍了两个假设的书店应用程序异常类，<tt>isbn_mismatch</tt> 类将析构函数定义为：</p>
+
+<pre>
+     class isbn_mismatch: public std::logic_error {
+     public:
+         virtual ~isbn_mismatch() throw() { }
+     };
+</pre><BR>
+
+<p class="docText">and said that we would explain this usage here.</p>
+<p class="docText">并说明我们会在这里解释这种用法。</p>
+
+<p class="docText">The <tt>isbn_mismatch</tt> class inherits from <tt>logic_error</tt>, which is one of the standard exception classes. The destructors for the standard exception classes include an empty <tt>throw()</tt> specifier; they promise that they will not throw any exceptions. When we inherit from one of these classes, then our destructor must also promise not to throw any exceptions.</P>
+<p class="docText"><tt>isbn_mismatch</tt> 类从 <tt>logic_error</tt> 类继承而来，<tt>logic_error</tt> 是一个标准异常类，该标准异常类的析构函数包含空 <tt>throw()</tt> 说明符，它们承诺不抛出任何异常。当继承这两个类中的一个时，我们的析构函数也必须承诺不抛出任何异常。</P>
+
+<p class="docText">Our <tt>out_of_stock</tt> class had no members, and so its synthesized destructor does nothing that might throw an exception. Hence, the compiler can know that the synthesized destructor will abide by the promise not to throw.</p>
+<p class="docText"><tt>out_of_stock</tt> 类没有成员，所以它的合成析构函数不做任何可能抛出异常的事情，因此，编译器可以知道合成析构函数将遵守不抛出异常的承诺。</p>
+
+<p class="docText">The <tt>isbn_mismatch</tt> class has two members of class <tt>string</tt>, which means that the synthesized destructor for <tt>isbn_mismatch</tt> calls the <tt>string</tt> destructor. The C++ standard stipulates that <tt>string</tt> destructor, like any other library class destructor, will not throw an exception. However, the library destructors do not define exception specifications. In this case, we know, but the compiler doesn't, that the <tt>string</tt> destructor won't throw. We must define our own destructor to reinstate the promise that the destructor will not throw.</P>
+<p class="docText"><tt>isbn_mismatch</tt> 类有两个 <tt>string</tt> 类成员，这意味着 <tt>isbn_mismatch</tt> 的合成析构函数调用 <tt>string</tt> 析构函数。C++ 标准保证，<tt>string</tt> 析构函数像任意其他标准库类析构函数一样，不抛出异常。但是，标准库的析构函数没有定义异常说明，在这种情况下，我们知道，但编译器不知道，<tt>string</tt> 析构函数将不抛出异常。我们必须定义自己的析构函数来恢复析构函数不抛出异常的承诺。</P>
+
+<a name="ch17lev3sec28"></a>
+<h5 class="docSection3Title">Exception Specifications and Virtual Functions</h5>
+<h5 class="docSection3Title">异常说明与虚函数</h5>
+
+<a name="idd1e138017"></a><a name="idd1e138022"></a><a name="idd1e138027"></a>
+<p class="docText">A virtual function in a base class may have an exception specification that differs from the exception specification of the corresponding virtual in a derived class. However, the exception specification of a derived-class virtual function must be either equally or more restrictive than the exception specification of the corresponding base-class virtual function.</p>
+<p class="docText">基类中虚函数的异常说明，可以与派生类中对应虚函数的异常说明不同。但是，派生类虚函数的异常说明必须与对应基类虚函数的异常说明同样严格，或者比后者更受限。</p>
+
+<p class="docText">This restriction ensures that when a pointer to a base-class type is used to call a derived virtual function, the exception specification of the derived class adds no new exceptions to those that the base said could be thrown. For example,</p>
+<p class="docText">这个限制保证，当使用指向基类类型的指针调用派生类虚函数的时候，派生类的异常说明不会增加新的可抛出异常。例如：</p>
+
+<pre>
+     class Base {
+     public:
+         virtual double f1(double) throw ();
+         virtual int f2(int) throw (std::logic_error);
+         virtual std::string f3() throw
+               (std::logic_error, std::runtime_error);
+     };
+     class Derived : public Base {
+     public:
+         // <span class="docEmphItalicAlt">error: exception specification is less restrictive than</span> <span class="docEmphasis">Base::f1</span><span class="docEmphItalicAlt">'s</span>
+         double f1(double) throw (std::underflow_error);
+
+         // <span class="docEmphItalicAlt">ok: same exception specification as</span> <span class="docEmphasis">Base::f2</span>
+         int f2(int) throw (std::logic_error);
+         // <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">Derived f3</span> <span class="docEmphItalicAlt">is more restrictive</span>
+         std::string f3() throw ();
+     };
+</pre><br>
+
+<p class="docText">The declaration of <tt>f1</tt> in the derived class is an error because its exception specification adds an exception to those listed in the version of <tt>f1</tt> in the base class. The reason that the derived class may not add to the specfication list is users of the hierarchy should be able to write code that depends on the specification list. If a call is made through a base pointer or reference, then only the exceptions specified in the base should be of concern to a user of these classes.</p>
+<p class="docText">派生类中 <tt>f1</tt> 的声明是错误的，因为它的异常说明在基类 <tt>f1</tt> 版本列出的异常中增加了一个异常。派生类不能在异常说明列表中增加异常，原因在于，继承层次的用户应该能够编写依赖于该说明列表的代码。如果通过基类指针或引用进行函数调用，那么，这些类的用户所涉及的应该只是在基类中指定的异常。</p>
+
+<p class="docText">By restricting which exceptions the derived classes will throw to those listed by the base class, we can write our code knowing what exceptions we must handle. Our code can rely on the fact that the list of exceptions in the base class is a superset of the list of exceptions that a derived-class version of the virtual might throw. As an example, when calling <tt>f3</tt>, we know we need to handle only <tt>logic_error</tt> or <tt>runtime_error:</tt></p>
+<p class="docText">通过派生类抛出的异常限制为由基类所列出的那些，在编写代码时就可以知道必须处理哪些异常。代码可以依赖于这样一个事实：基类中的异常列表是虚函数的派生类版本可以抛出的异常列表的超集。例如，当调用 <tt>f3</tt> 的时候，我们知道只需要处理 <tt>logic_error</tt> 或 <tt>runtime_error</tt>：</p>
+
+<pre>
+     // <span class="docEmphItalicAlt">guarantees not to throw exceptions</span>
+     void compute(Base *pb) throw()
+     {
+         try {
+             // <span class="docEmphItalicAlt">may throw exception of type</span> <span class="docEmphasis">std::logic_error</span>
+             // <span class="docEmphItalicAlt">or</span> <span class="docEmphasis">std::runtime_error</span>
+             pb-&gt;f3();
+         } catch (const logic_error &amp;le)   { /* ... */ }
+           catch (const runtime_error &amp;re) { /* ... */ }
+     }
+</pre><br>
+
+<p class="docText">The function <tt>compute</tt> uses the specification in the base class in deciding what exceptions it might need to catch.</p>
+<p class="docText">在确定可能需要捕获什么异常的时候，<tt>compute</tt> 函数使用基类中的异常说明。</p>
+
+<a name="ch17lev2sec11"></a>
+<h4 class="docSection2Title">17.1.11. Function Pointer Exception Specifications</h4>
+<h4 class="docSection2Title">17.1.11. 函数指针的异常说明</h4>
+
+<a name="idd1e138121"></a><a name="idd1e138126"></a><a name="idd1e138131"></a>
+<p class="docText">An exception specification is part of a function type. As such, exception specifications can be provided in the definition of a pointer to function:</p>
+<p class="docText">异常说明是函数类型的一部分。这样，也可以在函数指针的定义中提供异常说明：</p>
+
+<pre>
+     void (*pf)(int) throw(runtime_error);
+</pre><br>
+
+<p class="docText">This declaration says that <tt>pf</tt> points to a function that takes an <tt>int</tt>, returns a<tt>void</tt>, and that can throw exceptions only of type <tt>runtime_error</tt>. If no specification is provided, then the pointer may point at a function with matching type that could throw any kind of exception.</P>
+<p class="docText">这个声明是说，<tt>pf</tt> 指向接受 <tt>int</tt> 值的函数，该函数返回 <tt>void</tt> 对象，该函数只能抛出 <tt>runtime_error</tt> 类型的异常。如果不提供异常说明，该指针就可以指向能够抛出任意类型异常的具有匹配类型的函数。</P>
+
+<p class="docText">When a pointer to function with an exception specification is initialized from (or assigned to) another pointer (or to the address of a function), the exception specifications of both pointers do not have to be identical. However, the specification of the source pointer must be at least as restrictive as the specification of the destination pointer</P>
+<p class="docText">在用另一指针初始化带异常说明的函数的指针，或者将后者赋值给函数地址的时候，两个指针的异常说明不必相同，但是，源指针的异常说明必须至少与目标指针的一样严格。</P>
+
+<pre>
+     void recoup(int) throw(runtime_error);
+     // <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">recoup</span> <span class="docEmphItalicAlt">is as restrictive as</span> <span class="docEmphasis">pf1</span>
+     void (*pf1)(int) throw(runtime_error) = recoup;
+     // <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">recoup</span> <span class="docEmphItalicAlt">is more restrictive than</span> <span class="docEmphasis">pf2</span>
+     void (*pf2)(int) throw(runtime_error, logic_error) = recoup;
+     // <span class="docEmphItalicAlt">error:</span> <span class="docEmphasis">recoup</span> <span class="docEmphItalicAlt">is less restrictive than</span> <span class="docEmphasis">pf3</span>
+     void (*pf3)(int) throw() = recoup;
+     // <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">recoup</span> <span class="docEmphItalicAlt">is more restrictive than</span> <span class="docEmphasis">pf4</span>
+     void (*pf4)(int) = recoup;
+</pre><br>
+
+<p class="docText">The third initialization is an error. The pointer declaration says that <tt>pf3</tt> points to a function that will not throw any exceptions. However, <tt>recoup</tt> says it can throw exceptions of type <tt>runtime_error</tt>. The <tt>recoup</tt> function throws exception types beyond those specified by <tt>pf3</tt>. The <tt>recoup</tt> function is not a valid initializer for <tt>pf3</tt>, and a compile-time error is issued.</P>
+<p class="docText">第三个初始化是错误的。指针声明指出，<tt>pf3</tt> 指向不抛出任何异常的函数，但是，<tt>recoup</tt> 函数指出它能抛出 <tt>runtime_error</tt> 类型的异常，<tt>recoup</tt> 函数抛出的异常类型超出了 <tt>pf3</tt> 所指定的，对 <tt>pf3</tt> 而言，<tt>recoup</tt> 函数不是有效的初始化式，并且会引发一个编译时错误。</P>
+
+<a name="ch17sb07"></a>
+<p>
+<table cellspacing="0" width="90%" border="1" cellpadding="5">
+	<tr>
+		<td>
+			<H2 class="docSidebarTitle">Exercises Section 17.1.11</h2>
+			<blockquote>
+				<p>
+				<table border="0" cellspacing="16" cellpadding="0">
+					<tr valign="top">
+						<td align="right" class="docText" width="50">
+							<a name="ch17qa6q1"></a>
+							<b>Exercise 17.10:</b>
+						</td>
+						<td>
+							<p class="docText">What exceptions can a function throw if it has an exception specification of the form <tt>throw()</tt>? If it has no exception specification?</P>
+							<p class="docText">如果函数有形如 <tt>throw()</tt> 的异常说明，它能抛出什么异常？如果没有异常说明呢？</P>
+						</td>
+							</tr>
+					<tr valign="top">
+						<td align="right" class="docText" width="50">
+							<a name="ch17qa6q2"></a>
+							<b>Exercise 17.11:</b>
+						</td>
+						<td>
+							<p class="docText">Which, if either, of the following initializations is in error? Why?</p>
+							<p class="docText">如果有，下面哪个初始化是错误的？为什么？</p>
+<pre>
+     void example() throw(string);
+     (a) void (*pf1)() = example;
+     (b) void (*pf2)() throw() = example;
+</pre><br>
+						</td>
+					</tr>
+					<tr valign="top">
+						<td align="right" class="docText" width="50">
+							<a name="ch17qa6q3"></a>
+							<b>Exercise 17.12:</b>
+						</td>
+						<td>
+							<p class="docText">Which exceptions might the following functions throw?</p>
+							<p class="docText">下面函数可以抛出哪些异常？</p>
+<pre>
+     (a) void operate() throw(logic_error);
+     (b) int op(int) throw(underflow_error, overflow_error);
+     (c) char manip(string) throw();
+     (d) void process();
+</pre><br>
+						</td>
+					</tr>
+				</table>
+				</p>
+			</blockquote>
+		</td>
+	</tr>
+</table>
+</p>
+<br>
+
+		</td>
+	</tr>
+</table>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+		<td>
+			<div STYLE="MARGIN-LEFT: 0.15in;">
+				<a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle"  alt="Team LiB"></a>
+			</div>
+		</td>
+		<td align="right">
+			<div STYLE="MARGIN-LEFT: 0.15in;">
+				<a href="ch17.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a>
+				<a href="ch17lev1sec2.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+			</div>
+		</td>
+	</tr>
+</table>
+</body>
+</html>

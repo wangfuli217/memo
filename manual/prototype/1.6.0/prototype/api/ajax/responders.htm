@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Ajax Ajax.Responders - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />	
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>Ajax.Responders</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">Ajax.Responders.register(responder) Ajax.Responders.unregister(responder)</code></pre>
+			<p>维护一个全局的侦听器队列，它能捕获到所有基于 Prototype 的 AJAX 请求的每一个步骤。</p>
+		</div>
+		<div id="abody">
+			<p>
+				有时，你需要对发生在页面中的所有 AJAX 操作（通过 <code><a href="request.htm" >Ajax.Request</a></code>、
+				<code><a href="updater.htm" >Ajax.Updater</a></code> 或 <code><a href="periodicalUpdater.htm" >Ajax.PeriodicalUpdater</a></code>）
+				进行一些相同的处理工作。
+			</p>
+			<p>
+				例如，你可能希望一个 AJAX 请求在执行过程中能自动显示一个指示器，而请求完成时隐藏。你也可能希望处理某些类型的异常，
+				并将相关的信息写在页面平常用于显示异常信息的区域。类似的需求比比皆是。
+			</p>
+			<p>
+				为实现以上目的，Prototype 提供 <code>Ajax.Responders</code>，让你能够注册（如果你愿意，后续也可以注销）
+				<strong>响应器（responders）</strong>。响应器是一个对象，其属性的数据类型为函数，属性的名称必须与 Prototype
+				提供的回调名称一致，这样响应器才会正确执行你所关注的功能。<br />
+				<strong>译注：</strong>采用传统的代码书写方式，响应器的创建和注册如下：
+				<pre><code class="javascript">//请与下一个样例对照
+var responders = new Object();
+responders.onCreate = function() { Ajax.activeRequestCount++; }; //属性：onCreate
+responders.onComplete = function() { Ajax.activeRequestCount--; }; //属性：onComplete
+Ajax.Responders.register(responders);</code></pre>
+			</p>
+			<p>
+				例如，Prototype 自动注册了一个响应器，用于维护一个非常有用的变量：<code>Ajax.activeRequestCount</code>。
+				这个变量表示当前活动的 AJAX 请求（通过 Prototype 创建）数目。它通过监控请求的 <code>onCreate</code> 和
+				<code>onComplete</code>	事件实现这个功能，实现代码非常简单：
+			</p>
+			<pre><code class="javascript">Ajax.Responders.register({
+	onCreate: function() { Ajax.activeRequestCount++; }, 
+	onComplete: function() { Ajax.activeRequestCount--; }
+}); </code></pre>
+			<p>
+				生命周期中所有的 <a href="options.htm" >回调</a> 都是可用的。实际上 <code>onCreate</code> 仅能用于响应器，
+				因为单独的请求不能够感知到它：你知道你的代码创建单独请求的时机，不是吗？而 <code>onCreate</code>
+				被触发则发生在 XHR 连接被打开之前，正好在你的请求对象 <code>onUninitialized</code> 之前。
+			</p>
+			<h3>注销：记住以下事项&#8230;</h3>
+			<p>
+				老规矩，注销对象你必须使用和注册时相同的对象。因此，如果你打算注销一个响应器，首先确保你已经定义了它，
+				然后传递引用给 <code>register</code>，最后，在需要注销时，把同样的引用传递给 <code>unregister</code>。
+			</p>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

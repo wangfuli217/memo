@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Element.wrap - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>wrap<div class="box">1.6</div></h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">Element.wrap(element, wrapper[, attributes]) -> HTMLElement
+someElement.wrap(wrapper[, attributes]) -> HTMLElement</code></pre>
+			<p>将 <code>element</code> 表示的元素放入到参数 <code>wrapper</code> 指定的元素内部，返回 <code>wrapper</code>。</p>
+		</div>
+		<div id="abody">
+			<p class="notice">
+				在 Internet Explorer 中，如果对 <code>textarea</code> 元素使用 <code>wrap</code> 实例方法（如
+				<code>$('foo').wrap('p')</code>），将会引发错误。这是因为 IE 对 HTML 进行了一些私下的扩展，而 <code>wrap</code>
+				是 <code>textarea</code> 扩展后的一个属性。在这种情形下，请使用一般的版本（<code>Element.wrap('foo', 'p')</code>）。
+			</p>
+			<p>
+				如果页面上存在指定的元素，<code>Element#wrap</code> 会在恰当的位置封装它——元素在页面上的的位置不会发生变化。
+			</p>
+			<p>
+				参数 <code>wrapper</code> 可以是一个当前已有的 <code>HTMLElement</code>，也可以是一个能够被实际创建的 HTML 标签。可选的参数
+				<code>attributes</code> 包含一个属性/值对的列表，Prototype 调用 <a href="writeAttribute.htm" >Element#writeAttribute</a>
+				方法将属性/值对设置为 <code>wrapper</code> 的属性。
+			</p>
+			<h3>样例</h3>
+			<h4>初始 HTML</h4>
+			<pre><code class="html">&lt;table id=&quot;data&quot;&gt; 
+	&lt;tr&gt; 
+		&lt;th&gt;Foo&lt;/th&gt;
+		&lt;th&gt;Bar&lt;/th&gt; 
+	&lt;/tr&gt; 
+	&lt;tr&gt; 
+		&lt;td&gt;1&lt;/td&gt; 
+		&lt;td&gt;2&lt;/td&gt;
+	&lt;/tr&gt; 
+&lt;/table&gt;</code></pre>
+			<h4>JavaScript</h4>
+			<pre><code class="javascript">// 方式 1：
+var div = new Element('div', { 'class': 'table-wrapper' }); 
+$('data').wrap(div); 
+// 方式 2：
+$('data').wrap('div', { 'class': 'table-wrapper' }); 
+// 两种方式是一样的，均返回 DIV </code></pre>
+			<h4>最终的 HTML</h4>
+			<pre><code class="html">&lt;div class=&quot;table-wrapper&quot;&gt; 
+	&lt;table id=&quot;data&quot;&gt;
+		&lt;tr&gt; 
+			&lt;th&gt;Foo&lt;/th&gt; 
+			&lt;th&gt;Bar&lt;/th&gt; 
+		&lt;/tr&gt; 
+		&lt;tr&gt;
+			&lt;td&gt;1&lt;/td&gt; 
+			&lt;td&gt;2&lt;/td&gt; 
+		&lt;/tr&gt; 
+	&lt;/table&gt; 
+&lt;/div&gt;</code></pre>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

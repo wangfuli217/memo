@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Ajax Ajax.Updater - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>Ajax.Updater</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">new Ajax.Updater(container, url[, options])</code></pre>
+			<p>执行一个 AJAX 请求，并将响应内容更新到指定容器。</p>
+		</div>
+		<div id="abody">
+			<p>
+				<code>Ajax.Updater</code> 是一个特殊的 <a href="request.htm" >Ajax.Request</a>：
+				后者所具备的功能，前者同样拥有。如果你不熟悉 <code>Ajax.Request</code>，请先阅读与之相关的文档，然后再回到本章。
+			</p>
+			<h3>一个简单的样例</h3>
+			<pre><code class="javascript">new Ajax.Updater('items', '/items', { 
+	parameters: { text:　$F('text') } 
+}); </code></pre>
+			<h3>注意时序</h3>
+			<p>更新完成后，<code>onComplete</code> 回调将会被调用。</p>
+			<h3>附加选项</h3>
+			<p>
+				因为 <code>Ajax.Updater</code> 的目标是使用 AJAX 请求所返回的响应文本更新指定 DOM 元素（容器）的内容，因此，
+				除<a href="options.htm" >公用选项</a>外，它还具有一些新的特定选项：
+			</p>
+			<table>
+				<thead><tr><th>选项</th><th style="width:60px;">默认值</th><th>描述</th></tr></thead>
+				<tbody>
+					<tr>
+						<th><code>evalScripts</code></th>
+						<td><code>false</code></td>
+						<td>指出是否执行响应文本中包含的 <code>&lt;script&gt;</code> 元素下的脚本。</td>
+					</tr>
+					<tr>
+						<th><code>insertion</code></th>
+						<td>None</td>
+						<td>
+							默认情形下，通过 <a href="../element/update.htm" >Element.update</a>
+							将指定容器的内容替换为响应文本。你可能希望插入响应文本到已有的内容中，在 1.6.0 以前的版本，
+							你必须传入一个有效的 <a href="../insertion.htm" >Insertion</a>，例如
+							<a href="../insertion/bottom.htm" >Insertion.Bottom</a>。在 1.6.0 中，不再推荐使用这种标记方法。
+							现在，你只需简单的传入 <code>'top'</code>，<code>'bottom'</code>，<code>'before'</code>
+							或 <code>'after'</code> 即可。
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<p>
+				在下面的样例中，假设需要通过一个 AJAX 返回的 XHTML 片断创建新的条目，并放置到列表容器已有内容的后面：
+			</p>
+			<pre><code class="javascript">new Ajax.Updater('items', '/items', 
+	{ parameters: { text: $F('text') }, 
+	insertion: Insertion.Bottom 
+}); </code></pre>
+			<h3>关于 <code>evalScripts</code> 和脚本块定义</h3>
+			<p>
+				如果你使用 <code>evalScripts: true</code>，那么所有的 <code>&lt;script&gt;</code> 块将被执行。
+				执行的意思<strong>不是</strong>仅仅将脚本放置在页面中，而是将它们的内容直接传递给原生的 <code>eval()</code>
+				函数，因此需要注意两点：				
+			</p>
+			<ul>
+				<li>
+					脚本块中脚本的作用域被限定在 Prototype 内部，在脚本块中使用 <code><em>var</em></code>
+					定义的变量在执行后马上被销毁，页面上其它地方的脚本永远无法访问到它。<br />
+					<strong>译注：</strong>若要使用脚本块返回可在页面其它地方使用的变量，请直接使用变量名，而不要用 var 定义或预先声明，如 <code>myVariant = 'this is a example'</code>。
+				</li>
+				<li>
+					如果你在脚本块中定义了函数，你需要实际的<strong>创建</strong>它，否则页面上其它地方的脚本无法访问这个函数，
+					这意味着下面的脚本不会执行：
+				</li>
+			</ul>
+			<pre><code class="javascript">//如果是通过 Ajax.Updater 处理，这种类型的脚本不能工作：
+function coolFunc() {
+	// Amazing stuff!
+} </code></pre>
+			<p>需要使用下面的语法（<strong>译注：</strong>请注意，<code>coolFunc</code> 前面没有 <code>var</code>）：</p>
+			<pre><code class="javascript">//如果通过 Ajax.Updater 处理，需要这种类型的脚本才会正常工作
+coolFunc = function() {
+	// Amazing stuff!
+} </code></pre>			
+			<p>对于初学者而言，这是一个常见的陷井，因此，请注意！</p>
+			<h3>使用单一的容器，或者在 success/failure 时使用不同的容器？</h3>
+			<p>
+				上面所有的样例都假定无论请求成功还是失败，都将响应更新到同一个容器。有时，你可能希望只有在请求成功时才更新内容，
+				或者在请求失败时更新到另一个容器。
+			</p>
+			<p>
+				为达到这个目的，需要为 <code>container</code> 参数传递一个 DOM 元素的替代对象，替代对象<strong>必须</strong>具有
+				<code>success</code> 属性，属性值为请求成功时需要更新的容器。如果你同时提供 <code>failure</code>
+				属性，则当请求失败时会更新该属性指定的容器。
+			</p>
+			<p>下述代码中，仅在请求成功时才更新容器：</p>
+			<pre><code class="javascript">new Ajax.Updater({ success: 'items' }, '/items', {
+	parameters: { text: $F('text') }, 
+	insertion: Insertion.Bottom
+}); </code></pre>
+			<p>
+				下面的样例假设请求失败后在响应文本中会返回一条错误信息，并将错误信息更新到另一个元素（可能是一个状态区域）。
+			</p>
+			<pre><code class="javascript">new Ajax.Updater({ success: 'items', failure: 'notice' },
+	'/items',
+	{ parameters: { text: $F('text') }, insertion: Insertion.Bottom }
+);</code></pre>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

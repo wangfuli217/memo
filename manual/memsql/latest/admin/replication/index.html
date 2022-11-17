@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+    <!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+    <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+         <title>Using Replication</title> 
+        <link rel="shortcut icon" href="../../../static_star_theme/img/favicon.ico"/>
+        <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,700italic' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../static_star_theme/css/theme.css" type="text/css" /> 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+    </head>
+
+    <body class="wy-body-for-nav" role="document">
+
+    <div class="wy-grid-for-nav">
+
+        <div class="wy-full-navbar" data-swiftype-index="false">
+            <a href="http://www.memsql.com" class="logo">
+                <img src="../../../static_star_theme/img/memsql_logo_horizontal_white.svg" />
+            </a>
+            <div class="global nav">
+                <div class="pull-left left-links">
+                </div>
+                <div class="pull-right right-links">
+                    <a href="http://www.memsql.com/community/" style="word-spacing: 2px;">Community Edition</a>
+                    <a href="http://blog.memsql.com">Blog</a>
+                    <a href="http://www.memsql.com/memsql-partners">Partners</a>
+                    <a href="http://www.memsql.com/resources">Resources</a>
+                    <a href="../../../index.html">Documentation</a>
+                    <a href="http://www.memsql.com/contact">Contact</a>
+                </div>
+            </div>
+            <div class="nav-links">
+                <a href="http://www.memsql.com/product">Product</a>
+                <a href="http://www.memsql.com/solutions">Solutions</a>
+                <a href="http://www.memsql.com/case-studies">Case Studies</a>
+                <a href="http://www.memsql.com/company">Company</a>
+                <a class="download" href="http://www.memsql.com/download/">Download Now</a>
+            </div>
+        </div>
+
+        <nav data-toggle="wy-nav-shift" class="wy-nav-side" data-swiftype-index="false">
+            <div class="wy-side-nav-search">
+                <div role="search">
+  <form id="search-form" class="wy-form" method="get">
+    <input type="text" id="st-search-input" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+            </div>
+
+            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                
+                 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">MemSQL Docs Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro/index.html">How MemSQL Works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../setup/quick_start/index.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../setup/get_started/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../concepts/index.html">User Manual</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Operations Manual</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../upgrade/index.html">Upgrading MemSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_concepts/index.html">Administrator Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cluster/index.html">Administering a Cluster</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../security/index.html">Securing MemSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ssl/index.html">SSL Network Encryption</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../high_availability/index.html">Managing High Availability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../durability_recovery/index.html">Using Durability and Recovery</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="index.html">Using Replication</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="index.html#about-replication">About Replication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#replication-commands">Replication Commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#setting-up-replication">Setting Up Replication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#monitoring-replication">Monitoring Replication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#pausing-and-stopping-replication">Pausing and Stopping Replication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#concepts-in-cross-cluster-replication">Concepts in Cross-Cluster Replication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#failover-and-promotion">Failover and Promotion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#tuning-replication">Tuning Replication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#concepts-in-single-box-replication">Concepts in Single Box Replication</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../backup_restore/index.html">Backing Up and Restoring Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../data_export/index.html">Exporting Data From MemSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tracelog/index.html">Trace Log</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../from_mysql/index.html">Transitioning from MySQL to MemSQL</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../ref/commands_by_type/index.html">SQL Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../config/index.html">Configuration Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ops/index.html">MemSQL Ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../loader/index.html">MemSQL Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../archive/index.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../editions/index.html">MemSQL Editions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq/index.html">Frequently Asked Questions</a></li>
+</ul>
+ 
+            </div>
+            &nbsp;
+        </nav>
+
+        <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+            <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+                <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+                <a href="../../../index.html" class="logo">
+                    <img src="../../../static_star_theme/img/memsql_logo_horizontal_white.svg" />
+                    <span class="subtitle">Documentation</span>
+                </a>
+            </nav>
+
+            <div class="wy-nav-content">
+                <div class="rst-content">
+                    <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../index.html">MemSQL Documentation</a> &raquo;</li>
+      
+          <li><a href="../index.html">Operations Manual</a> &raquo;</li>
+      
+    <li>Using Replication</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+                    <div role="main" class="document">
+                        
+  <div class="section" id="using-replication">
+<span id="replication"></span><h1>Using Replication<a class="headerlink" href="index.html#using-replication" title="Permalink to this headline">¶</a></h1>
+<p>MemSQL replication is simple, robust, and fast. This topic describes how to use replication in MemSQL.</p>
+<div class="section" id="about-replication">
+<h2>About Replication<a class="headerlink" href="index.html#about-replication" title="Permalink to this headline">¶</a></h2>
+<p>MemSQL replication supports fully online provisioning. In the middle of a continuous write workload, you can start
+replication to a secondary (replica) cluster without pausing the primary (source) cluster. Replication creates a
+read-only database replica that can be used for disaster recovery or to serve additional reads.</p>
+<p>Replication in MemSQL can be either asynchronous or synchronous. Replication between clusters is always asynchronous.
+In asynchronous mode, writes on the primary cluster will never wait to be replicated to the secondary cluster. Furthermore,
+secondary cluster failures will never block the master. For information on synchronous replication, see <a class="reference internal" href="index.html#single-box-replication"><em>Concepts in Single Box Replication</em></a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">MemSQL replication requires that the durability is enabled (set <tt class="docutils literal"><span class="pre">durability</span></tt> to <tt class="docutils literal"><span class="pre">on</span></tt> in <tt class="docutils literal"><span class="pre">memsql.cnf</span></tt>).
+To replicate a database, the secondary cluster user must have <tt class="docutils literal"><span class="pre">CREATE</span> <span class="pre">DATABASE</span></tt> privileges and the primary
+cluster user (the one specified in <tt class="docutils literal"><span class="pre">REPLICATE</span> <span class="pre">DATABASE</span></tt>) must have <tt class="docutils literal"><span class="pre">REPLICATION</span> <span class="pre">SLAVE</span></tt> privileges on the
+primary cluster&#8217;s master aggregator.</p>
+</div>
+</div>
+<div class="section" id="replication-commands">
+<h2>Replication Commands<a class="headerlink" href="index.html#replication-commands" title="Permalink to this headline">¶</a></h2>
+<p>Replication in MemSQL is controlled entirely from the secondary cluster, where the following commands are run:</p>
+<ul class="simple">
+<li><a class="reference internal" href="../../ref/REPLICATE_DATABASE/index.html"><em>REPLICATE DATABASE</em></a></li>
+<li><a class="reference internal" href="../../ref/PAUSE_REPLICATING/index.html"><em>PAUSE REPLICATING</em></a></li>
+<li><a class="reference internal" href="../../ref/CONTINUE_REPLICATING/index.html"><em>CONTINUE REPLICATING</em></a></li>
+<li><a class="reference internal" href="../../ref/STOP_REPLICATING/index.html"><em>STOP REPLICATING</em></a></li>
+<li><a class="reference internal" href="../../ref/SHOW_REPLICATION_STATUS/index.html"><em>SHOW REPLICATION STATUS</em></a></li>
+<li><a class="reference internal" href="../../ref/SHOW_PARTITIONS/index.html"><em>SHOW PARTITIONS</em></a></li>
+<li><a class="reference internal" href="../../ref/SHOW_CLUSTER_STATUS/index.html"><em>SHOW CLUSTER STATUS</em></a></li>
+</ul>
+</div>
+<div class="section" id="setting-up-replication">
+<span id="id1"></span><h2>Setting Up Replication<a class="headerlink" href="index.html#setting-up-replication" title="Permalink to this headline">¶</a></h2>
+<p>This example will guide you through setting up replication of a  database. These instructions assume that you have two
+MemSQL clusters running. The following <tt class="docutils literal"><span class="pre">host:port</span></tt> combinations represent the master aggregators of the primary and
+secondary clusters:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">primary-MA:3306</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">secondary-MA:3306</span></tt></li>
+</ul>
+<p>Note that the primary and secondary clusters need not have identical topologies. MemSQL will automatically manage sharding
+of replica data on the secondary cluster. In this example, <tt class="docutils literal"><span class="pre">primary-MA</span></tt> has a root user with an empty password.</p>
+<p>To begin replicating the database <tt class="docutils literal"><span class="pre">db_name</span></tt> from <tt class="docutils literal"><span class="pre">primary-MA</span></tt>, run the following command on <tt class="docutils literal"><span class="pre">secondary-MA</span></tt>:</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="n">REPLICATE</span> <span class="k">DATABASE</span> <span class="n">db_name</span> <span class="k">FROM</span> <span class="n">root</span><span class="o">@</span><span class="k">primary</span><span class="o">-</span><span class="n">MA</span><span class="p">:</span><span class="mi">3306</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>By default, MemSQL replicates asynchronously within a cluster. Replication between MemSQL clusters is always asynchronous. For
+more information on synchronous replication, see <a class="reference internal" href="index.html#single-box-replication"><em>Concepts in Single Box Replication</em></a>. Note that multiple secondary clusters can
+replicate from a single primary cluster. To do this, run <tt class="docutils literal"><span class="pre">REPLICATE</span> <span class="pre">DATABASE</span></tt> on the master aggregator of each of
+the replica clusters.</p>
+</div>
+<div class="section" id="monitoring-replication">
+<h2>Monitoring Replication<a class="headerlink" href="index.html#monitoring-replication" title="Permalink to this headline">¶</a></h2>
+<p>Check the replication status using <tt class="docutils literal"><span class="pre">SHOW</span> <span class="pre">PARITIONS</span> <span class="pre">EXTENDED</span></tt> and <tt class="docutils literal"><span class="pre">SHOW</span> <span class="pre">CLUSTER</span> <span class="pre">STATUS</span></tt>. Running <tt class="docutils literal"><span class="pre">SHOW</span> <span class="pre">PARTITIONS</span> <span class="pre">EXTENDED</span></tt>
+on <tt class="docutils literal"><span class="pre">secondary-MA</span></tt> will display information such as replication role and from where each partition is replicating. <tt class="docutils literal"><span class="pre">SHOW</span> <span class="pre">CLUSTER</span> <span class="pre">STATUS</span></tt>
+provide information like log replay position.</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="k">SHOW</span> <span class="n">PARTITIONS</span> <span class="n">EXTENDED</span><span class="p">;</span>
+
+<span class="o">+---------+-----------+------+--------+--------+----------------------------------------------------------------------------+--------------+------------+--------------+</span>
+<span class="o">|</span> <span class="n">Ordinal</span> <span class="o">|</span> <span class="n">Host</span>      <span class="o">|</span> <span class="n">Port</span> <span class="o">|</span> <span class="n">Role</span>   <span class="o">|</span> <span class="n">Locked</span> <span class="o">|</span> <span class="n">Info</span>                                                                       <span class="o">|</span> <span class="n">Last</span> <span class="n">Command</span> <span class="o">|</span> <span class="n">Last</span> <span class="n">Error</span> <span class="o">|</span> <span class="n">Last</span> <span class="n">Message</span> <span class="o">|</span>
+<span class="o">+---------+-----------+------+--------+--------+----------------------------------------------------------------------------+--------------+------------+--------------+</span>
+<span class="o">|</span>       <span class="mi">0</span> <span class="o">|</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">.</span><span class="mi">10</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">Master</span> <span class="o">|</span>      <span class="mi">0</span> <span class="o">|</span> <span class="k">Primary</span> <span class="n">master</span> <span class="k">on</span> <span class="s1">&#39;10.0.3.6&#39;</span><span class="p">:</span><span class="mi">3306</span> <span class="n">at</span> <span class="mi">0</span><span class="p">:</span><span class="mi">0</span> <span class="p">[</span> <span class="n">MASTER</span><span class="o">=</span><span class="n">yes</span> <span class="n">SYNC</span><span class="o">=</span><span class="n">no</span> <span class="n">ATTACH</span><span class="o">=</span><span class="n">yes</span> <span class="p">]</span> <span class="o">|</span> <span class="k">CREATE</span>       <span class="o">|</span>          <span class="mi">0</span> <span class="o">|</span>              <span class="o">|</span>
+<span class="o">|</span>       <span class="mi">1</span> <span class="o">|</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">.</span><span class="mi">10</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">Master</span> <span class="o">|</span>      <span class="mi">0</span> <span class="o">|</span> <span class="k">Primary</span> <span class="n">master</span> <span class="k">on</span> <span class="s1">&#39;10.0.3.8&#39;</span><span class="p">:</span><span class="mi">3306</span> <span class="n">at</span> <span class="mi">0</span><span class="p">:</span><span class="mi">0</span> <span class="p">[</span> <span class="n">MASTER</span><span class="o">=</span><span class="n">yes</span> <span class="n">SYNC</span><span class="o">=</span><span class="n">no</span> <span class="n">ATTACH</span><span class="o">=</span><span class="n">yes</span> <span class="p">]</span> <span class="o">|</span> <span class="k">CREATE</span>       <span class="o">|</span>          <span class="mi">0</span> <span class="o">|</span>              <span class="o">|</span>
+<span class="o">|</span>       <span class="mi">2</span> <span class="o">|</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">.</span><span class="mi">10</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">Master</span> <span class="o">|</span>      <span class="mi">0</span> <span class="o">|</span> <span class="k">Primary</span> <span class="n">master</span> <span class="k">on</span> <span class="s1">&#39;10.0.3.6&#39;</span><span class="p">:</span><span class="mi">3306</span> <span class="n">at</span> <span class="mi">0</span><span class="p">:</span><span class="mi">0</span> <span class="p">[</span> <span class="n">MASTER</span><span class="o">=</span><span class="n">yes</span> <span class="n">SYNC</span><span class="o">=</span><span class="n">no</span> <span class="n">ATTACH</span><span class="o">=</span><span class="n">yes</span> <span class="p">]</span> <span class="o">|</span> <span class="k">CREATE</span>       <span class="o">|</span>          <span class="mi">0</span> <span class="o">|</span>              <span class="o">|</span>
+<span class="o">|</span>       <span class="mi">3</span> <span class="o">|</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">.</span><span class="mi">12</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">Master</span> <span class="o">|</span>      <span class="mi">0</span> <span class="o">|</span> <span class="k">Primary</span> <span class="n">master</span> <span class="k">on</span> <span class="s1">&#39;10.0.3.8&#39;</span><span class="p">:</span><span class="mi">3306</span> <span class="n">at</span> <span class="mi">0</span><span class="p">:</span><span class="mi">0</span> <span class="p">[</span> <span class="n">MASTER</span><span class="o">=</span><span class="n">yes</span> <span class="n">SYNC</span><span class="o">=</span><span class="n">no</span> <span class="n">ATTACH</span><span class="o">=</span><span class="n">yes</span> <span class="p">]</span> <span class="o">|</span> <span class="k">CREATE</span>       <span class="o">|</span>          <span class="mi">0</span> <span class="o">|</span>              <span class="o">|</span>
+<span class="o">|</span>       <span class="mi">4</span> <span class="o">|</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">.</span><span class="mi">12</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">Master</span> <span class="o">|</span>      <span class="mi">0</span> <span class="o">|</span> <span class="k">Primary</span> <span class="n">master</span> <span class="k">on</span> <span class="s1">&#39;10.0.3.6&#39;</span><span class="p">:</span><span class="mi">3306</span> <span class="n">at</span> <span class="mi">0</span><span class="p">:</span><span class="mi">0</span> <span class="p">[</span> <span class="n">MASTER</span><span class="o">=</span><span class="n">yes</span> <span class="n">SYNC</span><span class="o">=</span><span class="n">no</span> <span class="n">ATTACH</span><span class="o">=</span><span class="n">yes</span> <span class="p">]</span> <span class="o">|</span> <span class="k">CREATE</span>       <span class="o">|</span>          <span class="mi">0</span> <span class="o">|</span>              <span class="o">|</span>
+<span class="o">|</span>       <span class="mi">5</span> <span class="o">|</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">.</span><span class="mi">12</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">Master</span> <span class="o">|</span>      <span class="mi">0</span> <span class="o">|</span> <span class="k">Primary</span> <span class="n">master</span> <span class="k">on</span> <span class="s1">&#39;10.0.3.8&#39;</span><span class="p">:</span><span class="mi">3306</span> <span class="n">at</span> <span class="mi">0</span><span class="p">:</span><span class="mi">0</span> <span class="p">[</span> <span class="n">MASTER</span><span class="o">=</span><span class="n">yes</span> <span class="n">SYNC</span><span class="o">=</span><span class="n">no</span> <span class="n">ATTACH</span><span class="o">=</span><span class="n">yes</span> <span class="p">]</span> <span class="o">|</span> <span class="k">CREATE</span>       <span class="o">|</span>          <span class="mi">0</span> <span class="o">|</span>              <span class="o">|</span>
+<span class="o">|</span>       <span class="mi">6</span> <span class="o">|</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">.</span><span class="mi">10</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">Master</span> <span class="o">|</span>      <span class="mi">0</span> <span class="o">|</span> <span class="k">Primary</span> <span class="n">master</span> <span class="k">on</span> <span class="s1">&#39;10.0.3.6&#39;</span><span class="p">:</span><span class="mi">3306</span> <span class="n">at</span> <span class="mi">0</span><span class="p">:</span><span class="mi">0</span> <span class="p">[</span> <span class="n">MASTER</span><span class="o">=</span><span class="n">yes</span> <span class="n">SYNC</span><span class="o">=</span><span class="n">no</span> <span class="n">ATTACH</span><span class="o">=</span><span class="n">yes</span> <span class="p">]</span> <span class="o">|</span> <span class="k">CREATE</span>       <span class="o">|</span>          <span class="mi">0</span> <span class="o">|</span>              <span class="o">|</span>
+<span class="o">|</span>       <span class="mi">7</span> <span class="o">|</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">.</span><span class="mi">12</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">Master</span> <span class="o">|</span>      <span class="mi">0</span> <span class="o">|</span> <span class="k">Primary</span> <span class="n">master</span> <span class="k">on</span> <span class="s1">&#39;10.0.3.8&#39;</span><span class="p">:</span><span class="mi">3306</span> <span class="n">at</span> <span class="mi">0</span><span class="p">:</span><span class="mi">0</span> <span class="p">[</span> <span class="n">MASTER</span><span class="o">=</span><span class="n">yes</span> <span class="n">SYNC</span><span class="o">=</span><span class="n">no</span> <span class="n">ATTACH</span><span class="o">=</span><span class="n">yes</span> <span class="p">]</span> <span class="o">|</span> <span class="k">CREATE</span>       <span class="o">|</span>          <span class="mi">0</span> <span class="o">|</span>              <span class="o">|</span>
+<span class="o">|</span>       <span class="mi">8</span> <span class="o">|</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">.</span><span class="mi">12</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">Master</span> <span class="o">|</span>      <span class="mi">0</span> <span class="o">|</span> <span class="k">Primary</span> <span class="n">master</span> <span class="k">on</span> <span class="s1">&#39;10.0.3.6&#39;</span><span class="p">:</span><span class="mi">3306</span> <span class="n">at</span> <span class="mi">0</span><span class="p">:</span><span class="mi">0</span> <span class="p">[</span> <span class="n">MASTER</span><span class="o">=</span><span class="n">yes</span> <span class="n">SYNC</span><span class="o">=</span><span class="n">no</span> <span class="n">ATTACH</span><span class="o">=</span><span class="n">yes</span> <span class="p">]</span> <span class="o">|</span> <span class="k">CREATE</span>       <span class="o">|</span>          <span class="mi">0</span> <span class="o">|</span>              <span class="o">|</span>
+<span class="o">|</span>       <span class="mi">9</span> <span class="o">|</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">.</span><span class="mi">10</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">Master</span> <span class="o">|</span>      <span class="mi">0</span> <span class="o">|</span> <span class="k">Primary</span> <span class="n">master</span> <span class="k">on</span> <span class="s1">&#39;10.0.3.8&#39;</span><span class="p">:</span><span class="mi">3306</span> <span class="n">at</span> <span class="mi">0</span><span class="p">:</span><span class="mi">0</span> <span class="p">[</span> <span class="n">MASTER</span><span class="o">=</span><span class="n">yes</span> <span class="n">SYNC</span><span class="o">=</span><span class="n">no</span> <span class="n">ATTACH</span><span class="o">=</span><span class="n">yes</span> <span class="p">]</span> <span class="o">|</span> <span class="k">CREATE</span>       <span class="o">|</span>          <span class="mi">0</span> <span class="o">|</span>              <span class="o">|</span>
+<span class="o">|</span>      <span class="mi">10</span> <span class="o">|</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">.</span><span class="mi">10</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">Master</span> <span class="o">|</span>      <span class="mi">0</span> <span class="o">|</span> <span class="k">Primary</span> <span class="n">master</span> <span class="k">on</span> <span class="s1">&#39;10.0.3.6&#39;</span><span class="p">:</span><span class="mi">3306</span> <span class="n">at</span> <span class="mi">0</span><span class="p">:</span><span class="mi">0</span> <span class="p">[</span> <span class="n">MASTER</span><span class="o">=</span><span class="n">yes</span> <span class="n">SYNC</span><span class="o">=</span><span class="n">no</span> <span class="n">ATTACH</span><span class="o">=</span><span class="n">yes</span> <span class="p">]</span> <span class="o">|</span> <span class="k">CREATE</span>       <span class="o">|</span>          <span class="mi">0</span> <span class="o">|</span>              <span class="o">|</span>
+<span class="o">|</span>      <span class="mi">11</span> <span class="o">|</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">.</span><span class="mi">10</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">Master</span> <span class="o">|</span>      <span class="mi">0</span> <span class="o">|</span> <span class="k">Primary</span> <span class="n">master</span> <span class="k">on</span> <span class="s1">&#39;10.0.3.8&#39;</span><span class="p">:</span><span class="mi">3306</span> <span class="n">at</span> <span class="mi">0</span><span class="p">:</span><span class="mi">0</span> <span class="p">[</span> <span class="n">MASTER</span><span class="o">=</span><span class="n">yes</span> <span class="n">SYNC</span><span class="o">=</span><span class="n">no</span> <span class="n">ATTACH</span><span class="o">=</span><span class="n">yes</span> <span class="p">]</span> <span class="o">|</span> <span class="k">CREATE</span>       <span class="o">|</span>          <span class="mi">0</span> <span class="o">|</span>              <span class="o">|</span>
+<span class="o">|</span>      <span class="mi">12</span> <span class="o">|</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">.</span><span class="mi">12</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">Master</span> <span class="o">|</span>      <span class="mi">0</span> <span class="o">|</span> <span class="k">Primary</span> <span class="n">master</span> <span class="k">on</span> <span class="s1">&#39;10.0.3.6&#39;</span><span class="p">:</span><span class="mi">3306</span> <span class="n">at</span> <span class="mi">0</span><span class="p">:</span><span class="mi">0</span> <span class="p">[</span> <span class="n">MASTER</span><span class="o">=</span><span class="n">yes</span> <span class="n">SYNC</span><span class="o">=</span><span class="n">no</span> <span class="n">ATTACH</span><span class="o">=</span><span class="n">yes</span> <span class="p">]</span> <span class="o">|</span> <span class="k">CREATE</span>       <span class="o">|</span>          <span class="mi">0</span> <span class="o">|</span>              <span class="o">|</span>
+<span class="o">|</span>      <span class="mi">13</span> <span class="o">|</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">.</span><span class="mi">12</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">Master</span> <span class="o">|</span>      <span class="mi">0</span> <span class="o">|</span> <span class="k">Primary</span> <span class="n">master</span> <span class="k">on</span> <span class="s1">&#39;10.0.3.8&#39;</span><span class="p">:</span><span class="mi">3306</span> <span class="n">at</span> <span class="mi">0</span><span class="p">:</span><span class="mi">0</span> <span class="p">[</span> <span class="n">MASTER</span><span class="o">=</span><span class="n">yes</span> <span class="n">SYNC</span><span class="o">=</span><span class="n">no</span> <span class="n">ATTACH</span><span class="o">=</span><span class="n">yes</span> <span class="p">]</span> <span class="o">|</span> <span class="k">CREATE</span>       <span class="o">|</span>          <span class="mi">0</span> <span class="o">|</span>              <span class="o">|</span>
+<span class="o">|</span>      <span class="mi">14</span> <span class="o">|</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">.</span><span class="mi">12</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">Master</span> <span class="o">|</span>      <span class="mi">0</span> <span class="o">|</span> <span class="k">Primary</span> <span class="n">master</span> <span class="k">on</span> <span class="s1">&#39;10.0.3.6&#39;</span><span class="p">:</span><span class="mi">3306</span> <span class="n">at</span> <span class="mi">0</span><span class="p">:</span><span class="mi">0</span> <span class="p">[</span> <span class="n">MASTER</span><span class="o">=</span><span class="n">yes</span> <span class="n">SYNC</span><span class="o">=</span><span class="n">no</span> <span class="n">ATTACH</span><span class="o">=</span><span class="n">yes</span> <span class="p">]</span> <span class="o">|</span> <span class="k">CREATE</span>       <span class="o">|</span>          <span class="mi">0</span> <span class="o">|</span>              <span class="o">|</span>
+<span class="o">|</span>      <span class="mi">15</span> <span class="o">|</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">.</span><span class="mi">10</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">Master</span> <span class="o">|</span>      <span class="mi">0</span> <span class="o">|</span> <span class="k">Primary</span> <span class="n">master</span> <span class="k">on</span> <span class="s1">&#39;10.0.3.8&#39;</span><span class="p">:</span><span class="mi">3306</span> <span class="n">at</span> <span class="mi">0</span><span class="p">:</span><span class="mi">0</span> <span class="p">[</span> <span class="n">MASTER</span><span class="o">=</span><span class="n">yes</span> <span class="n">SYNC</span><span class="o">=</span><span class="n">no</span> <span class="n">ATTACH</span><span class="o">=</span><span class="n">yes</span> <span class="p">]</span> <span class="o">|</span> <span class="k">CREATE</span>       <span class="o">|</span>          <span class="mi">0</span> <span class="o">|</span>              <span class="o">|</span>
+<span class="o">+---------+-----------+------+--------+--------+----------------------------------------------------------------------------+--------------+------------+--------------+</span>
+
+<span class="n">memsql</span><span class="o">&gt;</span> <span class="k">SHOW</span> <span class="n">CLUSTER</span> <span class="n">STATUS</span><span class="p">;</span>
+
+<span class="o">+-----------+------+----------+-----------+-------------+-----------+---------+</span>
+<span class="o">|</span> <span class="n">Host</span>      <span class="o">|</span> <span class="n">Port</span> <span class="o">|</span> <span class="k">Database</span> <span class="o">|</span> <span class="n">Role</span>      <span class="o">|</span> <span class="n">State</span>       <span class="o">|</span> <span class="n">Position</span>  <span class="o">|</span> <span class="n">Details</span> <span class="o">|</span>
+<span class="o">+-----------+------+----------+-----------+-------------+-----------+---------+</span>
+<span class="o">|</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">.</span><span class="mi">10</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">tname</span>    <span class="o">|</span> <span class="n">REFERENCE</span> <span class="o">|</span> <span class="n">replicating</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2426</span>    <span class="o">|</span>         <span class="o">|</span>
+<span class="o">|</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">.</span><span class="mi">10</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">tname_0</span>  <span class="o">|</span> <span class="n">MASTER</span>    <span class="o">|</span> <span class="n">replicating</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">4034560</span> <span class="o">|</span>         <span class="o">|</span>
+<span class="o">|</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">.</span><span class="mi">10</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">tname_1</span>  <span class="o">|</span> <span class="n">MASTER</span>    <span class="o">|</span> <span class="n">replicating</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3992363</span> <span class="o">|</span>         <span class="o">|</span>
+<span class="o">|</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">.</span><span class="mi">10</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">tname_10</span> <span class="o">|</span> <span class="n">MASTER</span>    <span class="o">|</span> <span class="n">replicating</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">4008804</span> <span class="o">|</span>         <span class="o">|</span>
+<span class="o">|</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">.</span><span class="mi">10</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">tname_11</span> <span class="o">|</span> <span class="n">MASTER</span>    <span class="o">|</span> <span class="n">replicating</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3968388</span> <span class="o">|</span>         <span class="o">|</span>
+<span class="o">|</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">.</span><span class="mi">10</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">tname_15</span> <span class="o">|</span> <span class="n">MASTER</span>    <span class="o">|</span> <span class="n">replicating</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">4034012</span> <span class="o">|</span>         <span class="o">|</span>
+<span class="o">|</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">.</span><span class="mi">10</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">tname_2</span>  <span class="o">|</span> <span class="n">MASTER</span>    <span class="o">|</span> <span class="n">replicating</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3985924</span> <span class="o">|</span>         <span class="o">|</span>
+<span class="o">|</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">.</span><span class="mi">10</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">tname_6</span>  <span class="o">|</span> <span class="n">MASTER</span>    <span class="o">|</span> <span class="n">replicating</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">4021956</span> <span class="o">|</span>         <span class="o">|</span>
+<span class="o">|</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">.</span><span class="mi">10</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">tname_9</span>  <span class="o">|</span> <span class="n">MASTER</span>    <span class="o">|</span> <span class="n">replicating</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">4011270</span> <span class="o">|</span>         <span class="o">|</span>
+<span class="o">|</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">.</span><span class="mi">12</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">tname</span>    <span class="o">|</span> <span class="n">REFERENCE</span> <span class="o">|</span> <span class="n">replicating</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2426</span>    <span class="o">|</span>         <span class="o">|</span>
+<span class="o">|</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">.</span><span class="mi">12</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">tname_12</span> <span class="o">|</span> <span class="n">MASTER</span>    <span class="o">|</span> <span class="n">replicating</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">4001954</span> <span class="o">|</span>         <span class="o">|</span>
+<span class="o">|</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">.</span><span class="mi">12</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">tname_13</span> <span class="o">|</span> <span class="n">MASTER</span>    <span class="o">|</span> <span class="n">replicating</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3974690</span> <span class="o">|</span>         <span class="o">|</span>
+<span class="o">|</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">.</span><span class="mi">12</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">tname_14</span> <span class="o">|</span> <span class="n">MASTER</span>    <span class="o">|</span> <span class="n">replicating</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">4066618</span> <span class="o">|</span>         <span class="o">|</span>
+<span class="o">|</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">.</span><span class="mi">12</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">tname_3</span>  <span class="o">|</span> <span class="n">MASTER</span>    <span class="o">|</span> <span class="n">replicating</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3932348</span> <span class="o">|</span>         <span class="o">|</span>
+<span class="o">|</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">.</span><span class="mi">12</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">tname_4</span>  <span class="o">|</span> <span class="n">MASTER</span>    <span class="o">|</span> <span class="n">replicating</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">4029080</span> <span class="o">|</span>         <span class="o">|</span>
+<span class="o">|</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">.</span><span class="mi">12</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">tname_5</span>  <span class="o">|</span> <span class="n">MASTER</span>    <span class="o">|</span> <span class="n">replicating</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">4006201</span> <span class="o">|</span>         <span class="o">|</span>
+<span class="o">|</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">.</span><span class="mi">12</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">tname_7</span>  <span class="o">|</span> <span class="n">MASTER</span>    <span class="o">|</span> <span class="n">replicating</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">4069778</span> <span class="o">|</span>         <span class="o">|</span>
+<span class="o">|</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">.</span><span class="mi">12</span> <span class="o">|</span> <span class="mi">3306</span> <span class="o">|</span> <span class="n">tname_8</span>  <span class="o">|</span> <span class="n">MASTER</span>    <span class="o">|</span> <span class="n">replicating</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3956332</span> <span class="o">|</span>         <span class="o">|</span>
+<span class="o">+-----------+------+----------+-----------+-------------+-----------+---------+</span>
+</pre></div>
+</div>
+<p><tt class="docutils literal"><span class="pre">NetworkPosition</span></tt> uses the format <tt class="docutils literal"><span class="pre">[log</span> <span class="pre">file</span> <span class="pre">ordinal]:[byte</span> <span class="pre">offset</span> <span class="pre">into</span> <span class="pre">log</span> <span class="pre">file]</span></tt>.</p>
+<p><tt class="docutils literal"><span class="pre">SHOW</span> <span class="pre">DATABASES</span> <span class="pre">EXTENDED</span></tt> is another useful command for monitoring replication status. The output summarizes the replication
+status and various other information about the state of the databases present in a MemSQL cluster.</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="k">show</span> <span class="k">databases</span> <span class="n">extended</span><span class="p">;</span>
+
+<span class="o">+---------------------------+---------+-------------+-------------+----------+---------+-------------+------------+--------------+</span>
+<span class="o">|</span> <span class="k">Database</span>                  <span class="o">|</span> <span class="n">Commits</span> <span class="o">|</span> <span class="n">Role</span>        <span class="o">|</span> <span class="n">State</span>       <span class="o">|</span> <span class="n">Position</span> <span class="o">|</span> <span class="n">Details</span> <span class="o">|</span> <span class="n">AsyncSlaves</span> <span class="o">|</span> <span class="n">SyncSlaves</span> <span class="o">|</span> <span class="nf">Memory</span> <span class="p">(</span><span class="n">MBs</span><span class="p">)</span> <span class="o">|</span>
+<span class="o">+---------------------------+---------+-------------+-------------+----------+---------+-------------+------------+--------------+</span>
+<span class="o">|</span> <span class="n">information_schema</span>        <span class="o">|</span>      <span class="mi">35</span> <span class="o">|</span> <span class="n">master</span>      <span class="o">|</span> <span class="n">online</span>      <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">87170</span>  <span class="o">|</span>         <span class="o">|</span> <span class="mi">0</span>           <span class="o">|</span> <span class="mi">0</span>          <span class="o">|</span>         <span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">memsql</span>                    <span class="o">|</span>      <span class="mi">17</span> <span class="o">|</span> <span class="n">master</span>      <span class="o">|</span> <span class="n">online</span>      <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">1039</span>   <span class="o">|</span>         <span class="o">|</span> <span class="mi">0</span>           <span class="o">|</span> <span class="mi">0</span>          <span class="o">|</span>         <span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">sharding</span>                  <span class="o">|</span>      <span class="mi">40</span> <span class="o">|</span> <span class="n">master</span>      <span class="o">|</span> <span class="n">online</span>      <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">1759</span>   <span class="o">|</span>         <span class="o">|</span> <span class="mi">0</span>           <span class="o">|</span> <span class="mi">0</span>          <span class="o">|</span>         <span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">sharding_6683bab69542952c</span> <span class="o">|</span>       <span class="mi">5</span> <span class="o">|</span> <span class="n">async</span> <span class="n">slave</span> <span class="o">|</span> <span class="n">replicating</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">320</span>    <span class="o">|</span>         <span class="o">|</span> <span class="mi">0</span>           <span class="o">|</span> <span class="mi">0</span>          <span class="o">|</span>         <span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">t</span>                         <span class="o">|</span>      <span class="mi">18</span> <span class="o">|</span> <span class="n">async</span> <span class="n">slave</span> <span class="o">|</span> <span class="n">replicating</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2426</span>   <span class="o">|</span>         <span class="o">|</span> <span class="mi">2</span>           <span class="o">|</span> <span class="mi">0</span>          <span class="o">|</span>         <span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="o">|</span>
+<span class="o">+---------------------------+---------+-------------+-------------+----------+---------+-------------+------------+--------------+</span>
+<span class="mi">5</span> <span class="n">rows</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>The <a class="reference internal" href="../../ref/REPLICATE_DATABASE/index.html"><em>REPLICATE DATABASE</em></a> and <a class="reference internal" href="../../ref/CONTINUE_REPLICATING/index.html"><em>CONTINUE REPLICATING</em></a> statements will not wait for provisioning to complete before
+returning, even if used with synchronous replication (<tt class="docutils literal"><span class="pre">SYNC</span></tt> option). To check whether all synchronous slaves of a given
+master are fully synchronized (or are still in the process of catching up with the master) use <a class="reference internal" href="../../ref/SHOW_DATABASES/index.html"><em>SHOW DATABASES</em></a> with
+the <tt class="docutils literal"><span class="pre">EXTENDED</span></tt> option and look for the <tt class="docutils literal"><span class="pre">SyncSlaves</span></tt> column. If there are any sync slaves connected that have not fully
+synchronized yet they will appear in parentheses. For example:</p>
+<ol class="arabic simple">
+<li>On &#8216;slave-host&#8217;, start synchronous replication:</li>
+</ol>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="n">mysql</span><span class="o">&gt;</span> <span class="n">REPLICATE</span> <span class="k">DATABASE</span> <span class="n">SYNC</span> <span class="n">ExampleSlave</span> <span class="k">FROM</span> <span class="n">root</span><span class="o">@</span><span class="n">master</span><span class="o">-</span><span class="n">host</span><span class="o">/</span><span class="n">Example</span><span class="p">;</span>
+<span class="n">Query</span> <span class="n">OK</span><span class="p">,</span> <span class="mi">1</span> <span class="n">row</span> <span class="nf">affected</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">32</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li>On &#8216;master-host&#8217; run <a class="reference internal" href="../../ref/SHOW_DATABASES/index.html"><em>SHOW DATABASES</em></a> with the <tt class="docutils literal"><span class="pre">EXTENDED</span></tt> option immediately after starting replication on the
+slave to confirm that <tt class="docutils literal"><span class="pre">ExampleSlave</span></tt> is still not synchronized:</li>
+</ol>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="n">mysql</span><span class="o">&gt;</span> <span class="k">SHOW</span> <span class="k">DATABASES</span> <span class="n">EXTENDED</span> <span class="k">LIKE</span> <span class="s1">&#39;Example&#39;</span><span class="p">;</span>
+<span class="o">+--------------------+---------+--------+--------+-------------+---------+-------------+------------+</span>
+<span class="o">|</span> <span class="k">Database</span>           <span class="o">|</span> <span class="n">Commits</span> <span class="o">|</span> <span class="n">Role</span>   <span class="o">|</span> <span class="n">State</span>  <span class="o">|</span> <span class="n">Position</span>    <span class="o">|</span> <span class="n">Details</span> <span class="o">|</span> <span class="n">AsyncSlaves</span> <span class="o">|</span> <span class="n">SyncSlaves</span> <span class="o">|</span>
+<span class="o">+--------------------+---------+--------+--------+-------------+---------+-------------+------------+</span>
+<span class="o">|</span> <span class="n">Example</span>            <span class="o">|</span>   <span class="mi">91231</span> <span class="o">|</span> <span class="n">master</span> <span class="o">|</span> <span class="n">online</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">246251302</span> <span class="o">|</span>         <span class="o">|</span> <span class="mi">0</span>           <span class="o">|</span> <span class="mi">0</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span>      <span class="o">|</span>
+<span class="o">+--------------------+---------+--------+--------+-------------+---------+-------------+------------+</span>
+<span class="mi">1</span> <span class="n">row</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li>On &#8216;master-host&#8217; run <a class="reference internal" href="../../ref/SHOW_DATABASES/index.html"><em>SHOW DATABASES</em></a> with the <tt class="docutils literal"><span class="pre">EXTENDED</span></tt> option once the <tt class="docutils literal"><span class="pre">ExampleSlave</span></tt> database fully synchronizes itself with the <tt class="docutils literal"><span class="pre">Example</span></tt> database:</li>
+</ol>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="n">mysql</span><span class="o">&gt;</span> <span class="k">SHOW</span> <span class="k">DATABASES</span> <span class="n">EXTENDED</span> <span class="k">LIKE</span> <span class="s1">&#39;Example&#39;</span><span class="p">;</span>
+<span class="o">+--------------------+---------+--------+--------+-------------+---------+-------------+------------+</span>
+<span class="o">|</span> <span class="k">Database</span>           <span class="o">|</span> <span class="n">Commits</span> <span class="o">|</span> <span class="n">Role</span>   <span class="o">|</span> <span class="n">State</span>  <span class="o">|</span> <span class="n">Position</span>    <span class="o">|</span> <span class="n">Details</span> <span class="o">|</span> <span class="n">AsyncSlaves</span> <span class="o">|</span> <span class="n">SyncSlaves</span> <span class="o">|</span>
+<span class="o">+--------------------+---------+--------+--------+-------------+---------+-------------+------------+</span>
+<span class="o">|</span> <span class="n">Example</span>            <span class="o">|</span>   <span class="mi">91231</span> <span class="o">|</span> <span class="n">master</span> <span class="o">|</span> <span class="n">online</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">246251302</span> <span class="o">|</span>         <span class="o">|</span> <span class="mi">0</span>           <span class="o">|</span> <span class="mi">1</span>          <span class="o">|</span>
+<span class="o">+--------------------+---------+--------+--------+-------------+---------+-------------+------------+</span>
+<span class="mi">1</span> <span class="n">row</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="last">Until the synchronous slave fully synchronizes itself with the master, it will behave like an asynchronous slave.</p>
+</div>
+</div>
+<div class="section" id="pausing-and-stopping-replication">
+<h2>Pausing and Stopping Replication<a class="headerlink" href="index.html#pausing-and-stopping-replication" title="Permalink to this headline">¶</a></h2>
+<p>MemSQL allows users to pause and resume online replication with single commands.</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="n">PAUSE</span> <span class="n">REPLICATING</span> <span class="n">db_name</span><span class="p">;</span>
+<span class="n">Query</span> <span class="n">OK</span><span class="p">,</span> <span class="mi">1</span> <span class="n">row</span> <span class="nf">affected</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">06</span> <span class="n">sec</span><span class="p">)</span>
+
+<span class="n">memsql</span><span class="o">&gt;</span> <span class="k">CONTINUE</span> <span class="n">REPLICATING</span> <span class="n">db_name</span><span class="p">;</span>
+<span class="n">Query</span> <span class="n">OK</span><span class="p">,</span> <span class="mi">1</span> <span class="n">row</span> <span class="nf">affected</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">96</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><tt class="docutils literal"><span class="pre">PAUSE</span> <span class="pre">REPLICATING</span></tt> temporarily pauses replication but maintains the replication relationship between master and slave
+databases. To begin replicating
+from a different primary cluster, you must start a new <tt class="docutils literal"><span class="pre">REPLICATE</span> <span class="pre">DATABASE</span></tt> process.</p>
+<p><tt class="docutils literal"><span class="pre">STOP</span> <span class="pre">REPLICATION</span> <span class="pre">db_name</span></tt> halts replication of <tt class="docutils literal"><span class="pre">db_name</span></tt> and automatically promotes the <tt class="docutils literal"><span class="pre">db_name</span></tt> instance on the
+secondary cluster to a &#8220;full&#8221; MemSQL database with all read, write, DDL, and DML operations. Once replication on a cluster has been stopped, it cannot be restarted.
+To resume replication on an individual slave partition,
+you can use <a class="reference internal" href="../../ref/CONTINUE_REPLICATING/index.html"><em>CONTINUE REPLICATING</em></a> with the <tt class="docutils literal"><span class="pre">FORCE</span></tt> option.</p>
+</div>
+<div class="section" id="concepts-in-cross-cluster-replication">
+<h2>Concepts in Cross-Cluster Replication<a class="headerlink" href="index.html#concepts-in-cross-cluster-replication" title="Permalink to this headline">¶</a></h2>
+<p>Cross-cluster replication, like replication within a cluster, is automated and is triggered with a single command. However, there are some
+concepts to understand with respect to replication and MemSQL&#8217;s distributed architecture.</p>
+<p>The following is an example of the output of <a class="reference internal" href="../../ref/SHOW_REPLICATION_STATUS/index.html"><em>SHOW REPLICATION STATUS</em></a> run on <tt class="docutils literal"><span class="pre">secondary-MA</span></tt>. Note that this example follows the naming
+conventions established in <a class="reference internal" href="index.html#setting-up-replication"><em>Setting Up Replication</em></a>.</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="k">SHOW</span> <span class="n">REPLICATION</span> <span class="n">STATUS</span><span class="p">;</span>
+
+<span class="o">+-------------+---------------------------+--------------------------+----------------+---------------------------+-----------+-----------------+-------------+----------------+---------------+--------------+</span>
+<span class="o">|</span> <span class="n">Role</span>        <span class="o">|</span> <span class="k">Database</span>                  <span class="o">|</span> <span class="n">MasterURI</span>                <span class="o">|</span> <span class="n">MasterPosition</span> <span class="o">|</span> <span class="n">SlaveURI</span>                  <span class="o">|</span> <span class="n">Connected</span> <span class="o">|</span> <span class="n">NetworkPosition</span> <span class="o">|</span> <span class="n">SlaveState</span>  <span class="o">|</span> <span class="n">ReplayPosition</span> <span class="o">|</span> <span class="n">MasterCommits</span> <span class="o">|</span> <span class="n">SlaveCommits</span> <span class="o">|</span>
+<span class="o">+-------------+---------------------------+--------------------------+----------------+---------------------------+-----------+-----------------+-------------+----------------+---------------+--------------+</span>
+<span class="o">|</span> <span class="n">async</span> <span class="n">slave</span> <span class="o">|</span> <span class="n">sharding_6683bab69542952c</span> <span class="o">|</span> <span class="k">primary</span><span class="o">-</span><span class="n">MA</span><span class="p">:</span><span class="mi">3306</span><span class="o">/</span><span class="n">sharding</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">320</span>          <span class="o">|</span> <span class="no">NULL</span>                      <span class="o">|</span> <span class="n">yes</span>       <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">320</span>           <span class="o">|</span> <span class="n">replicating</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">320</span>          <span class="o">|</span> <span class="mi">5</span>             <span class="o">|</span> <span class="mi">5</span>            <span class="o">|</span>
+<span class="o">|</span> <span class="n">async</span> <span class="n">slave</span> <span class="o">|</span> <span class="n">db_name</span>                   <span class="o">|</span> <span class="k">primary</span><span class="o">-</span><span class="n">MA</span><span class="p">:</span><span class="mi">3306</span><span class="o">/</span><span class="n">db_name</span>  <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2426</span>         <span class="o">|</span> <span class="no">NULL</span>                      <span class="o">|</span> <span class="n">yes</span>       <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2426</span>          <span class="o">|</span> <span class="n">replicating</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2426</span>         <span class="o">|</span> <span class="mi">18</span>            <span class="o">|</span> <span class="mi">18</span>           <span class="o">|</span>
+<span class="o">|</span> <span class="n">master</span>      <span class="o">|</span> <span class="n">db_name</span>                   <span class="o">|</span> <span class="no">NULL</span>                     <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2426</span>         <span class="o">|</span> <span class="n">secondary</span><span class="o">-</span><span class="n">L1</span><span class="p">:</span><span class="mi">3306</span><span class="o">/</span><span class="n">db_name</span> <span class="o">|</span> <span class="n">yes</span>       <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2426</span>          <span class="o">|</span> <span class="n">replicating</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2426</span>         <span class="o">|</span> <span class="mi">18</span>            <span class="o">|</span> <span class="mi">18</span>           <span class="o">|</span>
+<span class="o">|</span> <span class="n">master</span>      <span class="o">|</span> <span class="n">db_name</span>                   <span class="o">|</span> <span class="no">NULL</span>                     <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2426</span>         <span class="o">|</span> <span class="n">secondary</span><span class="o">-</span><span class="n">L2</span><span class="p">:</span><span class="mi">3306</span><span class="o">/</span><span class="n">db_name</span> <span class="o">|</span> <span class="n">yes</span>       <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2426</span>          <span class="o">|</span> <span class="n">replicating</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2426</span>         <span class="o">|</span> <span class="mi">18</span>            <span class="o">|</span> <span class="mi">18</span>           <span class="o">|</span>
+<span class="o">+-------------+---------------------------+--------------------------+----------------+---------------------------+-----------+-----------------+-------------+----------------+---------------+--------------+</span>
+</pre></div>
+</div>
+<p>Running <tt class="docutils literal"><span class="pre">SHOW</span> <span class="pre">REPLICATION</span> <span class="pre">STATUS</span></tt> on a node shows the status of every replication process running on that node.
+In this example, the first line describes replication of the <tt class="docutils literal"><span class="pre">sharding</span></tt> database on <tt class="docutils literal"><span class="pre">primary-MA</span></tt>
+to the <tt class="docutils literal"><span class="pre">sharding_6683bab69542952c</span></tt> database on <tt class="docutils literal"><span class="pre">secondary-MA</span></tt>. The <tt class="docutils literal"><span class="pre">sharding</span></tt> database exists on the master aggregator
+and stores metadata that defines how data is partitioned. <tt class="docutils literal"><span class="pre">REPLICATE</span> <span class="pre">DATABASE</span></tt> automatically creates a <tt class="docutils literal"><span class="pre">sharding_[hash]`</span>
+<span class="pre">database</span> <span class="pre">on</span> <span class="pre">the</span> <span class="pre">secondary</span> <span class="pre">cluster</span> <span class="pre">which</span> <span class="pre">stores</span> <span class="pre">partition</span> <span class="pre">metadata</span> <span class="pre">about</span> <span class="pre">the</span> <span class="pre">primary</span> <span class="pre">cluster.</span> <span class="pre">The</span> <span class="pre">second</span> <span class="pre">line</span> <span class="pre">describes</span> <span class="pre">replication</span>
+<span class="pre">of</span> <span class="pre">metadata</span> <span class="pre">and</span> <span class="pre">reference</span> <span class="pre">tables</span> <span class="pre">for</span> <span class="pre">the</span> <span class="pre">``db_name</span></tt> database. This data is replicated synchronously to all aggregators and
+asynchronously to all leaves. The third and fourth lines describe replication of <tt class="docutils literal"><span class="pre">db_name</span></tt> metadata and reference tables
+from <tt class="docutils literal"><span class="pre">secondary-MA</span></tt> to the secondary cluster&#8217;s two leaf nodes (<tt class="docutils literal"><span class="pre">secondary-L1</span></tt> and <tt class="docutils literal"><span class="pre">secondary-L2</span></tt>).</p>
+<p>The following is the output of <a class="reference internal" href="../../ref/SHOW_REPLICATION_STATUS/index.html"><em>SHOW REPLICATION STATUS</em></a> run on <tt class="docutils literal"><span class="pre">secondary-L1</span></tt>. In this example, <tt class="docutils literal"><span class="pre">db_name_[ordinal]</span></tt> refers
+to a partition of the sharded <tt class="docutils literal"><span class="pre">db_name</span></tt> database.</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="k">SHOW</span> <span class="n">REPLICATION</span> <span class="n">STATUS</span><span class="p">;</span>
+
+<span class="o">+-------------+------------+-----------------------------+----------------+----------+-----------+-----------------+-------------+----------------+---------------+--------------+</span>
+<span class="o">|</span> <span class="n">Role</span>        <span class="o">|</span> <span class="k">Database</span>   <span class="o">|</span> <span class="n">MasterURI</span>                   <span class="o">|</span> <span class="n">MasterPosition</span> <span class="o">|</span> <span class="n">SlaveURI</span> <span class="o">|</span> <span class="n">Connected</span> <span class="o">|</span> <span class="n">NetworkPosition</span> <span class="o">|</span> <span class="n">SlaveState</span>  <span class="o">|</span> <span class="n">ReplayPosition</span> <span class="o">|</span> <span class="n">MasterCommits</span> <span class="o">|</span> <span class="n">SlaveCommits</span> <span class="o">|</span>
+<span class="o">+-------------+------------+-----------------------------+----------------+----------+-----------+-----------------+-------------+----------------+---------------+--------------+</span>
+<span class="o">|</span> <span class="n">async</span> <span class="n">slave</span> <span class="o">|</span> <span class="n">db_name</span>    <span class="o">|</span> <span class="n">secondary</span><span class="o">-</span><span class="n">MA</span><span class="p">:</span><span class="mi">3306</span><span class="o">/</span><span class="n">db_name</span>   <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2426</span>         <span class="o">|</span> <span class="no">NULL</span>     <span class="o">|</span> <span class="n">yes</span>       <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2426</span>          <span class="o">|</span> <span class="n">replicating</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2426</span>         <span class="o">|</span> <span class="mi">18</span>            <span class="o">|</span> <span class="mi">18</span>           <span class="o">|</span>
+<span class="o">|</span> <span class="n">async</span> <span class="n">slave</span> <span class="o">|</span> <span class="n">db_name_0</span>  <span class="o">|</span> <span class="k">primary</span><span class="o">-</span><span class="n">L1</span><span class="p">:</span><span class="mi">3306</span><span class="o">/</span><span class="n">db_name_0</span>   <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">4034560</span>      <span class="o">|</span> <span class="no">NULL</span>     <span class="o">|</span> <span class="n">yes</span>       <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">4034560</span>       <span class="o">|</span> <span class="n">replicating</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">4034560</span>      <span class="o">|</span> <span class="mi">2</span>             <span class="o">|</span> <span class="mi">2</span>            <span class="o">|</span>
+<span class="o">|</span> <span class="n">async</span> <span class="n">slave</span> <span class="o">|</span> <span class="n">db_name_1</span>  <span class="o">|</span> <span class="k">primary</span><span class="o">-</span><span class="n">L2</span><span class="p">:</span><span class="mi">3306</span><span class="o">/</span><span class="n">db_name_1</span>   <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3992363</span>      <span class="o">|</span> <span class="no">NULL</span>     <span class="o">|</span> <span class="n">yes</span>       <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3992363</span>       <span class="o">|</span> <span class="n">replicating</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3992363</span>      <span class="o">|</span> <span class="mi">2</span>             <span class="o">|</span> <span class="mi">2</span>            <span class="o">|</span>
+<span class="o">|</span> <span class="n">async</span> <span class="n">slave</span> <span class="o">|</span> <span class="n">db_name_10</span> <span class="o">|</span> <span class="k">primary</span><span class="o">-</span><span class="n">L1</span><span class="p">:</span><span class="mi">3306</span><span class="o">/</span><span class="n">db_name_10</span>  <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">4008804</span>      <span class="o">|</span> <span class="no">NULL</span>     <span class="o">|</span> <span class="n">yes</span>       <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">4008804</span>       <span class="o">|</span> <span class="n">replicating</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">4008804</span>      <span class="o">|</span> <span class="mi">2</span>             <span class="o">|</span> <span class="mi">2</span>            <span class="o">|</span>
+<span class="o">|</span> <span class="n">async</span> <span class="n">slave</span> <span class="o">|</span> <span class="n">db_name_11</span> <span class="o">|</span> <span class="k">primary</span><span class="o">-</span><span class="n">L2</span><span class="p">:</span><span class="mi">3306</span><span class="o">/</span><span class="n">db_name_11</span>  <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3968388</span>      <span class="o">|</span> <span class="no">NULL</span>     <span class="o">|</span> <span class="n">yes</span>       <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3968388</span>       <span class="o">|</span> <span class="n">replicating</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3968388</span>      <span class="o">|</span> <span class="mi">2</span>             <span class="o">|</span> <span class="mi">2</span>            <span class="o">|</span>
+<span class="o">|</span> <span class="n">async</span> <span class="n">slave</span> <span class="o">|</span> <span class="n">db_name_15</span> <span class="o">|</span> <span class="k">primary</span><span class="o">-</span><span class="n">L2</span><span class="p">:</span><span class="mi">3306</span><span class="o">/</span><span class="n">db_name_15</span>  <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">4034012</span>      <span class="o">|</span> <span class="no">NULL</span>     <span class="o">|</span> <span class="n">yes</span>       <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">4034012</span>       <span class="o">|</span> <span class="n">replicating</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">4034012</span>      <span class="o">|</span> <span class="mi">2</span>             <span class="o">|</span> <span class="mi">2</span>            <span class="o">|</span>
+<span class="o">|</span> <span class="n">async</span> <span class="n">slave</span> <span class="o">|</span> <span class="n">db_name_2</span>  <span class="o">|</span> <span class="k">primary</span><span class="o">-</span><span class="n">L1</span><span class="p">:</span><span class="mi">3306</span><span class="o">/</span><span class="n">db_name_2</span>   <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3985924</span>      <span class="o">|</span> <span class="no">NULL</span>     <span class="o">|</span> <span class="n">yes</span>       <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3985924</span>       <span class="o">|</span> <span class="n">replicating</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3985924</span>      <span class="o">|</span> <span class="mi">2</span>             <span class="o">|</span> <span class="mi">2</span>            <span class="o">|</span>
+<span class="o">|</span> <span class="n">async</span> <span class="n">slave</span> <span class="o">|</span> <span class="n">db_name_6</span>  <span class="o">|</span> <span class="k">primary</span><span class="o">-</span><span class="n">L1</span><span class="p">:</span><span class="mi">3306</span><span class="o">/</span><span class="n">db_name_6</span>   <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">4021956</span>      <span class="o">|</span> <span class="no">NULL</span>     <span class="o">|</span> <span class="n">yes</span>       <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">4021956</span>       <span class="o">|</span> <span class="n">replicating</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">4021956</span>      <span class="o">|</span> <span class="mi">2</span>             <span class="o">|</span> <span class="mi">2</span>            <span class="o">|</span>
+<span class="o">|</span> <span class="n">async</span> <span class="n">slave</span> <span class="o">|</span> <span class="n">db_name_9</span>  <span class="o">|</span> <span class="k">primary</span><span class="o">-</span><span class="n">L2</span><span class="p">:</span><span class="mi">3306</span><span class="o">/</span><span class="n">db_name_9</span>   <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">4011270</span>      <span class="o">|</span> <span class="no">NULL</span>     <span class="o">|</span> <span class="n">yes</span>       <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">4011270</span>       <span class="o">|</span> <span class="n">replicating</span> <span class="o">|</span> <span class="mi">0</span><span class="p">:</span><span class="mi">4011270</span>      <span class="o">|</span> <span class="mi">2</span>             <span class="o">|</span> <span class="mi">2</span>            <span class="o">|</span>
+<span class="o">+-------------+------------+-----------------------------+----------------+----------+-----------+-----------------+-------------+----------------+---------------+--------------+</span>
+<span class="mi">9</span> <span class="n">rows</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">01</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In this sample output, the first line refers to replication of the reference database (metadata) for <tt class="docutils literal"><span class="pre">db_name</span></tt>. This data is replicated
+from <tt class="docutils literal"><span class="pre">primary-MA</span></tt> to <tt class="docutils literal"><span class="pre">secondary-MA</span></tt> from which is is replicated to each leaf node in the secondary cluster. The remaining lines
+refer to replication of the partitions of the sharded database <tt class="docutils literal"><span class="pre">db_name</span></tt>. As you can see, the data is replicated directly from leaf
+nodes in the primary cluster to leaf nodes in the secondary cluster. In this example, <tt class="docutils literal"><span class="pre">secondary-L1</span></tt> is receiving data from both
+<tt class="docutils literal"><span class="pre">primary-L1</span></tt> and <tt class="docutils literal"><span class="pre">primary-L2</span></tt>.</p>
+<p>Finally, note that MemSQL will automatically take the steps necessary to ensure the secondary cluster is consistent with the primary cluster.
+For example, if a leaf node in a primary cluster with redundancy 2 and a slave partition on the secondary cluster gets ahead of a slave partition
+on the primary cluster (due to network or other irregularity), MemSQL will automatically drop and reprovision the slave partition on the secondary
+cluster such that it will be consistent with the recently promoted master partition on the primary cluster.</p>
+</div>
+<div class="section" id="failover-and-promotion">
+<span id="replication-failover"></span><h2>Failover and Promotion<a class="headerlink" href="index.html#failover-and-promotion" title="Permalink to this headline">¶</a></h2>
+<p>There are a number of failure cases to consider when discussing MemSQL replication.</p>
+<div class="section" id="primary-cluster-master-aggregator-failure">
+<h3>Primary Cluster Master Aggregator Failure<a class="headerlink" href="index.html#primary-cluster-master-aggregator-failure" title="Permalink to this headline">¶</a></h3>
+<p>If the master aggregator for the primary cluster fails, replication of reference and metadata will stop, but distributed
+tables will continue replicating because this data flows directly from leaves on the primary cluster to leaves on the
+secondary cluster. To resume replication of reference and metadata, do the following:</p>
+<ol class="arabic simple">
+<li>Pause replication from the master aggregator of the secondary cluster using <tt class="docutils literal"><span class="pre">PAUSE</span> <span class="pre">REPLICATING</span> <span class="pre">db_name</span></tt>.</li>
+<li>Promote a child aggregator in the primary cluster to master. For more information see <a class="reference internal" href="../../ref/AGGREGATOR_SET/index.html"><em>AGGREGATOR SET AS MASTER</em></a>.</li>
+<li>Resume replication from the master aggregator of the secondary cluster pointed at the new primary cluster master
+aggregator using the following command:</li>
+</ol>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="k">CONTINUE</span> <span class="n">REPLICATING</span> <span class="n">db_name</span> <span class="p">[</span><span class="n">ASYNC</span> <span class="o">|</span> <span class="n">SYNC</span><span class="p">]</span> <span class="k">FROM</span> <span class="n">primary_user</span><span class="p">[:</span><span class="n">primary_password</span><span class="p">]</span><span class="o">@</span><span class="k">primary</span><span class="o">-</span><span class="n">MA</span><span class="p">[:</span><span class="n">port</span><span class="p">][</span><span class="o">/</span><span class="n">db_name</span><span class="p">]</span> <span class="p">[</span><span class="k">FORCE</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="secondary-cluster-master-aggregator-failure">
+<h3>Secondary Cluster Master Aggregator Failure<a class="headerlink" href="index.html#secondary-cluster-master-aggregator-failure" title="Permalink to this headline">¶</a></h3>
+<p>If the master aggregator for the secondary cluster fails, like the previous failure case, replication of reference tables and
+metadata will stop, but distributed tables will continue replicating because this data flows directly from leaves on the
+primary cluster to leaves on the secondary cluster. To resume replication of reference and metadata, do the following:</p>
+<ol class="arabic simple">
+<li>Promote a child aggregator in the secondary cluster to master. For more information see <a class="reference internal" href="../../ref/AGGREGATOR_SET/index.html"><em>AGGREGATOR SET AS MASTER</em></a>.</li>
+<li>Pause replication from the new master aggregator of the secondary cluster using <tt class="docutils literal"><span class="pre">PAUSE</span> <span class="pre">REPLICATING</span> <span class="pre">db_name</span></tt>.</li>
+<li>Resume replication from the new master aggregator of the secondary cluster pointed at the primary cluster master aggregator
+using the following command:</li>
+</ol>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="k">CONTINUE</span> <span class="n">REPLICATING</span> <span class="n">db_name</span> <span class="p">[</span><span class="n">ASYNC</span> <span class="o">|</span> <span class="n">SYNC</span><span class="p">]</span> <span class="k">FROM</span> <span class="n">primary_user</span><span class="p">[:</span><span class="n">primary_password</span><span class="p">]</span><span class="o">@</span><span class="k">primary</span><span class="o">-</span><span class="n">MA</span><span class="p">[:</span><span class="n">port</span><span class="p">][</span><span class="o">/</span><span class="n">db_name</span><span class="p">]</span> <span class="p">[</span><span class="k">FORCE</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="failover-to-a-secondary-cluster">
+<h3>Failover to a Secondary Cluster<a class="headerlink" href="index.html#failover-to-a-secondary-cluster" title="Permalink to this headline">¶</a></h3>
+<p>If the primary cluster fails and it becomes necessary to failover to the secondary cluster, do the following:</p>
+<ol class="arabic simple">
+<li>Stop replication by running <tt class="docutils literal"><span class="pre">STOP</span> <span class="pre">REPLICATING</span> <span class="pre">db_name</span></tt> on the secondary cluster master aggregator. The secondary cluster is
+now a &#8220;full&#8221; MemSQL cluster has full read, write, DDL, and DML capabilities.</li>
+<li>Re-point your application at an aggregator in the secondary cluster. Note that, after running <tt class="docutils literal"><span class="pre">STOP</span> <span class="pre">REPLICATING</span></tt>, you cannot
+resume replicating from the primary cluster.</li>
+</ol>
+</div>
+</div>
+<div class="section" id="tuning-replication">
+<h2>Tuning Replication<a class="headerlink" href="index.html#tuning-replication" title="Permalink to this headline">¶</a></h2>
+<p>MemSQL Replication is tuned by default to be efficient and fast for most workloads. However, MemSQL exposes several configuration
+hooks to help you fine-tune performance.</p>
+<div class="section" id="snapshot-and-log-files">
+<h3>Snapshot and Log Files<a class="headerlink" href="index.html#snapshot-and-log-files" title="Permalink to this headline">¶</a></h3>
+<p>MemSQL replication works by transferring snapshot and log files from master to slave. When replication is initiated, the
+slave requests the snapshot file from the master and proceeds to provision from the snapshot. Once provisioning is complete,
+replication proceeds by shipping transactions directly from the log file.</p>
+<p>As described in <a class="reference internal" href="../durability_recovery/index.html#durability-configuration"><em>Configuring Durability</em></a>, MemSQL exposes the <tt class="docutils literal"><span class="pre">snapshots-to-keep</span></tt> variable to let you tune how
+many old versions of the snapshot and log files to keep around. MemSQL will automatically delete files that fall out of
+this window. In the context of replication, if a network outage causes the slave to fall so behind that its position in
+the log has been rotated out, then it is re-provisioned from the current snapshot so that replication can proceed from
+an existing log file.</p>
+<p>You can tune <tt class="docutils literal"><span class="pre">snapshot-trigger-size</span></tt> and <tt class="docutils literal"><span class="pre">snapshots-to-keep</span></tt> to optimize the server for your network. A larger
+<tt class="docutils literal"><span class="pre">snapshot-trigger-size</span></tt> increases the length of each log and therefore offers more tolerance in the event of a sluggish network.
+However, it will decrease the frequency at which snapshots are taken and increase MemSQL recovery time due to larger logs (snapshot
+recovery is parallel, log recovery is single threaded).</p>
+<p>By increasing <tt class="docutils literal"><span class="pre">snapshots-to-keep</span></tt>, you can effectively increase how long log files are kept around. If you increase these parameters,
+make sure to allocate enough disk space to account for the larger (<tt class="docutils literal"><span class="pre">snapshot-trigger-size</span></tt>) and extra (<tt class="docutils literal"><span class="pre">snapshots-to-keep</span></tt>) files.
+If a slave partition falls more than <tt class="docutils literal"><span class="pre">snapshots-to-keep</span></tt> (which is a positive integer) behind the master partition, primary cluster master aggregator will
+automatically reprovision that slave partition.</p>
+</div>
+<div class="section" id="using-mysqldump-to-extract-data-from-a-slave-database">
+<h3>Using <cite>mysqldump</cite> to Extract Data From a Slave Database<a class="headerlink" href="index.html#using-mysqldump-to-extract-data-from-a-slave-database" title="Permalink to this headline">¶</a></h3>
+<p>When <tt class="docutils literal"><span class="pre">mysqldump</span></tt> is run on a slave database following the instructions in <a class="reference internal" href="../data_export/index.html"><em>Exporting Data From MemSQL</em></a>, an
+error will occur. This error happens because <tt class="docutils literal"><span class="pre">mysqldump</span></tt> runs <tt class="docutils literal"><span class="pre">LOCK</span> <span class="pre">TABLES</span></tt> which isn&#8217;t permitted on a slave database.  <tt class="docutils literal"><span class="pre">mysqldump</span></tt>
+can be configured to avoid locking tables by passing the option <tt class="docutils literal"><span class="pre">--lock-tables=false</span></tt>.  So, to take a consistent <tt class="docutils literal"><span class="pre">mysqldump</span></tt> of a
+slave database called <tt class="docutils literal"><span class="pre">slave_db</span></tt> we recommend the following:</p>
+<div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="n">PAUSE</span> <span class="n">REPLICATING</span> <span class="n">slave_db</span>
+</pre></div>
+<div class="highlight"><pre><span class="nv">$ </span>mysqldump -u root -h 127.0.0.1 --lock-tables<span class="o">=</span><span class="nb">false </span>db &gt; db.dump
+</pre></div>
+<div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="n">REPLICATE</span> <span class="k">DATABASE</span> <span class="n">slave_db</span>
+</pre></div>
+<p>Note that pausing replication is only required if you want a consistent <tt class="docutils literal"><span class="pre">mysqldump</span></tt> when concurrent writes are happening on the master.</p>
+</div>
+</div>
+<div class="section" id="concepts-in-single-box-replication">
+<span id="single-box-replication"></span><h2>Concepts in Single Box Replication<a class="headerlink" href="index.html#concepts-in-single-box-replication" title="Permalink to this headline">¶</a></h2>
+<p>With synchronous replication, write queries will wait until they are also committed on the secondary cluster,  ensuring that all writes
+are backed up and that the database on the secondary cluster is always consistent with the database on the primary cluster.</p>
+<p>To enable synchronous replication, use <tt class="docutils literal"><span class="pre">REPLICATE</span> <span class="pre">DATABASE</span> <span class="pre">db_name</span> <span class="pre">SYNC</span> <span class="pre">FROM</span> <span class="pre">...</span></tt>.
+For more information on syntax see <a class="reference internal" href="../../ref/REPLICATE_DATABASE/index.html"><em>REPLICATE DATABASE</em></a>.</p>
+<p><strong>Related Topics</strong></p>
+<ul class="simple">
+<li><a class="reference internal" href="../index.html"><em>Operations Manual</em></a></li>
+</ul>
+</div>
+</div>
+
+
+                    </div>
+                    <footer data-swiftype-index="false">
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../backup_restore/index.html" class="btn btn-neutral float-right" title="Backing Up and Restoring Data">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../durability_recovery/index.html" class="btn btn-neutral" title="Using Durability and Recovery"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&copy; Copyright 2015, MemSQL</p>
+  </div>
+</footer>
+                </div>
+            </div>
+
+        </section>
+    </div>
+
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/underscore-min.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery.ba-hashchange.min.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery.swiftype.search.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery.swiftype.autocomplete.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/theme.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/search.js"></script> 
+
+        <!-- Google Analytics -->
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-21693588-3', 'auto');
+            ga('send', 'pageview');
+        </script>
+        <!-- End Google Analytics -->
+
+        <script type="text/javascript">
+            $.ajax({
+                url: document.location.protocol + '//munchkin.marketo.net/munchkin.js',
+                dataType: 'script',
+                cache: true,
+                success: function() {
+                    Munchkin.init('759-YLI-316');
+                }
+            });
+        </script>
+    </body>
+</html>

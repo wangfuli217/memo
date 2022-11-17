@@ -1,0 +1,138 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 15.7.  Containers and Inheritance</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch15lev1sec6.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch15lev1sec8.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch15lev1sec7"></a>
+
+        <h3 class="docSection1Title" id="432172-845">15.7. Containers and Inheritance</h3>
+        <h3 class="docSection1Title" id="432172-845">15.7. 容器与继承</h3>
+
+        <p class="docText">We'd like to use containers (or built-in arrays) to hold objects that are related by inheritance. However, the fact that objects are not polymorphic (<a class="docLink" href="ch15lev1sec3.html#ch15lev2sec10" >Section 15.3.1</a>, p. <a class="docLink" href="ch15lev1sec3.html#ch15lev2sec10" >577</a>) affects how we can use containers with types in an inheritance hierarchy.</p>
+        <p class="docText">我们希望使用容器（或内置数组）保存因继承而相关联的对象。但是，对象不是多态的（<a class="docLink" href="ch15lev1sec3.html#ch15lev2sec10" >第 15.3.1 节</a>），这一事实对将容器用于继承层次中的类型有影响。</p>
+
+        <p class="docText">As an example, our bookstore application would probably have the notion of a basket that represents the books a customer is buying. We'd like to be able to store the purchases in a <tt>multiset</tt> (<a class="docLink" href="ch10lev1sec5.html#ch10lev1sec5" >Section 10.5</a>, p. <a class="docLink" href="ch10lev1sec5.html#ch10lev1sec5" >375</a>). To define the <tt>multiset</tt>, we must specify the type of the objects that the container will hold. When we put an object in a container, the element is copied (<a class="docLink" href="ch09lev1sec3.html#ch09lev2sec8" >Section 9.3.3</a>, p. <a class="docLink" href="ch09lev1sec3.html#ch09lev2sec8" >318</a>).</p>
+	<p class="docText">例如，书店应用程序中可能有购物篮，购物篮代表顾客正在购买的书。我们希望能够在 <tt>multiset</tt>（<a class="docLink" href="ch10lev1sec5.html#ch10lev1sec5" >第 10.5 节</a>）中存储储购买物，要定义 <tt>multiset</tt>，必须指定容器将保存的对象的类型。将对象放进容器时，复制元素（<a class="docLink" href="ch09lev1sec3.html#ch09lev2sec8" >第 9.3.3 节</a>）。</p>
+
+        <p class="docText">If we define the <tt>multiset</tt> to hold objects of the base type</p>
+	<p class="docText">如果定义 <tt>multiset</tt> 保存基类类型的对象：</p>
+        <pre>
+     multiset&lt;Item_base&gt; basket;
+     Item_base base;
+     Bulk_item bulk;
+     basket.insert(base);  // <span class="docEmphItalicAlt">ok: add copy of</span> <span class="docEmphasis">base</span> <span class="docEmphItalicAlt">to</span> <span class="docEmphasis">basket</span>
+     basket.insert(bulk);  // <span class="docEmphItalicAlt">ok: but</span> <span class="docEmphasis">bulk</span> <span class="docEmphItalicAlt">sliced down to its base part</span>
+</pre><br>
+
+<a name="ch15term20"></a>
+        <p class="docText">then when we add objects that are of the derived type, only the base portion of the object is stored in the container. Remember, when we copy a derived object to a base object, the derived object is <span class="docEmphRoman"><a class="docLink" href="ch15lev1sec11.html#gloss15_20" >sliced</a></span> down (<a class="docLink" href="ch15lev1sec3.html#ch15lev2sec10" >Section 15.3.1</a>, p. <a class="docLink" href="ch15lev1sec3.html#ch15lev2sec10" >577</a>).</p>
+        <p class="docText">则加入派生类型的对象时，只将对象的基类部分保存在容器中。记住，将派生类对象复制到基类对象时，派生类对象将被切掉（<a class="docLink" href="ch15lev1sec3.html#ch15lev2sec10" >第 15.3.1 节</a>）。</p>
+
+        <p class="docText">The elements in the container are <tt>Item_base</tt> objects. Regardless of whether the element was made as a copy of a <tt>Bulk_item</tt> object, when we calculate the <tt>net_price</tt> of an element the element would be priced without a discount. Once the object is put into the <tt>multiset</tt>, it is no longer a derived object.</p>
+	<p class="docText">容器中的元素是 <tt>Item_base</tt> 对象，无论元素是否作为 <tt>Bulk_item</tt> 对象的副本而建立，当计算元素的 <tt>net_price</tt> 时，元素将按不打折定价。一旦对象放入了 <tt>multiset</tt>，它就不再是派生类对象了。</p>
+
+	<a name="ch15note28"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Because derived objects are "sliced down" when assigned to a base object, containers and types related by inheritance do not mix well.</p>
+                <p class="docText">因为派生类对象在赋值给基类对象时会被“切掉”，所以容器与通过继承相关的类型不能很好地融合。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">We cannot fix this problem by defining the container to hold derived objects. In this case, we couldn't put objects of <tt>Item_base</tt> into the containerthere is no standard conversion from base to derived type. We could explicitly cast a base-type object into a derived and add the resulting object to the container. However, if we did so, disaster would strike when we tried to use such an element. In this case, the element would be treated as if it were a derived object, but the members of the derived part would be uninitialized.</p>
+	<p class="docText">不能通过定义容器保存派生类对象来解决这个问题。在这种情况下，不能将 <tt>Item_base</tt> 对象放入容器——没有从基类类型到派生类型的标准转换。可以显式地将基类对象强制转换为派生类对象并将结果对象加入容器，但是，如果这样做，当试图使用这样的元素时，会产生大问题：在这种情况下，元素可以当作派生类对象对待，但派生类部分的成员将是未初始化的。</p>
+
+        <p class="docText">The only viable alternative would be to use the container to hold pointers to our objects. This strategy worksbut at the cost of pushing onto our users the problem of managing the objects and pointers. The user must ensure that the objects pointed to stay around for as long as the container. If the objects are dynamically allocated, then the user must ensure that they are properly freed when the container goes away. The next section presents a better and more common solution to this problem.</p>
+        <p class="docText">唯一可行的选择可能是使用容器保存对象的指针。这个策略可行，但代价是需要用户面对管理对象和指针的问题，用户必须保证只要容器存在，被指向的对象就存在。如果对象是动态分配的，用户必须保证在容器消失时适当地释放对象。下一节将介绍对这个问题更好更通用的解决方案。</p>
+
+	<a name="ch15sb19"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 15.7</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch15qa12q1"></a><b>Exercise 15.28:</b></td>
+
+                    <td>
+                      <p class="docText">Define a <tt>vector</tt> to hold objects of type <tt>Item_base</tt> and copy a number of objects of type <tt>Bulk_item</tt> into the <tt>vector</tt>. Iterate over the <tt>vector</tt> and generate the <tt>net_price</tt> for the elements in the container.</p>
+		      <p class="docText">定义一个 <tt>vector</tt> 保存 <tt>Item_base</tt> 类型的对象，并将一些 <tt>Bulk_item</tt> 类型对象复制的到 <tt>vector</tt> 中。遍历并计算容器中元素的总和。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch15qa12q2"></a><b>Exercise 15.29:</b></td>
+
+                    <td>
+                      <p class="docText">Repeat your program, but this time store pointers to objects of type <tt>Item_base</tt>. Compare the resulting sum.</p>
+		      <p class="docText">重复程序，但这次存储 <tt>Item_base</tt> 类型对象的指针。比较结果总和。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch15qa12q3"></a><b>Exercise 15.30:</b></td>
+
+                    <td>
+                      <p class="docText">Explain any discrepancy in the amount generated by the previous two programs. If there is no discrepancy, explain why there isn't one.</p>
+                      <p class="docText">解释上两题程序所产生总和的差异。如果没有差异，解释为什么没有。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch15lev1sec6.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch15lev1sec8.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

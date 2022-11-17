@@ -1,0 +1,438 @@
+﻿<html xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+    <META NAME="save" CONTENT="history" />
+    <title>使用属性（C# 编程指南）</title>
+    <link rel="stylesheet" type="text/css" href="../styles/presentation.css" />
+    <link rel="stylesheet" type="text/css" href="ms-help://Hx/HxRuntime/HxLink.css" />
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/EventUtilities.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/SplitScreen.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/Dropdown.js"> </script>
+    <script type="text/javascript" src="../scripts/script_manifold.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/script_feedBack.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CheckboxMenu.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CommonUtilities.js"> </script>
+    <xml>
+      <MSHelp:TOCTitle Title="使用属性" />
+      <MSHelp:Keyword Index="A" Term="f7f67b05-0983-4cdb-96af-1855d24c967c" />
+      <MSHelp:Keyword Index="K" Term="get 访问器 [C#]" />
+      <MSHelp:Keyword Index="K" Term="属性 [C#], 关于属性" />
+      <MSHelp:Keyword Index="K" Term="set 访问器 [C#]" />
+      <MSHelp:Attr Name="RevisionNumber" Value="20" />
+      <MSHelp:Attr Name="AssetID" Value="f7f67b05-0983-4cdb-96af-1855d24c967c" />
+      <MSHelp:Attr Name="Abstract" Value="&#xD;&#xA;                    属性结合了字段和方法的多个方面。对于对象的用户，属性显示为字段，访问该属性需要相同的语法。对于类的实现者，属性是一个或两个代码块，表示一个 get 访问器和/或一个 set 访问器。当读取属性时，执行 get 访问器的代码块；当向属性分配一个新值时，执行 set 访问器的代码块。不具有 set 访问器的属性被视为只读属性。不具有 get 访问器的属性被视为只写属性。同时具有这两个访问器的属性是读写属性。&#xD;&#xA;                " />
+      <MSHelp:Attr Name="codelang" Value="CSharp" />
+      <MSHelp:Attr Name="CommunityContent" Value="1" />
+      <MSHelp:Attr Name="CurrentDebugFrameLang" Value="CSharp" />
+      <MSHelp:Attr Name="DevLang" Value="CSharp" />
+      <MSHelp:Attr Name="DevLangVers" Value="CSharp" />
+      <MSHelp:Attr Name="DocSet" Value="C#" />
+      <MSHelp:Attr Name="DocSet" Value="C# Lang" />
+      <MSHelp:Attr Name="DocSet" Value="ExpressLibVS" />
+      <MSHelp:Attr Name="ProgModel" Value="managed" />
+      <MSHelp:Attr Name="ShippedIn" Value="vs.90" />
+      <MSHelp:Attr Name="Technology" Value="ManagedCode" />
+      <MSHelp:Attr Name="TopicVersion" Value="09.00.08178.10000" />
+      <MSHelp:Attr Name="Catalog Container" Value="System_Default_Catalog" />
+      <MSHelp:Attr Name="Content Set Container" Value="System_Default_Content_Set" />
+      <MSHelp:Attr Name="TopicType" Value="kbRef" />
+      <MSHelp:Attr Name="Locale" Value="zh-chs" />
+    </xml>
+  </head>
+  <body>
+    <input type="hidden" id="userDataCache" class="userDataStyle" />
+    <input type="hidden" id="hiddenScrollOffset" />
+    <img id="collapseImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" title="“折叠”图像" />
+    <img id="expandImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" title="“展开”图像" />
+    <img id="collapseAllImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" />
+    <img id="expandAllImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" />
+    <img id="dropDownImage" style="display:none; height:0; width:0;" src="../icons/dropdown.gif" />
+    <img id="dropDownHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/dropdownHover.gif" />
+    <img id="copyImage" style="display:none; height:0; width:0;" src="../icons/copycode.gif" title="“复制”图像" />
+    <img id="copyHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/copycodeHighlight.gif" title="“复制悬停”图像" />
+    <div id="header">
+      <table id="topTable" cellspacing="0" cellpadding="0">
+        <tr>
+          <td>
+            <span onclick="ExpandCollapseAll(toggleAllImage)" style="cursor:default;" onkeypress="ExpandCollapseAll_CheckKey(toggleAllImage, event)" tabindex="0">
+              <img ID="toggleAllImage" class="toggleAll" src="../icons/collapse_all.gif" /> <label id="collapseAllLabel" for="toggleAllImage" style="display: none;">全部折叠</label><label id="expandAllLabel" for="toggleAllImage" style="display: none;">全部展开</label> </span>
+            <span>    </span>
+            <span id="devlangsDropdown" class="filter" tabindex="0">
+              <img id="devlangsDropdownImage" src="../icons/dropdown.gif" /> <label id="devlangsMenuAllLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：全部 </nobr></label><label id="devlangsMenuMultipleLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：多个 </nobr></label><label id="devlangsMenuVisualBasicLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual Basic </nobr></label><label id="devlangsMenuCSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：C# </nobr></label><label id="devlangsMenuManagedCPlusPlusLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual C++ </nobr></label><label id="devlangsMenuJSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：J# </nobr></label><label id="devlangsMenuJScriptLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：JScript </nobr></label></span>
+          </td>
+        </tr>
+      </table>
+      <div id="devlangsMenu">
+        <input id="VisualBasicCheckbox" type="checkbox" data="VisualBasic,vb,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="VisualBasicCheckbox">Visual Basic</label>
+        <br />
+        <input id="CSharpCheckbox" type="checkbox" data="CSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="CSharpCheckbox">C#</label>
+        <br />
+        <input id="ManagedCPlusPlusCheckbox" type="checkbox" data="ManagedCPlusPlus,cpp,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="ManagedCPlusPlusCheckbox">Visual C++</label>
+        <br />
+        <input id="JSharpCheckbox" type="checkbox" data="JSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JSharpCheckbox">J#</label>
+        <br />
+        <input id="JScriptCheckbox" type="checkbox" data="JScript,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JScriptCheckbox">JScript</label>
+        <br />
+      </div>
+      <table id="bottomTable" cellpadding="0" cellspacing="0">
+        <tr id="headerTableRow1">
+          <td align="left">
+            <span id="runningHeaderText">C# 编程指南</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow2">
+          <td align="left">
+            <span id="nsrTitle">使用属性（C# 编程指南）</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow3">
+          <td align="left">
+            <a href="f7f67b05-0983-4cdb-96af-1855d24c967c.htm#exampleToggle" onclick="OpenSection(exampleToggle)">示例</a>  <a href="f7f67b05-0983-4cdb-96af-1855d24c967c.htm#seeAlsoToggle" onclick="OpenSection(seeAlsoToggle)">另请参见</a>  
+<script type="text/javascript">
+var fbBody = '%b8%d0%d0%bb%c4%fa%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%bf%aa%b7%a2%b0%e6%b1%e0%d0%b4%cd%c5%b6%d3%bd%ab%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%d3%c3%d3%da%b8%c4%bd%f8%ce%c4%b5%b5%a1%a3%ce%d2%c3%c7%d4%da%c9%f3%d4%c4%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%ca%b1%a3%ac%bf%c9%c4%dc%bb%e1%b8%f8%c4%fa%b7%a2%cb%cd%b5%e7%d7%d3%d3%ca%bc%fe%a3%ac%d2%d4%c7%eb%c4%fa%cc%e1%b9%a9%bd%f8%d2%bb%b2%bd%b5%c4%bd%e2%ca%cd%cb%b5%c3%f7%bb%f2%d5%df%be%cd%bd%e2%be%f6%b7%bd%b0%b8%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%ce%d2%c3%c7%b2%bb%bb%e1%bd%ab%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%d3%c3%d3%da%c8%ce%ba%ce%c6%e4%cb%fb%d3%c3%cd%be%a3%ac%b2%a2%c7%d2%d4%da%c9%f3%d4%c4%cd%ea%d6%ae%ba%f3%a3%ac%ce%d2%c3%c7%b2%bb%bb%e1%d4%d9%b1%a3%c1%f4%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%a1%a3%0d%0a%d3%d0%b9%d8%20Microsoft%20%d2%fe%cb%bd%d5%fe%b2%df%b5%c4%bd%f8%d2%bb%b2%bd%d0%c5%cf%a2%a3%ac%c7%eb%b2%ce%bc%fb%20http%3a%2f%2fprivacy.microsoft.com%2fzh-cn%2fdefault.aspx%a1%a3';
+var fbSubject = 'Customer%20Feedback';
+</script>
+  <span id="headfeedbackarea" class="feedbackhead"><a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);"> 发送反馈意见</a></span>
+</td>
+        </tr>
+      </table>
+      <table id="gradientTable">
+        <tr>
+          <td class="nsrBottom" background="../icons/gradient.gif" />
+        </tr>
+      </table>
+    </div>
+    <div id="mainSection">
+      <div id="mainBody">
+        <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
+        <font color="DarkGray"></font>
+        <p /> <p><font color="DarkGray">更新：2007 年 11 月</font></p><div class="introduction"><p>
+                    属性结合了字段和方法的多个方面。对于对象的用户，属性显示为字段，访问该属性需要相同的语法。对于类的实现者，属性是一个或两个代码块，表示一个 <mshelp:link keywords="a52de048-fbe0-41b0-82ec-8e4ac04d3a71" tabindex="0">get</mshelp:link> 访问器和/或一个 <mshelp:link keywords="30d7e4e5-cc2e-4635-a597-14a724879619" tabindex="0">set</mshelp:link> 访问器。当读取属性时，执行 <span sdata="langKeyword" value="get"><span class="keyword">get</span></span> 访问器的代码块；当向属性分配一个新值时，执行 <span sdata="langKeyword" value="set"><span class="keyword">set</span></span> 访问器的代码块。不具有 <span sdata="langKeyword" value="set"><span class="keyword">set</span></span> 访问器的属性被视为只读属性。不具有 <span sdata="langKeyword" value="get"><span class="keyword">get</span></span> 访问器的属性被视为只写属性。同时具有这两个访问器的属性是读写属性。
+                </p><p>
+                    与字段不同，属性不作为变量来分类。因此，不能将属性作为 <span sdata="link"><a href="b8a5e59c-907d-4065-b41d-95bf4273c0bd.htm">ref（C# 参考）</a></span>参数或 <span sdata="link"><a href="7e911a0c-3f98-4536-87be-d539b7536ca8.htm">out（C# 参考）</a></span>参数传递。
+                </p><p>
+                    属性具有多种用法：它们可在允许更改前验证数据；它们可透明地公开某个类上的数据，该类的数据实际上是从其他源（例如数据库）检索到的；当数据被更改时，它们可采取行动，例如引发事件或更改其他字段的值。
+                </p><p>
+                    属性在类块中是按以下方式来声明的：指定字段的访问级别，接下来指定属性的类型和名称，然后跟上声明 <span sdata="langKeyword" value="get"><span class="keyword">get</span></span> 访问器和/或 <span sdata="langKeyword" value="set"><span class="keyword">set</span></span> 访问器的代码块。例如：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Date
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> month = 7;  <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Backing store</span>
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> Month
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> month;
+        }
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span>
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> ((<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">value</span> &gt; 0) &amp;&amp; (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">value</span> &lt; 13))
+            {
+                month = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">value</span>;
+            }
+        }
+    }
+}
+
+</pre></td></tr></table></span></div></div><p>
+                    在此示例中，<span class="code">Month</span> 是作为属性声明的，这样 <span sdata="langKeyword" value="set"><span class="keyword">set</span></span> 访问器可确保 <span class="code">Month</span> 值设置为 1 和 12 之间。<span class="code">Month</span> 属性使用私有字段来跟踪实际值。属性的数据的真实位置经常称为属性的“后备存储”。属性使用作为后备存储的私有字段是很常见的。将字段标记为私有可确保该字段只能通过调用属性来更改。有关公共和私有访问限制的更多信息，请参见<span sdata="link"><a href="6e81ee82-224f-4a12-9baf-a0dca2656c5b.htm">访问修饰符（C# 编程指南）</a></span>。
+                </p><p>
+                    自动实现的属性提供用于简单属性声明的简化语法。有关更多信息，请参见<span sdata="link"><a href="aa55fa97-ccec-431f-b5e9-5ac789fd32b7.htm">自动实现的属性（C# 编程指南）</a></span>。
+                </p></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle0)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle0, event)" tabindex="0"><img id="sectionToggle0" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />get 访问器</span></h1><div id="sectionSection0" class="section" name="collapseableSection" style=""><p>
+                    <span sdata="langKeyword" value="get"><span class="keyword">get</span></span> 访问器体与方法体相似。它必须返回属性类型的值。执行 <span sdata="langKeyword" value="get"><span class="keyword">get</span></span> 访问器相当于读取字段的值。例如，当正在从 <span sdata="langKeyword" value="get"><span class="keyword">get</span></span> 访问器返回私有变量并且启用了优化时，对 <span sdata="langKeyword" value="get"><span class="keyword">get</span></span> 访问器方法的调用由编译器进行内联，因此不存在方法调用的系统开销。然而，由于在编译时编译器不知道在运行时实际调用哪个方法，因此无法内联虚拟 <span sdata="langKeyword" value="get"><span class="keyword">get</span></span> 访问器。以下是返回私有字段 <span class="code">name</span> 的值的 <span sdata="langKeyword" value="get"><span class="keyword">get</span></span> 访问器：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Person
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> name;  <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// the name field</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> Name    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// the Name property</span>
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> name;
+        }
+    }
+}
+
+</pre></td></tr></table></span></div></div><p>
+                    当引用属性时，除非该属性为赋值目标，否则将调用 <span sdata="langKeyword" value="get"><span class="keyword">get</span></span> 访问器以读取该属性的值。例如：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>Person person = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Person();
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//...</span>
+
+System.Console.Write(person.Name);  <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// the get accessor is invoked here</span>
+
+</pre></td></tr></table></span></div></div><p>
+                    <span sdata="langKeyword" value="get"><span class="keyword">get</span></span> 访问器必须以 <mshelp:link keywords="6da6e152-5b58-4448-8f3f-470dd0617ecd" tabindex="0">return</mshelp:link> 或 <mshelp:link keywords="5ac4feef-4b1a-4c61-aeb4-61d549e5dd42" tabindex="0">throw</mshelp:link> 语句终止，并且控制权不能离开访问器体。
+                </p><p>
+                    通过使用 <span sdata="langKeyword" value="get"><span class="keyword">get</span></span> 访问器更改对象的状态不是一种好的编程风格。例如，以下访问器在每次访问 <span class="code">number</span> 字段时都会产生更改对象状态的副作用。
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> number;
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> Number
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> number++;   <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Don't do this</span>
+    }
+}
+
+</pre></td></tr></table></span></div></div><p>
+                    <span sdata="langKeyword" value="get"><span class="keyword">get</span></span> 访问器可用于返回字段值，或用于计算并返回字段值。例如：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Employee
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> name;
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> Name
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> name != <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">null</span> ? name : <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"NA"</span>;
+        }
+    }
+}
+
+</pre></td></tr></table></span></div></div><p>
+                    在上一个代码段中，如果不对 <span class="code">Name</span> 属性赋值，它将返回值 NA。
+                </p></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle1)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle1, event)" tabindex="0"><img id="sectionToggle1" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />set 访问器</span></h1><div id="sectionSection1" class="section" name="collapseableSection" style=""><p>
+                    <span sdata="langKeyword" value="set"><span class="keyword">set</span></span> 访问器类似于返回类型为 <mshelp:link keywords="0d2d8a95-fe20-4fbd-bf5d-c1e54bce71d4" tabindex="0">void</mshelp:link> 的方法。它使用称为 <span class="parameter" sdata="paramReference">value</span> 的隐式参数，此参数的类型是属性的类型。在下面的示例中，将 <span sdata="langKeyword" value="set"><span class="keyword">set</span></span> 访问器添加到 <span class="code">Name</span> 属性：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Person
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> name;  <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// the name field</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> Name    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// the Name property</span>
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> name;
+        }
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span>
+        {
+            name = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">value</span>;
+        }
+    }
+}
+
+</pre></td></tr></table></span></div></div><p>
+                    当对属性赋值时，用提供新值的参数调用 <span sdata="langKeyword" value="set"><span class="keyword">set</span></span> 访问器。例如：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>Person person = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Person();
+person.Name = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Joe"</span>;  <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// the set accessor is invoked here                </span>
+
+System.Console.Write(person.Name);  <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// the get accessor is invoked here</span>
+
+</pre></td></tr></table></span></div></div><p>
+                    在 <span sdata="langKeyword" value="set"><span class="keyword">set</span></span> 访问器中，对局部变量声明使用隐式参数名称 <span class="parameter" sdata="paramReference">value</span> 是错误的。
+                </p></div><h1 class="heading"><span onclick="ExpandCollapse(languageReferenceRemarksToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(languageReferenceRemarksToggle, event)" tabindex="0"><img id="languageReferenceRemarksToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />备注</span></h1><div id="languageReferenceRemarksSection" class="section" name="collapseableSection" style=""><p>
+                    可将属性标记为 <span sdata="langKeyword" value="public"><span class="keyword">public</span></span>、<span sdata="langKeyword" value="private"><span class="keyword">private</span></span>、<span sdata="langKeyword" value="protected"><span class="keyword">protected</span></span>、<span sdata="langKeyword" value="internal"><span class="keyword">internal</span></span> 或 <span sdata="langKeyword" value="protected internal"><span class="keyword">protected internal</span></span>。这些访问修饰符定义类的用户如何才能访问属性。同一属性的 <span sdata="langKeyword" value="get"><span class="keyword">get</span></span> 和 <span sdata="langKeyword" value="set"><span class="keyword">set</span></span> 访问器可能具有不同的访问修饰符。例如，<span sdata="langKeyword" value="get"><span class="keyword">get</span></span> 可能是 <span sdata="langKeyword" value="public"><span class="keyword">public</span></span> 以允许来自类型外的只读访问；<span sdata="langKeyword" value="set"><span class="keyword">set</span></span> 可能是 <span sdata="langKeyword" value="private"><span class="keyword">private</span></span> 或 <span sdata="langKeyword" value="protected"><span class="keyword">protected</span></span>。有关更多信息，请参见<span sdata="link"><a href="6e81ee82-224f-4a12-9baf-a0dca2656c5b.htm">访问修饰符（C# 编程指南）</a></span>。
+                </p><p>
+                    可以使用 <span sdata="langKeyword" value="static"><span class="keyword">static</span></span> 关键字将属性声明为静态属性。这使得调用方随时可使用该属性，即使不存在类的实例。有关更多信息，请参见<span sdata="link"><a href="235614b5-1371-4dbd-9abd-b406a8b0298b.htm">静态类和静态类成员（C# 编程指南）</a></span>。
+                </p><p>
+                    可以使用 <mshelp:link keywords="5da9abae-bc1e-434f-8bea-3601b8dcb3b2" tabindex="0">virtual</mshelp:link> 关键字将属性标记为虚属性。这样，派生类就可以通过使用 <mshelp:link keywords="dd1907a8-acf8-46d3-80b9-c2ca4febada8" tabindex="0">override</mshelp:link> 关键字来重写事件行为。有关这些选项的更多信息，请参见<span sdata="link"><a href="81d64ee4-50f9-4d6c-a8dc-257c348d2eea.htm">继承（C# 编程指南）</a></span>。
+                </p><p>
+                    重写虚属性的属性还可以是 <mshelp:link keywords="8e4ed5d3-10be-47db-9488-0da2008e6f3f" tabindex="0">sealed</mshelp:link> 的，这表示它对派生类不再是虚拟的。最后，可以将属性声明为 <mshelp:link keywords="b0797770-c1f3-4b4d-9441-b9122602a6bb" tabindex="0">abstract</mshelp:link>。这意味着类中没有任何实现，派生类必须编写自己的实现。有关这些选项的更多信息，请参见 <span sdata="link"><a href="99aa52f7-b435-43f9-936e-2470af734c4e.htm">抽象类、密封类及类成员（C# 编程指南）</a></span>。
+                </p><div class="alert"><table width="100%" cellspacing="0" cellpadding="0"><tr><th align="left"><img class="note" title="说明" src="../icons/alert_note.gif" /><b>说明：</b></th></tr><tr><td><p>对 <mshelp:link keywords="5509e215-2183-4da3-bab4-6b7e607a4fdf" tabindex="0">static</mshelp:link> 属性的访问器使用 <span sdata="link"><a href="5da9abae-bc1e-434f-8bea-3601b8dcb3b2.htm">virtual（C# 参考）</a></span>、<span sdata="link"><a href="b0797770-c1f3-4b4d-9441-b9122602a6bb.htm">abstract（C# 参考）</a></span>或 <span sdata="link"><a href="dd1907a8-acf8-46d3-80b9-c2ca4febada8.htm">override（C# 参考）</a></span>修饰符是错误的。</p></td></tr></table></div></div><h1 class="heading"><span onclick="ExpandCollapse(exampleToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(exampleToggle, event)" tabindex="0"><img id="exampleToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />示例</span></h1><div id="exampleSection" class="section" name="collapseableSection" style=""><p>
+                    此例说明了实例、静态和只读属性。它从键盘接受雇员的姓名，按 1 递增 <span class="code">NumberOfEmployees</span>，并显示雇员的姓名和编号。
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Employee
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> NumberOfEmployees;
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> counter;
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> name;
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// A read-write instance property:</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> Name
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span> { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> name; }
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span> { name = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">value</span>; }
+    }
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// A read-only static property:</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> Counter
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span> { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> counter; }
+    }
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// A Constructor:</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> Employee()
+    {
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Calculate the employee's number:</span>
+        counter = ++counter + NumberOfEmployees;
+    }
+}
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> TestEmployee
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Main()
+    {
+        Employee.NumberOfEmployees = 107;
+        Employee e1 = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Employee();
+        e1.Name = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Claude Vige"</span>;
+
+        System.Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Employee number: {0}"</span>, Employee.Counter);
+        System.Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Employee name: {0}"</span>, e1.Name);
+    }
+}
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">/* Output:
+    Employee number: 108
+    Employee name: Claude Vige
+*/</span>
+
+</pre></td></tr></table></span></div></div><p>
+                    此示例说明如何访问基类中由派生类中具有同一名称的另一个属性所隐藏的属性。
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Employee
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> name;
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> Name
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span> { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> name; }
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span> { name = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">value</span>; }
+    }
+}
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Manager : Employee
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> name;
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Notice the use of the new modifier:</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> Name
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span> { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> name; }
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span> { name = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">value</span> + <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">", Manager"</span>; }
+    }
+}
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> TestHiding
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Main()
+    {
+        Manager m1 = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Manager();
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Derived class property.</span>
+        m1.Name = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"John"</span>;
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Base class property.</span>
+        ((Employee)m1).Name = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Mary"</span>;
+
+        System.Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Name in the derived class is: {0}"</span>, m1.Name);
+        System.Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Name in the base class is: {0}"</span>, ((Employee)m1).Name);
+    }
+}
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">/* Output:
+    Name in the derived class is: John, Manager
+    Name in the base class is: Mary
+*/</span>
+
+</pre></td></tr></table></span></div></div><p>
+                    以下是上一个示例中的要点：
+                </p><ul><li><p>
+                    派生类中的属性 <span class="code">Name</span> 隐藏基类中的属性 <span class="code">Name</span>。在这种情况下，派生类的属性声明中使用 <span sdata="langKeyword" value="new"><span class="keyword">new</span></span> 修饰符：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> Name
+
+</pre></td></tr></table></span></div></div></li><li><p>
+                    转换 <span class="code">(Employee)</span> 用于访问基类中的隐藏属性：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>((Employee)m1).Name = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Mary"</span>;
+
+</pre></td></tr></table></span></div></div><p>
+                    有关隐藏成员的更多信息，请参见 <span sdata="link"><a href="a2e20856-33b9-4620-b535-a60dbce8349b.htm">new 修饰符（C# 参考）</a></span>。
+                </p></li></ul><p>
+                    在此例中，<span class="code">Cube</span> 和 <span class="code">Square</span> 这两个类实现抽象类 <span class="code">Shape</span>，并重写它的抽象 <span class="code">Area</span> 属性。注意属性上 <mshelp:link keywords="dd1907a8-acf8-46d3-80b9-c2ca4febada8" tabindex="0">override</mshelp:link> 修饰符的使用。程序接受输入的边长并计算正方形和立方体的面积。它还接受输入的面积并计算正方形和立方体的相应边长。
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">abstract</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Shape
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">abstract</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">double</span> Area
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>;
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span>;
+    }
+}
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Square : Shape
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">double</span> side;
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> Square(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">double</span> s)  <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//constructor</span>
+    {
+        side = s;
+    }
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">override</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">double</span> Area
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> side * side;
+        }
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span>
+        {
+            side = System.Math.Sqrt(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">value</span>);
+        }
+    }
+}
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Cube : Shape
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">double</span> side;
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> Cube(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">double</span> s)
+    {
+        side = s;
+    }
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">override</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">double</span> Area
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span>
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> 6 * side * side;
+        }
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span>
+        {
+            side = System.Math.Sqrt(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">value</span> / 6);
+        }
+    }
+}
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> TestShapes
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Main()
+    {
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Input the side:</span>
+        System.Console.Write(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Enter the side: "</span>);
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">double</span> side = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">double</span>.Parse(System.Console.ReadLine());
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Compute the areas:</span>
+        Square s = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Square(side);
+        Cube c = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Cube(side);
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Display the results:</span>
+        System.Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Area of the square = {0:F2}"</span>, s.Area);
+        System.Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Area of the cube = {0:F2}"</span>, c.Area);
+        System.Console.WriteLine();
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Input the area:</span>
+        System.Console.Write(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Enter the area: "</span>);
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">double</span> area = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">double</span>.Parse(System.Console.ReadLine());
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Compute the sides:</span>
+        s.Area = area;
+        c.Area = area;
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Display the results:</span>
+        System.Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Side of the square = {0:F2}"</span>, s.side);
+        System.Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Side of the cube = {0:F2}"</span>, c.side);
+    }
+}
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">/* Example Output:
+    Enter the side: 4
+    Area of the square = 16.00
+    Area of the cube = 96.00
+
+    Enter the area: 24
+    Side of the square = 4.90
+    Side of the cube = 2.00
+*/</span>
+
+</pre></td></tr></table></span></div></div></div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />请参见</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><h4 class="subHeading">任务</h4><div class="seeAlsoStyle"><span sdata="link"><mshelp:link keywords="c1cc31ab-a9d4-495b-b452-ba7d4d8e54eb" tabindex="0">“属性”示例</mshelp:link></span></div><h4 class="subHeading">概念</h4><div class="seeAlsoStyle"><span sdata="link"><a href="ac0f23a2-6bf3-4077-be99-538ae5fd3bc5.htm">C# 编程指南</a></span></div><h4 class="subHeading">参考</h4><div class="seeAlsoStyle"><span sdata="link"><a href="e295a8a2-b357-4ee7-a12e-385a44146fa8.htm">属性（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="6503e9ed-33d7-44ec-b4c1-cc16c084b795.htm">接口属性（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="aa55fa97-ccec-431f-b5e9-5ac789fd32b7.htm">自动实现的属性（C# 编程指南）</a></span></div></div></div>
+      <div id="footer">
+        <div class="footerLine">
+          <img width="100%" height="3px" src="../icons/footer.gif" title="“页脚”图像" />
+        </div>
+<span id="feedbackarea">将有关本主题的<a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);">反馈意见</a>发送给 Microsoft。</span>
+</div>
+    </div>
+  </body>
+</html>

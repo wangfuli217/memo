@@ -1,0 +1,175 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml">
+<HEAD><TITLE>邮件核心模块（Mail Core）</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=GB2312">
+<STYLE type=text/css>PRE {
+	BACKGROUND-COLOR: #cccccc
+}
+.STYLE1 {
+	COLOR: #ff0000
+}
+</STYLE>
+
+<META content="MSHTML 6.00.6000.16809" name=GENERATOR></HEAD>
+<BODY>
+<H2>邮件核心模块（Mail Core）</H2><BR>
+
+<H3>·邮件代理配置</H3>
+<H4>nginx可以处理和代理以下的邮件协议：<BR>
+·IMAP <BR>
+·POP3 <BR>
+·SMTP </H4>
+<H3>·认证</H3>
+<H4>nginx使用外部的HTTP类服务器来了解它将连接到哪个后端的IMAP/POP。<BR>
+nginx在HTTP头中通过认证信息：<BR>
+<PRE>GET /auth HTTP/1.0
+Host: auth.server.hostname
+Auth-Method: plain
+Auth-User: user
+Auth-Pass: password
+Auth-Protocol: imap
+Auth-Login-Attempt: 1
+Client-IP: 192.168.1.1
+</PRE>
+合适的应答为：
+<PRE>HTTP/1.0 200 OK      # 这个字段实际上是被忽略或者可能不存在。
+Auth-Status: OK
+Auth-Server: 192.168.1.10
+Auth-Port: 110
+Auth-User: newname   # 如果你连接到一个后端可以不理会这个用户名。
+</PRE>
+当为POP3认证使用APOP时，你必须返回Auth-Pass：
+<PRE>HTTP/1.0 200 OK      # 这个字段实际上是被忽略或者可能不存在。
+Auth-Status: OK
+Auth-Server: 192.168.1.10
+Auth-Port: 110
+Auth-User: newname   # 如果你连接到一个后端可以不理会这个用户名。
+Auth-Pass: password  # 这里必须为明文的用户名密码。
+</PRE>
+失败的应答为：
+<PRE>HTTP/1.0 200 OK      # 这个字段实际上是被忽略或者可能不存在。
+Auth-Status: Invalid login or password
+Auth-Wait: 3         # nginx将在3秒后重新读取客户端的用户名与密码。
+</PRE></H4>
+<H3>·指令</H3>
+<H3> auth </H3>
+<H4>0.5.15版本后重命名为pop3_auth，见下文。</H4>
+<H3> imap_capabilities </H3>
+<H4>语法：imap_capabilities "capability1" ["capability2" .. "capabilityN"] <BR>
+默认值："IMAP4" "IMAP4rev1" "UIDPLUS" <BR>
+使用字段：main, server <BR>
+在客户端发布IMAP命令CAPABILITY时，设置<A href="http://ietf.org/rfc/rfc3501.txt" >IMAP协议</A>扩展列表，<A href="http://ietf.org/rfc/rfc2595.txt" >STARTTLS</A>在你使用<A href="MailSSL.html" >starttls</A>指令时会自动添加。<BR>
+目前标准的IMAP扩展在<A href="http://www.iana.org/assignments/imap4-capabilities/" >www.iana.org</A>发布。
+<PRE>mail {
+  imap_capabilities NAMESPACE SORT QUOTA;
+}
+</PRE>
+默认值仍然会被设置！？</H4>
+<H3> imap_client_buffer </H3>
+<H4>语法：imap_client_buffer size <BR>
+默认值：4K/8K<BR>
+使用字段：main, server <BR>
+为IMAP命令设置读取缓冲区大小，默认值为分页大小（根据系统不同为4k或8k）。</H4>
+<H3> listen </H3>
+<H4>语法：listen address:port [ bind ] <BR>
+默认值：no <BR>
+使用字段：server <BR>
+listen指令指定了server{...}字段中可以被访问到的ip地址及端口号，可以只指定一个ip，一个端口，或者一个可解析的服务器名。<BR>
+<PRE>listen 127.0.0.1:8000;
+listen 127.0.0.1;
+listen 8000;
+listen *:8000;
+listen localhost:8000;</PRE>
+ipv6地址格式（0.7.58）在一个方括号中指定：<BR>
+<PRE>listen [::]:8000;
+listen [fe80::1];</PRE>
+指令中可以指出系统调用bind(2)。<BR>
+bind -- 指出必须为这个“地址：端口”对独立构建bind(2)，如果多个指令监听同一端口但是不同的地址和某个listen指令为这个端口（*:port）监听所有地址，那么nginx仅构建bind(2)到*:port，在这种情况下地址通过系统调用getsockname()取得。</H4>
+<H3>pop3_auth </H3>
+<H4>语法：pop3_auth [plain] [apop] [cram-md5] <BR>
+默认值：plain <BR>
+使用字段：main, server <BR>
+为POP3客户端设置允许的认证动作：<BR>
+·plain - <A href="http://ietf.org/rfc/rfc1939.txt" >USER/PASS</A>,<A href="http://ietf.org/rfc/rfc2595.txt" >AUTH PLAIN</A>,<A href="http://www3.ietf.org/proceedings/03jul/I-D/draft-murchison-sasl-login-00.txt" >AUTH LOGIN</A><BR>
+·apop - <A href="http://ietf.org/rfc/rfc1939.txt" >APOP</A><BR>
+·cram-md5 - <A href="http://ietf.org/rfc/rfc2195.txt" >AUTH CRAM-MD5</A></H4>
+<H3>pop3_capabilities </H3>
+<H4>语法：pop3_capabilities "capability1" ["capability2" .. "capabilityN"] <BR>
+默认值："TOP" "USER" "UIDL" <BR>
+使用字段：main, server <BR>
+在客户端发布POP3命令CAPA时，设置<A href="http://ietf.org/rfc/rfc2449.txt" >POP3协议</A>扩展列表，<A href="http://ietf.org/rfc/rfc2595.txt" >STLS</A>在你使用<A href="MailSSL.html" >starttls</A>指令时会自动添加，<A href="http://ietf.org/rfc/rfc2449.txt" >SASL</A>通过指令pop3_auth添加。<BR></H4>
+<H3> protocol </H3>
+<H4>语法：protocol [ pop3 | imap | smtp ] ; <BR>
+默认值：IMAP <BR>
+使用字段：server <BR>
+为这个server块设置邮件协议。</H4>
+<H3> server</H3>
+<H4>语法：server {...} <BR>
+默认值：no <BR>
+使用字段：mail <BR>
+指定一个虚拟服务器配置。<BR>
+没有明确的机制来分开基于域名（请求中的主机头）和基于IP的虚拟主机。<BR>
+可以通过listen指令来指定必须连接到这个server块的所有地址和端口，并且在server_name指令中可以指定所有的域名。</H4>
+<H3> server_name </H3>
+<H4>语法：server_name name fqdn_server_host  <BR>
+默认值：主机名，通过调用gethostname()取得。 <BR>
+使用字段：mail, server <BR>
+指定虚拟主机名。如：<BR>
+<PRE>server {
+  server_name   example.com  www.example.com;
+}</PRE>
+第一个名称为服务器的基本名称，默认名称为机器的hostname。当然，可以使用文件通配符：<BR>
+<PRE>server {
+  server_name   example.com  *.example.com;
+}</PRE>
+上述例子中的两个名称可以合并为一个：<BR>
+<PRE>server {
+  server_name  .example.com;
+}</PRE>
+如果客户端请求中没有主机头或者没有匹配server_name的主机头，服务器基本名称将被用于一个HTTP重定向，你可以只使用“*”来强制nginx在HTTP重定向中使用Host头（注意*不能用于第一个名称，不过你可以用一个很傻逼的名称代替，如“_”）<BR>
+<PRE>server {
+  server_name example.com *;
+}
+server {
+  server_name _ *;
+}</PRE></H4>
+<H3>smtp_auth </H3>
+<H4>语法：smtp_auth [login] [plain] [cram-md5] ; <BR>
+默认值：login plain <BR>
+使用字段：main, server <BR>
+为SMTP客户端设置允许的认证动作：<BR>
+·login - <A href="http://www3.ietf.org/proceedings/03jul/I-D/draft-murchison-sasl-login-00.txt" >AUTH LOGIN</A><BR>
+·plain - <A href="http://ietf.org/rfc/rfc2595.txt" >AUTH PLAIN</A><BR>
+·cram-md5 - <A href="http://ietf.org/rfc/rfc2195.txt" >AUTH CRAM-MD5</A></H4>
+<H3>smtp_capabilities </H3>
+<H4>语法：smtp_capabilities “capability1” [“capability2” .. “capabilityN”] <BR>
+默认值：no <BR>
+使用字段：main, server <BR>
+在客户端发布命令EHLO时，设置SMTP协议扩展列表，这个列表使用smtp_auth指令中启用的动作自动扩展。<BR></H4>
+<H3> so_keepalive </H3>
+<H4>语法：so_keepalive on|off; <BR>
+默认值：off <BR>
+使用字段：main, server <BR>
+为后端的IMAP/POP3设置socket SO_KEEPALIVE选项。FreeBSD中keepalive参数使用于所有的连接，并且可以通过内核参数（sysctl net.inet.tcp.always_keepalive）关闭。<BR></H4>
+<H3> timeout </H3>
+<H4>语法：timeout milliseconds; <BR>
+默认值：60000 <BR>
+使用字段：main, server <BR>
+设置到后端代理连接的超时时间。<BR></H4>
+<H3>·参考文档</H3>
+<H4><A href="http://wiki.nginx.org/NginxMailCoreModule/" >Nginx Mail Core Module</A></H4>
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://179401.cn/analytics/" : "http://179401.cn/analytics/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://shouce.jb51.net/179401.cn/analytics/piwik.php-idsite=1"  style="border:0" alt=""/></p></noscript>
+<!-- End Piwik Tag -->
+</BODY>
+</HTML>
+<H3><A href="MailAuth.html" >前进->邮件认证模块（Mail Auth）</A></H3>

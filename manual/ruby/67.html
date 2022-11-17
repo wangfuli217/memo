@@ -1,0 +1,164 @@
+<html><HEAD><TITLE>Ruby参考手册 - 执行</TITLE>
+<META http-equiv=Content-type content="text/html; charset=gb2312">
+<META http-equiv=Content-Style-Type content=text/css><LINK href="67_files/style[1].css"  type=text/css rel=stylesheet></head>
+<BODY>
+<DIV class=navi><A id=header-navi name=head-navi></A><SPAN class=navi>[<A href="61.html" >Ruby首页</A>]</SPAN>  </DIV>
+<DIV class=body>
+<H1><A id=a.bc.c2.b9.d4 name=a.bc.c2.b9.d4>执行</A><!-- RDLabel: "执行" --></H1>
+<H2><A id=Ruby.20.a5.d7.a5.ed.a5.b0.a5.e9.a5.e0 name=Ruby.20.a5.d7.a5.ed.a5.b0.a5.e9.a5.e0>Ruby 程序</A><!-- RDLabel: "Ruby 程序" --></H2>
+<P><B>Ruby</B>程序的执行就是对代码进行计算的过程。先编译程序文本，遇到<B>BEGIN</B>就对其作出计算；然后计算顶层的一系列的表达式；若遇到<B>END</B>的话，将在最后对其进行处理然后结束程序(关于结束程序时处理步骤的详细过程请参考<FONT color=blue>结束程序时的相关处理</FONT>)。</P>
+<H2><A id=a.ca.b8 name=a.ca.b8>语句</A><!-- RDLabel: "语句" --></H2>
+<H3><A id=if name=if>if</A><!-- RDLabel: "if" --></H3>
+<P><B>if</B>句的计算过程如下：先对条件表达式进行计算，若为真则执行相应代码段，若为假则依次计算<B>elseif</B>部分的条件表达式，若遇到值为真的表达式则执行相应的代码段。若所有的条件表达式的值都为假的话，就执行<B>else</B>部分的代码段。</P>
+<P>语句的值取决于最后执行的<I><B>代码块</B></I>的值。若最后的代码块中没有表达式，或者所有条件表达式的值都是假而且没有<B>else</B>部分的话，则语句的值为nil。</P>
+<H3><A id=until name=until>until</A><!-- RDLabel: "until" --></H3>
+<H3><A id=if.20.bd.a4.be.fe.bb.d2 name=if.20.bd.a4.be.fe.bb.d2>if 修饰部分</A><!-- RDLabel: "if 修饰部分" --></H3>
+<H3><A id=unless.20.bd.a4.be.fe.bb.d2 name=unless.20.bd.a4.be.fe.bb.d2>unless 修饰部分</A><!-- RDLabel: "unless 修饰部分" --></H3>
+<H3><A id=while name=while>while</A><!-- RDLabel: "while" --></H3>
+<H3><A id=until_2 name=until_2>until</A><!-- RDLabel: "until" --></H3>
+<H3><A id=while.20.bd.a4.be.fe.bb.d2 name=while.20.bd.a4.be.fe.bb.d2>while 修饰部分</A><!-- RDLabel: "while 修饰部分" --></H3>
+<H3><A id=until.20.bd.a4.be.fe.bb.d2 name=until.20.bd.a4.be.fe.bb.d2>until 修饰部分</A><!-- RDLabel: "until 修饰部分" --></H3>
+<H3><A id=for name=for>for</A><!-- RDLabel: "for" --></H3>
+<H3><A id=begin.20.a1.c1.20end name=begin.20.a1.c1.20end>begin ～ end</A><!-- RDLabel: "begin ～ end" --></H3>
+<H3><A id=a.a5.af.a5.e9.a5.b9.c4.ea.b5.c1.ca.b8 name=a.a5.af.a5.e9.a5.b9.c4.ea.b5.c1.ca.b8>类定义句</A></H3>
+<P>定义类的内容。在执行时(而并非编译时)进行计算。</P>
+<P>书写样式</P><PRE>class ClassName [&lt; 超类表达式]
+  表达式
+end
+</PRE>
+<P>在对类定义句进行计算时，将先试图生成类。若有超类表达式就加以计算,其值作为ClassName类的父类,然后生成ClassName类的实例.若没有超类表达式,就把<FONT color=blue>Object</FONT>作为其父类.</P>
+<P>另一方面，若有同名类的话，就先使用那个同名类。然后处理超类表达式，若新生成的超类(在equal?)有所不同的话，就再生成一个新的类。</P>
+<P>得到类之后就将其代入常数“<B>ClassName</B>”中，由此决定类名。此时，若同名的常数中被代入一个非<B>Class</B>的实例的话，就会引发异常TypeError。</P>
+<P>最后生成新的框架(frame)，向顶层块的<B>self</B>以及<B>class</B>设定要进行定义的类，然后在框架的基础上对定义句中的表达式进行计算。我们无法得到类定义句的值。</P>
+<P>也就是说，在<B>Ruby</B>中我们可以多次“追加类定义”。</P>
+<H3><A id=a.a5.e2.a5.b8.a5.e5.a1.bc.a5.eb.c4.ea.b5.c1.ca.b8 name=a.a5.e2.a5.b8.a5.e5.a1.bc.a5.eb.c4.ea.b5.c1.ca.b8>模块定义句</A><!-- RDLabel: "模块定义句" --></H3>
+<P>定义模块的内容。在执行时(而并非编译时)进行计算。</P>
+<P>书写样式</P><PRE>module ModuleName
+  模块内容
+end
+</PRE>
+<P>对模块定义句进行计算时，首先会生成新的无名模块。但是，若已经有了一个名为<B>ModuleName</B>的模块的话，就使用该模块。此时就变成“追加模块的定义”了。</P>
+<P>得到模块后就将其代入常数<B>ModuleName</B>中。这个常数就成为模块的名称。此时，若向同名常数代入非模块的话就会引发异常TypeError。</P>
+<P>最后生成新的框架(frame)，向顶层块的<B>self</B>以及<B>class</B>中设定模块<B>ModuleName</B>，然后在框架的基础上对定义句中的表达式进行计算。模块定义句的值就是模块内容的最后一个表达式的值。若模块内容中没有可计算的表达式时，其值为nil。</P>
+<H3><A id=a.c6.c3.b0.db.a5.af.a5.e9.a5.b9.c4.ea.b5.c1.ca.b8 name=a.c6.c3.b0.db.a5.af.a5.e9.a5.b9.c4.ea.b5.c1.ca.b8>特殊类定义句</A><!-- RDLabel: "特殊类定义句" --></H3>
+<P>定义对象的特殊类。在执行时(而并非编译时)进行计算。</P>
+<P>书写样式</P><PRE>class &lt;&lt; EXPR
+  类的内容
+end
+</PRE>
+<P>先计算想定义特殊类的对象的表达式<B><I>EXPR</I></B>。然后生成该对象的特殊类(若尚未生成的话)。最后生成新框架，向顶层块的<B>self</B>和<B>class</B>中设定新生成的特殊类。在新框架的基础上对定义句中的表达式进行计算。</P>
+<P>特殊类定义句的值取决于类的内容中的最后一个表达式的值。若没有可计算的表达式时，其值为nil。</P>
+<P>请注意，<B>Fixnum Symbol</B>的实例以及 <B>true false nil</B> 不能定义特殊类</P>
+<H3><A id=a.a5.e1.a5.bd.a5.c3.a5.c9.c4.ea.b5.c1.ca.b8 name=a.a5.e1.a5.bd.a5.c3.a5.c9.c4.ea.b5.c1.ca.b8>方法定义句</A><!-- RDLabel: "方法定义句" --></H3>
+<P>定义方法的内容。在执行时(而并非编译时)进行计算。</P>
+<P>书写样式</P><PRE>def method_name(arg, argwithdefault=expr, *restarg, &amp;block)
+  方法内容
+end
+</PRE>
+<P>对其进行计算时，将向运行块的<B>class</B>中定义该方法。若<B>class</B>中已经存在同名的方法的话，则抛弃旧方法，添加新方法。</P>
+<P>方法定义句的值为nil。</P>
+<H3><A id=a.c6.c3.b0.db.a5.e1.a5.bd.a5.c3.a5.c9.c4.ea.b5.c1.bc.b0 name=a.c6.c3.b0.db.a5.e1.a5.bd.a5.c3.a5.c9.c4.ea.b5.c1.bc.b0>特殊方法定义句</A><!-- RDLabel: "特殊方法定义句" --></H3>
+<P>向对象的特殊类中定义方法。在执行时(而并非编译时)进行计算。</P>
+<P>书写样式</P><PRE>def expr.method_name(arg, argwithdefault=expr, *restarg, &amp;block)
+  方法内容
+end
+</PRE>
+<P>首先计算表达式<B><I>expr</I></B>。然后生成对象的特殊类(若尚未生成的话)。最后向特殊类中定义方法<B>method_name</B>。</P>
+<P>特殊方法定义句的值为nil。</P>
+<P>请注意，<B>Fixnum Symbol</B>的实例以及<B>true false nil</B>不能定义特殊方法。</P>
+<H3><A id=BEGIN name=BEGIN>BEGIN</A><!-- RDLabel: "BEGIN" --></H3>
+<P>编译时会用到(执行时首先计算)</P>
+<H3><A id=END name=END>END</A><!-- RDLabel: "END" --></H3>
+<P>编译时会用到(执行时最后计算)</P>
+<H2><A id=a.a5.e1.a5.bd.a5.c3.a5.c9 name=a.a5.e1.a5.bd.a5.c3.a5.c9>方法</A><!-- RDLabel: "方法" --></H2>
+<H3><A id=a.a5.e1.a5.bd.a5.c3.a5.c9.a4.ce.b8.c6.a4.d3.bd.d0.a4.b7 name=a.a5.e1.a5.bd.a5.c3.a5.c9.a4.ce.b8.c6.a4.d3.bd.d0.a4.b7>方法的调用</A><!-- RDLabel: "方法的调用" --></H3>
+<P>首先计算被调(receiver)表达式，得到被调用对象。省略被调表达式时，调用块的<B>self</B>将成为被调。</P>
+<P>接下来从左到右地对参数表达式进行计算，检索被调里面的方法。若检索失败则引发异常<B><FONT color=blue>NameError</FONT></B>，成功的话就执行方法。</P>
+<P>另外，执行方法的时候还可以添加块(block)。若向方法添加块时，只有当运行中的方法执行yield时才会对块进行计算。若没有执行yield的话，块将被忽视，不会执行。</P>
+<P>将块传给方法时，该块将会继承调用方的块的<B>self</B>和<B>class</B>。只有Module#module_eval/class_eval和Object#instance_eval这三个例外，如下所示。</P>
+<DL>
+<DT><A id=Module.23module_eval.2c.20class_eval name=Module.23module_eval.2c.20class_eval>Module#module_eval, class_eval</A><!-- RDLabel: "Module#module_eval, class_eval" --> 
+<DD>
+<P>self和class都是被调(receiver)</P>
+<DT><A id=Object.2einstance_eval name=Object.2einstance_eval>Object.instance_eval</A><!-- RDLabel: "Object.instance_eval" --> 
+<DD>
+<P>self是被调，class是被调的特殊类</P></DD></DL>
+<H3><A id=eval name=eval>eval</A><!-- RDLabel: "eval" --></H3>
+<P>把<B><FONT color=blue>Proc</FONT></B>对象和<B><FONT color=blue>Binding</FONT></B>对象传给<B>eval</B>的第二参数时，将在生成时的块的基础上对字符串进行计算。</P>
+<H3><A id=a.a5.e1.a5.bd.a5.c3.a5.c9.a4.ce.bc.c2.b9.d4 name=a.a5.e1.a5.bd.a5.c3.a5.c9.a4.ce.bc.c2.b9.d4>方法的执行</A><!-- RDLabel: "方法的执行" --></H3>
+<P>当框架上只有一个块的情况下，才开始执行方法。下面我们暂时把这个块称作顶层块(top level block)。顶层块的<B>self</B>是被调，<B>class</B>尚未被定义。</P>
+<P>首先，若有必选参数的话，就把得到值代入顶层块的局部变量。</P>
+<P>若存在可选参数，且已被省略的话，则在顶层块上对默认值表达式进行计算，然后将得到的默认值代入顶层块的局部变量。若可选参数没被省略的话，就把得到的值代入顶层块的局部变量。</P>
+<P>若存在*args这样的参数的话，则将剩下的所有参数以数组的形式代入局部变量。</P>
+<P>另外，若存在块参数<B><I>blockvar</I></B>的话，则将传给方法的块进行<FONT color=blue><B>Proc</B></FONT>对象化，然后代入顶层块的局部变量<B><I>blockvar</I></B>中。若没向方法传递块的话，就代入nil。</P>
+<P>接下来对方法内容进行计算，先计算方法层(method level)的rescue以及else部分，最后计算ensure部分。</P>
+<P>整个方法的值取决于传递给<FONT color=blue><B>return</B></FONT>的值。若没有调用return的话，则取决于 <B>方法内容／rescue／else</B> 中最后被计算的表达式的值。若三个都为空的话，值为nil。</P>
+<H3><A id=a.a5.d6.a5.ed.a5.c3.a5.af.c9.d5.a4.ad.a5.e1.a5.bd.a5.c3.a5.c9.b8.c6.a4.d3.bd.d0.a4.b7 name=a.a5.d6.a5.ed.a5.c3.a5.af.c9.d5.a4.ad.a5.e1.a5.bd.a5.c3.a5.c9.b8.c6.a4.d3.bd.d0.a4.b7>带块的方法调用</A></H3>
+<P>若向方法传递一个块的话，这个方法就叫做带块的方法。带块方法遇到yield时会转向块。</P>
+<P>可以使用块参数。</P>
+<P><B>break...</B>若块位于堆栈框架(stack frame)上的话，就跳到框架的块的后面。<B>break</B>并结束带块方法，其值为nil。若块不在堆栈框架上，则引发异常<B><FONT color=blue>LocalJumpError</FONT></B>。</P>
+<P><B>next</B> 跳到块的终点</P>
+<P><B>retry</B> 这个就复杂了...</P>
+<H3><A id=eval.2c.20instance_eval.2c.20module_eval name=eval.2c.20instance_eval.2c.20module_eval>eval, instance_eval, module_eval</A><!-- RDLabel: "eval, instance_eval, module_eval" --></H3>
+<P>略</P>
+<H2><A id=a.c2.e5.c6.fe name=a.c2.e5.c6.fe>赋值</A><!-- RDLabel: "赋值" --></H2>
+<P>赋值是指让变量或常数记住某个对象。从语法的角度来看，虽然[]=和属性赋值的方法调用看起来很像是赋值，但却并非这里谈到的赋值。</P>
+<P>我们可以反复地将各种对象赋值给变量。也可以将各种对象赋值给常数，但却只能赋值一次。也就是说，一旦将对象赋值给常数，就不能再更改。但这并不意味着赋值给常数的对象本身不允许更改，请您注意这点。</P>
+<H3><A id=a.c2.bf.bd.c5.c2.e5.c6.fe name=a.c2.bf.bd.c5.c2.e5.c6.fe>多重赋值</A><!-- RDLabel: "多重赋值" --></H3>
+<P>暂无</P>
+<H2><A id=a.ca.d1.bf.f4.a4.c8.c4.ea.bf.f4 name=a.ca.d1.bf.f4.a4.c8.c4.ea.bf.f4>变量和常数</A><!-- RDLabel: "变量和常数" --></H2>
+<P>我们可以让变量或常数记住一个对象。这叫做“变量(常数)的赋值”。</P>
+<P>当对变量或常数进行计算时，它就会返回记住的对象。这叫做“变量(常数)的调用”。</P>
+<P>下面我们就分别来看一看变量和常数的赋值与调用过程。</P>
+<H3><A id=a.a5.ed.a1.bc.a5.ab.a5.eb.ca.d1.bf.f4 name=a.a5.ed.a1.bc.a5.ab.a5.eb.ca.d1.bf.f4>局部变量</A><!-- RDLabel: "局部变量" --></H3>
+<P>局部变量只属于一个块。块是指与代码的某个范围相对应的运行时的结构，可以嵌套。具体说来，它伴随带块的方法调用以及eval系方法的执行而出现。我们只能在局部变量的所属块以及该块的嵌套块中对局部变量进行赋值和引用。</P>
+<P>同时，块被放在特定的“框架”上，并归属于该框架。因此，不能调用其他框架上的局部变量。所谓框架是指开始执行下列语句时生成的运行时的结构。</P>
+<UL>
+<LI>程序文本的顶层(传递给ruby的文件名、-e、load) 
+<LI>执行方法 
+<LI>类／模块的定义句 
+<LI><B>BEGIN</B>和<B>END</B>句 </LI></UL>
+<P>生成框架时自动搭载一个块，因此可以在这些语句中使用局部变量。</P>
+<P>编译时，<B><I>写入</I></B>程序代码的局部变量将赋值给框架中的尚未定义的局部变量。局部变量被赋值时所在的块就是它的归属块。由此可知，编译时局部变量的定义过程已经完成(请注意，<B>eval</B>系的方法在执行过程中进行编译)。定义的变量的初始值为nil。</P>
+<P>局部变量在定义和调用时，先是在块中从外到内地进行搜索。其结果就是，局部变量不能进行嵌套和屏蔽(<B>shadowing</B>)。但是，当若干的块处于非主从关系时，其内部可以包含不同的局部变量。</P>
+<P>调用未定义(即没有在代码中标出)的局部变量时，<B>Ruby</B>会试图把它当作对<B>self</B>的(无参数的)方法调用来处理。若搜索方法失败则引发异常<B>NameError</B>。</P>
+<P>再来看一下调用块的执行情况,块也可以带参数,但常被看做是在将要执行的块上进行的多重赋值.例如,下面代码的块在开始执行时</P><PRE>some_iterator do |a,b|
+  ....
+end
+</PRE>
+<P>首先会进行下列操作。</P><PRE>a, b = &lt;some_iterator 被yield的值 &gt;
+</PRE>
+<H3><A id=a.a5.a4.a5.f3.a5.b9.a5.bf.a5.f3.a5.b9.ca.d1.bf.f4 name=a.a5.a4.a5.f3.a5.b9.a5.bf.a5.f3.a5.b9.ca.d1.bf.f4>实例变量</A><!-- RDLabel: "实例变量" --></H3>
+<P>实例变量属于一个对象，在<B>self</B>代表的块的范围内可以进行赋值和调用。实例变量的赋值过程同时也就是该变量的定义过程，若调用未定义的实例变量则返回nil。</P>
+<P>remove_instance_variable</P>
+<H3><A id=a.a5.af.a5.e9.a5.b9.ca.d1.bf.f4 name=a.a5.af.a5.e9.a5.b9.ca.d1.bf.f4>类变量</A><!-- RDLabel: "类变量" --></H3>
+<P>类变量为一个特定的类、该类的子类以及该类的实例所拥有。在以这些对象为<B>self</B>的块的范围内，可对其进行赋值和调用。最初的赋值过程也兼做定义。若调用一个未经定义的类变量的话就会引发异常<B>NameError</B>。</P>
+<P>类变量的继承和“继承中止”</P>
+<H3><A id=a.a5.b0.a5.ed.a1.bc.a5.d0.a5.eb.ca.d1.bf.f4 name=a.a5.b0.a5.ed.a1.bc.a5.d0.a5.eb.ca.d1.bf.f4>全局变量</A><!-- RDLabel: "全局变量" --></H3>
+<P>在任何地方都可以对全局变量进行赋值和调用。最初的赋值过程兼做变量的定义，若调用一个未经定义的全局变量的话，就会返回nil。</P>
+<P>可跟踪(？)</P>
+<H3><A id=a.c4.ea.bf.f4 name=a.c4.ea.bf.f4>常数</A><!-- RDLabel: "常数" --></H3>
+<P>常数属于类/模块。我们可以使用除method以外的方式对其进行赋值。最初的赋值兼做定义。对常数赋值时所在的块的<B>class</B>就是常数的归属类。有个非常特殊的例外，我们可以使用Module#const_set方法来定义常数，同时，还可以使用Module#remove_const来取消常数。</P>
+<P>无法对已定义的常数进行再定义或赋值。实际上，只使用警告还可以进行赋值，但这只是一时的应急措施，并不符合规范。所以要少写这样的程序。</P>
+<P>可调用范围因写法不同而有所差异。</P>
+<DL>
+<DT><A id=a.c4.ea.bf.f4.cc.be.a4.ce.a4.df.a4.ce.be.ec.b9.e7.20.28.ce.e3.a1.a7.20Const.29 name=a.c4.ea.bf.f4.cc.be.a4.ce.a4.df.a4.ce.be.ec.b9.e7.20.28.ce.e3.a1.a7.20Const.29>只写出常数名时 (例： Const)</A> 
+<DD>
+<P>可调用范围有：常数所属的类、子类、嵌套类的框架内的代码</P>
+<DT><A id=a.a5.d5.a5.eb.a5.d1.a5.b9.bb.d8.c4.ea.a4.ce.be.ec.b9.e7.20.28.ce.e3.a1.a7.20Mod.3a.3aCls.3a.3aConst.29 name=a.a5.d5.a5.eb.a5.d1.a5.b9.bb.d8.c4.ea.a4.ce.be.ec.b9.e7.20.28.ce.e3.a1.a7.20Mod.3a.3aCls.3a.3aConst.29>写出完整路径时 (例： Mod::Cls::Const)</A> 
+<DD>
+<P>可在任何地方调用</P></DD></DL>
+<P>另外，像"::Const"这种前置"::"的写法，只有写成"Object::Const"时才能进行调用。</P>
+<H2><A id=a.b5.bc.bb.f7.ca.d1.bf.f4 name=a.b5.bc.bb.f7.ca.d1.bf.f4>伪变量</A><!-- RDLabel: "伪变量" --></H2>
+<P>下面这些变量看起来好像是局部变量，但实际上是保留字，返回确定的值。不可赋值。</P>
+<H3><A id=self name=self>self</A><!-- RDLabel: "self" --></H3>
+<P>返回该块的<B>self</B>。</P>
+<H3><A id=nil name=nil>nil</A><!-- RDLabel: "nil" --></H3>
+<P>返回<FONT color=blue><B>NilClass</B></FONT>的唯一的实例--nil。</P>
+<H3><A id=true name=true>true</A><!-- RDLabel: "true" --></H3>
+<P>返回<FONT color=blue><B>TrueClass</B></FONT>的唯一的实例--true。</P>
+<H3><A id=false name=false>false</A><!-- RDLabel: "false" --></H3>
+<P>返回<FONT color=blue><B>FalseClass</B></FONT>的唯一的实例--false。</P></DIV>
+<HR>
+
+<DIV class=footer>Originally Written by webmaster@ruby-lang.org<BR>Translated by <A href="http://cn.ce-lab.net/" >Community Engine China</A> (<A href="mailto:rubycn@ce-lab.net">Mail</A>)<BR>Last update on 2004-12-22 </DIV></BODY>

@@ -1,0 +1,164 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 14.4.  Assignment Operators</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch14lev1sec3.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch14lev1sec5.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch14lev1sec4"></a>
+
+        <h3 class="docSection1Title">14.4. Assignment Operators</h3>
+        <h3 class="docSection1Title">14.4. 赋值操作符</h3>
+
+        <p class="docText">We covered the assignment of one object of class type to another object of its type in <a class="docLink" href="ch13lev1sec2.html#ch13lev1sec2" >Section 13.2</a> (p. <a class="docLink" href="ch13lev1sec2.html#ch13lev1sec2" >482</a>). The class assignment operator takes a parameter that is the class type. Usually the parameter is a <tt>const</tt> reference to the class type. However, the parameter could be the class type or a non<tt>const</tt> reference to the class type. This operator will be synthesized by the compiler if we do not define it ourselves. The class assignment operator must be a member of the class so the compiler can know whether it needs to synthesize one.</p>
+        <p class="docText"><a class="docLink" href="ch13lev1sec2.html#ch13lev1sec2" >第 13.2 节</a>讨论了类类型对象对同类型其他对象的赋值。类赋值操作符接受类类型形参，通常，该形参是对类类型的 <tt>const</tt> 引用，但也可以是类类型或对类类型的非 <tt>const</tt> 引用。如果没有定义这个操作符，则编译器将合成它。类赋值操作符必须是类的成员，以便编译器可以知道是否需要合成一个。</p>
+
+        <p class="docText">Additional assignment operators that differ by the type of the right-hand operand can be defined for a class type. For example, the library <tt>string</tt> class defines three assignment operators: In addition to the class assignment operator, which takes a <tt>const string&amp;</tt> as its right-hand operand, the <tt>string</tt> class defines versions of assignment that take a C-style character string or a <tt>char</tt> as the right-hand operand. These might be used as follows:</p>
+        <p class="docText">可以为一个类定义许多附加的赋值操作符，这些赋值操作符会因右操作符类型不同而不同。例如，标准库的类 <tt>string</tt> 定义了 3 个赋值操作符：除了接受 <tt>const string&amp;</tt> 作为右操作数的类赋值操作符之外，类还定义了接受 C 风格字符串或 <tt>char</tt> 作为右操作数的赋值操作符，这些操作符可以这样使用：</p>
+        <pre>
+     string car ("Volks");
+     car = "Studebaker"; // <span class="docEmphasis">string = const char*</span>
+     string model;
+     model = 'T'; // <span class="docEmphasis">string = char</span>
+</pre><br>
+
+        <p class="docText"><a name="idd1e106537"></a><a name="idd1e106546"></a><a name="idd1e106554"></a><a name="idd1e106564"></a><a name="idd1e106570"></a><a name="idd1e106579"></a><a name="idd1e106591"></a>To support these operations, the string class contains members that look like</p>
+        <p class="docText">为了支持这些操作符，string 类包含如下成员：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">illustration of assignment operators for class string</span>
+     class string {
+     public:
+         string&amp; operator=(const string &amp;);      // <span class="docEmphasis">s1 = s2</span>;
+         string&amp; operator=(const char *);        // <span class="docEmphasis">s1 = "str"</span>;
+         string&amp; operator=(char);                // <span class="docEmphasis">s1 = 'c'</span>;
+         // ....
+      };
+</pre><br>
+        <a name="ch14note13"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Assignment operators can be overloaded. Unlike the compound-assignment operators, every assignment operator, regardless of parameter type, must be defined as a member function.</p>
+                <p class="docText">赋值操作符可以重载。无论形参为何种类型，赋值操作符必须定义为成员函数，这一点与复合赋值操作符有所不同。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch14lev2sec13"></a>
+
+        <h4 class="docSection2Title">Assignment Should Return a Reference to <tt>*this</tt></h4>
+        <h4 class="docSection2Title">赋值必须返回对 <tt>*this</tt> 的引用</h4>
+
+        <p class="docText">The <tt>string</tt> assignment operators return a reference to <tt>string</tt>, which is consistent with assignment for the built-in types. Moreover, because assignment returns a reference there is no need to create and destroy a temporary copy of the result. The return value is usually a reference to the left-hand operand. For example, here is the definition of the <tt>Sales_item</tt> compound-assignment operator:</p>
+        <p class="docText"><tt>string</tt> 赋值操作符返回 <tt>string</tt> 引用，这与内置类型的赋值一致。而且，因为赋值返回一个引用，就不需要创建和撤销结果的临时副本。返回值通常是左操作数的引用，例如，这是 <tt>Sales_item</tt> 复合赋值操作符的定义：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">assumes that both objects refer to the same isbn</span>
+     Sales_item&amp; Sales_item::operator+=(const Sales_item&amp; rhs)
+     {
+        units_sold += rhs.units_sold;
+        revenue += rhs.revenue;
+        return *this;
+     }
+</pre><br>
+        <a name="ch14note14"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="116" height="74" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/bestpractices.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Ordinarily, assignment operators and compound-assignment operators ought to return a reference to the left-hand operand.</p>
+                <p class="docText">一般而言，赋值操作符与复合赋值操作符应返回操作符的引用。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch14sb07"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 14.4</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch14qa6q1"></a><b>Exercise 14.14:</b></td>
+
+                    <td>
+                      <p class="docText">Define a version of the assignment operator that can assign an <tt>isbn</tt> to a <tt>Sales_item</tt>.</p>
+                      <p class="docText">定义一个赋值操作符，将 <tt>isbn</tt> 赋值给 <tt>Sales_item</tt> 对象。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch14qa6q2"></a><b>Exercise 14.15:</b></td>
+
+                    <td>
+                      <p class="docText">Define the class assignment operator for the <tt>CheckoutRecord</tt> introduced in the exercises to <a class="docLink" href="ch14lev1sec2.html#ch14sb04" >Section 14.2.1</a> (p. <a class="docLink" href="ch14lev1sec2.html#ch14sb04" >515</a>).</p>
+                      <p class="docText">为<a class="docLink" href="ch14lev1sec2.html#ch14sb04" >第 14.2.1 节</a>习题中介绍的 <tt>CheckoutRecord</tt> 类定义赋值操作符。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch14qa6q3"></a><b>Exercise 14.16:</b></td>
+
+                    <td>
+                      <p class="docText">Should <tt>CheckoutRecord</tt> define any other assignment operators? If so, explain which types should be used as operands and why. Implement the assignment operators for those types.</p>
+                      <p class="docText"><tt>CheckoutRecord</tt> 类还应该定义其他赋值操作符吗？如果是，解释哪些类型应该用作操作数并解释为什么。为这些类型实现赋值操作符。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch14lev1sec3.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch14lev1sec5.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+    <!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+    <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+         <title>Distributed SQL</title> 
+        <link rel="shortcut icon" href="../../../static_star_theme/img/favicon.ico"/>
+        <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,700italic' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../static_star_theme/css/theme.css" type="text/css" /> 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+    </head>
+
+    <body class="wy-body-for-nav" role="document">
+
+    <div class="wy-grid-for-nav">
+
+        <div class="wy-full-navbar" data-swiftype-index="false">
+            <a href="http://www.memsql.com" class="logo">
+                <img src="../../../static_star_theme/img/memsql_logo_horizontal_white.svg" />
+            </a>
+            <div class="global nav">
+                <div class="pull-left left-links">
+                </div>
+                <div class="pull-right right-links">
+                    <a href="http://www.memsql.com/community/" style="word-spacing: 2px;">Community Edition</a>
+                    <a href="http://blog.memsql.com">Blog</a>
+                    <a href="http://www.memsql.com/memsql-partners">Partners</a>
+                    <a href="http://www.memsql.com/resources">Resources</a>
+                    <a href="../../../index.html">Documentation</a>
+                    <a href="http://www.memsql.com/contact">Contact</a>
+                </div>
+            </div>
+            <div class="nav-links">
+                <a href="http://www.memsql.com/product">Product</a>
+                <a href="http://www.memsql.com/solutions">Solutions</a>
+                <a href="http://www.memsql.com/case-studies">Case Studies</a>
+                <a href="http://www.memsql.com/company">Company</a>
+                <a class="download" href="http://www.memsql.com/download/">Download Now</a>
+            </div>
+        </div>
+
+        <nav data-toggle="wy-nav-shift" class="wy-nav-side" data-swiftype-index="false">
+            <div class="wy-side-nav-search">
+                <div role="search">
+  <form id="search-form" class="wy-form" method="get">
+    <input type="text" id="st-search-input" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+            </div>
+
+            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                
+                 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">MemSQL Docs Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro/index.html">How MemSQL Works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../setup/quick_start/index.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../setup/get_started/index.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">User Manual</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../connecting/index.html">How to Connect to MemSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../how_to_run_queries/index.html">How to Run Queries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../multi_insert_examples/index.html">Concurrent Multi-Insert Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../data_loading/index.html">Loading Data Into MemSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../porting-apps/index.html">How to Port Your Applications to MemSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../memory_management/index.html">Memory Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../distributed_architecture/index.html">Distributed Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../codegen/index.html">Code Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/index.html">Database Key Concepts</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="index.html">Distributed SQL</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="index.html#query-execution-architecture">Query Execution Architecture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#distributed-ddl">Distributed DDL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#distributed-dml">Distributed DML</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../columnar/index.html">Column Store</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../geospatial/index.html">Geospatial Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../json/json/index.html">Javascript Object Notation (JSON)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Operations Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ref/commands_by_type/index.html">SQL Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/config/index.html">Configuration Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ops/index.html">MemSQL Ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../loader/index.html">MemSQL Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../archive/index.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../editions/index.html">MemSQL Editions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq/index.html">Frequently Asked Questions</a></li>
+</ul>
+ 
+            </div>
+            &nbsp;
+        </nav>
+
+        <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+            <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+                <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+                <a href="../../../index.html" class="logo">
+                    <img src="../../../static_star_theme/img/memsql_logo_horizontal_white.svg" />
+                    <span class="subtitle">Documentation</span>
+                </a>
+            </nav>
+
+            <div class="wy-nav-content">
+                <div class="rst-content">
+                    <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../index.html">MemSQL Documentation</a> &raquo;</li>
+      
+          <li><a href="../index.html">User Manual</a> &raquo;</li>
+      
+    <li>Distributed SQL</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+                    <div role="main" class="document">
+                        
+  <div class="section" id="distributed-sql">
+<h1>Distributed SQL<a class="headerlink" href="index.html#distributed-sql" title="Permalink to this headline">¶</a></h1>
+<p>This guide covers writing SQL that is optimized for MemSQL&#8217;s distributed system.
+MemSQL, even in a distributed environment, makes it extremely easy to query your
+data with a well-understood set of performance tradeoffs involving Data Definition
+Language (DDL) and Data Manipulation Language (DML) query design.</p>
+<p>Most of the traditional tradeoffs still apply&#8211; indexes still speed up seeks and
+sorts, distinct aggregates are slower than simple aggregates, etc. However, in
+a sharded distributed system, an advanced SQL user must take into account data
+partitioning as well. This guide will walk you through how to tune your distributed
+DDL and DML to perform well in MemSQL&#8217;s distributed system. This guide is not about
+clustering features or high availability (see <a class="reference internal" href="../../admin/high_availability/index.html"><em>Managing High Availability</em></a>) but
+instead focuses on query execution.</p>
+<div class="section" id="query-execution-architecture">
+<h2>Query Execution Architecture<a class="headerlink" href="index.html#query-execution-architecture" title="Permalink to this headline">¶</a></h2>
+<p>MemSQL is a two-tiered architecture consisting of aggregators and leaves. Aggregators can be thought
+of as load balancers or network proxies, through which SQL clients interact with the cluster. The only data
+they store is metadata about the machines in the cluster and the partitioning of the data. The leaves
+function as storage and compute nodes.</p>
+<div class="figure align-center">
+<img alt="../../_images/aggs-leaves.png" src="../../_images/aggs-leaves.png" />
+</div>
+<p>As a user, you interact with an aggregator as if it were &#8220;the&#8221; database, running queries and updating data
+as normal via SQL commands. Under the hood the aggregator queries the leaves, aggregates intermediate results
+(hence the name), and sends results back to the client. All of the communication between aggregators and
+leaves for query execution is also implemented as SQL statements.</p>
+<p>Data is sharded across the leaves into partitions. Each partition is a database on a leaf
+(named <tt class="docutils literal"><span class="pre">&lt;dbname&gt;_N</span></tt>) with a slice of each table&#8217;s data. By default, MemSQL will create one partition per CPU
+core on the leaves for maximum parallelism. This number is configurable cluster-wide with the
+<tt class="docutils literal"><span class="pre">default-partitions-per-leaf</span></tt> variable, or as an optional parameter to <a class="reference internal" href="../../ref/CREATE_DATABASE/index.html"><em>CREATE DATABASE</em></a>.</p>
+<p>In the context of query execution, a partition is the granular unit of query parallelism. In
+other words, every parallel query is run with a level of parallelism equal to the number of
+partitions.  You can view the partitions in a database with <a class="reference internal" href="../../ref/SHOW_PARTITIONS/index.html"><em>SHOW PARTITIONS</em></a>.</p>
+<div class="figure align-center">
+<img alt="../../_images/distributed-count.png" src="../../_images/distributed-count.png" />
+</div>
+<p>MemSQL also has the notion of <cite>reference tables</cite>. These tables are replicated in full to every
+machine in the cluster -every aggregator and every leaf- and are assumed to be relatively
+small. The ubiquity of reference tables makes them cheap to join against, but have some limitations. See
+<a class="reference internal" href="../table/index.html#reference-tables"><em>Reference Tables</em></a> for more details on their implementation. <a class="reference internal" href="index.html#distributed-dml"><em>Distributed DML</em></a> below
+discusses how to use them in query execution.</p>
+</div>
+<div class="section" id="distributed-ddl">
+<span id="id1"></span><h2>Distributed DDL<a class="headerlink" href="index.html#distributed-ddl" title="Permalink to this headline">¶</a></h2>
+<p>Traditionally, a schema designer must consider how to lay out columns, types, and indexes
+in a table. Many of these considerations still apply to a distributed system, with a
+few new concepts.</p>
+<p>Every distributed table has exactly one shard key, or shard index. This functions like a normal
+table index, and can contain any number of columns. This key also determines which partition a given row
+belongs to, using consistent hashing.</p>
+<p>When you run an <tt class="docutils literal"><span class="pre">INSERT</span></tt> query, the aggregator computes the hash value of the values in the column or columns that make up the shard key, does a modulo operation to get a partition number, and directs the <tt class="docutils literal"><span class="pre">INSERT</span></tt> query to the appropriate partition on a leaf machine.</p>
+<div class="figure align-center">
+<img alt="../../_images/insert-shard.png" src="../../_images/insert-shard.png" />
+</div>
+<p>The only guarantee that you have about the physical location of data in the system is
+that any two rows with the same shard key value are guaranteed to be on the same partition.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">MemSQL requires that any <tt class="docutils literal"><span class="pre">PRIMARY</span></tt> or <tt class="docutils literal"><span class="pre">UNIQUE</span></tt> index must
+be identical to or a superset of the shard key. Rows which might have a primary key conflict
+must map to the same partition in order for uniqueness to be enforced.</p>
+</div>
+<p>MemSQL&#8217;s distributed query optimizer leverages shard keys to determine how a read query
+should be executed. For example, queries that fully match the shard key can be routed
+directly to a single partition on a single leaf server. Queries that are guaranteed to
+be non-overlapping can be streamed without any processing on the aggregator or leaf-to-leaf temporary tables.
+These optimizations are discussed in depth in <a class="reference internal" href="index.html#distributed-dml"><em>Distributed DML</em></a>.</p>
+<p>MemSQL supports three types of shard keys:</p>
+<div class="section" id="primary-key-as-the-shard-key">
+<span id="id2"></span><h3>Primary Key as the Shard Key<a class="headerlink" href="index.html#primary-key-as-the-shard-key" title="Permalink to this headline">¶</a></h3>
+<p>If you create a table with a primary key and no explicit shard key, the PK will be used as
+the shard key by default. This helps avoid <a class="reference internal" href="../../admin/skew/index.html#skew"><em>data skew</em></a>.</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="nf">clicks</span> <span class="p">(</span>
+    <span class="n">click_id</span> <span class="kt">BIGINT</span> <span class="kp">AUTO_INCREMENT</span> <span class="k">PRIMARY</span> <span class="k">KEY</span><span class="p">,</span>
+    <span class="n">user_id</span> <span class="kt">INT</span><span class="p">,</span>
+    <span class="n">page_id</span> <span class="kt">INT</span><span class="p">,</span>
+    <span class="n">ts</span> <span class="kt">TIMESTAMP</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="non-unique-shard-key">
+<h3>Non-Unique Shard Key<a class="headerlink" href="index.html#non-unique-shard-key" title="Permalink to this headline">¶</a></h3>
+<p>The syntax for a non-unique shard key is <tt class="docutils literal"><span class="pre">SHARD</span> <span class="pre">KEY</span> <span class="pre">(col1,</span> <span class="pre">col2,</span> <span class="pre">...)</span></tt>. For example:</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="nf">clicks</span> <span class="p">(</span>
+    <span class="n">click_id</span> <span class="kt">BIGINT</span> <span class="kp">AUTO_INCREMENT</span><span class="p">,</span>
+    <span class="n">user_id</span> <span class="kt">INT</span><span class="p">,</span>
+    <span class="n">page_id</span> <span class="kt">INT</span><span class="p">,</span>
+    <span class="n">ts</span> <span class="kt">TIMESTAMP</span><span class="p">,</span>
+    <span class="n">SHARD</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">user_id</span><span class="p">),</span>
+    <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">click_id</span><span class="p">,</span> <span class="n">user_id</span><span class="p">)</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<p>In this example, any two clicks by the same user will be guaranteed to be on the same partition. You can take advantage of this
+property in query execution for efficient <tt class="docutils literal"><span class="pre">COUNT(DISTINCT</span> <span class="pre">user_id)</span></tt> queries, which knows that
+any two equal (non-distinct) <tt class="docutils literal"><span class="pre">user_id</span></tt> values will never be on different partitions.</p>
+<p>Note that even though <tt class="docutils literal"><span class="pre">click_id</span></tt> will be unique, we still have to include <tt class="docutils literal"><span class="pre">user_id</span></tt> in the primary key.</p>
+<div class="admonition note" id="foreign-shard-keys">
+<p class="first admonition-title">Note</p>
+<p class="last">MemSQL supports a variant of the shard key called the &#8220;foreign shard key&#8221; which explicitly references the shard key of another table. In MemSQL up through version 3.2 this FSK relationship was <em>required</em> for distributed joins. As of version 4 the syntax is still supported, but no longer required.</p>
+</div>
+</div>
+</div>
+<div class="section" id="distributed-dml">
+<span id="id3"></span><h2>Distributed DML<a class="headerlink" href="index.html#distributed-dml" title="Permalink to this headline">¶</a></h2>
+<p>How a table is partitioned affects the performance of some kinds of <tt class="docutils literal"><span class="pre">SELECT</span></tt> queries. In this section we&#8217;ll
+look at common query patterns and how they&#8217;re executed through the distributed system. You can use the <a class="reference internal" href="../../ref/EXPLAIN/index.html"><em>EXPLAIN</em></a>
+command to examine a query&#8217;s aggregator-level and leaf-level query plans.</p>
+<p>Let&#8217;s assume the following schema:</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="nf">a</span> <span class="p">(</span>
+    <span class="n">a1</span> <span class="kt">int</span><span class="p">,</span>
+    <span class="n">a2</span> <span class="kt">int</span><span class="p">,</span>
+    <span class="n">a3</span> <span class="kt">int</span><span class="p">,</span>
+    <span class="n">SHARD</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">),</span>
+    <span class="k">KEY</span> <span class="p">(</span><span class="n">a3</span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="nf">b</span> <span class="p">(</span>
+    <span class="n">b1</span> <span class="kt">int</span><span class="p">,</span>
+    <span class="n">b2</span> <span class="kt">int</span><span class="p">,</span>
+    <span class="n">b3</span> <span class="kt">int</span><span class="p">,</span>
+    <span class="n">SHARD</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">b1</span><span class="p">,</span> <span class="n">b2</span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span> <span class="n">REFERENCE</span> <span class="k">TABLE</span> <span class="nf">r</span> <span class="p">(</span>
+    <span class="n">r1</span> <span class="kt">int</span><span class="p">,</span>
+    <span class="n">r2</span> <span class="kt">int</span><span class="p">,</span>
+    <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">r1</span><span class="p">),</span>
+    <span class="k">KEY</span> <span class="p">(</span><span class="n">r2</span><span class="p">)</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<div class="section" id="index-matching">
+<h3>Index Matching<a class="headerlink" href="index.html#index-matching" title="Permalink to this headline">¶</a></h3>
+<p id="matches-shard-key"><strong>Matching the Shard Key.</strong> If you specify an equality on every column in the shard key, then the aggregator will direct the query
+to exactly one partition. Most queries do not fall into this pattern; instead, the aggregator must send queries to every partition
+in the cluster for intermediate results and then stitch them together.</p>
+<p>These queries are sent to one partition:</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">a</span> <span class="k">WHERE</span> <span class="n">a1</span> <span class="o">=</span> <span class="mi">4</span> <span class="k">AND</span> <span class="n">a2</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+<span class="k">SELECT</span> <span class="n">a3</span><span class="p">,</span> <span class="nf">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">a</span> <span class="k">WHERE</span> <span class="n">a1</span> <span class="o">=</span> <span class="mi">4</span> <span class="k">AND</span> <span class="n">a2</span> <span class="o">=</span> <span class="mi">10</span> <span class="k">GROUP</span> <span class="k">BY</span> <span class="n">a3</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>These queries are sent to all partitions:</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">a</span> <span class="k">WHERE</span> <span class="n">a1</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
+<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">a</span> <span class="k">WHERE</span> <span class="n">a1</span> <span class="o">=</span> <span class="mi">4</span> <span class="k">OR</span> <span class="n">a2</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">a</span> <span class="k">WHERE</span> <span class="n">a1</span> <span class="k">IN</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span> <span class="k">AND</span> <span class="n">a2</span> <span class="k">IN</span> <span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><strong>Secondary Index Matching.</strong> If your query uses a secondary (non-shard) index, then the aggregator must send the query to every partition
+in the cluster. Locally, each partition&#8217;s table will use its part of the secondary index to speed up the query. While the overall performance of the query is
+dictated by the seek and scan time of these indexes, the fact that the query must be sent everywhere in the cluster can increase the
+variance (and therefore overall latency) of the query.</p>
+<p>This query matches the secondary index on the column a3:</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">a</span> <span class="k">WHERE</span> <span class="n">a3</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+</pre></div>
+</div>
+<p><strong>No Index Matching.</strong> Queries that do not match any index perform a full table scan on all partitions. From the perspective of the
+aggregator, these queries are the same as queries that match a secondary index.</p>
+</div>
+<div class="section" id="aggregator-merging">
+<h3>Aggregator Merging<a class="headerlink" href="index.html#aggregator-merging" title="Permalink to this headline">¶</a></h3>
+<p>Most queries that don&#8217;t involve aggregates, group bys, or order bys don&#8217;t require any further processing on the aggregator. These
+queries are forwarded verbatim to one or many partitions, and the partition&#8217;s results are streamed back to the client.
+More complex queries do require merge processing on the aggregator.</p>
+<p><strong>Order By.</strong> <tt class="docutils literal"><span class="pre">ORDER</span> <span class="pre">BY</span></tt> queries that don&#8217;t involve aggregates or group bys can sort rows on the leaves and then merge the sorted
+intermediate results on the aggregator. For example, a query like <tt class="docutils literal"><span class="pre">SELECT</span> <span class="pre">*</span> <span class="pre">FROM</span> <span class="pre">a</span> <span class="pre">WHERE</span> <span class="pre">a3</span> <span class="pre">=</span> <span class="pre">5</span> <span class="pre">ORDER</span> <span class="pre">BY</span> <span class="pre">a1</span></tt> will follow this pattern.
+These queries leverage distributed (leaf) processing to do the majority of filtering and sorting, which makes them scalable with the
+amount of data in the system.</p>
+<p><strong>Aggregates.</strong> Queries with aggregates compute aggregate values on the leaves and then use aggregate merging on the aggregator to
+compute a final result. Each aggregate is either assumed to be associative or converted into an expression that is associative. For
+example, <tt class="docutils literal"><span class="pre">AVG(expr)</span></tt> is converted to <tt class="docutils literal"><span class="pre">SUM(expr)/COUNT(expr)</span></tt> automatically by the aggregator.</p>
+<p><strong>Distinct Aggregates.</strong> Distinct aggregates like <tt class="docutils literal"><span class="pre">COUNT(DISTINCT</span> <span class="pre">...)</span></tt> are not as efficient as simple aggregates like <tt class="docutils literal"><span class="pre">COUNT(*)</span></tt>.
+Distinct values must be resolved across partition boundaries (you could have <tt class="docutils literal"><span class="pre">a3=10</span></tt> on two different partitions in <tt class="docutils literal"><span class="pre">SELECT</span> <span class="pre">COUNT(DISTINCT</span> <span class="pre">a3)</span> <span class="pre">FROM</span> <span class="pre">a</span></tt>), so each
+partition must send every distinct value it has back to the aggregator. Queries with distinct aggregates ship one row per
+distinct value per partition back to the aggregator and can therefore be expensive if there are a lot of distinct values.</p>
+<p>There is an exception to this rule: if you run a <tt class="docutils literal"><span class="pre">DISTINCT</span></tt> aggregate over the shard key, distinct values can
+be resolved on the leaves and the aggregator can merge aggregate values as it would with simple aggregates. An example of such a
+query would be <tt class="docutils literal"><span class="pre">SELECT</span> <span class="pre">COUNT(DISTINCT</span> <span class="pre">a1,</span> <span class="pre">a2)</span> <span class="pre">FROM</span> <span class="pre">a</span></tt>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">It is also possible to calculate a fast approximation of distinct values; see <a class="reference internal" href="../../ref/functions/APPROX_COUNT_DISTINCT/index.html"><em>APPROX_COUNT_DISTINCT</em></a>.</p>
+</div>
+<p><strong>Group By.</strong> <tt class="docutils literal"><span class="pre">GROUP</span> <span class="pre">BY</span></tt> queries are spread very efficiently across the leaves. The aggregator sends the <tt class="docutils literal"><span class="pre">GROUP</span> <span class="pre">BY</span></tt> construct
+to the leaves so that the leaves process data down to the size of the final, grouped result set. The aggregator then merges together
+these grouped results (combining aggregates along the way) and sends the final result back to the client. The efficiency of a distributed
+<tt class="docutils literal"><span class="pre">GROUP</span> <span class="pre">BY</span></tt> query is inversely proportional to the number of rows in the final result set, since the traffic through the system
+is roughly the number of partitions multiplied by the size of the grouped result set.</p>
+<p><strong>Having.</strong> <tt class="docutils literal"><span class="pre">HAVING</span></tt> clauses are processed entirely on the aggregator since they perform filtering after the <tt class="docutils literal"><span class="pre">GROUP</span> <span class="pre">BY</span></tt> operation
+is complete.</p>
+</div>
+<div class="section" id="distributed-joins">
+<span id="id4"></span><h3>Distributed Joins<a class="headerlink" href="index.html#distributed-joins" title="Permalink to this headline">¶</a></h3>
+<p><strong>Reference Joins.</strong> As a general rule, MemSQL will efficiently execute any join query with a single sharded table and
+as many reference tables as you&#8217;d like. Since reference tables are fully replicated to on every machine in the cluster, leaves can
+join against their their local copies of reference tables.</p>
+<p>These queries leverage reference joins:</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">a</span> <span class="k">INNER</span> <span class="k">JOIN</span> <span class="n">r</span> <span class="k">ON</span> <span class="n">a</span><span class="p">.</span><span class="n">a1</span> <span class="o">=</span> <span class="n">r</span><span class="p">.</span><span class="n">r1</span><span class="p">;</span>
+<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">r</span> <span class="k">LEFT</span> <span class="k">JOIN</span> <span class="n">a</span> <span class="k">ON</span> <span class="n">a</span><span class="p">.</span><span class="n">a1</span> <span class="o">=</span> <span class="n">r</span><span class="p">.</span><span class="n">r1</span><span class="p">;</span>
+<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">a</span><span class="p">,</span> <span class="n">r</span> <span class="n">r1</span><span class="p">,</span> <span class="n">r</span> <span class="n">r2</span><span class="p">,</span> <span class="n">r</span> <span class="n">r3</span><span class="p">;</span>
+<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">a</span> <span class="k">INNER</span> <span class="k">JOIN</span>
+    <span class="p">(</span><span class="k">SELECT</span> <span class="k">DISTINCT</span> <span class="n">r1</span> <span class="k">FROM</span> <span class="n">r</span><span class="p">)</span> <span class="n">x</span>
+    <span class="k">ON</span> <span class="n">a</span><span class="p">.</span><span class="n">a1</span> <span class="o">=</span> <span class="n">x</span><span class="p">.</span><span class="n">c</span><span class="p">;</span>
+</pre></div>
+</div>
+<p><strong>Aligning Shard Keys For Performance</strong>: Alinging the shard keys of various large tables enables more efficient joining. Starting with MemSQL 4 it is possible to perform arbitrary distributed joins across any tables and along any column. However, if you join two tables with identical shard key signatures along that shard key, the joins will be performed local to the partitions, reducing network overhead.</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="nf">users</span> <span class="p">(</span>
+    <span class="n">id</span> <span class="kt">BIGINT</span> <span class="kp">AUTO_INCREMENT</span><span class="p">,</span>
+    <span class="n">user_name</span> <span class="kt">VARCHAR</span><span class="p">(</span><span class="mi">1000</span><span class="p">),</span>
+    <span class="n">account_id</span> <span class="kt">BIGINT</span><span class="p">,</span>
+    <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">id</span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="nf">clicks</span> <span class="p">(</span>
+    <span class="n">click_id</span> <span class="kt">BIGINT</span> <span class="kp">AUTO_INCREMENT</span><span class="p">,</span>
+    <span class="n">account_id</span> <span class="kt">BIGINT</span><span class="p">,</span>
+    <span class="n">user_id</span> <span class="kt">BIGINT</span><span class="p">,</span>
+    <span class="n">page_id</span> <span class="kt">INT</span><span class="p">,</span>
+    <span class="n">ts</span> <span class="kt">TIMESTAMP</span><span class="p">,</span>
+    <span class="n">SHARD</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">user_id</span><span class="p">),</span>
+    <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">click_id</span><span class="p">,</span> <span class="n">user_id</span><span class="p">)</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<p>In this example, <tt class="docutils literal"><span class="pre">id</span></tt> is be the shard key of the <tt class="docutils literal"><span class="pre">users</span></tt> table, and the shard key on the <tt class="docutils literal"><span class="pre">clicks</span></tt> table has the same signature (a single BIGINT). These queries join locally without network overhead:</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">users</span> <span class="k">INNER</span> <span class="k">JOIN</span> <span class="n">clicks</span> <span class="k">ON</span> <span class="n">users</span><span class="p">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">clicks</span><span class="p">.</span><span class="n">user_id</span> <span class="k">WHERE</span> <span class="n">clicks</span><span class="p">.</span><span class="n">page_id</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+
+<span class="k">SELECT</span> <span class="nf">avg</span><span class="p">(</span><span class="n">c1</span><span class="p">.</span><span class="n">t</span> <span class="o">-</span> <span class="n">c2</span><span class="p">.</span><span class="n">t</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">clicks</span> <span class="n">c1</span> <span class="k">INNER</span> <span class="k">JOIN</span> <span class="n">clicks</span> <span class="n">c2</span> <span class="k">ON</span> <span class="n">c1</span><span class="p">.</span><span class="n">user_id</span> <span class="o">=</span> <span class="n">c2</span><span class="p">.</span><span class="n">user_id</span> <span class="k">WHERE</span> <span class="n">c1</span><span class="p">.</span><span class="n">page_id</span> <span class="o">&gt;</span> <span class="n">c2</span><span class="p">.</span><span class="n">page_id</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Whereas this query will stream rows between leaves:</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="k">SELECT</span> <span class="n">u</span><span class="p">.</span><span class="n">account_id</span><span class="p">,</span> <span class="nf">count</span><span class="p">(</span><span class="k">distinct</span> <span class="n">user_id</span><span class="p">),</span> <span class="nf">count</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">FROM</span> <span class="n">users</span> <span class="n">u</span> <span class="k">INNER</span> <span class="k">JOIN</span> <span class="n">clicks</span> <span class="n">c</span> <span class="k">ON</span> <span class="n">u</span><span class="p">.</span><span class="n">account_id</span> <span class="o">=</span> <span class="n">c</span><span class="p">.</span><span class="n">account_id</span>
+<span class="k">GROUP</span> <span class="k">BY</span> <span class="n">u</span><span class="p">.</span><span class="n">account_id</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>If you identify your data layout and join patterns in advance, this technique can be an extremely effective way to run performant
+joins between distributed tables. For more information about how queries execute, see <a class="reference internal" href="../../ref/EXPLAIN/index.html"><em>EXPLAIN</em></a>.</p>
+</div>
+<div class="section" id="write-queries">
+<h3>Write Queries<a class="headerlink" href="index.html#write-queries" title="Permalink to this headline">¶</a></h3>
+<p><strong>Updates and Deletes.</strong> The <tt class="docutils literal"><span class="pre">WHERE</span></tt> clause in an <tt class="docutils literal"><span class="pre">UPDATE</span></tt> or <tt class="docutils literal"><span class="pre">DELETE</span></tt> query is optimized the same way as the <tt class="docutils literal"><span class="pre">WHERE</span></tt> clause in a <tt class="docutils literal"><span class="pre">SELECT</span></tt> query.
+If the predicate matches the shard key exactly then the query is routed to a single partition, etc.</p>
+<p><strong>Inserts.</strong> MemSQL executes <tt class="docutils literal"><span class="pre">INSERT</span></tt> queries by analyzing the insert values relevant to the shard key and routing the query
+to the corresponding partition. For example, <tt class="docutils literal"><span class="pre">INSERT</span> <span class="pre">INTO</span> <span class="pre">a</span> <span class="pre">(a1,</span> <span class="pre">a2,</span> <span class="pre">a3)</span> <span class="pre">VALUES</span> <span class="pre">(1,</span> <span class="pre">2,</span> <span class="pre">3)</span></tt> would compute the hash value of
+<tt class="docutils literal"><span class="pre">(1,</span> <span class="pre">2)</span></tt> and map this value to the appropriate partition.</p>
+<p>If you&#8217;re bulk inserting data with <tt class="docutils literal"><span class="pre">INSERT</span></tt> queries, then you should take advantage of the multi-insert syntax:
+<tt class="docutils literal"><span class="pre">INSERT</span> <span class="pre">INTO</span> <span class="pre">a</span> <span class="pre">(a1,</span> <span class="pre">a2,</span> <span class="pre">a3)</span> <span class="pre">VALUES</span> <span class="pre">(1,</span> <span class="pre">2,</span> <span class="pre">3),</span> <span class="pre">(2,</span> <span class="pre">3,</span> <span class="pre">4),</span> <span class="pre">...</span></tt>. The aggregator will chop up the multi-insert into single insert
+queries and run them in parallel across the cluster. This technique enables your application to combat the inherent latency of
+running in a distributed system.</p>
+<p>Currently, in the event of a rollback (duplicate key error, out-of-memory, etc.), the aggregator will not roll back any successful
+tuples in the multi-insert query. This is in contrast to the single-box system, which will treat a multi-insert as one large transaction.</p>
+</div>
+</div>
+</div>
+
+
+                    </div>
+                    <footer data-swiftype-index="false">
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../columnar/index.html" class="btn btn-neutral float-right" title="Column Store">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../information_schema/index.html" class="btn btn-neutral" title="Information Schema"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&copy; Copyright 2015, MemSQL</p>
+  </div>
+</footer>
+                </div>
+            </div>
+
+        </section>
+    </div>
+
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/underscore-min.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery.ba-hashchange.min.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery.swiftype.search.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery.swiftype.autocomplete.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/theme.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/search.js"></script> 
+
+        <!-- Google Analytics -->
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-21693588-3', 'auto');
+            ga('send', 'pageview');
+        </script>
+        <!-- End Google Analytics -->
+
+        <script type="text/javascript">
+            $.ajax({
+                url: document.location.protocol + '//munchkin.marketo.net/munchkin.js',
+                dataType: 'script',
+                cache: true,
+                success: function() {
+                    Munchkin.init('759-YLI-316');
+                }
+            });
+        </script>
+    </body>
+</html>

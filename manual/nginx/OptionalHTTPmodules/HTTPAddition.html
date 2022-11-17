@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml">
+<HEAD><TITLE>HTTP Addition模块（HTTP Addition）</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=GB2312">
+<STYLE type=text/css>PRE {
+	BACKGROUND-COLOR: #cccccc
+}
+.STYLE1 {
+	COLOR: #ff0000
+}
+</STYLE>
+
+<META content="MSHTML 6.00.6000.16809" name=GENERATOR></HEAD>
+<BODY>
+<H2>HTTP Addition模块（HTTP Addition）</H2><BR>
+
+<H3>·摘要</H3>
+<H4>这个模块可以在当前的location之前或者之后增加别的location。<BR>
+它作为一个输出过滤器执行，包含到其他location中的主请求和子请求不会被完全缓冲，并且仍然以流的形式传递到客户端，因为最终应答体的长度在传递HTTP头的时候是未知的，HTTP的chunked编码总是在这里使用。<BR>
+<H3>安装</H3>
+<H4>默认情况下这个模块是没有编译的，如果要使用则需要在编译时指定下列参数：<BR>
+<PRE>./configure --with-http_addition_module</PRE>
+示例配置：<BR>
+<PRE>location / {
+  add_before_body   /before_action;
+  add_after_body    /after_action;
+</PRE></H4>
+<H3>一些限制</H3>
+<H4>在0.8.17版本中如果当前的location请求一个请求自身的子请求，包含的location不会被添加。如以下配置：<BR>
+<PRE>location /foo {
+  add_before_body /bar;
+}
+ 
+location /bar {
+  add_before_body  /baz;
+}</PRE>
+连接到/foo的请求并不会将/baz对应的location添加到字段中。<BR>
+同样注意，在定义需要包含的location时只能使用字符串，而不能使用变量，所以以下配置：
+<PRE>location / {
+  set $before_action /before_action;
+  add_before_body $before_action;
+}</PRE>
+并不能正常工作（虽然在测试配置文件正确性的时候可以通过）</H4>
+<H3>·指令</H3>
+<H3>add_before_body </H3>
+<H4>语法：add_before_body uri <BR>
+默认值：no <BR>
+使用字段：http, server, location <BR>
+在应答体的前面增加URI，为一个处理结果发出子请求。</H4>
+<H3>add_after_body </H3>
+<H4>语法：add_after_body uri <BR>
+默认值：no <BR>
+使用字段：http, server, location <BR>
+在应答体的后面增加URI，为一个处理结果发出子请求。</H4>
+<H3>addition_types </H3>
+<H4>语法：addition_types mime-type [mime-type ...] <BR>
+默认值：text/html <BR>
+使用字段：http, server, location <BR>
+指令（0.7.9）允许增加让该location处理的其他MIME类型（默认为"text/html"）。（0.8.17之前这个指令在源代码中被拼写成"addtion_types"，不过在0.8.17版本后修复了。）</H4>
+<H3>·参考文档</H3>
+<H4><A href="http://sysoev.ru/nginx/docs/http/ngx_http_addition_module.html" >Original Documentation</A><BR>
+<A href="http://wiki.nginx.org/NginxHttpAdditionModule/" >Nginx Http Addition Module</A></H4>
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://179401.cn/analytics/" : "http://179401.cn/analytics/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://shouce.jb51.net/179401.cn/analytics/piwik.php-idsite=1"  style="border:0" alt=""/></p></noscript>
+<!-- End Piwik Tag -->
+</BODY>
+</HTML>
+<H3><A href="EmbeddedPerl.html" >前进->嵌入式Perl模块（Embedded Perl）</A></H3>

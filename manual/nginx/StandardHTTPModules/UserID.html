@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml">
+<HEAD><TITLE>User ID模块（User ID）</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=GB2312">
+<STYLE type=text/css>PRE {
+	BACKGROUND-COLOR: #cccccc
+}
+.STYLE1 {
+	COLOR: #ff0000
+}
+</STYLE>
+
+<META content="MSHTML 6.00.6000.16809" name=GENERATOR></HEAD>
+<BODY>
+<H2>User ID模块（User ID）</H2><BR>
+
+<H3>·摘要</H3>
+<H4>模块ngx_http_userid_module为连接发布cookie，主要使用$uid_got和$uid_set变量，注意：$uid_got无法$uid_set在SSI中取得，因为SSI过滤模块工作在userid模块过滤之前。<BR>
+这个模块相当于Apache的mod_uid模块。<BR>
+示例配置：<BR>
+<PRE>userid          on;
+userid_name     uid;
+userid_domain   example.com;
+userid_path     /;
+userid_expires  365d;
+userid_p3p      'policyref="/w3c/p3p.xml", CP="CUR ADM OUR NOR STA NID"';</PRE></H4>
+<H3>·指令</H3>
+<H3>userid </H3>
+<H4>语法：userid [on|v1|log||off] <BR>
+默认值：userid off <BR>
+使用字段：http, server, location <BR>
+是否启用发出cookie或者记录到被请求的cookie：<BR>
+<H5>·on - 启用版本2的cookie并记录。<BR>
+·v1 - 启用版本1的cookie并记录。<BR>
+·log - 不传送cookie，但是写入日志。<BR>
+·off - 禁用cookie。</H5></H4>
+<H3>userid_domain </H3>
+<H4>语法：userid_domain [ name | none ] <BR>
+默认值：userid_domain none <BR>
+使用字段：http, server, location <BR>
+指定cookie的域名，参数“none”不对任何域名发出cookie。</H4>
+<H3>userid_expires </H3>
+<H4>语法：userid_expires [ time | max ] <BR>
+默认值：none <BR>
+使用字段：http, server, location <BR>
+设置cookie的过期时间。<BR>
+参数设置并发出浏览器对于cookie的实效时间，值“max”指定过期时间为：2037年12月31日23:55:55 GMT，这是某些旧浏览器所能识别的最大时间。</H4>
+<H3>userid_name </H3>
+<H4>语法：userid_name name <BR>
+默认值：userid_name uid <BR>
+使用字段：http, server, location <BR>
+设置cookie的名称。</H4>
+<H3>userid_p3p </H3>
+<H4>语法：userid_p3p line <BR>
+默认值：none <BR>
+使用字段：http, server, location <BR>
+为和cookie一起传递的P3P头指定一个值。</H4>
+<H3>userid_path </H3>
+<H4>语法：userid_path path <BR>
+默认值：userid_path / <BR>
+使用字段：http, server, location <BR>
+设置cookie路径。</H4>
+<H3>userid_service </H3>
+<H4>语法：userid_service number <BR>
+默认值：userid_service address <BR>
+使用字段：http, server, location <BR>
+设置cookie发布的服务器地址，如果不设置，版本一的cookie将其设置为0，版本二将其设置为服务器IP。</H4>
+<H3>·参考文档</H3>
+<H4><A href="http://sysoev.ru/nginx/docs/http/ngx_http_userid_module.html" >Original Documentation</A><BR>
+<A href="http://wiki.nginx.org/NginxHttpUserIdModule/" >Nginx Http User ID Module</A></H4>
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://179401.cn/analytics/" : "http://179401.cn/analytics/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://shouce.jb51.net/179401.cn/analytics/piwik.php-idsite=1"  style="border:0" alt=""/></p></noscript>
+<!-- End Piwik Tag -->
+</BODY>
+</HTML>
+<H3><A href="uWSGI.html" >前进->uWSGI模块</A></H3>

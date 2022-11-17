@@ -1,0 +1,149 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 6.12.  The goto Statement</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch06lev1sec11.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch06lev1sec13.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch06lev1sec12"></a>
+
+        <h3 class="docSection1Title">6.12. The <tt>goto</tt> Statement</h3>
+        <h3 class="docSection1Title">6.12. <tt>goto</tt> 语句</h3>
+
+<a name="ch06term16"></a>
+        <p class="docText">A <b><a class="docLink" href="ch06lev1sec16.html#gloss06_16" ><span class="docEmphStrong"><tt>goto</tt></span> statement</a></b> provides an unconditional jump from the <tt>goto</tt> to a <tt>label</tt>ed statement in the same function.</p>
+        <p class="docText"><b><a class="docLink" href="ch06lev1sec16.html#gloss06_16" ><span class="docEmphStrong"><tt>goto</tt></span> 语句</a></b>提供了函数内部的无条件跳转，实现从 <tt>goto</tt> 语句跳转到同一函数内某个带标号的语句。</p>
+
+<a name="ch06note19"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Use of <tt>goto</tt>s has been discouraged since the late 1960s. <tt>goto</tt>s make it difficult to trace the control flow of a program, making the program hard to understand and hard to modify. Any program that uses a <tt>goto</tt> can be rewritten so that it doesn't need the <tt>goto</tt>.</p>
+		<p class="docText">从上世纪 60 年代后期开始，不主张使用 <tt>goto</tt> 语句。<tt>goto</tt> 语句使跟踪程序控制流程变得很困难，并且使程序难以理解，也难以修改。所有使用 <tt>goto</tt> 的程序都可以改写为不用 <tt>goto</tt> 语句，因此也就没有必要使用 <tt>goto</tt> 语句了。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">The syntactic form of a <tt>goto</tt> statement is</p>
+        <p class="docText"><tt>goto</tt> 语句的语法规则如下：</p>
+        <pre>
+     goto <span class="docEmphasis">label;</span>
+</pre><br>
+
+<a name="ch06term19"></a>
+        <p class="docText">where <span class="docEmphasis">label</span> is an identifier that identifies a labeled statement. A <b><a class="docLink" href="ch06lev1sec16.html#gloss06_19" >labeled statement</a></b> is any statement that is preceded by an identifier followed by a colon:</p>
+        <p class="docText">其中 <span class="docEmphasis">label</span> 是用于标识带标号的语句的标识符。在任何语句前提供一个标识符和冒号，即得<b><a class="docLink" href="ch06lev1sec16.html#gloss06_19" >带标号的语句</a></b>：</p>
+        <pre>
+     end: return; // <span class="docEmphItalicAlt">labeled statement, may be target of a</span> <span class="docEmphasis">goto</span>
+</pre><br>
+
+        <p class="docText">The identifier that forms the label may be used only as the target of a <tt>goto</tt>. For this reason, label identifiers may be the same as variable names or other identifiers in the program without interfering with other uses of those identifiers. The <tt>goto</tt> and the labeled statement to which it transfers control must be in the same function.</p>
+        <p class="docText">形成标号的标识符只能用作 <tt>goto</tt> 的目标。因为这个原因，标号标识符可以与变量名以及程序里的其他标识符一样，不与别的标识符重名。<tt>goto</tt> 语句和获得所转移的控制权的带标号的语句必须位于于同一个函数内。</p>
+
+<a name="idd1e45349"></a><a name="idd1e45359"></a>
+        <p class="docText">A <tt>goto</tt> may not jump forward over a variable definition:</p>
+        <p class="docText"><tt>goto</tt> 语句不能跨越变量的定义语句向前跳转：</p>
+        <pre>
+     // ...
+     goto end;
+     int ix = 10; // <span class="docEmphItalicAlt">error:</span> <span class="docEmphasis">goto</span> <span class="docEmphItalicAlt">bypasses declaration statement</span>
+ end:
+     // <span class="docEmphItalicAlt">error: code here could use</span> <span class="docEmphasis">ix</span> <span class="docEmphItalicAlt">but the</span> <span class="docEmphasis">goto</span> <span class="docEmphItalicAlt">bypassed its declaration</span>
+     ix = 42;
+</pre><br>
+
+        <p class="docText">If definitions are needed between a <tt>goto</tt> and its corresponding label, the definitions must be enclosed in a block:</p>
+        <p class="docText">如果确实需要在 <tt>goto</tt> 和其跳转对应的标号之间定义变量，则定义必须放在一个块语句中：</p>
+        <pre>
+         // ...
+         goto end; // <span class="docEmphItalicAlt">ok: jumps to a point where</span> <span class="docEmphasis">ix</span> <span class="docEmphItalicAlt">is not defined</span>
+         {
+            int ix = 10;
+            // ... <span class="docEmphItalicAlt">code using ix</span>
+         }
+     end: // <span class="docEmphasis">ix</span> <span class="docEmphItalicAlt">no longer visible here</span>
+</pre><br>
+
+        <p class="docText">A jump backward over an already executed definition is okay. Why? Jumping over an unexecuted definition would mean that a variable could be used even though it was never defined. Jumping back to a point before a variable is defined destroys the variable and constructs it again:</p>
+        <p class="docText">向后跳过已经执行的变量定义语句则是合法的。为什么？向前跳过未执行的变量定义语句，意味着变量可能在没有定义的情况下使用。向后跳回到一个变量定义之前，则会使系统撤销这个变量，然后再重新创建它：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">backward jump over declaration statement ok</span>
+       begin:
+         int sz = get_size();
+         if (sz &lt;= 0) {
+               goto begin;
+         }
+</pre><br>
+
+        <p class="docText">Note that <tt>sz</tt> is destroyed when the <tt>goto</tt> executes and is defined and initialized anew when control jumps back to <tt>begin:</tt>.</p>
+        <p class="docText">注意：执行 <tt>goto</tt> 语句时，首先撤销变量 <tt>sz</tt>，然后程序的控制流程跳转到带 <tt>begin:</tt> 标号的语句继续执行，再次重新创建和初始化 <tt>sz</tt> 变量。</p>
+
+<a name="ch06sb10"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 6.12</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch06qa9q1"></a><b>Exercise 6.22:</b></td>
+
+                    <td>
+                      <p class="docText">The last example in this section that jumped back to <tt>begin</tt> could be better written using a loop. Rewrite the code to eliminate the <tt>goto</tt>.</p>
+                      <p class="docText">对于本节的最后一个例子，跳回到 <tt>begin</tt> 标号的功能可以用循环更好地实现。请不使用 <tt>goto</tt> 语句重写这段代码。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch06lev1sec11.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch06lev1sec13.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

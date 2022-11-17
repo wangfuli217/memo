@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml">
+<HEAD><TITLE>Real IP模块（Real IP）</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=GB2312">
+<STYLE type=text/css>PRE {
+	BACKGROUND-COLOR: #cccccc
+}
+.STYLE1 {
+	COLOR: #ff0000
+}
+</STYLE>
+
+<META content="MSHTML 6.00.6000.16809" name=GENERATOR></HEAD>
+<BODY>
+<H2>Real IP模块（Real IP）</H2><BR>
+
+<H3>·摘要</H3>
+<H4>这个模块允许修改请求头中客户端的ip地址（如X-Real-IP和X-Forwarded-For）。<BR>
+这对于一些工作在七层负载均衡器后面的nginx非常有用，请求来自本地IP，但是代理服务器在请求头中增加了客户端的真实IP。<BR>
+要使用这个模块必须在编译时指定下列编译参数：<BR>
+<PRE>--with-http_realip_module</PRE>
+使用须知：你将创建一个信任代理的列表（见下文）并且头部中第一个不被信任的IP将作为客户端IP（参考Apache的mod_extract）。<BR>
+示例配置：<BR>
+<PRE>set_real_ip_from   192.168.1.0/24;
+set_real_ip_from   192.168.2.1;
+real_ip_header     X-Real-IP;</PRE></H4>
+<H3>·指令</H3>
+<H3>set_real_ip_from </H3>
+<H4>语法：set_real_ip_from [the address|CIDR] <BR>
+默认值：none <BR>
+使用字段：http, server, location <BR>
+这个指令指定信任的代理IP，它们将会以精确的替换IP转发。</H4>
+<H3>real_ip_header </H3>
+<H4>语法：real_ip_header [X-Real-IP|X-Forwarded-For] <BR>
+默认值：real_ip_header X-Real-IP <BR>
+使用字段：http, server, location <BR>
+设置需要使用哪个头来确定替换的IP地址。</H4>
+<H3>·参考文档</H3>
+<H4><A href="http://sysoev.ru/nginx/docs/http/ngx_http_realip_module.html" >Original Documentation</A><BR>
+<A href="http://wiki.nginx.org/NginxHttpRealIpModule/" >Nginx Http Real IP Module</A><BR></H4>
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://179401.cn/analytics/" : "http://179401.cn/analytics/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://shouce.jb51.net/179401.cn/analytics/piwik.php-idsite=1"  style="border:0" alt=""/></p></noscript>
+<!-- End Piwik Tag -->
+</BODY>
+</HTML>
+<H3><A href="SSL.html" >前进->SSL模块（SSL）</A></H3>

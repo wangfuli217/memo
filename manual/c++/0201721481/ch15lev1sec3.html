@@ -1,0 +1,225 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 15.3.  Conversions and Inheritance</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch15lev1sec2.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch15lev1sec4.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch15lev1sec3"></a>
+
+        <h3 class="docSection1Title">15.3. Conversions and Inheritance</h3>
+        <h3 class="docSection1Title">15.3. 转换与继承</h3>
+
+	<a name="ch15note16"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+		    <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Understanding conversions between base and derived types is essential to understanding how object-oriented programming works in C++.</p>
+                <p class="docText">理解基类类型和派生类型之间的转换，对于理解面向对象编程在 C++ 中如何工作非常关键。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">As we've seen, every derived object contains a base part, which means that we can execute operations on a derived object as if it were a base object. Because a derived object is also a base, there is an automatic conversion from a reference to a derived type to a reference to its base type(s). That is, we can convert a reference to a derived object to a reference to its base subobject and likewise for pointers.</p>
+        <p class="docText">我们已经看到，每个派生类对象包含一个基类部分，这意味着可以像使用基类对象一样在派生类对象上执行操作。因为派生类对象也是基类对象，所以存在从派生类型引用到基类类型引用的自动转换，即，可以将派生类对象的引用转换为基类子对象的引用，对指针也类似。</p>
+
+        <p class="docText">Base-type objects can exist either as independent objects or as part of a derived object. Therefore, a base object might or might not be part of a derived object. As a result, there is no (automatic) conversion from reference (or pointer) to base to reference (or pointer) to derived.</p>
+        <p class="docText">基类类型对象既可以作为独立对象存在，也可以作为派生类对象的一部分而存在，因此，一个基类对象可能是也可能不是一个派生类对象的部分，结果，没有从基类引用（或基类指针）到派生类引用（或派生类指针）的（自动）转换。</p>
+
+        <p class="docText">The situation with respect to conversions of objects (as opposed to references or pointers) is more complicated. Although we can usually use an object of a derived type to initialize or assign an object of the base type, there is no direct conversion from an object of a derived type to an object of the base type.</p>
+        <p class="docText">相对于引用或指针而言，对象转换的情况更为复杂。虽然一般可以使用派生类型的对象对基类类型的对象进行初始化或赋值，但，没有从派生类型对象到基类类型对象的直接转换。</p>
+
+	<a name="ch15lev2sec10"></a>
+        <h4 class="docSection2Title">15.3.1. Derived-to-Base Conversions</h4>
+        <h4 class="docSection2Title">15.3.1. 派生类到基类的转换</h4>
+
+        <p class="docText">If we have an object of a derived type, we can use its address to assign or initialize a pointer to the base type. Similarly, we can use a reference or object of the derived type to initialize a reference to the base type. Pedantically speaking, there is no similar conversion for objects. The compiler will not automatically convert an object of derived type into an object of the base type.</p>
+        <p class="docText">如果有一个派生类型的对象，则可以使用它的地址对基类类型的指针进行赋值或初始化。同样，可以使用派生类型的引用或对象初始化基类类型的引用。严格说来，对对象没有类似转换。编译器不会自动将派生类型对象转换为基类类型对象。</p>
+
+        <p class="docText">It is, however, usually possible to use a derived-type object to initialize or assign an object of base type. The difference between initializing and/or assigning an object and the automatic conversion that is possible for a reference or pointer is subtle and must be well understood.</p>
+        <p class="docText">但是，一般可以使用派生类型对象对基类对象进行赋值或初始化。对对象进行初始化和／或赋值以及可以自动转换引用或指针，这之间的区别是微妙的，必须好好理解。</p>
+
+	<a name="ch15lev3sec18"></a>
+        <h5 class="docSection3Title">Conversion to a Reference is Not the Same as Converting an Object</h5>
+        <h5 class="docSection3Title">引用转换不同于转换对象</h5>
+
+	<a name="idd1e115750"></a><a name="idd1e115758"></a><a name="idd1e115763"></a><a name="idd1e115770"></a><a name="idd1e115775"></a>
+        <p class="docText">As we've seen, we can pass an object of derived type to a function expecting a reference to base. We might therefore think that the object is converted. However, that is not what happens. When we pass an object to a function expecting a reference, the reference is bound directly to that object. Although it appears that we are passing an object, the argument is actually a reference to that object. The object itself is not copied and the conversion doesn't change the derived-type object in any way. It remains a derived-type object.</p>
+        <p class="docText">我们已经看到，可以将派生类型的对象传给希望接受基类引用的函数。也许会因此认为对象进行转换，但是，事实并非如此。将对象传给希望接受引用的函数时，引用直接绑定到该对象，虽然看起来在传递对象，实际上实参是该对象的引用，对象本身未被复制，并且，转换不会在任何方面改变派生类型对象，该对象仍是派生类型对象。</p>
+
+        <p class="docText">When we pass a derived object to a function expecting a base-type object (as opposed to a reference) the situation is quite different. In that case, the parameter's type is fixedboth at compile time and run time it will be a base-type object. If we call such a function with a derived-type object, then the base-class portion of that derived object is copied into the parameter.</p>
+        <p class="docText">将派生类对象传给希望接受基类类型对象（而不是引用）的函数时，情况完全不同。在这种情况下，形参的类型是固定的——在编译时和运行时形参都是基类类型对象。如果用派生类型对象调用这样的函数，则该派生类对象的基类部分被复制到形参。</p>
+
+        <p class="docText">It is important to understand the difference between converting a derived object to a base-type reference and using a derived object to initialize or assign to a base-type object.</p>
+        <p class="docText">一个是派生类对象转换为基类类型引用，一个是用派生类对象对基类对象进行初始化或赋值，理解它们之间的区别很重要。</p>
+
+	<a name="ch15lev3sec19"></a>
+        <h5 class="docSection3Title">Using a Derived Object to Initialize or Assign a Base Object</h5>
+        <h5 class="docSection3Title">用派生类对象对基类对象进行初始化或赋值</h5>
+
+        <p class="docText">When we initialize or assign an object of base type, we are actually calling a function: When we initialize, we're calling a constructor; when we assign, we're calling an assignment operator.</p>
+        <p class="docText">对基类对象进行初始化或赋值，实际上是在调用函数：初始化时调用构造函数，赋值时调用赋值操作符。</p>
+
+        <p class="docText">When we use a derived-type object to initialize or assign a base object, there are two possibilities. The first (albeit unlikely) possibility is that the base class might explicitly define what it means to copy or assign an object of the derived type to an object of the base type. It would do so by defining an appropriate constructor or assignment operator:</p>
+        <p class="docText">用派生类对象对基类对象进行初始化或赋值时，有两种可能性。第一种（虽然不太可能的）可能性是，基类可能显式定义了将派生类型对象复制或赋值给基类对象的含义，这可以通过定义适当的构造函数或赋值操作符实现：</p>
+        <pre>
+     class Derived;
+     class Base {
+     public:
+         Base(const Derived&amp;);  // <span class="docEmphItalicAlt">create a new</span> <span class="docEmphasis">Base</span> <span class="docEmphItalicAlt">from a Derived</span>
+         Base &amp;operator=(const Derived&amp;);  // <span class="docEmphItalicAlt">assign from a</span> <span class="docEmphasis">Derived</span>
+         // ...
+     };
+</pre><br>
+
+        <p class="docText">In this case, the definition of these members would control what happens when a <tt>Derived</tt> object is used to initialize or assign to a <tt>Base</tt> object.</p>
+	<p class="docText">在这种情况下，这些成员的定义将控制用 <tt>Derived</tt> 对象对 <tt>Base</tt> 对象进行初始化或赋值时会发生什么。</p>
+
+        <p class="docText">However, it is uncommon for classes to define explicitly how to initialize or assign an object of the base type from an object of derived type. Instead, base classes ususally define (either explicitly or implicitly) their own copy constructor and assignment operator (<a class="docLink" href="ch13.html#ch13" >Chapter 13</a>). These members take a parameter that is a (<tt>const</tt>) reference to the base type. Because there is a conversion from reference to derived to reference to base, these copy-control members can be used to initialize or assign a base object from a derived object:</p>
+	<p class="docText">然而，类显式定义怎样用派生类型对象对基类类型进行初始化或赋值并不常见，相反，基类一般（显式或隐式地）定义自己的复制构造函数和赋值操作符（<a class="docLink" href="ch13.html#ch13" >第十三章</a>），这些成员接受一个形参，该形参是基类类型的（<tt>const</tt>）引用。因为存在从派生类引用到基类引用的转换，这些复制控制成员可用于从派生类对象对基类对象进行初始化或赋值：</p>
+        <pre>
+     Item_base item; // <span class="docEmphItalicAlt">object of base type</span>
+     Bulk_item bulk; // <span class="docEmphItalicAlt">object of derived type</span>
+     // <span class="docEmphItalicAlt">ok: uses</span> <span class="docEmphasis">Item_base::Item_base(const Item_base&amp;)</span> <span class="docEmphasis">constructor</span>
+     Item_base item(bulk);  // <span class="docEmphasis">bulk</span> <span class="docEmphItalicAlt">is "sliced down" to its</span> <span class="docEmphasis">Item_base</span> <span class="docEmphItalicAlt">portion</span>
+     // <span class="docEmphItalicAlt">ok: calls</span> <span class="docEmphasis">Item_base::operator=(const Item_base&amp;)</span>
+     item = bulk;           // <span class="docEmphasis">bulk</span> <span class="docEmphItalicAlt">is "sliced down" to its</span> <span class="docEmphasis">Item_base</span> <span class="docEmphItalicAlt">portion</span>
+</pre><br>
+
+	<a name="idd1e115892"></a><a name="idd1e115899"></a><a name="idd1e115904"></a><a name="idd1e115911"></a>
+        <p class="docText">When we call the <tt>Item_base</tt> copy constructor or assignment operator on an object of type <tt>Bulk_item</tt>, the following steps happen:</p>
+	<p class="docText">用 <tt>Bulk_item</tt> 类型的对象调用 <tt>Item_base</tt> 类的复制构造函数或赋值操作符时，将发生下列步骤：</p>
+
+	<a name="ch15pro01"></a>
+        <ul class="doclist" start="">
+		<li>
+		<p class="docText">The <tt>Bulk_item</tt> object is converted to a reference to <tt>Item_base</tt>, which means only that an <tt>Item_base</tt> reference is bound to the <tt>Bulk_item</tt> object.</p>
+		<p class="docText">将 <tt>Bulk_item</tt> 对象转换为 <tt>Item_base</tt> 引用，这仅仅意味着将一个 <tt>Item_base</tt> 引用绑定到 <tt>Bulk_item</tt> 对象。</p>
+      		</li>
+
+		<li>
+		<p class="docText">That reference is passed as an argument to the copy constructor or assignment operator.</p>
+		<p class="docText">将该引用作为实参传给复制构造函数或赋值操作符。</p>
+      		</li>
+       
+		<li>
+		<p class="docText">Those operators use the <tt>Item_base</tt> part of <tt>Bulk_item</tt> to initialize and assign, respectively, the members of the <tt>Item_base</tt> on which the constructor or assignment was called.</p>
+		<p class="docText">那些操作符使用 <tt>Bulk_item</tt> 的 <tt>Item_base</tt> 部分分别对调用构造函数或赋值的 <tt>Item_base</tt> 对象的成员进行初始化或赋值。</p>
+      		</li>
+
+		<li>
+		<p class="docText">Once the operator completes, the object is an <tt>Item_base</tt>. It contains a copy of the <tt>Item_base</tt> part of the <tt>Bulk_item</tt> from which it was initialized or assigned, but the <tt>Bulk_item</tt> parts of the argument are ignored.</p>
+		<p class="docText">一旦操作符执行完毕，对象即为 <tt>Item_base</tt>。它包含 <tt>Bulk_item</tt> 的 <tt>Item_base</tt> 部分的副本，但实参的 <tt>Bulk_item</tt> 部分被忽略。</p>
+      		</li>
+        </ul>
+
+        <p class="docText">In these cases, we say that the <tt>Bulk_item</tt> portion of <tt>bulk</tt> is "sliced down" as part of the initialization or assignment to <tt>item</tt>. An <tt>Item_base</tt> object contains only the members defined in the base class. It does not contain the members defined by any of its derived types. There is no room in an <tt>Item_base</tt> object for the derived members.</p>
+	<p class="docText">在这种情况下，我们说 <tt>bulk</tt> 的 <tt>Bulk_item</tt> 部分在对 <tt>item</tt> 进行初始化或赋值时被“切掉”了。<tt>Item_base</tt> 对象只包含基类中定义的成员，不包含由任意派生类型定义的成员，<tt>Item_base</tt> 对象中没有派生类成员的存储空间。</p>
+
+	<a name="ch15lev3sec20"></a>
+        <h5 class="docSection3Title">Accessibility of Derived-to-Base Conversion</h5>
+        <h5 class="docSection3Title">派生类到基类转换的可访问性</h5>
+
+        <p class="docText">Like an inherited member function, the conversion from derived to base may or may not be accessible. Whether the conversion is accessible depends on the access label specified on the derived class' derivation.</p>
+        <p class="docText">像继承的成员函数一样，从派生类到基类的转换可能是也可能不是可访问的。转换是否访问取决于在派生类的派生列表中指定的访问标号。</p>
+
+	<a name="ch15note17"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="84" height="51" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/tip.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">To determine whether the conversion to base is accessible, consider whether a <tt>public</tt> member of the base class would be accessible. If so, the conversion is accessible; otherwise, it is not.</p>
+		<p class="docText">要确定到基类的转换是否可访问，可以考虑基类的 <tt>public</tt> 成员是否访问，如果可以，转换是可访问的，否则，转换是不可访问的。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">If the inheritance is <tt>public</tt>, then both user code and member functions of subsequently derived classes may use the derived-to-base conversion. If a class is derived using <tt>private</tt> or <tt>protected</tt> inheritance, then user code may not convert an object of derived type to a base type object. If the inheritance is <tt>private</tt>, then classes derived from the <tt>private</tt>ly inherited class may not convert to the base class. If the inheritance is <tt>protected</tt>, then the members of subsequently derived classes may convert to the base type.</p>
+	<p class="docText">如果是 <tt>public</tt> 继承，则用户代码和后代类都可以使用派生类到基类的转换。如果类是使用 <tt>private</tt> 或 <tt>protected</tt> 继承派生的，则用户代码不能将派生类型对象转换为基类对象。如果是 <tt>private</tt> 继承，则从 <tt>private</tt> 继承类派生的类不能转换为基类。如果是 <tt>protected</tt> 继承，则后续派生类的成员可以转换为基类类型。</p>
+
+        <p class="docText">Regardless of the derivation access label, a <tt>public</tt> member of the base class is accessible to the derived class itself. Therefore, the derived-to-base conversion is always accessible to the members and friends of the derived class itself.</p>
+	<p class="docText">无论是什么派生访问标号，派生类本身都可以访问基类的 <tt>public</tt> 成员，因此，派生类本身的成员和友元总是可以访问派生类到基类的转换。</p>
+
+<a name="ch15lev2sec11"></a>
+        <h4 class="docSection2Title">15.3.2. Conversions from Base to Derived</h4>
+        <h4 class="docSection2Title">15.3.2. 基类到派生类的转换</h4>
+
+<a name="idd1e116052"></a><a name="idd1e116057"></a><a name="idd1e116060"></a><a name="idd1e116065"></a>
+        <p class="docText">There is no automatic conversion from the base class to a derived class. We cannot use a base object when a derived object is required:</p>
+        <p class="docText">从基类到派生类的自动转换是不存在的。需要派生类对象时不能使用基类对象：</p>
+        <pre>
+     Item_base base;
+     Bulk_item* bulkP = &amp;base;  // <span class="docEmphItalicAlt">error: can't convert base to derived</span>
+     Bulk_item&amp; bulkRef = base; // <span class="docEmphItalicAlt">error: can't convert base to derived</span>
+     Bulk_item bulk = base;     // <span class="docEmphItalicAlt">error: can't convert base to derived</span>
+</pre><br>
+
+        <p class="docText">The reason that there is no (automatic) conversion from base type to derived type is that a base object might be just thata base. It does not contain the members of the derived type. If we were allowed to assign a base object to a derived type, then we might attempt to use that derived object to access members that do not exist.</p>
+        <p class="docText">没有从基类类型到派生类型的（自动）转换，原因在于基类对象只能是基类对象，它不能包含派生类型成员。如果允许用基类对象给派生类型对象赋值，那么就可以试图使用该派生类对象访问不存在的成员。</p>
+
+        <p class="docText">What is sometimes a bit more surprising is that the restriction on converting from base to derived exists even when a base pointer or reference is actually bound to a derived object:</p>
+        <p class="docText">有时更令人惊讶的是，甚至当基类指针或引用实际绑定到绑定到派生类对象时，从基类到派生类的转换也存在限制：</p>
+        <pre>
+     Bulk_item bulk;
+     Item_base *itemP = &amp;bulk;  // <span class="docEmphItalicAlt">ok: dynamic type is</span> <span class="docEmphasis">Bulk_item</span>
+     Bulk_item *bulkP = itemP;  // <span class="docEmphItalicAlt">error: can't convert base to derived</span>
+</pre><br>
+
+        <p class="docText">The compiler has no way to know at compile time that a specific conversion will actually be safe at run time. The compiler looks only at the static types of the pointer or reference to determine whether a conversion is legal.</p>
+        <p class="docText">编译器在编译时无法知道特定转换在运行时实际上是安全的。编译器确定转换是否合法，只看指针或引用的静态类型。</p>
+
+        <p class="docText">In those cases when we <span class="docEmphasis">know</span> that the conversion from base to derived is safe, we can use a <tt>static_cast</tt> (<a class="docLink" href="ch05lev1sec12.html#ch05lev2sec28" >Section 5.12.4</a>, p. <a class="docLink" href="ch05lev1sec12.html#ch05lev2sec28" >183</a>) to override the compiler. Alternatively, we could request a conversion that is checked at run time by using a <tt>dynamic_cast</tt>, which is covered in <a class="docLink" href="ch18lev1sec2.html#ch18lev2sec8" >Section 18.2.1</a> (p. <a class="docLink" href="ch18lev1sec2.html#ch18lev2sec8" >773</a>).</p>
+	<p class="docText">在这些情况下，如果知道从基类到派生类的转换是安全的，就可以使用 <tt>static_cast</tt>（<a class="docLink" href="ch05lev1sec12.html#ch05lev2sec28" >第 5.12.4 节</a>）强制编译器进行转换。或者，可以用 <tt>dynamic_cast</tt> 申请在运行时进行检查，<a class="docLink" href="ch18lev1sec2.html#ch18lev2sec8" >第 18.2.1 节</a>将介绍 <tt>dynamic_cast</tt>。</p>
+
+	<a href="21001535.html" ><img src="images/pixel.gif"  alt="" width="1" height="1" border="0"></a>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch15lev1sec2.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch15lev1sec4.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

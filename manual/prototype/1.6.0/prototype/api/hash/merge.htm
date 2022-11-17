@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Hash.merge - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>merge<div class="box">1.6 modified</div></h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">merge(object) -> newHash</code></pre>
+			<p>
+				将 <code>object</code> 和当前的 hash 实例合并，返回合并后的结果。<em>在 v1.6.0 之前：</em>
+				这是一个破坏性的方法（对象的值将会被增加到当前 hash 中）。<em>从 v1.6.0 开始：</em>
+				这不再是一个破坏性的方法（在合并之前，hash 已被克隆）。
+			</p>
+		</div>
+		<div id="abody">
+			<p>
+				如果存在相同的“键”，原 hash 中该键对应的值会被参数 <code>object</code> 中的值覆盖。
+				这经常被用于选择性的修改一些指定“键”的值（例如：在一系列的选项上应用一些级别控制）。
+			</p>
+			<p>参数 <code>object</code> 可以是一个 <code>Hash</code> 或者是一个普通的 <code>Object</code>。</p>
+			<h3>样例</h3>
+			<p>从 1.6.0 开始，<code>Hash#merge</code> 返回一个新的 hash：</p>
+			<pre><code class="javascript">var h = $H({ name: 'Prototype', version: 1.5 }); 
+h.merge({version: 1.6, author: 'Sam' }).inspect(); 
+// -> #&lt;Hash:{'name': 'Prototype', 'version': 1.6, 'author': 'Sam'}&gt; 
+h.inspect(); 
+// -> #&lt;Hash:{'name': 'Prototype', 'version': 1.5}&gt; </code></pre>
+			<p>在 1.6.0 之前，<code>Hash#merge</code> 会破坏原有的 hash：</p>
+			<pre><code class="javascript">var h = $H({ name: 'Prototype', version: 1.5 }); 
+h.merge({version: 1.6, author: 'Sam' }).inspect(); 
+// -> #&lt;Hash:{'name': 'Prototype', 'version': 1.6, 'author': 'Sam'}&gt; 
+h.inspect(); 
+// -> #&lt;Hash:{'name': 'Prototype', 'version': 1.6, 'author': 'Sam'}&gt; </code></pre>
+			<h3>参见</h3>
+			<p>
+				在 1.6.0 及以上的版本中，如果你需要一个 <em>破坏性</em> 的合并操作，请使用 <a href="update.htm" >Hash#update</a>。
+			</p>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

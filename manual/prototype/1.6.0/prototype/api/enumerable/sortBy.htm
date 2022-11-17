@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Enumerable.sortBy - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>sortBy</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">sortBy(iterator[, context]) -> Array</code></pre>
+			<p>遍历元素，根据 <code>iterator</code> 返回的值，对 <code>Enumerable</code> 中的元素进行排序。</p>
+		</div>
+		<div id="abody">
+			<p>
+				排序是稳定的，相等的元素在结果集中的次序与原次序相同。元素在应用 <code>iterator</code>
+				后返回的值必须能够进行严格的比较（即 <code>&lt;</code> 操作符必须在任意两个返回值之间可用）。
+			</p>
+			<p>
+				注意：数组已经具有原生的 <code>sort</code> 方法，它依赖于数组元素的 <em>自然顺序关系</em>（即对于任意两个元素，
+				<code>&lt;</code> 操作符具有明确的语义）。对于数组，仅当自然顺序关系不存在或不满足需求时才需要使用 <code>sortBy</code>。<br />
+				<strong>译注：</strong>其实 <code>Array</code> 的 <code>sort</code> 方法也可以传递一个谓词函数作为判断数组元素大小的准则，
+				以便实现自定义的排序规则。
+			</p>
+			<p>
+				可选的 <code>context</code> 参数是 <code>iterator</code> 要绑定的对象，若设定该参数，<code>iterator</code>
+				中的 <code>this</code> 关键字将指向 <code>context</code> 对象。
+			</p>
+			<h3>样例</h3>
+			<pre><code class="javascript">['hello', 'world', 'this', 'is', 'nice'].sortBy(function(s) { 
+	return s.length; 
+}) 
+// -> ['is', 'this', 'nice', 'hello', 'world'] 
+['hello', 'world', 'this', 'is', 'cool'].sortBy(function(s) { 
+	var md = s.match(/[aeiouy]/g); 
+	return null == md ? 0 : md.length; 
+}) 
+// -> [ 'world', 'this', 'is', 'hello', 'cool'] 
+// (根据单词中包含的元音字母的个数进行排序) </code></pre>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

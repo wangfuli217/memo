@@ -1,0 +1,214 @@
+﻿<div class="uidocs-summarys">
+	<a name="uidocs_draggable_summary" />
+	<div class="uidocs-summary">
+		<div class="ui-widget-header">译者总结:</div>
+		<div class="uidocs-method-summary-content">
+根据各个按钮测试一下吧. init是用来初始化一个progressbar的.
+		</div>
+		<div class="uidocs-summary-toggle ui-widget-header" onclick="$(this).next().toggle('slide');">显示演示示例</div>
+		<div class="uidocs-summary-play">
+<!doctype html>
+<html lang="en">
+<head>
+	<title>jQuery UI Progressbar - Default functionality</title>
+	<link type="text/css" href="../../themes/base/ui.all.css" rel="stylesheet" />
+	<script type="text/javascript" src="../../jquery-1.3.2.js"></script>
+	<script type="text/javascript" src="../../ui/ui.core.js"></script>
+	<script type="text/javascript" src="../../ui/ui.progressbar.js"></script>
+	<link type="text/css" href="../demos.css" rel="stylesheet" />
+	<script type="text/javascript">
+	$(function() {	
+		var current_value = 0;
+		change = function() {
+			$("#progressbar").progressbar('option', 'value', current_value);
+			current_value ++;
+			if(current_value <= 100) {
+				setTimeout('change()', 200);
+			}
+		};
+		progressbar_dynamic = function() {
+			progressbar_init();
+			change();
+		};
+		progressbar_init = function() {
+			$("#progressbar").progressbar({
+				value: current_value, 
+				change: function(event, ui) {
+					$('#number').text($(this).progressbar('option', 'value'));
+					document.getElementById('number').style.position = 'relative';
+					document.getElementById('number').style.left = $(this).progressbar('option', 'value') * ($('.ui-progressbar').width() / 100) - 5;
+				}
+			});
+		};
+		progressbar_destroy = function() {
+			$("#progressbar").progressbar('destroy');
+		};
+		progressbar_disable = function() {
+			$("#progressbar").progressbar('disable');
+		};
+		progressbar_enable = function() {
+			$("#progressbar").progressbar('enable');
+		};
+		progressbar_option = function() {
+			var option_name = $('#option_name').val();
+			var option_value = $('#option_value').val();
+			if(option_value) {
+				$("#progressbar").progressbar('option', option_name, option_value);
+			} else {
+				$('#option_value').val($("#progressbar").progressbar('option', option_name));
+			}
+		};
+		progressbar_value = function() {
+			var value_value = $('#value_value').val();
+			if(value_value) {
+				$("#progressbar").progressbar('value', value_value);
+			} else {
+				$('#value_value').val($("#progressbar").progressbar('option', 'value'));
+			}
+		};
+	});
+	</script>
+	<style type="text/css">
+		input{height: 22px; margin: 1px 2px;}
+		input[type=button]{border: none; width: 80px;}
+		input[type=text]{border: 1px solid #BBBBBB; line-height: 20px;}
+		#number{width: 5px;}
+	</style>
+</head>
+<body>
+	<br /><br />
+	<div id="number">&nbsp;</div>
+	<div id="progressbar"></div>
+	<br /><br />
+	<input type="button" value="init" onclick="progressbar_init();" />
+	&nbsp;&nbsp;
+	<input type="button" value="destroy" onclick="progressbar_destroy();" />
+	&nbsp;&nbsp;
+	<input type="button" value="disable" onclick="progressbar_disable();" />
+	&nbsp;&nbsp;
+	<input type="button" value="enable" onclick="progressbar_enable();" />
+	&nbsp;&nbsp;
+	<input type="button" value="dynamic" onclick="progressbar_dynamic();" />
+	<br />
+	<input type="button" value="option" onclick="progressbar_option();" />
+	选项名: <input type="text" id="option_name" /> 
+	选项值: <input type="text" id="option_value" />
+	<br />
+	<input type="button" value="value" onclick="progressbar_value();" />
+	完成度: <input type="text" id="value_value" />
+	<br />
+	<hr />
+	init: 初始化一个进度条
+	destroy: 销毁进度条
+	disable: 失效
+	enable: 有效
+	dynamic: 一个模拟的动态加载效果
+	option: 测试option方法
+	value: 测试value方法
+</body>
+</html>
+		</div>
+		<div class="uidocs-summary-code">
+&lt;!doctype html><br />
+&lt;html lang="en"><br />
+&lt;head><br />
+	&lt;title>jQuery UI Progressbar - Default functionality&lt;/title><br />
+	&lt;link type="text/css" href="../../themes/base/ui.all.css" rel="stylesheet" /><br />
+	&lt;script type="text/javascript" src="../../jquery-1.3.2.js">&lt;/script><br />
+	&lt;script type="text/javascript" src="../../ui/ui.core.js">&lt;/script><br />
+	&lt;script type="text/javascript" src="../../ui/ui.progressbar.js">&lt;/script><br />
+	&lt;link type="text/css" href="../demos.css" rel="stylesheet" /><br />
+	&lt;script type="text/javascript"><br />
+	$(function() {	<br />
+		var current_value = 0;<br />
+		change = function() {<br />
+			$("#progressbar").progressbar('option', 'value', current_value);<br />
+			current_value ++;<br />
+			if(current_value &lt;= 100) {<br />
+				setTimeout('change()', 200);<br />
+			}<br />
+		};<br />
+		progressbar_dynamic = function() {<br />
+			progressbar_init();<br />
+			change();<br />
+		};<br />
+		progressbar_init = function() {<br />
+			$("#progressbar").progressbar({<br />
+				value: current_value, <br />
+				change: function(event, ui) {<br />
+					$('#number').text($(this).progressbar('option', 'value'));<br />
+					document.getElementById('number').style.position = 'relative';<br />
+					document.getElementById('number').style.left = $(this).progressbar('option', 'value') * ($('.ui-progressbar').width() / 100) - 5;<br />
+				}<br />
+			});<br />
+		};<br />
+		progressbar_destroy = function() {<br />
+			$("#progressbar").progressbar('destroy');<br />
+		};<br />
+		progressbar_disable = function() {<br />
+			$("#progressbar").progressbar('disable');<br />
+		};<br />
+		progressbar_enable = function() {<br />
+			$("#progressbar").progressbar('enable');<br />
+		};<br />
+		progressbar_option = function() {<br />
+			var option_name = $('#option_name').val();<br />
+			var option_value = $('#option_value').val();<br />
+			if(option_value) {<br />
+				$("#progressbar").progressbar('option', option_name, option_value);<br />
+			} else {<br />
+				$('#option_value').val($("#progressbar").progressbar('option', option_name));<br />
+			}<br />
+		};<br />
+		progressbar_value = function() {<br />
+			var value_value = $('#value_value').val();<br />
+			if(value_value) {<br />
+				$("#progressbar").progressbar('value', value_value);<br />
+			} else {<br />
+				$('#value_value').val($("#progressbar").progressbar('option', 'value'));<br />
+			}<br />
+		};<br />
+	});<br />
+	&lt;/script><br />
+	&lt;style type="text/css"><br />
+		input{height: 22px; margin: 1px 2px;}<br />
+		input[type=button]{border: none; width: 80px;}<br />
+		input[type=text]{border: 1px solid #BBBBBB; line-height: 20px;}<br />
+		#number{width: 5px;}<br />
+	&lt;/style><br />
+&lt;/head><br />
+&lt;body><br />
+	&lt;br />&lt;br /><br />
+	&lt;div id="number">&nbsp;&lt;/div><br />
+	&lt;div id="progressbar">&lt;/div><br />
+	&lt;br />&lt;br /><br />
+	&lt;input type="button" value="init" onclick="progressbar_init();" /><br />
+	&nbsp;&nbsp;<br />
+	&lt;input type="button" value="destroy" onclick="progressbar_destroy();" /><br />
+	&nbsp;&nbsp;<br />
+	&lt;input type="button" value="disable" onclick="progressbar_disable();" /><br />
+	&nbsp;&nbsp;<br />
+	&lt;input type="button" value="enable" onclick="progressbar_enable();" /><br />
+	&nbsp;&nbsp;<br />
+	&lt;input type="button" value="dynamic" onclick="progressbar_dynamic();" /><br />
+	&lt;br /><br />
+	&lt;input type="button" value="option" onclick="progressbar_option();" /><br />
+	选项名: &lt;input type="text" id="option_name" /> <br />
+	选项值: &lt;input type="text" id="option_value" /><br />
+	&lt;br /><br />
+	&lt;input type="button" value="value" onclick="progressbar_value();" /><br />
+	完成度: &lt;input type="text" id="value_value" /><br />
+	&lt;br /><br />
+	&lt;hr /><br />
+	init: 初始化一个进度条<br />
+	destroy: 销毁进度条<br />
+	disable: 失效<br />
+	enable: 有效<br />
+	dynamic: 一个模拟的动态加载效果<br />
+	option: 测试option方法<br />
+	value: 测试value方法<br />
+&lt;/body><br />
+&lt;/html><br />
+		</div>
+	</div>
+</div>

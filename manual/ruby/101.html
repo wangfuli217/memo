@@ -1,0 +1,697 @@
+<html><HEAD><TITLE>Programming Ruby: The Pragmatic Programmer's Guide</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=gb2312"><LINK media=screen href="101_files/pr_style[1].css"  type=text/css rel=StyleSheet></head>
+<BODY bgColor=white>
+<TABLE cellSpacing=0 cellPadding=3 width="100%" bgColor=#c09090 border=0>
+<TBODY>
+<TR>
+<TD colSpan=3>
+<TABLE cellPadding=20 width="100%" bgColor=#701a1a>
+<TBODY>
+<TR>
+<TD width="100%">
+<H1 class=header>Programming Ruby</H1>
+<H3 class=subheader>The Pragmatic Programmer's Guide</H3></TD></TR></TBODY></TABLE></TD></TR>
+<TR>
+<TD align=left width="33%"><A class=subheader href="100.html" >上一章&lt;</A> </TD>
+<TD vAlign=center align=middle width="33%"><A class=subheader href="95.html" >目录^</A> <BR></TD>
+<TD align=right width="33%"><A class=subheader href="102.html" >下一章 &gt;</A> <BR></TD></TR></TBODY></TABLE><!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<H1>容器，块（ Blocks）和迭代器（ Iterator）</H1>
+<HR>
+<BR>&nbsp;&nbsp;&nbsp; 一个自动点唱机只有一首歌恐怕不会太流行，所以我们需要建立一个歌曲目录和一个等待播放的列表。这都是容器的例子，一个包含若干个对其它对象引用的对象。 
+<P>&nbsp;&nbsp;&nbsp; 目录和播放列表都有类似的操作，增加歌曲，删除歌曲，返回歌曲列表等等。播放列表可能还需要别的方法，比如插入广告，记录累计播放时间等，我们将在后面考率这些问题。现在，我们需要建立一个SongList类，以便在目录和播放列表中使用。
+<H2><A name=S1>容器</A></H2>
+<P>&nbsp;&nbsp;&nbsp; 在开始实现之前，我们要知道怎么在SongList中存储歌曲列表。我们有三个明显得选择：Ruby的提供的Array，Ruby提供的Hash，或者我们自己创建一个列表结构。下面我们来看看数组合和哈希，然后选择一个来在我们的类中使用。</P>
+<H3><A name=UA>数组Arrays</A></H3>
+<P>数组类包含了若干个对其它对象的引用，每个引用在数组的一个位置上，用一个正整数来索引。</P>
+<P>你可以直接指定一组值来创建一个数组，或者用数组类的new方法。用第一种方法创建数组要用中括号把各个元素括起来，每个元素之间用逗号隔开。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>a&nbsp;=&nbsp;[&nbsp;3.14159,&nbsp;"pie",&nbsp;99&nbsp;]</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>a.type</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>Array</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>a.length</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>3</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>a[0]</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>3.14159</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>a[1]</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>"pie"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>a[2]</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>99</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>a[3]</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>nil</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE></CODE></TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>b&nbsp;=&nbsp;Array.new</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>b.type</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>Array</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>b.length</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>0</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>b[0]&nbsp;=&nbsp;"second"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>b[1]&nbsp;=&nbsp;"array"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>b</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>["second",&nbsp;"array"]</CODE> </TD></TR></TBODY></TABLE>
+<P>数组指定索引的下标用[ ]操作符，这实际上也是一个方法，可以在子类中被重载。数组索引从0开始，从左向右技术，如果指定的索引为负数，则表示从右边开始计数（这时候最右边的索引下标为-1，不是0）。</P>
+<P>　</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>a&nbsp;=&nbsp;[&nbsp;1,&nbsp;3,&nbsp;5,&nbsp;7,&nbsp;9&nbsp;]</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>a[-1]</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>9</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>a[-2]</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>7</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>a[-99]</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>nil</CODE> </TD></TR></TBODY></TABLE>
+<P>　</P>
+<P>你也可以一对数字<CODE>[start,&nbsp;count]</CODE>作为下标，这将返回一个数组，包含原数组中从start开始的count个元素。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>a&nbsp;=&nbsp;[&nbsp;1,&nbsp;3,&nbsp;5,&nbsp;7,&nbsp;9&nbsp;]</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>a[1,&nbsp;3]</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>[3,&nbsp;5,&nbsp;7]</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>a[3,&nbsp;1]</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>[7]</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>a[-3,&nbsp;2]</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>[5,&nbsp;7]</CODE> </TD></TR></TBODY></TABLE>
+<P>　</P>
+<P>&nbsp;&nbsp;&nbsp; 最后，你也可以在数组下标中使用Range作为索引。Range可参看下一章。Range的起始值之间如果是2个点号，则包括最后的结束值，如果是3个点号，则Range的值不包括最后的那个边界值。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>a&nbsp;=&nbsp;[&nbsp;1,&nbsp;3,&nbsp;5,&nbsp;7,&nbsp;9&nbsp;]</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>a[1..3]</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>[3,&nbsp;5,&nbsp;7]</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>a[1...3]</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>[3,&nbsp;5]</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>a[3..3]</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>[7]</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>a[-3..-1]</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>[5,&nbsp;7,&nbsp;9]</CODE> </TD></TR></TBODY></TABLE>
+<P>[ ]方法有一个对应的 <CODE>[]=</CODE> 方法，这个方法是用来给指定的位置设置新的值，如果数组的下标位置超过了数组的大小，那么指定的下标将被设为指定的值，而中间没有涉及到的位置为设为nil。如下面例子数组最大下标为4，而对a[6]设置新值，a[5]则被设为nil。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top>a = [ 1, 3, 5, 7, 9 ]</TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top>[1, 3, 5, 7, 9]</TD></TR>
+<TR>
+<TD vAlign=top>a[1] = 'bat'</TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top>[1, "bat", 5, 7, 9]</TD></TR>
+<TR>
+<TD vAlign=top>a[-3] = 'cat'</TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top>[1, "bat", "cat", 7, 9]</TD></TR>
+<TR>
+<TD vAlign=top>a[3] = [ 9, 8 ]</TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top>[1, "bat", "cat", [9, 8], 9]</TD></TR>
+<TR>
+<TD vAlign=top>a[6] = 99</TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top>[1, "bat", "cat", [9, 8], 9, nil, 99]</TD></TR></TBODY></TABLE>
+<P></P>
+<P>如果在<CODE>[]=</CODE> 方法中下标索引为两个数字（一个开始位置，一个长度）或者一个Range，则对应的一系列值将被重新设置。如果第二个参数即长度为0，则右边的值将被插入当前位置，没有值会被删除。如果[ ]=右边的长度和左边下标中指定的长度不一样，则原数组自动进行调整。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top>a = [ 1, 3, 5, 7, 9 ]</TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top>[1, 3, 5, 7, 9]</TD></TR>
+<TR>
+<TD vAlign=top>a[2, 2] = 'cat'</TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top>[1, 3, "cat", 9]</TD></TR>
+<TR>
+<TD vAlign=top>a[2, 0] = 'dog'</TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top>[1, 3, "dog", "cat", 9]</TD></TR>
+<TR>
+<TD vAlign=top>a[1, 1] = [ 9, 8, 7 ]</TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top>[1, 9, 8, 7, "dog", "cat", 9]</TD></TR>
+<TR>
+<TD vAlign=top>a[0..3] = []</TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top>["dog", "cat", 9]</TD></TR>
+<TR>
+<TD vAlign=top>a[5] = 99</TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top>["dog", "cat", 9, nil, nil, 99]</TD></TR></TBODY></TABLE>
+<P></P>
+<P>数组有很多有用的方法，使用这些方法你能用数组实现队列，堆栈，列表等各种数据结构。</P>
+<P>&nbsp;</P>
+<H3><A name=UB>哈希Hashes</A></H3>
+<P></P>Hashes (sometimes known as associative arrays or dictionaries) are similar to arrays, in that they are indexed collectives of object references. 
+<P></P>However, while you index arrays with integers, you can index a hash with objects of any type: strings, regular expressions, and so on. When you store a value in a hash, you actually supply two objects---the key and the value. You can subsequently retrieve the value by indexing the hash with the same key. The values in a hash can be any objects of any type. The example that follows uses hash literals: a list of <EM>key</EM>&nbsp;<CODE>=&gt;</CODE>&nbsp;<EM>value</EM> pairs between braces. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>h&nbsp;=&nbsp;{&nbsp;'dog'&nbsp;=&gt;&nbsp;'canine',&nbsp;'cat'&nbsp;=&gt;&nbsp;'feline',&nbsp;'donkey'&nbsp;=&gt;&nbsp;'asinine'&nbsp;}</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE></CODE></TD></TR>
+<TR>
+<TD vAlign=top><CODE>h.length</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>3</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>h['dog']</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>"canine"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>h['cow']&nbsp;=&nbsp;'bovine'</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>h[12]&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;'dodecine'</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>h['cat']&nbsp;=&nbsp;99</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>h</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>{"cow"=&gt;"bovine",&nbsp;"cat"=&gt;99,&nbsp;12=&gt;"dodecine",&nbsp;"donkey"=&gt;"asinine",&nbsp;"dog"=&gt;"canine"}</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>Compared with arrays, hashes have one significant advantage: they can use any object as an index. However, they also have a significant disadvantage: their elements are not ordered, so you cannot easily use a hash as a stack or a queue. 
+<P></P>You'll find that hashes are one of the most commonly used data structures in Ruby. A full list of the methods implemented by class <CODE>Hash</CODE> starts on page 317. 
+<H3><A name=UC>Implementing a SongList Container</A></H3>
+<P></P>After that little diversion into arrays and hashes, we're now ready to implement the jukebox's <CODE>SongList</CODE>. Let's invent a basic list of methods we need in our <CODE>SongList</CODE>. We'll want to add to it as we go along, but it will do for now. 
+<P></P>
+<DL>
+<DT>append( aSong ) ? list 
+<DD>Append the given song to the list. 
+<DT>deleteFirst() ? aSong 
+<DD>Remove the first song from the list, returning that song. 
+<DT>deleteLast() ? aSong 
+<DD>Remove the last song from the list, returning that song. 
+<DT>[ anIndex } ? aSong 
+<DD>Return the song identified by <I>anIndex</I>, which may be an integer index or a song title. </DD></DL>
+<P></P>This list gives us a clue to the implementation. The ability to append songs at the end, and remove them from both the front and end, suggests a dequeue---a double-ended queue---which we know we can implement using an <CODE>Array</CODE>. Similarly, the ability to return a song at an integer position in the list is supported by arrays. 
+<P></P>However, there's also the need to be able to retrieve songs by title, which might suggest using a hash, with the title as a key and the song as a value. Could we use a hash? Well, possibly, but there are problems. First a hash is unordered, so we'd probably need to use an ancillary array to keep track of the list. A bigger problem is that a hash does not support multiple keys with the same value. That would be a problem for our playlist, where the same song might be queued up for playing multiple times. So, for now we'll stick with an array of songs, searching it for titles when needed. If this becomes a performance bottleneck, we can always add some kind of hash-based lookup later. 
+<P></P>We'll start our class with a basic <CODE>initialize</CODE> method, which creates the <CODE>Array</CODE> we'll use to hold the songs and stores a reference to it in the instance variable <CODE>@songs</CODE>. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>class&nbsp;SongList
+&nbsp;&nbsp;def&nbsp;initialize
+&nbsp;&nbsp;&nbsp;&nbsp;@songs&nbsp;=&nbsp;Array.new
+&nbsp;&nbsp;end
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>The <CODE>SongList#append</CODE> method adds the given song to the end of the <CODE>@songs</CODE> array. It also returns <I>self</I>, a reference to the current <CODE>SongList</CODE> object. This is a useful convention, as it lets us chain together multiple calls to <CODE>append</CODE>. We'll see an example of this later. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>class&nbsp;SongList
+&nbsp;&nbsp;def&nbsp;append(aSong)
+&nbsp;&nbsp;&nbsp;&nbsp;@songs.push(aSong)
+&nbsp;&nbsp;&nbsp;&nbsp;self
+&nbsp;&nbsp;end
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>Then we'll add the <CODE>deleteFirst</CODE> and <CODE>deleteLast</CODE> methods, trivially implemented using <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_array.html#Array.shift" ><CODE>Array#shift</CODE> </A>and <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_array.html#Array.pop" ><CODE>Array#pop</CODE> </A>, respectively. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>class&nbsp;SongList
+&nbsp;&nbsp;def&nbsp;deleteFirst
+&nbsp;&nbsp;&nbsp;&nbsp;@songs.shift
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;deleteLast
+&nbsp;&nbsp;&nbsp;&nbsp;@songs.pop
+&nbsp;&nbsp;end
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>At this point, a quick test might be in order. First, we'll append four songs to the list. Just to show off, we'll use the fact that <CODE>append</CODE> returns the <CODE>SongList</CODE> object to chain together these method calls. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>list&nbsp;=&nbsp;SongList.new
+list.
+&nbsp;&nbsp;append(Song.new('title1',&nbsp;'artist1',&nbsp;1)).
+&nbsp;&nbsp;append(Song.new('title2',&nbsp;'artist2',&nbsp;2)).
+&nbsp;&nbsp;append(Song.new('title3',&nbsp;'artist3',&nbsp;3)).
+&nbsp;&nbsp;append(Song.new('title4',&nbsp;'artist4',&nbsp;4))
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>Then we'll check that songs are taken from the start and end of the list correctly, and that <CODE>nil</CODE> is returned when the list becomes empty. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>list.deleteFirst</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>Song:&nbsp;title1--artist1&nbsp;(1)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>list.deleteFirst</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>Song:&nbsp;title2--artist2&nbsp;(2)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>list.deleteLast</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>Song:&nbsp;title4--artist4&nbsp;(4)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>list.deleteLast</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>Song:&nbsp;title3--artist3&nbsp;(3)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>list.deleteLast</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>nil</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>So far so good. Our next method is <CODE>[]</CODE>, which accesses elements by index. If the index is a number (which we check using <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_object.html#Object.kind_of_qm" ><CODE>Object#kind_of?</CODE> </A>), we just return the element at that position. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>class&nbsp;SongList
+&nbsp;&nbsp;def&nbsp;[](key)
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;key.kind_of?(Integer)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@songs[key]
+&nbsp;&nbsp;&nbsp;&nbsp;else
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;...
+&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;end
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>Again, testing this is pretty trivial. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>list[0]</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>Song:&nbsp;title1--artist1&nbsp;(1)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>list[2]</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>Song:&nbsp;title3--artist3&nbsp;(3)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>list[9]</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>nil</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>Now we need to add the facility that lets us look up a song by title. This is going to involve scanning through the songs in the list, checking the title of each. To do this, we first need to spend a couple of pages looking at one of Ruby's neatest features: iterators.
+<H2><A name=S2>块和迭代器Blocks and Iterators</A></H2>
+<P>下面，我们要在SongList中修改[ ] 方法，使它能接受一个字符串参数，返回以此为标题的歌曲的。看起来我们很容易可以实现：我们有一个包含了很多Song对象的对象的数组，我们只需循环遍历整个数组，找到匹配的那个就可以了。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>class&nbsp;SongList
+&nbsp;&nbsp;def&nbsp;[](key)
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;key.kind_of?(Integer)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;@songs[key]
+&nbsp;&nbsp;&nbsp;&nbsp;else
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;i&nbsp;in&nbsp;0...@songs.length
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;@songs[i]&nbsp;if&nbsp;key&nbsp;==&nbsp;@songs[i].name
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;nil
+&nbsp;&nbsp;end
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P>这样已经可以工作了，而且看上去很符合常规：用一个for循环来遍历数组。</P>
+<P>有没有更自然的方法呢？</P>
+<P>当然有，我们可以用Array的find方法。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>class&nbsp;SongList
+&nbsp;&nbsp;def&nbsp;[](key)
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;key.kind_of?(Integer)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;@songs[key]
+&nbsp;&nbsp;&nbsp;&nbsp;else
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;@songs.find&nbsp;{&nbsp;|aSong|&nbsp;key&nbsp;==&nbsp;aSong.name&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;result
+&nbsp;&nbsp;end
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P>我们可以用if修饰符来使代码更简短一些。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>class&nbsp;SongList
+&nbsp;&nbsp;def&nbsp;[](key)
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;@songs[key]&nbsp;if&nbsp;key.kind_of?(Integer)
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;@songs.find&nbsp;{&nbsp;|aSong|&nbsp;aSong.name&nbsp;==&nbsp;key&nbsp;}
+&nbsp;&nbsp;end
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P>方法find就是一个迭代器，这个方法重复不断地执行一个给定的block。块和迭代器都是Ruby中比较有趣的特点。我们后面会进一步来讨论这些特点。</P>
+<H3><A name=UD>实现迭代器</A></H3>
+<P>一个Ruby迭代器就是一个简单的能接收代码块的方法。第一眼看上去，Ruby中的block像C，Java，Perl中的一样，但是实际上是有不同的。</P>
+<P>首先，块在源代码中紧挨着方法调用，并且和这个方法的最后一个参数写在同一行上。其次，这个块不会立即被执行，Ruby首先会记住这个块出现的上下文（局部变量，当前对象等），然后进入方法，这里也是魔术开始的地方。</P>
+<P>在方法里面，这个块才会用yield来调用执行，就像这个块是方法本身一样，每当yield在方法中被执行，这个块就会被调用。当这个块执行完退出后，控制将交给yield后面的语句<I>（yield来自一个有20多年历史的语言：CLU）</I>。我们来看一个小例子。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>def&nbsp;threeTimes
+&nbsp;&nbsp;yield
+&nbsp;&nbsp;yield
+&nbsp;&nbsp;yield
+end
+threeTimes&nbsp;{&nbsp;puts&nbsp;"Hello"&nbsp;}
+</PRE></TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>Hello
+Hello
+Hello
+</PRE></TD></TR></TBODY></TABLE>
+<P>这个块（用两个大括号定义）赋给了一个方法threeTimes，在这个方法里面，yield执行了3次，每次执行它都会调用给定的block，即打印一个欢迎语句。使块变得有趣的是你可以给块传递参数，并且从块中得到结果。下面例子，我们将会得到小于一个指定值得Fibonacci 数列。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>def&nbsp;fibUpTo(max)
+&nbsp;&nbsp;i1,&nbsp;i2&nbsp;=&nbsp;1,&nbsp;1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;parallel&nbsp;assignment
+&nbsp;&nbsp;while&nbsp;i1&nbsp;&lt;=&nbsp;max
+&nbsp;&nbsp;&nbsp;&nbsp;yield&nbsp;i1
+&nbsp;&nbsp;&nbsp;&nbsp;i1,&nbsp;i2&nbsp;=&nbsp;i2,&nbsp;i1+i2
+&nbsp;&nbsp;end
+end
+fibUpTo(1000)&nbsp;{&nbsp;|f|&nbsp;print&nbsp;f,&nbsp;"&nbsp;"&nbsp;}
+</PRE></TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>1&nbsp;1&nbsp;2&nbsp;3&nbsp;5&nbsp;8&nbsp;13&nbsp;21&nbsp;34&nbsp;55&nbsp;89&nbsp;144&nbsp;233&nbsp;377&nbsp;610&nbsp;987</PRE></TD></TR></TBODY></TABLE>
+<P>在这个例子中，yield接收一个参数，这个参数将会在执行的时候传递给指定的块。在块的定义中，参数用两个竖线括起来，放在最前面。在这个例子中f用来接收yield传递的参数，所以，这个块才能打印这个序列。一个块可以接受任意个参数。如果一个块的参数和yield中传递的参数个数不一样，将会怎样呢？很巧合，这和我们在并行赋值（parallel assignment）中谈到的原则一样（如果一个block只接收一个参数，而yield提供的参数多于1个，那么这些参数将被转化为一个数组。）</P>传递给一个块的参数可以是存在地局部变量，如果是这样的话，那么这个局部变量的新值（如果在块中被修改了）在块退出后将会保留，这可能会有一定的副作用，但是这样做有一个性能方面的考率。
+<P>一个块也可以返回一个结果给调用它的方法。这个块中的最后一个表达式的值将会返回给方法，Array中的find方法就是这样工作的。<I>（find在<CODE>Enumerable</CODE>中定义，被插入到了类<CODE>Array</CODE>）</I></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>class&nbsp;Array</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;def&nbsp;find</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;i&nbsp;in&nbsp;0...size</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;value&nbsp;=&nbsp;self[i]</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;value&nbsp;if&nbsp;yield(value)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;&nbsp;&nbsp;end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;nil</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE></CODE></TD></TR>
+<TR>
+<TD vAlign=top><CODE>[1,&nbsp;3,&nbsp;5,&nbsp;7,&nbsp;9].find&nbsp;{|v|&nbsp;v*v&nbsp;&gt;&nbsp;30&nbsp;}</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>7</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P>这个用法中数组将连续的元素传递给指定的块，如果这个块返回true，则这个方法返回当前对应的元素值，如果没有符合的值，则返回nil。这个方法显示了迭代器的好处，Array类只作自己应该做的，访问数组元素，而应用代码只关注于特殊的需求。</P>
+<P>Ruby中的集合对象中也包含其它一些常用迭代器，其中之二是each和collect。each可以认为是最简单的迭代器，它们都会对集合的每个元素来调用块。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>[&nbsp;1,&nbsp;3,&nbsp;5&nbsp;].each&nbsp;{&nbsp;|i|&nbsp;puts&nbsp;i&nbsp;}
+</PRE></TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>1
+3
+5
+</PRE>
+<P></P></TD></TR></TBODY></TABLE>
+<P></P>
+<P>另一个是collect，它跟each类似，它将集合中的元素传递给一个块，在块中处理后返回一个包含处理结果的新数组。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>["H",&nbsp;"A",&nbsp;"L"].collect&nbsp;{&nbsp;|x|&nbsp;x.succ&nbsp;}</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>["I",&nbsp;"B",&nbsp;"M"]</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<H3><A name=UE>Ruby 和 C++ 、 Java的比较</A></H3>
+<P>这值得我们再花一些时间来比较一下Ruby，C＋＋,JAVA中的迭代器。在Ruby中，迭代器是一个简单的方法，每当它产生一个新值，都会调用yield方法。使用迭代器只需要给这个迭代器传递一个块，不需要像C＋＋，Java中那样创建辅助类来处理迭代器的状态。从这一点和其它一些特点来说，Ruby是一种透明语言，当你写程序的时候，你只需关注于让功能能够实现，而不必编写脚手架来支持语言的一些功能。</P>迭代器不仅仅用在数组和哈希等集合结构上，它也能返回上面Fibonacci 例子中那样的序列值，Ruby中的输入输出类也用到了迭代器，这些类实现了迭代器接口，每次返回一个I/O流的下一行。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>f&nbsp;=&nbsp;File.open("testfile")
+f.each&nbsp;do&nbsp;|line|
+&nbsp;&nbsp;print&nbsp;line
+end
+f.close
+</PRE></TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>This&nbsp;is&nbsp;line&nbsp;one
+This&nbsp;is&nbsp;line&nbsp;two
+This&nbsp;is&nbsp;line&nbsp;three
+And&nbsp;so&nbsp;on...
+</PRE></TD></TR></TBODY></TABLE>
+<P>让我们再看看另外一个迭代器实现。Smalltalk也支持迭代器，如果你用smalltalk语言来计算一个数组中元素的和，可以这样：</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>sumOfValues&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Smalltalk&nbsp;method"
+&nbsp;&nbsp;&nbsp;&nbsp;^self&nbsp;values
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inject:&nbsp;0
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;into:&nbsp;[&nbsp;:sum&nbsp;:element&nbsp;|&nbsp;sum&nbsp;+&nbsp;element&nbsp;value]
+</PRE></TD></TR></TBODY></TABLE>
+<P></P><CODE>inject</CODE> 这样工作：第一次指定的block被执行的时候，sum被设成inject的参数（本例为0），element被设为数组的第一个元素。以后block被执行的时候，sum的值设为上次block执行后返回的值。这样，sum就可以记录总数了最后的inject的值是block最后一次执行后返回的值。 
+<P>Ruby 没有<CODE>inject</CODE> 方法，但我们可以很容易的写一个，在这个例子中我们把它加入Array类。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>class&nbsp;Array</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;def&nbsp;inject(n)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;each&nbsp;{&nbsp;|value|&nbsp;n&nbsp;=&nbsp;yield(n,&nbsp;value)&nbsp;}</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;n</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;def&nbsp;sum</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;&nbsp;&nbsp;inject(0)&nbsp;{&nbsp;|n,&nbsp;value|&nbsp;n&nbsp;+&nbsp;value&nbsp;}</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;def&nbsp;product</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;&nbsp;&nbsp;inject(1)&nbsp;{&nbsp;|n,&nbsp;value|&nbsp;n&nbsp;*&nbsp;value&nbsp;}</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>[&nbsp;1,&nbsp;2,&nbsp;3,&nbsp;4,&nbsp;5&nbsp;].sum</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>15</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>[&nbsp;1,&nbsp;2,&nbsp;3,&nbsp;4,&nbsp;5&nbsp;].product</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>120</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P>尽管block经常是用在迭代器中，但是，块也有其它一些有用的用处。</P>
+<H3><A name=UF>在事务处理中使用块</A></H3>
+<P>block也可以用作定义一块代码，这些代码必须在一定的事务控制下运行。比如，你经常会打开一个文件，对内容作一些处理，然后需要确保文件在最后会被关闭。尽管我们可以用常规的方法实现，但是，我们可以让文件对象自己负责关闭它。一个简单例子如下（忽略了错误处理等）：</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>class&nbsp;File
+&nbsp;&nbsp;def&nbsp;File.openAndProcess(*args)
+&nbsp;&nbsp;&nbsp;&nbsp;f&nbsp;=&nbsp;File.open(*args)
+&nbsp;&nbsp;&nbsp;&nbsp;yield&nbsp;f
+&nbsp;&nbsp;&nbsp;&nbsp;f.close()
+&nbsp;&nbsp;end
+end
+
+
+File.openAndProcess("testfile",&nbsp;"r")&nbsp;do&nbsp;|aFile|  
+&nbsp;&nbsp;print&nbsp;while&nbsp;aFile.gets  
+end
+   </PRE></TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>This&nbsp;is&nbsp;line&nbsp;one
+This&nbsp;is&nbsp;line&nbsp;two
+This&nbsp;is&nbsp;line&nbsp;three
+And&nbsp;so&nbsp;on...
+</PRE></TD></TR></TBODY></TABLE>
+<P>这个小例子阐述了几个技术点。方法<CODE>openAndProcess</CODE> 是一个类方法，这个方法可以独立于任何File对象来单独调用，即不需要生成类的实例。我们在这个方法的参数列表中使用了 <CODE>*args</CODE>，这表示所有调用时候的参数将作为数组传递到这个方法。而这个参数是传递给File.open方法的。</P>
+<P>一旦这个文件被打开，<CODE>openAndProcess</CODE> 将调用yield，然后将打开的文件对象传递给这个block。当block返回后，这个文件将被关闭。这种情况下，关闭文件的任务就从使用文件对象的用户转变为文件本身了。</P>
+<P>最后，这个例子用do..end来定义一个块，这和用两个打括号定义一个块只是有优先级别的区别，将在后面讨论。</P>
+<P>让文件自己管理自己的生命周期十分有用，Ruby自带的File类就提供了这样的支持。如果<A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_file.html#File.open" ><CODE>File.open</CODE></A>调用时指定了一个block，那么这个块就会用传递过来文件对象作为参数执行，然后，当块结束后，这个文件会被文件对象关闭。这很有趣，也就是说<A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_file.html#File.open" ><CODE>File.open</CODE></A>方法有两个版本，一个接受block，一个不接受block。当没有指定block调用这个方法的时候，这个方法只会返回一个打开的文件对象。方法<A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_m_kernel.html#Kernel.block_given_qm" ><CODE>Kernel::block_given?</CODE></A>提供了实现这种功能的可能，如果调用的时候给了一个block，这个方法将返回true，这样，你也可以实现自己open方法：</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>class&nbsp;File
+&nbsp;&nbsp;def&nbsp;File.myOpen(*args)
+&nbsp;&nbsp;&nbsp;&nbsp;aFile&nbsp;=&nbsp;File.new(*args)
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;If&nbsp;there's&nbsp;a&nbsp;block,&nbsp;pass&nbsp;in&nbsp;the&nbsp;file&nbsp;and&nbsp;close
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;the&nbsp;file&nbsp;when&nbsp;it&nbsp;returns
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;block_given?
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;yield&nbsp;aFile
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;aFile.close
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;aFile&nbsp;=&nbsp;nil
+&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;aFile
+&nbsp;&nbsp;end
+end
+</PRE></TD></TR></TBODY></TABLE>
+<H3><A name=UG>块和闭包</A></H3>
+<P>让我们再回来看看自动点唱机，某些时候，我们需要处理点唱机和用户的界面：很多按钮，供用户选择歌曲和控制播放，我们需要给这些按钮指定相应的时间处理代码，而Ruby中的block就很适合干这样的事情。假设点唱机的设计者通过Ruby扩展为我们提供了一个基本的按钮类。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>bStart&nbsp;=&nbsp;Button.new("Start")
+bPause&nbsp;=&nbsp;Button.new("Pause")
+#&nbsp;...
+</PRE></TD></TR></TBODY></TABLE>
+<P>当用户按下按钮之后如何处理呢？Button类提供了一个<CODE>buttonPressed</CODE>方法，在按钮按下时能被回调。所以最简单的方法创建Button的子类，然后在每个子类中实现<CODE>buttonPressed</CODE> 方法。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>class&nbsp;StartButton&nbsp;&lt;&nbsp;Button
+&nbsp;&nbsp;def&nbsp;initialize
+&nbsp;&nbsp;&nbsp;&nbsp;super("Start")&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;invoke&nbsp;Button's&nbsp;initialize
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;buttonPressed
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;do&nbsp;start&nbsp;actions...
+&nbsp;&nbsp;end
+end
+</PRE>
+<P></P>bStart&nbsp;=&nbsp;StartButton.new </TD></TR></TBODY></TABLE>
+<P>这样做有两个问题，首先这样将产生大量子类，如果Button变化了，所有子类都需要维护；第二，按钮按下之后需要执行的行为不应该在按钮上表示，这是点唱机的责任。我们可以用块来消除这些问题</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>class&nbsp;JukeboxButton&nbsp;&lt;&nbsp;Button
+&nbsp;&nbsp;def&nbsp;initialize(label,&nbsp;&amp;action)
+&nbsp;&nbsp;&nbsp;&nbsp;super(label)
+&nbsp;&nbsp;&nbsp;&nbsp;@action&nbsp;=&nbsp;action
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;buttonPressed
+&nbsp;&nbsp;&nbsp;&nbsp;@action.call(self)
+&nbsp;&nbsp;end
+end
+
+ 
+bStart&nbsp;=&nbsp;JukeboxButton.new("Start")&nbsp;{&nbsp;songList.start&nbsp;}   
+bPause&nbsp;=&nbsp;JukeboxButton.new("Pause")&nbsp;{&nbsp;songList.pause&nbsp;}
+ </PRE></TD></TR></TBODY></TABLE>
+<P>上面代码的关键点在<CODE>JukeboxButton#initialize</CODE>的第二个参数，这个参数前面带有一个&amp;符号，在Ruby中代表这个参数是一个块，这个块将会被转化为一个Proc对象，并关联道相应变量。在本例中我们把它赋给实例变量<CODE>@action 。</CODE>当回调方法<CODE>buttonPressed</CODE> 执行时，我们用方法<A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_proc.html#Proc.call" ><CODE>Proc#call</CODE></A>来调用相应的block。</P>当创建一个Proc对象之后我们得到的是什么呢？很有趣，我们得到的不仅是一串代码。和这个block定义相关联的上下文环境（范围内的）：self值，定义它的方法，变量，常量等。Ruby中的一个有趣的地方就是即使block定义时候的变量已经不在它的使用范围内，这个变量还保留着，仍可以使用 
+<P>我们来看一个例子，这个例子用了方法proc，这个方法把一个block变为了一个Proc对象。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>def&nbsp;nTimes(aThing)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;return&nbsp;proc&nbsp;{&nbsp;|n|&nbsp;aThing&nbsp;*&nbsp;n&nbsp;}</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE></CODE></TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>p1&nbsp;=&nbsp;nTimes(23)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>p1.call(3)</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>69</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>p1.call(4)</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>92</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>p2&nbsp;=&nbsp;nTimes("Hello&nbsp;")</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>p2.call(3)</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>"Hello&nbsp;Hello&nbsp;Hello&nbsp;"</CODE> </TD></TR></TBODY></TABLE>
+<P>方法<CODE>nTimes</CODE> 返回一个Proc对象，这个对象引用了这个函数的参数：<CODE>aThing</CODE><CODE> 。</CODE>即使这个参数在块被调用时已经不在自己的作用域里了，这个块还是可以访问这个参数。（比如<CODE>p1.call(4)，</CODE>这个时候，虽然对p1的赋值语句中的参数23已经超出了作用域范围，但是它仍然保存着23×4＝92。）</P>
+<P></P>
+<HR>
+
+<TABLE cellSpacing=0 cellPadding=10 bgColor=#a03030 border=0>
+<TBODY>
+<TR>
+<TD align=left width="33%"><A class=subheader href="100.html" >Previous &lt;</A> </TD>
+<TD vAlign=center align=middle width="33%"><A class=subheader href="95.html" >Contents ^</A> <BR></TD>
+<TD align=right width="33%"><A class=subheader href="102.html" >Next &gt;</A> <BR></TD></TR></TBODY></TABLE>
+<P></P><FONT size=-1>Extracted from the book "Programming Ruby - The Pragmatic Programmer's Guide"</FONT> <BR><FONT size=-3>Copyright &copy; 2001 by Addison Wesley Longman, Inc. This material may be distributed only subject to the terms and conditions set forth in the Open Publication License, v1.0 or later (the latest version is presently available at <A href="http://www.opencontent.org/openpub/" >http://www.opencontent.org/openpub/</A>)). 
+<P></P>Distribution of substantively modified versions of this document is prohibited without the explicit permission of the copyright holder. 
+<P></P>Distribution of the work or derivative of the work in any standard (paper) book form is prohibited unless prior permission is obtained from the copyright holder. <BR></FONT></BODY>

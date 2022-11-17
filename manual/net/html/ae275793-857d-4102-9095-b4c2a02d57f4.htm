@@ -1,0 +1,188 @@
+﻿<html xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+    <META NAME="save" CONTENT="history" />
+    <title>性能（C# 编程指南）</title>
+    <link rel="stylesheet" type="text/css" href="../styles/presentation.css" />
+    <link rel="stylesheet" type="text/css" href="ms-help://Hx/HxRuntime/HxLink.css" />
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/EventUtilities.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/SplitScreen.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/Dropdown.js"> </script>
+    <script type="text/javascript" src="../scripts/script_manifold.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/script_feedBack.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CheckboxMenu.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CommonUtilities.js"> </script>
+    <xml>
+      <MSHelp:TOCTitle Title="性能" />
+      <MSHelp:Keyword Index="A" Term="ae275793-857d-4102-9095-b4c2a02d57f4" />
+      <MSHelp:Keyword Index="K" Term="C# 语言, 性能" />
+      <MSHelp:Keyword Index="K" Term="性能 [C#]" />
+      <MSHelp:Attr Name="RevisionNumber" Value="25" />
+      <MSHelp:Attr Name="AssetID" Value="ae275793-857d-4102-9095-b4c2a02d57f4" />
+      <MSHelp:Attr Name="Abstract" Value="&#xD;&#xA;                    术语“性能”通常指程序的执行速度。有时候，通过遵循源代码中的一些基本规则便可以提高执行速度。在某些程序中，仔细检查代码并使用探查器确保程序可以尽可能快地运行非常重要。在另一些程序中，由于在编写时代码运行得足够快，因此不必进行此类优化。&#xD;&#xA;                " />
+      <MSHelp:Attr Name="CommunityContent" Value="1" />
+      <MSHelp:Attr Name="DevLang" Value="CSharp" />
+      <MSHelp:Attr Name="DevLangVers" Value="CSharp" />
+      <MSHelp:Attr Name="DocSet" Value="C#" />
+      <MSHelp:Attr Name="DocSet" Value="C# Lang" />
+      <MSHelp:Attr Name="DocSet" Value="ExpressLibVS" />
+      <MSHelp:Attr Name="ProgModel" Value="managed" />
+      <MSHelp:Attr Name="ShippedIn" Value="vs.90" />
+      <MSHelp:Attr Name="Technology" Value="ManagedCode" />
+      <MSHelp:Attr Name="TopicVersion" Value="09.00.08178.10000" />
+      <MSHelp:Attr Name="Catalog Container" Value="System_Default_Catalog" />
+      <MSHelp:Attr Name="Content Set Container" Value="System_Default_Content_Set" />
+      <MSHelp:Attr Name="TopicType" Value="kbRef" />
+      <MSHelp:Attr Name="Locale" Value="zh-chs" />
+    </xml>
+  </head>
+  <body>
+    <input type="hidden" id="userDataCache" class="userDataStyle" />
+    <input type="hidden" id="hiddenScrollOffset" />
+    <img id="collapseImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" title="“折叠”图像" />
+    <img id="expandImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" title="“展开”图像" />
+    <img id="collapseAllImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" />
+    <img id="expandAllImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" />
+    <img id="dropDownImage" style="display:none; height:0; width:0;" src="../icons/dropdown.gif" />
+    <img id="dropDownHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/dropdownHover.gif" />
+    <img id="copyImage" style="display:none; height:0; width:0;" src="../icons/copycode.gif" title="“复制”图像" />
+    <img id="copyHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/copycodeHighlight.gif" title="“复制悬停”图像" />
+    <div id="header">
+      <table id="topTable" cellspacing="0" cellpadding="0">
+        <tr>
+          <td>
+            <span onclick="ExpandCollapseAll(toggleAllImage)" style="cursor:default;" onkeypress="ExpandCollapseAll_CheckKey(toggleAllImage, event)" tabindex="0">
+              <img ID="toggleAllImage" class="toggleAll" src="../icons/collapse_all.gif" /> <label id="collapseAllLabel" for="toggleAllImage" style="display: none;">全部折叠</label><label id="expandAllLabel" for="toggleAllImage" style="display: none;">全部展开</label> </span>
+            <span>    </span>
+            <span id="devlangsDropdown" class="filter" tabindex="0">
+              <img id="devlangsDropdownImage" src="../icons/dropdown.gif" /> <label id="devlangsMenuAllLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：全部 </nobr></label><label id="devlangsMenuMultipleLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：多个 </nobr></label><label id="devlangsMenuVisualBasicLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual Basic </nobr></label><label id="devlangsMenuCSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：C# </nobr></label><label id="devlangsMenuManagedCPlusPlusLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual C++ </nobr></label><label id="devlangsMenuJSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：J# </nobr></label><label id="devlangsMenuJScriptLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：JScript </nobr></label></span>
+          </td>
+        </tr>
+      </table>
+      <div id="devlangsMenu">
+        <input id="VisualBasicCheckbox" type="checkbox" data="VisualBasic,vb,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="VisualBasicCheckbox">Visual Basic</label>
+        <br />
+        <input id="CSharpCheckbox" type="checkbox" data="CSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="CSharpCheckbox">C#</label>
+        <br />
+        <input id="ManagedCPlusPlusCheckbox" type="checkbox" data="ManagedCPlusPlus,cpp,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="ManagedCPlusPlusCheckbox">Visual C++</label>
+        <br />
+        <input id="JSharpCheckbox" type="checkbox" data="JSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JSharpCheckbox">J#</label>
+        <br />
+        <input id="JScriptCheckbox" type="checkbox" data="JScript,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JScriptCheckbox">JScript</label>
+        <br />
+      </div>
+      <table id="bottomTable" cellpadding="0" cellspacing="0">
+        <tr id="headerTableRow1">
+          <td align="left">
+            <span id="runningHeaderText">C# 编程指南</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow2">
+          <td align="left">
+            <span id="nsrTitle">性能（C# 编程指南）</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow3">
+          <td align="left">
+            <a href="ae275793-857d-4102-9095-b4c2a02d57f4.htm#seeAlsoToggle" onclick="OpenSection(seeAlsoToggle)">另请参见</a>  
+<script type="text/javascript">
+var fbBody = '%b8%d0%d0%bb%c4%fa%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%bf%aa%b7%a2%b0%e6%b1%e0%d0%b4%cd%c5%b6%d3%bd%ab%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%d3%c3%d3%da%b8%c4%bd%f8%ce%c4%b5%b5%a1%a3%ce%d2%c3%c7%d4%da%c9%f3%d4%c4%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%ca%b1%a3%ac%bf%c9%c4%dc%bb%e1%b8%f8%c4%fa%b7%a2%cb%cd%b5%e7%d7%d3%d3%ca%bc%fe%a3%ac%d2%d4%c7%eb%c4%fa%cc%e1%b9%a9%bd%f8%d2%bb%b2%bd%b5%c4%bd%e2%ca%cd%cb%b5%c3%f7%bb%f2%d5%df%be%cd%bd%e2%be%f6%b7%bd%b0%b8%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%ce%d2%c3%c7%b2%bb%bb%e1%bd%ab%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%d3%c3%d3%da%c8%ce%ba%ce%c6%e4%cb%fb%d3%c3%cd%be%a3%ac%b2%a2%c7%d2%d4%da%c9%f3%d4%c4%cd%ea%d6%ae%ba%f3%a3%ac%ce%d2%c3%c7%b2%bb%bb%e1%d4%d9%b1%a3%c1%f4%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%a1%a3%0d%0a%d3%d0%b9%d8%20Microsoft%20%d2%fe%cb%bd%d5%fe%b2%df%b5%c4%bd%f8%d2%bb%b2%bd%d0%c5%cf%a2%a3%ac%c7%eb%b2%ce%bc%fb%20http%3a%2f%2fprivacy.microsoft.com%2fzh-cn%2fdefault.aspx%a1%a3';
+var fbSubject = 'Customer%20Feedback';
+</script>
+  <span id="headfeedbackarea" class="feedbackhead"><a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);"> 发送反馈意见</a></span>
+</td>
+        </tr>
+      </table>
+      <table id="gradientTable">
+        <tr>
+          <td class="nsrBottom" background="../icons/gradient.gif" />
+        </tr>
+      </table>
+    </div>
+    <div id="mainSection">
+      <div id="mainBody">
+        <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
+        <font color="DarkGray"></font>
+        <p /> <p><font color="DarkGray">更新：
+                    
+    2008 年 7 月
+  
+                </font></p><div class="introduction"><p>
+                    术语“性能”通常指程序的执行速度。有时候，通过遵循源代码中的一些基本规则便可以提高执行速度。在某些程序中，仔细检查代码并使用探查器确保程序可以尽可能快地运行非常重要。在另一些程序中，由于在编写时代码运行得足够快，因此不必进行此类优化。
+                </p><p>
+                    在衡量性能并针对性能进行优化时，应遵循下面这些通用准则：
+                </p><ul><li><p>
+                    首先，确立性能目标并衡量程序的性能，以确定代码何时达不到这些目标。
+                </p></li><li><p>
+                    开始编写代码时，使代码正确，遵循良好的设计准则并清楚地表达您的意图。仅当您确定代码达不到性能目标时才在以后进行优化。针对性能进行优化的代码通常更加难于阅读和维护。一般情况下，编写可读、可靠且可维护的代码会更好一些，但其运行速度比您编写的多数优化代码要慢一些。
+                </p></li><li><p>
+                    如果必须进行优化，应首先从程序的最慢部分入手。如果确定某个程序达不到性能目标，请找出性能可以提高的具体位置并确定哪些性能问题是程序运行慢的主要原因。优化几乎不调用的方法，或者如果整个程序必须等待 30 秒让方法 B 在另一线程上运行，才能对方法 A 进行优化使其在 50 毫秒内运行，这些通常是没有用的。
+                </p></li></ul></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle0)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle0, event)" tabindex="0"><img id="sectionToggle0" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />装箱和取消装箱</span></h1><div id="sectionSection0" class="section" name="collapseableSection" style=""><p>
+                    如果必须频繁地将值类型装箱，则最好避免使用值类型，例如在非泛型集合类（如 <span sdata="cer" target="T:System.Collections.ArrayList"><mshelp:link keywords="T:System.Collections.ArrayList" tabindex="0">System.Collections<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span></span>ArrayList</mshelp:link></span>）中。可以通过使用泛型集合（例如 <span sdata="cer" target="T:System.Collections.Generic.List`1"><mshelp:link keywords="T:System.Collections.Generic.List`1" tabindex="0">System.Collections.Generic<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span></span>List<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span></span>T<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span></span></mshelp:link></span>）来避免将值类型装箱。装箱和取消装箱都是需要大量运算的过程。对值类型进行装箱时，必须创建一个全新的对象。此操作所需时间可比简单的引用赋值操作长 20 倍。取消装箱时，强制转换过程所需时间可达赋值操作的四倍。有关更多信息，请参见<mshelp:link keywords="8da9bbf4-bce9-4b08-b2e5-f64c11c56514" tabindex="0">装箱和取消装箱</mshelp:link>。
+                </p></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle1)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle1, event)" tabindex="0"><img id="sectionToggle1" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />字符串</span></h1><div id="sectionSection1" class="section" name="collapseableSection" style=""><p>
+                    在连接大量字符串变量时，例如在紧凑循环中，请使用 <span sdata="cer" target="T:System.Text.StringBuilder"><mshelp:link keywords="T:System.Text.StringBuilder" tabindex="0">System.Text<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span></span>StringBuilder</mshelp:link></span> 而不是 C# <mshelp:link keywords="93e56486-bb42-43c1-bd43-60af11e64e67" tabindex="0">+ 运算符</mshelp:link>。有关更多信息，请参见<span sdata="link"><a href="8e16736f-4096-4f3f-be0f-9d4c3ff63520.htm">如何：串联多个字符串（C# 编程指南）</a></span>。
+                </p></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle2)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle2, event)" tabindex="0"><img id="sectionToggle2" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />析构函数</span></h1><div id="sectionSection2" class="section" name="collapseableSection" style=""><p>
+                    不应使用空析构函数。如果类包含析构函数，Finalize 队列中则会创建一个项。调用析构函数时，将调用垃圾回收器来处理该队列。如果析构函数为空，只会导致性能降低。有关更多信息，请参见<mshelp:link keywords="1ae6e46d-a4b1-4a49-abe5-b97f53d9e049" tabindex="0">析构函数</mshelp:link>。
+                </p></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle3)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle3, event)" tabindex="0"><img id="sectionToggle3" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />其他资源</span></h1><div id="sectionSection3" class="section" name="collapseableSection" style=""><ul><li><p>
+                    <a href="http://msdn.microsoft.com/zh-cn/library/ms973852(en-us).aspx">Writing Faster Managed Code: Know What Things Cost</a>（编写更快的托管代码：了解开销）
+                </p></li><li><p>
+                    <a href="http://go.microsoft.com/fwlink/?LinkId=99295">编写高性能的托管应用程序：入门</a>
+                </p></li><li><p>
+                    <a href="http://msdn.microsoft.com/zh-cn/library/ms973837(en-us).aspx">Garbage Collector Basics and Performance Hints</a>（垃圾回收器基础知识和性能提示）
+                </p></li><li><p>
+                    <a href="http://msdn.microsoft.com/zh-cn/library/ms973839(en-us).aspx">Performance Tips and Tricks in .NET Applications</a>（.NET 应用程序的性能提示和技巧）
+                </p></li><li><p>
+                    <a href="http://msdn.microsoft.com/zh-cn/magazine/cc163510.aspx">.NET 的内部诊断工具</a>
+                </p></li><li><p>
+                    <a href="http://go.microsoft.com/fwlink/?LinkId=115679">Rico Mariani's Performance Tidbits</a>（Rico Mariani 关于性能问题的见解）
+                </p></li></ul></div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />请参见</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><h4 class="subHeading">概念</h4><div class="seeAlsoStyle"><span sdata="link"><a href="ac0f23a2-6bf3-4077-be99-538ae5fd3bc5.htm">C# 编程指南</a></span></div><h4 class="subHeading">参考</h4><div class="seeAlsoStyle"><span sdata="link"><a href="17c381f5-f8b8-49c0-804e-19852eec504c.htm">安全性（C# 编程指南）</a></span></div></div><h1 class="heading"><span onclick="ExpandCollapse(changeHistoryToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(changeHistoryToggle, event)" tabindex="0"><img id="changeHistoryToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />修订记录</span></h1><div id="changeHistorySection" class="section" name="collapseableSection" style=""><div class="caption"></div><div class="tableSection"><table width="50%" cellspacing="2" cellpadding="5" frame="lhs"><tr><th><p>
+                    日期
+                </p></th><th><p>
+                    历史记录
+                </p></th><th><p>
+                    原因
+                </p></th></tr><tr><td><p>
+                    
+    <p>2008 年 7 月</p>
+  
+                </p></td><td><p>
+                    在有关装箱和取消装箱的章节中增加了一些信息。
+                </p></td><td><p>
+                    
+    <p>信息补充。</p>
+  
+                </p></td></tr><tr><td><p>
+                    
+    <p>2008 年 7 月</p>
+  
+                </p></td><td><p>
+                    增加了有关字符串的一节。
+                </p></td><td><p>
+                    
+    <p>信息补充。</p>
+  
+                </p></td></tr><tr><td><p>
+                    
+    <p>2008 年 7 月</p>
+  
+                </p></td><td><p>
+                    增加了简介部分的信息。
+                </p></td><td><p>
+                    
+    <p>信息补充。</p>
+  
+                </p></td></tr></table></div></div></div>
+      <div id="footer">
+        <div class="footerLine">
+          <img width="100%" height="3px" src="../icons/footer.gif" title="“页脚”图像" />
+        </div>
+<span id="feedbackarea">将有关本主题的<a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);">反馈意见</a>发送给 Microsoft。</span>
+</div>
+    </div>
+  </body>
+</html>

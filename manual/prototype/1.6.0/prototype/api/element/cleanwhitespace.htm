@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Element.cleanWhitespace - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>
+			cleanWhitespace
+		</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">cleanWhitespace(element) -> HTMLElement</code></pre>
+			<p>
+				移除元素中所有仅包含空白的文本节点，返回移除空白文本节点后的元素。<br />
+				<strong>译注：</strong>所谓空白文本节点，是根据 XML 中的概念得来的，例如，有以下 HTML 代码：
+			</p>
+			<pre><code class='ebnf'>&lt;div&gt;
+&lt;p&gt;第一段&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+			<p>
+				&lt;div&gt; 的子节点（element.childNodes）包括 &lt;p&gt; 和空白文本节点（对于空白文本节点，各种浏览器的处理方式不一样）,
+				这些空白文本节点有时对处理节点的顺序关系会造成影响，如上述 HTML 代码中我们通常认为 &lt;p&gt; 没有前导和后继兄弟节点，
+				但因为空白文本节点的干扰，程序可能会认为 &lt;p&gt; 有一个前导兄弟节点和一个后继兄弟节点。为消除这些干扰因素，Prototype
+				提供了 <code>cleanWhitespace</code> 方法，用于去除无用的空白文本节点。
+			</p>
+		</div>
+		<div id="abody">
+			<p>
+				<code>Element.cleanWhitespace</code> 移除仅包含空白的文本节点。这对于使用一些原生的标准方法如 <code>nextSibling</code>、
+				<code>previousSibling</code>、<code>firstChild</code> 或 <code>lastChild</code> 来操作 DOM 时特别有用。
+			</p>
+			<p>
+				如果只想访问元素节点（不包括文本节点），试试这些方法：<a href="up.htm" >Element.up</a>、
+				<a href="down.htm" >Element.down</a>、<a href="next.htm" >Element.next</a> 和
+				<a href="previous.htm" >Element.previous</a> 。千万不要错过。
+			</p>
+			<h3>样例</h3>
+			<p>思考一下下面这段 HTML 片断：</p>
+			<pre><code class="html">&lt;ul id="apples"&gt;
+	&lt;li&gt;Mutsu&lt;/li&gt;
+	&lt;li&gt;McIntosh&lt;/li&gt;
+	&lt;li&gt;Ida Red&lt;/li&gt;
+&lt;/ul&gt; </code></pre>
+			<p>想一下如何获取第一个列表项目：</p>
+			<pre><code class="javascript">var element = $('apples');
+element.firstChild.innerHTML;
+// -> undefined </code></pre>
+			<p>
+				这并不一定会正确的工作。为什么？因为 <code>ul#apples</code> 的第一个子节点实际上是一个仅包含空白的文本节点，它位于
+				<code>&lt;ul id="apples"&gt;</code> 和 <code>&lt;li&gt;Mutsu&lt;/li&gt;</code> 之间。
+			</p>
+			<p>让我们移除所有这些无用的空白：</p>
+			<pre><code class="javascript">element.cleanWhitespace(); </code></pre>
+			<p>这使得 DOM 看起来类似于下面这样：</p>
+			<pre><code class="html">&lt;UL id="apples"&gt;&lt;LI&gt;Mutsu&lt;/LI&gt;&lt;LI&gt;McIntosh&lt;/LI&gt;&lt;LI&gt;Ida Red&lt;/LI&gt;&lt;/UL&gt; </code></pre>
+			<p>现在 <code>firstChild</code> 终于按照期望的方式工作了！</p>
+			<pre><code class="javascript">element.firstChild.innerHTML; 
+// -> 'Mutsu' </code></pre>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

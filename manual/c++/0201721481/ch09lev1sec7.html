@@ -1,0 +1,435 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 9.7.  Container Adaptors</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch09lev1sec6.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch09lev1sec8.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch09lev1sec7"></a>
+
+        <h3 class="docSection1Title">9.7. Container Adaptors</h3>
+        <h3 class="docSection1Title">9.7. 容器适配器</h3>
+
+        <p class="docText">In addition to the sequential containers, the library provides three sequential container adaptors: <tt>queue</tt>, <span class="docEmphRoman"><a name="ch09term11"></a><a class="docLink" href="ch09lev1sec9.html#gloss09_11" ><span class="docEmphRoman"><tt>priority_queue</tt>,</span></a></span> and <tt>stack</tt>. An <b><a name="ch09term1"></a><a class="docLink" href="ch09lev1sec9.html#gloss09_01" >adaptor</a></b> is a general concept in the library. There are container, iterator, and function adaptors. Essentially, an adaptor is a mechanism for making one thing act like another. A container adaptor takes an existing container type and makes it act like a different abstract type. For example, the <tt>stack</tt> adaptor takes any of the sequential containers and makes it operate as if it were a <tt>stack</tt>. <a class="docLink" href="ch09lev1sec7.html#ch09table22">Table 9.22</a> (p. <a class="docLink" href="ch09lev1sec7.html#ch09table22">350</a>) lists the operations and types that are common to all the container adaptors.</p>
+	<p class="docText">除了顺序容器，标准库还提供了三种顺序容器适配器：<tt>queue</tt>、<span class="docEmphRoman"><a class="docLink" href="ch09lev1sec9.html#gloss09_11" ><span class="docEmphRoman"><tt>priority_queue</tt></span></a></span> 和 <tt>stack</tt>。<b><a class="docLink" href="ch09lev1sec9.html#gloss09_01" >适配器（adaptor）</a></b>是标准库中通用的概念，包括容器适配器、迭代器适配器和函数适配器。本质上，适配器是使一事物的行为类似于另一事物的行为的一种机制。容器适配器让一种已存在的容器类型采用另一种不同的抽象类型的工作方式实现。例如，<tt>stack</tt>（栈）适配器可使任何一种顺序容器以栈的方式工作。<a class="docLink" href="ch09lev1sec7.html#ch09table22">表 9.22</a> 列出了所有容器适配器通用的操作和类型。</p>
+	
+	<a name="ch09table22"></a>
+        <h5 class="docTableTitle">Table 9.22. Common Adaptor Operations and Types</h5>
+        <h5 class="docTableTitle">表 9.22. 适配器通用的操作和类型</h5>
+
+        <table cellspacing="0" class="allBorders" border="1" rules="none" cellpadding="5">
+          <colgroup>
+            <col width="150">
+            <col width="350">
+          </colgroup>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>size_type</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Type large enough to hold size of largest object of this type.</p>
+              <p class="docText">一种类型，足以存储此适配器类型最大对象的长度</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>value_type</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Element type.</p>
+              <p class="docText">元素类型</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>container_type</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Type of the underlying container on which the adaptor is implemented.</p>
+              <p class="docText">基础容器的类型，适配器在此容器类型上实现</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>A a;</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Create a new empty adaptor named <tt>a</tt>.</p>
+              <p class="docText">创建一个新空适配器，命名为 <tt>a</tt></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>A a(c);</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Create a new adaptor named <tt>a</tt> with a copy of the container <tt>c</tt>.</p>
+              <p class="docText">创建一个名为 <tt>a</tt> 的新适配器，初始化为容器 <tt>c</tt> 的副本</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><span class="docEmphasis">Relational Operators</span></p>
+              <p class="docText"><span class="docEmphasis">关系操作符</span></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Each adaptor supports all the relational operators: <tt>==, !=, &lt;, &lt;=, &gt;, &gt;=</tt>.</p>
+              <p class="docText">所有适配器都支持全部关系操作符：<tt>==、 !=、 &lt;、 &lt;=、 &gt;、 &gt;=</tt></p>
+            </td>
+          </tr>
+        </table><br>
+
+        <p class="docText">To use an adaptor, we must include its associated header:</p>
+        <p class="docText">使用适配器时，必须包含相关的头文件：</p>
+        <pre>
+     #include &lt;stack&gt;    // <span class="docEmphItalicAlt">stack adaptor</span>
+     #include &lt;queue&gt;    // <span class="docEmphItalicAlt">both queue and priority_queue adaptors</span>
+</pre><br>
+        <a name="ch09lev2sec23"></a>
+
+        <h4 class="docSection2Title">Initializing an Adapator</h4>
+        <h4 class="docSection2Title">适配器的初始化</h4>
+
+        <p class="docText">Each adaptor defines two constructors: the default constructor that creates an empty object and a constructor that takes a container and makes a copy of that container as its underlying value. For example, assuming that <tt>deq</tt> is a <tt>deque&lt;int&gt;</tt>, we could use <tt>deq</tt> to initialize a new <tt>stack</tt> as follows:</p>
+        <p class="docText">所有适配器都定义了两个构造函数：默认构造函数用于创建空对象，而带一个容器参数的构造函数将参数容器的副本作为其基础值。例如，假设 <tt>deq</tt> 是 <tt>deque&lt;int&gt;</tt> 类型的容器，则可用 <tt>deq</tt> 初始化一个新的栈，如下所示：</p>
+        <pre>
+     stack&lt;int&gt; stk(deq);      // <span class="docEmphItalicAlt">copies elements from</span> <span class="docEmphasis">deq</span> into <span class="docEmphasis">stk</span>
+</pre><br>
+        <a name="ch09lev2sec24"></a>
+
+        <h4 class="docSection2Title">Overriding the Underlying Container Type</h4>
+        <h4 class="docSection2Title">覆盖基础容器类型</h4>
+
+        <p class="docText">By default both <tt>stack</tt> and <span class="docEmphRoman"><a name="ch09term12"></a><a class="docLink" href="ch09lev1sec9.html#gloss09_12" ><span class="docEmphRoman"><tt>queue</tt></span></a></span> are implemented in terms of <tt>deque</tt>, and a <tt>priority_queue</tt> is implemented on a <tt>vector</tt>. We can override the default container type by naming a sequential container as a second type argument when creating the adaptor:</p>
+	<p class="docText">默认的 <tt>stack</tt> 和 <span class="docEmphRoman"><a class="docLink" href="ch09lev1sec9.html#gloss09_12" ><span class="docEmphRoman"><tt>queue</tt></span></a></span> 都基于 <tt>deque</tt> 容器实现，而 <tt>priority_queue</tt> 则在 <tt>vector</tt> 容器上实现。在创建适配器时，通过将一个顺序容器指定为适配器的第二个类型实参，可覆盖其关联的基础容器类型：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">empty</span> <span class="docEmphasis">stack</span> <span class="docEmphItalicAlt">implemented on top of</span> <span class="docEmphasis">vector</span>
+     stack&lt; string, vector&lt;string&gt; &gt; str_stk;
+
+     // <span class="docEmphasis">str_stk2</span> <span class="docEmphItalicAlt">is implemented on top of</span> <span class="docEmphasis">vector</span> <span class="docEmphItalicAlt">and holds a copy of</span> <span class="docEmphasis">svec</span>
+     stack&lt;string, vector&lt;string&gt; &gt; str_stk2(svec);
+</pre><br>
+
+	<a name="idd1e74703"></a><a name="idd1e74710"></a><a name="idd1e74717"></a><a name="idd1e74725"></a><a name="idd1e74733"></a><a name="idd1e74741"></a><a name="idd1e74749"></a><a name="idd1e74756"></a><a name="idd1e74762"></a><a name="idd1e74767"></a>
+        <p class="docText">There are constraints on which containers can be used for a given adapator. We can use any of the sequential containers as the underlying container for a <tt>stack</tt>. Thus, a <tt>stack</tt> can be built on a <tt>vector, list</tt>, or <tt>deque</tt>. The <tt>queue</tt> adapator requires <tt>push_front</tt> in its underlying container, and so could be built on a <tt>list</tt> but not on a <tt>vector</tt>. A <tt>priority_queue</tt> requires random access and so can be built on a <tt>vector</tt> or a <tt>deque</tt> but not on a <tt>list</tt>.</p><a name="ch09lev2sec25"></a>
+        <p class="docText">对于给定的适配器，其关联的容器必须满足一定的约束条件。<tt>stack</tt> 适配器所关联的基础容器可以是任意一种顺序容器类型。因此，<tt>stack</tt> 栈可以建立在 <tt>vector、list</tt> 或者 <tt>deque</tt> 容器之上。而 <tt>queue</tt> 适配器要求其关联的基础容器必须提供 <tt>push_front</tt> 运算，因此只能建立在 <tt>list</tt> 容器上，而不能建立在 <tt>vector</tt> 容器上。<tt>priority_queue</tt> 适配器要求提供随机访问功能，因此可建立在 <tt>vector</tt> 或 <tt>deque</tt> 容器上，但不能建立在 <tt>list</tt> 容器上。</p>
+
+        <h4 class="docSection2Title">Relational Operations on Adaptors</h4>
+        <h4 class="docSection2Title">适配器的关系运算</h4>
+
+        <p class="docText">Two adaptors of the same type can be compared for equality, inequality, less-than, greater-than, less-than-equal, and greater-than-equal relationships, provided that the underlying element type supports the equality and less-than operators. For these operations, the elements are compared in turn. The first pair of unequal elements determines the less-than or greater-than relationship.</p><a name="ch09lev2sec26"></a>
+        <p class="docText">两个相同类型的适配器可以做相等、不等、小于、大于、小于等于以及等于关系比较，只要基础元素类型支持等于和小于操作符既可。这些关系运算由元素依次比较来实现。第一对不相等的元素将决定两者之间的小于或大于关系。</p>
+
+        <h4 class="docSection2Title">9.7.1. Stack Adaptor</h4>
+        <h4 class="docSection2Title">9.7.1. 栈适配器</h4>
+
+        <p class="docText">The operations provided by a <tt>stack</tt> are listed in <a class="docLink" href="ch09lev1sec7.html#ch09table23">Table 9.23</a> on the facing page. The following program exercises this set of five <tt>stack</tt> operations:</p><a name="ch09table23"></a>
+        <p class="docText"><a class="docLink" href="ch09lev1sec7.html#ch09table23">表 9.23</a> 列出了栈提供的所有操作。</p>
+
+        <h5 class="docTableTitle">Table 9.23. Operations Supported by the Stack Container Adaptor</h5>
+        <h5 class="docTableTitle">表 9.23. 栈容器适配器支持的操作</h5>
+
+        <table cellspacing="0" class="allBorders" border="1" rules="none" cellpadding="5">
+          <colgroup>
+            <col width="100">
+            <col width="400">
+          </colgroup>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>s.empty()</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Returns <tt>true</tt> if the <tt>stack</tt> is empty; false otherwise.</p>
+              <p class="docText">如果栈为空，则返回 <tt>true</tt>，否则返回 <tt>stack</tt></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>s.size()</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Returns a count of the number of elements on the <tt>stack</tt>.</p>
+              <p class="docText">返回栈中元素的个数</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>s.pop()</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Removes, but does not return, the top element from the <tt>stack</tt>.</p>
+              <p class="docText">删除栈顶元素的值，但不返回其值</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>s.top()</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Returns, but does not remove, the top element on the <tt>stack</tt>.</p>
+              <p class="docText">返回栈顶元素的值，但不删除该元素</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>s.push(item)</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Places a new top element on the <tt>stack</tt>.</p>
+              <p class="docText">在栈顶压入新元素</p>
+            </td>
+          </tr>
+        </table><br>
+        <pre>
+     // <span class="docEmphItalicAlt">number of elements we'll put in our stack</span>
+     const stack&lt;int&gt;::size_type stk_size = 10;
+     stack&lt;int&gt; intStack; // <span class="docEmphItalicAlt">empty stack</span>
+     // <span class="docEmphItalicAlt">fill up the stack</span>
+     int ix = 0;
+     while (intStack.size() != stk_size)
+         // <span class="docEmphItalicAlt">use postfix increment; want to push old value onto</span> <span class="docEmphasis">intStack</span>
+         intStack.push(ix++); // <span class="docEmphasis">intStack</span> <span class="docEmphItalicAlt">holds 0...9 inclusive</span>
+
+     int error_cnt = 0;
+     // <span class="docEmphItalicAlt">look at each value and pop it off the stack</span>
+     while (intStack.empty() == false) {
+         int value = intStack.top();
+         // <span class="docEmphItalicAlt">read the top element of the stack</span>
+         if (value != --ix) {
+             cerr &lt;&lt; "oops! expected " &lt;&lt; ix
+                  &lt;&lt; " received " &lt;&lt; value &lt;&lt; endl;
+             ++error_cnt; }
+         intStack.pop(); // <span class="docEmphItalicAlt">pop the top element, and repeat</span>
+     }
+     cout &lt;&lt; "Our program ran with "
+          &lt;&lt; error_cnt &lt;&lt; " errors!" &lt;&lt; endl;
+</pre><br>
+
+	<a name="idd1e74970"></a><a name="idd1e74977"></a><a name="idd1e74984"></a><a name="idd1e74991"></a><a name="idd1e74998"></a>
+        <p class="docText">The declaration</p>
+        <p class="docText">声明语句：</p>
+        <pre>
+     stack&lt;int&gt; intStack;   // <span class="docEmphItalicAlt">empty stack</span>
+</pre><br>
+
+        <p class="docText">defines <tt>intStack</tt> to be an empty <tt>stack</tt> that holds integer elements. The <tt>for</tt> loop adds <tt>stk_size</tt> elements initializing each to the next integer in sequence starting from zero. The <tt>while</tt> loop iterates through the entire <tt>stack</tt>, examining the <tt>top</tt> value and <tt>pop</tt>ping it from the <tt>stack</tt> until the <tt>stack</tt> is empty.</p>
+	<p class="docText">将 <tt>intStack</tt> 定义为一个存储整型元素的空栈。第一个 <tt>while</tt> 循环在该栈中添加了 <tt>stk_size</tt> 个元素，元素初值是从 0 开始依次递增 1 的整数。第二个 <tt>while</tt> 循环迭代遍历整个栈，检查其栈顶（top）的元素值，然后栈顶元素出栈，直到栈变空为止。</p>
+
+        <p class="docText">Each container adaptor defines its own operations in terms of operations provided by the underlying container type. By default, this <tt>stack</tt> is implemented using a <tt>deque</tt> and uses <tt>deque</tt> operations to implement the operations of a <tt>stack</tt>. For example, when we execute</p>
+        <p class="docText">所有容器适配器都根据其基础容器类型所支持的操作来定义自己的操作。默认情况下，栈适配器建立在 <tt>deque</tt> 容器上，因此采用 <tt>deque</tt> 提供的操作来实现栈功能。例如，执行下面的语句：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">use postfix increment; want to push old value onto</span> <span class="docEmphasis">intStack</span>
+     intStack.push(ix++);    // <span class="docEmphasis">intStack</span> <span class="docEmphItalicAlt">holds 0...9 inclusive</span>
+</pre><br>
+
+        <p class="docText">this operation executes by calling the <tt>push_back</tt> operation of the <tt>deque</tt> object on which <tt>intStack</tt> is based. Although <tt>stack</tt> is implemented by using a <tt>deque</tt>, we have no direct access to the <tt>deque</tt> operations. We cannot call <tt>push_back</tt> on a <tt>stack</tt>; instead, we must use the <tt>stack</tt> operation named <tt>push</tt>.</p><a name="ch09lev2sec27"></a>
+        <p class="docText">这个操作通过调用 <tt>push_back</tt> 操作实现，而该 <tt>intStack</tt> 所基于的 <tt>deque</tt> 对象提供。尽管栈是以 <tt>deque</tt> 容器为基础实现的，但是程序员不能直接访问 <tt>deque</tt> 所提供的操作。例如，不能在栈上调用 <tt>push_back</tt> 函数，而是必须使用栈所提供的名为 <tt>push</tt> 的操作。</p>
+
+        <h4 class="docSection2Title">9.7.2. Queue and Priority Queue</h4>
+        <h4 class="docSection2Title">9.7.2. 队列和优先级队列</h4>
+
+        <p class="docText">The library <tt>queue</tt> uses a first-in, first-out (FIFO) storage and retrieval policy. Objects entering the queue are placed in the back. The next object retrieved is taken from the front of the queue. There are two kinds of queues: the FIFO queue, which we will speak of simply as a <tt>queue</tt>, and a priority queue.</p>
+        <p class="docText">标准库队列使用了先进先出（FIFO）的存储和检索策略。进入队列的对象被放置在尾部，下一个被取出的元素则取自队列的首部。标准库提供了两种风格的队列：FIFO 队列（FIFO queue，简称 <tt>queue</tt>），以及优先级队列（priority <tt>queue</tt>）。</p>
+
+        <p class="docText">A <tt>priority_queue</tt> lets us establish a priority among the elements held in the queue. Rather than place a newly entered item at the back of the queue, the item is placed ahead of all those items with a lower priority. By default, the library uses the <tt>&lt;</tt> operator on the element type to determine relative priorities.</p>
+        <p class="docText"><tt>priority_queue</tt> 允许用户为队列中存储的元素设置优先级。这种队列不是直接将新元素放置在队列尾部，而是放在比它优先级低的元素前面。标准库默认使用元素类型的 <tt>&lt;</tt> 操作符来确定它们之间的优先级关系。</p>
+
+	<a name="idd1e75146"></a><a name="idd1e75153"></a><a name="idd1e75160"></a><a name="idd1e75167"></a><a name="idd1e75174"></a><a name="idd1e75182"></a><a name="idd1e75189"></a><a name="idd1e75197"></a><a name="idd1e75204"></a><a name="idd1e75211"></a><a name="idd1e75218"></a>
+        <p class="docText">A real-world example of a priority queue is the line to check luggage at an airport. Those whose flight is going to leave within the next 30 minutes are generally moved to the front of the line so that they can finish the check-in process before their plane takes off. A programming example of a priority queue is the scheduler of an operating system determining which, of a number of waiting processes, should execute next.</p>
+        <p class="docText">优先级队列的一个实例是机场行李检查队列。30 分钟后即将离港的航班的乘客通常会被移到队列前面，以便他们能在飞机起飞前完成检查过程。使用优先级队列的程序示例是操作系统的调试表，它决定在大量等待进程中下一个要执行的进程。</p>
+
+        <p class="docText">To use either <tt>queue</tt> or <tt>priority_queue</tt>, we must include the <tt>queue</tt> header. <a class="docLink" href="ch09lev1sec7.html#ch09table24">Table 9.24</a> lists the operations supported by <tt>queue</tt> and <tt>priority_queue</tt>.</p><a name="ch09table24"></a>
+        <p class="docText">要使用这两种队列，必须包含 <tt>queue</tt> 头文件。<a class="docLink" href="ch09lev1sec7.html#ch09table24">表 9.24</a> 列出了队列和优先级队列所提供的所有操作。</p>
+
+        <h5 class="docTableTitle">Table 9.24. Operations Supported by Queues and Priority Queues</h5>
+        <h5 class="docTableTitle">表 9.24. 队列和优先级队列支持的操作</h5>
+
+        <table cellspacing="0" class="allBorders" border="1" rules="none" cellpadding="5">
+          <colgroup>
+            <col width="100">
+            <col width="400">
+          </colgroup>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>q.empty()</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Returns <tt>true</tt> if the <tt>queue</tt> is empty; false otherwise.</p>
+	      <p class="docText">如果队列为空，则返回 <tt>true</tt>，否则返回 <tt>false</tt></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>q.size()</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Returns a count of the number of elements on the <tt>queue</tt>.</p>
+              <p class="docText">返回队列中元素的个数</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>q.pop()</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Removes, but does not return, the front element from the <tt>queue</tt>.</p>
+              <p class="docText">删除队首元素，但不返回其值</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>q.front()</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Returns, but does not remove, the front element on the <tt>queue</tt>.</p>
+              <p class="docText">返回队首元素的值，但不删除该元素</p>
+
+              <p class="docText"><span class="docEmphStrong">This operation can be applied only to a <tt>queue</tt></span>.</p>
+              <p class="docText"><span class="docEmphStrong">该操作只适用于队列</span></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>q.back()</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Returns, but does not remove, the back element on the <tt>queue</tt>.</p>
+              <p class="docText">返回队尾元素的值，但不删除该元素</p>
+
+              <p class="docText"><span class="docEmphStrong">This operation can be applied only to a <tt>queue</tt></span>.</p>
+              <p class="docText"><span class="docEmphStrong">该操作只适用于队列</span></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>q.top()</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Returns, but does not remove, the highest-priority element.</p>
+              <p class="docText">返回具有最高优先级的元素值，但不删除该元素</p>
+
+              <p class="docText"><span class="docEmphStrong">This operation can be applied only to a <tt>priority_queue</tt>.</span></p>
+              <p class="docText"><span class="docEmphStrong">该操作只适用于优先级队列</span></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText"><tt>q.push(item)</tt></p>
+            </td>
+
+            <td class="docTableCell" align="left" valign="top">
+              <p class="docText">Places a new element at the end of the <tt>queue</tt> or at its appropriate position based on priority in a <tt>priority_queue</tt>.</p>
+	      <p class="docText">对于 <tt>queue</tt>，在队尾压入一个新元素，对于 <tt>priority_quue</tt>，在基于优先级的适当位置插入新元素</p>
+            </td>
+          </tr>
+        </table><br>
+        <a name="ch09sb19"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 9.7.2</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch09qa17q1"></a><b>Exercise 9.42:</b></td>
+
+                    <td>
+                      <p class="docText">Write a program to read a series of words into a <tt>stack</tt>.</p>
+                      <p class="docText">编写程序读入一系列单词，并将它们存储在 <tt>stack</tt> 对象中。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch09qa17q2"></a><b>Exercise 9.43:</b></td>
+
+                    <td>
+                      <p class="docText">Use a <tt>stack</tt> to process parenthesized expressions. When you see an open parenthesis, note that it was seen. When you see a close parenthesis after an open parenthesis, <tt>pop</tt> elements down to and including the open parenthesis off the <tt>stack</tt>. <tt>push</tt> a value onto the <tt>stack</tt> to indicate that a parenthesized expression was replaced.</p>
+                      <p class="docText">使用 <tt>stack</tt> 对象处理带圆括号的表达式。遇到左圆括号时，将其标记下来。然后在遇到右加括号时，弹出 <tt>stack</tt> 对象中这两边括号之间的相关元素（包括左圆括号）。接着在 <tt>stack</tt> 对象中压入一个值，用以表明这个用一对圆括号括起来的表达式已经被替换。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch09lev1sec6.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch09lev1sec8.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

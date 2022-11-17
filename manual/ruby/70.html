@@ -1,0 +1,149 @@
+<html><HEAD><TITLE>Ruby参考手册 - 安全模型</TITLE>
+<META http-equiv=Content-type content="text/html; charset=gb2312">
+<META http-equiv=Content-Style-Type content=text/css><LINK href="70_files/style[1].css"  type=text/css rel=stylesheet></head>
+<BODY>
+<DIV class=navi><A id=header-navi name=head-navi></A><SPAN class=navi>[<A href="61.html" >Ruby首页</A>]</SPAN>  </DIV>
+<DIV class=body>
+<H1><A id=a.a5.bb.a5.ad.a5.e5.a5.ea.a5.c6.a5.a3.a5.e2.a5.c7.a5.eb name=a.a5.bb.a5.ad.a5.e5.a5.ea.a5.c6.a5.a3.a5.e2.a5.c7.a5.eb>安全模型</A><!-- RDLabel: "安全模型" --></H1>
+<P>为了安全地运行CGI等程序，Ruby设置了安全结构。</P>
+<P>Ruby的安全模型由“对象的污染”和“安全级别”构成。</P>
+<H2><A id=a.a5.aa.a5.d6.a5.b8.a5.a7.a5.af.a5.c8.a4.ce.b1.f8.c0.f7 name=a.a5.aa.a5.d6.a5.b8.a5.a7.a5.af.a5.c8.a4.ce.b1.f8.c0.f7>对象的污染</A></H2>
+<P>Ruby有时会认为对象“遭到了污染”，这主要有两种用途。</P>
+<P>第一，以不安全的输入为基础制成的对象就是“受污染”的对象，不能用作“危险操作”的参数。这主要是为了防止恶意数据导致程序作出一些意外的危险动作。</P>
+<P>第二，可以使安全对象(未遭污染的对象)得到保护，免遭不安全对象的威胁。若安全级别为4，则对未受污染的对象进行操作时就会受到很多限制，这正体现了对于安全方面的考虑。</P>
+<P>与对象的污染有关的方法</P>
+<DL>
+<DT><A id=Object.23taint name=Object.23taint>Object#taint</A><!-- RDLabel: "Object#taint" --> 
+<DD>
+<P>污染对象</P>
+<DT><A id=Object.23tainted.3f name=Object.23tainted.3f>Object#tainted?</A><!-- RDLabel: "Object#tainted?" --> 
+<DD>
+<P>若对象受到了污染就返回真</P>
+<DT><A id=Object.23untaint name=Object.23untaint>Object#untaint</A><!-- RDLabel: "Object#untaint" --> 
+<DD>
+<P>消除对象受到的污染</P></DD></DL>
+<H2><A id=a.a5.bb.a1.bc.a5.d5.a5.ec.a5.d9.a5.eb name=a.a5.bb.a1.bc.a5.d5.a5.ec.a5.d9.a5.eb>安全级别</A><!-- RDLabel: "安全级别" --></H2>
+<P>每个线程都有特有的“安全级别”。安全级别越高，操作受到的限制也就越多。线程局部变量<FONT color=blue><B>$SAFE</B></FONT>标明了安全级别。</P>
+<P><FONT color=blue><B>[ruby-list:37415]</B></FONT></P>
+<P><FONT color=blue><B>$SAFE</B></FONT>的相关规则</P>
+<UL>
+<LI>程序开始时<B>$SAFE</B>的值为0 
+<LI>各线程在生成时继承父线程的<B>$SAFE</B>值 
+<LI>不能降低现有的<B>$SAFE</B>值 </LI></UL>
+<P>从原则上讲，低安全等级时的限制也适用于高安全等级。例如，若某操作在1级就被禁止的话，在2级就更不可能通过了。</P>
+<H3><A id=a.a5.ec.a5.d9.a5.eb.200 name=a.a5.ec.a5.d9.a5.eb.200>0级</A></H3>
+<P>默认的安全级别。</P>
+<H4><A id=a.b1.f8.c0.f7.a4.b5.a4.ec.a4.eb.a5.aa.a5.d6.a5.b8.a5.a7.a5.af.a5.c8 name=a.b1.f8.c0.f7.a4.b5.a4.ec.a4.eb.a5.aa.a5.d6.a5.b8.a5.a7.a5.af.a5.c8>被污染对象</A></H4>
+<UL>
+<LI>
+<P>可从IO、环境变量或命令行参数(ARGV)中获得的字符串</P>
+<P>(只有环境变量PATH例外)</P></LI></UL>
+<P>环境变量PATH比较特殊，只有当其值中含有<I><B>危险路径</B></I>时才会受到污染。</P>
+<P>这时所说的<I><B>危险路径</B></I>是指，谁都可以变更或写入的路径。从根目录起层层检查，若包含谁都可以更改的地方的话，该路径就是危险的。</P>
+<H4><A id=a.b6.d8.bb.df.a4.b5.a4.ec.a4.eb.c1.e0.ba.ee name=a.b6.d8.bb.df.a4.b5.a4.ec.a4.eb.c1.e0.ba.ee>禁止的操作</A></H4>
+<UL>
+<LI>没有 </LI></UL>
+<H3><A id=a.a5.ec.a5.d9.a5.eb.201 name=a.a5.ec.a5.d9.a5.eb.201>1级</A></H3>
+<P>特指以安全程序处理不安全数据的情况。适合于用CGI等处理用户的输入。</P>
+<H4><A id=a.b1.f8.c0.f7.a4.b5.a4.ec.a4.eb.a5.aa.a5.d6.a5.b8.a5.a7.a5.af.a5.c8_2 name=a.b1.f8.c0.f7.a4.b5.a4.ec.a4.eb.a5.aa.a5.d6.a5.b8.a5.a7.a5.af.a5.c8_2>被污染对象</A><!-- RDLabel: "被污染对象" --></H4>
+<UL>
+<LI>与0级相同 </LI></UL>
+<H4><A id=a.b6.d8.bb.df.a4.b5.a4.ec.a4.eb.c1.e0.ba.ee_2 name=a.b6.d8.bb.df.a4.b5.a4.ec.a4.eb.c1.e0.ba.ee_2>禁止的操作</A><!-- RDLabel: "禁止的操作" --></H4>
+<UL>
+<LI>下列以受污染字符串为参数的操作 
+<UL>
+<LI>Dir, IO, File、FileTest的类方法、方法 
+<LI>使用FileTest操作符、比较文件的更新时间 
+<LI>执行外部命令(system, exec, ``) 
+<LI>eval (参考4级的说明) 
+<LI>加载顶层(若使用第二参数进行wrap则可以执行) 
+<LI>require 
+<LI>trap </LI></UL>
+<LI>执行外部命令(只有当环境变量PATH中包含危险路径时) </LI></UL>
+<H3><A id=a.a5.ec.a5.d9.a5.eb.202 name=a.a5.ec.a5.d9.a5.eb.202>2级</A></H3>
+<H4><A id=a.b1.f8.c0.f7.a4.b5.a4.ec.a4.eb.a5.aa.a5.d6.a5.b8.a5.a7.a5.af.a5.c8_3 name=a.b1.f8.c0.f7.a4.b5.a4.ec.a4.eb.a5.aa.a5.d6.a5.b8.a5.a7.a5.af.a5.c8_3>被污染对象</A><!-- RDLabel: "被污染对象" --></H4>
+<UL>
+<LI>与1级相同 </LI></UL>
+<H4><A id=a.b6.d8.bb.df.a4.b5.a4.ec.a4.eb.c1.e0.ba.ee_3 name=a.b6.d8.bb.df.a4.b5.a4.ec.a4.eb.c1.e0.ba.ee_3>禁止的操作</A><!-- RDLabel: "禁止的操作" --></H4>
+<P>在1级限制的基础上，以下操作也被禁止。</P>
+<UL>
+<LI>Dir.chdir Dir.chroot Dir.mkdir Dir.rmdir 
+<LI>File.chown File.chmod File.umask File.truncate File#lstat File#chmod File#chown File#delete File#unlink File#truncate File#flock 以及FileTest模块的方法 
+<LI>IO#ioctl, IO#fcntl 
+<LI>Process.fork Process.setpgid Process.setsid Process.setpriority Process.egid= Process.kill 
+<LI>使用危险路径load 
+<LI>以被污染字符串为参数的load(即使被wrap也不行) 
+<LI>syscall 
+<LI>exit! 
+<LI>trap </LI></UL>
+<H3><A id=a.a5.ec.a5.d9.a5.eb.203 name=a.a5.ec.a5.d9.a5.eb.203>3级</A></H3>
+<P>所有生成的对象都被污染。适于为在4级状态下运行程序提供环境。</P>
+<H4><A id=a.b1.f8.c0.f7.a4.b5.a4.ec.a4.eb.a5.aa.a5.d6.a5.b8.a5.a7.a5.af.a5.c8_4 name=a.b1.f8.c0.f7.a4.b5.a4.ec.a4.eb.a5.aa.a5.d6.a5.b8.a5.a7.a5.af.a5.c8_4>被污染对象</A><!-- RDLabel: "被污染对象" --></H4>
+<UL>
+<LI>所有生成的对象 </LI></UL>
+<H4><A id=a.b6.d8.bb.df.a4.b5.a4.ec.a4.eb.c1.e0.ba.ee_4 name=a.b6.d8.bb.df.a4.b5.a4.ec.a4.eb.c1.e0.ba.ee_4>禁止的操作</A><!-- RDLabel: "禁止的操作" --></H4>
+<P>在2级限制的基础上，以下操作也被禁止。</P>
+<UL>
+<LI>Object#untaint </LI></UL>
+<H3><A id=a.a5.ec.a5.d9.a5.eb.204 name=a.a5.ec.a5.d9.a5.eb.204>4级</A></H3>
+<P>执行不安全程序时等级。</P>
+<P>此时，3级时禁止的“受污染字符串的eval”却被解禁。(这是因为用eval时，所有的危险操作都已经被禁止了。)</P>
+<H4><A id=a.b1.f8.c0.f7.a4.b5.a4.ec.a4.eb.a5.aa.a5.d6.a5.b8.a5.a7.a5.af.a5.c8_5 name=a.b1.f8.c0.f7.a4.b5.a4.ec.a4.eb.a5.aa.a5.d6.a5.b8.a5.a7.a5.af.a5.c8_5>被污染对象</A><!-- RDLabel: "被污染对象" --></H4>
+<UL>
+<LI>与3级相同。 </LI></UL>
+<H4><A id=a.b6.d8.bb.df.a4.b5.a4.ec.a4.eb.c1.e0.ba.ee_5 name=a.b6.d8.bb.df.a4.b5.a4.ec.a4.eb.c1.e0.ba.ee_5>禁止的操作</A><!-- RDLabel: "禁止的操作" --></H4>
+<P>在3级限制(如上所述，不包括eval)的基础上，以下操作也被禁止。</P>
+<UL>
+<LI>Object#taint 
+<LI>改变顶层的定义(autoload, load, include) 
+<LI>对既存方法的再定义 
+<LI>改变Object类的定义 
+<LI>改变未被污染的类和模块的定义或改变类变量 
+<LI>改变未被污染的对象的状态 
+<LI>改变未被污染的全局变量 
+<LI>使用未被污染的IO及File的处理 
+<LI>输出到IO 
+<LI>程序的终结(exit, abort)(且out of memory也不fatal) 
+<LI>对其他线程造成影响的Thread类的操作以及其他线程的Thread#[] 
+<LI>ObjectSpace._id2ref 
+<LI>ObjectSpace.each_object <FONT color=blue><B>ruby 1.7 feature</B></FONT> 
+<LI>改变环境变量 
+<LI>srand </LI></UL>
+<H2><A id=a.a5.bb.a1.bc.a5.d5.a5.ec.a5.d9.a5.eb.a4.cb.b4.d8.a4.b9.a4.eb.a4.bd.a4.ce.c2.be.a4.ce.be.dc.ba.d9 name=a.a5.bb.a1.bc.a5.d5.a5.ec.a5.d9.a5.eb.a4.cb.b4.d8.a4.b9.a4.eb.a4.bd.a4.ce.c2.be.a4.ce.be.dc.ba.d9>其他的安全级别相关信息</A></H2>
+<UL>
+<LI>当$SAFE = 0时才执行require 
+<LI>若超过Level1的话，启动时会有下列不同
+<UL>
+<LI>不把环境变量RUBYLIB添加到$:之中 
+<LI>不把当前目录添加到$:之中 
+<LI>不处理环境变量RUBYOPT 
+<LI>不能使用下列开关 -s -S -e -r -i -I -x (就算脚本被setgid, setuid也是如此) 
+<LI>不会从标准输入读入程序 (就算脚本被setgid, setuid也一样) </LI></UL>
+<LI>被setuid, setgid的脚本将在超过$SAFE = 1的状态下运行。 
+<LI>在3级以上的环境中生成的Proc将会记下该时刻的安全级别。若受污染的Proc对象被call的话，它将以记忆的安全级别来运行。 
+<LI>若受污染的Method对象被call的话，将以4级状态运行。 
+<LI>若将受污染的字符串指定为trap/trace_var的第二参数时，将以4级状态运行<FONT color=blue><B>ruby 1.7 feature</B></FONT>：在 version 1.7中，若将受污染的字符串指定为第二参数而运行trap/trace_var的话，马上就会引发异常<FONT color=blue><B>SecurityError</B></FONT>。 
+<LI>超过4级的话，即使out of memory也不会<FONT color=blue><B>fatal</B></FONT>。 
+<LI>根据您安装情况的不同，Fixnum Symbol true false nil可能不会被污染。但请注意Bignum Float可能会受到污染。 </LI></UL>
+<H2><A id=a.bb.c8.cd.d1.ce.e3 name=a.bb.c8.cd.d1.ce.e3>实例</A></H2>
+<P>$SAFE级别一旦升高就不能调低了。如下所示，可以使用线程将程序的一部分置入高安全级别状态下运行。</P>
+<P>例:</P><PRE>def safe(level)
+  result = nil
+  Thread.start {
+    $SAFE = level
+    result = yield
+  }.join
+  result
+end
+
+safe(4) { puts "hello" }    # 因为是$SAFE所以例外
+puts "world"                # 外部不受影响
+</PRE>
+<H2><A id=a.b3.c8.c4.a5.a5.e9.a5.a4.a5.d6.a5.e9.a5.ea.a4.c7.a4.ce.b0.b7.a4.a4 name=a.b3.c8.c4.a5.a5.e9.a5.a4.a5.d6.a5.e9.a5.ea.a4.c7.a4.ce.b0.b7.a4.a4>扩展库中的应对</A></H2>
+<UL>
+<LI>在扩展库中，有必要对对象的污染状态进行适当的传播。 
+<LI>改变全局状态或与外部联系之前，有必要检查安全级别。 </LI></UL>
+<P><FONT color=blue><B>[ruby-list:37407]</B></FONT></P></DIV>
+<HR>
+
+<DIV class=footer>Originally Written by webmaster@ruby-lang.org<BR>Translated by <A href="http://cn.ce-lab.net/" >Community Engine China</A> (<A href="mailto:rubycn@ce-lab.net">Mail</A>)<BR>Last update on 2004-12-22 </DIV></BODY>

@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Hash.each - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>each</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">each(iterator) -> Hash</code></pre>
+			<p>迭代处理 hash 中的“键/值”对。</p>
+		</div>
+		<div id="abody">
+			<p>
+				实际上这是混入的 <a href="../enumerable.htm" >Enumerable</a> 模块拥有的 <a href="../enumerable/each.htm" >each</a>
+				方法。在这里列举出来是为了说明 <code>iterator</code> 的第一个参数的结构，以及遍历时是按照什么顺序对元素进行迭代的。
+			</p>
+			<p>“键/值”对被传递作为 <code>iterator</code> 的第一个参数，它是一个具有两个属性的对象：</p>
+			<ol>
+				<li><code>key</code>：“键”的名称，是一个 <code>String</code>。</li>
+				<li><code>value</code>：与“键”相对应的值（有可能是 <code>undefined</code>)。</li>
+			</ol>
+			<p class="notice">
+				遍历时元素的顺序取决于浏览器，因为它依赖于原生的 <code>for ... in</code> 循环。虽然大多数现代的浏览器都会有固定的顺序，
+				但是也有例外的情况，因此，在你的脚本中不要期望元素的顺序总是一致的。
+			</p>
+			<p>
+				虽然迭代过程中会跳过 <code>Hash</code> 和 <code>Enumerable</code> 所固有的方法，但是 hash 中仍有可能具有函数值。
+				更准确的说法应该是：迭代时会跳过对象原型（原生的 prototype 属性）中的所有属性。
+			</p>
+			<h3>样例</h3>
+			<pre><code class="javascript">var h = $H({ version: 1.5, author: 'Sam Stephenson' });
+h.each(function(pair) { 
+	alert(pair.key + ' = "' + pair.value + '"'); 
+}); 
+
+// 注意，提示框出现的顺序不一定跟下面一样
+// --> 提示 'version = "1.5"' 和 'author = "Sam Stephenson"'</code></pre>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

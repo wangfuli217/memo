@@ -1,0 +1,497 @@
+<html><HEAD><TITLE>Programming Ruby: The Pragmatic Programmer's Guide</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=iso-8859-1"><LINK media=screen href="125_files/pr_style[1].css"  type=text/css rel=StyleSheet></head>
+<BODY bgColor=white>
+<TABLE cellSpacing=0 cellPadding=3 width="100%" bgColor=#c09090 border=0>
+<TBODY>
+<TR>
+<TD colSpan=3>
+<TABLE cellPadding=20 width="100%" bgColor=#701a1a>
+<TBODY>
+<TR>
+<TD width=6>
+<H1 class=header>Programming Ruby</H1>
+<H3 class=subheader>The Pragmatic Programmer's Guide</H3></TD></TR></TBODY></TABLE></TD></TR>
+<TR>
+<TD align=left width="33%"><A class=subheader href="124.html" >Previous &lt;</A> </TD>
+<TD vAlign=center align=middle width="33%"><A class=subheader href="95.html" >Contents ^</A> <BR></TD>
+<TD align=right width="33%"><A class=subheader href="126.html" >Next &gt;</A> <BR></TD></TR></TBODY></TABLE><!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<H1>Interactive Ruby Shell</H1>
+<HR>
+<BR>
+<P></P>Back on page 124 we introduced irb, a Ruby module that lets you enter Ruby programs interactively and see the results immediately. This appendix goes into more detail on using and customizing irb. 
+<P></P>
+<H2><A name=S1>Command Line</A></H2>
+<P></P><CODE>irb</CODE> is run from the command line. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD><PRE>irb <I>[</I>
+            <I>irb-options</I>
+            <I>]</I> <I>[</I>
+            <I>ruby_script</I>
+            <I>]</I> <I>[</I>
+            <I>options</I>
+            <I>]</I>
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>The command-line options for irb are listed in Table B.1 on page 518. Typically, you'll run irb with no options, but if you want to run a script and watch the blow-by-blow description as it runs, you can provide the name of the Ruby script and any options for that script. 
+<TABLE width=500 bgColor=#ffe0e0 border=2>
+<TBODY>
+<TR>
+<TD><B>irb command-line options</B> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<TBODY>
+<TR bgColor=#ff9999>
+<TD vAlign=top><B>Option</B> </TD>
+<TD vAlign=top><B>Description</B> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>-f</CODE> </TD>
+<TD vAlign=top>Suppress reading <CODE>~/.irbrc</CODE>.</TD></TR>
+<TR>
+<TD vAlign=top><CODE>-m</CODE> </TD>
+<TD vAlign=top>Math mode (fraction and matrix support is available).</TD></TR>
+<TR>
+<TD vAlign=top><CODE>-d</CODE> </TD>
+<TD vAlign=top>Set <CODE>$DEBUG</CODE> to true (same as ``<CODE>ruby -d</CODE>'').</TD></TR>
+<TR>
+<TD vAlign=top><CODE>-r load-module</CODE> </TD>
+<TD vAlign=top>Same as ``<CODE>ruby -r</CODE>''.</TD></TR>
+<TR>
+<TD vAlign=top><CODE>--inspect</CODE> </TD>
+<TD vAlign=top>Use ``inspect'' for output (the default, unless in math mode).</TD></TR>
+<TR>
+<TD vAlign=top><CODE>--noinspect</CODE> </TD>
+<TD vAlign=top>Do not use inspect for output.</TD></TR>
+<TR>
+<TD vAlign=top><CODE>--readline</CODE> </TD>
+<TD vAlign=top>Use <CODE>Readline</CODE> extension module.</TD></TR>
+<TR>
+<TD vAlign=top><CODE>--noreadline</CODE> </TD>
+<TD vAlign=top>Do not use <CODE>Readline</CODE> extension module.</TD></TR>
+<TR>
+<TD vAlign=top><CODE>--prompt</CODE> <EM>prompt-mode</EM> </TD>
+<TD vAlign=top>Switch prompt mode. Predefined prompt modes are ``default'', ``simple'', ``xmp'', and ``inf-ruby''.</TD></TR>
+<TR>
+<TD vAlign=top><CODE>--prompt-mode</CODE> <EM>prompt-mode</EM> </TD>
+<TD vAlign=top>Same as <CODE>--prompt</CODE>.</TD></TR>
+<TR>
+<TD vAlign=top><CODE>--inf-ruby-mode</CODE> </TD>
+<TD vAlign=top>Sets up irb to run in <CODE>inf-ruby-mode</CODE> under Emacs. Changes the prompt and suppresses <CODE>--readline</CODE>.</TD></TR>
+<TR>
+<TD vAlign=top><CODE>--simple-prompt</CODE> </TD>
+<TD vAlign=top>Simple prompt mode.</TD></TR>
+<TR>
+<TD vAlign=top><CODE>--noprompt</CODE> </TD>
+<TD vAlign=top>Do not display a prompt.</TD></TR>
+<TR>
+<TD vAlign=top><CODE>--tracer</CODE> </TD>
+<TD vAlign=top>Display trace for execution of commands.</TD></TR>
+<TR>
+<TD vAlign=top><CODE>--back-trace-limit n</CODE> </TD>
+<TD vAlign=top>Display backtrace information using the top n and last n entries. The default value is 16.</TD></TR>
+<TR>
+<TD vAlign=top><CODE>--irb_debug n</CODE> </TD>
+<TD vAlign=top>Set internal debug level to n (only for irb development).</TD></TR>
+<TR>
+<TD vAlign=top><CODE>-v, --version</CODE> </TD>
+<TD vAlign=top>Print the version of irb.</TD></TR>
+<TR>
+<TD bgColor=#ff9999 colSpan=9 height=2><IMG height=1 src="120_files/dot[1].gif"  width=1></TD></TR></TBODY></TABLE>
+<P></P></TD></TR></TBODY></TABLE>
+<P></P>
+<H2><A name=S2>Initialization File</A></H2>
+<P></P>irb uses an initialization file in which you can set commonly used options or execute any required Ruby statements. When irb is run, it will try to load an initialization file from one of the following sources in order: <CODE>~/.irbrc</CODE>, <CODE>.irbrc</CODE>, <CODE>irb.rc</CODE>, <CODE>_irbrc</CODE>, and <CODE>$irbrc</CODE>. 
+<P></P>Within the initialization file you may run any arbitrary Ruby code. You can also set any of the configuration values that correspond to command-line arguments as shown in Table B.2 on page 518. 
+<TABLE width=500 bgColor=#ffe0e0 border=2>
+<TBODY>
+<TR>
+<TD><B>irb configuration values</B> 
+<CENTER>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<P></P>
+<TBODY>
+<TR>
+<TD bgColor=#ff9999 colSpan=9 height=3><IMG height=1 src="120_files/dot[1].gif"  width=1></TD></TR>
+<TR>
+<TD vAlign=top><CODE>IRB.conf[:IRB_NAME] = "irb"</CODE> </TD>
+<TD vAlign=top><CODE>IRB.conf[:MATH_MODE] = false</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>IRB.conf[:USE_TRACER] = false</CODE> </TD>
+<TD vAlign=top><CODE>IRB.conf[:USE_LOADER] = false</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>IRB.conf[:IGNORE_SIGINT] = true</CODE> </TD>
+<TD vAlign=top><CODE>IRB.conf[:IGNORE_EOF] = false</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>IRB.conf[:INSPECT_MODE] = nil</CODE> </TD>
+<TD vAlign=top><CODE>IRB.conf[:IRB_RC] = nil</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>IRB.conf[:BACK_TRACE_LIMIT] = 16</CODE> </TD>
+<TD vAlign=top><CODE>IRB.conf[:USE_LOADER] = false</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>IRB.conf[:USE_READLINE] = nil</CODE> </TD>
+<TD vAlign=top><CODE>IRB.conf[:USE_TRACER] = false</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>IRB.conf[:IGNORE_SIGINT] = true</CODE> </TD>
+<TD vAlign=top><CODE>IRB.conf[:IGNORE_EOF] = false</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>IRB.conf[:PROMPT_MODE] = :DEFAULT</CODE> </TD>
+<TD vAlign=top><CODE>IRB.conf[:PROMPT] = { ...&nbsp;}</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>IRB.conf[:DEBUG_LEVEL] = 0</CODE> </TD>
+<TD vAlign=top><CODE>IRB.conf[:VERBOSE] = true</CODE> </TD></TR>
+<TR>
+<TD bgColor=#ff9999 colSpan=9 height=2><IMG height=1 src="120_files/dot[1].gif"  width=1></TD></TR></TBODY></TABLE>
+<P></P></CENTER></TD></TR></TBODY></TABLE>
+<P></P>As an interesting twist on configuring irb, you can set <CODE>IRB.conf[:IRB_RC]</CODE> to a <CODE>Proc</CODE> object. This proc will be invoked whenever the irb context is changed, and will receive that new context as a parameter. You can use this facility to change the configuration dynamically based on the context. 
+<H2><A name=S3>Commands</A></H2>
+<P></P>At the irb prompt, you can enter any valid Ruby expression and see the results. You can also use any of the following commands to control the irb session. 
+<P></P>
+<DL>
+<P></P>
+<DT><CODE>exit, quit, irb_exit</CODE> 
+<DD>Quits this irb session or subsession. If you've used <CODE>cb</CODE> to change bindings (see below), exits from this binding mode. 
+<P></P>
+<DT><CODE>conf, irb_context</CODE> 
+<DD>Displays current configuration. Modifying the configuration is achieved by invoking methods of <CODE>conf</CODE>. 
+<P></P>
+<DT><CODE>conf.back_trace_limit n</CODE> 
+<DD>Sets display lines of backtrace as top n and tail n. The default value is 16. 
+<P></P>
+<DT><CODE>conf.debug_level = N</CODE> 
+<DD>Sets debug level of irb. 
+<P></P>
+<DT><CODE>conf.ignore_eof = true/false</CODE> 
+<DD>Specifies the behavior of an end of file received on input. If true, it will be ignored; otherwise, it will quit irb. 
+<P></P>
+<DT><CODE>conf.ignore_sigint= true/false</CODE> 
+<DD>Specifies the behavior of ^C (control-c). If false, ^C will quit irb. If true, ^C during input will cancel input and return to the top level; during execution, ^C will abort the current operation. 
+<P></P>
+<DT><CODE>conf.inf_ruby_mode = true/false</CODE> 
+<DD>If <CODE>true</CODE>, changes the prompt and disables readline support, allowing irb to work with <CODE>inf-ruby-mode</CODE>. <EM>[<CODE>inf-ruby-mode</CODE> allows Emacs users to interact with Ruby while editing programs. See the file <CODE>inf_ruby.el</CODE> in the <CODE>misc</CODE> directory of the distribution for more details.]</EM> The default value is false. 
+<P></P>
+<DT><CODE>conf.inspect_mode = true/false/nil</CODE> 
+<DD>Specifies inspect mode according to the following values: 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>true</CODE> </TD>
+<TD vAlign=top>Display inspect (default).</TD></TR>
+<TR>
+<TD vAlign=top><CODE>false</CODE> </TD>
+<TD vAlign=top>Display to_s.</TD></TR>
+<TR>
+<TD vAlign=top><CODE>nil</CODE> </TD>
+<TD vAlign=top>Inspect mode in non-math mode, non-inspect mode in math mode.</TD></TR></TBODY></TABLE>
+<P></P>
+<DT><CODE>conf.irb_level</CODE> 
+<DD>Displays the current binding level (see <CODE>cb</CODE>). 
+<P></P>
+<DT><CODE>conf.math_mode</CODE> 
+<DD>Displays whether or not Ruby is in math mode. 
+<P></P>
+<DT><CODE>conf.use_loader = true/false</CODE> 
+<DD>Specifies whether or not irb's own file reader method is used with <CODE>load</CODE>/<CODE>require</CODE>. 
+<P></P>
+<DT><CODE>conf.prompt_c</CODE> 
+<DD>The prompt for a continuing statement (for example, immediately after an ``if''). 
+<P></P>
+<DT><CODE>conf.prompt_i</CODE> 
+<DD>The standard, top-level prompt. 
+<P></P>
+<DT><CODE>conf.prompt_s</CODE> 
+<DD>The prompt for a continuing string. 
+<P></P>
+<DT><CODE>conf.rc = true/false</CODE> 
+<DD>Specifies whether or not to use the initialization file <CODE>~/.irbrc</CODE>. 
+<P></P>
+<DT><CODE>conf.use_prompt = true/false</CODE> 
+<DD>Specifies whether or not to display prompts. 
+<P></P>
+<DT><CODE>conf.use_readline = true/false/nil</CODE> 
+<DD>Specifies whether or not to use Readline according to the following values: 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>true</CODE> </TD>
+<TD vAlign=top>Use Readline.</TD></TR>
+<TR>
+<TD vAlign=top><CODE>false</CODE> </TD>
+<TD vAlign=top>Do not use Readline.</TD></TR>
+<TR>
+<TD vAlign=top><CODE>nil</CODE> </TD>
+<TD vAlign=top>Use Readline except for <CODE>inf-ruby-mode</CODE> (default).</TD></TR></TBODY></TABLE>
+<P></P>
+<DT><CODE>conf.verbose=true/false</CODE> 
+<DD>Specifies whether or not verbose messages are displayed. 
+<P></P>
+<DT><CODE>cb, irb_change_binding <I>[</I> <I>obj</I> <I>]</I> </CODE>
+<DD>Creates and enters a new binding that has its own scope for local variables. If <I>obj</I> is given, it will be used as self in the new binding. 
+<P></P>
+<DT><CODE>irb <I>[</I>obj<I>]</I> </CODE>
+<DD>Starts an irb subsession. If <I>obj</I> is given, it will be used as self. 
+<P></P>
+<DT><CODE>jobs, irb_jobs</CODE> 
+<DD>Lists irb subsessions. 
+<P></P>
+<DT><CODE>fg n, irb_fg n</CODE> 
+<DD>Switches into the specified irb subsession. n may be any of the following values: 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top>irb subsession number</TD></TR>
+<TR>
+<TD vAlign=top>thread id</TD></TR>
+<TR>
+<TD vAlign=top>irb object</TD></TR>
+<TR>
+<TD vAlign=top>self (the <I>obj</I> that launched a particular subsession)</TD></TR></TBODY></TABLE>
+<P></P>
+<DT><CODE>kill n, irb_kill n</CODE> 
+<DD>Kills an irb subsession. n may be any of the values as described for <CODE>irb_fg</CODE>. 
+<P></P></DD></DL>
+<H3><A name=UA>Configuring the Prompt</A></H3>
+<P></P>You have a lot of flexibility in configuring the prompts that irb uses. Sets of prompts are stored in the prompt hash: 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>IRB.conf[:PROMPT]
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>For example, to establish a new prompt mode called ``MY_PROMPT'', you might enter the following (either directly at an irb prompt or in the <CODE>.irbrc</CODE> file): 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>IRB.conf[:PROMPT][:MY_PROMPT]&nbsp;=&nbsp;{&nbsp;#&nbsp;name&nbsp;of&nbsp;prompt&nbsp;mode
+&nbsp;&nbsp;:PROMPT_I&nbsp;=&gt;&nbsp;"...",&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;normal&nbsp;prompt
+&nbsp;&nbsp;:PROMPT_S&nbsp;=&gt;&nbsp;"...",&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;prompt&nbsp;for&nbsp;continuing&nbsp;strings
+&nbsp;&nbsp;:PROMPT_C&nbsp;=&gt;&nbsp;"...",&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;prompt&nbsp;for&nbsp;continuing&nbsp;statement
+&nbsp;&nbsp;:RETURN&nbsp;=&gt;&nbsp;"&nbsp;&nbsp;&nbsp;&nbsp;==&gt;%s\n"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;format&nbsp;to&nbsp;return&nbsp;value
+}
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>Then, invoke irb with the prompt mode above by 
+<P></P><PRE><CODE>%&nbsp;irb --prompt my-prompt</CODE>
+</PRE>
+<P></P>Or set the following configuration value: 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>IRB.conf[:PROMPT_MODE]&nbsp;=&nbsp;:MY_PROMPT
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>The constants <CODE>PROMPT_I</CODE>, <CODE>PROMPT_S</CODE>, and <CODE>PROMPT_C</CODE> specify the format for each of the prompt strings. Within the prompt format, the following flags are available and will expand to the given text: 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<TBODY>
+<TR bgColor=#ff9999>
+<TD vAlign=top><B>Flag</B> </TD>
+<TD vAlign=top><B>Description</B> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>%N</CODE> </TD>
+<TD vAlign=top>Current command.</TD></TR>
+<TR>
+<TD vAlign=top><CODE>%m</CODE> </TD>
+<TD vAlign=top><CODE>to_s</CODE> of the main object (self).</TD></TR>
+<TR>
+<TD vAlign=top><CODE>%M</CODE> </TD>
+<TD vAlign=top><CODE>inspect</CODE> of the main object (self).</TD></TR>
+<TR>
+<TD vAlign=top><CODE>%l</CODE> </TD>
+<TD vAlign=top>Delimiter type. In strings that are continued across a line break, <CODE>%l</CODE> will display the type of delimiter used to begin the string, so you'll know how to end it. The delimiter will be one of <CODE>"</CODE>, <CODE>'</CODE>, <CODE>/</CODE>, <CODE>]</CODE>, or <CODE>`</CODE>.</TD></TR>
+<TR>
+<TD vAlign=top><CODE>%ni</CODE> </TD>
+<TD vAlign=top>Indent level. The optional number n is used as a width specification to printf, as <CODE>printf("%nd")</CODE>.</TD></TR>
+<TR>
+<TD vAlign=top><CODE>%nn</CODE> </TD>
+<TD vAlign=top>Current line number (n used as with the indent level).</TD></TR>
+<TR>
+<TD vAlign=top><CODE>%%</CODE> </TD>
+<TD vAlign=top>A literal percent sign.</TD></TR>
+<TR>
+<TD bgColor=#ff9999 colSpan=9 height=2><IMG height=1 src="120_files/dot[1].gif"  width=1></TD></TR></TBODY></TABLE>
+<P></P>For instance, the default prompt mode is defined as follows: 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>IRB.conf[:PROMPT_MODE][:DEFAULT]&nbsp;=&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:PROMPT_I&nbsp;=&gt;&nbsp;"%N(%m):%03n:%i&gt;&nbsp;",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:PROMPT_S&nbsp;=&gt;&nbsp;"%N(%m):%03n:%i%l&nbsp;",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:PROMPT_C&nbsp;=&gt;&nbsp;"%N(%m):%03n:%i*&nbsp;",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:RETURN&nbsp;=&gt;&nbsp;"%s\n"
+}
+</PRE></TD></TR></TBODY></TABLE>
+<H2><A name=S4>Restrictions</A></H2>
+<P></P>Because of the way irb works, there is a minor incompatibility between it and the standard Ruby interpreter. The problem lies in the determination of local variables. 
+<P></P>Normally, Ruby looks for an assignment statement to determine if something is a variable---if a name hasn't been assigned to, then Ruby assumes that name is a method call. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>eval&nbsp;"a&nbsp;=&nbsp;0"
+a
+</PRE></TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>prog.rb:2: undefined local variable or method `a'<BR>for #&lt;Object:0x401c2ce0&gt; (NameError)
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>In this case, the assignment is there, but it's within a string, so Ruby doesn't take it into account. 
+<P></P>irb, on the other hand, executes statements as they are entered. 
+<P></P><PRE>  irb(main):001:0&gt; eval "a = 0"
+  0
+  irb(main):002:0&gt; a
+  0
+</PRE>
+<P></P>In irb, the assignment was executed before the second line was encountered, so ``a'' is correctly identified as a local variable. 
+<P></P>If you need to match the Ruby behavior more closely, you can place these statements within a <CODE>begin</CODE>/<CODE>end</CODE> pair. 
+<P></P><PRE>  irb(main):001:0&gt; begin
+  irb(main):002:1*   eval "a = 0"
+  irb(main):003:1&gt;   a
+  irb(main):004:1&gt; end
+  NameError: undefined local variable or method `a'
+  (irb):3:in `irb_binding'
+</PRE>
+<H2><A name=S5>rtags, xmp, and the Frame Class</A></H2>
+<P></P>The base version of irb is installed along with Ruby itself. But there is an extended version of irb in the archives containing a few extra goodies that need mentioning. 
+<H3><A name=UB>rtags</A></H3>
+<P></P><CODE>rtags</CODE> is a command used to create a <CODE>TAGS</CODE> file for use with either the emacs or vi editor. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD><PRE>rtags <I>[</I>
+            <I>-vi</I>
+            <I>]</I> <I>[</I>
+            <I>files</I>
+            <I>]</I>...</PRE></TD></TR></TBODY></TABLE>
+<P></P>By default, rtags makes a <CODE>TAGS</CODE> file suitable for emacs (see etags.el). The <CODE>-vi</CODE> option makes a TAGS file for use with vi. 
+<P></P>rtags needs to be installed in the same manner as irb (that is, you need to install irb in the library path and make a link from <CODE>irb/rtags.rb</CODE> to <CODE>bin/rtags</CODE>). 
+<H3><A name=UC>xmp</A></H3>
+<P></P>irb's xmp is an ``example printer''---that is, a pretty-printer that shows the value of each expression as it is run (much like the script we wrote to format the examples in this book). There is also another stand-alone xmp in the archives. 
+<P></P>xmp can be used as follows: 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>require&nbsp;"irb/xmp"
+<P></P>
+xmp&nbsp;&lt;&lt;END
+artist&nbsp;=&nbsp;"Doc&nbsp;Severinsen"
+artist
+END
+</PRE></TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>[pwd:/tc/work/ruby/ProgrammingRuby/latex]
+artist&nbsp;=&nbsp;"Doc&nbsp;Severinsen"
+&nbsp;&nbsp;&nbsp;&nbsp;==&gt;"Doc&nbsp;Severinsen"
+artist
+&nbsp;&nbsp;&nbsp;&nbsp;==&gt;"Doc&nbsp;Severinsen"
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>Or, it can be used as an object instance. Used in this fashion, the object maintains context between invocations: 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>require&nbsp;"irb/xmp"
+<P></P>
+x&nbsp;=&nbsp;XMP.new
+x.puts&nbsp;&lt;&lt;END
+artist&nbsp;=&nbsp;"Louis&nbsp;Prima"
+END
+<P></P>
+x.puts&nbsp;&lt;&lt;END
+artist
+END
+</PRE></TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>[pwd:/tc/work/ruby/ProgrammingRuby/latex]
+artist&nbsp;=&nbsp;"Louis&nbsp;Prima"
+&nbsp;&nbsp;&nbsp;&nbsp;==&gt;"Louis&nbsp;Prima"
+artist
+&nbsp;&nbsp;&nbsp;&nbsp;==&gt;"Louis&nbsp;Prima"
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>You can explicitly provide a binding with either form; otherwise, xmp uses the caller's environment. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>xmp&nbsp;code_string,&nbsp;abinding
+XMP.new(abinding)
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>Note that xmp does not work with multithreading. 
+<H3><A name=UD>The Frame Class</A></H3>
+<P></P>The <CODE>IRB::Frame</CODE> class represents the interpreter's stack and allows easy access to the <CODE>Binding</CODE> environment in effect at different stack levels. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<P></P>
+<TBODY>
+<TR>
+<TD bgColor=#ff9999 colSpan=9 height=3><IMG height=1 src="120_files/dot[1].gif"  width=1></TD></TR>
+<TR>
+<TD vAlign=top><CODE>IRB::Frame.top(<EM>n = 0</EM>)</CODE> </TD>
+<TD vAlign=top>Returns a <CODE>Binding</CODE> for the nth context from the top. The 0th context is topmost, most recent frame.</TD></TR>
+<TR>
+<TD vAlign=top><CODE>IRB::Frame.bottom(<EM>n = 0</EM>)</CODE> </TD>
+<TD vAlign=top>Returns a <CODE>Binding</CODE> for the nth context from the bottom. The 0th context is the bottommost, initial frame.</TD></TR>
+<TR>
+<TD vAlign=top><CODE>IRB::Frame.sender</CODE> </TD>
+<TD vAlign=top>Returns the object (the sender) that invoked the current method.</TD></TR>
+<TR>
+<TD bgColor=#ff9999 colSpan=9 height=2><IMG height=1 src="120_files/dot[1].gif"  width=1></TD></TR></TBODY></TABLE>
+<P></P>You can use this facility, for instance, to examine local variables from the method that called the current method: 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>require&nbsp;'irb/frame'
+<P></P>
+def&nbsp;outie
+&nbsp;&nbsp;b&nbsp;=&nbsp;IRB::Frame.top(1)
+&nbsp;&nbsp;eval&nbsp;"p&nbsp;my_local",&nbsp;b
+end
+<P></P>
+def&nbsp;innie
+&nbsp;&nbsp;my_local&nbsp;=&nbsp;102.7
+&nbsp;&nbsp;outie
+end
+<P></P>
+innie
+</PRE></TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>102.7
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>Note that this doesn't work with multithreaded programs. 
+<P></P>
+<HR>
+
+<TABLE cellSpacing=0 cellPadding=10 bgColor=#a03030 border=0>
+<TBODY>
+<TR>
+<TD align=left width="33%"><A class=subheader href="124.html" >Previous &lt;</A> </TD>
+<TD vAlign=center align=middle width="33%"><A class=subheader href="95.html" >Contents ^</A> <BR></TD>
+<TD align=right width="33%"><A class=subheader href="126.html" >Next &gt;</A> <BR></TD></TR></TBODY></TABLE>
+<P></P><FONT size=-1>Extracted from the book "Programming Ruby - The Pragmatic Programmer's Guide"</FONT> <BR><FONT size=-3>Copyright © 2001 by Addison Wesley Longman, Inc. This material may be distributed only subject to the terms and conditions set forth in the Open Publication License, v1.0 or later (the latest version is presently available at <A href="http://www.opencontent.org/openpub/" >http://www.opencontent.org/openpub/</A>)). 
+<P></P>Distribution of substantively modified versions of this document is prohibited without the explicit permission of the copyright holder. 
+<P></P>Distribution of the work or derivative of the work in any standard (paper) book form is prohibited unless prior permission is obtained from the copyright holder. <BR></FONT></BODY>

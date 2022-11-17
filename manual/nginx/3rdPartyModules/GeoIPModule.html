@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml">
+<HEAD><TITLE>GeoIP模块（GeoIP Module）</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=GB2312">
+<STYLE type=text/css>PRE {
+	BACKGROUND-COLOR: #cccccc
+}
+.STYLE1 {
+	COLOR: #ff0000
+}
+</STYLE>
+
+<META content="MSHTML 6.00.6000.16809" name=GENERATOR></HEAD>
+<BODY>
+<H2>GeoIP模块（GeoIP Module）</H2><BR>
+
+<H3>·摘要</H3>
+<H4>根据<A href="http://www.maxmind.com/" >MaxMind</A>GeoIP接口查找国家代码。<BR>
+作者：<A href="http://www.spilgames.com/" >SPIL GAMES</A><BR>
+<A href="http://wiki.nginx.org/File:Nginx-geoip-0.2.tar.gz" >点击这里下载</A><BR>
+该模块只适用于nginx0.7以上版本。<BR>
+改模块基于标准模块中的<A href="../StandardHTTPModules/Geo.html" >GEO模块</A>，区别在于它并不约束于某一块配置，而使用<A href="http://www.maxmind.com/" >MaxMind</A>二进制API。它在二进制<A href="http://www.maxmind.com/app/geolitecountry/" >GeoLite Country</A>和<A href="http://www.maxmind.com/app/country/" >GeoIP Country</A>数据库中提供更快速的查询。<BR>
+使用二进制数据库和API的好处之一是能够通过geoipupdate功能获得自动化的更新，这正是<A href="http://www.spilgames.com/" >SPIL GAMES</A>编写该模块的原因之一。<BR>
+示例配置：
+<PRE>geoip_country_file /absolute/path/to/GeoIP.dat;
+location /geoip/ {
+  rewrite .* /?country=$geoip_country_code;
+}
+</PRE></H4>
+<H3>指令</H3>
+<H3>geoip_country_file </H3>
+<H4>语法：geoip_country_file path <BR>
+默认值：n/a <BR>
+使用字段：http <BR>
+启用解析下文中的$geoip_country_* 变量。</H4>
+<H3>·变量</H3>
+<H4>支持下列变量：<BR>
+$geoip_country_code, 从GeoIP country API解析的2位国家代码。<BR>
+$geoip_country_code3, 从GeoIP country API解析的3位国家代码。<BR>
+$geoip_country_name, 从GeoIP country API解析的完整国家名称。<BR></H4>
+<H3>·安装</H3>
+<H4>下载：<A href="http://wiki.nginx.org/File:Nginx-geoip-0.2.tar.gz" >File:Nginx-geoip-0.2.tar.gz</A><BR>
+解包，并且在编译nginx时加入下列参数：<BR>
+<PRE>. --add-module=/path/to/nginx-geoip-0.2 </PRE>
+安装前请确保你的系统中已经安装了<A href="http://www.maxmind.com/app/c/" > GeoIP C API库</A>。</H4>
+<H3>·Bugs</H3>
+<H4>请提交报告到matthijs@spilgames.com。</H4>
+<H3>·参考文档</H3>
+<H4><A href="http://wiki.nginx.org/NginxHttp3rdPartyGeoIPModule/" >GeoIP Module</A></H4>
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://179401.cn/analytics/" : "http://179401.cn/analytics/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://shouce.jb51.net/179401.cn/analytics/piwik.php-idsite=1"  style="border:0" alt=""/></p></noscript>
+<!-- End Piwik Tag -->
+</BODY>
+</HTML>
+<H3><A href="HeadersMoreModule.html" >前进->Headers More模块（Headers More Module）</A></H3>

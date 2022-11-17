@@ -1,0 +1,434 @@
+<html><HEAD><TITLE>Programming Ruby: The Pragmatic Programmer's Guide</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=gb2312"><LINK media=screen href="112_files/pr_style[1].css"  type=text/css rel=StyleSheet></head>
+<BODY bgColor=white>
+<TABLE cellSpacing=0 cellPadding=3 width="100%" bgColor=#c09090 border=0>
+<TBODY>
+<TR>
+<TD colSpan=3>
+<TABLE cellPadding=20 width="100%" bgColor=#701a1a>
+<TBODY>
+<TR>
+<TD width="100%">
+<H1 class=header>Programming Ruby</H1>
+<H3 class=subheader>实用程序员指南</H3></TD></TR></TBODY></TABLE></TD></TR>
+<TR>
+<TD align=left width="33%"><A class=subheader href="111.html" >上一章&lt;</A> </TD>
+<TD vAlign=center align=middle width="33%"><A class=subheader href="95.html" >目录 ^</A> <BR></TD>
+<TD align=right width="33%"><A class=subheader href="113.html" >Next &gt;</A> <BR></TD></TR></TBODY></TABLE><!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<H1>Ruby和 Tk</H1>
+<HR>
+<B>译者注：因原来的发布不带图片，所以本章图片选自<BR>http://www.ruby.no/prosjekt/ProgrammeringIRuby/ext_tk.html，不是英语，可能看不清，不过界面都显示出来了。</B> <BR>
+<P>Ruby Application Archive （简称RAA）包括几个支持你使用Ruby来创建GUI（Graphical User Interface）程序的扩展（extensions ），包括Tcl/Tk扩展，GTK扩展，OpenGL扩展和其它的一些。 
+<P>　</P>
+<P>TK扩展是随着Ruby软件一起发布的，可以在Unix和windows上使用。为了使用它，你需要在你的系统上安装Tk。Tk是一个庞大的系统，关于它的书已经有很多了，所以我们不会在这里浪费太多的时间和资源去深入的研究Tk本身，而是着重于如何在Ruby中使用Tk。要想很好的在Ruby中使用Tk，你需要下面的一些参考书中的一本。因为Tk和Ruby的绑定和Tk到Perl的绑定类似，所以你可以用<EM>Learning Perl/Tk</EM>&nbsp; 或者 <EM>Perl/Tk Pocket Reference</EM></P>
+<P>Tk以一种组合的方式工作，就是说你首先创建一个容器（container ）部件（widget ），比如<CODE>TkFrame</CODE> 或者<CODE>TkRoot</CODE>，然后在它上面继续创建其它部件，比如按钮或者标签（labels）。当你打算开始启动GUI的时候，调用<CODE>Tk.mainloop</CODE>，然后Tk引擎将接替对程序的控制，显示各个窗口部件，响应各种GUI事件。</P>
+<P>　</P>
+<H2><A name=S1>简单的Tk应用程序</A></H2>
+<P>Ruby中一个简单的Tk应用程序像下面一样：</P>
+<P>　</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>require&nbsp;'tk'
+root&nbsp;=&nbsp;TkRoot.new&nbsp;{&nbsp;title&nbsp;"Ex1"&nbsp;}
+TkLabel.new(root)&nbsp;{
+&nbsp;&nbsp;text&nbsp;&nbsp;'Hello,&nbsp;World!'
+&nbsp;&nbsp;pack&nbsp;&nbsp;{&nbsp;padx&nbsp;15&nbsp;;&nbsp;pady&nbsp;15;&nbsp;side&nbsp;'left'&nbsp;}
+}
+Tk.mainloop
+</PRE></TD></TR></TBODY></TABLE>
+<P>界面如图：</P>
+<P><IMG height=90 src="112_files/figure15.1[1].jpg"  width=156 border=0></P>
+<P>让我们更近距离的看看这些代码。在装载完tk扩展模块之后，我们用<CODE>TkRoot.new</CODE>建立了一个最顶级（root-level ）的框架（frame）。然后，我们建立了一个标签部件作为这个父级窗口的子部件，并设置了这个标签的一些属性，最后，最后，我们让父窗口显示（pack？）并进入GUI主事件循环。</P>
+<P>显示的建立一个顶级窗口是一个很好的习惯，尽管你不建立这个窗口程序也能工作。例如上面的代码即使变为以下三行也能工作：</P>
+<P>　</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>require&nbsp;'tk'
+TkLabel.new&nbsp;{&nbsp;text&nbsp;'Hello,&nbsp;World!'&nbsp;}
+Tk.mainloop
+</PRE></TD></TR></TBODY></TABLE>
+<P>这样就可以工作了，再参考一下上面我们提到的Perl/Tk的书，我们就能写出非常好的GUI程序了。但是，下面我们还是会更详细的讲述一下Tk在Ruby中的使用。</P>
+<H2>窗口部件（<A name=S2>Widgets</A>）</H2>
+<P>创建一个窗口部件很容易，在Ruby中这些部件名字都在原来的基础上加上了Tk前缀，比如，Label，Button和Entry变成了<CODE>TkLabel</CODE>，<CODE>TkButton</CODE>和<CODE>TkEntry</CODE>。你可以通过使用new方法创建一个部件，就像创建其它对象一样。如果你创建组件的时候没有指定父部件的名字，那么将把顶级窗口作为默认父部件。我们有时候也会在创建部件的时候设置一些部件属性（选项），比如颜色，大小等等；有时候，我们也希望从这些部件得到程序返回信息，我们可以设置回调（callbacks ）方法和共享数据（sharing data）。</P>
+<H3><A name=UA>设置部件（Widget）选项</A></H3>
+<P>如果你看一下Tk的参考手册（比如关于Perl/Tk），你会发现这些窗口部件选项可以用一个连字符列出（listed with a hyphen ），就像命令行参数那样。在Perl/Tk中，你可以将这些参数放入一个Hash传给这个widget，在Ruby中你也可以这么做，但是，你也可以通过一个代码block来设置这些参数：选项的名称作为方法名，选项的值作为这个方法的参数。一个widget创建时候的第一个参数为父部件，然后后面跟一个哈希结构的选项列表，或者以代码块格式来设置这些选项。所以，下面这两项实际上是相等地。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>TkLabel.new(parent_widget)&nbsp;{
+&nbsp;&nbsp;text&nbsp;&nbsp;&nbsp;&nbsp;'Hello,&nbsp;World!'
+&nbsp;&nbsp;pack('padx'&nbsp;&nbsp;=&gt;&nbsp;5,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'pady'&nbsp;&nbsp;=&gt;&nbsp;5,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'side'&nbsp;&nbsp;=&gt;&nbsp;'left')
+}
+#&nbsp;or
+TkLabel.new(parent_widget,&nbsp;text&nbsp;=&gt;&nbsp;'Hello,&nbsp;World!').pack(...)
+</PRE></TD></TR></TBODY></TABLE>
+<P>不过有一个需要注意的小地方：有时候变量的作用域可能出乎你的想象。block是在widget的环境上下文中执行（evaluated ），而不是调用者的（caller's）。这就意味着调用者的实例变量在这个block中不可用，但是在包含它的范围内的局部变量和全局变量（不是你曾经用过的）。我们将在后面的例子中使用这两种方法设置widget的选项。</P>
+<P>不确定的英文原文：The block is actually in the context of the widget's object, not the . This means that the caller's instance variables will not be available in the block, but local variables from the enclosing scope and globals (not that you ever use <EM>those</EM>) will be.</P>
+<P>距离（比如上面例子中的padx和pady）默认单位为象素，但是你也可以指定为其它单位，比如以c为后缀表示单位为厘米，i表示英寸，m表示毫米，p表示点（point）等。</P>
+<P>　</P>
+<H3><A name=UB>取得Widget的数据</A></H3>
+<P>我们可以通过方法回调和绑定变量（binding variables）从窗口部件得到信息。</P>
+<P>回调（Callbacks ）很容易使用。command选项（比如下面例子中的TkButton）接收一个Proc对象，这个Proc对象会在这个回调触发的时候被调用。这里，我们可以用<A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_m_kernel.html#Kernel.proc" > <CODE>Kernel::proc</CODE> </A>将block <CODE>{exit}</CODE>转换为一个<CODE>Proc</CODE>对象。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>TkButton.new(bottom)&nbsp;{
+&nbsp;&nbsp;text&nbsp;"Ok"
+&nbsp;&nbsp;command&nbsp;proc&nbsp;{&nbsp;p&nbsp;mycheck.value;&nbsp;exit&nbsp;}
+&nbsp;&nbsp;pack('side'=&gt;'left',&nbsp;'padx'=&gt;10,&nbsp;'pady'=&gt;10)
+}
+</PRE></TD></TR></TBODY></TABLE>
+<P>我们也可以使用<CODE>TkVariable</CODE> 代理将Ruby的变量绑定到 Tk widget的值。注意下面的<CODE>TkCheckButton</CODE> 是如何创建的，variable选项接受一个TkVariable类型的参数，这个例子里我们用 <CODE>TkVariable.new</CODE>首先创建了这个变量。访问变量mycheck.value将根据这个选择框是否被选中而返回0或1。你可以在各种支持variable选项的部件中使用这种方法，比如radio，button和文本框。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>mycheck&nbsp;=&nbsp;TkVariable.new
+
+ 
+TkCheckButton.new(top)&nbsp;{    
+&nbsp;&nbsp;variable&nbsp;mycheck    
+&nbsp;&nbsp;pack('padx'=&gt;5,&nbsp;'pady'=&gt;5,&nbsp;'side'&nbsp;=&gt;&nbsp;'left')    
+}
+  </PRE></TD></TR></TBODY></TABLE>
+<H3><A name=UC>动态设置和获取选项</A></H3>
+<P>除了在创建一个部件的时候设定选项，我们也可以在这个部件运行的时候重新配置它。每个widget都支持configure方法，这个方法接收一个Hash或者代码块作为参数，和new方法类似，比如我们可以修改一下第一个例子，使它的按钮在按下的时候能给修改标签的文本。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>lbl&nbsp;=&nbsp;TkLabel.new(top)&nbsp;{&nbsp;justify&nbsp;'center'
+&nbsp;&nbsp;text&nbsp;&nbsp;&nbsp;&nbsp;'Hello,&nbsp;World!';
+&nbsp;&nbsp;pack('padx'=&gt;5,&nbsp;'pady'=&gt;5,&nbsp;'side'&nbsp;=&gt;&nbsp;'top')&nbsp;}
+TkButton.new(top)&nbsp;{
+&nbsp;&nbsp;text&nbsp;"Cancel"
+&nbsp;&nbsp;command&nbsp;proc&nbsp;{&nbsp;lbl.configure('text'=&gt;"Goodbye,&nbsp;Cruel&nbsp;World!")&nbsp;}
+&nbsp;&nbsp;pack('side'=&gt;'right',&nbsp;'padx'=&gt;10,&nbsp;'pady'=&gt;10)
+}
+</PRE></TD></TR></TBODY></TABLE>
+<P>所以，当你按Cancel按钮的时候，标签的文本将由``<CODE>Hello, World!</CODE>'' 变为``<CODE>Goodbye, Cruel World!</CODE>''。</P>
+<P>你也可以用cget方法取得某个widget的某个选项的值。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>require&nbsp;'tk'</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>b&nbsp;=&nbsp;TkButton.new&nbsp;{</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;text&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"OK"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;justify&nbsp;&nbsp;'left'</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;border&nbsp;&nbsp;&nbsp;5</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>}</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>b.cget('text')</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>"OK"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>b.cget('justify')</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>"left"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>b.cget('border')</CODE> </TD>
+<TD vAlign=top>?</TD>
+<TD vAlign=top><CODE>5</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<H3><A name=UD>程序示例</A></H3>
+<P>下面来看一个稍微长点例子，一个真正的应用程序－``pig Latin''生成器。输入一个短语，比如 ``Ruby rules'' ，然后按下按钮``Pig It''，程序将立即把这个短语翻译为</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>require&nbsp;'tk'
+
+ 
+class&nbsp;PigBox     
+&nbsp;&nbsp;def&nbsp;pig(word)     
+&nbsp;&nbsp;&nbsp;&nbsp;leadingCap&nbsp;=&nbsp;word&nbsp;=~&nbsp;/^A-Z/     
+&nbsp;&nbsp;&nbsp;&nbsp;word.downcase!     
+&nbsp;&nbsp;&nbsp;&nbsp;res&nbsp;=&nbsp;case&nbsp;word     
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;when&nbsp;/^aeiouy/     
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;word+"way"     
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;when&nbsp;/^([^aeiouy]+)(.*)/     
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$2+$1+"ay"     
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else     
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;word     
+&nbsp;&nbsp;&nbsp;&nbsp;end     
+&nbsp;&nbsp;&nbsp;&nbsp;leadingCap&nbsp;?&nbsp;res.capitalize&nbsp;:&nbsp;res     
+&nbsp;&nbsp;end
+ 
+&nbsp;&nbsp;def&nbsp;showPig     
+&nbsp;&nbsp;&nbsp;&nbsp;@text.value&nbsp;=&nbsp;@text.value.split.collect{|w|&nbsp;pig(w)}.join("&nbsp;")     
+&nbsp;&nbsp;end
+ 
+&nbsp;&nbsp;def&nbsp;initialize     
+&nbsp;&nbsp;&nbsp;&nbsp;ph&nbsp;=&nbsp;{&nbsp;'padx'&nbsp;=&gt;&nbsp;10,&nbsp;'pady'&nbsp;=&gt;&nbsp;10&nbsp;}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;common&nbsp;options     
+&nbsp;&nbsp;&nbsp;&nbsp;p&nbsp;=&nbsp;proc&nbsp;{showPig}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;@text&nbsp;=&nbsp;TkVariable.new     
+&nbsp;&nbsp;&nbsp;&nbsp;root&nbsp;=&nbsp;TkRoot.new&nbsp;{&nbsp;title&nbsp;"Pig"&nbsp;}     
+&nbsp;&nbsp;&nbsp;&nbsp;top&nbsp;=&nbsp;TkFrame.new(root)     
+&nbsp;&nbsp;&nbsp;&nbsp;TkLabel.new(top)&nbsp;{text&nbsp;&nbsp;&nbsp;&nbsp;'Enter&nbsp;Text:'&nbsp;;&nbsp;pack(ph)&nbsp;}     
+&nbsp;&nbsp;&nbsp;&nbsp;@entry&nbsp;=&nbsp;TkEntry.new(top,&nbsp;'textvariable'&nbsp;=&gt;&nbsp;@text)     
+&nbsp;&nbsp;&nbsp;&nbsp;@entry.pack(ph)     
+&nbsp;&nbsp;&nbsp;&nbsp;TkButton.new(top)&nbsp;{text&nbsp;'Pig&nbsp;It';&nbsp;command&nbsp;p;&nbsp;pack&nbsp;ph}     
+&nbsp;&nbsp;&nbsp;&nbsp;TkButton.new(top)&nbsp;{text&nbsp;'Exit';&nbsp;command&nbsp;{proc&nbsp;exit};&nbsp;pack&nbsp;ph}     
+&nbsp;&nbsp;&nbsp;&nbsp;top.pack('fill'=&gt;'both',&nbsp;'side'&nbsp;=&gt;'top')     
+&nbsp;&nbsp;end     
+end
+ 
+PigBox.new     
+Tk.mainloop
+   </PRE></TD></TR></TBODY></TABLE>
+<P>界面如图：</P>
+<P><IMG height=253 src="112_files/figure15.2[1].jpg"  width=221 border=0></P>
+<P>　</P>
+<TABLE cellPadding=15 width=500 align=center bgColor=#ffe0e0 border=2>
+<TBODY>
+<TR>
+<TD align=middle><B>Sidebar: 布局管理器？（Geometry Management）</B> </TD></TR>
+<TR>
+<TD>
+<P>在本章的例子中，我们已经看到了pack方法，这是一个非常重要的方法，如果你不调用这个方法，那么你的widget将永远不会出现，pack命令将告诉geometry manager将这个部件按照设定的参数放到合适的位置上。支持三种命令：</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<TBODY>
+<TR bgColor=#ff9999>
+<TD vAlign=top><B>命令</B> </TD>
+<TD vAlign=top><B>定位标准</B> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>pack</CODE> </TD>
+<TD vAlign=top>灵活的，基于约束（constraint）的定位</TD></TR>
+<TR>
+<TD vAlign=top><CODE>place</CODE> </TD>
+<TD vAlign=top>Absolute position</TD></TR>
+<TR>
+<TD vAlign=top><CODE>grid</CODE> </TD>
+<TD vAlign=top>Tabular (row/column) position</TD></TR>
+<TR>
+<TD bgColor=#ff9999 colSpan=9 height=2><IMG height=1 src="120_files/dot[1].gif"  width=1></TD></TR></TBODY></TABLE>
+<P>因为pack可能是最常用的方法了，所以我们的例子里都使用pack方法。</P>
+<P>译者注：如果一个方法（method）没有参数，有时候也叫做命令（command）</P></TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>
+<H2><A name=S3>绑定事件（Binding Events）</A></H2>
+<P>我们的窗口部件是暴露给现实世界的，人们可以在它上面点击，移动鼠标，进入这个组件等。所有的这些事情，都会产生一个事件，我们也可以捕获这些事件。你可以通过窗口部件的bind方法，给它的某一事件绑定一个事件处理，通常，这个时间处理是一个代码块（block of code）。</P>
+<P>比如，我们创建了一个用来显示一个图像的按钮，我们希望鼠标在这个按钮上移动的时候图像会变化，则可以用以下代码：</P>
+<P>　</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>image1&nbsp;=&nbsp;TkPhotoImage.new&nbsp;{&nbsp;file&nbsp;"img1.gif"&nbsp;}
+image2&nbsp;=&nbsp;TkPhotoImage.new&nbsp;{&nbsp;file&nbsp;"img2.gif"&nbsp;}
+
+ 
+b&nbsp;=&nbsp;TkButton.new(@root)&nbsp;{      
+&nbsp;&nbsp;image&nbsp;&nbsp;&nbsp;&nbsp;image1      
+&nbsp;&nbsp;command&nbsp;&nbsp;proc&nbsp;{&nbsp;doit&nbsp;}      
+}
+ 
+b.bind("Enter")&nbsp;{&nbsp;b.configure('image'=&gt;image2)&nbsp;}      
+b.bind("Leave")&nbsp;{&nbsp;b.configure('image'=&gt;image1)&nbsp;}
+   </PRE></TD></TR></TBODY></TABLE>
+<P>首先，我们用<CODE>TkPhotoImage</CODE>创建了2个GIF图像，然后，创建了一个按钮，名字为b，它显示的图像为image1，然后我们将它的Enter方法绑定一个将它的图像变为image2的代码块，Leave事件帮定到恢复image1图像的代码块。</P>这个例子显示了简单的Enter和Leave方法，而且，bind方法的参数可以有几个子字符串构成，每个串之间用减号分割，顺序为<EM>modifier-modifier-type-detail。</EM> 修饰符（Modifiers ）可以在Tk的参考手册中找到，包括<CODE>Button1</CODE>, <CODE>Control</CODE>, <CODE>Alt</CODE>, <CODE>Shift</CODE>等等，type是事件的名字（遵循X11的命名习惯），包括ButtonPress，KeyPress和Expose等。Detail或者是一个用于表示button的从1到5的数字，或者用来表示键盘输入的keysym。比如，如果我们想处理事件：在control键被按下的时候释放鼠标的button1，可以如下表示： 
+<P></P><CODE>Control-Button1-ButtonRelease</CODE> <BR><EM>或者</EM> <BR><CODE>Control-ButtonRelease-1</CODE> 
+<P>事件本身也会包含一些特定的字段（fields ），比如事件的发成的时间，坐标x，y的值等。bind可以将这些属性传给一个回调方法，这叫做<EM>event field codes</EM> 。这种方法使用起来类似printf的规则，比如，为了得到一个鼠标移动时候的xy坐标值，我们可以给bind方法传3个参数，第二个参数是一个用于回调的Proc对象，第三个参数是包括事件属性的字符串（event field string）</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>canvas.bind("Motion",&nbsp;proc{|x,&nbsp;y|&nbsp;do_motion&nbsp;(x,&nbsp;y)},&nbsp;"%x&nbsp;%y")
+</PRE></TD></TR></TBODY></TABLE>
+<H2><A name=S4>画布Canvas</A></H2>
+<P>Tk提供了一个画布（canvas）部件，你可以在上面进行绘画，然后输出为PostScript 格式。这里是一个简单的例子，来自Ruby发布。按下鼠标按键1，然后拖动，当松开按键1的时候，将会在两个点之间划一条直线。按下按键2将会把这个画布转出为适合打印的PostScript 格式。</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>require&nbsp;'tk'
+class&nbsp;Draw 
+&nbsp;&nbsp;def&nbsp;do_press(x,&nbsp;y) 
+&nbsp;&nbsp;&nbsp;&nbsp;@start_x&nbsp;=&nbsp;x 
+&nbsp;&nbsp;&nbsp;&nbsp;@start_y&nbsp;=&nbsp;y 
+&nbsp;&nbsp;&nbsp;&nbsp;@current_line&nbsp;=&nbsp;TkcLine.new(@canvas,&nbsp;x,&nbsp;y,&nbsp;x,&nbsp;y) 
+&nbsp;&nbsp;end 
+&nbsp;&nbsp;def&nbsp;do_motion(x,&nbsp;y) 
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;@current_line 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@current_line.coords&nbsp;@start_x,&nbsp;@start_y,&nbsp;x,&nbsp;y 
+&nbsp;&nbsp;&nbsp;&nbsp;end 
+&nbsp;&nbsp;end 
+&nbsp;&nbsp;def&nbsp;do_release(x,&nbsp;y) 
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;@current_line 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@current_line.coords&nbsp;@start_x,&nbsp;@start_y,&nbsp;x,&nbsp;y 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@current_line.fill&nbsp;'black' 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@current_line&nbsp;=&nbsp;nil 
+&nbsp;&nbsp;&nbsp;&nbsp;end 
+&nbsp;&nbsp;end 
+&nbsp;&nbsp;def&nbsp;initialize(parent) 
+&nbsp;&nbsp;&nbsp;&nbsp;@canvas&nbsp;=&nbsp;TkCanvas.new(parent) 
+&nbsp;&nbsp;&nbsp;&nbsp;@canvas.pack 
+&nbsp;&nbsp;&nbsp;&nbsp;@start_x&nbsp;=&nbsp;@start_y&nbsp;=&nbsp;0 
+&nbsp;&nbsp;&nbsp;&nbsp;@canvas.bind("1",&nbsp;proc{|e|&nbsp;do_press(e.x,&nbsp;e.y)}) 
+&nbsp;&nbsp;&nbsp;&nbsp;@canvas.bind("2",&nbsp;proc{&nbsp;puts&nbsp;@canvas.postscript({})&nbsp;}) 
+&nbsp;&nbsp;&nbsp;&nbsp;@canvas.bind("B1-Motion",&nbsp;proc{|x,&nbsp;y|&nbsp;do_motion(x,&nbsp;y)},&nbsp;"%x&nbsp;%y") 
+&nbsp;&nbsp;&nbsp;&nbsp;@canvas.bind("ButtonRelease-1", 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;proc{|x,&nbsp;y|&nbsp;do_release&nbsp;(x,&nbsp;y)},&nbsp;"%x&nbsp;%y") 
+&nbsp;&nbsp;end 
+end
+ 
+root&nbsp;=&nbsp;TkRoot.new{&nbsp;title&nbsp;'Canvas'&nbsp;} 
+Draw.new(root) 
+Tk.mainloop
+ </PRE></TD></TR></TBODY></TABLE>
+<P>只需要用鼠标点几下，就能创作出你的杰作了。</P>
+<P>界面如下：</P>
+<P><IMG height=277 src="112_files/figure15.3[1].jpg"  width=344 border=0></P>
+<P>　</P>
+<H2><A name=S5>滚动Scrolling</A></H2>
+<P>除非你只想画一个非常小的图画，否则上面的程序肯定不会很适合的。<CODE>TkCanvas</CODE>, <CODE>TkListbox</CODE>和<CODE>TkText</CODE> 都可以支持滚动条，所以你能处理一个“大图象”的一部分</P>滚动条和widget之间的通信是双向的，移动滚动条的话widget的视图也会移动，而widget的试图被其他方法移动之后，滚动条也必须相应的变化。 
+<P>我们以前还没有怎么介绍列表框（listbox），我们下面的滚动条的例子将使用一个列表框。下面的例子中，我们先创建一个普通的<CODE>TkListbox</CODE>，然后，又创建一个<CODE>TkScrollbar</CODE>，通过command选项为这个滚动条增加了一个回调，这个回调将调用列表的yview方法，这个方法用来在纵坐标方向改变list的可见部分。</P>
+<P>在回调建立之后，我们反过来也需要在list在移动之后，滚动条的设置也要改变，可以用<CODE>TkScrollbar#set</CODE>方法。下面的例子只是下一节例子中的一部分代码。</P>
+<P>　</P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>list_w&nbsp;=&nbsp;TkListbox.new(frame,&nbsp;'selectmode'&nbsp;=&gt;&nbsp;'single')
+
+ 
+scroll_bar&nbsp;=&nbsp;TkScrollbar.new(frame,  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'command'&nbsp;=&gt;&nbsp;proc&nbsp;{&nbsp;|*args|&nbsp;list_w.yview&nbsp;*args&nbsp;})
+ 
+scroll_bar.pack('side'&nbsp;=&gt;&nbsp;'left',&nbsp;'fill'&nbsp;=&gt;&nbsp;'y')
+ 
+list_w.yscrollcommand(proc&nbsp;{&nbsp;|first,last|  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;scroll_bar.set(first,last)&nbsp;})
+ </PRE></TD></TR></TBODY></TABLE>
+<H3>　</H3>
+<H3><A name=UE>Just One More Thing</A></H3>
+<P>我们可以用几百页来继续讨论Tk，但是那是其它的书本的内容了。下面的程序是我们最后的Tk例子，一个简单的GIF图像查看器。你可以从一个列表框选择一个GIF文件名，然后显示一个适应窗口大小的图像。这里有一些内容需要指出。</P>
+<P>你是否看见过一个应用程序将光标设置为忙状态（沙漏）而忘了改回来吗？在Ruby中则不必担心这种情况的发生。还记得<A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_file.html#File.new" > <CODE>File.new</CODE> </A>方法能接收一个block而确保文件最后被关闭吗，我们可以同样的在busy方法中使用这种机制，来确保最后光标被恢复，如下面的例子。</P>
+<P>这个例子也显示了<CODE>TkListbox</CODE> 的一些其它常用方法，向它增加元素，建立鼠标键松开时候的事件回调[<I>你也许需要鼠标松开事件，而不是按下事件，鼠标按下的时候表示选择了一个widget</I>]，并且得到选择的那一个元素等。</P>
+<P>到目前位置我们用<CODE>TkPhotoImage</CODE> 直接来显示图片，我们也可以对它进行缩放，抽样（subsample），或者只显示它的一部分。这里，我们用到了subsample 来使图片适合预览。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>require&nbsp;'tk'
+
+ 
+def&nbsp;busy   
+&nbsp;&nbsp;begin   
+&nbsp;&nbsp;&nbsp;&nbsp;$root.cursor&nbsp;"watch"&nbsp;#&nbsp;Set&nbsp;a&nbsp;watch&nbsp;cursor   
+&nbsp;&nbsp;&nbsp;&nbsp;$root.update&nbsp;#&nbsp;Make&nbsp;sure&nbsp;it&nbsp;updates&nbsp;&nbsp;the&nbsp;screen   
+&nbsp;&nbsp;&nbsp;&nbsp;yield&nbsp;#&nbsp;Call&nbsp;the&nbsp;associated&nbsp;block   
+&nbsp;&nbsp;ensure   
+&nbsp;&nbsp;&nbsp;&nbsp;$root.cursor&nbsp;""&nbsp;#&nbsp;Back&nbsp;to&nbsp;original   
+&nbsp;&nbsp;&nbsp;&nbsp;$root.update   
+&nbsp;&nbsp;end   
+end
+ 
+$root&nbsp;=&nbsp;TkRoot.new&nbsp;{title&nbsp;'Scroll&nbsp;List'}   
+frame&nbsp;=&nbsp;TkFrame.new($root)
+ 
+list_w&nbsp;=&nbsp;TkListbox.new(frame,&nbsp;'selectmode'&nbsp;=&gt;&nbsp;'single')
+ 
+scroll_bar&nbsp;=&nbsp;TkScrollbar.new(frame,   
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'command'&nbsp;=&gt;&nbsp;proc&nbsp;{&nbsp;|*args|&nbsp;list_w.yview&nbsp;*args&nbsp;})
+ 
+scroll_bar.pack('side'&nbsp;=&gt;&nbsp;'left',&nbsp;'fill'&nbsp;=&gt;&nbsp;'y')
+ 
+list_w.yscrollcommand(proc&nbsp;{&nbsp;|first,last|   
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;scroll_bar.set(first,last)&nbsp;})   
+list_w.pack('side'=&gt;'left')
+ 
+image_w&nbsp;=&nbsp;TkPhotoImage.new   
+TkLabel.new(frame,&nbsp;'image'&nbsp;=&gt;&nbsp;image_w).pack('side'=&gt;'left')   
+frame.pack
+ 
+list_contents&nbsp;=&nbsp;Dir["screenshots/gifs/*.gif"]   
+list_contents.each&nbsp;{|x|   
+&nbsp;&nbsp;list_w.insert('end',x)&nbsp;#&nbsp;Insert&nbsp;each&nbsp;file&nbsp;name&nbsp;into&nbsp;the&nbsp;list   
+}   
+list_w.bind("ButtonRelease-1")&nbsp;{   
+&nbsp;&nbsp;index&nbsp;=&nbsp;list_w.curselection[0]   
+&nbsp;&nbsp;busy&nbsp;{   
+&nbsp;&nbsp;&nbsp;&nbsp;tmp_img&nbsp;=&nbsp;TkPhotoImage.new('file'=&gt;&nbsp;list_contents[index])   
+&nbsp;&nbsp;&nbsp;&nbsp;scale&nbsp;&nbsp;&nbsp;=&nbsp;tmp_img.height&nbsp;/&nbsp;100   
+&nbsp;&nbsp;&nbsp;&nbsp;scale&nbsp;&nbsp;&nbsp;=&nbsp;1&nbsp;if&nbsp;scale&nbsp;&lt;&nbsp;1   
+&nbsp;&nbsp;&nbsp;&nbsp;image_w.copy(tmp_img,&nbsp;'subsample'&nbsp;=&gt;&nbsp;[scale,scale])   
+&nbsp;&nbsp;&nbsp;&nbsp;tmp_img&nbsp;=&nbsp;nil&nbsp;#&nbsp;Be&nbsp;sure&nbsp;to&nbsp;remove&nbsp;it,&nbsp;the   
+&nbsp;&nbsp;&nbsp;&nbsp;GC.start&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;image&nbsp;may&nbsp;have&nbsp;been&nbsp;large   
+&nbsp;&nbsp;}   
+}
+
+Tk.mainloop
+</PRE></TD></TR></TBODY></TABLE>
+<P><B>译者注：上面代码倒数第七行，即copy图像的那一行，在我的系统（2000＋ruby 1.8.2）上运行出错，改为如下即可通过：image_w.copy(tmp_img, '-subsample 2 2')&nbsp;</B></P>
+<P>界面如下：</P>
+<P><IMG height=260 src="112_files/figure15.4[1].jpg"  width=351 border=0></P>
+<P>最后再来看看垃圾收集，当我们有一些很大的图片时，我们不想让这些图片在不需要的时候占用内存，所以我们把对这个对象的引用设为nil，这就告诉了垃圾收集器立即把这些变量清理。</P>
+<H2>　</H2>
+<H2><A name=S6>借鉴Perl/Tk文档</A></H2>
+<P>就说道这里了，你已经初步了解了在Ruby中使用Tk。在很大程度上，你可以轻松的在Ruby中借鉴适用于Perl/Tk的文档，但是这里有一些要注意，不是每个在Perl中实现的方法在Ruby中也被实现，而且也可能存在没有被文档化的功能。在关于Ruby/Tk的书出来之前，你最好还是有什么问题到新闻组上去讨论，或者阅读更多的源代码。</P>
+<P>但是通常来说，你会直到如何去做。记住部件的选项可以通过一个哈希或者代码block传给widget，而且<CODE>TkWidget</CODE> 中代码块方法的变量作用域在这个widget内，而不是在类的实例中。</P>
+<H3><A name=UF>Object 的创建</A></H3>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>Perl/Tk:&nbsp;&nbsp;$widget&nbsp;=&nbsp;$parent-&gt;Widget(&nbsp;[&nbsp;option&nbsp;=&gt;&nbsp;value&nbsp;]&nbsp;)
+Ruby:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;widget&nbsp;=&nbsp;TkWidget.new(parent,&nbsp;option-hash)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;widget&nbsp;=&nbsp;TkWidget.new(parent)&nbsp;{&nbsp;code&nbsp;block&nbsp;}
+</PRE></TD></TR></TBODY></TABLE>
+<P>你也许不需要保存新创建widget的返回值，尽管这个值可以得到。不要忘了调用一个widget 的pack方法，否则你将不会看到这个部件。</P>
+<H3>选项（<A name=UG>Options</A>）</H3>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>Perl/Tk:&nbsp;&nbsp;-background&nbsp;=&gt;&nbsp;color
+Ruby:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'background'&nbsp;=&gt;&nbsp;color
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;background&nbsp;color&nbsp;}
+</PRE></TD></TR></TBODY></TABLE>
+<P>记住代码块的作用域是不同的。</P>
+<H3>变量引用（<A name=UH>Variable References</A>）</H3>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>Perl/Tk:&nbsp;&nbsp;-textvariable&nbsp;=&gt;&nbsp;\$variable
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-textvariable&nbsp;=&gt;&nbsp;varRef
+Ruby:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ref&nbsp;=&nbsp;TkVariable.new
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'textvariable'&nbsp;=&gt;&nbsp;ref
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;textvariable&nbsp;ref&nbsp;}
+</PRE></TD></TR></TBODY></TABLE>
+<P>使用将一个Ruby变量绑定到widget的值，然后，你就可以用<CODE>TkVariable</CODE> 里的value的访问方法（<CODE>TkVariable#value</CODE>和<CODE>TkVariable#value=</CODE>）来直接处理widget的内容了。</P>
+<P></P>
+<HR>
+
+<TABLE cellSpacing=0 cellPadding=10 width=256 bgColor=#a03030 border=0>
+<TBODY>
+<TR>
+<TD align=left width=67><A class=subheader href="111.html" >上一章&lt;</A> </TD>
+<TD vAlign=center align=middle width=53><A class=subheader href="95.html" >目录 ^</A> <BR></TD>
+<TD align=right width=70><A class=subheader href="113.html" >下一章 &gt;</A> <BR></TD></TR></TBODY></TABLE>
+<P></P><FONT size=-1>Extracted from the book "Programming Ruby - The Pragmatic Programmer's Guide"</FONT> <BR><FONT size=-3>Copyright &copy; 2001 by Addison Wesley Longman, Inc. This material may be distributed only subject to the terms and conditions set forth in the Open Publication License, v1.0 or later (the latest version is presently available at <A href="http://www.opencontent.org/openpub/" >http://www.opencontent.org/openpub/</A>)). 
+<P></P>Distribution of substantively modified versions of this document is prohibited without the explicit permission of the copyright holder. 
+<P></P>Distribution of the work or derivative of the work in any standard (paper) book form is prohibited unless prior permission is obtained from the copyright holder. <BR></FONT></BODY>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+    <!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+    <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+         <title>Data Skew</title> 
+        <link rel="shortcut icon" href="../../../static_star_theme/img/favicon.ico"/>
+        <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,700italic' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../static_star_theme/css/theme.css" type="text/css" /> 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+    </head>
+
+    <body class="wy-body-for-nav" role="document">
+
+    <div class="wy-grid-for-nav">
+
+        <div class="wy-full-navbar" data-swiftype-index="false">
+            <a href="http://www.memsql.com" class="logo">
+                <img src="../../../static_star_theme/img/memsql_logo_horizontal_white.svg" />
+            </a>
+            <div class="global nav">
+                <div class="pull-left left-links">
+                </div>
+                <div class="pull-right right-links">
+                    <a href="http://www.memsql.com/community/" style="word-spacing: 2px;">Community Edition</a>
+                    <a href="http://blog.memsql.com">Blog</a>
+                    <a href="http://www.memsql.com/memsql-partners">Partners</a>
+                    <a href="http://www.memsql.com/resources">Resources</a>
+                    <a href="../../../index.html">Documentation</a>
+                    <a href="http://www.memsql.com/contact">Contact</a>
+                </div>
+            </div>
+            <div class="nav-links">
+                <a href="http://www.memsql.com/product">Product</a>
+                <a href="http://www.memsql.com/solutions">Solutions</a>
+                <a href="http://www.memsql.com/case-studies">Case Studies</a>
+                <a href="http://www.memsql.com/company">Company</a>
+                <a class="download" href="http://www.memsql.com/download/">Download Now</a>
+            </div>
+        </div>
+
+        <nav data-toggle="wy-nav-shift" class="wy-nav-side" data-swiftype-index="false">
+            <div class="wy-side-nav-search">
+                <div role="search">
+  <form id="search-form" class="wy-form" method="get">
+    <input type="text" id="st-search-input" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+            </div>
+
+            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                
+                 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">MemSQL Docs Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro/index.html">How MemSQL Works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../setup/quick_start/index.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../setup/get_started/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../concepts/index.html">User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Operations Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ref/commands_by_type/index.html">SQL Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../config/index.html">Configuration Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ops/index.html">MemSQL Ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../loader/index.html">MemSQL Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../archive/index.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../editions/index.html">MemSQL Editions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq/index.html">Frequently Asked Questions</a></li>
+</ul>
+ 
+            </div>
+            &nbsp;
+        </nav>
+
+        <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+            <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+                <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+                <a href="../../../index.html" class="logo">
+                    <img src="../../../static_star_theme/img/memsql_logo_horizontal_white.svg" />
+                    <span class="subtitle">Documentation</span>
+                </a>
+            </nav>
+
+            <div class="wy-nav-content">
+                <div class="rst-content">
+                    <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../index.html">MemSQL Documentation</a> &raquo;</li>
+      
+    <li>Data Skew</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+                    <div role="main" class="document">
+                        
+  <div class="section" id="data-skew">
+<h1>Data Skew<a class="headerlink" href="index.html#data-skew" title="Permalink to this headline">¶</a></h1>
+<p>An important property of a distributed database is that the data gets distributed more or less evenly. In rare cases the data may be &#8220;skewed&#8221; out of balance. This topic discusses how skew can happen, how to detect it, and what to do about it.</p>
+<div class="section" id="sharding-skew">
+<span id="skew"></span><h2>Sharding &amp; Skew<a class="headerlink" href="index.html#sharding-skew" title="Permalink to this headline">¶</a></h2>
+<p>&#8220;Skew&#8221; is a condition in which a table&#8217;s data is unevenly balanced among partitions in the cluster. Probability being what it is, small amounts of skew are inevitable and harmless. By default, MemSQL distributes data based on a <a class="reference internal" href="../../concepts/distributed_sql/index.html#distributed-ddl"><em>hash of the primary key</em></a>. Since the hash values are unique and evenly distributed, this keeps skew to a minimum.</p>
+<p>You can tell MemSQL to shard a table by a set of columns instead of the primary key. For example, a table of domains and a table of URLs from those domains. You might want to track URLs posted in the comments of a large message board, or found during a general crawl of the web.</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="nf">domains</span> <span class="p">(</span>
+    <span class="n">id</span> <span class="kt">BIGINT</span><span class="p">,</span>
+    <span class="n">domain</span> <span class="kt">varchar</span><span class="p">(</span><span class="mi">128</span><span class="p">)</span>
+    <span class="p">...</span>
+    <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">id</span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="nf">urls</span> <span class="p">(</span>
+    <span class="n">id</span> <span class="kt">BIGINT</span><span class="p">,</span>
+    <span class="n">domain_id</span> <span class="kt">BIGINT</span><span class="p">,</span>
+    <span class="n">path</span> <span class="kt">VARCHAR</span><span class="p">(</span><span class="mi">8192</span><span class="p">),</span>
+    <span class="n">first_seen</span> <span class="kt">INT</span> <span class="k">UNSIGNED</span> <span class="k">NOT</span> <span class="no">NULL</span><span class="p">,</span>
+    <span class="n">crawl</span> <span class="n">count</span> <span class="kt">INT</span> <span class="k">UNSIGNED</span> <span class="k">NOT</span> <span class="no">NULL</span><span class="p">,</span>
+    <span class="p">...</span>
+    <span class="k">FOREIGN</span> <span class="n">SHARD</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">domain_id</span><span class="p">)</span> <span class="k">references</span> <span class="nf">domains</span> <span class="p">(</span><span class="n">id</span><span class="p">)</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<p>This compiles and runs just fine. Rows with the same <tt class="docutils literal"><span class="pre">domain_id</span></tt> will be placed together in the same partition. However, it&#8217;s probable that some domains will have many more times the number of URLs. The partition that contains links for &#8220;youtube.com&#8221; will almost certainly have more rows than average, throwing off the balance of the cluster. That unlucky partition will not only have to store more data, it will probably be asked to do more work during SELECT, UPDATE, and DELETE queries.</p>
+</div>
+<div class="section" id="measuring-skew">
+<h2>Measuring Skew<a class="headerlink" href="index.html#measuring-skew" title="Permalink to this headline">¶</a></h2>
+<p>Measuring the skew of a table is straightforward in MemSQL. The built-in <tt class="docutils literal"><span class="pre">INFORMATION_SCHEMA</span></tt> database contains metadata about tables, columns, indexes, and partitions. In particular, the <tt class="docutils literal"><span class="pre">TABLE_STATISTICS</span></tt> table contains one row per table partition, and can be used to see if a given partition has a lot more rows than average:</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="k">SELECT</span>
+    <span class="n">DATABASE_NAME</span><span class="p">,</span>
+    <span class="n">TABLE_NAME</span><span class="p">,</span>
+    <span class="n">ORDINAL</span> <span class="k">AS</span> <span class="n">PARTITION_ID</span><span class="p">,</span>
+    <span class="n">ROWS</span><span class="p">,</span>
+    <span class="n">MEMORY_USE</span>
+<span class="k">FROM</span> <span class="n">INFORMATION_SCHEMA</span><span class="p">.</span><span class="n">TABLE_STATISTICS</span>
+<span class="k">WHERE</span> <span class="n">TABLE_NAME</span> <span class="o">=</span> <span class="s1">&#39;domains&#39;</span><span class="p">;</span>
+
+<span class="o">+---------------+------------+--------------+-------+------------+</span>
+<span class="o">|</span> <span class="n">DATABASE_NAME</span> <span class="o">|</span> <span class="n">TABLE_NAME</span> <span class="o">|</span> <span class="n">PARTITION_ID</span> <span class="o">|</span> <span class="n">ROWS</span>  <span class="o">|</span> <span class="n">MEMORY_USE</span> <span class="o">|</span>
+<span class="o">+---------------+------------+--------------+-------+------------+</span>
+<span class="o">|</span> <span class="n">web</span>           <span class="o">|</span> <span class="n">domains</span>    <span class="o">|</span> <span class="mi">0</span>            <span class="o">|</span> <span class="mi">85916</span> <span class="o">|</span>   <span class="mi">11527936</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">web</span>           <span class="o">|</span> <span class="n">domains</span>    <span class="o">|</span> <span class="mi">1</span>            <span class="o">|</span> <span class="mi">85925</span> <span class="o">|</span>   <span class="mi">11528512</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">web</span>           <span class="o">|</span> <span class="n">domains</span>    <span class="o">|</span> <span class="mi">2</span>            <span class="o">|</span> <span class="mi">85427</span> <span class="o">|</span>   <span class="mi">11627712</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">web</span>           <span class="o">|</span> <span class="n">domains</span>    <span class="o">|</span> <span class="mi">3</span>            <span class="o">|</span> <span class="mi">86185</span> <span class="o">|</span>   <span class="mi">11545152</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">web</span>           <span class="o">|</span> <span class="n">domains</span>    <span class="o">|</span> <span class="mi">4</span>            <span class="o">|</span> <span class="mi">85592</span> <span class="o">|</span>   <span class="mi">11376128</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">web</span>           <span class="o">|</span> <span class="n">domains</span>    <span class="o">|</span> <span class="mi">5</span>            <span class="o">|</span> <span class="mi">85549</span> <span class="o">|</span>   <span class="mi">11504448</span> <span class="o">|</span>
+<span class="p">...</span>
+</pre></div>
+</div>
+<p>Just looking over the raw values, it&#8217;s plain there is only a tiny amount of variation in the domains table, as expected. You can use this raw <tt class="docutils literal"><span class="pre">TABLE_STATISTICS</span></tt> data to compute the <a class="reference external" href="http://en.wikipedia.org/wiki/Relative_standard_deviation">relative standard deviation (RSD)</a> across all partitions and tables in your database. The RSD is a decent way to measure &#8220;skewness&#8221;. Unlike a simple <tt class="docutils literal"><span class="pre">STDDEV()</span></tt>, it allows you to compare the amount of skew between tables.</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="k">SELECT</span>
+    <span class="n">DATABASE_NAME</span><span class="p">,</span>
+    <span class="n">TABLE_NAME</span><span class="p">,</span>
+    <span class="nf">FLOOR</span><span class="p">(</span><span class="nf">AVG</span><span class="p">(</span><span class="n">ROWS</span><span class="p">))</span> <span class="k">AS</span> <span class="n">avg_rows</span><span class="p">,</span>
+    <span class="nf">ROUND</span><span class="p">(</span><span class="nf">STDDEV</span><span class="p">(</span><span class="n">ROWS</span><span class="p">)</span><span class="o">/</span><span class="nf">AVG</span><span class="p">(</span><span class="n">ROWS</span><span class="p">),</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span> <span class="k">AS</span> <span class="n">row_skew</span><span class="p">,</span>
+    <span class="nf">FLOOR</span><span class="p">(</span><span class="nf">AVG</span><span class="p">(</span><span class="n">MEMORY_USE</span><span class="p">))</span> <span class="k">AS</span> <span class="n">avg_memory</span><span class="p">,</span>
+    <span class="nf">ROUND</span><span class="p">(</span><span class="nf">STDDEV</span><span class="p">(</span><span class="n">MEMORY_USE</span><span class="p">)</span><span class="o">/</span><span class="nf">AVG</span><span class="p">(</span><span class="n">MEMORY_USE</span><span class="p">),</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span> <span class="k">AS</span> <span class="n">memory_skew</span>
+<span class="k">FROM</span> <span class="n">INFORMATION_SCHEMA</span><span class="p">.</span><span class="n">TABLE_STATISTICS</span>
+<span class="k">GROUP</span> <span class="k">BY</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span>
+<span class="k">HAVING</span> <span class="nf">SUM</span><span class="p">(</span><span class="n">ROWS</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">10000</span>
+<span class="k">ORDER</span> <span class="k">BY</span> <span class="n">row_skew</span> <span class="k">DESC</span><span class="p">;</span>
+
+<span class="o">+---------------+----------------------+----------+----------+--------------+-------------+</span>
+<span class="o">|</span> <span class="n">DATABASE_NAME</span> <span class="o">|</span> <span class="n">TABLE_NAME</span>           <span class="o">|</span> <span class="n">avg_rows</span> <span class="o">|</span> <span class="n">row_skew</span> <span class="o">|</span> <span class="n">avg_memory</span>   <span class="o">|</span> <span class="n">memory_skew</span> <span class="o">|</span>
+<span class="o">+---------------+----------------------+----------+----------+--------------+-------------+</span>
+<span class="o">|</span> <span class="n">web</span>           <span class="o">|</span> <span class="n">urls</span>                 <span class="o">|</span> <span class="mi">28881401</span> <span class="o">|</span>    <span class="mi">9</span><span class="p">.</span><span class="mi">520</span> <span class="o">|</span>  <span class="mi">25733328291</span> <span class="o">|</span>       <span class="mi">3</span><span class="p">.</span><span class="mi">200</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">web</span>           <span class="o">|</span> <span class="n">domains</span>              <span class="o">|</span>   <span class="mi">902817</span> <span class="o">|</span>    <span class="mi">0</span><span class="p">.</span><span class="mi">100</span> <span class="o">|</span>    <span class="mi">111046491</span> <span class="o">|</span>       <span class="mi">0</span><span class="p">.</span><span class="mi">200</span> <span class="o">|</span>
+<span class="p">...</span>
+</pre></div>
+</div>
+<p>A skew score of N means that there is about N% variation in the number of rows (or memory allocated) in a partition. As a general rule of thumb, skew less than 10% should not greatly affect system stability or performance, and is not a cause for worry. If you do see persistent skew <em>and</em> observe other issues as well, such as a server running particularly &#8220;hot&#8221;, then you should further investigate the distribution of the values in your chosen shard keys.</p>
+</div>
+<div class="section" id="detecting-skew">
+<h2>Detecting Skew<a class="headerlink" href="index.html#detecting-skew" title="Permalink to this headline">¶</a></h2>
+<p>While bulk-loading data, recovering from a restart, or after deleting lots of data, it&#8217;s possible that one partition may temporarily show more memory use than others. Memory allocation and garbage collection are not instant across the machines in a cluster. During that period, the query above may produce a large <tt class="docutils literal"><span class="pre">memory_skew</span></tt> number. This is normal, and corrects itself over time as the system reaches a new steady state.</p>
+<p>MemSQL Ops runs periodic checks and throws a notification only if the <tt class="docutils literal"><span class="pre">row_skew</span></tt> metric remains elevated for extended periods of time. By default it throws a notification if the row_skew is above 10% for three consecutive minutes.</p>
+</div>
+</div>
+
+
+                    </div>
+                    <footer data-swiftype-index="false">
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&copy; Copyright 2015, MemSQL</p>
+  </div>
+</footer>
+                </div>
+            </div>
+
+        </section>
+    </div>
+
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/underscore-min.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery.ba-hashchange.min.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery.swiftype.search.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery.swiftype.autocomplete.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/theme.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/search.js"></script> 
+
+        <!-- Google Analytics -->
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-21693588-3', 'auto');
+            ga('send', 'pageview');
+        </script>
+        <!-- End Google Analytics -->
+
+        <script type="text/javascript">
+            $.ajax({
+                url: document.location.protocol + '//munchkin.marketo.net/munchkin.js',
+                dataType: 'script',
+                cache: true,
+                success: function() {
+                    Munchkin.init('759-YLI-316');
+                }
+            });
+        </script>
+    </body>
+</html>

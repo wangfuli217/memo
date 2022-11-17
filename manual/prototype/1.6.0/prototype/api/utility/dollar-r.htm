@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>工具函数 $R - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />	
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>$R</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">$R(start, end[, exclusive = false]) -> ObjectRange</code></pre>
+			<p>
+				创建一个新的 <code>ObjectRange</code> 对象。这个函数是对 <a href="../objectRange.htm" >ObjectRange</a>
+				构造函数的简单封装，但是应优先使用 <code>$R</code> 简称。
+			</p>
+		</div>
+		<div id="abody">
+			<p>
+				<a href="../objectRange.htm" >ObjectRange</a> 的实例描述了一系列遵循某种规则变化的值，如数字、
+				文本或其它在语义上支持相邻值推导的类型。更详细的说明以及如何使自定义的类型支持
+				<code>ObjectRange</code>，请查阅<a href="../objectRange.htm" >相关文档</a>。
+			</p>
+			<p>				
+				<code>$R</code> 函数和原始的构造函数具有完全相同的参数：start 和 end
+				分别表示<strong>下限值和上限值</strong>（两个参数的类型必须一致），exclusive
+				表示<strong>是否排除上限值(参数 end)</strong>。默认不排除上限值。
+			</p>
+			<h3>样例</h3>
+			<pre><code class="javascript">$R(0, 10).include(10) 
+// -> true 
+$A($R(0, 5)).join(', ') 
+// -> '0, 1, 2, 3, 4, 5' 
+$A($R('aa', 'ah')).join(', ') 
+// -> 'aa, ab, ac, ad, ae, af, ag, ah' 
+$R(0, 10, true).include(10) 
+// -> false 
+$R(0, 10, true).each(function(value){ 
+	// 调用 10 次，value 的值从 0 到 9 
+}); </code></pre>
+			<p>
+				注意：<code>ObjectRange</code> 混入（mix in）了 <a href="../enumerable.htm" >Enumerable</a>
+				模块：从而使得该对象转换为 <code>Array</code> 极其容易（<code>Enumerable</code> 提供了
+				<a href="../enumerable/toArray.htm" >toArray</a> 方法，可供 <code>$A</code>
+				直接调用以进行转换），并且也极大的方便了值的迭代遍历。（注意：无论如何，通过 <code>start</code>
+				和 <code>end</code> 属性获取下限或上限值，远比调用 <code>Enumerable</code> 的
+				<a href="../enumerable/min.htm" >min()</a> 和 <a href="../enumerable/max.htm" >max()</a>
+				方法有效。）
+			</p>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

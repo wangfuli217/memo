@@ -1,0 +1,209 @@
+﻿<html xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+    <META NAME="save" CONTENT="history" />
+    <title>使用委托（C# 编程指南）</title>
+    <link rel="stylesheet" type="text/css" href="../styles/presentation.css" />
+    <link rel="stylesheet" type="text/css" href="ms-help://Hx/HxRuntime/HxLink.css" />
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/EventUtilities.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/SplitScreen.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/Dropdown.js"> </script>
+    <script type="text/javascript" src="../scripts/script_manifold.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/script_feedBack.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CheckboxMenu.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CommonUtilities.js"> </script>
+    <xml>
+      <MSHelp:TOCTitle Title="使用委托" />
+      <MSHelp:Keyword Index="A" Term="99a2fc27-a32e-4a34-921c-e65497520eec" />
+      <MSHelp:Keyword Index="K" Term="委托 [C#], 使用方法" />
+      <MSHelp:Attr Name="RevisionNumber" Value="14" />
+      <MSHelp:Attr Name="AssetID" Value="99a2fc27-a32e-4a34-921c-e65497520eec" />
+      <MSHelp:Attr Name="Abstract" Value="&#xD;&#xA;                    委托是一种安全地封装方法的类型，它与 C 和 C++ 中的函数指针类似。与 C 中的函数指针不同，委托是面向对象的、类型安全的和保险的。委托的类型由委托的名称定义。下面的示例声明了一个名为 Del 的委托，该委托可以封装一个采用字符串作为参数并返回 void 的方法。&#xD;&#xA;                " />
+      <MSHelp:Attr Name="codelang" Value="CSharp" />
+      <MSHelp:Attr Name="CommunityContent" Value="1" />
+      <MSHelp:Attr Name="DevLang" Value="CSharp" />
+      <MSHelp:Attr Name="DevLangVers" Value="CSharp" />
+      <MSHelp:Attr Name="DocSet" Value="C#" />
+      <MSHelp:Attr Name="DocSet" Value="C# Lang" />
+      <MSHelp:Attr Name="DocSet" Value="ExpressLibVS" />
+      <MSHelp:Attr Name="ProgModel" Value="managed" />
+      <MSHelp:Attr Name="ShippedIn" Value="vs.90" />
+      <MSHelp:Attr Name="Technology" Value="ManagedCode" />
+      <MSHelp:Attr Name="TopicVersion" Value="09.00.08178.10000" />
+      <MSHelp:Attr Name="Catalog Container" Value="System_Default_Catalog" />
+      <MSHelp:Attr Name="Content Set Container" Value="System_Default_Content_Set" />
+      <MSHelp:Attr Name="TopicType" Value="kbRef" />
+      <MSHelp:Attr Name="Locale" Value="zh-chs" />
+    </xml>
+  </head>
+  <body>
+    <input type="hidden" id="userDataCache" class="userDataStyle" />
+    <input type="hidden" id="hiddenScrollOffset" />
+    <img id="collapseImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" title="“折叠”图像" />
+    <img id="expandImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" title="“展开”图像" />
+    <img id="collapseAllImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" />
+    <img id="expandAllImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" />
+    <img id="dropDownImage" style="display:none; height:0; width:0;" src="../icons/dropdown.gif" />
+    <img id="dropDownHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/dropdownHover.gif" />
+    <img id="copyImage" style="display:none; height:0; width:0;" src="../icons/copycode.gif" title="“复制”图像" />
+    <img id="copyHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/copycodeHighlight.gif" title="“复制悬停”图像" />
+    <div id="header">
+      <table id="topTable" cellspacing="0" cellpadding="0">
+        <tr>
+          <td>
+            <span onclick="ExpandCollapseAll(toggleAllImage)" style="cursor:default;" onkeypress="ExpandCollapseAll_CheckKey(toggleAllImage, event)" tabindex="0">
+              <img ID="toggleAllImage" class="toggleAll" src="../icons/collapse_all.gif" /> <label id="collapseAllLabel" for="toggleAllImage" style="display: none;">全部折叠</label><label id="expandAllLabel" for="toggleAllImage" style="display: none;">全部展开</label> </span>
+            <span>    </span>
+            <span id="devlangsDropdown" class="filter" tabindex="0">
+              <img id="devlangsDropdownImage" src="../icons/dropdown.gif" /> <label id="devlangsMenuAllLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：全部 </nobr></label><label id="devlangsMenuMultipleLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：多个 </nobr></label><label id="devlangsMenuVisualBasicLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual Basic </nobr></label><label id="devlangsMenuCSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：C# </nobr></label><label id="devlangsMenuManagedCPlusPlusLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual C++ </nobr></label><label id="devlangsMenuJSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：J# </nobr></label><label id="devlangsMenuJScriptLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：JScript </nobr></label></span>
+          </td>
+        </tr>
+      </table>
+      <div id="devlangsMenu">
+        <input id="VisualBasicCheckbox" type="checkbox" data="VisualBasic,vb,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="VisualBasicCheckbox">Visual Basic</label>
+        <br />
+        <input id="CSharpCheckbox" type="checkbox" data="CSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="CSharpCheckbox">C#</label>
+        <br />
+        <input id="ManagedCPlusPlusCheckbox" type="checkbox" data="ManagedCPlusPlus,cpp,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="ManagedCPlusPlusCheckbox">Visual C++</label>
+        <br />
+        <input id="JSharpCheckbox" type="checkbox" data="JSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JSharpCheckbox">J#</label>
+        <br />
+        <input id="JScriptCheckbox" type="checkbox" data="JScript,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JScriptCheckbox">JScript</label>
+        <br />
+      </div>
+      <table id="bottomTable" cellpadding="0" cellspacing="0">
+        <tr id="headerTableRow1">
+          <td align="left">
+            <span id="runningHeaderText">C# 编程指南</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow2">
+          <td align="left">
+            <span id="nsrTitle">使用委托（C# 编程指南）</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow3">
+          <td align="left">
+            <a href="99a2fc27-a32e-4a34-921c-e65497520eec.htm#seeAlsoToggle" onclick="OpenSection(seeAlsoToggle)">另请参见</a>  
+<script type="text/javascript">
+var fbBody = '%b8%d0%d0%bb%c4%fa%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%bf%aa%b7%a2%b0%e6%b1%e0%d0%b4%cd%c5%b6%d3%bd%ab%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%d3%c3%d3%da%b8%c4%bd%f8%ce%c4%b5%b5%a1%a3%ce%d2%c3%c7%d4%da%c9%f3%d4%c4%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%ca%b1%a3%ac%bf%c9%c4%dc%bb%e1%b8%f8%c4%fa%b7%a2%cb%cd%b5%e7%d7%d3%d3%ca%bc%fe%a3%ac%d2%d4%c7%eb%c4%fa%cc%e1%b9%a9%bd%f8%d2%bb%b2%bd%b5%c4%bd%e2%ca%cd%cb%b5%c3%f7%bb%f2%d5%df%be%cd%bd%e2%be%f6%b7%bd%b0%b8%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%ce%d2%c3%c7%b2%bb%bb%e1%bd%ab%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%d3%c3%d3%da%c8%ce%ba%ce%c6%e4%cb%fb%d3%c3%cd%be%a3%ac%b2%a2%c7%d2%d4%da%c9%f3%d4%c4%cd%ea%d6%ae%ba%f3%a3%ac%ce%d2%c3%c7%b2%bb%bb%e1%d4%d9%b1%a3%c1%f4%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%a1%a3%0d%0a%d3%d0%b9%d8%20Microsoft%20%d2%fe%cb%bd%d5%fe%b2%df%b5%c4%bd%f8%d2%bb%b2%bd%d0%c5%cf%a2%a3%ac%c7%eb%b2%ce%bc%fb%20http%3a%2f%2fprivacy.microsoft.com%2fzh-cn%2fdefault.aspx%a1%a3';
+var fbSubject = 'Customer%20Feedback';
+</script>
+  <span id="headfeedbackarea" class="feedbackhead"><a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);"> 发送反馈意见</a></span>
+</td>
+        </tr>
+      </table>
+      <table id="gradientTable">
+        <tr>
+          <td class="nsrBottom" background="../icons/gradient.gif" />
+        </tr>
+      </table>
+    </div>
+    <div id="mainSection">
+      <div id="mainBody">
+        <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
+        <font color="DarkGray"></font>
+        <p /> <p><font color="DarkGray">更新：2007 年 11 月</font></p><div class="introduction"><p>
+                    <mshelp:link keywords="0bb8cb6d-2f87-47c7-9d1f-d65c1cd01e9f" tabindex="0">委托</mshelp:link>是一种安全地封装方法的类型，它与 C 和 C++ 中的函数指针类似。与 C 中的函数指针不同，委托是面向对象的、类型安全的和保险的。委托的类型由委托的名称定义。下面的示例声明了一个名为 <span class="code">Del</span> 的委托，该委托可以封装一个采用<mshelp:link keywords="3037e558-fb22-494d-bca1-a15ade11b11a" tabindex="0">字符串</mshelp:link>作为参数并返回 <mshelp:link keywords="0d2d8a95-fe20-4fbd-bf5d-c1e54bce71d4" tabindex="0">void</mshelp:link> 的方法。
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">delegate</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Del(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> message);
+
+</pre></td></tr></table></span></div></div><p>
+                    构造委托对象时，通常提供委托将包装的方法的名称或使用<mshelp:link keywords="a62441fa-f0a3-4acb-9aa6-93762a635275" tabindex="0">匿名方法</mshelp:link>。实例化委托后，委托将把对它进行的方法调用传递给方法。调用方传递给委托的参数被传递给方法，来自方法的返回值（如果有）由委托返回给调用方。这被称为调用委托。可以将一个实例化的委托视为被包装的方法本身来调用该委托。例如：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Create a method for a delegate.</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> DelegateMethod(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> message)
+{
+    System.Console.WriteLine(message);
+}
+
+</pre></td></tr></table></span></div></div><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Instantiate the delegate.</span>
+Del handler = DelegateMethod;
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Call the delegate.</span>
+handler(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Hello World"</span>);
+
+</pre></td></tr></table></span></div></div><p>
+                    委托类型派生自 .NET Framework 中的 <span sdata="cer" target="T:System.Delegate"><mshelp:link keywords="T:System.Delegate" tabindex="0">Delegate</mshelp:link></span> 类。委托类型是<mshelp:link keywords="8e4ed5d3-10be-47db-9488-0da2008e6f3f" tabindex="0">密封</mshelp:link>的，不能从 <span sdata="cer" target="T:System.Delegate"><mshelp:link keywords="T:System.Delegate" tabindex="0">Delegate</mshelp:link></span> 中派生委托类型，也不可能从中派生自定义类。由于实例化委托是一个对象，所以可以将其作为参数进行传递，也可以将其赋值给属性。这样，方法便可以将一个委托作为参数来接受，并且以后可以调用该委托。这称为异步回调，是在较长的进程完成后用来通知调用方的常用方法。以这种方式使用委托时，使用委托的代码无需了解有关所用方法的实现方面的任何信息。此功能类似于接口所提供的封装。有关更多信息，请参见<mshelp:link keywords="2e759bdf-7ca4-4005-8597-af92edf6d8f0" tabindex="0">何时使用委托而不使用接口</mshelp:link>。
+                </p><p>
+                    回调的另一个常见用法是定义自定义的比较方法并将该委托传递给排序方法。它允许调用方的代码成为排序算法的一部分。下面的示例方法使用 <span class="code">Del</span> 类型作为参数：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> MethodWithCallback(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> param1, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> param2, Del callback)
+{
+    callback(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"The number is: "</span> + (param1 + param2).ToString());
+}
+
+</pre></td></tr></table></span></div></div><p>
+                    然后可以将上面创建的委托传递给该方法：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>MethodWithCallback(1, 2, handler);
+
+</pre></td></tr></table></span></div></div><p>
+                    在控制台中将收到下面的输出：
+                </p><p>
+                    <span class="code">The number is: 3 </span>
+                </p><p>
+                    在将委托用作抽象概念时，<span class="code">MethodWithCallback</span> 不需要直接调用控制台 -- 设计它时无需考虑控制台。<span class="code">MethodWithCallback</span> 的作用只是准备字符串并将该字符串传递给其他方法。此功能特别强大，因为委托的方法可以使用任意数量的参数。
+                </p><p>
+                    将委托构造为包装实例方法时，该委托将同时引用实例和方法。除了它所包装的方法外，委托不了解实例类型，所以只要任意类型的对象中具有与委托签名相匹配的方法，委托就可以引用该对象。将委托构造为包装静态方法时，它只引用方法。考虑下列声明：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> MethodClass
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Method1(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> message) { }
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Method2(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> message) { }
+}
+
+</pre></td></tr></table></span></div></div><p>
+                    加上前面显示的静态 <span class="code">DelegateMethod</span>，现在我们有三个方法可由 <span class="code">Del</span> 实例进行包装。
+                </p><p>
+                    调用委托时，它可以调用多个方法。这称为多路广播。若要向委托的方法列表（调用列表）中添加额外的方法，只需使用加法运算符或加法赋值运算符（“+”或“+=”）添加两个委托。例如：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>MethodClass obj = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> MethodClass();
+Del d1 = obj.Method1;
+Del d2 = obj.Method2;
+Del d3 = DelegateMethod;
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//Both types of assignment are valid.</span>
+Del allMethodsDelegate = d1 + d2;
+allMethodsDelegate += d3;
+
+</pre></td></tr></table></span></div></div><p>
+                    此时，<span class="code">allMethodsDelegate</span> 在其调用列表中包含三个方法 -- <span class="code">Method1</span>、<span class="code">Method2</span> 和 <span class="code">DelegateMethod</span>。原来的三个委托 <span class="code">d1</span>、<span class="code">d2</span> 和 <span class="code">d3</span> 保持不变。调用 <span class="code">allMethodsDelegate</span> 时，将按顺序调用所有这三个方法。如果委托使用引用参数，则引用将依次传递给三个方法中的每个方法，由一个方法引起的更改对下一个方法是可见的。如果任一方法引发了异常，而在该方法内未捕获该异常，则该异常将传递给委托的调用方，并且不再对调用列表中后面的方法进行调用。如果委托具有返回值和/或输出参数，它将返回最后调用的方法的返回值和参数。若要从调用列表中移除方法，请使用减法运算符或减法赋值运算符（“-”或“-=”）。例如：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//remove Method1</span>
+allMethodsDelegate -= d1;
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// copy AllMethodsDelegate while removing d2</span>
+Del oneMethodDelegate = allMethodsDelegate - d2;
+
+</pre></td></tr></table></span></div></div><p>
+                    由于委托类型派生自 <span sdata="langKeyword" value="System.Delegate"><span class="keyword">System.Delegate</span></span>，所以可在委托上调用该类定义的方法和属性。例如，为了找出委托的调用列表中的方法数，您可以编写下面的代码：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> invocationCount = d1.GetInvocationList().GetLength(0);
+
+</pre></td></tr></table></span></div></div><p>
+                    在调用列表中具有多个方法的委托派生自 <span sdata="cer" target="T:System.MulticastDelegate"><mshelp:link keywords="T:System.MulticastDelegate" tabindex="0">MulticastDelegate</mshelp:link></span>，这是 <span sdata="langKeyword" value="System.Delegate"><span class="keyword">System.Delegate</span></span> 的子类。由于两个类都支持 <span sdata="langKeyword" value="GetInvocationList"><span class="keyword">GetInvocationList</span></span>，所以上面的代码在两种情况下都适用。
+                </p><p>
+                    多路广播委托广泛用于事件处理中。事件源对象向已注册接收该事件的接收方对象发送事件通知。为了为事件注册，接收方创建了旨在处理事件的方法，然后为该方法创建委托并将该委托传递给事件源。事件发生时，源将调用委托。然后，委托调用接收方的事件处理方法并传送事件数据。给定事件的委托类型由事件源定义。有关更多信息，请参见<span sdata="link"><a href="a8e51b22-d294-44fb-9539-0072f06c4cb3.htm">事件（C# 编程指南）</a></span>。
+                </p><p>
+                    在编译时，对分配了两种不同类型的委托进行比较将产生编译错误。如果委托实例静态地属于类型 <span sdata="langKeyword" value="System.Delegate"><span class="keyword">System.Delegate</span></span>，则允许进行比较，但在运行时将返回 false。例如：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">delegate</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Delegate1();
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">delegate</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Delegate2();
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> method(Delegate1 d, Delegate2 e, System.Delegate f)
+{
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Compile-time error.</span>
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//Console.WriteLine(d == e);</span>
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// OK at compile-time. False if the run-time type of f </span>
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// is not the same as that of d.</span>
+    System.Console.WriteLine(d == f);
+}
+
+</pre></td></tr></table></span></div></div></div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />请参见</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><h4 class="subHeading">概念</h4><div class="seeAlsoStyle"><span sdata="link"><a href="ac0f23a2-6bf3-4077-be99-538ae5fd3bc5.htm">C# 编程指南</a></span></div><h4 class="subHeading">参考</h4><div class="seeAlsoStyle"><span sdata="link"><a href="97de039b-c76b-4b9c-a27d-8c1e1c8d93da.htm">委托（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="e6acad03-93e0-4efb-a158-8696d5eb4ecf.htm">委托中的协变和逆变（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="a8e51b22-d294-44fb-9539-0072f06c4cb3.htm">事件（C# 编程指南）</a></span></div></div></div>
+      <div id="footer">
+        <div class="footerLine">
+          <img width="100%" height="3px" src="../icons/footer.gif" title="“页脚”图像" />
+        </div>
+<span id="feedbackarea">将有关本主题的<a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);">反馈意见</a>发送给 Microsoft。</span>
+</div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>工具函数 Try.these - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />	
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>Try.these</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">Try.these(Function...) -> firstOKResult</code></pre>
+			<p>
+				接收任意数目的函数作为参数，返回第一个执行成功的函数（未抛出异常的函数）的结果。
+			</p>
+		</div>
+		<div id="abody">
+			<p>
+				该函数提供一种简单的风格：按照一定的顺序尝试执行一组函数。这组函数的执行顺序通常依照某个给定的特性，
+				根据函数和特性的相符程度由高到低进行排列（译注：类似于“职责链[chain of responsibility]”模式）。
+			</p>
+			<p>
+				在 Prototype <a href="../ajax.htm" >Ajax</a> 一节的样例中，我们想要获取一个
+				<code>XMLHttpRequest</code> 对象，然而，在 IE6 及其早期版本中，并没有提供内置的 <code>XMLHttpRequest</code>
+				Javascript 对象，如果我们试图实例化该对象，将会抛出一个异常。并且，随着时间的推移，各个版本的 IE
+				创建该对象的方式也随之变化，COM 接口名称也不尽相同。
+			</p>
+			<p>
+				<code>Try.these</code> 会按照一定的顺序尝试执行多种方法，从最佳的（从理论上来说也是最普遍的）
+				一直到最原始及最少见的方法，返回第一个执行成功的函数的结果。
+			</p>
+			<p>
+				如果没有执行成功的函数，<code>Try.these</code> 将返回 <code>undefined</code>。若出现这种情况，
+				则下面样例的 <code>getTransport</code> 方法返回的最终结果将是 <code>false</code>。
+			</p>
+			<pre><code class="javascript">getTransport: function(){
+	return Try.these(
+		function() { return new XMLHttpRequest() }, 
+		function() { return new ActiveXObject('Msxml2.XMLHTTP') }, 
+		function() { return new ActiveXObject('Microsoft.XMLHTTP') } 
+	) || false; 
+}</code></pre>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

@@ -1,0 +1,242 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 18.5.  Union: A Space-Saving Class</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch18lev1sec4.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch18lev1sec6.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch18lev1sec5"></a>
+
+        <h3 class="docSection1Title">18.5. Union: A Space-Saving Class</h3>
+        <h3 class="docSection1Title">18.5. 联合：节省空间的类</h3>
+
+<a name="ch18term22"></a>
+        <p class="docText">A <b><a class="docLink" href="ch18lev1sec9.html#gloss18_22" >union</a></b> is a special kind of class. A <tt>union</tt> may have multiple data members, but at any point in time, only one of the members may have a value. When a value is assigned to one member of the <tt>union</tt>, all other members become undefined.</p>
+        <p class="docText"><b><a class="docLink" href="ch18lev1sec9.html#gloss18_22" >联合</a></b>是一种特殊的类。一个 <tt>union</tt> 对象可以有多个数据成员，但在任何时刻，只有一个成员可以有值。当将一个值赋给 <tt>union</tt> 对象的一个成员的时候，其他所有都变为未定义的。</p>
+
+<a name="idd1e152070"></a><a name="idd1e152076"></a><a name="idd1e152081"></a>
+        <p class="docText">The amount of storage allocated for a <tt>union</tt> is at least as much as the amount necessary to contain its largest data member. Like any class, a <tt>union</tt> defines a new type.</p>
+        <p class="docText">为 <tt>union</tt> 对象分配的存储的量至少与包含其最大数据成员的一样多。像任何类一样，一个 <tt>union</tt> 定义了一个新的类型。</p>
+
+<a name="ch18lev2sec16"></a>
+        <h4 class="docSection2Title">Defining a Union</h4>
+        <h4 class="docSection2Title">定义联合</h4>
+
+        <p class="docText">Unions offer a convenient way to represent a set of mutually exclusive values that may have different types. As an example, we might have a process that handles different kinds of numeric or character data. That process might define a <tt>union</tt> to hold these values:</p>
+        <p class="docText">联合提供了便利的办法表示一组相互排斥的值，这些值可以是不同类型的。作为例子，我们可能有一个处理不同各类数值或字符数据的过程。该过程可以定义一个 <tt>union</tt> 来保存这些值：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">objects of type</span> <span class="docEmphasis">TokenValue</span> <span class="docEmphItalicAlt">have a single member,</span>
+     // <span class="docEmphItalicAlt">which could be of any of the listed types</span>
+     union TokenValue {
+         char   cval;
+         int    ival;
+         double dval;
+     };
+</pre><br>
+
+        <p class="docText">A <tt>union</tt> is defined starting with the keyword <tt>union</tt>, followed by an (optional) name for the <tt>union</tt> and a set of member declarations enclosed in curly braces. This code defines a <tt>union</tt> named <tt>TokenValue</tt> that can hold a value that is either a <tt>char</tt>, an <tt>int</tt>, a pointer to <tt>char</tt>, or a <tt>double</tt>. <a class="docLink" href="ch18lev1sec5.html#ch18lev1sec5">Section 18.5</a> (p. <a class="docLink" href="ch18lev1sec5.html#ch18lev1sec5">795</a>) will look at what it means to omit the <tt>union</tt> name.</p>
+        <p class="docText">一个 <tt>union</tt> 定义以关键字 <tt>union</tt> 开始，后接（可选的）<tt>union</tt> 名字，以及一组以花括号括住的成员声明。这段代码定义了名为 <tt>TokenValue</tt> 的 <tt>union</tt>，它可以保存一个 <tt>char</tt>、<tt>int</tt>、<tt>char</tt> 指针或 <tt>double</tt> 值。本节介绍省略 <tt>union</tt> 名字意味着什么。</p>
+
+        <p class="docText">Like any class, a <tt>union</tt> type defines how much storage is associated with objects of its type. The size of each <tt>union</tt> object is fixed at compile time: It is at least as large as the size of the <tt>union</tt>'s largest data member.</p>
+	<p class="docText">像任何类一样，<tt>union</tt> 类型定义了与 <tt>union</tt> 类型的对象相关联的内存是多少。每个 <tt>union</tt> 对象的大小在编译时固定的：它至少与 <tt>union</tt> 的最大数据成员一样大。</p>
+
+<a name="ch18lev2sec17"></a>
+        <h4 class="docSection2Title">No Static, Reference, or Class Data Members</h4>
+        <h4 class="docSection2Title">没有静态数据成员、引用成员或类数据成员</h4>
+
+        <p class="docText">Some, but not all, class features apply equally to <tt>union</tt>s. For example, like any class, a <tt>union</tt> can specify protection labels to make members public, private, or protected. By default, <tt>union</tt>s behave like <tt>struct</tt>s: Unless otherwise specified, the members of a <tt>union</tt> are <tt>public</tt>.</p>
+        <p class="docText">某些（但不是全部）类特征同样适用于 <tt>union</tt>。例如，像任何类一样，<tt>union</tt> 可以指定保护标记使成员成为公用的、私有的或受保护的。默认情况下，<tt>union</tt> 表现得像 <tt>struct</tt>：除非另外指定，否则 <tt>union</tt> 的成员都为 <tt>public</tt> 成员。</p>
+
+        <p class="docText">A <tt>union</tt> may also define member functions, including constructors and destructors. However, a <tt>union</tt> may not serve as a base class, so a member function may not be virtual.</p>
+        <p class="docText"><tt>union</tt> 也可以定义成员函数，包括构造函数和析构函数。但是，<tt>union</tt> 不能作为基类使用，所以成员函数不能为虚数。</p>
+
+        <p class="docText">A <tt>union</tt> cannot have a static data member or a member that is a reference. Moreover, <tt>union</tt>s cannot have a member of a class type that defines a constructor, destructor, or assignment operator:</p>
+        <p class="docText"><tt>union</tt> 不能具有静态数据成员或引用成员，而且，<tt>union</tt> 不能具有定义了构造函数、析构函数或赋值操作符的类类型的成员：</p>
+        <pre>
+     union illegal_members {
+         Screen s;      // <span class="docEmphItalicAlt">error: has constructor</span>
+         static int is; // <span class="docEmphItalicAlt">error: static member</span>
+         int &amp;rfi;      // <span class="docEmphItalicAlt">error: reference member</span>
+         Screen *ps;    // <span class="docEmphItalicAlt">ok: ordinary built-in pointer type</span>
+     };
+</pre><br>
+
+        <p class="docText">This restriction includes classes with members that have a constructor, destructor, or assignment operator.</p>
+        <p class="docText">这个限制包括了具有带构造函数、析构函数或赋值操作符的成员的类。</p>
+
+<a name="ch18lev2sec18"></a>
+        <h4 class="docSection2Title">Using a Union Type</h4>
+        <h4 class="docSection2Title">使用联合类型</h4>
+
+<a name="idd1e152248"></a><a name="idd1e152251"></a><a name="idd1e152256"></a><a name="idd1e152261"></a>
+        <p class="docText">The name of a <tt>union</tt> is a type name:</p>
+        <p class="docText"><tt>union</tt> 的名字是一个类型名：</p>
+        <pre>
+     TokenValue first_token = {'a'};  // <span class="docEmphItalicAlt">initialized</span> <span class="docEmphasis">TokenValue</span>
+     TokenValue last_token;           // <span class="docEmphItalicAlt">uninitialized</span> <span class="docEmphasis">TokenValue</span> <span class="docEmphItalicAlt">object</span>
+     TokenValue *pt = new TokenValue; // <span class="docEmphItalicAlt">pointer to a</span> <span class="docEmphasis">TokenValue</span> <span class="docEmphItalicAlt">object</span>
+</pre><br>
+
+        <p class="docText">Like other built-in types, by default <tt>union</tt>s are uninitialized. We can explicitly initialize a <tt>union</tt> in the same way that we can explicitly initialize (<a class="docLink" href="ch12lev1sec4.html#ch12lev2sec24" >Section 12.4.5</a>, p. <a class="docLink" href="ch12lev1sec4.html#ch12lev2sec24" >464</a>) simple classes. However, we can provide an initializer only for the first member. The initializer must be enclosed in a pair of curly braces. The initialization of <tt>first_token</tt> gives a value to its <tt>cval</tt> member.</p>
+        <p class="docText">像其他内置类型一样，默认情况下 <tt>union</tt> 对象是未初始化的。可以用与显式初始化（<a class="docLink" href="ch12lev1sec4.html#ch12lev2sec24" >第 12.4.5 节</a>）简单类对象一样的方法显式初始化 <tt>union</tt> 对象。但是，只能为第一个成员提供初始化式。该初始化式必须括在一对花括号中。<tt>first_token</tt> 的初始化给它的 <tt>cval</tt> 成员一个值。</p>
+
+<a name="ch18lev2sec19"></a>
+        <h4 class="docSection2Title">Using Members of a Union</h4>
+        <h4 class="docSection2Title">使用联合的成员</h4>
+
+        <p class="docText">The members of an object of <tt>union</tt> type are accessed using the normal member access operators (<tt>.</tt> and <tt>-&gt;</tt>):</p>
+        <p class="docText">可以使用普通成员访问操作符（<tt>.</tt> 和 <tt>-&gt;</tt>）访问 <tt>union</tt> 类型对象的成员：</p>
+        <pre>
+     last_token.cval = 'z';
+     pt-&gt;ival = 42;
+</pre><br>
+
+        <p class="docText">Giving a value to a data member of a <tt>union</tt> object makes the other data members undefined. When using a <tt>union</tt>, we must always <span class="docEmphasis">know</span> what type of value is currently stored in the <tt>union</tt>. Retrieving the value stored in the <tt>union</tt> through the wrong data member can lead to a crash or other incorrect program behavior.</p>
+        <p class="docText">给 <tt>union</tt> 对象的某个数据成员一个值使得其他数据成员变为未定义的。使用 <tt>union</tt> 对象时，我们必须总是<span class="docEmphasis">知道</span> <tt>union</tt> 对象中当前存储的是什么类型的值。通过错误的数据成员检索保存在 <tt>union</tt> 对象中的值，可能会导致程序崩溃或者其他不正确的程序行为。</p>
+
+<a name="ch18note26"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="116" height="74" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/bestpractices.jpg;400478" ></td>
+
+              <td valign="top">
+<a name="ch18term5"></a>
+                <p class="docText">The best way to avoid accessing the <tt>union</tt> value through the wrong member is to define a separate object that keeps track of what value is stored in the <tt>union</tt>. This additional object is referred to as the <b><a class="docLink" href="ch18lev1sec9.html#gloss18_05" >discriminant</a></b> of the <tt>union</tt>.</p>
+		<p class="docText">避免通过错误成员访问 <tt>union</tt> 值的最佳办法是，定义一个单独的对象跟踪 <tt>union</tt> 中存储了什么值。这个附加对象称为 <tt>union</tt> 的<b><a class="docLink" href="ch18lev1sec9.html#gloss18_05" >判别式</a></b>。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch18lev2sec20"></a>
+
+        <h4 class="docSection2Title">Nested Unions</h4>
+        <h4 class="docSection2Title">嵌套联合</h4>
+
+        <p class="docText">Most often <tt>union</tt>s are used as nested types, where the discriminant is a member of the enclosing class:</p>
+        <p class="docText"><tt>union</tt> 最经常用作嵌套类型，其中判别式是外围类的一个成员：</p>
+        <pre>
+     class Token {
+     public:
+         // <span class="docEmphItalicAlt">indicates which kind of value is in</span> <span class="docEmphasis">val</span>
+         enum TokenKind {INT, CHAR, DBL};
+         TokenKind tok;
+         union {             // <span class="docEmphItalicAlt">unnamed union</span>
+             char   cval;
+             int    ival;
+             double dval;
+         } val;              // <span class="docEmphItalicAlt">member</span> <span class="docEmphasis">val</span> <span class="docEmphItalicAlt">is a union of the 3 listed types</span>
+     };
+</pre><br>
+
+        <p class="docText">In this class, the enumeration object <tt>tok</tt> serves to indicate which kind of value is stored in the <tt>val</tt> member. That member is an (unnamed) <tt>union</tt> that holds either a <tt>char, int</tt>, or <tt>double</tt>.</p>
+	<p class="docText">这个类中，用枚举对象 <tt>tok</tt> 指出 <tt>val</tt> 成员中存储了哪种值，<tt>val</tt> 成员是一个（未命名的）<tt>union</tt>，它保存 <tt>char</tt>、<tt>int</tt> 或 <tt>double</tt> 值。</p>
+
+<a name="idd1e152441"></a><a name="idd1e152444"></a>
+        <p class="docText">We often use a switch statement (<a class="docLink" href="ch06lev1sec6.html#ch06lev1sec6" >Section 6.6</a>, p. <a class="docLink" href="ch06lev1sec6.html#ch06lev1sec6" >199</a>) to test the discriminant and then do processing dependent on which value is currently stored in the <tt>union</tt>:</p>
+	<p class="docText">经常使用 <tt>switch</tt> 语句（<a class="docLink" href="ch06lev1sec6.html#ch06lev1sec6" >第 6.6 节</a>）测试判别式，然后根据 <tt>union</tt> 中当前存储的值进行处理：</p>
+        <pre>
+     Token token;
+     switch (token.tok) {
+     case Token::INT:
+         token.val.ival = 42; break;
+     case Token::CHAR:
+         token.val.cval = 'a'; break;
+     case Token::DBL:
+         token.val.dval = 3.14; break;
+     }
+</pre><br>
+        <a name="ch18lev2sec21"></a>
+
+        <h4 class="docSection2Title">Anonymous Unions</h4>
+        <h4 class="docSection2Title">匿名联合</h4>
+
+<a name="ch18term2"></a>
+        <p class="docText">An unnamed <tt>union</tt> that is not used to define an object is referred to as an <b><a class="docLink" href="ch18lev1sec9.html#gloss18_02" >anonymous <span class="docEmphStrong"><tt>union</tt></span></a></b>. The names of the members of an anonymous <tt>union</tt> appear in the enclosing scope. For example, here is our <tt>Token</tt> class rewritten to use an anonymous <tt>union</tt>:</p>
+        <p class="docText">不用于定义对象的未命名 <tt>union</tt> 称为<b><a class="docLink" href="ch18lev1sec9.html#gloss18_02" >匿名<span class="docEmphStrong"><tt>联合</tt></span></a></b>。匿名 <tt>union</tt> 的成员的名字出现在外围作用域中。例如，使用匿名 <tt>union</tt> 重写的 <tt>Token</tt> 类如下：</p>
+        <pre>
+     class Token {
+     public:
+         // <span class="docEmphItalicAlt">indicates which kind of token value is in</span> <span class="docEmphasis">val</span>
+         enum TokenKind {INT, CHAR, DBL};
+         TokenKind tok;
+         union {                 // <span class="docEmphItalicAlt">anonymous union</span>
+             char   cval;
+             int    ival;
+             double dval;
+         };
+     };
+</pre><br>
+
+        <p class="docText">Because an anonymous <tt>union</tt> provides no way to access its members, the members are directly accessible as part of the scope where the anonymous <tt>union</tt> is defined. Rewriting our previous <tt>switch</tt> to use the anonymous-<tt>union</tt> version of our class would look like:</p>
+        <p class="docText">因为匿名 <tt>union</tt> 不提供访问其成员的途径，所以将成员作为定义匿名 <tt>union</tt> 的作用域的一部分直接访问。重写前面的 <tt>switch</tt> 以便使用类的匿名 <tt>union</tt> 版本，如下：</p>
+        <pre>
+     Token token;
+     switch (token.tok) {
+     case Token::INT:
+         token.ival = 42; break;
+     case Token::CHAR:
+         token.cval = 'a'; break;
+     case Token::DBL:
+         token.dval = 3.14; break;
+     }
+</pre><br>
+        <a name="ch18note27"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">An anonymous <tt>union</tt> cannot have private or protected members, nor can an anonymous <tt>union</tt> define member functions.</p>
+                <p class="docText">匿名 <tt>union</tt> 不能有私有成员或受保护成员，也不能定义成员函数。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a href="21001535.html" ><img src="images/pixel.gif"  alt="" width="1" height="1" border="0"></a>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch18lev1sec4.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch18lev1sec6.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

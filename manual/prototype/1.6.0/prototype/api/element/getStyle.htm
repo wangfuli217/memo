@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Element.getStyle - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>getStyle</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">getStyle(element, property) -> String | null</code></pre>
+			<p>
+				返回 <code>element</code> 的指定 CSS 属性值。<code>property</code> 可以用标准的 CSS 名称指定，也可以使用
+				camelized 命名方式指定（<strong>译注：</strong>例如 CSS 属性 border-width 可以用 border-width 指代，也可用 borderWidth 指代）。				
+			</p>
+			<p><strong>译注：</strong>其实该方法等同于 DOM 中 <code>element.style.xxx</code> 系列属性。</p>			
+		</div>
+		<div id="abody">
+			<p>
+				不论元素应用内联 CSS 样式，还是应用样式表中指定的样式，该方法均能查询到元素相应的 CSS 属性。对于样式属性 <code>float</code>、
+				<code>opacity</code>（返回值界于 0 和 1 之间，0 表示完全透明，1 表示完全不透明）、位置属性（<code>left</code>、
+				<code>top</code>、<code>right</code> 和 <code>bottom</code>）以及隐藏元素的尺寸（<code>width</code> 或 <code>height</code>），
+				该方法的返回值在不同的浏览器上会有一些差别。
+			</p>
+			<h3>样例</h3>
+			<pre><code class="javascript">$(element).getStyle('font-size');
+// 等同于：
+$(element).getStyle('fontSize');
+// -> '12px' </code></pre>
+			<h3>注意</h3>
+			<p>Internet Explorer 直接返回其相应的 CSS 样式属性值，而其它的浏览器返回计算后的值，请看下面的 HTML 片断：</p>
+			<pre><code class="html">&lt;style&gt;
+	#test { font-size: 12px; margin-left: 1em; } 
+&lt;/style&gt;
+&lt;div id="test"&gt;&lt;/div&gt; </code></pre>
+			<pre><code class="javascript">$('test').getStyle('margin-left'); 
+// -> 在 IE 上返回 '1em' 
+// -> 其它浏览器上返回 '12px'</code></pre>
+			<p>
+				如果元素被隐藏（<code>display</code> 属性为 <code>'none'</code>），并且查询的属性不是内联属性，Safari 将返回 <code>null</code>。
+			</p>
+			<p>
+				该方法并不支持所有的 CSS 属性，或许你仅能够使用在<a href="http://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-ElementCSSInlineStyle" >
+				文档对象模型（DOM）级别 2 样式规范</a> 中描述的 CSS 属性。
+			</p>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

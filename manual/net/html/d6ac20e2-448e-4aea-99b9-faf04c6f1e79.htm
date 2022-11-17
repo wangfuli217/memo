@@ -1,0 +1,137 @@
+﻿<html xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+    <META NAME="save" CONTENT="history" />
+    <title>如何：将字节数组转换为 int（C# 编程指南）</title>
+    <link rel="stylesheet" type="text/css" href="../styles/presentation.css" />
+    <link rel="stylesheet" type="text/css" href="ms-help://Hx/HxRuntime/HxLink.css" />
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/EventUtilities.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/SplitScreen.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/Dropdown.js"> </script>
+    <script type="text/javascript" src="../scripts/script_manifold.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/script_feedBack.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CheckboxMenu.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CommonUtilities.js"> </script>
+    <xml>
+      <MSHelp:TOCTitle Title="如何：将字节数组转换为 int" />
+      <MSHelp:Keyword Index="A" Term="d6ac20e2-448e-4aea-99b9-faf04c6f1e79" />
+      <MSHelp:Keyword Index="K" Term="字节数组" />
+      <MSHelp:Keyword Index="K" Term="转换 [C#], 字节数组到 int" />
+      <MSHelp:Keyword Index="K" Term="int 数据类型 [C#]" />
+      <MSHelp:Attr Name="RevisionNumber" Value="16" />
+      <MSHelp:Attr Name="AssetID" Value="d6ac20e2-448e-4aea-99b9-faf04c6f1e79" />
+      <MSHelp:Attr Name="Abstract" Value="此示例演示如何使用 T:System.BitConverter 类将字节数组转换为 int 并返回字节数组。例如，在从网络读取字节之后，可能需要将字节转换为内置数据类型。除了示例中的 M:System.BitConverter.ToInt32(System.Byte[],System.Int32) 方法之外，下表列出了 T:System.BitConverter 类中将字节（来自字节数组）转换为其他内置类型的方法。" />
+      <MSHelp:Attr Name="codelang" Value="CSharp" />
+      <MSHelp:Attr Name="CommunityContent" Value="1" />
+      <MSHelp:Attr Name="DevLang" Value="CSharp" />
+      <MSHelp:Attr Name="DevLangVers" Value="CSharp" />
+      <MSHelp:Attr Name="DocSet" Value="C#" />
+      <MSHelp:Attr Name="DocSet" Value="C# Lang" />
+      <MSHelp:Attr Name="DocSet" Value="ExpressLibVS" />
+      <MSHelp:Attr Name="ProgModel" Value="managed" />
+      <MSHelp:Attr Name="ShippedIn" Value="vs.90" />
+      <MSHelp:Attr Name="Technology" Value="ManagedCode" />
+      <MSHelp:Attr Name="TopicVersion" Value="09.00.08178.10000" />
+      <MSHelp:Attr Name="Catalog Container" Value="System_Default_Catalog" />
+      <MSHelp:Attr Name="Content Set Container" Value="System_Default_Content_Set" />
+      <MSHelp:Attr Name="TopicType" Value="kbHowTo" />
+      <MSHelp:Attr Name="Locale" Value="zh-chs" />
+    </xml>
+  </head>
+  <body>
+    <input type="hidden" id="userDataCache" class="userDataStyle" />
+    <input type="hidden" id="hiddenScrollOffset" />
+    <img id="collapseImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" title="“折叠”图像" />
+    <img id="expandImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" title="“展开”图像" />
+    <img id="collapseAllImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" />
+    <img id="expandAllImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" />
+    <img id="dropDownImage" style="display:none; height:0; width:0;" src="../icons/dropdown.gif" />
+    <img id="dropDownHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/dropdownHover.gif" />
+    <img id="copyImage" style="display:none; height:0; width:0;" src="../icons/copycode.gif" title="“复制”图像" />
+    <img id="copyHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/copycodeHighlight.gif" title="“复制悬停”图像" />
+    <div id="header">
+      <table id="topTable" cellspacing="0" cellpadding="0">
+        <tr>
+          <td>
+            <span onclick="ExpandCollapseAll(toggleAllImage)" style="cursor:default;" onkeypress="ExpandCollapseAll_CheckKey(toggleAllImage, event)" tabindex="0">
+              <img ID="toggleAllImage" class="toggleAll" src="../icons/collapse_all.gif" /> <label id="collapseAllLabel" for="toggleAllImage" style="display: none;">全部折叠</label><label id="expandAllLabel" for="toggleAllImage" style="display: none;">全部展开</label> </span>
+            <span>    </span>
+            <span id="devlangsDropdown" class="filter" tabindex="0">
+              <img id="devlangsDropdownImage" src="../icons/dropdown.gif" /> <label id="devlangsMenuAllLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：全部 </nobr></label><label id="devlangsMenuMultipleLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：多个 </nobr></label><label id="devlangsMenuVisualBasicLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual Basic </nobr></label><label id="devlangsMenuCSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：C# </nobr></label><label id="devlangsMenuManagedCPlusPlusLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual C++ </nobr></label><label id="devlangsMenuJSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：J# </nobr></label><label id="devlangsMenuJScriptLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：JScript </nobr></label></span>
+          </td>
+        </tr>
+      </table>
+      <div id="devlangsMenu">
+        <input id="VisualBasicCheckbox" type="checkbox" data="VisualBasic,vb,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="VisualBasicCheckbox">Visual Basic</label>
+        <br />
+        <input id="CSharpCheckbox" type="checkbox" data="CSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="CSharpCheckbox">C#</label>
+        <br />
+        <input id="ManagedCPlusPlusCheckbox" type="checkbox" data="ManagedCPlusPlus,cpp,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="ManagedCPlusPlusCheckbox">Visual C++</label>
+        <br />
+        <input id="JSharpCheckbox" type="checkbox" data="JSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JSharpCheckbox">J#</label>
+        <br />
+        <input id="JScriptCheckbox" type="checkbox" data="JScript,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JScriptCheckbox">JScript</label>
+        <br />
+      </div>
+      <table id="bottomTable" cellpadding="0" cellspacing="0">
+        <tr id="headerTableRow1">
+          <td align="left">
+            <span id="runningHeaderText">C# 编程指南</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow2">
+          <td align="left">
+            <span id="nsrTitle">如何：将字节数组转换为 int（C# 编程指南）</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow3">
+          <td align="left">
+            <a href="d6ac20e2-448e-4aea-99b9-faf04c6f1e79.htm#exampleToggle" onclick="OpenSection(exampleToggle)">示例</a>  <a href="d6ac20e2-448e-4aea-99b9-faf04c6f1e79.htm#seeAlsoToggle" onclick="OpenSection(seeAlsoToggle)">另请参见</a>  
+<script type="text/javascript">
+var fbBody = '%b8%d0%d0%bb%c4%fa%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%bf%aa%b7%a2%b0%e6%b1%e0%d0%b4%cd%c5%b6%d3%bd%ab%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%d3%c3%d3%da%b8%c4%bd%f8%ce%c4%b5%b5%a1%a3%ce%d2%c3%c7%d4%da%c9%f3%d4%c4%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%ca%b1%a3%ac%bf%c9%c4%dc%bb%e1%b8%f8%c4%fa%b7%a2%cb%cd%b5%e7%d7%d3%d3%ca%bc%fe%a3%ac%d2%d4%c7%eb%c4%fa%cc%e1%b9%a9%bd%f8%d2%bb%b2%bd%b5%c4%bd%e2%ca%cd%cb%b5%c3%f7%bb%f2%d5%df%be%cd%bd%e2%be%f6%b7%bd%b0%b8%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%ce%d2%c3%c7%b2%bb%bb%e1%bd%ab%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%d3%c3%d3%da%c8%ce%ba%ce%c6%e4%cb%fb%d3%c3%cd%be%a3%ac%b2%a2%c7%d2%d4%da%c9%f3%d4%c4%cd%ea%d6%ae%ba%f3%a3%ac%ce%d2%c3%c7%b2%bb%bb%e1%d4%d9%b1%a3%c1%f4%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%a1%a3%0d%0a%d3%d0%b9%d8%20Microsoft%20%d2%fe%cb%bd%d5%fe%b2%df%b5%c4%bd%f8%d2%bb%b2%bd%d0%c5%cf%a2%a3%ac%c7%eb%b2%ce%bc%fb%20http%3a%2f%2fprivacy.microsoft.com%2fzh-cn%2fdefault.aspx%a1%a3';
+var fbSubject = 'Customer%20Feedback';
+</script>
+  <span id="headfeedbackarea" class="feedbackhead"><a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);"> 发送反馈意见</a></span>
+</td>
+        </tr>
+      </table>
+      <table id="gradientTable">
+        <tr>
+          <td class="nsrBottom" background="../icons/gradient.gif" />
+        </tr>
+      </table>
+    </div>
+    <div id="mainSection">
+      <div id="mainBody">
+        <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
+        <font color="DarkGray"></font>
+        <p /> <p><font color="DarkGray">更新：2007 年 11 月</font></p><div class="introduction"><p>此示例演示如何使用 <span sdata="cer" target="T:System.BitConverter"><mshelp:link keywords="T:System.BitConverter" tabindex="0">BitConverter</mshelp:link></span> 类将字节数组转换为 <mshelp:link keywords="212447b4-5d2a-41aa-88ab-84fe710bdb52" tabindex="0">int</mshelp:link> 并返回字节数组。例如，在从网络读取字节之后，可能需要将字节转换为内置数据类型。除了示例中的 <span sdata="cer" target="M:System.BitConverter.ToInt32(System.Byte[],System.Int32)"><mshelp:link keywords="M:System.BitConverter.ToInt32(System.Byte[],System.Int32)" tabindex="0">ToInt32(<span class="languageSpecificText"><span class="cpp">array&lt;</span></span>Byte<span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span></span>, Int32)</mshelp:link></span> 方法之外，下表列出了 <span sdata="cer" target="T:System.BitConverter"><mshelp:link keywords="T:System.BitConverter" tabindex="0">BitConverter</mshelp:link></span> 类中将字节（来自字节数组）转换为其他内置类型的方法。</p><div class="caption"></div><div class="tableSection"><table width="50%" cellspacing="2" cellpadding="5" frame="lhs"><tr><th><p>返回类型</p></th><th><p>方法</p></th></tr><tr><td><p><span sdata="langKeyword" value="bool"><span class="keyword">bool</span></span></p></td><td><p><span sdata="cer" target="M:System.BitConverter.ToBoolean(System.Byte[],System.Int32)"><mshelp:link keywords="M:System.BitConverter.ToBoolean(System.Byte[],System.Int32)" tabindex="0">ToBoolean(<span class="languageSpecificText"><span class="cpp">array&lt;</span></span>Byte<span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span></span>, Int32)</mshelp:link></span></p></td></tr><tr><td><p><span sdata="langKeyword" value="char"><span class="keyword">char</span></span></p></td><td><p><span sdata="cer" target="M:System.BitConverter.ToChar(System.Byte[],System.Int32)"><mshelp:link keywords="M:System.BitConverter.ToChar(System.Byte[],System.Int32)" tabindex="0">ToChar(<span class="languageSpecificText"><span class="cpp">array&lt;</span></span>Byte<span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span></span>, Int32)</mshelp:link></span></p></td></tr><tr><td><p><span sdata="langKeyword" value="double"><span class="keyword">double</span></span></p></td><td><p><span sdata="cer" target="M:System.BitConverter.ToDouble(System.Byte[],System.Int32)"><mshelp:link keywords="M:System.BitConverter.ToDouble(System.Byte[],System.Int32)" tabindex="0">ToDouble(<span class="languageSpecificText"><span class="cpp">array&lt;</span></span>Byte<span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span></span>, Int32)</mshelp:link></span></p></td></tr><tr><td><p><span sdata="langKeyword" value="short"><span class="keyword">short</span></span></p></td><td><p><span sdata="cer" target="M:System.BitConverter.ToInt16(System.Byte[],System.Int32)"><mshelp:link keywords="M:System.BitConverter.ToInt16(System.Byte[],System.Int32)" tabindex="0">ToInt16(<span class="languageSpecificText"><span class="cpp">array&lt;</span></span>Byte<span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span></span>, Int32)</mshelp:link></span></p></td></tr><tr><td><p><span sdata="langKeyword" value="int"><span class="keyword">int</span></span></p></td><td><p><span sdata="cer" target="M:System.BitConverter.ToInt32(System.Byte[],System.Int32)"><mshelp:link keywords="M:System.BitConverter.ToInt32(System.Byte[],System.Int32)" tabindex="0">ToInt32(<span class="languageSpecificText"><span class="cpp">array&lt;</span></span>Byte<span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span></span>, Int32)</mshelp:link></span></p></td></tr><tr><td><p><span sdata="langKeyword" value="long"><span class="keyword">long</span></span></p></td><td><p><span sdata="cer" target="M:System.BitConverter.ToInt64(System.Byte[],System.Int32)"><mshelp:link keywords="M:System.BitConverter.ToInt64(System.Byte[],System.Int32)" tabindex="0">ToInt64(<span class="languageSpecificText"><span class="cpp">array&lt;</span></span>Byte<span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span></span>, Int32)</mshelp:link></span></p></td></tr><tr><td><p><span sdata="langKeyword" value="float"><span class="keyword">float</span></span></p></td><td><p><span sdata="cer" target="M:System.BitConverter.ToSingle(System.Byte[],System.Int32)"><mshelp:link keywords="M:System.BitConverter.ToSingle(System.Byte[],System.Int32)" tabindex="0">ToSingle(<span class="languageSpecificText"><span class="cpp">array&lt;</span></span>Byte<span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span></span>, Int32)</mshelp:link></span></p></td></tr><tr><td><p><span sdata="langKeyword" value="ushort"><span class="keyword">ushort</span></span></p></td><td><p><span sdata="cer" target="M:System.BitConverter.ToUInt16(System.Byte[],System.Int32)"><mshelp:link keywords="M:System.BitConverter.ToUInt16(System.Byte[],System.Int32)" tabindex="0">ToUInt16(<span class="languageSpecificText"><span class="cpp">array&lt;</span></span>Byte<span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span></span>, Int32)</mshelp:link></span></p></td></tr><tr><td><p><span sdata="langKeyword" value="uint"><span class="keyword">uint</span></span></p></td><td><p><span sdata="cer" target="M:System.BitConverter.ToUInt32(System.Byte[],System.Int32)"><mshelp:link keywords="M:System.BitConverter.ToUInt32(System.Byte[],System.Int32)" tabindex="0">ToUInt32(<span class="languageSpecificText"><span class="cpp">array&lt;</span></span>Byte<span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span></span>, Int32)</mshelp:link></span></p></td></tr><tr><td><p><span sdata="langKeyword" value="ulong"><span class="keyword">ulong</span></span></p></td><td><p><span sdata="cer" target="M:System.BitConverter.ToUInt64(System.Byte[],System.Int32)"><mshelp:link keywords="M:System.BitConverter.ToUInt64(System.Byte[],System.Int32)" tabindex="0">ToUInt64(<span class="languageSpecificText"><span class="cpp">array&lt;</span></span>Byte<span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span></span>, Int32)</mshelp:link></span></p></td></tr></table></div></div><h1 class="heading"><span onclick="ExpandCollapse(exampleToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(exampleToggle, event)" tabindex="0"><img id="exampleToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />示例</span></h1><div id="exampleSection" class="section" name="collapseableSection" style=""><p>此示例实例化字节数组，并在计算机结构为 little-endian 的情况下反转数组（即首先存储最低有效字节），然后调用 <span sdata="cer" target="M:System.BitConverter.ToInt32(System.Byte[],System.Int32)"><mshelp:link keywords="M:System.BitConverter.ToInt32(System.Byte[],System.Int32)" tabindex="0">ToInt32(<span class="languageSpecificText"><span class="cpp">array&lt;</span></span>Byte<span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span></span>, Int32)</mshelp:link></span> 方法以将数组中的四个字节转换为 <span sdata="langKeyword" value="int"><span class="keyword">int</span></span>。<span sdata="cer" target="M:System.BitConverter.ToInt32(System.Byte[],System.Int32)"><mshelp:link keywords="M:System.BitConverter.ToInt32(System.Byte[],System.Int32)" tabindex="0">ToInt32(<span class="languageSpecificText"><span class="cpp">array&lt;</span></span>Byte<span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span></span>, Int32)</mshelp:link></span> 的第二个参数指定字节数组的起始索引。</p><div class="alert"><table width="100%" cellspacing="0" cellpadding="0"><tr><th align="left"><img class="note" title="说明" src="../icons/alert_note.gif" /><b>说明：</b></th></tr><tr><td><p>输出可能会根据计算机结构的 endian 设置而不同。</p></td></tr></table></div><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">byte</span>[] bytes = { 0, 0, 0, 25 };
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// If the system architecture is little-endian (that is, little end first),</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// reverse the byte array.</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> (BitConverter.IsLittleEndian)
+    Array.Reverse(bytes);
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> i = BitConverter.ToInt32(bytes, 0);
+Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"int: {0}"</span>, i);
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Output: int: 25</span>
+
+</pre></td></tr></table></span></div></div><p>在此示例中，调用 <span sdata="cer" target="T:System.BitConverter"><mshelp:link keywords="T:System.BitConverter" tabindex="0">BitConverter</mshelp:link></span> 类的 <span sdata="cer" target="M:System.BitConverter.GetBytes(System.Int32)"><mshelp:link keywords="M:System.BitConverter.GetBytes(System.Int32)" tabindex="0">GetBytes(Int32)</mshelp:link></span> 方法以将 <span sdata="langKeyword" value="int"><span class="keyword">int</span></span> 转换为字节数组。</p><div class="alert"><table width="100%" cellspacing="0" cellpadding="0"><tr><th align="left"><img class="note" title="说明" src="../icons/alert_note.gif" /><b>说明：</b></th></tr><tr><td><p>输出可能会根据计算机结构的 endian 设置而不同。</p></td></tr></table></div><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">byte</span>[] bytes = BitConverter.GetBytes(201805978);
+Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"byte array: "</span> + BitConverter.ToString(bytes));
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Output: byte array: 9A-50-07-0C</span>
+
+</pre></td></tr></table></span></div></div></div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />请参见</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><h4 class="subHeading">参考</h4><div class="seeAlsoStyle"><span sdata="cer" target="T:System.BitConverter"><mshelp:link keywords="T:System.BitConverter" tabindex="0">BitConverter</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="cer" target="F:System.BitConverter.IsLittleEndian"><mshelp:link keywords="F:System.BitConverter.IsLittleEndian" tabindex="0">IsLittleEndian</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="f782d7cc-035e-4500-b1b1-36a9881130ad.htm">类型（C# 编程指南）</a></span></div></div></div>
+      <div id="footer">
+        <div class="footerLine">
+          <img width="100%" height="3px" src="../icons/footer.gif" title="“页脚”图像" />
+        </div>
+<span id="feedbackarea">将有关本主题的<a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);">反馈意见</a>发送给 Microsoft。</span>
+</div>
+    </div>
+  </body>
+</html>

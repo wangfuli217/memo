@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+    <!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+    <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+         <title>Memory Management</title> 
+        <link rel="shortcut icon" href="../../../static_star_theme/img/favicon.ico"/>
+        <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,700italic' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../static_star_theme/css/theme.css" type="text/css" /> 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+    </head>
+
+    <body class="wy-body-for-nav" role="document">
+
+    <div class="wy-grid-for-nav">
+
+        <div class="wy-full-navbar" data-swiftype-index="false">
+            <a href="http://www.memsql.com" class="logo">
+                <img src="../../../static_star_theme/img/memsql_logo_horizontal_white.svg" />
+            </a>
+            <div class="global nav">
+                <div class="pull-left left-links">
+                </div>
+                <div class="pull-right right-links">
+                    <a href="http://www.memsql.com/community/" style="word-spacing: 2px;">Community Edition</a>
+                    <a href="http://blog.memsql.com">Blog</a>
+                    <a href="http://www.memsql.com/memsql-partners">Partners</a>
+                    <a href="http://www.memsql.com/resources">Resources</a>
+                    <a href="../../../index.html">Documentation</a>
+                    <a href="http://www.memsql.com/contact">Contact</a>
+                </div>
+            </div>
+            <div class="nav-links">
+                <a href="http://www.memsql.com/product">Product</a>
+                <a href="http://www.memsql.com/solutions">Solutions</a>
+                <a href="http://www.memsql.com/case-studies">Case Studies</a>
+                <a href="http://www.memsql.com/company">Company</a>
+                <a class="download" href="http://www.memsql.com/download/">Download Now</a>
+            </div>
+        </div>
+
+        <nav data-toggle="wy-nav-shift" class="wy-nav-side" data-swiftype-index="false">
+            <div class="wy-side-nav-search">
+                <div role="search">
+  <form id="search-form" class="wy-form" method="get">
+    <input type="text" id="st-search-input" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+            </div>
+
+            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                
+                 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">MemSQL Docs Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro/index.html">How MemSQL Works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../setup/quick_start/index.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../setup/get_started/index.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">User Manual</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../connecting/index.html">How to Connect to MemSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../how_to_run_queries/index.html">How to Run Queries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../multi_insert_examples/index.html">Concurrent Multi-Insert Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../data_loading/index.html">Loading Data Into MemSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../porting-apps/index.html">How to Port Your Applications to MemSQL</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="index.html">Memory Management</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="index.html#configuring-memory-limits">Configuring Memory Limits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#maximum-table-memory-reached">Maximum Table Memory Reached</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#linux-out-of-memory-behavior">Linux Out of Memory Behavior</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../distributed_architecture/index.html">Distributed Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../codegen/index.html">Code Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/index.html">Database Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../distributed_sql/index.html">Distributed SQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../columnar/index.html">Column Store</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../geospatial/index.html">Geospatial Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../json/json/index.html">Javascript Object Notation (JSON)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Operations Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ref/commands_by_type/index.html">SQL Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/config/index.html">Configuration Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ops/index.html">MemSQL Ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../loader/index.html">MemSQL Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../archive/index.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../editions/index.html">MemSQL Editions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq/index.html">Frequently Asked Questions</a></li>
+</ul>
+ 
+            </div>
+            &nbsp;
+        </nav>
+
+        <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+            <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+                <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+                <a href="../../../index.html" class="logo">
+                    <img src="../../../static_star_theme/img/memsql_logo_horizontal_white.svg" />
+                    <span class="subtitle">Documentation</span>
+                </a>
+            </nav>
+
+            <div class="wy-nav-content">
+                <div class="rst-content">
+                    <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../index.html">MemSQL Documentation</a> &raquo;</li>
+      
+          <li><a href="../index.html">User Manual</a> &raquo;</li>
+      
+    <li>Memory Management</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+                    <div role="main" class="document">
+                        
+  <div class="section" id="memory-management">
+<h1>Memory Management<a class="headerlink" href="index.html#memory-management" title="Permalink to this headline">¶</a></h1>
+<p>This page discusses common memory management topics. It includes the following sections:</p>
+<blockquote>
+<div><ul class="simple">
+<li><a class="reference internal" href="index.html#memory-limit"><em>Configuring Memory Limits</em></a></li>
+<li><a class="reference internal" href="index.html#maximum-table-memory-reached"><em>Maximum Table Memory Reached</em></a></li>
+<li><a class="reference internal" href="index.html#linux-behavior"><em>Linux Out of Memory Behavior</em></a></li>
+</ul>
+</div></blockquote>
+<div class="section" id="configuring-memory-limits">
+<span id="memory-limit"></span><h2>Configuring Memory Limits<a class="headerlink" href="index.html#configuring-memory-limits" title="Permalink to this headline">¶</a></h2>
+<p>MemSQL has two system variables that control its memory usage.  Both are measured in megabytes.</p>
+<div class="section" id="maximum-memory">
+<h3>maximum_memory<a class="headerlink" href="index.html#maximum-memory" title="Permalink to this headline">¶</a></h3>
+<p>MemSQL will not allocate more than <tt class="docutils literal"><span class="pre">maximum_memory</span></tt> megabytes of memory.  If a <tt class="docutils literal"><span class="pre">SELECT</span></tt> query&#8217;s memory allocations put the memory usage by MemSQL over <tt class="docutils literal"><span class="pre">maximum_memory</span></tt>, query execution stops and an error message is generated.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">If an <a class="reference internal" href="../../ref/CREATE_TABLE/index.html"><em>CREATE TABLE</em></a>, <a class="reference internal" href="../../ref/ALTER_TABLE/index.html"><em>ALTER TABLE</em></a>, <a class="reference internal" href="../../ref/CREATE_INDEX/index.html"><em>CREATE INDEX</em></a>, or <a class="reference internal" href="../../ref/DROP_INDEX/index.html"><em>DROP INDEX</em></a> statement&#8217;s memory allocations put the memory usage by MemSQL over <tt class="docutils literal"><span class="pre">maximum_memory</span></tt>, the server may terminate.  See the section below on <tt class="docutils literal"><span class="pre">maximum_table_memory</span></tt> for how to avoid allowing write queries to exceeded <tt class="docutils literal"><span class="pre">maximum_memory</span></tt>.</p>
+</div>
+<p>Query compilations whose allocations exceed this limit will also terminate the server. See <a class="reference internal" href="../codegen/index.html"><em>Code Generation</em></a> for more information on query compilations. By default, <tt class="docutils literal"><span class="pre">maximum_memory</span></tt> is set to the 90% of the physical memory on the host machine.  If the machine
+has swap enabled, its set to the amount of physical memory on the machine.</p>
+</div>
+<div class="section" id="maximum-table-memory">
+<h3>maximum_table_memory<a class="headerlink" href="index.html#maximum-table-memory" title="Permalink to this headline">¶</a></h3>
+<p>MemSQL will not allow writes to any table once the cumulative memory in use by all tables in MemSQL reaches <tt class="docutils literal"><span class="pre">maximum_table_memory</span></tt> (MemSQL will become read-only).  <tt class="docutils literal"><span class="pre">SELECT</span></tt> and <tt class="docutils literal"><span class="pre">DELETE</span></tt> queries will still be allowed even once the limit is reached.
+<tt class="docutils literal"><span class="pre">UPDATE</span></tt>, <tt class="docutils literal"><span class="pre">INSERT</span></tt> , <tt class="docutils literal"><span class="pre">CREATE</span> <span class="pre">TABLE</span></tt>, <tt class="docutils literal"><span class="pre">ALTER</span> <span class="pre">TABLE</span></tt>, <tt class="docutils literal"><span class="pre">CREATE</span> <span class="pre">INDEX</span></tt> or <tt class="docutils literal"><span class="pre">DROP</span> <span class="pre">INDEX</span></tt> statements will fail with an error message once the limit has been reached.  Query compilations are also disallowed once the limit is reached.</p>
+<p>This setting is designed to allow <a class="reference internal" href="../../ref/SELECT/index.html"><em>SELECT</em></a> queries to allocate temporary memory for sorting, hash group-by, and so on. The <tt class="docutils literal"><span class="pre">maximum_table_memory</span></tt> must be set to a value lower then <tt class="docutils literal"><span class="pre">maximum_memory</span></tt>.  By default, <tt class="docutils literal"><span class="pre">maximum_table_memory</span></tt> is set to 90% of <tt class="docutils literal"><span class="pre">maximum_memory</span></tt>.</p>
+<p>If the <tt class="docutils literal"><span class="pre">maximum_table_memory</span></tt> limit has been reached, <tt class="docutils literal"><span class="pre">DELETE</span></tt> queries can still be executed to remove data from the table. Some caution should be taken as <tt class="docutils literal"><span class="pre">DELETE</span></tt>s allocate extra memory to mark rows as deleted.  Large <tt class="docutils literal"><span class="pre">DELETE</span></tt>
+queries may fail if the memory used by MemSQL reaches <tt class="docutils literal"><span class="pre">maximum_memory</span></tt>.  The memory for a deleted row is reclaimed asynchronously by a garbage collector.</p>
+<p>Replicating databases will pause if memory use reaches <tt class="docutils literal"><span class="pre">maximum_table_memory</span></tt> while replicating data.  If memory becomes available again, say some data is deleted, replication will automatically continue replicating.</p>
+</div>
+</div>
+<div class="section" id="maximum-table-memory-reached">
+<span id="id1"></span><h2>Maximum Table Memory Reached<a class="headerlink" href="index.html#maximum-table-memory-reached" title="Permalink to this headline">¶</a></h2>
+<p>If you see the error message below, the leaf at <tt class="docutils literal"><span class="pre">'leafhost':leafport</span></tt> has reached <tt class="docutils literal"><span class="pre">maximum_table_memory</span></tt>, which is the maximum cumulative memory in use by all table on a node.  MemSQL will not allow writes to any table once <tt class="docutils literal"><span class="pre">maximum_table_memory</span></tt> is reached (MemSQL will become read-only).   See <a class="reference internal" href="index.html#memory-limit"><em>Configuring Memory Limits</em></a> for more details on memory configuration.</p>
+<div class="highlight"><pre><span class="n">Leaf</span> <span class="nf">Error</span> <span class="p">(</span><span class="n">leafhost</span><span class="p">:</span><span class="n">leafport</span><span class="p">):</span> <span class="n">Memory</span> <span class="k">usage</span> <span class="k">by</span> <span class="n">MemSQL</span> <span class="k">for</span> <span class="kp">tables</span> <span class="p">(</span><span class="c1">##### MB) has reached the value of &#39;maximum_table_memory&#39; global variable (##### MB). This query cannot be executed.</span>
+</pre></div>
+<p>You can resolve this issue with the steps below.</p>
+<div class="section" id="check-for-data-skew">
+<h3>Check for Data Skew<a class="headerlink" href="index.html#check-for-data-skew" title="Permalink to this headline">¶</a></h3>
+<p>First, determine which nodes are reaching their memory capacity.  Do this by checking for data skew across your nodes. <a class="reference internal" href="index.html#yes-skew"><em>If Skew is Present</em></a> (significantly higher memory consumption on specific nodes), you should re-evaluate your shard keys.  <a class="reference internal" href="index.html#no-skew"><em>If No Skew is Present</em></a>, you should increase cluster memory or delete data.  There are two ways to check for skew:</p>
+<ol class="arabic simple">
+<li>If you are running MemSQL 2.6, execute the following query to view per-table memory consumption and row count in your MemSQL cluster.</li>
+</ol>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="k">SELECT</span>
+    <span class="n">DATABASE_NAME</span><span class="p">,</span>
+    <span class="n">TABLE_NAME</span><span class="p">,</span>
+    <span class="nf">MIN</span><span class="p">(</span><span class="n">ROWS</span><span class="p">),</span>
+    <span class="nf">MAX</span><span class="p">(</span><span class="n">ROWS</span><span class="p">),</span>
+    <span class="nf">FLOOR</span><span class="p">(</span><span class="nf">AVG</span><span class="p">(</span><span class="n">ROWS</span><span class="p">))</span> <span class="k">AS</span> <span class="n">avg_rows</span><span class="p">,</span>
+    <span class="nf">ROUND</span><span class="p">(</span><span class="nf">STDDEV</span><span class="p">(</span><span class="n">ROWS</span><span class="p">)</span><span class="o">/</span><span class="nf">AVG</span><span class="p">(</span><span class="n">ROWS</span><span class="p">),</span><span class="mi">3</span><span class="p">)</span> <span class="k">AS</span> <span class="n">row_skew</span><span class="p">,</span>
+    <span class="nf">MIN</span><span class="p">(</span><span class="n">MEMORY_USE</span><span class="p">),</span>
+    <span class="nf">MAX</span><span class="p">(</span><span class="n">MEMORY_USE</span><span class="p">),</span>
+    <span class="nf">SUM</span><span class="p">(</span><span class="n">MEMORY_USE</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1024</span><span class="o">*</span><span class="mi">1024</span><span class="p">)</span> <span class="k">AS</span> <span class="n">total_memory_mb</span><span class="p">,</span>
+    <span class="nf">FLOOR</span><span class="p">(</span><span class="nf">AVG</span><span class="p">(</span><span class="n">MEMORY_USE</span><span class="p">))</span> <span class="k">AS</span> <span class="n">avg_memory</span><span class="p">,</span>
+    <span class="nf">ROUND</span><span class="p">(</span><span class="nf">STDDEV</span><span class="p">(</span><span class="n">MEMORY_USE</span><span class="p">)</span><span class="o">/</span><span class="nf">AVG</span><span class="p">(</span><span class="n">MEMORY_USE</span><span class="p">),</span><span class="mi">3</span><span class="p">)</span> <span class="k">AS</span> <span class="n">memory_skew</span>
+<span class="k">FROM</span> <span class="n">INFORMATION_SCHEMA</span><span class="p">.</span><span class="n">TABLE_STATISTICS</span>
+<span class="k">GROUP</span> <span class="k">BY</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span>
+<span class="k">HAVING</span> <span class="nf">SUM</span><span class="p">(</span><span class="n">ROWS</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">10000</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li>With any version of MemSQL, you can manually compare <tt class="docutils literal"><span class="pre">maximum_table_memory</span></tt> and <tt class="docutils literal"><span class="pre">Alloc_table_memory</span></tt> (memory used by tables) on each node:</li>
+</ol>
+<div class="highlight"><pre><span class="n">mysql</span><span class="o">&gt;</span> <span class="k">SHOW</span> <span class="n">VARIABLES</span> <span class="k">LIKE</span> <span class="s2">&quot;maximum_%&quot;</span><span class="p">;</span>
+<span class="o">+----------------------+-------+</span>
+<span class="o">|</span> <span class="n">Variable_name</span>        <span class="o">|</span> <span class="n">Value</span> <span class="o">|</span>
+<span class="o">+----------------------+-------+</span>
+<span class="o">|</span> <span class="n">maximum_memory</span>       <span class="o">|</span> <span class="mi">48291</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">maximum_table_memory</span> <span class="o">|</span> <span class="mi">43462</span> <span class="o">|</span>
+<span class="o">+----------------------+-------+</span>
+
+<span class="n">mysql</span><span class="o">&gt;</span> <span class="k">SHOW</span> <span class="n">STATUS</span> <span class="n">EXTENDED</span> <span class="k">LIKE</span> <span class="s2">&quot;Alloc_table_memory&quot;</span><span class="p">;</span>
+<span class="o">+--------------------+----------+</span>
+<span class="o">|</span> <span class="n">Variable_name</span>      <span class="o">|</span> <span class="n">Value</span>    <span class="o">|</span>
+<span class="o">+--------------------+----------+</span>
+<span class="o">|</span> <span class="n">Alloc_table_memory</span> <span class="o">|</span> <span class="mi">43462</span> <span class="n">MB</span> <span class="o">|</span>
+<span class="o">+--------------------+----------+</span>
+<span class="mi">1</span> <span class="n">row</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">01</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+<p>If memory consumption is significantly higher on specific nodes, see <a class="reference internal" href="index.html#yes-skew"><em>If Skew is Present</em></a>.  If memory consumption is fairly uniform across leaves, see <a class="reference internal" href="index.html#no-skew"><em>If No Skew is Present</em></a>.</p>
+</div>
+<div class="section" id="if-skew-is-present">
+<span id="yes-skew"></span><h3>If Skew is Present<a class="headerlink" href="index.html#if-skew-is-present" title="Permalink to this headline">¶</a></h3>
+<p>MemSQL distributes data based on the SHARD KEY specified in a table&#8217;s schema.  If no SHARD KEY is explicitly specified, the PRIMARY KEY is used as the default SHARD KEY.  If the SHARD KEY shards on a low cardinality column, data will accumulate on certain nodes.  To resolve this, you should export your data, modify your schema, and then reload your data.  To export your data, see <a class="reference internal" href="../../admin/from_mysql/index.html#migrate-data"><em>Migrating Data with mysqldump</em></a>.  After you backup your data, you can <tt class="docutils literal"><span class="pre">DROP</span> <span class="pre">TABLE</span> <span class="pre">low_cardinality_shard_key_table</span></tt>, and then <tt class="docutils literal"><span class="pre">CREATE</span> <span class="pre">TABLE</span></tt> with a higher cardinality SHARD KEY.  When you reload the data, MemSQL will automatically shard your data based on the new SHARD KEY.</p>
+<p>Example:</p>
+<div class="highlight"><pre><span class="nv">$ </span>mysqldump -h 127.0.0.1 -u root my_db low_cardinality_shard_key_table --no-create-info &gt; databackup.sql
+
+memsql&gt; DROP TABLE low_cardinality_shard_key_table;
+
+memsql&gt; <span class="nb">source </span>updated_shard_key_schema.sql;
+</pre></div>
+</div>
+<div class="section" id="if-no-skew-is-present">
+<span id="no-skew"></span><h3>If No Skew is Present<a class="headerlink" href="index.html#if-no-skew-is-present" title="Permalink to this headline">¶</a></h3>
+<p>If nodes are reaching <tt class="docutils literal"><span class="pre">maximum_table_memory</span></tt> without skew, the cluster itself is nearing maximum memory capacity.  To resolve this, you need to add capacity or delete data.  To add capacity, see <a class="reference internal" href="../../admin/cluster/index.html#task-adding-leaves"><em>Adding and Removing Leaves</em></a>.  If additional leaf nodes are not available, use the instructions below to delete data in batches.  <tt class="docutils literal"><span class="pre">DELETE</span></tt> queries use 50 bytes of memory per record deleted until the <tt class="docutils literal"><span class="pre">DELETE</span></tt> commits, so the <tt class="docutils literal"><span class="pre">maximum_table_memory</span></tt> needs to be temporarily increase on all nodes during the <tt class="docutils literal"><span class="pre">DELETE</span></tt>.</p>
+<p>On each leaf node in your cluster, do the following:</p>
+<ol class="arabic simple">
+<li>Pause write workloads from an aggregator or your application.</li>
+<li>Check current <tt class="docutils literal"><span class="pre">maximum_memory</span></tt> and <tt class="docutils literal"><span class="pre">maximum_table_memory</span></tt>.</li>
+</ol>
+<div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="k">select</span> <span class="o">@@</span><span class="n">global</span><span class="p">.</span><span class="n">maximum_memory</span>
+<span class="o">|</span> <span class="o">@@</span><span class="n">global</span><span class="p">.</span><span class="n">maximum_memory</span> <span class="o">|</span>
+<span class="o">+-------------------------+</span>
+<span class="o">|</span>                   <span class="mi">65536</span> <span class="o">|</span>
+<span class="o">+-------------------------+</span>
+<span class="mi">1</span> <span class="n">row</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+
+<span class="n">memsql</span><span class="o">&gt;</span> <span class="k">select</span> <span class="o">@@</span><span class="n">global</span><span class="p">.</span><span class="n">maximum_table_memory</span>
+<span class="o">+-------------------------------+</span>
+<span class="o">|</span> <span class="o">@@</span><span class="n">global</span><span class="p">.</span><span class="n">maximum_table_memory</span> <span class="o">|</span>
+<span class="o">+-------------------------------+</span>
+<span class="o">|</span>                         <span class="mi">57927</span> <span class="o">|</span>
+<span class="o">+-------------------------------+</span>
+ <span class="mi">1</span> <span class="n">row</span> <span class="k">in</span> <span class="kt">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+<ol class="arabic simple" start="3">
+<li>Increase <tt class="docutils literal"><span class="pre">maximum_table_memory</span></tt> to 95% of <tt class="docutils literal"><span class="pre">maximum_memory</span></tt>.  The default value is 90% of <tt class="docutils literal"><span class="pre">maximum_memory</span></tt>.</li>
+</ol>
+<div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="kt">set</span> <span class="o">@@</span><span class="n">global</span><span class="p">.</span><span class="n">maximum_table_memory</span><span class="o">=</span><span class="mi">62259</span><span class="p">;</span>
+<span class="n">Query</span> <span class="n">OK</span><span class="p">,</span> <span class="mi">0</span> <span class="n">rows</span> <span class="nf">affected</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+<ol class="arabic simple" start="4">
+<li>Execute small batches of DELETE queries.  Limit to 100,000 records or less to reduce memory used until commit.</li>
+</ol>
+<div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="k">DELETE</span> <span class="k">FROM</span> <span class="n">mytable</span> <span class="k">limit</span> <span class="mi">100000</span><span class="p">;</span>
+<span class="n">Query</span> <span class="n">OK</span><span class="p">,</span> <span class="mi">0</span> <span class="n">rows</span> <span class="nf">affected</span> <span class="p">(</span><span class="mi">1</span><span class="p">.</span><span class="mi">64</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+<ol class="arabic simple" start="5">
+<li>Restore <tt class="docutils literal"><span class="pre">maximum_table_memory</span></tt> to original value.</li>
+</ol>
+<div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="kt">set</span> <span class="o">@@</span><span class="n">global</span><span class="p">.</span><span class="n">maximum_table_memory</span><span class="o">=</span><span class="mi">57927</span><span class="p">;</span>
+<span class="n">Query</span> <span class="n">OK</span><span class="p">,</span> <span class="mi">0</span> <span class="n">rows</span> <span class="nf">affected</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="linux-out-of-memory-behavior">
+<span id="linux-behavior"></span><h2>Linux Out of Memory Behavior<a class="headerlink" href="index.html#linux-out-of-memory-behavior" title="Permalink to this headline">¶</a></h2>
+<p>Linux will kill processes using a lot of memory when the amount of free memory on the system is too low.  MemSQL is often the target process killed.  To check if MemSQL was killed by Linux as a result of the system running out of memory, run:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>dmesg | grep -i <span class="s2">&quot;out of memory&quot;</span>
+</pre></div>
+</div>
+<p>If the server has rebooted since MemSQL was killed, you can find the logs from the last boot by running:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>cat /var/log/kern.log
+</pre></div>
+</div>
+<p>Linux can be configured to disable this behaviour by changing the setting of <tt class="docutils literal"><span class="pre">vm.overcommit_memory</span></tt>or <tt class="docutils literal"><span class="pre">vm.overcommit_ratio</span></tt>, but this is not recommended.  Its safer to configure MemSQL to use less memory by setting <tt class="docutils literal"><span class="pre">maximum_memory</span></tt>to a lower value.</p>
+</div>
+</div>
+
+
+                    </div>
+                    <footer data-swiftype-index="false">
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../distributed_architecture/index.html" class="btn btn-neutral float-right" title="Distributed Architecture">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../porting-apps/index.html" class="btn btn-neutral" title="How to Port Your Applications to MemSQL"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&copy; Copyright 2015, MemSQL</p>
+  </div>
+</footer>
+                </div>
+            </div>
+
+        </section>
+    </div>
+
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/underscore-min.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery.ba-hashchange.min.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery.swiftype.search.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery.swiftype.autocomplete.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/theme.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/search.js"></script> 
+
+        <!-- Google Analytics -->
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-21693588-3', 'auto');
+            ga('send', 'pageview');
+        </script>
+        <!-- End Google Analytics -->
+
+        <script type="text/javascript">
+            $.ajax({
+                url: document.location.protocol + '//munchkin.marketo.net/munchkin.js',
+                dataType: 'script',
+                cache: true,
+                success: function() {
+                    Munchkin.init('759-YLI-316');
+                }
+            });
+        </script>
+    </body>
+</html>

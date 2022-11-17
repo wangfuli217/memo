@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+    <!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+    <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+         <title>Securing MemSQL</title> 
+        <link rel="shortcut icon" href="../../../static_star_theme/img/favicon.ico"/>
+        <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,700italic' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../static_star_theme/css/theme.css" type="text/css" /> 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+    </head>
+
+    <body class="wy-body-for-nav" role="document">
+
+    <div class="wy-grid-for-nav">
+
+        <div class="wy-full-navbar" data-swiftype-index="false">
+            <a href="http://www.memsql.com" class="logo">
+                <img src="../../../static_star_theme/img/memsql_logo_horizontal_white.svg" />
+            </a>
+            <div class="global nav">
+                <div class="pull-left left-links">
+                </div>
+                <div class="pull-right right-links">
+                    <a href="http://www.memsql.com/community/" style="word-spacing: 2px;">Community Edition</a>
+                    <a href="http://blog.memsql.com">Blog</a>
+                    <a href="http://www.memsql.com/memsql-partners">Partners</a>
+                    <a href="http://www.memsql.com/resources">Resources</a>
+                    <a href="../../../index.html">Documentation</a>
+                    <a href="http://www.memsql.com/contact">Contact</a>
+                </div>
+            </div>
+            <div class="nav-links">
+                <a href="http://www.memsql.com/product">Product</a>
+                <a href="http://www.memsql.com/solutions">Solutions</a>
+                <a href="http://www.memsql.com/case-studies">Case Studies</a>
+                <a href="http://www.memsql.com/company">Company</a>
+                <a class="download" href="http://www.memsql.com/download/">Download Now</a>
+            </div>
+        </div>
+
+        <nav data-toggle="wy-nav-shift" class="wy-nav-side" data-swiftype-index="false">
+            <div class="wy-side-nav-search">
+                <div role="search">
+  <form id="search-form" class="wy-form" method="get">
+    <input type="text" id="st-search-input" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+            </div>
+
+            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                
+                 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">MemSQL Docs Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro/index.html">How MemSQL Works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../setup/quick_start/index.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../setup/get_started/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../concepts/index.html">User Manual</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Operations Manual</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../upgrade/index.html">Upgrading MemSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin_concepts/index.html">Administrator Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cluster/index.html">Administering a Cluster</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="index.html">Securing MemSQL</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="index.html#configuring-security">Configuring Security</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#host-based-security">Host-Based Security</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#password-based-security">Password-Based Security</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../ssl/index.html">SSL Network Encryption</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../high_availability/index.html">Managing High Availability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../durability_recovery/index.html">Using Durability and Recovery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../replication/index.html">Using Replication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../backup_restore/index.html">Backing Up and Restoring Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../data_export/index.html">Exporting Data From MemSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tracelog/index.html">Trace Log</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../from_mysql/index.html">Transitioning from MySQL to MemSQL</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../ref/commands_by_type/index.html">SQL Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../config/index.html">Configuration Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ops/index.html">MemSQL Ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../loader/index.html">MemSQL Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../archive/index.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../editions/index.html">MemSQL Editions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq/index.html">Frequently Asked Questions</a></li>
+</ul>
+ 
+            </div>
+            &nbsp;
+        </nav>
+
+        <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+            <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+                <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+                <a href="../../../index.html" class="logo">
+                    <img src="../../../static_star_theme/img/memsql_logo_horizontal_white.svg" />
+                    <span class="subtitle">Documentation</span>
+                </a>
+            </nav>
+
+            <div class="wy-nav-content">
+                <div class="rst-content">
+                    <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../index.html">MemSQL Documentation</a> &raquo;</li>
+      
+          <li><a href="../index.html">Operations Manual</a> &raquo;</li>
+      
+    <li>Securing MemSQL</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+                    <div role="main" class="document">
+                        
+  <div class="section" id="securing-memsql">
+<span id="security"></span><h1>Securing MemSQL<a class="headerlink" href="index.html#securing-memsql" title="Permalink to this headline">¶</a></h1>
+<p>MemSQL supports features for user authentication, fine-grained access controls, and certificate-based
+network encryption between clients and the database cluster, as well as between individual nodes in the cluster.
+All communication happens over the MySQL protocol (default port 3306), including replication and management.</p>
+<p>Encryption is a large topic, covered in <a class="reference internal" href="../ssl/index.html"><em>SSL Network Encryption</em></a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Currently, MemSQL does not have features for the security of data &#8220;at rest&#8221;, for example, encrypted
+backups and logs. It is, however, entirely possible to enrypt backup files with an external program
+after they are written, or to use disk volumes with transparent encryption.</p>
+</div>
+<div class="section" id="configuring-security">
+<h2>Configuring Security<a class="headerlink" href="index.html#configuring-security" title="Permalink to this headline">¶</a></h2>
+<p>MemSQL ships with security disabled by default, but it supports enough of the MySQL security protocol to enable simple
+user and host logins with passwords, and SSL encryption. By default, you can log into MemSQL with the <tt class="docutils literal"><span class="pre">root</span></tt> user and
+an empty password over an unsecured channel. Below are instructions on how to turn on various security features.</p>
+</div>
+<div class="section" id="host-based-security">
+<span id="security-host"></span><h2>Host-Based Security<a class="headerlink" href="index.html#host-based-security" title="Permalink to this headline">¶</a></h2>
+<p>The first layer of defense is host-based security. Like MySQL, MemSQL supports the <tt class="docutils literal"><span class="pre">bind-address</span></tt> variable in
+<a class="reference internal" href="../memsql.cnf/index.html"><em>memsql.cnf</em></a>, which lets you specify the address on which the server socket binds. For example, if you
+set it to <tt class="docutils literal"><span class="pre">127.0.0.1</span></tt>, you will only be able to connect to MemSQL locally.</p>
+<p>You can also use a firewall to determine which hosts can access MemSQL. If you&#8217;re on Amazon EC2, for example, you can configure security
+groups to limit the network by specifying allowed IP addresses or security groups.</p>
+</div>
+<div class="section" id="password-based-security">
+<span id="security-accounts"></span><h2>Password-Based Security<a class="headerlink" href="index.html#password-based-security" title="Permalink to this headline">¶</a></h2>
+<p>MemSQL supports granular grant-based security.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p>If you see an error like:</p>
+<div class="highlight-none"><div class="highlight"><pre>ERROR 1045 (28000): Access denied for user &#39;root&#39;@&#39;localhost&#39; (user password: YES)
+</pre></div>
+</div>
+<p>then you probably have a default password configured in your global <cite>my.cnf</cite> file. The client refers to this file for default parameters
+to use when connecting to the database, so if you have a line resembling:</p>
+<div class="highlight-none"><div class="highlight"><pre>password = XXXXXX
+</pre></div>
+</div>
+<p>then the client will default to connecting to MemSQL with that password. MemSQL comes installed with a root user and no password, so to resolve
+this issue you have two simple workarounds:</p>
+<ul class="last simple">
+<li>Remove this line from <cite>my.cnf</cite></li>
+<li>Specify <tt class="docutils literal"><span class="pre">--password=''</span></tt> as an argument to the connection command: <tt class="docutils literal"><span class="pre">mysql</span> <span class="pre">-u</span> <span class="pre">root</span> <span class="pre">--password=''</span> <span class="pre">-h</span> <span class="pre">127.0.0.1</span> <span class="pre">-P</span> <span class="pre">3306</span> <span class="pre">--prompt=&quot;memsql&gt;</span> <span class="pre">&quot;</span></tt></li>
+</ul>
+</div>
+<div class="section" id="adding-a-user">
+<h3>Adding a User<a class="headerlink" href="index.html#adding-a-user" title="Permalink to this headline">¶</a></h3>
+<p>You can add a user with the standard <a class="reference internal" href="../../ref/GRANT/index.html"><em>GRANT</em></a> syntax:</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="k">GRANT</span> <span class="k">SELECT</span><span class="p">,</span><span class="k">INSERT</span><span class="p">,</span><span class="k">UPDATE</span><span class="p">,</span><span class="k">DELETE</span> <span class="k">ON</span> <span class="o">*</span><span class="p">.</span><span class="o">*</span> <span class="k">TO</span> <span class="s1">&#39;&lt;user&gt;&#39;</span><span class="o">@</span><span class="s1">&#39;&lt;host&gt;&#39;</span> <span class="n">IDENTIFIED</span> <span class="k">BY</span> <span class="s1">&#39;&lt;password&gt;&#39;</span>
+</pre></div>
+</div>
+<p>You can use the same command to change the password for an existing user.</p>
+</div>
+<div class="section" id="removing-a-user">
+<h3>Removing a User<a class="headerlink" href="index.html#removing-a-user" title="Permalink to this headline">¶</a></h3>
+<p>To remove a user, use the <a class="reference internal" href="../../ref/DROP_USER/index.html"><em>DROP USER</em></a> command:</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="k">DROP</span> <span class="n">USER</span> <span class="s1">&#39;&lt;user&gt;&#39;</span><span class="o">@</span><span class="s1">&#39;&lt;host&gt;&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="configuring-password-security">
+<h3>Configuring password security<a class="headerlink" href="index.html#configuring-password-security" title="Permalink to this headline">¶</a></h3>
+<p>By default, MemSQL installs with a database user named <tt class="docutils literal"><span class="pre">root</span></tt>, with a blank password. All communications between nodes in a MemSQL cluster happens over the MySQL protocol, using this user and password. As a part of a defense-in-depth security strategy, you may wish to set up password security.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">All of the shell commands are run on the master aggregator, and all of the <tt class="docutils literal"><span class="pre">memsql&gt;</span></tt> SQL commands are run from a MySQL client connection to the master.</p>
+</div>
+<p><strong>Step 1</strong>: Make sure that manual control is disabled, to allow MemSQL Ops to re-attach and configure nodes.</p>
+<div class="highlight-bash"><div class="highlight"><pre>master-agg<span class="nv">$ </span>memsql-ops cluster-manual-control --disable
+</pre></div>
+</div>
+<p><strong>Step 2</strong>: List all hosts and MemSQL instances. The ID field is used in some of the steps.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>memsql-ops memsql-list
+ ID       Agent Id  State   Role    Host         Port
+ F8DAA45  Aedb2d1   ONLINE  MASTER  10.0.10.187  3306
+ C7A7F5D  Af9b08a   ONLINE  LEAF    10.0.15.33   3306
+ CCF8070  A4c182e   ONLINE  LEAF    10.0.3.2     3306
+</pre></div>
+</div>
+<p><strong>Step 3</strong>: Add a new user to all MemSQL nodes in the cluster. The user must have <tt class="docutils literal"><span class="pre">ALL</span></tt> permissions on all tables and databases. It is not necessary to give it the &#8220;grant option&#8221;, ie, the ability to create new users. Below is a set of one-liner shell commands that issue SQL statements to the nodes in the cluster.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>mysql -uroot -h10.0.10.187 -e <span class="s2">&quot;grant all on *.* to &#39;cluster_user&#39; identified by &#39;trustno1&#39;&quot;</span>
+<span class="nv">$ </span>mysql -uroot -h10.0.15.33 -e <span class="s2">&quot;grant all on *.* to &#39;cluster_user&#39; identified by &#39;trustno1&#39;&quot;</span>
+<span class="nv">$ </span>mysql -uroot -h10.0.3.2 -e <span class="s2">&quot;grant all on *.* to &#39;cluster_user&#39; identified by &#39;trustno1&#39;&quot;</span>
+</pre></div>
+</div>
+<p>Optionally, you can use network filters on this account. For example, if you want to allow only connections from the 10.0.0.0/16 subnet, you can specify <tt class="docutils literal"><span class="pre">'cluster_user'&#64;'10.0.%'</span></tt> instead of just <tt class="docutils literal"><span class="pre">'cluster_user'</span></tt>. Make careful note of the quoting rules in the <a class="reference internal" href="../../ref/GRANT/index.html"><em>GRANT</em></a> syntax.</p>
+<p><strong>Step 4</strong>: Configuring leaves. This involves un-monitoring the leaf, removing the leaf from the cluster, and adding it back with the new user. Use the list from step 2 above to get the leaf IDs. Running this sequence one at a time on the leaves ensures that the cluster remains available for the duration of this step. If you are able to tolerate short periods of cluster downtime, you can use <tt class="docutils literal"><span class="pre">remove</span> <span class="pre">leaf</span> <span class="pre">'host'</span> <span class="pre">FORCE</span></tt> instead, which disables failover. See <a class="reference internal" href="../../ref/REMOVE_LEAF/index.html"><em>REMOVE LEAF</em></a> for more details.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>memsql-ops memsql-unmonitor CCF8070
+<span class="nv">$ </span>mysql -uroot -h10.0.10.187 -e <span class="s2">&quot;remove leaf &#39;10.0.3.2&#39;&quot;</span>
+<span class="nv">$ </span>memsql-ops memsql-monitor -h 10.0.3.2 -u cluster_user -p trustno1
+
+<span class="nv">$ </span>memsql-ops memsql-unmonitor C7A7F5D
+<span class="nv">$ </span>mysql -uroot -h10.0.10.187 -e <span class="s2">&quot;remove leaf &#39;10.0.15.33&#39;&quot;</span>
+<span class="nv">$ </span>memsql-ops memsql-monitor -h 10.0.15.33 -u cluster_user -p trustno1
+</pre></div>
+</div>
+<p><strong>Step 5</strong>: Configuring aggregators. For each aggregator, <em>starting with the master</em>, un-monitor and then monitor with the new permissions.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>memsql-ops memsql-unmonitor F8DAA45
+<span class="nv">$ </span>memsql-ops memsql-monitor -h 10.0.10.187 -u cluster_user -p trustno1
+</pre></div>
+</div>
+<p><strong>Step 6</strong>: Restart the cluster in order to flush old database connections, then change the password of the root user on all nodes.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>memsql-ops cluster-restart
+
+<span class="nv">$ </span>mysql -uroot -h10.0.10.187 -e <span class="s2">&quot;grant all on *.* to &#39;root&#39; identified by &#39;secret-password-no-one-has&#39; with grant option&quot;</span>
+<span class="nv">$ </span>mysql -uroot -h10.0.15.33 -e <span class="s2">&quot;grant all on *.* to &#39;root&#39; identified by &#39;secret-password-no-one-has&#39; with grant option&quot;</span>
+<span class="nv">$ </span>mysql -uroot -h10.0.3.2 -e <span class="s2">&quot;grant all on *.* to &#39;root&#39; identified by &#39;secret-password-no-one-has&#39; with grant option&quot;</span>
+</pre></div>
+</div>
+<p>Now you have a cluster with two user accounts: the &#8220;root&#8221; superuser, whose password should only be used for system administration and user management, and the &#8220;cluster_user&#8221;, which is used solely for intracluster queries and replication.</p>
+<p><strong>Step 7</strong>: Optional. Next we recommend adding application-specific users. Note that these users are only required on the aggregators, not the leaves.</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="n">memsql</span><span class="o">&gt;</span> <span class="k">create</span> <span class="k">database</span> <span class="n">app1</span><span class="p">;</span>
+<span class="n">memsql</span><span class="o">&gt;</span> <span class="k">grant</span> <span class="k">all</span> <span class="k">on</span> <span class="n">app1</span><span class="p">.</span><span class="o">*</span> <span class="k">to</span> <span class="s1">&#39;app1_readwrite&#39;</span> <span class="n">identified</span> <span class="k">by</span> <span class="s1">&#39;*******&#39;</span><span class="p">;</span>
+<span class="n">memsql</span><span class="o">&gt;</span> <span class="k">grant</span> <span class="k">select</span> <span class="k">on</span> <span class="n">app1</span><span class="p">.</span><span class="o">*</span> <span class="k">to</span> <span class="s1">&#39;app1_readonly&#39;</span> <span class="n">identified</span> <span class="k">by</span> <span class="s1">&#39;hunter2&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<p><strong>Step 8</strong>: Optional. Remove other default users that may be present, like the <tt class="docutils literal"><span class="pre">root&#64;localhost</span></tt> user (distinct from the <tt class="docutils literal"><span class="pre">root&#64;%</span></tt> user), the &#8220;blank&#8221; local users, and dashboard.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="s1">&#39;&#39;</span>@<span class="s1">&#39;localhost&#39;</span>
+<span class="s1">&#39;&#39;</span>@<span class="s1">&#39;127.0.0.1&#39;</span>
+<span class="s1">&#39;dashboard&#39;</span>@<span class="s1">&#39;%&#39;</span>
+<span class="s1">&#39;dashboard&#39;</span>@<span class="s1">&#39;localhost&#39;</span>
+<span class="s1">&#39;root&#39;</span>@<span class="s1">&#39;localhost&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="inspecting-permissions">
+<h3>Inspecting Permissions<a class="headerlink" href="index.html#inspecting-permissions" title="Permalink to this headline">¶</a></h3>
+<p>MemSQL doesn&#8217;t expose the users table directly. Instead, you can view grants and permissions by querying
+<tt class="docutils literal"><span class="pre">information_schema.user_privileges</span></tt>.</p>
+<p>This information is also exposed by running <a class="reference internal" href="../../ref/SHOW_GRANTS/index.html"><em>SHOW GRANTS</em></a>:</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="k">SHOW</span> <span class="n">GRANTS</span> <span class="k">FOR</span> <span class="n">user</span><span class="o">@</span><span class="n">domain</span><span class="p">;</span>
+</pre></div>
+</div>
+<p><strong>Related Topics</strong></p>
+<ul class="simple">
+<li><a class="reference internal" href="../index.html"><em>Operations Manual</em></a></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+                    </div>
+                    <footer data-swiftype-index="false">
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../ssl/index.html" class="btn btn-neutral float-right" title="SSL Network Encryption">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../cluster/index.html" class="btn btn-neutral" title="Administering a Cluster"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&copy; Copyright 2015, MemSQL</p>
+  </div>
+</footer>
+                </div>
+            </div>
+
+        </section>
+    </div>
+
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/underscore-min.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery.ba-hashchange.min.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery.swiftype.search.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery.swiftype.autocomplete.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/theme.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/search.js"></script> 
+
+        <!-- Google Analytics -->
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-21693588-3', 'auto');
+            ga('send', 'pageview');
+        </script>
+        <!-- End Google Analytics -->
+
+        <script type="text/javascript">
+            $.ajax({
+                url: document.location.protocol + '//munchkin.marketo.net/munchkin.js',
+                dataType: 'script',
+                cache: true,
+                success: function() {
+                    Munchkin.init('759-YLI-316');
+                }
+            });
+        </script>
+    </body>
+</html>

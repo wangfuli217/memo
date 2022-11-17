@@ -1,0 +1,657 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 11.2.  A First Look at the Algorithms</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch11lev1sec1.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch11lev1sec3.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch11lev1sec2"></a>
+
+        <h3 class="docSection1Title">11.2. A First Look at the Algorithms</h3>
+        <h3 class="docSection1Title">11.2. 初窥算法</h3>
+
+        <p class="docText">Before covering the structure of the algorithms library, let's look at a couple of examples. We've already seen the use of <tt>find</tt>; in this section we'll use a few additional algorithms. To use a generic algorithm, we must include the <tt>algorithm</tt> header:</p>
+        <p class="docText">在研究算法标准库的结构之前，先看一些例子。上一节已经介绍了 <tt>find</tt> 函数的用法；本节将要使用其他的一些算法。使用泛型算法必须包含 <tt>algorithm</tt> 头文件：</p>
+        <pre>
+    #include &lt;algorithm&gt;
+</pre>
+
+        <p class="docText">The library also defines a set of generalized numeric algorithms, using the same conventions as the generic algorithms. To use these algorithms we include the <tt>numeric</tt> header:</p>
+        <p class="docText">标准库还定义了一组泛化的算术算法（generalized numeric algorithm），其命名习惯与泛型算法相同。使用这些算法则必须包含 <tt>numeric</tt> 头文件：</p>
+        <pre>
+    #include &lt;numeric&gt;
+</pre>
+
+        <p class="docText">With only a handful of exceptions, all the algorithms operate over a range of elements. We'll refer to this range as the "input range." The algorithms that take an input range always use their first two parameters to denote that range. These parameters are iterators used to denote the first and one past the last element that we want to process.</p>
+        <p class="docText">除了少数例外情况，所有算法都在一段范围内的元素上操作，我们将这段范围称为“输出范围（input range）”。带有输入范围参数的算法总是使用头两个形参标记该范围。这两个形参是分别指向要处理的第一个元素和最后一个元素的下一位置的迭代器。</p>
+
+        <p class="docText">Although most algorithms are similar in that they operate over an input range, they differ in how they use the elements in that range. The most basic way to understand the algorithms is to know whether they read elements, write elements, or rearrange the order of the elements. We'll look at samples of each kind of algorithm in the remainder of this section.</p>
+        <p class="docText">尽管大多数算法对算法对输入范围的操作是类似的，但在该范围内如何操纵元素却有所不同。理解算法的最基本方法是了解该算法是否读元素、写元素或者对元素进行重新排序。在本节的余下内容中，将会观察到每种算法的例子。</p><a name="ch11lev2sec4"></a>
+
+        <h4 class="docSection2Title">11.2.1. Read-Only Algorithms</h4>
+        <h4 class="docSection2Title">11.2.1. 只读算法</h4><a name="idd1e84533"></a><a name="idd1e84537"></a><a name="idd1e84542"></a><a name="idd1e84547"></a>
+
+        <p class="docText">A number of the algorithms read, but never write to, the elements in their input range. <tt>find</tt> is one such algorithm. Another simple, read-only algorithm is <tt>accumulate</tt>, which is defined in the <tt>numeric</tt> header. Assuming <tt>vec</tt> is a <tt>vector</tt> of <tt>int</tt> values, the following code</p>
+        <p class="docText">许多算法只会读取其输入范围内的元素，而不会写这些元素。<tt>find</tt> 就是一个这样的算法。另一个简单的只读算法是 <tt>accumulate</tt>，该算法在 <tt>numeric</tt> 头文件中定义。假设 <tt>vec</tt> 是一个 <tt>int</tt> 型的 <tt>vector</tt> 对象，下面的代码：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">sum the elements in vec starting the summation with the value</span> <span class="docEmphasis">42</span>
+     int sum = accumulate(vec.begin(), vec.end(), 42);
+</pre>
+
+        <p class="docText">sets <tt>sum</tt> equal to the sum of the elements in <tt>vec</tt> plus 42. <tt>accumulate</tt> takes three parameters. The first two specify a range of elements to sum. The third is an initial value for the sum. The <tt>accumulate</tt> function sets an internal variable to the initial value. It then adds the value of each element in the range to that initial value. The algorithm returns the result of the summation. The return type of <tt>accumulate</tt> is the type of its third argument.</p>
+        <p class="docText">将 <tt>sum</tt> 设置为 <tt>vec</tt> 的元素之和再加上 42。<tt>accumulate</tt> 带有三个形参。头两个形参指定要累加的元素范围。第三个形参则是累加的初值。<tt>accumulate</tt> 函数将它的一个内部变量设置为指定的初值，然后在此初值上累加输入范围 <tt>accumulate</tt> </p><a name="ch11note01"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">The third argument, which specifies the starting value, is necessary because <tt>accumulate</tt> knows nothing about the element types that it is accumulating. Therefore, it has no way to invent an appropriate starting value or associated type.</p>
+                <p class="docText">用于指定累加起始值的第三个实参是必要的，因为 <tt>accumulate</tt> 对将要累加的元素类型一无所知，因此，除此之外，没有别的办法创建合适的起始值或者关联的类型。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <p class="docText">There are two implications of the fact that <tt>accumulate</tt> doesn't know about the types over which it sums. First, we must pass an initial starting value because otherwise <tt>accumulate</tt> cannot know what starting value to use. Second, the type of the elements in the container must match or be convertible to the type of the third argument. Inside <tt>accumulate</tt>, the third argument is used as the starting point for the summation; the elements in the container are successively added into this sum. It must be possible to add the element type to the type of the sum.</p>
+        <p class="docText"><tt>accumulate</tt> 对要累加的元素类型一无所知，这个事实有两层含义。首先，调用该函数时必须传递一个起始值，否则，<tt>accumulate</tt> 将不知道使用什么起始值。其次，容器内的元素类型必须与第三个实参的类型匹配，或者可转换为第三个实参的类型。在 <tt>accumulate</tt> 内部，第三个实参用作累加的起点；容器内的元素按顺序连续累加到总和之中。因此，必须能够将元素类型加到总和类型上。</p>
+
+        <p class="docText">As an example, we could use <tt>accumulate</tt> to concatenate the elements of a <tt>vector</tt> of <tt>string</tt>s:</p>
+        <p class="docText">考虑下面的例子，可以使用 <tt>accumulate</tt> 把 <tt>string</tt> 型的 <tt>vector</tt> 容器中的元素连接起来：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">concatenate elements from v and store in sum</span>
+     string sum = accumulate(v.begin(), v.end(), string(""));
+</pre>
+
+        <p class="docText">The effect of this call is to concatenate each element in <tt>vec</tt> onto a <tt>string</tt> that starts out as the empty string. Note that we explicitly create a <tt>string</tt> as the third parameter. Passing a character-string literal would be a compile-time error. If we passed a string literal, the summation type would be <tt>const char*</tt> but the <tt>string</tt> addition operator (<a class="docLink" href="ch03lev1sec2.html#ch03lev2sec4" >Section 3.2.3</a>, p. <a class="docLink" href="ch03lev1sec2.html#ch03lev2sec4" >86</a>) for operands of type <tt>string</tt> and <tt>const char*</tt> yields a <tt>string</tt> not a <tt>const char*</tt>.</p>
+        <p class="docText">这个函数调用的效果是：从空字符串开始，把 <tt>vec</tt> 里的每个元素连接成一个字符串。注意：程序显式地创建了一个 <tt>string</tt> 对象，用该函数调用的第三个实参。传递一个字符串字面值，将会导致编译时错误。因为此时，累加和的类型将是 <tt>const char*</tt>，而 <tt>string</tt> 的加法操作符（<a class="docLink" href="ch03lev1sec2.html#ch03lev2sec4" >第 3.2.3 节</a>）所使用的操作数则分别是 <tt>string</tt> 和 <tt>const char*</tt> 类型，加法的结果将产生一个 <tt>string</tt> 对象，而不是 <tt>const char*</tt> 指针。</p><a name="ch11lev3sec1"></a>
+
+        <h5 class="docSection3Title">Using <tt>find_first_of</tt></h5>
+        <h5 class="docSection3Title"><tt>find_first_of</tt> 的使用</h5>
+
+        <p class="docText">In addition to <tt>find</tt>, the library defines several other, more complicated searching algorithms. Several of these are similar to the <tt>find</tt> operations of the <tt>string</tt> class (<a class="docLink" href="ch09lev1sec6.html#ch09lev2sec21" >Section 9.6.4</a>, p. <a class="docLink" href="ch09lev1sec6.html#ch09lev2sec21" >343</a>). One such is <tt>find_first_of</tt>. This algorithm takes two pairs of iterators that denote two ranges of elements. It looks in the first range for a match to any element from the second range and returns an iterator denoting the first element that matches. If no match is found, it returns the end iterator of the <a name="idd1e84711"></a><a name="idd1e84716"></a>first range. Assuming that <tt>roster1</tt> and <tt>roster2</tt> are two <tt>list</tt>s of names, we could use <tt>find_first_of</tt> to count how many names are in both lists:</p>
+        <p class="docText">除了 <tt>find</tt> 之外，标准库还定义了其他一些更复杂的查找算法。当中的一部分类似 <tt>string</tt> 类的 <tt>find</tt> 操作（<a class="docLink" href="ch09lev1sec6.html#ch09lev2sec21" >第 9.6.4 节</a>），其中一个是 <tt>find_first_of</tt> 函数。这个算法带有两对迭代器参数来标记两段元素范围，在第一段范围内查找与第二段范围中任意元素匹配的元素，然后返回一个迭代器，指向第一个匹配的元素。如果找不到元素，则返回第一个范围的 <tt>end</tt> 迭代器。假设 <tt>roster1</tt> 和 <tt>roster2</tt> 是两个存放名字的 <tt>list</tt> 对象，可使用 <tt>find_first_of</tt> 统计有多少个名字同时出现在这两个列表中：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">program for illustration purposes only:</span>
+     // <span class="docEmphItalicAlt">there are much faster ways to solve this problem</span>
+     size_t cnt = 0;
+     list&lt;string&gt;::iterator it = roster1.begin();
+     // <span class="docEmphItalicAlt">look in</span> <span class="docEmphasis">roster1</span> <span class="docEmphItalicAlt">for any name also in</span> <span class="docEmphasis">roster2</span>
+     while   ((it = find_first_of(it, roster1.end(),
+                  roster2.begin(), roster2.end()))
+                     != roster1.end()) {
+        ++cnt;
+        // <span class="docEmphItalicAlt">we got a match, increment</span> <span class="docEmphasis">it</span> <span class="docEmphItalicAlt">to look in the rest of</span> <span class="docEmphasis">roster1</span>
+        ++it;
+     }
+     cout &lt;&lt; "Found " &lt;&lt; cnt
+          &lt;&lt; " names on both rosters" &lt;&lt; endl;
+</pre>
+
+        <p class="docText">The call to <tt>find_first_of</tt> looks for any element in <tt>roster2</tt> that matches an element from the first rangethat is, it looks for an element in the range from <tt>it</tt> to <tt>roster1.end()</tt>. The function returns the first element in that range that is also in the second range. On the first trip through the <tt>while</tt>, we look in the entire range of <tt>roster1</tt>. On second and subsequent trips, we look in that part of <tt>roster1</tt> that has not already been matched.</p>
+        <p class="docText">调用 <tt>find_first_of</tt> 查找 <tt>roster2</tt> 中的每个元素是否与第一个范围内的元素匹配，也就是在 <tt>it</tt> 到 <tt>roster1.end()</tt> 范围内查找一个元素。该函数返回此范围内第一个同时存在于第二个范围中的元素。在 <tt>while</tt> 的第一次循环中，遍历整个 <tt>roster1</tt> 范围。第二次以及后续的循环迭代则只考虑 <tt>roster1</tt> 中尚未匹配的部分。</p>
+
+        <p class="docText">In the condition, we check the return from <tt>find_first_of</tt> to see whether we found a matching name. If we got a match, we increment our counter. We also increment <tt>it</tt> so that it refers to the next element in <tt>roster1</tt>. We know we're done when <tt>find_first_of</tt> returns <tt>roster1.end()</tt>, which it does if there is no match.</p>
+        <p class="docText">循环条件检查 <tt>find_first_of</tt> 的返回值，判断是否找到匹配的名字。如果找到一个匹配，则使计数器加 1,同时给 <tt>it</tt> 加 1，使它指向 <tt>roster1</tt> 中的下一个元素。很明显可知，当不再有任何匹配时，<tt>find_first_of</tt> 返回 <tt>roster1.end()</tt>，完成统计。</p><a name="ch11sb03"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Key Concept: Iterator Argument Types</h2>
+              <h2 class="docSidebarTitle">关键概念：迭代器实参类型</h2>
+
+              <p class="docText"><span class="docEmphStrong">In general, the generic algorithms operate on iterator pairs that denote a range of elements in a container (or other sequence). The types of the arguments that denote the range must match exactly, and the iterators themselves must denote a range: They must refer to elements in the same container (or to the element just past the end of that container), and if they are unequal, then it must be possible to reach the second iterator by repeatedly incrementing the first iterator.</span></p>
+              <p class="docText"><span class="docEmphStrong">通常，泛型算法都是在标记容器（或其他序列）内的元素范围的迭代器上操作的。标记范围的两个实参类型必须精确匹配，而迭代器本身必须标记一个范围：它们必须指向同一个容器中的元素（或者超出容器末端的下一位置），并且如果两者不相等，则第一个迭代器通过不断地自增，必须可以到达第二个迭代器。</span></p>
+
+              <p class="docText"><span class="docEmphStrong">Some algorithms, such as <tt>find_first_of</tt>, take two pairs of iterators. The iterator types in each pair must match exactly, but there is no requirement that the type of the two pairs match each other. In particular, the elements can be stored in different kinds of sequences. What is required is that we be able to compare elements from the two sequences.</span></p>
+              <p class="docText"><span class="docEmphStrong">有些算法，例如 <tt>find_first_of</tt>，带有两对迭代器参数。每对迭代器中，两个实参的类型必须精确匹配，但不要求两对之间的类型匹配。特别是，元素可存储在不同类型序列中，只要这两序列的元素可以比较即可。</span></p>
+
+              <p class="docText"><span class="docEmphStrong">In our program, the types of <tt>roster1</tt> and <tt>roster2</tt> need not match exactly: <tt>roster1</tt> could be a <tt>list</tt> while <tt>roster2</tt> was a <tt>vector</tt></span>, <span class="docEmphStrong"><tt>deque</tt></span>, <span class="docEmphStrong">or other sequence that we'll learn about later in this chapter. What is required is that we be able to compare the elements from these two sequences using the <tt>==</tt> operator. If <tt>roster1</tt> is a <tt>list&lt;string&gt;</tt>, then</span> <span class="docEmphStrong"><tt>roster2</tt> could be a <tt>vector&lt;char*&gt;</tt> because the <tt>string</tt> library defines <tt>==</tt> on a <tt>string</tt> and a <tt>char*</tt></span>.</p>
+              <p class="docText"><span class="docEmphStrong">在上述程序中，<tt>roster1</tt> 和 <tt>roster2</tt> 的类型不必精确匹配：<tt>roster1</tt> 可以是 <tt>list</tt> 对象，而 <tt>roster2</tt> 则可以是 <tt>vector</tt> 对象、</span><span class="docEmphStrong"> <tt>deque</tt> 对象或者是其他后面要学到的序列。只要这两个序列的元素可使用相等（<tt>==</tt>）操作符进行比较即可。如果 <tt>roster1</tt> 是 <tt>list&lt;string&gt;</tt> 对象，则 <tt>roster2</tt> 可以是 <tt>vector&lt;char*&gt;</tt> 对象，因为 <tt>string</tt> 标准库为 <tt>string</tt> 对象与 <tt>char*</tt> 对象定义了相等（<tt>==</tt>）操作符</span>。</p>
+            </td>
+          </tr>
+        </table>
+        <a name="ch11sb04"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 11.2.1</h2>
+
+              <blockquote>
+                <a name="ch11qa2q1"></a><a name="ch11qa2q2"></a><a name="ch11qa2q3"></a>
+
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><b>Exercise 11.3:</b></td>
+
+                    <td>
+                      <p class="docText"><a name="idd1e84902"></a>Use <tt>accumulate</tt> to sum the elements in a <tt>vector&lt;int&gt;</tt>.</p>
+                      <p class="docText">用 <tt>accumulate</tt> 统计 <tt>vector&lt;int&gt;</tt> 容器对象中的元素之和</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><b>Exercise 11.4:</b></td>
+
+                    <td>
+                      <p class="docText">Assuming <tt>v</tt> is a <tt>vector&lt;double&gt;</tt> what, if anything, is wrong with calling <tt>accumulate&lt;v.begin(), v.end(), 0)</tt>?</p>
+                      <p class="docText">假定 <tt>v</tt> 是 <tt>vector&lt;double&gt;</tt> 类型的对象，则调用 <tt>accumulate&lt;v.begin(), v.end(), 0)</tt> 是否有错？如果有的话，错在哪里？</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><b>Exercise 11.5:</b></td>
+
+                    <td>
+                      <p class="docText">What would happen if the program that called <tt>find_first_of</tt> did not increment <tt>it</tt>?</p>
+                      <p class="docText">对于本节调用 <tt>find_first_of</tt> 的例程，如果不给 <tt>it</tt> 加 1,将会如何？</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table>
+        <a name="ch11lev2sec5"></a>
+
+        <h4 class="docSection2Title">11.2.2. Algorithms that Write Container Elements</h4>
+
+        <h4 class="docSection2Title">11.2.2. 写容器元素的算法</h4>
+
+        <p class="docText">Some algorithms write element values. When using algorithms that write elements, we must take care to ensure that the sequence into which the algorithm writes is at least as large as the number of elements being written.</p>
+        <p class="docText">一些算法写入元素值。在使用这些算法写元素时要当心，必须确保算法所写的序列至少足以存储要写入的元素。</p>
+
+        <p class="docText">Some algorithms write directly into the input sequence. Others take an additional iterator that denotes a destination. Such algorithms use the destination iterator as a place in which to write output. Still a third kind writes a specified number of elements to some sequence.</p>
+        <p class="docText">有些算法直接将数据写入到输入序列，另外一些则带有一个额外的迭代器参数指定写入目标。这类算法将目标迭代器用作输出的位置。还有第三种算法将指定数目的元素写入某个序列。</p><a name="ch11lev3sec2"></a>
+
+        <h5 class="docSection3Title">Writing to the Elements of the Input Sequence</h5>
+        <h5 class="docSection3Title">写入输入序列的元素</h5>
+
+        <p class="docText">The algorithms that write to their input sequence are inherently safethey write only as many elements as are in the specified input range.</p>
+        <p class="docText">写入到输入序列的算法本质上是安全的——只会写入与指定输入范围数量相同的元素。</p>
+
+        <p class="docText">A simple example of an algorithm that writes to its input sequence is <tt>fill</tt>:</p>
+        <p class="docText">写入到输入序列的一个简单算法是 <tt>fill</tt> 函数，考虑如下例子：</p>
+        <pre>
+     fill(vec.begin(), vec.end(), 0); // <span class="docEmphItalicAlt">reset each element to 0</span>
+     // <span class="docEmphItalicAlt">set subsequence of the range to 10</span>
+     fill(vec.begin(), vec.begin() + vec.size()/2, 10);
+</pre>
+
+        <p class="docText"><tt>fill</tt> takes a pair of iterators that denote a range in which to write copies of its third parameter. It executes by setting each element in the range to the given value. Assuming that the input range is valid, then the writes are safe. The algorithm writes only to elements known to exist in the input range itself.</p>
+        <p class="docText"><tt>fill</tt> 带有一对迭代器形参，用于指定要写入的范围，而所写的值是它的第三个形参的副本。执行时，将该范围内的每个元素都设为给定的值。如果输入范围有效，则可安全写入。这个算法只会对输入范围内已存在的元素进行写入操作。</p><a name="ch11lev3sec3"></a>
+
+        <h5 class="docSection3Title">Algorithms Do Not Check Write Operations</h5>
+        <h5 class="docSection3Title">不检查写入操作的算法</h5>
+
+        <p class="docText">The <tt>fill_n</tt> function takes an iterator, a count, and a value. It writes the specified number of elements with the given value starting at the element referred to by the iterator. The <tt>fill_n</tt> function assumes that it is safe to write the specified number of elements. It is a fairly common beginner mistake to call <tt>fill_n</tt> (or similar algorithms that write to elements) on a container that has no elements:</p>
+        <p class="docText"><tt>fill_n</tt> 函数带有的参数包括：一个迭代器、一个计数器以及一个值。该函数从迭代器指向的元素开始，将指定数量的元素设置为给定的值。<tt>fill_n</tt> 函数假定对指定数量的元素做写操作是安全的。初学者常犯的错误的是：在没有元素的空容器上调用 <tt>fill_n</tt> 函数（或者类似的写元素算法）。</p>
+        <pre>
+     vector&lt;int&gt; vec; // <span class="docEmphItalicAlt">empty</span> <span class="docEmphasis">vector</span>
+     // <span class="docEmphItalicAlt">disaster: attempts to write to 10 (nonexistent) elements in</span> <span class="docEmphasis">vec</span>
+     fill_n(vec.begin(), 10, 0);
+</pre>
+
+        <p class="docText">This call to <tt>fill_n</tt> is a disaster. We specified that ten elements should be written, but there are no such elements <tt>vec</tt> is empty. The result is undefined and will probably result in a serious run-time failure.</p>
+        <p class="docText">这个 <tt>fill_n</tt> 函数的调用将带来灾难性的后果。我们指定要写入 10 个元素，但这些元素却不存在——<tt>vec</tt> 是空的。其结果未定义，很可能导致严重的运行时错误。</p><a name="ch11note02"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <a name="idd1e85047"></a><a name="idd1e85052"></a><a name="idd1e85056"></a><a name="idd1e85062"></a><a name="idd1e85065"></a><a name="idd1e85070"></a><a name="idd1e85075"></a><a name="idd1e85080"></a>
+
+                <p class="docText">Algorithms that write a specified number of elements or that write to a destination iterator do not check whether the destination is large enough to hold the number of elements being written.</p>
+                <p class="docText">对指定数目的元素做写入运算，或者写到目标迭代器的算法，都不检查目标的大小是否足以存储要写入的元素。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <a name="ch11lev3sec4"></a>
+
+        <h5 class="docSection3Title">Introducing <tt>back_inserter</tt></h5>
+        <h5 class="docSection3Title">引入 <tt>back_inserter</tt></h5>
+
+        <p class="docText">One way to ensure that an algorithm has enough elements to hold the output is to use an <b><a name="ch11term7"></a><a class="docLink" href="ch11lev1sec7.html#gloss11_07" >insert iterator</a></b>. An insert iterator is an iterator that <span class="docEmphasis">adds</span> elements to the underlying container. Ordinarily, when we assign to a container element through an iterator, we assign to the element to which the iterator refers. When we assign through an insert iterator, a new element equal to the right-hand value is added to the container.</p>
+        <p class="docText">确保算法有足够的元素存储输出数据的一种方法是使用<b><a class="docLink" href="ch11lev1sec7.html#gloss11_07" >插入迭代器</a></b>。插入迭代器是可以给基础容器添加元素的迭代器。通常，用迭代器给容器元素赋值时，被赋值的是迭代器所指向的元素。而使用插入迭代器赋值时，则会在容器中添加一个新元素，其值等于赋值运算的右操作数的值。</p>
+
+        <p class="docText">We'll have more to say about insert iterators in <a class="docLink" href="ch11lev1sec3.html#ch11lev2sec7" >Section 11.3.1</a> (p. <a class="docLink" href="ch11lev1sec3.html#ch11lev2sec7" >406</a>). However, in order to illustrate how to safely use algorithms that write to a container, we will use <b><a name="ch11term1"></a><a class="docLink" href="ch11lev1sec7.html#gloss11_01" ><span class="docEmphStrong"><tt>back_inserter</tt>.</span></a></b> Programs that use <tt>back_inserter</tt> must include the <tt>iterator</tt> header.</p>
+        <p class="docText"><a class="docLink" href="ch11lev1sec3.html#ch11lev2sec7" >第 11.3.1 节</a>将会讨论更多关于插入迭代器的内容。然而，为了说明如何安全使用写容器的算法，下面将使用 <b><a class="docLink" href="ch11lev1sec7.html#gloss11_01" ><span class="docEmphStrong"><tt>back_inserter</tt>.</span></a></b> 使用 <tt>back_inserter</tt> 的程序必须包含 <tt>iterator</tt> 头文件。</p>
+
+        <p class="docText">The <tt>back_inserter</tt> function is an iterator adaptor. Like the container adaptors (<a class="docLink" href="ch09lev1sec7.html#ch09lev1sec7" >Section 9.7</a>, p. <a class="docLink" href="ch09lev1sec7.html#ch09lev1sec7" >348</a>), an iterator adaptor takes an object and generates a new object that adapts the behavior of its argument. In this case, the argument to <tt>back_inserter</tt> is a reference to a container. <tt>back_inserter</tt> generates an insert iterator bound to that container. When we attempt to assign to an element through that iterator, the assignment calls <tt>push_back</tt> to add an element with the given value to the container. We can use <tt>back_inserter</tt> to generate an iterator to use as the destination in <tt>fill_n:</tt></p>
+        <p class="docText"><tt>back_inserter</tt> 函数是迭代器适配器。与容器适配器（<a class="docLink" href="ch09lev1sec7.html#ch09lev1sec7" >第 9.7 节</a>）一样，迭代器适配器使用一个对象作为实参，并生成一个适应其实参行为的新对象。在本例中，传递给 <tt>back_inserter</tt> 的实参是一个容器的引用。<tt>back_inserter</tt> 生成一个绑定在该容器上的插入迭代器。在试图通过这个迭代器给元素赋值时，赋值运算将调用 <tt>push_back</tt> 在容器中添加一个具有指定值的元素。使用 <tt>back_inserter</tt> 可以生成一个指向 <tt>fill_n</tt> 写入目标的迭代器：</p>
+        <pre>
+     vector&lt;int&gt; vec; // <span class="docEmphItalicAlt">empty</span> <span class="docEmphasis">vector</span>
+     // <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">back_inserter</span> <span class="docEmphItalicAlt">creates an</span> <span class="docEmphasis">insert</span> <span class="docEmphItalicAlt">iterator that adds elements to</span> <span class="docEmphasis">vec</span>
+     fill_n (back_inserter(vec), 10, 0); // <span class="docEmphItalicAlt">appends 10 elements to</span> <span class="docEmphasis">vec</span>
+</pre>
+
+        <p class="docText">Now, each time <tt>fill_n</tt> writes a value, it will do so through the insert iterator generated by <tt>back_inserter</tt>. The effect will be to call <tt>push_back</tt> on <tt>vec</tt>, adding ten elements to the end of <tt>vec</tt>, each of which has the value 0.</p>
+        <p class="docText">现在，<tt>fill_n</tt> 函数每写入一个值，都会通过 <tt>back_inserter</tt> 生成的插入迭代器实现。效果相当于在 <tt>vec</tt> 上调用 <tt>push_back</tt>，在 <tt>vec</tt> 末尾添加 10 个元素，每个元素的值都是 0。</p><a name="ch11lev3sec5"></a>
+
+        <h5 class="docSection3Title">Algorithms that Write to a Destination Iterator</h5>
+        <h5 class="docSection3Title">写入到目标迭代器的算法</h5>
+
+        <p class="docText">A third kind of algorithm writes an unknown number of elements to a destination iterator. As with <tt>fill_n</tt>, the destination iterator refers to the first element of a sequence that will hold the output. The simplest such algorithm is <tt>copy</tt>. This algorithm takes three iterators: The first two denote an input range and the third refers to an element in the destination sequence. It is essential that the destination passed to <tt>copy</tt> be at least as large as the input range. Assuming <tt>ilst</tt> is a <tt>list</tt> holding <tt>int</tt>s, we might <tt>copy</tt> it into a <tt>vector</tt>:</p>
+        <p class="docText">第三类算法向目标迭代器写入未知个数的元素。正如 <tt>fill_n</tt> 函数一样，目标迭代器指向存放输出数据的序列中第一个元素。这类算法中最简单的是 <tt>copy</tt> 函数。<tt>copy</tt> 带有三个迭代器参数：头两个指定输入范围，第三个则指向目标序列的一个元素。传递给 <tt>copy</tt> 的目标序列必须至少要与输入范围一样大。假设 <tt>ilst</tt> 是一个存放 <tt>int</tt> 型数据的 <tt>list</tt> 对象，可如下将它 <tt>copy</tt> 给一个 <tt>vector</tt> 对象：</p>
+        <pre>
+     vector&lt;int&gt; ivec; // <span class="docEmphItalicAlt">empty</span> <span class="docEmphasis">vector</span>
+     // <span class="docEmphItalicAlt">copy elements from</span> <span class="docEmphasis">ilst</span> <span class="docEmphItalicAlt">into</span> <span class="docEmphasis">ivec</span>
+     copy (ilst.begin(), ilst.end(), back_inserter(ivec));
+</pre>
+
+        <p class="docText"><tt>copy</tt> reads elements from the input range, copying them to the destination.</p>
+        <p class="docText"><tt>copy</tt> 从输入范围中读取元素，然后将它们复制给目标 ivec。</p>
+
+        <p class="docText"><a name="idd1e85278"></a><a name="idd1e85285"></a><a name="idd1e85288"></a><a name="idd1e85291"></a><a name="idd1e85296"></a><a name="idd1e85300"></a>Of course, this example is a bit inefficient: Ordinarily if we want to create a new container as a copy of an existing container, it is better to use an input range directly as the initializer for a newly constructed container:</p>
+        <p class="docText">当然，这个例子的效率比较差：通常，如果要以一个已存在的容器为副本创建新容器，更好的方法是直接用输入范围作为新构造容器的初始化式：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">better way to copy elements from</span> <span class="docEmphasis">ilst</span>
+     vector&lt;int&gt; ivec(ilst.begin(), ilst.end());
+</pre>
+        <a name="ch11lev3sec6"></a>
+
+        <h5 class="docSection3Title">Algorithm <tt>_copy</tt> Versions</h5>
+        <h5 class="docSection3Title">算法的 <tt>_copy</tt> 版本</h5>
+
+        <p class="docText">Several algorithms provide so-called "copying" versions. These algorithms do some processing on the elements of their input sequence but do not change the original elements. Instead, a new sequence is written that contains the result of processing the elements of the original.</p>
+        <p class="docText">有些算法提供所谓的“复制（copying）”版本。这些算法对输入序列的元素做出处理，但不修改原来的元素，而是创建一个新序列存储元素的处理结果。但不修改原来的元素，而是创建一个新序列存储元素的处理结果。</p>
+
+        <p class="docText">The <tt>replace</tt> algorithm is a good example. This algorithm reads and writes to an input sequence, replacing a given value by a new value. The algorithm takes four parameters: a pair of iterators denoting the input range and a pair of values. It substitutes the second value for each element that is equal the first:</p>
+        <p class="docText"><tt>replace</tt> 算法就是一个很好的例子。该算法对输入序列做读写操作，将序列中特定的值替换为新的值。该算法带有四个形参：一对指定输入范围的迭代器和两个值。每一个等于第一值的元素替换成第二个值。</p>
+        <pre>
+     // <span class="docEmphItalicAlt">replace any element with value of</span> <span class="docEmphasis">0</span> <span class="docEmphItalicAlt">by</span> <span class="docEmphasis">42</span>
+     replace(ilst.begin(), ilst.end(), 0, 42);
+</pre>
+
+        <p class="docText">This call replaces all instances of 0 by the 42. If we wanted to leave the original sequence unchanged, we would call <tt>replace_copy</tt>. That algorithm takes a third iterator argument denoting a destination in which to write the adjusted sequence:</p>
+        <p class="docText">这个调用将所有值为 0 的实例替换成 42。如果不想改变原来的序列，则调用 <tt>replace_copy</tt>。这个算法接受第三个迭代器实参，指定保存调整后序列的目标位置。</p>
+        <pre>
+     // <span class="docEmphItalicAlt">create empty</span> <span class="docEmphasis">vector</span> <span class="docEmphItalicAlt">to hold the replacement</span>
+     vector&lt;int&gt; ivec;
+
+     // <span class="docEmphItalicAlt">use</span> <span class="docEmphasis">back_inserter</span> <span class="docEmphItalicAlt">to grow destination as needed</span>
+     replace_copy (ilst.begin(), ilst.end(),
+                  back_inserter(ivec), 0, 42);
+</pre>
+
+        <p class="docText">After this call, <tt>ilst</tt> is unchanged, and <tt>ivec</tt> contains a copy of <tt>ilst</tt> with the exception that every element in <tt>ilst</tt> with the value 0 has the value 42 in <tt>ivec</tt>.</p>
+        <p class="docText">调用该函数后，<tt>ilst</tt> 没有改变，<tt>ivec</tt> 存储 <tt>ilst</tt> 一份副本，而 <tt>ilst</tt> 内所有的 0 在 <tt>ivec</tt> 中都变成了 42。</p><a name="ch11sb05"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 11.2.2</h2>
+
+              <blockquote>
+                <a name="ch11qa3q2"></a><a name="ch11qa3q3"></a>
+
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch11qa3q1"></a><b>Exercise 11.6:</b></td>
+
+                    <td>
+                      <a name="idd1e85458"></a>
+
+                      <p class="docText">Using <tt>fill_n</tt>, write a program to set a sequence of <tt>int</tt> values to 0.</p>
+                      <p class="docText">使用 <tt>fill_n</tt> 编写程序，将一个 <tt>int</tt> 序列的值设为 0。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><b>Exercise 11.7:</b></td>
+
+                    <td>
+                      <p class="docText">Determine if there are any errors in the following programs and, if so, correct the error(s):</p>
+                      <p class="docText">判断下面的程序是否有错，如果有，请改正之：</p>
+                      <pre>
+     (a) vector&lt;int&gt; vec; list&lt;int&gt; lst; int i;
+         while (cin &gt;&gt; i)
+             lst.push_back(i);
+         copy(lst.begin(), lst.end(), vec.begin());
+
+     (b) vector&lt;int&gt; vec;
+         vec.reserve(10);
+         fill_n(vec.begin(), 10, 0);
+</pre>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><b>Exercise 11.8:</b></td>
+
+                    <td>
+                      <p class="docText">We said that algorithms do not change the size of the containers over which they operate. Why doesn't the use of <tt>back_inserter</tt> invalidate this claim?</p>
+                      <p class="docText">前面说过，算法不改变它所操纵的容器的大小，为什么使用 <tt>back_inserter</tt> 也不能突破这个限制？</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table>
+        <a name="ch11lev2sec6"></a>
+
+        <h4 class="docSection2Title">11.2.3. Algorithms that Reorder Container Elements</h4>
+        <h4 class="docSection2Title">11.2.3. 对容器元素重新排序的算法</h4>
+
+        <p class="docText">Suppose we want to analyze the words used in a set of children's stories. For example, we might want know how many words contain six or more characters. We want to count each word only once, regardless of how many times it appears or whether it appears in multiple stories. We'd like to be able to print the words in size order, and we want the words to be in alphabetic order within a given size.</p>
+        <p class="docText">假设我们要分析一组儿童故事中所使用的单词。例如，可能想知道它们使用了多少个由六个或以上字母组成的单词。每个单词只统计一次，不考虑它出现的次数，也不考虑它是否在多个故事中出现。要求以长度的大小输出这些单词，对于同样长的单词，则以字典顺序输出。</p>
+
+        <p class="docText">We'll assume that we have read our input and stored the text of each book in a <tt>vector</tt> of <tt>string</tt>s named <tt>words</tt>. How might we solve the part of the problem that involves counting word occurrences? To solve this problem, we'd need to:</p>
+        <p class="docText">假定每本书的文本已经读入并保存在一个 <tt>string</tt> 类型的 <tt>vector</tt> 对象中，它的名字是 <tt>words</tt>。现在，应该怎么解决包括统计单词出现次数这个问题呢？为了解此问题，要做下面几项操作：</p>
+
+        <div style="font-weight:bold">
+          <ol class="docList" type="1">
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">Eliminate duplicate copies of each word</p>
+                <p class="docList">去掉所有重复的单词。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">Order the words based on size</p>
+                <p class="docList">按单词的长度排序。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">Count the words whose size is 6 or greater</p>
+                <p class="docList">统计长度等于或超过 6 个字符的单词个数。</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+
+        <p class="docText">We can use generic algorithms in each of these steps.</p>
+        <p class="docText">上述每一步都可使用泛型算法实现。</p>
+
+        <p class="docText">For purposes of illustration, we'll use the following simple story as our input:</p>
+        <p class="docText">为了说清楚，使用下面这个简单的故事作为我们的输入：</p>
+        <pre>
+     <span class="docEmphStrong">the quick red fox jumps over the slow red turtle</span>
+</pre>
+
+        <p class="docText">Given this input, our program should produce the following output:</p>
+        <p class="docText">对于这个输入，我们的程序应该产生如下输出：</p>
+        <pre>
+     <span class="docEmphStrong">1 word 6 characters or longer</span>
+</pre>
+        <a name="ch11lev3sec7"></a>
+
+        <h5 class="docSection3Title">Eliminating Duplicates</h5>
+        <h5 class="docSection3Title">去除重复</h5>
+
+        <p class="docText">Assuming our input is in a <tt>vector</tt> named <tt>words</tt>, our first subproblem is to eliminate duplicates from the <tt>words</tt>:</p>
+        <p class="docText">假设我们的输入存储在一个名为 <tt>words</tt> 的 <tt>vector</tt> 对象中，第一个子问题是将 <tt>words</tt> 中重复出现的单词去除掉：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">sort</span> <span class="docEmphasis">words</span> <span class="docEmphItalicAlt">alphabetically so we can find the duplicates</span>
+     sort(words.begin(), words.end());
+     /* <span class="docEmphItalicAlt">eliminate duplicate words:</span>
+      * <span class="docEmphasis">unique</span> <span class="docEmphItalicAlt">reorders</span> <span class="docEmphasis">words</span> <span class="docEmphItalicAlt">so that each word appears once in the</span>
+      *    <span class="docEmphItalicAlt">front portion of</span> <span class="docEmphasis">words</span> <span class="docEmphItalicAlt">and returns an iterator one past the unique range;</span>
+      * <span class="docEmphasis">erase</span> <span class="docEmphItalicAlt">uses a</span> <span class="docEmphasis">vector</span> <span class="docEmphItalicAlt">operation to remove the nonunique elements</span>
+      */
+     vector&lt;string&gt;::iterator end_unique =
+                    unique(words.begin(), words.end());
+     words.erase(end_unique, words.end());
+</pre>
+
+        <p class="docText">Our input <tt>vector</tt> contains a copy of every word used in each story. We start by sorting this <tt>vector</tt>. The <tt>sort</tt> algorithm takes two iterators that denote the range of elements to sort. It uses the <tt>&lt;</tt> operator to compare the elements. In this call we ask that the entire <tt>vector</tt> be sorted.</p>
+        <p class="docText"><tt>vector</tt> 对象包含每个故事中使用的所有单词。首先对此 <tt>vector</tt> 对象排序。<tt>sort</tt> 算法带有两个迭代器实参，指出要排序的元素范围。这个算法使用小于（<tt>&lt;</tt>）操作符比较元素。在本次调用中，要求对整个 <tt>vector</tt> 对象排序。</p>
+
+        <p class="docText">After the call to <tt>sort</tt>, our <tt>vector</tt> elements are ordered:</p>
+        <p class="docText">调用 <tt>sort</tt> 后，此 <tt>vector</tt> 对象的元素按次序排列：</p>
+        <pre>
+     <span class="docEmphStrong">fox jumps over quick red red slow the the turtle</span>
+</pre>
+
+        <p class="docText">Note that the words <tt>red</tt> and <tt>the</tt> are duplicated.</p>
+        <p class="docText">注意，单词 <tt>red</tt> 和 <tt>the</tt> 重复出现了。</p><a name="ch11lev3sec8"></a>
+
+        <h5 class="docSection3Title">Using <tt>unique</tt></h5>
+        <h5 class="docSection3Title"><tt>unique</tt> 的使用</h5>
+
+        <p class="docText"><a name="idd1e85653"></a><a name="idd1e85659"></a><a name="idd1e85665"></a><a name="idd1e85668"></a><a name="idd1e85672"></a>Once <tt>words</tt> is sorted, our problem is to keep only one copy of each word that is used in our stories. The <tt>unique</tt> algorithm is well suited to this problem. It takes two iterators that denote a range of elements. It rearranges the elements in the input range so that adjacent duplicated entries are eliminated and returns an iterator that denotes the end of the range of the unique values.</p>
+        <p class="docText">单词按次序排列后，现在的问题是：让故事中所用到的每个单词都只保留一个副本。<tt>unique</tt> 算法很适合用于解决这个问题，它带有两个指定元素范围的迭代器参数。该算法删除相邻的重复元素，然后重新排列输入范围内的元素，并且返回一个迭代器，表示无重复的值范围的结束。</p>
+
+        <p class="docText">After the call to <tt>unique</tt>, the <tt>vector</tt> holds</p>
+        <p class="docText">调用 <tt>unique</tt> 后，<tt>vector</tt> 中存储内容是：</p>
+
+        <p class="docText"><img border="0" alt="" width="500" height="100" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/402fig01.gif;400478" ></p>
+
+        <p class="docText">Note that the size of <tt>words</tt> is unchanged. It still has ten elements; only the order of these elements has changed. The call to <tt>unique</tt> "removes" adjacent duplicates. We put remove in quotes because <tt>unique</tt> doesn't remove any elements. Instead, it overwrites adjacent duplicates so that the unique elements are copied into the front of the sequence. The iterator returned by <tt>unique</tt> denotes one past the end of the range of unique elements.</p>
+        <p class="docText">注意，<tt>words</tt> 的大小并没有改变，依然保存着 10 个元素；只是这些元素的顺序改变了。调用 <tt>unique</tt>“删除”了相邻的重复值。给“删除”加上引号是因为 <tt>unique</tt> 实际上并没有删除任何元素，而是将无重复的元素复制到序列的前端，从而覆盖相邻的重复元素。<tt>unique</tt> 返回的迭代器指向超出无重复的元素范围末端的下一位置。</p><a name="ch11lev3sec9"></a>
+
+        <h5 class="docSection3Title">Using Container Operations to Remove Elements</h5>
+        <h5 class="docSection3Title">使用容器操作删除元素</h5>
+
+        <p class="docText">If we want to eliminate the duplicate items, we must use a container operation, which we do in the call to <tt>erase</tt>. This call erases the elements starting with the one to which <tt>end_unique</tt> refers through the end of <tt>words</tt>. After this call, <tt>words</tt> contains the eight unique words from the input.</p>
+        <p class="docText">如果要删除重复的项，必须使用容器操作，在本例中调用 <tt>erase</tt> 实现该功能。这个函数调用从 <tt>end_unique</tt> 指向的元素开始删除，直到 <tt>words</tt> 的最后一个元素也删除掉为止。调用之后，<tt>words</tt> 存储输入的 8 个不相同的元素。</p><a name="ch11note03"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Algorithms never directly change the size of a container. If we want to add or remove elements, we must use a container operation.</p>
+                <p class="docText">算法不直接修改容器的大小。如果需要添加或删除元素，则必须使用容器操作。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <p class="docText">It is worth noting that this call to <tt>erase</tt> would be safe even if there were no duplicated words in our <tt>vector</tt>. If there were no duplicates, then <tt>unique</tt> would return <tt>words.end()</tt>. Both arguments in the call to <tt>erase</tt> would have the same value, <tt>words.end()</tt>. The fact that the iterators are equal would mean that the range to <tt>erase</tt> would be empty. Erasing an empty range has no effect, so our program is correct even if the input has no duplicates.</p>
+        <p class="docText">值得注意的是，对没有重复元素的 <tt>vector</tt> 对象，调用 <tt>erase</tt> 也是安全的。如果不存在重复的元素，<tt>unique</tt> 就会返回 <tt>words.end()</tt>，此时，调用 <tt>erase</tt> 的两个实参值相同，都是 <tt>words.end()</tt>。两个迭代器相等这个事实意味着 <tt>erase</tt> 函数要删除的范围是空的。删除一段空的范围没有任何作用，所以即使输入中没有重复的元素，我们的程序仍然正确。</p><a name="ch11lev3sec10"></a>
+
+        <h5 class="docSection3Title">Defining Needed Utility Functions</h5>
+        <h5 class="docSection3Title">定义需要的实用函数</h5>
+
+        <p class="docText">Our next subproblem is to count how many words are of length six or greater. To solve this problem, we'll use two additional generic algorithms: <tt>stable_sort</tt> and <tt>count_if</tt>. To use each of these algorithms we'll need a companion utility function, known as a <b><a name="ch11term14"></a><a class="docLink" href="ch11lev1sec7.html#gloss11_14" >predicates</a></b>. A predicate is a function that performs some test and returns a type that can be used in a condition to indicate success or failure.</p>
+        <p class="docText">下一个子问题统计长度不小于 6 的单词个数。为了解决这个问题，需要用到另外两个泛型算法：<tt>stable_sort</tt> 和 <tt>count_if</tt>。使用这些算法，还需要一个配套的实用函数，称为<b><a class="docLink" href="ch11lev1sec7.html#gloss11_14" >谓词</a></b>。谓词是做某些检测的函数，返回用于条件判断的类型，指出条件是否成立。</p>
+
+        <p class="docText">The first predicate we need will be used to sort the elements based on size. To do this sort, we need to define a predicate function that compares two <tt>string</tt>s and returns a <tt>bool</tt> indicating whether the first is shorter in length than the second:</p>
+        <p class="docText">我们需要的第一个谓词将用在基于大小的元素排序中。为了实现排序，必须定义一个谓词函数来实现两个 <tt>string</tt> 对象的比较，并返回一个 <tt>bool</tt> 值，指出第一个字符串是否比第二个短：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">comparison function to be used to sort by word length</span>
+     bool isShorter(const string &amp;s1, const string &amp;s2)
+     {
+         return s1.size() &lt; s2.size();
+     }
+</pre>
+
+        <p class="docText"><a name="idd1e85813"></a><a name="idd1e85818"></a><a name="idd1e85823"></a><a name="idd1e85828"></a><a name="idd1e85834"></a><a name="idd1e85840"></a>The other function we need will determine whether a given <tt>string</tt> is of length six or greater:</p>
+        <p class="docText">另一个所需的谓词函数将判断给出的 <tt>string</tt> 对象的长度是否不小于 6：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">determine whether a length of a given word is 6 or more</span>
+     bool GT6(const string &amp;s)
+     {
+          return s.size() &gt;= 6;
+     }
+</pre>
+
+        <p class="docText">Although this function solves our problem, it is unnecessarily limitedthe function hardwires the size into the function itself. If we wanted to find out how many words were of another length, we'd have to write another function. We could easily write a more general comparison function that took two parameters, the <tt>string</tt> and the size. However, the function we pass to <tt>count_if</tt> takes a single argument, so we cannot use the more general approach in this program. We'll see a better way to write this part of our solution in <a class="docLink" href="ch14lev1sec8.html#ch14lev2sec27" >Section 14.8.1</a> (p. <a class="docLink" href="ch14lev1sec8.html#ch14lev2sec27" >531</a>).</p>
+        <p class="docText">尽管这个函数能解决问题，但存在不必要限制——函数内部硬性规定了对长度大小的要求。如果要统计其他长度的单词个数，则必须编写另一个函数。其实很容易写出更通用的比较函数，使它带有两个形参，分别是 <tt>string</tt> 对象和一个长度大小值即可。但是，传递给 <tt>count_if</tt> 算法的函数只能带有一个实参，因此本程序不能使用上述更通用的方法。<a class="docLink" href="ch14lev1sec8.html#ch14lev2sec27" >第 14.8.1 节</a>将为这个问题提供更好的解决方案。</p><a name="ch11lev3sec11"></a>
+
+        <h5 class="docSection3Title">Sorting Algorithms</h5>
+        <h5 class="docSection3Title">排序算法</h5>
+
+        <p class="docText">The library defines four different sort algorithms, of which we've used the simplest, <tt>sort</tt>, tosort <tt>words</tt> into alphabetical order. In addition to <tt>sort</tt>, the library also defines a <tt>stable_sort</tt> algorithm. A <tt>stable_sort</tt> maintains the original order among equal elements. Ordinarily, we don't care about the relative order of equal elements in a sorted sequence. After all, they're equal. However, in this case, we have defined "equal" to mean "the same length." Elements that have the same length can still be distinct when viewed alphabetically. By calling <tt>stable_sort</tt>, we maintain alphabetic order among those elements that have the same length.</p>
+        <p class="docText">标准库定义了四种不同的排序算法，上面只使用了最简单的 <tt>sort</tt> 算法，使 <tt>words</tt> 按字典次序排列。除了 <tt>sort</tt> 之外，标准库还定义了 <tt>stable_sort</tt> 算法，<tt>stable_sort</tt> 保留相等元素的原始相对位置。通常，对于已排序的序列，我们并不关心其相等元素的相对位置，毕竟，这些元素是相等的。但是，在这个应用中，我们将“相等”定义为“相同的长度”，有着相同长度的元素还能以字典次序的不同而区分。调用 <tt>stable_sort</tt> 后，对于长度相同的元素，将保留其字典顺序。</p>
+
+        <p class="docText">Both <tt>sort</tt> and <tt>stable_sort</tt> are overloaded functions. One version uses the <tt>&lt;</tt> operator for the element type to do the comparison. We used this version of <tt>sort</tt> to sort <tt>words</tt> before looking for duplicate elements. The second version takes a third parameter: the name of a predicate to use when comparing elements. That function must take two arguments of the same type as the element type and return a value that can be tested in a condition. We will use this second version, passing our <tt>isShorter</tt> function to compare elements:</p>
+        <p class="docText"><tt>sort</tt> 和 <tt>stable_sort</tt> 都是重载函数。其中一个版本使用元素类型提供的小于（<tt>&lt;</tt>）操作符实现比较。在查找重复元素之前，我们就是用这个 <tt>sort</tt> 版本对元素排序。第二个重载版本带有第三个形参：比较元素所使用的谓词函数的名字。这个谓词函数必须接受两个实参，实参的类型必须与元素类型相同，并返回一个可用作条件检测的值。下面将比较元素的 <tt>isShorter</tt> 函数作为实参，调用第二个版本的排序函数：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">sort</span> <span class="docEmphasis">words</span> <span class="docEmphItalicAlt">by size, but maintain alphabetic order for words of the same size</span>
+     stable_sort(words.begin(), words.end(), isShorter);
+</pre>
+
+        <p class="docText">After this call, <tt>words</tt> is sorted by element size, but the words of each length are also still in alphabetical order:</p>
+
+        <p class="docText">调用后，<tt>words</tt> 中的元素按长度大小排序，而长度相同的单词则仍然保持字典顺序：</p>
+
+        <p class="docText"><img border="0" alt="" width="375" height="38" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/403fig01.gif;400478" ></p><a name="ch11lev3sec12"></a>
+
+        <h5 class="docSection3Title">Counting Words of Length Six or More</h5>
+        <h5 class="docSection3Title">统计长度不小于 6 的单词</h5>
+
+        <p class="docText"><a name="idd1e85957"></a>Now that we've reordered our <tt>vector</tt> by word size, our remaining problem is to count how many words are of length six or greater. The <tt>count_if</tt> algorithm handles this problem:</p>
+        <p class="docText">现在此 <tt>vector</tt> 对象已经按单词长度排序，剩下的问题就是统计长度不小于 6 的单词个数。使用 <tt>count_if</tt> 算法处理这个问题：</p>
+        <pre>
+     vector&lt;string&gt;::size_type wc =
+                  count_if(words.begin(), words.end(), GT6);
+</pre>
+
+        <p class="docText"><tt>count_if</tt> executes by reading the range denoted by its first two parameters. It passes each value that it reads to the predicate function represented by its third argument. That function must take a single argument of the element type and must return a value that can be tested as a condition. The algorithm returns a count of the number of elements for which the function succeeded. In this case, <tt>count_if</tt> passes each word to <tt>GT6</tt>, which returns the <tt>bool</tt> value <tt>true</tt> if the word's length is six or more.</p>
+        <p class="docText">执行 <tt>count_if</tt> 时，首先读取它的头两个实参所标记的范围内的元素。每读出一个元素，就将它传递给第三个实参表示的谓词函数。此谓词函数。此谓词函数需要单个元素类型的实参，并返回一个可用作条件检测的值。<tt>count_if</tt> 算法返回使谓词函数返回条件成立的元素个数。在这个程序中，<tt>count_if</tt> 将每个单词传递给 <tt>GT6</tt>，而 <tt>GT6</tt> 返回一个 <tt>bool</tt> 值，如果单词长度不小于 6，则该 <tt>bool</tt> 值为 <tt>true</tt>。</p><a name="ch11lev3sec13"></a>
+
+        <h5 class="docSection3Title">Putting It All Together</h5>
+        <h5 class="docSection3Title">将全部程序段放在一起</h5>
+
+        <p class="docText">Having looked at the program in detail, here is the program as a whole:</p>
+        <p class="docText">了解程序的细节之后，下面是完整的程序：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">comparison function to be used to sort by word length</span>
+     bool isShorter(const string &amp;s1, const string &amp;s2)
+     {
+         return s1.size() &lt; s2.size();
+     }
+     // <span class="docEmphItalicAlt">determine whether a length of a given word is 6 or more</span>
+     bool GT6(const string &amp;s)
+     {
+         return s.size() &gt;= 6;
+     }
+     int main()
+     {
+         vector&lt;string&gt; words;
+         // <span class="docEmphItalicAlt">copy contents of each book into a single</span> <span class="docEmphasis">vector</span>
+         string next_word;
+         while (cin &gt;&gt; next_word) {
+             // <span class="docEmphItalicAlt">insert next book's contents at end of</span> <span class="docEmphasis">words</span>
+             words.push_back(next_word);
+         }
+         // <span class="docEmphItalicAlt">sort</span> <span class="docEmphasis">words</span> <span class="docEmphItalicAlt">alphabetically so we can find the duplicates</span>
+         sort (words.begin(), words.end());
+         /* <span class="docEmphItalicAlt">eliminate duplicate words:</span>
+          * <span class="docEmphasis">unique</span> <span class="docEmphItalicAlt">reorders</span> <span class="docEmphasis">words</span> <span class="docEmphItalicAlt">so that each word appears once in the</span>
+          *       <span class="docEmphItalicAlt">front portion of</span> <span class="docEmphasis">words</span> <span class="docEmphItalicAlt">and returns an iterator one past the unique range;</span>
+          * <span class="docEmphasis">erase</span> <span class="docEmphItalicAlt">uses a</span> <span class="docEmphasis">vector</span> <span class="docEmphItalicAlt">operation to remove the nonunique elements</span>
+          */
+         vector&lt;string&gt;::iterator end_unique =
+                     unique(words.begin(), words.end());
+         words.erase(end_unique, words.end());
+          // <span class="docEmphItalicAlt">sort</span> <span class="docEmphasis">words</span> <span class="docEmphItalicAlt">by size, but maintain alphabetic order for words of the same size</span>
+          stable_sort(words.begin(), words.end(), isShorter);
+          vector&lt;string&gt;::size_type wc =
+                          count_if (words.begin(), words.end(), GT6);
+          cout &lt;&lt; wc &lt;&lt; " " &lt;&lt; make_plural(wc, "word", "s")
+               &lt;&lt; " 6 characters or longer" &lt;&lt; endl;
+          return 0;
+     }
+</pre>
+        <a name="idd1e86080"></a><a name="idd1e86083"></a><a name="idd1e86088"></a><a name="idd1e86093"></a><a name="idd1e86096"></a>
+
+        <p class="docText">We leave as an exercise the problem of printing the words in size order.</p>
+        <p class="docText">最后，我们留下按长度顺序输出单词这个问题作为习题。</p><a name="ch11sb06"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 11.2.3</h2>
+
+              <blockquote>
+                <a name="ch11qa4q1"></a><a name="ch11qa4q2"></a><a name="ch11qa4q3"></a><a name="ch11qa4q4"></a>
+
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><b>Exercise 11.9:</b></td>
+
+                    <td>
+                      <p class="docText">Implement the program to count words of size 4 or greater, including printing the list of unique words in the input. Test your program by running it on the program's source file.</p>
+                      <p class="docText">编写程序统计长度不小于 4 的单词，并输出输入序列中不重复的单词。在程序源文件上运行和测试你自己编写的程序。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><b>Exercise 11.10:</b></td>
+
+                    <td>
+                      <p class="docText">The library defines a <tt>find_if</tt> function. Like <tt>find</tt>, the <tt>find_if</tt> function takes a pair of iterators that indicates a range over which to operate. Like <tt>count_if</tt>, it also takes a third parameter that names a predicate that can be used to test each element in the range. <tt>find_if</tt> returns an iterator that refers to the first element for which the function returns a nonzero value. It returns its second iterator argument if there is no such element. Use the <tt>find_if</tt> function to rewrite the portion of our program that counted how many words are greater than length six.</p>
+                      <p class="docText">标准库定义了一个 <tt>find_if</tt> 函数。与 <tt>find</tt> 一样，<tt>find_if</tt> 函数带有一对迭代器形参，指定其操作的范围。与 <tt>count_if</tt> 一样，该函数还带有第三个形参，表明用于检查范围内每个元素的谓词函数。<tt>find_if</tt> 返回一个迭代器，指向第一个谓词函数返回非零值的元素。如果这样的元素不存在，则返回第二个迭代器实参。使用 <tt>find_if</tt> 函数重写上述例题中统计长度大于 6 的单词个数的程序部分。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><b>Exercise 11.11:</b></td>
+
+                    <td>
+                      <p class="docText">Why do you think the algorithms don't change the size of containers?</p>
+                      <p class="docText">你认为为什么算法不改变容器的大小？</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><b>Exercise 11.12:</b></td>
+
+                    <td>
+                      <p class="docText">Why was it be necessary to use <tt>erase</tt> rather than define a generic algorithm that could remove elements from the container?</p>
+                      <p class="docText">为什么必须使用 <tt>erase</tt>，而不是定义一个泛型算法来删除容器中的元素？</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch11lev1sec1.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch11lev1sec3.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

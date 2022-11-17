@@ -1,0 +1,242 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 9.5.  Deciding Which Container to Use</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch09lev1sec4.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch09lev1sec6.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch09lev1sec5"></a>
+
+        <h3 class="docSection1Title">9.5. Deciding Which Container to Use</h3>
+        <h3 class="docSection1Title">9.5. 容器的选用</h3>
+
+        <p class="docText">As we saw in the previous section, allocating memory to hold elements in contiguous storage has impacts on the memory allocation strategies and overhead of a container. By using clever implementation techniques, library authors minimize this allocation overhead. Whether elements are stored contiguously has other significant impacts on:</p>
+        <p class="docText">在前面的章节中可见，分配连续存储元素的内存空间会影响内存分配策略和容器对象的开销。通过巧妙的实现技巧，标准库的实现者已经最小化了内存分配的开销。元素是否连续存储还会显著地影响：</p>
+
+        <ul>
+          <li>
+            <p class="docList">The costs to add or delete elements from the middle of the container</p>
+            <p class="docList">在容器的中间位置添加或删除元素的代价。</p>
+          </li>
+
+          <li>
+            <p class="docList">The costs to perform nonsequential access to elements of the container</p>
+            <p class="docList">执行容器元素的随机访问的代价。</p>
+          </li>
+        </ul>
+
+	<a name="idd1e70284"></a><a name="idd1e70290"></a><a name="idd1e70296"></a><a name="ch09lev2sec15"></a>
+        <p class="docText">The degree to which a program does these operations should be used to determine which type of container to use. The <tt>vector</tt> and <tt>deque</tt> types provide fast non-sequential access to elements at the cost of making it expensive to add or remove elements anywhere other than the ends of the container. The <tt>list</tt> type supports fast insertion and deletion anywhere but at the cost of making nonsequential access to elements expensive.</p>
+        <p class="docText">程序使用这些操作的程序将决定应该选择哪种类型的容器。<tt>vector</tt> 和 <tt>deque</tt> 容器提供了对元素的快速随机访问，但付出的代价是，在容器的任意位置插入或删除元素，比在容器尾部插入和删除的开销更大。<tt>list</tt> 类型在任何位置都能快速插入和删除，但付出的代价是元素的随机访问开销较大。</p>
+
+        <h4 class="docSection2Title">How Insertion Affects Choice of Container</h4>
+        <h4 class="docSection2Title">插入操作如何影响容器的选择</h4>
+
+        <p class="docText">A <tt>list</tt> represents noncontiguous memory and allows for both forward and backward traversal one element at a time. It is efficient to <tt>insert</tt> or <tt>erase</tt> an element at any point. Inserting or removing an element in a <tt>list</tt> does not move any other elements. Random access, on the other hand, is not supported. Accessing an element requires traversing the intervening elements.</p>
+        <p class="docText"><tt>list</tt> 容器表示不连续的内存区域，允许向前和向后逐个遍历元素。在任何位置都可高效地 <tt>insert</tt> 或 <tt>erase</tt> 一个元素。插入或删除 <tt>list</tt> 容器中的一个元素不需要移动任何其他元素。另一方面，<tt>list</tt> 容器不支持随机访问，访问某个元素要求遍历涉及的其他元素。</p>
+
+        <p class="docText">Inserting (or removing) anywhere except at the back of a <tt>vector</tt> requires that each element to the right of the inserted (or deleted) element be moved. For example, if we have a <tt>vector</tt> with 50 elements and we wish to <tt>erase</tt> element number 23, then each of the elements after 23 have to be moved forward by one position. Otherwise, there'd be a hole in the <tt>vector</tt>, and the <tt>vector</tt> elements would no longer be contiguous.</p>
+	<p class="docText">对于 <tt>vector</tt> 容器，除了容器尾部外，其他任何位置上的插入（或删除）操作都要求移动被插入（或删除）元素右边所有的元素。例如，假设有一个拥有 50 个元素的 <tt>vector</tt> 容器，我们希望删除其中的第 23 号元素，则 23 号元素后面的所有元素都必须向前移动一个位置。否则， <tt>vector</tt> 容器上将会留下一个空位（hole），而 <tt>vector</tt> 容器的元素就不再是连续存放的了。</p>
+
+        <p class="docText">A <tt>deque</tt> is a more complicated data structure. We are guaranteed that adding or removing elements from either end of the <tt>deque</tt> is a fast operation. Adding or removing from the middle will be more expensive. A <tt>deque</tt> offers some properties of both <tt>list</tt> and <tt>vector</tt>:</p>
+        <p class="docText"><tt>deque</tt> 容器拥有更加复杂的数据结构。从 <tt>deque</tt> 队列的两端插入和删除元素都非常快。在容器中间插入或删除付出的代价将更高。 <tt>deque</tt> 容器同时提供了 <tt>list</tt> 和 <tt>vector</tt> 的一些性质：</p>
+
+        <ul>
+          <li>
+            <p class="docList">Like <tt>vector</tt>, it is inefficient to <tt>insert</tt> or <tt>erase</tt> elements in the middle of the <tt>deque</tt>.</p>
+            <p class="docList">与 <tt>vector</tt> 容器一样，在 <tt>deque</tt> 容器的中间 <tt>insert</tt> 或 <tt>erase</tt> 元素效率比较低。</p>
+          </li>
+
+          <li>
+            <p class="docList">Unlike <tt>vector</tt>, a <tt>deque</tt> offers efficient <tt>insert</tt> and <tt>erase</tt> at the front as well as at the back.</p>
+            <p class="docList">不同于 <tt>vector</tt> 容器，<tt>deque</tt> 容器提供高效地在其首部实现 <tt>insert</tt> 和 <tt>erase</tt> 的操作，就像在容器尾部的一样。</p>
+          </li>
+
+          <li>
+            <p class="docList">Unlike <tt>list</tt> and like <tt>vector</tt>, a <tt>deque</tt> supports fast random access to any element.</p>
+            <p class="docList">与 <tt>vector</tt> 容器一样而不同于 <tt>list</tt> 容器的是， <tt>deque</tt> 容器支持对所有元素的随机访问。</p>
+          </li>
+
+          <li>
+            <p class="docList">Inserting elements at the front or back of a <tt>deque</tt> does not invalidate any iterators. Erasing the front or back element invalidates only iterators referring to the element(s) erased. Inserting or erasing anywhere else in the <tt>deque</tt> invalidates all iterators referring to elements of the <tt>deque</tt>.</p>
+            <p class="docList">在 <tt>deque</tt> 容器首部或尾部插入元素不会使任何迭代器失效，而首部或尾部删除元素则只会使指向被删除元素的迭代器失效。在 <tt>deque</tt> 容器的任何其他位置的插入和删除操作将使指向该容器元素的所有迭代器都失效。</p>
+          </li>
+        </ul><a name="ch09lev2sec16"></a>
+
+        <h4 class="docSection2Title">How Access to the Elements Affects Choice of Container</h4>
+        <h4 class="docSection2Title">元素的访问如何影响容器的选择</h4>
+
+        <p class="docText">Both <tt>vector</tt> and <tt>deque</tt> support efficient random access to their elements. That is, we can efficiently access element 5, then 15, then 7, and so on. Random access in a <tt>vector</tt> can be efficient because each access is to a fixed offset from the beginning of the <tt>vector</tt>. It is much slower to jump around in a <tt>list</tt>. the only way to move between the elements of a <tt>list</tt> is to sequentially follow the pointers. Moving from the 5th to the 15th element requires visiting every element between them.</p><a name="ch09note24"></a>
+        <p class="docText"><tt>vector</tt> 和 <tt>deque</tt> 容器都支持对其元素实现高效的随机访问。也就是说，我们可以高效地先访问 5 号元素，然后访问 15 号元素，接着访问 7 号元素，等等。 由于 <tt>vector</tt> 容器的每次访问都是距离其起点的固定偏移，因此其随机访问非常有效率。在 <tt>list</tt> 容器中，上述跳跃访问会变得慢很多。在 <tt>list</tt> 容器的元素之间移动的唯一方法是顺序跟随指针。从 5 号元素移动到 15 号元素必须遍历它们之间所有的元素。</p>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="84" height="51" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/tip.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText"><a name="idd1e70464"></a> In general, unless there is a good reason to prefer another container, <tt>vector</tt> is usually the right one to use.</p>
+                <p class="docText">通常来说，除非找到选择使用其他容器的更好理由，否则 <tt>vector</tt> 容器都是最佳选择。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch09lev2sec17"></a>
+
+        <h4 class="docSection2Title">Hints on Selecting Which Container to Use</h4>
+        <h4 class="docSection2Title">选择容器的提示</h4>
+
+        <p class="docText">There are a few rules of thumb that apply to selecting which container to use:</p>
+        <p class="docText">下面列举了一些选择容器类型的法则：</p>
+
+        <div style="font-weight:bold">
+          <ol class="docList" type="1">
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">If the program requires random access to elements, use a <tt>vector</tt> or a <tt>deque</tt>.</p>
+                <p class="docList">如果程序要求随机访问元素，则应使用 <tt>vector</tt> 或 <tt>deque</tt> 容器。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">If the program needs to insert or delete elements in the middle of the container, use a <tt>list</tt>.</p>
+                <p class="docList">如果程序必须在容器的中间位置插入或删除元素，则应采用 <tt>list</tt> 容器。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">If the program needs to insert or delete elements at the front and the back, but not in the middle, of the container, use a <tt>deque</tt>.</p>
+                <p class="docList">如果程序不是在容器的中间位置，而是在容器首部或尾部插入或删除元素，则应采用 <tt>deque</tt> 容器。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">If we need to insert elements in the middle of the container only while reading input and then need random access to the elements, consider reading them into a <tt>list</tt> and then reordering the <tt>list</tt> as appropriate for subsequent access and copying the reordered <tt>list</tt> into a <tt>vector</tt>.</p>
+                <p class="docList">如果只需在读取输入时在容器的中间位置插入元素，然后需要随机访问元素，则可考虑在输入时将元素读入到一个 <tt>list</tt> 容器，接着对此容器重新排序，使其适合顺序访问，然后将排序后的 <tt>list</tt> 容器复制到一个 <tt>vector</tt> 容器。</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+
+        <p class="docText">What if the program needs to randomly access and insert and delete elements in the middle of the container?</p>
+        <p class="docText">如果程序既需要随机访问又必须在容器的中间位置插入或删除元素，那应该怎么办呢？</p>
+
+        <p class="docText">This decision will depend on the relative cost of doing random access to <tt>list</tt> elements versus the cost of copying elements when inserting or deleting elements in a <tt>vector</tt> or <tt>deque</tt>. In general, the predominant operation of the application (whether it does more access or more insertion or deletion) should determine the choice of container type.</p>
+        <p class="docText">此时，选择何种容器取决于下面两种操作付出的相对代价：随机访问 <tt>list</tt> 容器元素的代价，以及在 <tt>vector</tt> 或 <tt>deque</tt> 容器中插入／删除元素时复制元素的代价。通常来说，应用中占优势的操作（程序中更多使用的是访问操作还是插入／删除操作）将决定应该什么类型的容器。</p>
+
+        <p class="docText">Deciding which container to use may require profiling the performance of each container type doing the kinds of operations the application requires.</p><a name="ch09note25"></a>
+        <p class="docText">决定使用哪种容器可能要求剖析各种容器类型完成应用所要求的各类操作的性能。</p>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="116" height="74" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/bestpractices.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">When you are not certain which container the application should use, try to write your code so that it uses only operations common to both <tt>vector</tt>s and <tt>lists:</tt> Use iterators, not subscripts, and avoid random access to elements. By writing your programs this way, it will be easier to change the container from a <tt>vector</tt> to a <tt>list</tt> if necessary.</p>
+                <p class="docText">如果无法确定某种应用应该采用哪种容器，则编写代码时尝试只使用 <tt>vector</tt> 和 <tt>lists</tt> 容器都提供的操作：使用迭代器，而不是下标，并且避免随机访问元素。这样编写，在必要时，可很方便地将程序从使用 <tt>vector</tt> 容器修改为使用 <tt>list</tt> 的容器。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+      </td>
+    </tr>
+  </table>
+
+	<a name="ch09sb15"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 9.5</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch09qa13q1"></a><b>Exercise 9.33:</b></td>
+
+                    <td>
+                      <p class="docText"><a name="idd1e70845"></a><a name="idd1e70852"></a><a name="idd1e70859"></a><a name="idd1e70866"></a>Which is the most appropriatea <tt>vector</tt>, a <tt>deque</tt>, or a <tt>list</tt>for the following program tasks? Explain the rationale for your choice. If there is no reason to prefer one or another container explain why not?</p>
+                      <p class="docText">对于下列程序任务，采用哪种容器（<tt>vector</tt>、<tt>deque</tt> 还是 <tt>list</tt>）实现最合适？解释选择的理由。如果无法说明采用某种容器比另一种容器更好的原因，请解释为什么无法说明？</p>
+
+                      <div style="font-weight:bold">
+                        <ol class="docList" type="a">
+                          <li>
+                            <div style="font-weight:normal">
+                              <p class="docList">Read an unknown number of words from a file for the purpose of generating English language sentences.</p>
+                              <p class="docList">从一个文件中讲稿未知数目的单词，以生成英文句子。</p>
+                            </div>
+                          </li>
+
+                          <li>
+                            <div style="font-weight:normal">
+                              <p class="docList">Read a fixed number of words, inserting them in the container alphabetically as they are entered. We'll see in the next chapter that associative containers are better suited to this problem.</p>
+                              <p class="docList">读入固定数目的单词，在输入时将它们按字母顺序插入到容器中。下一章将更适合处理此类问题的关联容器。</p>
+                            </div>
+                          </li>
+
+                          <li>
+                            <div style="font-weight:normal">
+                              <p class="docList">Read an unknown number of words. Always insert new words at the back. Remove the next value from the front.</p>
+                              <p class="docList">读入未知数目的单词。总是在容器尾部插入新单词，从容器首部删除下一个值。</p>
+                            </div>
+                          </li>
+
+                          <li>
+                            <div style="font-weight:normal">
+                              <p class="docList">Read an unknown number of integers from a file. Sort the numbers and then print them to standard output.</p>
+                              <p class="docList">从一个文件中讲稿未知数目的整数。对这些整数排序，然后把它们输出到标准输出设备。</p>
+                            </div>
+                          </li>
+                        </ol>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch09lev1sec4.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch09lev1sec6.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

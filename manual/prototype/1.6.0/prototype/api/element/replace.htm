@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Element.replace - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>replace</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">replace(element[, html]) -> HTMLElement</code></pre>
+			<p>
+				使用 <code>html</code> 参数指定的内容替换 <code>element</code>，返回被替换的 <code>element</code>。<br />
+				<strong>译注：</strong>该方法类似于 IE 下的 <code>element.outerHTML = html</code>		
+			</p>
+		</div>
+		<div id="abody">
+			<p class="notice">
+				当用于 Opera 9 的 <code>input</code> 元素时，若将 <code>replace</code> 当作实例的方法调用（如：
+				<code>$('foo').replace('&lt;p&gt;Bar&lt;/p&gt;')</code>），会引发错误。在<a href="http://www.whatwg.org/specs/web-forms/current-work/" >
+				Web Forms 2</a> 草案中，<code>replace</code> 是 <code>input</code> 的一个保留属性。在这种情形下，请使用一般的版本（
+				<code>Element.replace('foo', '&lt;p&gt;Bar&lt;/p&gt;')</code>）。
+			</p>
+			<p>
+				<code>html</code> 参数可以是纯文本，一个 HTML 片断或者任意具有 <code>toString</code> 方法的 JavaScript 对象。
+			</p>
+			<p>
+				如果 <code>html</code> 参数中包括 <code>&lt;script&gt;</code> 标签，在 <code>element</code> 被替换后，<code>&lt;script&gt;</code>
+				标签内的脚本将会被执行（<code>Element.replace()</code> 内部调用了 <a href="../string/evalScripts.htm" >String#evalScripts</a>）。
+			</p>
+			<p>
+				注意：如果没有指定 <code>html</code> 参数，<code>Element.replace</code> 将简单的移除 <code>element</code>。然而，使用
+				<a href="remove.htm" >Element.remove</a> 方法更高效并且更标准。
+			</p>
+			<h3>样例</h3>
+			<pre><code class="html">&lt;div id="food"&gt;
+	&lt;div id="fruits"&gt;
+		&lt;p id="first"&gt;Kiwi, banana &lt;em&gt;and&lt;/em&gt; apple.&lt;/p&gt;
+	&lt;/div&gt;
+&lt;/div&gt; </code></pre>
+			<p>传递一个 HTML 片断：</p>
+			<pre><code class="javascript">$('first').replace('&lt;ul id="favorite"&gt;&lt;li&gt;kiwi&lt;/li&gt;&lt;li&gt;banana&lt;/li&gt;&lt;li&gt;apple&lt;/li&gt;&lt;/ul&gt;');
+// -> HTMLElement (p#first) 
+$('fruits').innerHTML; // -> '&lt;ul id="favorite"&gt;&lt;li&gt;kiwi&lt;/li&gt;&lt;li&gt;banana&lt;/li&gt;&lt;li&gt;apple&lt;/li&gt;&lt;/ul&gt;'
+			</code></pre>
+			<p>这一次包括一个 &lt;script&gt; 标签：</p>
+			<pre><code class="javascript">$('favorite').replace('&lt;p id="still-first"&gt;Melon, oranges &lt;em&gt;and&lt;/em&gt; grapes.&lt;/p&gt;&lt;script&gt;alert("removed!")&lt;/script&gt;');
+// -> 返回 HTMLElement (ul#favorite) 并弹出一个提示框，显示“removed!” 
+$('fruits').innerHTML
+// -> '&lt;p id="still-first"&gt;Melon, oranges &lt;em&gt;and&lt;/em&gt; grapes.&lt;/p&gt;'</code></pre>
+			<p>使用纯文本：</p>
+			<pre><code class="javascript">$('still-first').replace('Melon, oranges and grapes.');
+// -> HTMLElement (p#still-first) 
+$('fruits').innerHTML 
+// -> 'Melon, oranges and grapes.' </code></pre>
+			<p>最后，应用 <code>toString()</code> 方法：</p>
+			<pre><code class="javascript">$('fruits').replace(123); 
+// -> HTMLElement 
+$('food').innerHTML;
+// -> '123' </code></pre>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

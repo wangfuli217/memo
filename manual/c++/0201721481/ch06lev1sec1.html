@@ -1,0 +1,139 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 6.1.  Simple Statements</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch06.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch06lev1sec2.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch06lev1sec1"></a>
+
+        <h3 class="docSection1Title">6.1. Simple Statements</h3>
+        <h3 class="docSection1Title">6.1. 简单语句</h3>
+
+<a name="ch06term14"></a>
+        <p class="docText">Most statements in C++ end with a semicolon. An expression, such as <tt>ival + 5</tt>, becomes an <b><a class="docLink" href="ch06lev1sec16.html#gloss06_14" >expression statement</a></b> by following it with a semicolon. Expression statements cause the expression to be evaluated. In the case of</p>
+        <p class="docText">C++ 中，大多数语句以分号结束。例如，像 <tt>ival + 5</tt> 这样的表达式，在后面加上分号，就是一条<b><a class="docLink" href="ch06lev1sec16.html#gloss06_14" >表达式语句</a></b>。表达式语句用于计算表达式。但执行下面的语句</p>
+        <pre>
+     ival + 5;    // <span class="docEmphItalicAlt">expression statement</span>
+</pre><br>
+
+        <p class="docText">evaluating this expression is useless: The result is calculated but not assigned or otherwise used. More commonly, expression statements contain expressions that when evaluated affect the program's state. Examples of such expressions are those that use assignment, increment, input, or output operators.</p>
+        <p class="docText">却没有任何意义：因为计算出来的结果没有用于赋值或其他用途。通常，表达式语句所包含的表达式在计算时会影响程序的状态，使用赋值、自增、输入或输出操作符的表达式就是很好的例子。</p>
+
+<a name="ch06lev2sec1"></a>
+        <h4 class="docSection2Title">Null Statements</h4>
+        <h4 class="docSection2Title">空语句</h4>
+
+<a name="ch06term20"></a>
+        <p class="docText">The simplest form of statement is the empty, or <b><a class="docLink" href="ch06lev1sec16.html#gloss06_20" >null statement</a></b>. It takes the following form (a single semicolon):</p>
+        <p class="docText">程序语句最简单的形式是<b><a class="docLink" href="ch06lev1sec16.html#gloss06_20" >空语句</a></b>，它使用以下的形式（只有一个单独的分号）：</p>
+        <pre>
+     ;  // <span class="docEmphItalicAlt">null statement</span>
+</pre><br>
+
+        <p class="docText">A null statement is useful where the language requires a statement but the program's logic does not. Such usage is most common when a loop's work can be done within the condition. For example, we might want to read an input stream, ignoring everything we read until we encounter a particular value:</p>
+        <p class="docText">如果在程序的某个地方，语法上需要一个语句，但逻辑上并不需要，此时应该使用空语句。这种用法常见于在循环条件判断部分就能完成全部循环工作的情况。例如，下面程序从输入流中读取数据，在获得某个特殊值前无需作任何操作：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">read until we hit end-of-file or find an input equal to</span> <span class="docEmphasis">sought</span>
+     while (cin &gt;&gt; s &amp;&amp; s != sought)
+         ; // <span class="docEmphItalicAlt">null statement</span>
+</pre><br>
+
+        <p class="docText">The condition reads a value from the standard input and implicitly tests <tt>cin</tt> to see whether the read was successful. Assuming the read succeeded, the second part of the condition tests whether the value we read is equal to the value in <tt>sought</tt>. If we found the value we want, then the <tt>while</tt> loop is exited; otherwise, the condition is tested again, which involves reading another value from <tt>cin</tt>.</p>
+        <p class="docText">循环条件从标准输入中读入一个值并检验 <tt>cin</tt> 的读入是否成功。如果成功读取数据，循环条件紧接着检查该值是否等于 <tt>sought</tt>。如果找到了需要的值，则退出 <tt>while</tt> 循环；否则，循环条件再次从 <tt>cin</tt> 里读入另一个值继续检验。</p>
+
+<a name="ch06note01"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="116" height="74" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/bestpractices.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">A null statement should be commented, so that anyone reading the code can see that the statement was omitted intentionally.</p>
+                <p class="docText">使用空语句时应该加上注释，以便任何读这段代码的人都知道该语句是有意省略的。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">Because a null statement is a statement, it is legal anywhere a statement is expected. For this reason, semicolons that might appear illegal are often nothing more than null statements:</p>
+        <p class="docText">由于空语句也是一个语句，因此可用在任何允许使用语句的地方。由于这个原因，那些看似非法的分号往往只不过是一个空语句而已：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">ok: second semicolon is superfluous null statement</span>
+     ival = v1 + v2;;
+</pre><br>
+
+<a name="idd1e41949"></a><a name="idd1e41952"></a><a name="idd1e41955"></a><a name="idd1e41958"></a><a name="idd1e41961"></a><a name="idd1e41966"></a><a name="idd1e41971"></a>
+        <p class="docText">This fragment is composed of two statements: the expression statement and the null statement.</p>
+        <p class="docText">这个程序段由两条语句组成：一条表达式语句和一条空语句。</p>
+
+<a name="ch06note02"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Extraneous null statements are not always harmless.</p>
+                <p class="docText">无关的空语句并非总是无害的。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">An extra semicolon following the condition in a <tt>while</tt> or <tt>if</tt> can drastically alter the programmer's intent:</p>
+        <p class="docText">在 <tt>while</tt> 或 <tt>if</tt> 条件后面额外添加分号，往往会彻底改变程序员的意图：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">disaster: extra semicolon: loop body is this null statement</span>
+     while (iter != svec.end()) ; // <span class="docEmphItalicAlt">null statement--while body is empty!</span>
+         ++iter;     // <span class="docEmphItalicAlt">increment is not part of the loop</span>
+</pre><br>
+
+        <p class="docText">This program will loop indefinitely. Contrary to the indentation, the increment is not part of the loop. The loop body is a null statement caused by the extra semicolon following the condition.</p>
+        <p class="docText">这个程序将会无限次循环。与缩进的意义相反，此自增语句并不是循环的一部分。由于循环条件后面多了一个分号，因此循环体为空语句。</p>
+
+<a href="21001535.html" ><img src="images/pixel.gif"  alt="" width="1" height="1" border="0"></a>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch06.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch06lev1sec2.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

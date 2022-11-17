@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+    <!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+    <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+         <title>How to Port Your Applications to MemSQL</title> 
+        <link rel="shortcut icon" href="../../../static_star_theme/img/favicon.ico"/>
+        <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,700italic' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../static_star_theme/css/theme.css" type="text/css" /> 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+    </head>
+
+    <body class="wy-body-for-nav" role="document">
+
+    <div class="wy-grid-for-nav">
+
+        <div class="wy-full-navbar" data-swiftype-index="false">
+            <a href="http://www.memsql.com" class="logo">
+                <img src="../../../static_star_theme/img/memsql_logo_horizontal_white.svg" />
+            </a>
+            <div class="global nav">
+                <div class="pull-left left-links">
+                </div>
+                <div class="pull-right right-links">
+                    <a href="http://www.memsql.com/community/" style="word-spacing: 2px;">Community Edition</a>
+                    <a href="http://blog.memsql.com">Blog</a>
+                    <a href="http://www.memsql.com/memsql-partners">Partners</a>
+                    <a href="http://www.memsql.com/resources">Resources</a>
+                    <a href="../../../index.html">Documentation</a>
+                    <a href="http://www.memsql.com/contact">Contact</a>
+                </div>
+            </div>
+            <div class="nav-links">
+                <a href="http://www.memsql.com/product">Product</a>
+                <a href="http://www.memsql.com/solutions">Solutions</a>
+                <a href="http://www.memsql.com/case-studies">Case Studies</a>
+                <a href="http://www.memsql.com/company">Company</a>
+                <a class="download" href="http://www.memsql.com/download/">Download Now</a>
+            </div>
+        </div>
+
+        <nav data-toggle="wy-nav-shift" class="wy-nav-side" data-swiftype-index="false">
+            <div class="wy-side-nav-search">
+                <div role="search">
+  <form id="search-form" class="wy-form" method="get">
+    <input type="text" id="st-search-input" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+            </div>
+
+            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                
+                 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">MemSQL Docs Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro/index.html">How MemSQL Works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../setup/quick_start/index.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../setup/get_started/index.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">User Manual</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../connecting/index.html">How to Connect to MemSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../how_to_run_queries/index.html">How to Run Queries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../multi_insert_examples/index.html">Concurrent Multi-Insert Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../data_loading/index.html">Loading Data Into MemSQL</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="index.html">How to Port Your Applications to MemSQL</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="index.html#porting-tables-to-memsql">Porting tables to MemSQL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#loading-data-into-memsql">Loading data into MemSQL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#how-to-connect">How to connect</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../memory_management/index.html">Memory Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../distributed_architecture/index.html">Distributed Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../codegen/index.html">Code Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/index.html">Database Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../distributed_sql/index.html">Distributed SQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../columnar/index.html">Column Store</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../geospatial/index.html">Geospatial Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../json/json/index.html">Javascript Object Notation (JSON)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Operations Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ref/commands_by_type/index.html">SQL Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/config/index.html">Configuration Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ops/index.html">MemSQL Ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../loader/index.html">MemSQL Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../archive/index.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../editions/index.html">MemSQL Editions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq/index.html">Frequently Asked Questions</a></li>
+</ul>
+ 
+            </div>
+            &nbsp;
+        </nav>
+
+        <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+            <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+                <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+                <a href="../../../index.html" class="logo">
+                    <img src="../../../static_star_theme/img/memsql_logo_horizontal_white.svg" />
+                    <span class="subtitle">Documentation</span>
+                </a>
+            </nav>
+
+            <div class="wy-nav-content">
+                <div class="rst-content">
+                    <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../index.html">MemSQL Documentation</a> &raquo;</li>
+      
+          <li><a href="../index.html">User Manual</a> &raquo;</li>
+      
+    <li>How to Port Your Applications to MemSQL</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+                    <div role="main" class="document">
+                        
+  <div class="section" id="how-to-port-your-applications-to-memsql">
+<h1>How to Port Your Applications to MemSQL<a class="headerlink" href="index.html#how-to-port-your-applications-to-memsql" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="porting-tables-to-memsql">
+<h2>Porting tables to MemSQL<a class="headerlink" href="index.html#porting-tables-to-memsql" title="Permalink to this headline">¶</a></h2>
+<p>An important decision to make when porting your schema is setting up the the
+appropriate shard keys (see <a class="reference internal" href="../distributed_sql/index.html#distributed-ddl"><em>Distributed DDL</em></a> for more details). If your table has a
+<tt class="docutils literal"><span class="pre">PRIMARY</span></tt> key, MemSQL will by default choose that key as the shard key. For
+example, both of the following table definitions will shard the table by <tt class="docutils literal"><span class="pre">a</span></tt>:</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="nf">t1</span><span class="p">(</span><span class="n">a</span> <span class="kt">INT</span><span class="p">,</span> <span class="n">b</span> <span class="kt">INT</span><span class="p">,</span> <span class="k">PRIMARY</span> <span class="k">KEY</span><span class="p">(</span><span class="n">a</span><span class="p">));</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="nf">t1</span><span class="p">(</span><span class="n">a</span> <span class="kt">INT</span><span class="p">,</span> <span class="n">b</span> <span class="kt">INT</span><span class="p">,</span> <span class="n">SHARD</span> <span class="k">KEY</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="k">PRIMARY</span> <span class="k">KEY</span><span class="p">(</span><span class="n">a</span><span class="p">));</span>
+</pre></div>
+</div>
+<p>If your table does not have a primary key, then you must explicitly choose a
+shard key column. There are two major factors to take into account when
+defining a shard key:</p>
+<ul class="simple">
+<li>Using a column or set of columns unique enough to minimize skew.</li>
+<li>Sharding on columns which you expect to join on often. This allows the optimizer to minimize network traffic during the execution of the query (see <a class="reference internal" href="../distributed_sql/index.html#distributed-dml"><em>Distributed DML</em></a> for more details).</li>
+</ul>
+<p>Let’s say we have the following table and query which we would like to be extremely performant:</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="nf">events</span><span class="p">(</span><span class="n">event_id</span> <span class="kt">INT</span><span class="p">,</span> <span class="n">user_id</span> <span class="kt">INT</span><span class="p">,</span> <span class="kt">time</span> <span class="kt">TIMESTAMP</span><span class="p">);</span>
+
+<span class="k">SELECT</span> <span class="nf">COUNT</span><span class="p">(</span><span class="k">DISTINCT</span> <span class="n">first</span><span class="p">.</span><span class="n">user_id</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">events</span> <span class="k">AS</span> <span class="n">first</span> <span class="k">JOIN</span> <span class="n">events</span> <span class="k">AS</span> <span class="n">second</span> <span class="k">WHERE</span> <span class="n">first</span><span class="p">.</span><span class="n">user_id</span> <span class="o">=</span> <span class="n">second</span><span class="p">.</span><span class="n">user_id</span> <span class="k">AND</span> <span class="nf">TIMESTAMPDIFF</span><span class="p">(</span><span class="n">MINUTE</span><span class="p">,</span> <span class="n">first</span><span class="p">.</span><span class="kt">time</span><span class="p">,</span> <span class="n">second</span><span class="p">.</span><span class="kt">time</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">20</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>In this case, we’ll want to modify our table schema to shard on <tt class="docutils literal"><span class="pre">user_id</span></tt>. When we run our query, we’ll be able to take advantage of locality when performing the join and when computing the distinct aggregate value: The advantage with the join is that it will happen on the leaves without having to repartition or move data between leaves.</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="nf">events</span><span class="p">(</span><span class="n">event_id</span> <span class="kt">INT</span><span class="p">,</span> <span class="n">user_id</span> <span class="kt">INT</span><span class="p">,</span> <span class="kt">time</span> <span class="kt">TIMESTAMP</span><span class="p">,</span> <span class="n">SHARD</span> <span class="k">KEY</span><span class="p">(</span><span class="n">user_id</span><span class="p">));</span>
+</pre></div>
+</div>
+<p>But what if we aren’t sure yet what our workload will look like? In that case, MemSQL allows you to shard uniformly on a random value by entering a blank shard key:</p>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="nf">events</span><span class="p">(</span><span class="n">event_id</span> <span class="kt">INT</span><span class="p">,</span> <span class="n">user_id</span> <span class="kt">INT</span><span class="p">,</span> <span class="kt">time</span> <span class="kt">TIMESTAMP</span><span class="p">,</span> <span class="n">SHARD</span> <span class="k">KEY</span><span class="p">());</span>
+</pre></div>
+</div>
+<p>This will allow you to continue developing your application and does not impose any functional restrictions. Once you understand how your workload performs in MemSQL better, you can recreate your table with a shard key.</p>
+</div>
+<div class="section" id="loading-data-into-memsql">
+<h2>Loading data into MemSQL<a class="headerlink" href="index.html#loading-data-into-memsql" title="Permalink to this headline">¶</a></h2>
+<p>See <a class="reference internal" href="../data_loading/index.html"><em>Loading Data Into MemSQL</em></a>.</p>
+</div>
+<div class="section" id="how-to-connect">
+<h2>How to connect<a class="headerlink" href="index.html#how-to-connect" title="Permalink to this headline">¶</a></h2>
+<p>MemSQL is wire compatible with MySQL, meaning that any MySQL client can be used to connect to MemSQL.</p>
+<p>See <a class="reference internal" href="../connecting/index.html"><em>How to Connect to MemSQL</em></a> for more details.</p>
+</div>
+</div>
+
+
+                    </div>
+                    <footer data-swiftype-index="false">
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../memory_management/index.html" class="btn btn-neutral float-right" title="Memory Management">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../data_loading/index.html" class="btn btn-neutral" title="Loading Data Into MemSQL"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&copy; Copyright 2015, MemSQL</p>
+  </div>
+</footer>
+                </div>
+            </div>
+
+        </section>
+    </div>
+
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/underscore-min.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery.ba-hashchange.min.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery.swiftype.search.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery.swiftype.autocomplete.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/theme.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/search.js"></script> 
+
+        <!-- Google Analytics -->
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-21693588-3', 'auto');
+            ga('send', 'pageview');
+        </script>
+        <!-- End Google Analytics -->
+
+        <script type="text/javascript">
+            $.ajax({
+                url: document.location.protocol + '//munchkin.marketo.net/munchkin.js',
+                dataType: 'script',
+                cache: true,
+                success: function() {
+                    Munchkin.init('759-YLI-316');
+                }
+            });
+        </script>
+    </body>
+</html>

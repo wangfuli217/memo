@@ -1,0 +1,259 @@
+﻿<html xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+    <META NAME="save" CONTENT="history" />
+    <title>LINQ 查询表达式（C# 编程指南）</title>
+    <link rel="stylesheet" type="text/css" href="../styles/presentation.css" />
+    <link rel="stylesheet" type="text/css" href="ms-help://Hx/HxRuntime/HxLink.css" />
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/EventUtilities.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/SplitScreen.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/Dropdown.js"> </script>
+    <script type="text/javascript" src="../scripts/script_manifold.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/script_feedBack.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CheckboxMenu.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CommonUtilities.js"> </script>
+    <xml>
+      <MSHelp:TOCTitle Title="LINQ 查询表达式" />
+      <MSHelp:Keyword Index="A" Term="40638f19-fb46-4d26-a2d9-a383b48f5ed4" />
+      <MSHelp:Keyword Index="K" Term="C# 语言, LINQ 查询表达式" />
+      <MSHelp:Keyword Index="K" Term="表达式 [C#], LINQ 查询表达式" />
+      <MSHelp:Keyword Index="K" Term="LINQ [C#], 查询表达式" />
+      <MSHelp:Keyword Index="K" Term="查询 [C# 中的 LINQ], 查询表达式" />
+      <MSHelp:Keyword Index="K" Term="查询表达式 [C# 中的 LINQ], 关于查询表达式" />
+      <MSHelp:Keyword Index="S" Term="LINQ to DataSet" />
+      <MSHelp:Keyword Index="F" Term="LINQ to DataSet" />
+      <MSHelp:Keyword Index="S" Term="LINQ to Objects" />
+      <MSHelp:Keyword Index="F" Term="LINQ to Objects" />
+      <MSHelp:Keyword Index="S" Term="LINQ to SQL" />
+      <MSHelp:Keyword Index="F" Term="LINQ to SQL" />
+      <MSHelp:Keyword Index="S" Term="LINQ to XML" />
+      <MSHelp:Keyword Index="F" Term="LINQ to XML" />
+      <MSHelp:Keyword Index="S" Term="使用 LINQ" />
+      <MSHelp:Keyword Index="F" Term="使用 LINQ" />
+      <MSHelp:Attr Name="RevisionNumber" Value="18" />
+      <MSHelp:Attr Name="AssetID" Value="40638f19-fb46-4d26-a2d9-a383b48f5ed4" />
+      <MSHelp:Attr Name="Abstract" Value="&#xD;&#xA;                    语言集成查询 (LINQ) 是一组技术的名称，这些技术建立在将查询功能直接集成到 C# 语言（以及 Visual Basic 和可能的任何其他 .NET 语言）的基础上。借助于 LINQ，查询现在已是高级语言构造，就如同类、方法、事件等等。&#xD;&#xA;                " />
+      <MSHelp:Attr Name="codelang" Value="CSharp" />
+      <MSHelp:Attr Name="CommunityContent" Value="1" />
+      <MSHelp:Attr Name="DevLang" Value="CSharp" />
+      <MSHelp:Attr Name="DevLangVers" Value="CSharp" />
+      <MSHelp:Attr Name="DocSet" Value="C#" />
+      <MSHelp:Attr Name="DocSet" Value="C# Lang" />
+      <MSHelp:Attr Name="DocSet" Value="ExpressLibVS" />
+      <MSHelp:Attr Name="ProgModel" Value="managed" />
+      <MSHelp:Attr Name="ShippedIn" Value="vs.90" />
+      <MSHelp:Attr Name="Technology" Value="ManagedCode" />
+      <MSHelp:Attr Name="TopicVersion" Value="09.00.08178.10000" />
+      <MSHelp:Attr Name="Catalog Container" Value="System_Default_Catalog" />
+      <MSHelp:Attr Name="Content Set Container" Value="System_Default_Content_Set" />
+      <MSHelp:Attr Name="TopicType" Value="kbArticle" />
+      <MSHelp:Attr Name="Locale" Value="zh-chs" />
+    </xml>
+  </head>
+  <body>
+    <input type="hidden" id="userDataCache" class="userDataStyle" />
+    <input type="hidden" id="hiddenScrollOffset" />
+    <img id="collapseImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" title="“折叠”图像" />
+    <img id="expandImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" title="“展开”图像" />
+    <img id="collapseAllImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" />
+    <img id="expandAllImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" />
+    <img id="dropDownImage" style="display:none; height:0; width:0;" src="../icons/dropdown.gif" />
+    <img id="dropDownHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/dropdownHover.gif" />
+    <img id="copyImage" style="display:none; height:0; width:0;" src="../icons/copycode.gif" title="“复制”图像" />
+    <img id="copyHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/copycodeHighlight.gif" title="“复制悬停”图像" />
+    <div id="header">
+      <table id="topTable" cellspacing="0" cellpadding="0">
+        <tr>
+          <td>
+            <span onclick="ExpandCollapseAll(toggleAllImage)" style="cursor:default;" onkeypress="ExpandCollapseAll_CheckKey(toggleAllImage, event)" tabindex="0">
+              <img ID="toggleAllImage" class="toggleAll" src="../icons/collapse_all.gif" /> <label id="collapseAllLabel" for="toggleAllImage" style="display: none;">全部折叠</label><label id="expandAllLabel" for="toggleAllImage" style="display: none;">全部展开</label> </span>
+            <span>    </span>
+            <span id="devlangsDropdown" class="filter" tabindex="0">
+              <img id="devlangsDropdownImage" src="../icons/dropdown.gif" /> <label id="devlangsMenuAllLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：全部 </nobr></label><label id="devlangsMenuMultipleLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：多个 </nobr></label><label id="devlangsMenuVisualBasicLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual Basic </nobr></label><label id="devlangsMenuCSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：C# </nobr></label><label id="devlangsMenuManagedCPlusPlusLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual C++ </nobr></label><label id="devlangsMenuJSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：J# </nobr></label><label id="devlangsMenuJScriptLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：JScript </nobr></label></span>
+          </td>
+        </tr>
+      </table>
+      <div id="devlangsMenu">
+        <input id="VisualBasicCheckbox" type="checkbox" data="VisualBasic,vb,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="VisualBasicCheckbox">Visual Basic</label>
+        <br />
+        <input id="CSharpCheckbox" type="checkbox" data="CSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="CSharpCheckbox">C#</label>
+        <br />
+        <input id="ManagedCPlusPlusCheckbox" type="checkbox" data="ManagedCPlusPlus,cpp,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="ManagedCPlusPlusCheckbox">Visual C++</label>
+        <br />
+        <input id="JSharpCheckbox" type="checkbox" data="JSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JSharpCheckbox">J#</label>
+        <br />
+        <input id="JScriptCheckbox" type="checkbox" data="JScript,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JScriptCheckbox">JScript</label>
+        <br />
+      </div>
+      <table id="bottomTable" cellpadding="0" cellspacing="0">
+        <tr id="headerTableRow1">
+          <td align="left">
+            <span id="runningHeaderText">C# 编程指南</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow2">
+          <td align="left">
+            <span id="nsrTitle">LINQ 查询表达式（C# 编程指南）</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow3">
+          <td align="left">
+            <a href="40638f19-fb46-4d26-a2d9-a383b48f5ed4.htm#seeAlsoToggle" onclick="OpenSection(seeAlsoToggle)">另请参见</a>  
+<script type="text/javascript">
+var fbBody = '%b8%d0%d0%bb%c4%fa%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%bf%aa%b7%a2%b0%e6%b1%e0%d0%b4%cd%c5%b6%d3%bd%ab%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%d3%c3%d3%da%b8%c4%bd%f8%ce%c4%b5%b5%a1%a3%ce%d2%c3%c7%d4%da%c9%f3%d4%c4%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%ca%b1%a3%ac%bf%c9%c4%dc%bb%e1%b8%f8%c4%fa%b7%a2%cb%cd%b5%e7%d7%d3%d3%ca%bc%fe%a3%ac%d2%d4%c7%eb%c4%fa%cc%e1%b9%a9%bd%f8%d2%bb%b2%bd%b5%c4%bd%e2%ca%cd%cb%b5%c3%f7%bb%f2%d5%df%be%cd%bd%e2%be%f6%b7%bd%b0%b8%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%ce%d2%c3%c7%b2%bb%bb%e1%bd%ab%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%d3%c3%d3%da%c8%ce%ba%ce%c6%e4%cb%fb%d3%c3%cd%be%a3%ac%b2%a2%c7%d2%d4%da%c9%f3%d4%c4%cd%ea%d6%ae%ba%f3%a3%ac%ce%d2%c3%c7%b2%bb%bb%e1%d4%d9%b1%a3%c1%f4%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%a1%a3%0d%0a%d3%d0%b9%d8%20Microsoft%20%d2%fe%cb%bd%d5%fe%b2%df%b5%c4%bd%f8%d2%bb%b2%bd%d0%c5%cf%a2%a3%ac%c7%eb%b2%ce%bc%fb%20http%3a%2f%2fprivacy.microsoft.com%2fzh-cn%2fdefault.aspx%a1%a3';
+var fbSubject = 'Customer%20Feedback';
+</script>
+  <span id="headfeedbackarea" class="feedbackhead"><a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);"> 发送反馈意见</a></span>
+</td>
+        </tr>
+      </table>
+      <table id="gradientTable">
+        <tr>
+          <td class="nsrBottom" background="../icons/gradient.gif" />
+        </tr>
+      </table>
+    </div>
+    <div id="mainSection">
+      <div id="mainBody">
+        <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
+        <font color="DarkGray"></font>
+        <p /> <p><font color="DarkGray">更新：2007 年 11 月</font></p><div class="introduction"><p>
+                    语言集成查询 (LINQ) 是一组技术的名称，这些技术建立在将查询功能直接集成到 C# 语言（以及 Visual Basic 和可能的任何其他 .NET 语言）的基础上。借助于 LINQ，查询现在已是高级语言构造，就如同类、方法、事件等等。
+                </p><p>
+                    对于编写查询的开发人员来说，LINQ 最明显的“语言集成”部分是查询表达式。查询表达式是使用 C# 3.0 中引入的声明性查询语法编写的。通过使用查询语法，您甚至可以使用最少的代码对数据源执行复杂的筛选、排序和分组操作。您使用相同的基本查询表达式模式来查询和转换 SQL 数据库、ADO.NET 数据集、XML 文档和流以及 .NET 集合中的数据。
+                </p><p>
+                    下面的示例演示了完整的查询操作。完整操作包括创建数据源、定义查询表达式，以及在 <span sdata="langKeyword" value="foreach"><span class="keyword">foreach</span></span> 语句中执行查询。
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> LINQQueryExpressions
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Main()
+    {
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Specify the data source.</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>[] scores = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>[] { 97, 92, 81, 60 };
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Define the query expression.</span>
+        IEnumerable&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span>&gt; scoreQuery =
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">from</span> score <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> scores
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">where</span> score &gt; 80
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">select</span> score;
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Execute the query.</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">foreach</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> i <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">in</span> scoreQuery)
+        {
+            Console.Write(i + <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">" "</span>);
+        }            
+    }
+}
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Output: 97 92 81</span>
+
+</pre></td></tr></table></span></div></div><p>
+                    有关 C# 中的 LINQ 基础知识的更多信息，请参见 <span sdata="link"><mshelp:link keywords="b8700c1f-05c9-4380-b6eb-e34c4da38e54" tabindex="0">C# 中的 LINQ 入门</mshelp:link></span>。
+                </p></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle0)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle0, event)" tabindex="0"><img id="sectionToggle0" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />查询表达式概述</span></h1><div id="sectionSection0" class="section" name="collapseableSection" style=""><ul><li><p>
+                    查询表达式可用于查询和转换来自任意支持 LINQ 的数据源中的数据。例如，单个查询可以从 SQL 数据库检索数据，并生成 XML 流作为输出。
+                </p></li><li><p>
+                    查询表达式容易掌握，因为它们使用许多常见的 C# 语言构造。有关更多信息，请参见 <span sdata="link"><mshelp:link keywords="b8700c1f-05c9-4380-b6eb-e34c4da38e54" tabindex="0">C# 中的 LINQ 入门</mshelp:link></span>。
+                </p></li><li><p>
+                    查询表达式中的变量都是强类型的，但许多情况下您不需要显式提供类型，因为编译器可以推断类型。有关更多信息，请参见<span sdata="link"><mshelp:link keywords="99118938-d47c-4d7e-bb22-2657a9f95268" tabindex="0">查询操作中的类型关系 (LINQ)</mshelp:link></span>。
+                </p></li><li><p>
+                    在您循环访问 <span sdata="langKeyword" value="foreach"><span class="keyword">foreach</span></span> 语句中的查询变量之前，不会执行查询。有关更多信息，请参见 <span sdata="link"><mshelp:link keywords="37895c02-268c-41d5-be39-f7d936fa88a8" tabindex="0">LINQ 查询介绍</mshelp:link></span>。
+                </p></li><li><p>
+                    在编译时，根据 C# 规范中设置的规则将查询表达式转换为“标准查询运算符”方法调用。任何可以使用查询语法表示的查询也可以使用方法语法表示。但是，在大多数情况下，查询语法更易读和简洁。有关更多信息，请参见 <span sdata="link"><a href="e5d5a5cc-636b-4bff-b9c8-a8edc6207c22.htm">C# 语言规范</a></span>和<span sdata="link"><mshelp:link keywords="24cda21e-8af8-4632-b519-c404a839b9b2" tabindex="0">标准查询运算符概述</mshelp:link></span>。
+                </p></li><li><p>
+                    作为编写 LINQ 查询的一项规则，建议尽量使用查询语法，只在必需的情况下才使用方法语法。这两种不同形式在语义或性能上没有区别。查询表达式通常比用方法语法编写的等效表达式更易读。
+                </p></li><li><p>
+                    一些查询操作，如 <span sdata="cer" target="M:System.Linq.Enumerable.Count``1(System.Collections.Generic.IEnumerable{``0})"><mshelp:link keywords="Overload:System.Linq.Enumerable.Count" tabindex="0">Count</mshelp:link></span> 或 <span sdata="cer" target="M:System.Linq.Enumerable.Max(System.Collections.Generic.IEnumerable{System.Decimal})"><mshelp:link keywords="Overload:System.Linq.Enumerable.Max" tabindex="0">Max</mshelp:link></span>，没有等效的查询表达式子句，因此必须表示为方法调用。方法语法可以通过多种方式与查询语法组合。有关更多信息，请参见<span sdata="link"><mshelp:link keywords="eedd6dd9-fec2-428c-9581-5b8783810ded" tabindex="0">查询语法与方法语法 (LINQ)</mshelp:link></span>。
+                </p></li><li><p>
+                    查询表达式可以编译为表达式目录树或委托，具体取决于查询所应用到的类型。<span sdata="cer" target="T:System.Collections.Generic.IEnumerable`1"><mshelp:link keywords="T:System.Collections.Generic.IEnumerable`1" tabindex="0">IEnumerable<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span></span>T<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span></span></mshelp:link></span> 查询编译为委托。<span sdata="cer" target="T:System.Linq.IQueryable"><mshelp:link keywords="T:System.Linq.IQueryable" tabindex="0">IQueryable</mshelp:link></span> 和 <span sdata="cer" target="T:System.Linq.IQueryable`1"><mshelp:link keywords="T:System.Linq.IQueryable`1" tabindex="0">IQueryable<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span></span>T<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span></span></mshelp:link></span> 查询编译为表达式目录树。有关更多信息，请参见<span sdata="link"><mshelp:link keywords="fb1d3ed8-d5b0-4211-a71f-dd271529294b" tabindex="0">表达式目录树</mshelp:link></span>。
+                </p></li></ul><p>
+                    下表列出了一些主题，提供有关常见任务的查询和代码示例的其他信息。
+                </p><div class="caption"></div><div class="tableSection"><table width="50%" cellspacing="2" cellpadding="5" frame="lhs"><tr><th><p>
+                    主题
+                </p></th><th><p>
+                    说明
+                </p></th></tr><tr><td><p>
+                    <span sdata="link"><a href="d3e1f4e6-1cf0-4066-87e3-1a42387223a6.htm">查询表达式基础（C# 编程指南）</a></span>
+                </p></td><td><p>
+                    介绍基本查询概念并提供 C# 查询语法的示例。
+                </p></td></tr><tr><td><p>
+                    <span sdata="link"><a href="45e47fcc-cfa1-4b72-b161-d038ae87bd23.htm">如何：在 C# 中编写 LINQ 查询</a></span>
+                </p></td><td><p>
+                    提供若干基本查询表达式类型的示例。
+                </p></td></tr><tr><td><p>
+                    <span sdata="link"><a href="4ce6c081-7731-4b8f-b4fa-d947f165a18a.htm">如何：在查询表达式中处理异常（C# 编程指南）</a></span>
+                </p></td><td><p>
+                    如何以及何时将可能会引发异常的代码移出查询表达式。
+                </p></td></tr><tr><td><p>
+                    <span sdata="link"><mshelp:link keywords="a9972a9c-e7c1-41d4-8b33-911cbe3c82ad" tabindex="0">如何：从多个源填充对象集合 (LINQ)</mshelp:link></span>
+                </p></td><td><p>
+                    如何使用 <span sdata="langKeyword" value="select"><span class="keyword">select</span></span> 语句将来自不同源的数据合并为新类型。
+                </p></td></tr><tr><td><p>
+                    <span sdata="link"><a href="ee981053-3392-4245-a8c2-b3730211da0d.htm">如何：以各种方式对结果进行分组（C# 编程指南）</a></span>
+                </p></td><td><p>
+                    演示使用 <span sdata="langKeyword" value="group"><span class="keyword">group</span></span> 子句的不同方法。
+                </p></td></tr><tr><td><p>
+                    <span sdata="link"><a href="f48c64af-6d4e-473c-ab27-02f78b5ec2b9.htm">如何：对组进行分组（C# 编程指南）</a></span>
+                </p></td><td><p>
+                    演示如何创建嵌套组。
+                </p></td></tr><tr><td><p>
+                    <span sdata="link"><a href="7b0805cd-53b4-429d-86b6-d37fb08f2c95.htm">如何：对分组操作执行子查询（C# 编程指南）</a></span> 
+                </p></td><td><p>
+                    演示如何使用查询中的子表达式作为新查询的数据源。
+                </p></td></tr><tr><td><p>
+                    <span sdata="link"><a href="0f0f48a8-e13b-4274-8903-3b73f68cd18e.htm">如何：按连续键对结果进行分组（C# 编程指南）</a></span>
+                </p></td><td><p>
+                    演示如何实现线程安全的标准查询运算符，该运算符可对流式数据源执行分组操作。
+                </p></td></tr><tr><td><p>
+                    <span sdata="link"><a href="52f2dc7a-8353-4c6e-98d3-eec99a907a5f.htm">如何：在运行时动态指定谓词筛选器（C# 编程指南）</a></span>
+                </p></td><td><p>
+                    演示如何为 <span sdata="langKeyword" value="where"><span class="keyword">where</span></span> 子句的相等性比较提供任意数目的值。
+                </p></td></tr><tr><td><p>
+                    <span sdata="link"><a href="7271597f-3523-4f7b-b088-1eeffe913b2d.htm">如何：在内存中存储查询结果（C# 编程指南）</a></span>
+                </p></td><td><p>
+                    阐释如何具体化和存储查询结果，而不必使用 <span sdata="langKeyword" value="foreach"><span class="keyword">foreach</span></span> 循环。
+                </p></td></tr><tr><td><p>
+                    <span sdata="link"><a href="9d6f20a7-f085-44cf-9df3-71948255ec68.htm">如何：从方法中返回查询（C# 编程指南）</a></span>
+                </p></td><td><p>
+                    演示如何从方法返回查询变量，以及如何将它们作为输入参数传递给方法。
+                </p></td></tr><tr><td><p>
+                    <span sdata="link"><a href="a05e2ab1-410d-4a1d-8ada-af93539682c9.htm">如何：执行自定义联接操作（C# 编程指南）</a></span>
+                </p></td><td><p>
+                    演示如何基于任何类型的谓词函数执行联接运算。
+                </p></td></tr><tr><td><p>
+                    <span sdata="link"><a href="3e015b3f-9cca-4b0c-aa97-dca0d36ea592.htm">如何：使用复合键进行联接（C# 编程指南）</a></span>
+                </p></td><td><p>
+                    演示如何基于多个匹配键联接两个源。
+                </p></td></tr><tr><td><p>
+                    <span sdata="link"><a href="83f36f16-2ba3-453f-8b9f-7d02b415610e.htm">如何：对 Join 子句的结果进行排序（C# 编程指南）</a></span>
+                </p></td><td><p>
+                    演示如何对联接运算生成的序列进行排序。
+                </p></td></tr><tr><td><p>
+                    <span sdata="link"><a href="d9edb404-8314-413e-ae51-83bb86c7a4b5.htm">如何：执行内部联接（C# 编程指南）</a></span>
+                </p></td><td><p>
+                    演示如何在 LINQ 中执行内联。
+                </p></td></tr><tr><td><p>
+                    <span sdata="link"><a href="31b654c0-77ac-43fa-be11-aa38e14cae2d.htm">如何：执行分组联接（C# 编程指南）</a></span>
+                </p></td><td><p>
+                    演示如何在 LINQ 中生成已分组的联接。
+                </p></td></tr><tr><td><p>
+                    <span sdata="link"><a href="18e32be8-93db-4d30-8dea-ec6596e18f43.htm">如何：执行左外部联接（C# 编程指南）</a></span>
+                </p></td><td><p>
+                    演示如何在 LINQ 中生成左外部联接。
+                </p></td></tr><tr><td><p>
+                    <span sdata="link"><a href="cb34f7a1-7ef5-466a-90ba-91da30ab525d.htm">如何：在查询表达式中处理 Null 值（C# 编程指南）</a></span>
+                </p></td><td><p>
+                    演示如何在 LINQ 查询中处理 Null 值。
+                </p></td></tr></table></div></div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />请参见</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><h4 class="subHeading">任务</h4><div class="seeAlsoStyle"><span sdata="link"><mshelp:link keywords="2962a610-419a-4276-9ec8-4b7f2af0c081" tabindex="0">演练：在 C# 中编写查询 (LINQ)</mshelp:link></span></div><h4 class="subHeading">概念</h4><div class="seeAlsoStyle"><span sdata="link"><mshelp:link keywords="a7ea3421-1cf4-4df7-832a-aa22fe6379e9" tabindex="0">基本查询操作 (LINQ)</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="link"><mshelp:link keywords="eedd6dd9-fec2-428c-9581-5b8783810ded" tabindex="0">查询语法与方法语法 (LINQ)</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="link"><mshelp:link keywords="24cda21e-8af8-4632-b519-c404a839b9b2" tabindex="0">标准查询运算符概述</mshelp:link></span></div><h4 class="subHeading">参考</h4><div class="seeAlsoStyle"><span sdata="link"><mshelp:link keywords="609c7a6b-cbdd-429d-99f3-78d13d3bc049" tabindex="0">LINQ 常规编程指南</mshelp:link></span></div><h4 class="subHeading">其他资源</h4><div class="seeAlsoStyle"><span sdata="link"><mshelp:link keywords="a73c4aec-5d15-4e98-b962-1274021ea93d" tabindex="0">语言集成查询 (LINQ)</mshelp:link></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="6c9bec16-dbd7-4a7c-a060-fe4600b2021f.htm">查询关键字（C# 参考）</a></span></div><div class="seeAlsoStyle"><a href="http://go.microsoft.com/fwlink/?LinkId=112389">How Linq to Objects Queries Work（Linq to Objects 查询如何工作）</a></div><div class="seeAlsoStyle"><a href="http://go.microsoft.com/fwlink/?LinkId=112391">Reading and Writing Queries（阅读和编写查询）</a></div><div class="seeAlsoStyle"><a href="http://go.microsoft.com/fwlink/?LinkId=112394">What is a collection?（什么是集合？）</a></div><div class="seeAlsoStyle"><a href="http://go.microsoft.com/fwlink/?LinkId=112411">Link to Everything: A List of LINQ Providers（链接到完整内容：LINQ 提供程序列表）</a></div></div></div>
+      <div id="footer">
+        <div class="footerLine">
+          <img width="100%" height="3px" src="../icons/footer.gif" title="“页脚”图像" />
+        </div>
+<span id="feedbackarea">将有关本主题的<a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);">反馈意见</a>发送给 Microsoft。</span>
+</div>
+    </div>
+  </body>
+</html>

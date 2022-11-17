@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Element.addMethods - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>addMethods</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">addMethods([methods])
+addMethods(tagName, methods)</code></pre>
+			<p>
+				第一个参数的类型是一个 hash 列表，用于对 <code>Element</code> 对象进行扩展，hash 列表的名值对将转换为
+				<code><a href="extend.htm" >扩展后</a></code> 的元素的方法或属性。<br />第二种用法是扩展一个指定的
+				HTML 元素，tagName 指定 HTML 元素标签。
+			</p>
+		</div>
+		<div id="abody">
+			<p>
+				<code>Element.addMethods</code> 使你能够混入自己的方法到 <code>Element</code> 对象。混入后，可以在 <code>$()</code>
+				工具函数返回的 <a href="extend.htm" >已扩展</a> 的元素上使用你的方法，或者直接作为 <code>Element</code>
+				的方法，如下面的例子：
+			</p>
+			<pre><code class="javascript">$(element).myOwnMethod([args...]); </code></pre>
+			<p>注意，也可以写成下面的方式：</p>
+			<pre><code class="javascript">Element.myOwnMethod(element|id[, args...]); </code></pre>
+			<p>
+				为增加新的方法，只需简单的为 <code>Element.addMethods</code> 提供一个包括函数的 hash 对象。注意，hash
+				对象中每个函数的第一个参数必须是 <code>element</code>。在每个函数内，记得传递 <code>element</code> 给
+				<a href="../utility/dollar.htm" >$()</a>，并且，在函数结束时，若要支持在一行代码中对元素进行连续调用，请返回已扩展的
+				<code>element</code>。
+			</p>
+			<p>参数 <code>[methods]</code> 的形式与下述代码类似：</p>
+			<pre><code class="javascript">var myVeryOwnElementMethods = {
+	myFirstMethod: function(element[, args...]) {
+		element = $(element);
+		// 你的程序
+		return element; 
+	}, 
+	mySecondMethod: function(element[, args...]) {
+		element = $(element);
+		// 你的程序
+		return element;
+	}
+}; </code></pre>
+			<h3>仅扩展指定的元素（需要 v1.5.1 及后续的版本）</h3>
+			<p>
+				如果使用<em>两个参数</em>调用 <code>Element.addMethods</code>，则第一个参数是你希望增加自定义方法的 HTML 元素的标签名。
+			</p>
+			<pre><code class="javascript">Element.addMethods('DIV', my_div_methods); 
+// 自定义的方法仅增加到 DIV 元素上。 </code></pre>
+			<p>第一个参数也可以是一个标签名数组：</p>
+			<pre><code class="javascript">Element.addMethods(['DIV', 'SPAN'], my_div_methods); 
+// DIV 和 SPAN 拥有相同的扩展方法</code></pre>
+			<p>标签名称并不区分大小写，在样例中均使用大写是为了使标签名看起来更为醒目。</p>
+			<p>
+				最后的警告：<code>Element.addMethods</code> 有一个内建的安全机制，以防止你覆盖原生的元素方法或属性（如 <code>getAttribute</code>
+				或 <code>innerHTML</code> 等），但这并不能阻止你重写 Prototype 框架的方法。Prototype 在内部使用了许多自身的方法，
+				因此在使用该方法时请审查每一个步骤。
+			</p>
+			<h3>样例</h3>
+			<p>
+				想要在语义上清晰地标出你的元素，这需要在元素外围增加额外的 <code>&lt;div&gt;</code>。为什么不创建一个
+				<code>Element.wrap('tagName')</code> 方法，在指定的 <code>tagName</code> 中封装 <code>element</code>，然后返回封装好的封装器呢？
+			</p>
+			<pre><code class="javascript">Element.addMethods({
+	wrap: function(element, tagName) {
+		element = $(element);
+		var wrapper = document.createElement('tagName');
+		element.parentNode.replaceChild(wrapper, element);
+		wrapper.appendChild(element);
+		return Element.extend(wrapper);
+	}
+}); </code></pre>
+			<p>用类似于下面的代码使用新增加的方法：</p>
+			<pre><code class="html">// 调用前：
+&lt;p id="first"&gt;Some content...&lt;/p&gt; </code></pre>
+			<pre><code class="javascript">$(element).wrap('div'); // -> HTMLElement (div) </code></pre>
+			<pre><code class="html">// 调用后：
+&lt;div&gt;&lt;p id="first"&gt;Some content...&lt;/p&gt;&lt;/div&gt;</code></pre>
+			<p>
+				如果你确认你的 <code>Element.wrap</code> 方法返回新创建的 <code>&lt;div&gt;</code>，就等着到黄金时间感谢
+				<a href="extend.htm" >Element.extend</a> 吧，因为你可以立即链接一个新的方法到返回值上：
+			</p>
+			<pre><code class="javascript">$(element).wrap('div').setStyle({backgroundImage: 'url(images/rounded-corner-top-left.png) top left'}); </code></pre>
+			<p>
+				在 Web 应用中，你经常使用 <a href="../ajax/updater.htm" >Ajax.Updater</a> 更新 DOM 元素吗？
+				想知道怎样才能又快又好的完成这项工作，并大幅缩减你的代码总量吗？试试这个法子：
+			</p>
+			<pre><code class="javascript">Element.addMethods({
+	ajaxUpdate: function(element, url, options) {
+		element = $(element);
+		element.update('&lt;img src="/images/spinner.gif" alt="loading..." /&gt;');
+		new Ajax.Updater(element, url, options);
+		return element;
+	}
+}); </code></pre>
+			<p>现在，无论什么时候你想要更新一个元素的内容，只需像下面这样做就可以了：</p>
+			<pre><code class="javascript">$(element).ajaxUpdate('/new/content'); // -> HTMLElement</code></pre>
+			<p>
+				该方法首先替换 <code>element</code> 的内容为一个漂亮的 Ajax 请求等待指示器（<strong>译注：</strong>spinner.gif
+				图片），然后创建一个新的 <a href="../ajax/updater.htm" >Ajax.Updater</a>。请求完成后，将自动移除指示器，并设置
+				<code>element</code> 的内容为 Ajax 请求返回的内容。				
+			</p>
+			<h3>使用没有参数的 <code>Element.addMethods</code>。</h3>
+			<p>				
+				<code>Element.addMethods</code> 有一个不入流的小秘密，你能够不传递任何参数而直接调用它，会发生什么情况呢？它简单地遍历所有的
+				<code>Element.Methods</code>、<code>Element.Methods.Simulated</code>、<code>Form.Methods</code> 和
+				<code>Form.Element.Methods</code>，然后将它们增加到相关的 DOM 元素（<code>Form.Methods</code> 仅增加到 <code>form</code> 元素，相应的
+				<code>Form.Element.Methods</code> 仅扩展 <code>input</code>、<code>select</code> 和 <code>textarea</code>）。
+			</p>
+			<p>在什么情形下使用不带参数的 <code>Element.addMethods</code>？</p>
+			<p>
+				假如你希望为按钮增加一个方法，调用该方法后将使按钮失效，并替换其文本为类似于“Please wait...”的字样。
+				但你不希望这个方法应用于其它任何元素，要怎么做呢？请看下面的代码：
+			</p>
+			<pre><code class="javascript">Form.Element.Methods.processing = function(element, text) {
+	element = $(element); 
+	if (element.tagName.toLowerCase() == 'input' && ['button', 'submit'].include(element.type))
+	{
+		element.value = (text === undefined ? 'Please wait...' : text);
+		element.disable()
+	}
+	return element;
+};
+
+Element.addMethods(); </code></pre>
+			<p>
+				<strong>译注：</strong>原文中的代码和说明有些不太相符，所以做了少许修改。其实可使用 <code>addMethods(tagName, methods)</code>
+				来实现上述的假设。
+			</p>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Ajax Ajax.PeriodicalUpdater - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />	
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>Ajax.PeriodicalUpdater</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">new Ajax.PeriodicalUpdater(container, url[, options])</code></pre>
+			<p>
+				周期性地执行一个 AJAX 请求并根据返回的响应文本更新指定容器的内容。它提供了一种“退化（decay）”机制
+				—— 当相邻两次请求的响应内容无变化时，会自动增加后续请求的时间间隔。
+			</p>
+		</div>
+		<div id="abody">
+			<p>
+				该对象解决了常见的要求进行周期性更新的需求，常被用于各种需要“轮询”机制的场合
+				（例如在线聊天室或在线邮件客户端）。
+			</p>
+			<p>
+				基本的思路是按照指定的时间间隔定时运行一个指定的 <a href="updater.htm" >Ajax.Update</a>，如果
+				<code>decay</code> 选项（请看下面）被激活，则监视响应的内容，并根据其是否变更来调整请求的时间间隔。
+			</p>
+			<h3>附加选项</h3>
+			<p>
+				<code>Ajax.PeriodicalUpdater</code> 支持所有的<a href="options.htm" >公用选项</a>及回调，同时也支持 <a href="updater.htm" >Ajax.Updater</a>
+				引入的选项。另外，它还提供了两个新的选项用于处理起始的时间间隔和请求频率的减小比率。				
+			</p>
+			<table>
+				<thead><tr><th>选项</th><th style="width:50px;">默认值</th><th>描述</th></tr></thead>
+				<tbody>
+					<tr>
+						<th><code>frequency</code></th>
+						<td>2</td>
+						<td>
+							注意：这不是一个频率（如 0.5Hz），而是一个时间段（如：多少秒）。别杀我，这不是我弄的。在实际应用中，2 秒是 Ajax
+							请求的最小时间间隔，你不应该将它设为更小的值（否则如果请求的处理和返回花费的时间稍长，你将不得不面对多个并行的请求）。
+							但是理论上可以提供小于 1 的时间间隔，如 0.75 秒。
+						</td>
+					</tr>
+					<tr>
+						<th><code>decay</code></th>
+						<td>1</td>
+						<td>
+							当响应内容无变化时，控制请求时间间隔的增长比率。它被用来和当前的时间间隔（初始值是 <code>frequency</code>
+							参数）相乘。每次请求返回的内容无变化时，当前的时间间隔就乘以 <code>decay</code>。因此，默认值意味着时间间隔不会发生变化，
+							而值大于 1 时间间隔会增加，值小于 1 是很危险的：如果在较长的时间内响应的内容都无变化，请求的时间间隔会越来越短，
+							直到你的浏览器无法承受而崩溃。<strong>注意：</strong>一旦响应内容发生变化，当前的时间间隔会被重置为初始值（<code>frequency</code>
+							的值）。
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<br />
+			<p>为更好的理解 <code>decay</code>，下面列出了一个样例及该样例运行时发生的请求调用序列的一小部分：</p>
+			<pre><code class="javascript">new Ajax.PeriodicalUpdater('items', '/items', { method: 'get', frequency: 3, decay: 2 }); </code></pre>
+			<table id="decayTable">
+				<thead>
+					<tr>
+						<th style="width:80px;">调用顺序</th>
+						<th style="width:80px;">调用时间</th>
+						<th style="width:130px;">调用前 Decay 值</th>
+						<th style="width:80px;">响应变化</th>
+						<th style="width:130px;">调用后 Decay 值</th>
+						<th style="width:110px;">下一时间间隔</th>
+						<th>注释</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>1</td><td>00:00</td><td>2</td><td>n/a</td><td>1</td><td>3</td>
+						<td>第一次调用，没有之前的响应可供比较，因此认为响应是变化的。</td>
+					</tr>
+					<tr>
+						<td>2</td><td>00:03</td><td>1</td><td>yes</td><td>1</td><td>3</td>
+						<td>响应再次改变：我们将 decay“重设”为 1，事实上在前面 decay 就已经为 1 了。</td>						
+					</tr>
+					<tr>
+						<td>3</td><td>00:06</td><td>1</td><td>no</td><td>2</td><td>6</td>
+						<td>
+							响应无变化，decay 参数值变成其与 <code>decay</code> 选项因子的乘积：我们需要等待再长的时间
+						</td>
+					</tr>
+					<tr>
+						<td>4</td><td>00:12</td><td>2</td><td>no</td><td>4</td><td>12</td>
+						<td>仍然无变化，再次加倍</td>
+					</tr>
+					<tr>
+						<td>5</td><td>00:24</td><td>4</td><td>no</td><td>8</td><td>24</td>
+						<td>继续，没完没了了！</td>
+					</tr>
+					<tr>
+						<td>6</td><td>00:48</td><td>8</td><td>yes</td><td>1</td><td>3</td>
+						<td>终于结束了！重设 decay 为 1，因此又可以使用初始的时间间隔了。</td>
+					</tr>
+				</tbody>
+			</table>
+			<h3>禁用和重新启用 <code>PeriodicalUpdater</code></h3>
+			<p>
+				在 <code>PeriodicalUpdater</code> 运行期间，如果你想中止请求，只需简单的调用它的 <code>stop</code> 方法。
+				要再次启用它，调用它的 <code>start</code> 方法。两者都不需要参数。
+			</p>
+			<h3>切记！这不是一种特例！</h3>
+			<p>
+				不论它们的名称有多么类似，<code>Ajax.PeriodicalUpdater</code> 都不是 <a href="updater.htm" >Ajax.Updater</a>
+				的一种特例。所以不要指望能够使用 <a href="request.htm" >Ajax.Request</a> 提供的常规方法以及	<code>Ajax.Updater</code> 
+				所继承的方法（译注：<code>Ajax.Updater</code> 继承了 <code>Ajax.Request</code>），例如 <code>evalJSON</code> 或
+				<code>getHeader</code>。另外，<code>onComplete</code> 回调也被劫持以用于更新管理，因此，如果你希望在每次请求成功后获得通知，请使用
+				<code>onSuccess</code>（注意：它将在更新被执行前调用）。
+			</p>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

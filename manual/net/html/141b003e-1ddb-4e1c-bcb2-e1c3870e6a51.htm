@@ -1,0 +1,329 @@
+﻿<html xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+    <META NAME="save" CONTENT="history" />
+    <title>类型参数的约束（C# 编程指南）</title>
+    <link rel="stylesheet" type="text/css" href="../styles/presentation.css" />
+    <link rel="stylesheet" type="text/css" href="ms-help://Hx/HxRuntime/HxLink.css" />
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/EventUtilities.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/SplitScreen.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/Dropdown.js"> </script>
+    <script type="text/javascript" src="../scripts/script_manifold.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/script_feedBack.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CheckboxMenu.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CommonUtilities.js"> </script>
+    <xml>
+      <MSHelp:TOCTitle Title="类型参数的约束" />
+      <MSHelp:Keyword Index="A" Term="141b003e-1ddb-4e1c-bcb2-e1c3870e6a51" />
+      <MSHelp:Keyword Index="K" Term="泛型 [C#], 类型约束" />
+      <MSHelp:Keyword Index="K" Term="类型约束 [C#]" />
+      <MSHelp:Keyword Index="K" Term="未绑定的类型参数 [C#]" />
+      <MSHelp:Attr Name="RevisionNumber" Value="33" />
+      <MSHelp:Attr Name="AssetID" Value="141b003e-1ddb-4e1c-bcb2-e1c3870e6a51" />
+      <MSHelp:Attr Name="Abstract" Value="&#xD;&#xA;                    在定义泛型类时，可以对客户端代码能够在实例化类时用于类型参数的类型种类施加限制。如果客户端代码尝试使用某个约束所不允许的类型来实例化类，则会产生编译时错误。这些限制称为约束。约束是使用 where 上下文关键字指定的。下表列出了六种类型的约束：&#xD;&#xA;                " />
+      <MSHelp:Attr Name="codelang" Value="CSharp" />
+      <MSHelp:Attr Name="CommunityContent" Value="1" />
+      <MSHelp:Attr Name="DevLang" Value="CSharp" />
+      <MSHelp:Attr Name="DevLangVers" Value="CSharp" />
+      <MSHelp:Attr Name="DocSet" Value="C#" />
+      <MSHelp:Attr Name="DocSet" Value="C# Lang" />
+      <MSHelp:Attr Name="DocSet" Value="ExpressLibVS" />
+      <MSHelp:Attr Name="ProgModel" Value="managed" />
+      <MSHelp:Attr Name="ShippedIn" Value="vs.90" />
+      <MSHelp:Attr Name="Technology" Value="ManagedCode" />
+      <MSHelp:Attr Name="TopicVersion" Value="09.00.08178.10000" />
+      <MSHelp:Attr Name="Catalog Container" Value="System_Default_Catalog" />
+      <MSHelp:Attr Name="Content Set Container" Value="System_Default_Content_Set" />
+      <MSHelp:Attr Name="TopicType" Value="kbRef" />
+      <MSHelp:Attr Name="Locale" Value="zh-chs" />
+    </xml>
+  </head>
+  <body>
+    <input type="hidden" id="userDataCache" class="userDataStyle" />
+    <input type="hidden" id="hiddenScrollOffset" />
+    <img id="collapseImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" title="“折叠”图像" />
+    <img id="expandImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" title="“展开”图像" />
+    <img id="collapseAllImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" />
+    <img id="expandAllImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" />
+    <img id="dropDownImage" style="display:none; height:0; width:0;" src="../icons/dropdown.gif" />
+    <img id="dropDownHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/dropdownHover.gif" />
+    <img id="copyImage" style="display:none; height:0; width:0;" src="../icons/copycode.gif" title="“复制”图像" />
+    <img id="copyHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/copycodeHighlight.gif" title="“复制悬停”图像" />
+    <div id="header">
+      <table id="topTable" cellspacing="0" cellpadding="0">
+        <tr>
+          <td>
+            <span onclick="ExpandCollapseAll(toggleAllImage)" style="cursor:default;" onkeypress="ExpandCollapseAll_CheckKey(toggleAllImage, event)" tabindex="0">
+              <img ID="toggleAllImage" class="toggleAll" src="../icons/collapse_all.gif" /> <label id="collapseAllLabel" for="toggleAllImage" style="display: none;">全部折叠</label><label id="expandAllLabel" for="toggleAllImage" style="display: none;">全部展开</label> </span>
+            <span>    </span>
+            <span id="devlangsDropdown" class="filter" tabindex="0">
+              <img id="devlangsDropdownImage" src="../icons/dropdown.gif" /> <label id="devlangsMenuAllLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：全部 </nobr></label><label id="devlangsMenuMultipleLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：多个 </nobr></label><label id="devlangsMenuVisualBasicLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual Basic </nobr></label><label id="devlangsMenuCSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：C# </nobr></label><label id="devlangsMenuManagedCPlusPlusLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual C++ </nobr></label><label id="devlangsMenuJSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：J# </nobr></label><label id="devlangsMenuJScriptLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：JScript </nobr></label></span>
+          </td>
+        </tr>
+      </table>
+      <div id="devlangsMenu">
+        <input id="VisualBasicCheckbox" type="checkbox" data="VisualBasic,vb,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="VisualBasicCheckbox">Visual Basic</label>
+        <br />
+        <input id="CSharpCheckbox" type="checkbox" data="CSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="CSharpCheckbox">C#</label>
+        <br />
+        <input id="ManagedCPlusPlusCheckbox" type="checkbox" data="ManagedCPlusPlus,cpp,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="ManagedCPlusPlusCheckbox">Visual C++</label>
+        <br />
+        <input id="JSharpCheckbox" type="checkbox" data="JSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JSharpCheckbox">J#</label>
+        <br />
+        <input id="JScriptCheckbox" type="checkbox" data="JScript,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JScriptCheckbox">JScript</label>
+        <br />
+      </div>
+      <table id="bottomTable" cellpadding="0" cellspacing="0">
+        <tr id="headerTableRow1">
+          <td align="left">
+            <span id="runningHeaderText">C# 编程指南</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow2">
+          <td align="left">
+            <span id="nsrTitle">类型参数的约束（C# 编程指南）</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow3">
+          <td align="left">
+            <a href="141b003e-1ddb-4e1c-bcb2-e1c3870e6a51.htm#seeAlsoToggle" onclick="OpenSection(seeAlsoToggle)">另请参见</a>  
+<script type="text/javascript">
+var fbBody = '%b8%d0%d0%bb%c4%fa%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%bf%aa%b7%a2%b0%e6%b1%e0%d0%b4%cd%c5%b6%d3%bd%ab%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%d3%c3%d3%da%b8%c4%bd%f8%ce%c4%b5%b5%a1%a3%ce%d2%c3%c7%d4%da%c9%f3%d4%c4%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%ca%b1%a3%ac%bf%c9%c4%dc%bb%e1%b8%f8%c4%fa%b7%a2%cb%cd%b5%e7%d7%d3%d3%ca%bc%fe%a3%ac%d2%d4%c7%eb%c4%fa%cc%e1%b9%a9%bd%f8%d2%bb%b2%bd%b5%c4%bd%e2%ca%cd%cb%b5%c3%f7%bb%f2%d5%df%be%cd%bd%e2%be%f6%b7%bd%b0%b8%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%ce%d2%c3%c7%b2%bb%bb%e1%bd%ab%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%d3%c3%d3%da%c8%ce%ba%ce%c6%e4%cb%fb%d3%c3%cd%be%a3%ac%b2%a2%c7%d2%d4%da%c9%f3%d4%c4%cd%ea%d6%ae%ba%f3%a3%ac%ce%d2%c3%c7%b2%bb%bb%e1%d4%d9%b1%a3%c1%f4%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%a1%a3%0d%0a%d3%d0%b9%d8%20Microsoft%20%d2%fe%cb%bd%d5%fe%b2%df%b5%c4%bd%f8%d2%bb%b2%bd%d0%c5%cf%a2%a3%ac%c7%eb%b2%ce%bc%fb%20http%3a%2f%2fprivacy.microsoft.com%2fzh-cn%2fdefault.aspx%a1%a3';
+var fbSubject = 'Customer%20Feedback';
+</script>
+  <span id="headfeedbackarea" class="feedbackhead"><a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);"> 发送反馈意见</a></span>
+</td>
+        </tr>
+      </table>
+      <table id="gradientTable">
+        <tr>
+          <td class="nsrBottom" background="../icons/gradient.gif" />
+        </tr>
+      </table>
+    </div>
+    <div id="mainSection">
+      <div id="mainBody">
+        <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
+        <font color="DarkGray"></font>
+        <p /> <p><font color="DarkGray">更新：
+                    
+    2008 年 7 月
+  
+                </font></p><div class="introduction"><p>
+                    在定义泛型类时，可以对客户端代码能够在实例化类时用于类型参数的类型种类施加限制。如果客户端代码尝试使用某个约束所不允许的类型来实例化类，则会产生编译时错误。这些限制称为约束。约束是使用 <span sdata="langKeyword" value="where"><span class="keyword">where</span></span> 上下文关键字指定的。下表列出了六种类型的约束：
+                </p><div class="caption"></div><div class="tableSection"><table width="50%" cellspacing="2" cellpadding="5" frame="lhs"><tr><th><p>
+                    约束
+                </p></th><th><p>
+                    说明
+                </p></th></tr><tr><td><p>
+                    T：结构
+                </p></td><td><p>
+                    类型参数必须是值类型。可以指定除 <span sdata="cer" target="T:System.Nullable"><mshelp:link keywords="T:System.Nullable" tabindex="0">Nullable</mshelp:link></span> 以外的任何值类型。有关更多信息，请参见<span sdata="link"><a href="0bacbe72-ce15-4b14-83e1-9c14e6380c28.htm">使用可空类型（C# 编程指南）</a></span>。
+                </p></td></tr><tr><td><p>
+                    T：类
+                </p></td><td><p>
+                    类型参数必须是引用类型；这一点也适用于任何类、接口、委托或数组类型。
+                </p></td></tr><tr><td><p>
+                    T：new()
+                </p></td><td><p>
+                    类型参数必须具有无参数的公共构造函数。当与其他约束一起使用时，<span sdata="langKeyword" value="new()"><span class="keyword">new()</span></span> 约束必须最后指定。
+                </p></td></tr><tr><td><p>
+                    T：&lt;基类名&gt;
+                </p></td><td><p>
+                    类型参数必须是指定的基类或派生自指定的基类。
+                </p></td></tr><tr><td><p>
+                    T：&lt;接口名称&gt;
+                </p></td><td><p>
+                    类型参数必须是指定的接口或实现指定的接口。可以指定多个接口约束。约束接口也可以是泛型的。
+                </p></td></tr><tr><td><p>
+                    T：U
+                </p></td><td><p>
+                    为 T 提供的类型参数必须是为 U 提供的参数或派生自为 U 提供的参数。这称为裸类型约束。
+                </p></td></tr></table></div></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle0)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle0, event)" tabindex="0"><img id="sectionToggle0" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />使用约束的原因</span></h1><div id="sectionSection0" class="section" name="collapseableSection" style=""><p>
+                    如果要检查泛型列表中的某个项以确定它是否有效，或者将它与其他某个项进行比较，则编译器必须在一定程度上保证它需要调用的运算符或方法将受到客户端代码可能指定的任何类型参数的支持。这种保证是通过对泛型类定义应用一个或多个约束获得的。例如，基类约束告诉编译器：仅此类型的对象或从此类型派生的对象才可用作类型参数。一旦编译器有了这个保证，它就能够允许在泛型类中调用该类型的方法。约束是使用上下文关键字 <span sdata="langKeyword" value="where"><span class="keyword">where</span></span> 应用的。下面的代码示例演示可通过应用基类约束添加到 <span class="code">GenericList&lt;T&gt;</span> 类（在<span sdata="link"><a href="a1ad761e-42f7-41dd-a62f-452a2de26b9d.htm">泛型介绍（C# 编程指南）</a></span>中）的功能。
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Employee
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> name;
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> id;
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> Employee(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> s, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> i)
+    {
+        name = s;
+        id = i;
+    }
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> Name
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span> { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> name; }
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span> { name = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">value</span>; }
+    }
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> ID
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span> { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> id; }
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span> { id = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">value</span>; }
+    }
+}
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> GenericList&lt;T&gt; <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">where</span> T : Employee
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Node
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> Node next;
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> T data;
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> Node(T t)
+        {
+            next = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">null</span>;
+            data = t;
+        }
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> Node Next
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span> { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> next; }
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span> { next = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">value</span>; }
+        }
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> T Data
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">get</span> { <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> data; }
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">set</span> { data = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">value</span>; }
+        }
+    }
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">private</span> Node head;
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> GenericList() <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//constructor</span>
+    {
+        head = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">null</span>;
+    }
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> AddHead(T t)
+    {
+        Node n = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Node(t);
+        n.Next = head;
+        head = n;
+    }
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> IEnumerator&lt;T&gt; GetEnumerator()
+    {
+        Node current = head;
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">while</span> (current != <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">null</span>)
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">yield</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> current.Data;
+            current = current.Next;
+        }
+    }
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> T FindFirstOccurrence(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> s)
+    {
+        Node current = head;
+        T t = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">null</span>;
+
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">while</span> (current != <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">null</span>)
+        {
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//The constraint enables access to the Name property.</span>
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> (current.Data.Name == s)
+            {
+                t = current.Data;
+                <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">break</span>;
+            }
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">else</span>
+            {
+                current = current.Next;
+            }
+        }
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> t;
+    }
+}
+
+</pre></td></tr></table></span></div></div><p>
+                    约束使得泛型类能够使用 <span class="code">Employee.Name</span> 属性，因为类型为 T 的所有项都保证是 <span class="code">Employee</span> 对象或从 <span class="code">Employee</span> 继承的对象。
+                </p><p>
+                    可以对同一类型参数应用多个约束，并且约束自身可以是泛型类型，如下所示：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> EmployeeList&lt;T&gt; <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">where</span> T : Employee, IEmployee, System.IComparable&lt;T&gt;, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span>()
+{
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// ...</span>
+}
+
+</pre></td></tr></table></span></div></div><p>
+                    通过约束类型参数，可以增加约束类型及其继承层次结构中的所有类型所支持的允许操作和方法调用的数量。因此，在设计泛型类或方法时，如果要对泛型成员执行除简单赋值之外的任何操作或调用 <b>System.Object</b> 不支持的任何方法，您将需要对该类型参数应用约束。
+                </p><p>
+                    在应用 <span class="code">where T : class</span> 约束时，避免对类型参数使用 <span sdata="langKeyword" value="=="><span class="keyword">==</span></span> 和 <span sdata="langKeyword" value="!="><span class="keyword">!=</span></span> 运算符，因为这些运算符仅测试引用同一性而不测试值相等性。即使在用作参数的类型中重载这些运算符也是如此。下面的代码说明了这一点；即使 <span sdata="cer" target="T:System.String"><mshelp:link keywords="T:System.String" tabindex="0">String</mshelp:link></span> 类重载 <span sdata="langKeyword" value="=="><span class="keyword">==</span></span> 运算符，输出也为 false。
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> OpTest&lt;T&gt;(T s, T t) <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">where</span> T : <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span>
+{
+    System.Console.WriteLine(s == t);
+}
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Main()
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> s1 = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"foo"</span>;
+    System.Text.StringBuilder sb = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> System.Text.StringBuilder(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"foo"</span>);
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> s2 = sb.ToString();
+    OpTest&lt;<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span>&gt;(s1, s2);
+}
+
+</pre></td></tr></table></span></div></div><p>
+                    这种情况的原因在于，编译器在编译时仅知道 T 是引用类型，因此必须使用对所有引用类型都有效的默认运算符。如果必须测试值相等性，建议的方法是同时应用 <span class="code">where T : IComparable&lt;T&gt;</span> 约束，并在将用于构造泛型类的任何类中实现该接口。
+                </p></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle1)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle1, event)" tabindex="0"><img id="sectionToggle1" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />约束多个参数</span></h1><div id="sectionSection1" class="section" name="collapseableSection" style=""><p>
+                    可以对多个参数应用约束，并对一个参数应用多个约束，如下面的示例所示：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Base { }
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Test&lt;T, U&gt;
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">where</span> U : <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">struct</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">where</span> T : Base, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span>() { }
+
+</pre></td></tr></table></span></div></div></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle2)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle2, event)" tabindex="0"><img id="sectionToggle2" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />未绑定的类型参数</span></h1><div id="sectionSection2" class="section" name="collapseableSection" style=""><p>
+                    没有约束的类型参数（如公共类 <span class="code">SampleClass&lt;T&gt;{}</span> 中的 T）称为未绑定的类型参数。未绑定的类型参数具有以下规则：
+                </p><ul><li><p>
+                    不能使用 <span sdata="langKeyword" value="!="><span class="keyword">!=</span></span> 和 <span sdata="langKeyword" value="=="><span class="keyword">==</span></span> 运算符，因为无法保证具体类型参数能支持这些运算符。
+                </p></li><li><p>
+                    可以在它们与 <b>System.Object</b> 之间来回转换，或将它们显式转换为任何接口类型。
+                </p></li><li><p>
+                    可以将它们与 <mshelp:link keywords="fecb1c60-6232-4efe-87f7-9a86ba2e9119" tabindex="0">null</mshelp:link> 进行比较。将未绑定的参数与 <span sdata="langKeyword" value="null"><span class="keyword">null</span></span> 进行比较时，如果类型参数为值类型，则该比较将始终返回 false。
+                </p></li></ul></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle3)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle3, event)" tabindex="0"><img id="sectionToggle3" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />裸类型约束</span></h1><div id="sectionSection3" class="section" name="collapseableSection" style=""><p>
+                    用作约束的泛型类型参数称为裸类型约束。当具有自己的类型参数的成员函数必须将该参数约束为包含类型的类型参数时，裸类型约束很有用，如下面的示例所示：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> List&lt;T&gt;
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Add&lt;U&gt;(List&lt;U&gt; items) <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">where</span> U : T {<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">/*...*/</span>}
+}
+
+</pre></td></tr></table></span></div></div><p>
+                    在上面的示例中，<span class="code">T</span> 在 <b>Add</b> 方法的上下文中是一个裸类型约束，而在 <b>List</b> 类的上下文中是一个未绑定的类型参数。
+                </p><p>
+                    裸类型约束还可以在泛型类定义中使用。注意，还必须已经和其他任何类型参数一起在尖括号中声明了裸类型约束：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//naked type constraint</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> SampleClass&lt;T, U, V&gt; <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">where</span> T : V { }
+
+</pre></td></tr></table></span></div></div><p>
+                    泛型类的裸类型约束的作用非常有限，因为编译器除了假设某个裸类型约束派生自 <b>System.Object</b> 以外，不会做其他任何假设。在希望强制两个类型参数之间的继承关系的情况下，可对泛型类使用裸类型约束。
+                </p></div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />请参见</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><h4 class="subHeading">概念</h4><div class="seeAlsoStyle"><span sdata="link"><a href="ac0f23a2-6bf3-4077-be99-538ae5fd3bc5.htm">C# 编程指南</a></span></div><h4 class="subHeading">参考</h4><div class="seeAlsoStyle"><span sdata="link"><a href="a1ad761e-42f7-41dd-a62f-452a2de26b9d.htm">泛型介绍（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="58850b64-cb97-4136-be50-1f3bc7fc1da9.htm">new 约束（C# 参考）</a></span></div><div class="seeAlsoStyle"><span sdata="cer" target="N:System.Collections.Generic"><mshelp:link keywords="N:System.Collections.Generic" tabindex="0">System.Collections.Generic</mshelp:link></span></div></div><h1 class="heading"><span onclick="ExpandCollapse(changeHistoryToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(changeHistoryToggle, event)" tabindex="0"><img id="changeHistoryToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />修订记录</span></h1><div id="changeHistorySection" class="section" name="collapseableSection" style=""><div class="caption"></div><div class="tableSection"><table width="50%" cellspacing="2" cellpadding="5" frame="lhs"><tr><th><p>
+                    日期
+                </p></th><th><p>
+                    历史记录
+                </p></th><th><p>
+                    原因
+                </p></th></tr><tr><td><p>
+                    
+    <p>2008 年 7 月</p>
+  
+                </p></td><td><p>
+                    增加了有关多个约束的段落。
+                </p></td><td><p>
+                    
+    <p>内容 Bug 修复</p>
+  
+                </p></td></tr></table></div></div></div>
+      <div id="footer">
+        <div class="footerLine">
+          <img width="100%" height="3px" src="../icons/footer.gif" title="“页脚”图像" />
+        </div>
+<span id="feedbackarea">将有关本主题的<a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);">反馈意见</a>发送给 Microsoft。</span>
+</div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,33 @@
+<html><HEAD><TITLE>Ruby参考手册 - Ruby 线程</TITLE>
+<META http-equiv=Content-type content="text/html; charset=gb2312">
+<META http-equiv=Content-Style-Type content=text/css><LINK href="69_files/style[1].css"  type=text/css rel=stylesheet></head>
+<BODY>
+<DIV class=navi><A id=header-navi name=head-navi></A><SPAN class=navi>[<A href="61.html" >Ruby首页</A>]</SPAN>  </DIV>
+<DIV class=body>
+<H1><A id=Ruby.20.a5.b9.a5.ec.a5.c3.a5.c9 name=Ruby.20.a5.b9.a5.ec.a5.c3.a5.c9>Ruby 线程</A><!-- RDLabel: "Ruby 线程" --></H1>
+<P>线程是指共享内存空间并可同时运行的控制流。使用线程便可进行并行编程。</P>
+<P>现在Ruby的线程是用户级的线程，可在所有平台上实现相同的运作。下面就来看看线程的运作情况。</P>
+<H2><A id=Ruby.20.a4.ce.a5.b9.a5.ec.a5.c3.a5.c9.a4.ce.bb.c5.cd.cd name=Ruby.20.a4.ce.a5.b9.a5.ec.a5.c3.a5.c9.a4.ce.bb.c5.cd.cd>Ruby线程的运作方式</A></H2>
+<P>程序开始时同步生成的线程称作<B>main thread</B>。当<B>main thread</B>结束时，其他所有线程以及整个程序也会结束。用户的介入所引起的异常也会被送给<B>main thread</B>。</P>
+<P>线程启动时会指定一个块。当这个块结束运行时，该线程也会终结。块的结束既包括正常结束又包括因错误等引起的异常结束。</P>
+<P><B>Ruby</B>的线程调度采用的是一种带优先顺序的循环调度法。每隔一段时间或者当运行中的线程放弃权利的时候，就对进行调度。从可运行的线程中选出优先级别最高的加以运行。</P>
+<H2><A id=a.a5.b9.a5.ec.a5.c3.a5.c9.a4.c8.ce.e3.b3.b0 name=a.a5.b9.a5.ec.a5.c3.a5.c9.a4.c8.ce.e3.b3.b0>线程和异常</A><!-- RDLabel: "线程和异常" --></H2>
+<P>当某线程发生异常，且没有被<B>rescue</B>捕捉到时，该线程通常会被无警告地终止。但是，若有其它线程因为Thread#join的关系一直等待该线程的话，则等待的线程同样会被引发相同的异常。</P><PRE>begin
+  t = Thread.new do
+    Thread.pass    # 主线程确实在等join
+    raise "unhandled exception"
+  end
+  t.join
+rescue
+  p $!  # =&gt; "unhandled exception"
+end
+</PRE>
+<P>使用下列3个方法，就可以让解释器在某个线程因异常而终止时中断运行。</P>
+<UL>
+<LI>启动脚本时指定<B>-d</B>选项，并以调试模时运行。 
+<LI>用<CODE>Thread.abort_on_exception</CODE>设置标志。 
+<LI>使用<CODE>Thread#abort_on_exception</CODE>对指定的线程设定标志。 </LI></UL>
+<P>当使用上述3种方法之一后，整个解释器就会被中断。</P></DIV>
+<HR>
+
+<DIV class=footer>Originally Written by webmaster@ruby-lang.org<BR>Translated by <A href="http://cn.ce-lab.net/" >Community Engine China</A> (<A href="mailto:rubycn@ce-lab.net">Mail</A>)<BR>Last update on 2004-12-22 </DIV></BODY>

@@ -1,0 +1,210 @@
+﻿<html xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+    <META NAME="save" CONTENT="history" />
+    <title>匿名方法（C# 编程指南）</title>
+    <link rel="stylesheet" type="text/css" href="../styles/presentation.css" />
+    <link rel="stylesheet" type="text/css" href="ms-help://Hx/HxRuntime/HxLink.css" />
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/EventUtilities.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/SplitScreen.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/Dropdown.js"> </script>
+    <script type="text/javascript" src="../scripts/script_manifold.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/script_feedBack.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CheckboxMenu.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CommonUtilities.js"> </script>
+    <xml>
+      <MSHelp:TOCTitle Title="匿名方法" />
+      <MSHelp:Keyword Index="A" Term="a62441fa-f0a3-4acb-9aa6-93762a635275" />
+      <MSHelp:Keyword Index="K" Term="委托 [C#], 匿名方法" />
+      <MSHelp:Keyword Index="K" Term="方法 [C#], 匿名" />
+      <MSHelp:Attr Name="RevisionNumber" Value="26" />
+      <MSHelp:Attr Name="AssetID" Value="a62441fa-f0a3-4acb-9aa6-93762a635275" />
+      <MSHelp:Attr Name="Abstract" Value="&#xD;&#xA;                    在 2.0 之前的 C# 版本中，声明委托的唯一方法是使用命名方法。C# 2.0 引入了匿名方法，而在 C# 3.0 及更高版本中，Lambda 表达式取代了匿名方法，作为编写内联代码的首选方式。不过，本主题中有关匿名方法的信息同样也适用于 Lambda 表达式。有一种情况下，匿名方法提供了 Lambda 表达式中所没有的功能。匿名方法使您能够省略参数列表，这意味着可以将匿名方法转换为带有各种签名的委托。这对于 Lambda 表达式来说是不可能的。有关 ..." />
+      <MSHelp:Attr Name="codelang" Value="CSharp" />
+      <MSHelp:Attr Name="CommunityContent" Value="1" />
+      <MSHelp:Attr Name="CurrentDebugFrameLang" Value="CSharp" />
+      <MSHelp:Attr Name="DevLang" Value="CSharp" />
+      <MSHelp:Attr Name="DevLangVers" Value="CSharp" />
+      <MSHelp:Attr Name="DocSet" Value="C#" />
+      <MSHelp:Attr Name="DocSet" Value="C# Lang" />
+      <MSHelp:Attr Name="DocSet" Value="ExpressLibVS" />
+      <MSHelp:Attr Name="ProgModel" Value="managed" />
+      <MSHelp:Attr Name="ShippedIn" Value="vs.90" />
+      <MSHelp:Attr Name="Technology" Value="ManagedCode" />
+      <MSHelp:Attr Name="TopicVersion" Value="09.00.08178.10000" />
+      <MSHelp:Attr Name="Catalog Container" Value="System_Default_Catalog" />
+      <MSHelp:Attr Name="Content Set Container" Value="System_Default_Content_Set" />
+      <MSHelp:Attr Name="TopicType" Value="kbRef" />
+      <MSHelp:Attr Name="Locale" Value="zh-chs" />
+    </xml>
+  </head>
+  <body>
+    <input type="hidden" id="userDataCache" class="userDataStyle" />
+    <input type="hidden" id="hiddenScrollOffset" />
+    <img id="collapseImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" title="“折叠”图像" />
+    <img id="expandImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" title="“展开”图像" />
+    <img id="collapseAllImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" />
+    <img id="expandAllImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" />
+    <img id="dropDownImage" style="display:none; height:0; width:0;" src="../icons/dropdown.gif" />
+    <img id="dropDownHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/dropdownHover.gif" />
+    <img id="copyImage" style="display:none; height:0; width:0;" src="../icons/copycode.gif" title="“复制”图像" />
+    <img id="copyHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/copycodeHighlight.gif" title="“复制悬停”图像" />
+    <div id="header">
+      <table id="topTable" cellspacing="0" cellpadding="0">
+        <tr>
+          <td>
+            <span onclick="ExpandCollapseAll(toggleAllImage)" style="cursor:default;" onkeypress="ExpandCollapseAll_CheckKey(toggleAllImage, event)" tabindex="0">
+              <img ID="toggleAllImage" class="toggleAll" src="../icons/collapse_all.gif" /> <label id="collapseAllLabel" for="toggleAllImage" style="display: none;">全部折叠</label><label id="expandAllLabel" for="toggleAllImage" style="display: none;">全部展开</label> </span>
+            <span>    </span>
+            <span id="devlangsDropdown" class="filter" tabindex="0">
+              <img id="devlangsDropdownImage" src="../icons/dropdown.gif" /> <label id="devlangsMenuAllLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：全部 </nobr></label><label id="devlangsMenuMultipleLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：多个 </nobr></label><label id="devlangsMenuVisualBasicLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual Basic </nobr></label><label id="devlangsMenuCSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：C# </nobr></label><label id="devlangsMenuManagedCPlusPlusLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual C++ </nobr></label><label id="devlangsMenuJSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：J# </nobr></label><label id="devlangsMenuJScriptLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：JScript </nobr></label></span>
+          </td>
+        </tr>
+      </table>
+      <div id="devlangsMenu">
+        <input id="VisualBasicCheckbox" type="checkbox" data="VisualBasic,vb,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="VisualBasicCheckbox">Visual Basic</label>
+        <br />
+        <input id="CSharpCheckbox" type="checkbox" data="CSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="CSharpCheckbox">C#</label>
+        <br />
+        <input id="ManagedCPlusPlusCheckbox" type="checkbox" data="ManagedCPlusPlus,cpp,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="ManagedCPlusPlusCheckbox">Visual C++</label>
+        <br />
+        <input id="JSharpCheckbox" type="checkbox" data="JSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JSharpCheckbox">J#</label>
+        <br />
+        <input id="JScriptCheckbox" type="checkbox" data="JScript,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JScriptCheckbox">JScript</label>
+        <br />
+      </div>
+      <table id="bottomTable" cellpadding="0" cellspacing="0">
+        <tr id="headerTableRow1">
+          <td align="left">
+            <span id="runningHeaderText">C# 编程指南</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow2">
+          <td align="left">
+            <span id="nsrTitle">匿名方法（C# 编程指南）</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow3">
+          <td align="left">
+            <a href="a62441fa-f0a3-4acb-9aa6-93762a635275.htm#exampleToggle" onclick="OpenSection(exampleToggle)">示例</a>  <a href="a62441fa-f0a3-4acb-9aa6-93762a635275.htm#seeAlsoToggle" onclick="OpenSection(seeAlsoToggle)">另请参见</a>  
+<script type="text/javascript">
+var fbBody = '%b8%d0%d0%bb%c4%fa%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%bf%aa%b7%a2%b0%e6%b1%e0%d0%b4%cd%c5%b6%d3%bd%ab%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%d3%c3%d3%da%b8%c4%bd%f8%ce%c4%b5%b5%a1%a3%ce%d2%c3%c7%d4%da%c9%f3%d4%c4%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%ca%b1%a3%ac%bf%c9%c4%dc%bb%e1%b8%f8%c4%fa%b7%a2%cb%cd%b5%e7%d7%d3%d3%ca%bc%fe%a3%ac%d2%d4%c7%eb%c4%fa%cc%e1%b9%a9%bd%f8%d2%bb%b2%bd%b5%c4%bd%e2%ca%cd%cb%b5%c3%f7%bb%f2%d5%df%be%cd%bd%e2%be%f6%b7%bd%b0%b8%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%ce%d2%c3%c7%b2%bb%bb%e1%bd%ab%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%d3%c3%d3%da%c8%ce%ba%ce%c6%e4%cb%fb%d3%c3%cd%be%a3%ac%b2%a2%c7%d2%d4%da%c9%f3%d4%c4%cd%ea%d6%ae%ba%f3%a3%ac%ce%d2%c3%c7%b2%bb%bb%e1%d4%d9%b1%a3%c1%f4%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%a1%a3%0d%0a%d3%d0%b9%d8%20Microsoft%20%d2%fe%cb%bd%d5%fe%b2%df%b5%c4%bd%f8%d2%bb%b2%bd%d0%c5%cf%a2%a3%ac%c7%eb%b2%ce%bc%fb%20http%3a%2f%2fprivacy.microsoft.com%2fzh-cn%2fdefault.aspx%a1%a3';
+var fbSubject = 'Customer%20Feedback';
+</script>
+  <span id="headfeedbackarea" class="feedbackhead"><a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);"> 发送反馈意见</a></span>
+</td>
+        </tr>
+      </table>
+      <table id="gradientTable">
+        <tr>
+          <td class="nsrBottom" background="../icons/gradient.gif" />
+        </tr>
+      </table>
+    </div>
+    <div id="mainSection">
+      <div id="mainBody">
+        <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
+        <font color="DarkGray"></font>
+        <p /> <p><font color="DarkGray">更新：2007 年 11 月</font></p><div class="introduction"><p>
+                    在 2.0 之前的 C# 版本中，声明<mshelp:link keywords="0bb8cb6d-2f87-47c7-9d1f-d65c1cd01e9f" tabindex="0">委托</mshelp:link>的唯一方法是使用<mshelp:link keywords="98fa8c61-66b6-4146-986c-3236c4045733" tabindex="0">命名方法</mshelp:link>。C# 2.0 引入了匿名方法，而在 C# 3.0 及更高版本中，Lambda 表达式取代了匿名方法，作为编写内联代码的首选方式。不过，本主题中有关匿名方法的信息同样也适用于 Lambda 表达式。有一种情况下，匿名方法提供了 Lambda 表达式中所没有的功能。匿名方法使您能够省略参数列表，这意味着可以将匿名方法转换为带有各种签名的委托。这对于 Lambda 表达式来说是不可能的。有关 lambda 表达式的更多特定信息，请参见 <span sdata="link"><a href="57e3ba27-9a82-4067-aca7-5ca446b7bf93.htm">Lambda 表达式（C# 编程指南）</a></span>。
+                </p><p>
+                    要将代码块传递为委托参数，创建匿名方法则是唯一的方法。这里是两个示例：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Create a handler for a click event</span>
+button1.Click += <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">delegate</span>(System.Object o, System.EventArgs e)
+                   { System.Windows.Forms.MessageBox.Show(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Click!"</span>); };
+
+</pre></td></tr></table></span></div></div><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Create a delegate instance</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">delegate</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Del(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> x);
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Instantiate the delegate using an anonymous method</span>
+Del d = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">delegate</span>(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> k) { <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">/* ... */</span> };
+
+</pre></td></tr></table></span></div></div><p>
+                    通过使用匿名方法，由于您不必创建单独的方法，因此减少了实例化委托所需的编码系统开销。
+                </p><p>
+                    例如，如果创建方法所需的系统开销是不必要的，则指定代码块（而不是委托）可能非常有用。启动新线程即是一个很好的示例。无需为委托创建更多方法，线程类即可创建一个线程并且包含该线程执行的代码。
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> StartThread()
+{
+    System.Threading.Thread t1 = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> System.Threading.Thread
+      (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">delegate</span>()
+            {
+                System.Console.Write(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Hello, "</span>);
+                System.Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"World!"</span>);
+            });
+    t1.Start();
+}
+
+</pre></td></tr></table></span></div></div></div><h1 class="heading"><span onclick="ExpandCollapse(languageReferenceRemarksToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(languageReferenceRemarksToggle, event)" tabindex="0"><img id="languageReferenceRemarksToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />备注</span></h1><div id="languageReferenceRemarksSection" class="section" name="collapseableSection" style=""><p>
+                    匿名方法的参数的范围是“<span class="placeholder">匿名方法块</span>”。
+                </p><p>
+                    如果目标在块外部，那么，在匿名方法块内使用跳转语句（如 <mshelp:link keywords="2c03c9c1-8119-44ef-b740-fb3d287a42fe" tabindex="0">goto</mshelp:link>、<mshelp:link keywords="be2571ed-efb0-4965-b122-81e5b09db0b9" tabindex="0">break</mshelp:link> 或 <mshelp:link keywords="8a5ac96f-f98a-4519-b32d-345847ed7be0" tabindex="0">continue</mshelp:link>）是错误的。如果目标在块内部，在匿名方法块外部使用跳转语句（如 <span sdata="langKeyword" value="goto"><span class="keyword">goto</span></span>、<span sdata="langKeyword" value="break"><span class="keyword">break</span></span> 或 <span sdata="langKeyword" value="continue"><span class="keyword">continue</span></span>）也是错误的。
+                </p><p>
+                    如果局部变量和参数的范围包含匿名方法声明，则该局部变量和参数称为该匿名方法的“<span class="placeholder">外部</span>”变量。例如，下面代码段中的 <span class="code">n</span> 即是一个外部变量：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> n = 0;
+Del d = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">delegate</span>() { System.Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Copy #:{0}"</span>, ++n); };
+
+</pre></td></tr></table></span></div></div><p>
+                    与局部变量不同，捕获变量的生命周期一直持续到引用该匿名方法的委托符合垃圾回收的条件为止。对 <span class="code">n</span> 的引用是在创建该委托时捕获的。
+                </p><p>
+                    匿名方法不能访问外部范围的 <mshelp:link keywords="b8a5e59c-907d-4065-b41d-95bf4273c0bd" tabindex="0">ref</mshelp:link> 或 <mshelp:link keywords="7e911a0c-3f98-4536-87be-d539b7536ca8" tabindex="0">out</mshelp:link> 参数。
+                </p><p>
+                    在“<span class="placeholder">匿名方法块</span>”中不能访问任何不安全代码。
+                </p><p>
+                    在 <mshelp:link keywords="bc62316a-d41f-4f90-8300-c6f4f0556e43" tabindex="0">is</mshelp:link> 运算符的左侧不允许使用匿名方法。
+                </p></div><h1 class="heading"><span onclick="ExpandCollapse(exampleToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(exampleToggle, event)" tabindex="0"><img id="exampleToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />示例</span></h1><div id="exampleSection" class="section" name="collapseableSection" style=""><p>
+                    下面的示例演示实例化委托的两种方法：
+                </p><ul><li><p>
+                    使委托与匿名方法关联。
+                </p></li><li><p>
+                    使委托与命名方法 (<span class="code">DoWork</span>) 关联。
+                </p></li></ul><p>
+                    两种方法都会在调用委托时显示一条消息。
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Declare a delegate</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">delegate</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Printer(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> s);
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> TestClass
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Main()
+    {
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Instatiate the delegate type using an anonymous method:</span>
+        Printer p = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">delegate</span>(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> j)
+        {
+            System.Console.WriteLine(j);
+        };
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Results from the anonymous delegate call:</span>
+        p(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"The delegate using the anonymous method is called."</span>);
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// The delegate instantiation using a named method </span><span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"DoWork"</span>:
+        p = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Printer(TestClass.DoWork);
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Results from the old style delegate call:</span>
+        p(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"The delegate using the named method is called."</span>);
+    }
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// The method associated with the named delegate:</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> DoWork(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> k)
+    {
+        System.Console.WriteLine(k);
+    }
+}
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">/* Output:
+    The delegate using the anonymous method is called.
+    The delegate using the named method is called.
+*/</span>
+
+</pre></td></tr></table></span></div></div></div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />请参见</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><h4 class="subHeading">概念</h4><div class="seeAlsoStyle"><span sdata="link"><a href="ac0f23a2-6bf3-4077-be99-538ae5fd3bc5.htm">C# 编程指南</a></span></div><h4 class="subHeading">参考</h4><div class="seeAlsoStyle"><span sdata="link"><a href="97de039b-c76b-4b9c-a27d-8c1e1c8d93da.htm">委托（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="57e3ba27-9a82-4067-aca7-5ca446b7bf93.htm">Lambda 表达式（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="b0fcca10-a92d-4f2a-835b-b0ccae6739ee.htm">不安全代码和指针（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="cc738f07-e8cd-4683-9585-9f40c0667c37.htm">方法（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="98fa8c61-66b6-4146-986c-3236c4045733.htm">带有命名方法的委托与带有匿名方法的委托（C# 编程指南）</a></span></div><h4 class="subHeading">其他资源</h4><div class="seeAlsoStyle"><span sdata="link"><a href="06de3167-c16c-4e1a-b3c5-c27841d4569a.htm">C# 参考</a></span></div></div></div>
+      <div id="footer">
+        <div class="footerLine">
+          <img width="100%" height="3px" src="../icons/footer.gif" title="“页脚”图像" />
+        </div>
+<span id="feedbackarea">将有关本主题的<a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);">反馈意见</a>发送给 Microsoft。</span>
+</div>
+    </div>
+  </body>
+</html>

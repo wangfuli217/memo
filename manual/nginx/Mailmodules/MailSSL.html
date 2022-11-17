@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml">
+<HEAD><TITLE>邮件SSL认证模块（Mail SSL）</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=GB2312">
+<STYLE type=text/css>PRE {
+	BACKGROUND-COLOR: #cccccc
+}
+.STYLE1 {
+	COLOR: #ff0000
+}
+</STYLE>
+
+<META content="MSHTML 6.00.6000.16809" name=GENERATOR></HEAD>
+<BODY>
+<H2>邮件SSL认证模块（Mail SSL）</H2><BR>
+
+<H3>·摘要</H3>
+<H4>这个模块为POP3/IMAP/SMTP提供SSL/TLS支持。配置与<A href="../OptionalHTTPmodules/SSL.html" >HTTP SSL模块</A>基本相同，但是不支持检察客户端证书。</H4>
+<H3>·指令</H3>
+<H3> ssl </H3>
+<H4>语法：ssl on | off <BR>
+默认值：ssl off <BR>
+使用字段：mail, server <BR>
+为这个虚拟主机启用SSL。</H4>
+<H3> ssl_certificate </H3>
+<H4>语法：ssl_certificate file <BR>
+默认值：cert.pem <BR>
+使用字段：mail, server <BR>
+为这个虚拟主机指定PEM格式的证书文件，相同的文件可以包含其它的证书，同样密钥为PEM格式。</H4>
+<H3> ssl_certificate_key </H3>
+<H4>语法：ssl_certificate_key file <BR>
+默认值：cert.pem <BR>
+使用字段：mail, server<BR>
+为这个虚拟主机指定PEM格式的密钥。</H4>
+<H3> ssl_ciphers </H3>
+<H4>语法：ssl_ciphers file ciphers <BR>
+默认值：ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP <BR>
+使用字段：mail, server <BR>
+指出允许的密码，密码指定为OpenSSL支持的格式。</H4>
+<H3> ssl_prefer_server_ciphers </H3>
+<H4>语法：ssl_prefer_server_ciphers on | off <BR>
+默认值：off <BR>
+使用字段：mail, server <BR>
+依赖SSLv3和TLSv1协议的服务器密码将优先于客户端密码。</H4>
+<H3>ssl_protocols </H3>
+<H4>语法：ssl_protocols [SSLv2] [SSLv3] [TLSv1] <BR>
+默认值：SSLv2 SSLv3 TLSv1 <BR>
+使用字段：mail, server <BR>
+指定要使用的SSL协议。</H4>
+<H3> ssl_session_cache </H3>
+<H4>语法：ssl_session_cache [builtin[:size [shared:name:size] <BR>
+默认值：builtin:20480 <BR>
+使用字段：mail, server <BR>
+设置储存SSL会话的缓存类型和大小。<BR>
+缓存类型为：<BR>
+·builtin - 内建OpenSSL缓存，仅能用在一个工作进程中，缓存大小在会话总数中指定，注意：如果要使用这个类型可能会引起内存碎片问题，具体请查看下文中参考文档。<BR>
+·shared - 缓存在所有的工作进程中共享，缓存大小指定单位为字节，1MB缓存大概保存4000个会话，每个共享的缓存必须有自己的名称，相同名称的缓存可以使用在不同的虚拟主机中。<BR>
+可以同时使用两个缓存类型，如：
+<PRE>ssl_session_cache  builtin:1000  shared:SSL:10m;</PRE>
+然而仅当builtin没有影响共享缓存时会使用。</H4>
+<H3>ssl_session_timeout </H3>
+<H4>语法：ssl_session_timeout time <BR>
+默认值：5m <BR>
+使用字段：mail, server <BR>
+设置客户端能够反复使用储存在缓存中的会话参数时间。</H4>
+<H3> starttls </H3>
+<H4>语法：starttls on | off | only <BR>
+默认值：off <BR>
+使用字段：mail, server <BR>
+·on - 允许为IMAP/SMTP使用STARTTLS和为POP3使用STLS。<BR>
+·off - 禁止命令STLS和STARTTLS。<BR>
+·only - 在客户端使用TLS启用STLS和STARTTLS。</H4>
+<H3>·参考文档</H3>
+<H4><A href="http://wiki.nginx.org/NginxMailSslModule/" >Nginx Mail SSL Module</A></H4>
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://179401.cn/analytics/" : "http://179401.cn/analytics/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://shouce.jb51.net/179401.cn/analytics/piwik.php-idsite=1"  style="border:0" alt=""/></p></noscript>
+<!-- End Piwik Tag -->
+</BODY>
+</HTML>
+<H3><A href="../3rdPartyModules/index.html" >前进->第三方模块（3rd party modules）</A></H3>

@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>String.sub - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>sub</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">sub(pattern, replacement[, count = 1]) -> string</code></pre>
+			<p>
+				将字符串中前 <code>count</code> 个与 <code>pattern</code> 指定的模式匹配的子串用 <code>replacement</code>
+				替换掉。<code>replacement</code> 可以是一个普通的字符串、一个回调函数或是一个<a href="../template.htm" >
+				Template</a> 字符串。<code>pattern</code> 可以是一个字符串或是一个正则表达式。
+			</p>
+		</div>
+		<div id="abody">
+			<p>
+				与 <a href="gsub.htm" >String#gsub</a> 不同，<code>String#sub</code> 还具有可选的第三个参数，
+				用于指定模式匹配的次数，如果不指定，默认为 1。
+			</p>
+			<p>
+				除此以外，<code>String#sub</code> 与 <a href="gsub.htm" >String#gsub</a> 具有相同的功能。完整的描述请参见
+				<a href="gsub.htm" >String#gsub</a>。
+			</p>
+			<h3>样例</h3>
+			<pre><code class="javascript">var fruits = 'apple pear orange'; 
+			
+fruits.sub(' ', ', ');
+// -> 'apple, pear orange' 
+fruits.sub(' ', ', ', 1); 
+// -> 'apple, pear orange'
+fruits.sub(' ', ', ', 2); 
+// -> 'apple, pear, orange' 
+
+fruits.sub(/\w+/, function(match){
+	return match[0].capitalize() + ','
+}, 2); 
+// -> 'Apple, Pear, orange' 
+
+var markdown = '![a pear](/img/pear.jpg) ![an orange](/img/orange.jpg)'; 
+
+markdown.sub(/!\[(.*?)\]\((.*?)\)/, function(match){ 
+	return '&lt;img alt="' + match[1] + '" src="' + match[2] + '" /&gt;';
+}); 
+// -> '&lt;img alt="a pear" src="/img/pear.jpg" /&gt; ![an orange](/img/orange.jpg)'
+
+markdown.sub(/!\[(.*?)\]\((.*?)\)/, '&lt;img alt="#{1}" src="#{2}" /&gt;'); 
+// -> '&lt;img alt="a pear" src="/img/pear.jpg" /&gt; ![an orange](/img/orange.jpg)' </code></pre>
+			<h3>注意</h3>
+			<p>请 <em>不要</em> 在正则表达式中使用标识 <code>"g"</code>，这会导致一个无限循环。</p>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

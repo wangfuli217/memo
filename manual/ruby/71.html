@@ -1,0 +1,318 @@
+<html><HEAD><TITLE>Ruby参考手册 - 正则表达式</TITLE>
+<META http-equiv=Content-type content="text/html; charset=gb2312">
+<META http-equiv=Content-Style-Type content=text/css><LINK href="71_files/style[1].css"  type=text/css rel=stylesheet></head>
+<BODY>
+<DIV class=navi><A id=header-navi name=head-navi></A><SPAN class=navi>[<A href="61.html" >Ruby首页</A>]</SPAN>  </DIV>
+<DIV class=body>
+<H1><A id=a.c0.b5.b5.ac.c9.bd.b8.bd name=a.c0.b5.b5.ac.c9.bd.b8.bd>正则表达式</A><!-- RDLabel: "正则表达式" --></H1>
+<UL>
+<LI><A class=modified-year title="正则表达式 (218d)" href="71.html#a.b8.e5.ca.fd.bb.b2.be.c8">后方参考</A> 
+<LI><A class=modified-year title="正则表达式 (218d)" href="71.html#a.ca.b8.bb.fa.a5.af.a5.e9.a5.b9">字符范围</A> 
+<LI><A class=modified-year title="正则表达式 (218d)" href="71.html#a.a5.d0.a5.c3.a5.af.a5.c8.a5.e9.a5.c3.a5.af">回缩(backtrack)</A> 
+<LI><A class=modified-year title="正则表达式 (218d)" href="71.html#a.a5.b5.a5.f3.a5.d7.a5.eb">范例</A> </LI></UL>
+<P>下面就来讲讲ruby支持的正则表达式符号(元字符)。</P>
+<P>有这么个规则：</P>
+<UL>
+<LI>不带\的数字和字母不是元字符 
+<LI>带\的符号也不是元字符 </LI></UL>
+<P>下文中出现的“匹配多字节字符的正则表达式”是指，通过使用<FONT color=blue><B>$KCODE</B></FONT>进行设定，或显式地使用汉字选项(请参考<FONT color=blue>正则表达式字面值</FONT>)等方式进行的匹配多字节字符的正则表达式。</P>
+<UL>
+<LI>
+<P><CODE>^</CODE></P>
+<P>行首。与字符串的头部或换行符之后的位置相匹配。</P>
+<LI>
+<P><CODE>$</CODE></P>
+<P>行尾。与字符串的尾部或换行符之前的位置相匹配。不包括换行符本身。</P>
+<P><FONT color=blue><B>ruby 1.8 特性</B></FONT>：以前，只匹配字符串尾部换行符前的位置，现在则扩大到字符串的尾部。<FONT color=blue><B>trap::Regexp</B></FONT></P><PRE>p "\n".gsub(/$/, "o")
+=&gt; "o\n"  (1.6)
+=&gt; "o\no" (1.8)
+</PRE>
+<LI>
+<P><CODE>.</CODE></P>
+<P>匹配除换行符以外的任意一个字符。使用正则表达式选项 m(多行模式。请参考<FONT color=blue>正则表达式字面值</FONT>) 时，则匹配包括换行符在内的任意一个字符。在匹配多字节字符的正则表达式中，则匹配一个字(非单字节)。</P>
+<P>当遇到不完整的多字节字符的一部分(无法判断该字符是多字节字符？二进制？还是ASCII)时，也不会匹配。</P><PRE>p /./e =~ "あ"[0,1]     # =&gt; nil
+</PRE>
+<LI>
+<P><CODE>\w</CODE></P>
+<P>字母和数字。等同于<CODE>[0-9A-Za-z]</CODE>。</P>
+<P>若为匹配多字节字符的正则表达式时，则也会匹配日语的全角字符。</P>
+<LI>
+<P><CODE>\W</CODE></P>
+<P>非字母和数字。<CODE>\w</CODE>以外的单个字符。</P>
+<LI>
+<P><CODE>\s</CODE></P>
+<P>空字符。相当于<CODE>[ \t\n\r\f]</CODE></P>
+<LI>
+<P><CODE>\S</CODE></P>
+<P>非空字符。<CODE>[ \t\n\r\f]</CODE> 以外的单个字符。</P>
+<LI>
+<P><CODE>\d</CODE></P>
+<P>数字。即<CODE>[0-9]</CODE></P>
+<LI>
+<P><CODE>\D</CODE></P>
+<P>非数字</P>
+<LI>
+<P><CODE>\A</CODE></P>
+<P>字符串头部。与<CODE>^</CODE>不同的是，它不受有无换行符的影响 。</P>
+<LI>
+<P><CODE>\Z</CODE></P>
+<P>字符串尾部。若字符串以换行符结尾，则匹配换行符前的位置。</P>
+<P><FONT color=blue><B>ruby 1.8 特性</B></FONT>：以前，只匹配字符串尾部换行符前的位置，现在则扩大到字符串的尾部。<FONT color=blue><B>trap::Regexp</B></FONT></P><PRE>p "\n".gsub(/\Z/, "o")
+=&gt; "o\n"   (1.6)
+=&gt; "o\no"  (1.8)
+</PRE>
+<LI>
+<P><CODE>\z</CODE></P>
+<P>字符串结尾。与$以及\Z不同的是，它不受有无换行符的影响。</P>
+<LI>
+<P><CODE>\b</CODE></P>
+<P>在字符范围描述符之外时表示词边界(匹配从\w到\W)。在字符范围描述符之内时表示退格符(0x08)。</P>
+<LI>
+<P><CODE>\B</CODE></P>
+<P>非词边界</P>
+<LI>
+<P><CODE>\G</CODE></P>
+<P>在上次成功匹配的地方(之后)进行匹配(不留余地)。只有在首次使用时才会匹配到头部(与\A相同)。</P>
+<P>可以用在<FONT color=blue><B>scan</B></FONT>和<FONT color=blue><B>gsub</B></FONT>中。当您想在上次匹配的地方之后再进行匹配的话，可以使用。</P>
+<P>举个简单(没什么用)的例子。</P><PRE># 从头取出3位数字(数字必须相连)。
+str = "123456 789"
+str.scan(/\G\d\d\d/) {|m| p m }
+</PRE>
+<LI>
+<P><CODE>[ ]</CODE></P>
+<P>指定字符范围。请参考<FONT color=blue><B>字符范围</B></FONT></P>。 
+<LI>
+<P><CODE>*</CODE></P>
+<P>前面元素至少出现0次。尽可能匹配较长的部分。</P>
+<LI>
+<P><CODE>*?</CODE></P>
+<P>负责指定数量(quantifiers)。表示前面元素至少出现0次(尽量匹配短的部分)</P>
+<LI>
+<P><CODE>+</CODE></P>
+<P>负责指定数量(quantifiers)。表示前面元素至少出现1次</P>
+<LI>
+<P><CODE>+?</CODE></P>
+<P>负责指定数量(quantifiers)。表示前面元素至少出现1次(尽量匹配短的部分)</P>
+<LI><CODE>{m}</CODE> 
+<LI><CODE>{m,}</CODE> 
+<LI>
+<P><CODE>{m,n}</CODE></P>
+<P>指定元素重复出现的次数(interval quantifier)。分别表示前面元素重复出现</P>
+<UL>
+<LI>m 次 
+<LI>至少 m 次 
+<LI>至少 m 次，至多 n 次 </LI></UL>
+<P><CODE>{,n}</CODE> 或 <CODE>{,}</CODE> 将导致匹配失败。</P><PRE>str = "foofoofoo"
+p str[/(foo){1}/]   # =&gt; "foo"
+p str[/(foo){2,}/]  # =&gt; "foofoofoo"
+p str[/(foo){1,2}/] # =&gt; "foofoo"
+</PRE>
+<P>正则表达式 <CODE>?</CODE>, <CODE>*</CODE>, <CODE>+</CODE> 分别等同于 <CODE>{0,1}</CODE>, <CODE>{0,}</CODE> <CODE>{1,}</CODE> 。</P>
+<LI><CODE>{m}?</CODE> 
+<LI><CODE>{m,}?</CODE> 
+<LI>
+<P><CODE>{m,n}?</CODE></P>
+<P>指定元素重复出现的次数(interval quantifier)。分别表示前面元素重复出现</P>
+<UL>
+<LI>m 次 
+<LI>至少 m 次 
+<LI>至少 m 次，至多 n 次 </LI></UL>
+<P>(尽量匹配短的部分)。</P>
+<LI>
+<P><CODE>?</CODE></P>
+<P>负责指定数量(quantifiers)。表示前面元素至多出现1次。</P>
+<LI>
+<P><CODE>??</CODE></P>
+<P>负责指定数量(quantifiers)。表示前面元素至多出现1次(尽量匹配短的部分)</P>
+<LI>
+<P><CODE>|</CODE></P>
+<P>选择(alternative)。</P>
+<LI>
+<P><CODE>( )</CODE></P>
+<P>正则表达式的群组化。与括号中的正则表达式相匹配的字符串将被保存下来，供后方参考使用。</P>
+<LI>
+<P><CODE>\1</CODE>, <CODE>\2</CODE> ... <CODE>\<VAR>n</VAR></CODE></P>
+<P>后方参考(back reference)。请参考<FONT color=blue><B>后方参考</B></FONT>。</P>
+<LI>
+<P><CODE>(?# )</CODE></P>
+<P>注释。括号中的任意字符串将被忽视。</P>
+<LI>
+<P><CODE>(?: )</CODE></P>
+<P>不具备后方参考功能的群组化。它不为\1,\2(或<FONT color=blue>$1</FONT>,<FONT color=blue>$2</FONT>)提供服务，是一种单纯的群组功能。</P><PRE>/(abc)/ =~ "abc"
+p $1
+=&gt; "abc"
+
+/(?:abc)/ =~ "abc"
+p $1
+=&gt; nil
+</PRE>
+<LI>
+<P><CODE>(?= )</CODE></P>
+<P>先行(lookahead)。使用模式(pattern)指定位置(不留间隔)</P><PRE>(?=re1)re2
+</PRE>
+<P>表示将匹配同时符合re1和re2的要求的字符串。</P><PRE>re1(?=re2)
+</PRE>
+<P>という山附は、稿に re2 とマッチする矢机误が鲁く、正则表达式 re1 です。</P><PRE>p /foo(?=bar)/ =~ "foobar"      # =&gt; 0
+p $&amp;    # =&gt; "foo"   (bar の婶尸の攫鼠はない)
+</PRE>
+<LI>
+<P><CODE>(?! )</CODE></P>
+<P>否定先行(negative lookahead)。使用否定的模式(pattern)来指定位置(不留间隔)</P><PRE>(?!re1)re2
+</PRE>
+<P>该正则表达式表示，匹配re1但不匹配re2。</P><PRE># 除000以外的3位数字
+re = /(?!000)\d\d\d/
+p re =~ "000"   # =&gt; nil
+p re =~ "012"   # =&gt; 0
+p re =~ "123"   # =&gt; 0
+
+# C语言标识符 (首位是[A-Za-z_]然后是[0-9A-Za-z_]的字符串)
+/\b(?![0-9])\w+\b/
+</PRE>
+<LI>
+<P><CODE>(?&gt; )</CODE></P>
+<P>禁用<A class=modified-year href="71.html#a.a5.d0.a5.c3.a5.af.a5.c8.a5.e9.a5.c3.a5.af"><B>回缩功能</B></A>。</P>
+<P>该功能尚处于试验阶段。将来有可能被停用，请您注意使用。特别是不要在广义库中使用。</P>
+<LI>
+<P><CODE>(?ixm-ixm)</CODE></P>
+<P>正则表达式中的i选项、x选项、m选项的开关。请您参考<FONT color=blue><B>正则表达式字面值</B></FONT>来了解选项的详细内容。</P><PRE>re = /A(?i)a(?-i)A/
+p re =~ "AaA"         # =&gt; 0
+p re =~ "AAA"         # =&gt; 0
+p re =~ "AAa"         # =&gt; nil
+</PRE>
+<LI>
+<P><CODE>(?ixm-ixm: )</CODE></P>
+<P>括号中的i选项、x选项、m选项的开关。在括号范围内有效。</P><PRE>re = /A(?i:a)A/
+p re =~ "AaA"         # =&gt; 0
+p re =~ "AAA"         # =&gt; 0
+p re =~ "AAa"         # =&gt; nil
+</PRE></LI></UL>
+<H2><A id=a.b8.e5.ca.fd.bb.b2.be.c8 name=a.b8.e5.ca.fd.bb.b2.be.c8>后方参考</A><!-- RDLabel: "后方参考" --></H2>
+<P>正则表达式 \1 \2 ... \n 表示后方参考。\n表示将匹配第n个括号(正则表达式的()表示群)的内容保存起来，供后面使用。</P><PRE>/((foo)bar)\1\2/
+</PRE>
+<P>和</P><PRE>/((foo)bar)foobarfoo/
+</PRE>
+<P>是一样的。</P>
+<P>例:</P><PRE>re = /(foo|bar|baz)\1/
+p re =~ 'foofoo'   # =&gt; 0
+p re =~ 'barbar'   # =&gt; 0
+p re =~ 'bazbaz'   # =&gt; 0
+p re =~ 'foobar'   # =&gt; nil
+</PRE>
+<P>对应的括号必须位于后方参考表达式的左侧。</P>
+<P>若后方参考表达式位于对应的括号中时，匹配常常会失败。当后方参考表达式中的数字是1位，且没有对应的括号时，匹配也将失败。</P><PRE>p /(\1)/ =~ "foofoofoo" # =&gt; nil
+p /(foo)\2/ =~ "foo\2"  # =&gt; nil
+</PRE>
+<P>虽然可以指定2位以上的后方参考表达式，但是不要把它同<FONT color=blue><B>反斜线表示法</B></FONT>的\nnn(对应于8进制数nnn的字符)混为一谈。当数字只有1位时，通常是后方参考表达式。当指定了一个超过2位的数字时，若没有对应括号的话，则被看作是8进制代码。</P>
+<P>相反地，若在正则表达式中使用1位的8进制代码时，必须以0打头，例如\01等(不可能存在形如\0这样的后方参考表达式，因此不会混淆)。</P><PRE>p   /\1/ =~ "\1"   # =&gt; nil     # 无对应括号的后方参考
+p  /\01/ =~ "\1"   # =&gt; 0       8 进制代码
+p  /\11/ =~ "\11"  # =&gt; 0       8 进制代码
+
+# 8 进制代码 (因为没有对应括号)
+p /(.)\10/ =~ "1\10" # =&gt; 0
+
+# 后方参考 (因为有对应的括号)
+p /((((((((((.))))))))))\10/ =~ "aa"  # =&gt; 0
+
+# 8 进制代码 (因为没有像"\0" + "8" -&gt; \08 这样的8进制代码)
+p /(.)\08/ =~ "1\0008" # =&gt; 0
+
+# 如果想在后方参考表达式之后插入数字的话，就必须使用括号加以分隔。
+p /(.)(\1)1/ =~ "111"   # =&gt; 0
+</PRE>
+<H2><A id=a.ca.b8.bb.fa.a5.af.a5.e9.a5.b9 name=a.ca.b8.bb.fa.a5.af.a5.e9.a5.b9>字符范围</A><!-- RDLabel: "字符范围" --></H2>
+<P>正则表达式 [] 负责指定字符范围。这将匹配 [] 内列出的任何一个字符。</P>
+<P>例如/[abc]/表示只要匹配"a", "b", "c"中任何一个即可。也可以按照ASCII代码顺序，在连续的字符串之间插入“-”后写成/[a-c]/也是一样的效果。另外，若头上是“^”的话，表示要匹配指定字符之外的一个字符。</P>
+<P>若“^”不在头上的话，表示匹配该字符本身。同时，当“-”出现在头或尾上时，表示匹配该字符本身。</P><PRE>p /[a^]/ =~ "^"   # =&gt; 0
+p /[-a]/ =~ "-"   # =&gt; 0
+p /[a-]/ =~ "-"   # =&gt; 0
+p /[-]/ =~ "-"   # =&gt; 0
+</PRE>
+<P>空的字符范围将引发错误。</P><PRE>p /[]/ =~ ""
+p /[^]/ =~ "^"
+# =&gt; invalid regular expression; empty character class: /[^]/
+</PRE>
+<P>当“]”出现在头上(或否定的“^”之后)时，表示“]”本身，而并非字符范围的结尾。</P><PRE>p /[]]/ =~ "]"       # =&gt; 0
+p /[^]]/ =~ "]"      # =&gt; nil
+</PRE>
+<P>可以使用反斜线对"^", "-", "]" 以及 "\\"(反斜线)进行转义，使其匹配该字符本身。</P><PRE>p /[\^]/ =~ "^"   # =&gt; 0
+p /[\-]/ =~ "-"   # =&gt; 0
+p /[\]]/ =~ "]"   # =&gt; 0
+p /[\\]/ =~ "\\"  # =&gt; 0
+</PRE>
+<P>在[]中可以使用<FONT color=blue>反斜线表示法</FONT>以及正则表达式\w, \W, \s, \S, \d, \D (这些都是表示字符范围的简写法)。</P>
+<P>请注意，下列包含否定意味的字符范围也将匹配换行符(正则表达式 \W,\D 也是如此)。</P><PRE>p /[^a-z]/ =~ "\n"    # =&gt; 0
+</PRE>
+<P>字符范围中也可以使用下列特殊的表达法，但是，将来这些表达法是否会继续得到支持还未可知(所以此处从略，欲知详情请参考<FONT color=blue>grep(1)</FONT>的手册)。</P><PRE>[:alnum:]  数字和字母 0-9a-zA-Z
+[:alpha:]  字母 a-zA-Z
+[:blank:]  空白类
+[:cntrl:]  控制字符
+[:digit:]  数字
+[:graph:]  除空白以外的可打印可视字符
+[:lower:]  小写字母
+[:print:]  可视字符
+[:punct:]  符号
+[:space:]  空白字符
+[:upper:]  大写字母
+[:xdigit:] 16进制字符
+</PRE>
+<P>例: (包括"[]"在内，"[:...:]"表示1个字符。并非文字类的"[]")</P><PRE>p /[[:alnum:]][[:cntrl:]]/ =~ "a\x01"  # =&gt; 0
+</PRE>
+<P>注: 全角字符不在考虑范围之内。即使指定让正则表达式对汉字进行匹配时，[:alpha:]等也不会匹配全角的字母。</P><PRE>p /[[:alpha:]]/e =~ "Ａ"        # =&gt; nil
+</PRE>
+<H2><A id=a.a5.d0.a5.c3.a5.af.a5.c8.a5.e9.a5.c3.a5.af name=a.a5.d0.a5.c3.a5.af.a5.c8.a5.e9.a5.c3.a5.af>回缩(backtrack)</A><!-- RDLabel: "回缩" --></H2>
+<P>用特殊括号(?&gt; )将正则表达式括起来后，与该正则表达式相匹配的字符串中的回缩功能就将失效。举例如下。</P>
+<P>例如在通常的正则表达式中</P>
+<P>p /(a*)ab/ === 'aaab'</P>
+<P>是匹配的。该匹配过程如下所示。</P>
+<OL>
+<LI>正则表达式 a* 从索引0开始匹配3个a 
+<LI>正则表达式 a 匹配失败 
+<LI>正则表达式 a* 将匹配部分稍稍“缩小”一下，匹配2个a(使用了回缩功能) 
+<LI>正则表达式 a 与字符a匹配 
+<LI>正则表达式 b 与字符b匹配 </LI></OL>但是，如果用括号(?&gt; )把正则表达式括起来的话，就不再匹配了。详细过程如下。
+<P></P>
+<OL>
+<LI>正则表达式 a* 从索引0开始匹配3个a 
+<LI>正则表达式 a 匹配失败 
+<LI>a* 想把匹配部分回缩一下，但由于特殊括号的作用，回缩功能失效。 
+<LI>正则表达式 a* 从索引1开始匹配2个a </LI></OL>
+<P>接下来的匹配都不成功，最终导致整体匹配失败。</P>
+<P>简单说来，通常的正则表达式是“贪婪型的匹配”，而(?&gt; )则是“超贪婪型的匹配”，因为它一旦匹配成功就决不放手。</P>
+<H2><A id=a.a5.b5.a5.f3.a5.d7.a5.eb name=a.a5.b5.a5.f3.a5.d7.a5.eb>范例</A><!-- RDLabel: "范例" --></H2>
+<P>为了便于您拷贝使用，我们将其代入到以$re_开头的全局变量中。</P>
+<H3><A id=a.bf.f4.c3.cd name=a.bf.f4.c3.cd>数值</A></H3>
+<UL>
+<LI>
+<P>浮点数(包括整数)</P><PRE>$re_float = /[-+]?(?:[0-9]+(\.[0-9]*)?|(\.[0-9]+))([eE][-+]?[0-9]+)?/
+
+p $re_float =~ "1.23"    # =&gt; 0
+p $&amp;.to_f                # =&gt; 1.23
+p $re_float =~ ".23"     # =&gt; 0
+p $&amp;.to_f                # =&gt; 0.23
+p $re_float =~ "1.23e1"  # =&gt; 0
+p $&amp;.to_f                # =&gt; 12.3
+p $re_float =~ "1.23e-1" # =&gt; 0
+p $&amp;.to_f                # =&gt; 0.123
+</PRE></LI></UL>
+<H3><A id=a.bf.f4.bb.fa.a4.f2.203.20.b7.e5.a4.ba.a4.c4.a5.b3.a5.f3.a5.de.a4.c7.b6.e8.c0.da.a4.eb name=a.bf.f4.bb.fa.a4.f2.203.20.b7.e5.a4.ba.a4.c4.a5.b3.a5.f3.a5.de.a4.c7.b6.e8.c0.da.a4.eb>用逗号将数字划分成3位一组的形式</A></H3>
+<UL>
+<LI>
+<P>方法1：使用回行和先行的方法(回行(lookbehind)需要Oniguruma库的支持)</P><PRE>p "tone of 12345Hz".gsub(/(?&lt;=\d)(?=(?:\d\d\d)+(?!\d))/, ',')
+=&gt; ruby 1.8.0 (2003-08-07) [i586-linux]
+   "tone of 12,345Hz"
+</PRE>
+<LI>
+<P>方法2：只使用先行的方法</P><PRE>p "tone of 12345Hz".gsub(/(\d)(?=(?:\d\d\d)+(?!\d))/, '\1,')
+=&gt; ruby 1.8.0 (2003-08-07) [i586-linux]
+   "tone of 12,345Hz"
+</PRE>
+<LI>
+<P>方法3：不使用先行的方法</P><PRE>s = "tone of 12345Hz"
+nil while s.gsub!(/(.*\d)(\d\d\d)/, '\1,\2')
+p s
+=&gt; ruby 1.8.0 (2003-08-07) [i586-linux]
+   "tone of 12,345 Hz"
+</PRE></LI></UL>
+<HR>
+</DIV>
+<DIV class=footer>Originally Written by webmaster@ruby-lang.org<BR>Translated by <A href="http://cn.ce-lab.net/" >Community Engine China</A> (<A href="mailto:rubycn@ce-lab.net">Mail</A>)<BR>Last update on 2004-12-22 </DIV></BODY>

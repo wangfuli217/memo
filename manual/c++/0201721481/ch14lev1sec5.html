@@ -1,0 +1,166 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 14.5.  Subscript Operator</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch14lev1sec4.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch14lev1sec6.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch14lev1sec5"></a>
+
+        <h3 class="docSection1Title">14.5. Subscript Operator</h3>
+        <h3 class="docSection1Title">14.5. 下标操作符</h3>
+
+        <p class="docText"><a name="idd1e106735"></a><a name="idd1e106742"></a><a name="idd1e106751"></a><a name="idd1e106758"></a><a name="idd1e106767"></a><a name="idd1e106775"></a>Classes that represent containers from which individual elements can be retrieved usually define the subscript operator, <tt>operator[]</tt>. The library classes, <tt>string</tt> and <tt>vector</tt>, are examples of classes that define the subscript operator.</p><a name="ch14note15"></a>
+        <p class="docText">可以从容器中检索单个元素的容器类一般会定义下标操作符，即 <tt>operator[]</tt>。标准库的类 <tt>string</tt> 和 <tt>vector</tt> 均是定义了下标操作符的类的例子。</p>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">The subscript operator must be defined as a class member function.</p>
+                <p class="docText">下标操作符必须定义为类成员函数。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch14lev2sec14"></a>
+
+        <h4 class="docSection2Title">Providing Read and Write Access</h4>
+        <h4 class="docSection2Title">提供读写访问</h4>
+
+        <p class="docText">One complication in defining the subscript operator is that we want it to do the right thing when used as either the left- or right-hand operand of an assignment. To appear on the left-hand side, it must yield an lvalue, which we can achieve by specifying the return type as a reference. As long as subscript returns a reference, it can be used on either side of an assignment.</p>
+        <p class="docText">定义下标操作符比较复杂的地方在于，它在用作赋值的左右操作符数时都应该能表现正常。下标操作符出现在左边，必须生成左值，可以指定引用作为返回类型而得到左值。只要下标操作符返回引用，就可用作赋值的任意一方。</p>
+
+        <p class="docText">It is also a good idea to be able to subscript <tt>const</tt> and non<tt>const</tt> objects. When applied to a <tt>const</tt> object, the return should be a <tt>const</tt> reference so that it is not usable as the target of an assignment.</p><a name="ch14note16"></a>
+        <p class="docText">可以对 <tt>const</tt> 和非 <tt>const</tt> 对象使用下标也是个好主意。应用于 <tt>const</tt> 对象时，返回值应为 <tt>const</tt> 引用，因此不能用作赋值的目标。</p>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="116" height="74" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/bestpractices.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Ordinarily, a class that defines subscript needs to define two versions: one that is a non<tt>const</tt> member and returns a reference and one that is a <tt>const</tt> member and returns a <tt>const</tt> reference.</p>
+                <p class="docText">类定义下标操作符时，一般需要定义两个版本：一个为非 <tt>const</tt> 成员并返回引用，另一个为 <tt>const</tt> 成员并返回 <tt>const</tt> 引用。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+        <a name="ch14lev2sec15"></a>
+
+        <h4 class="docSection2Title">Prototypical Subscript Operator</h4>
+        <h4 class="docSection2Title">原型下标操作符</h4>
+
+        <p class="docText">The following class defines the subscript operator. For simplicity, we assume the data <tt>Foo</tt> holds are stored in a <tt>vector&lt;int&gt;:</tt></p>
+        <p class="docText">下面的类定义了下标操作符。为简单起见，假定 <tt>Foo</tt> 所保存的数据存储在一个 <tt>vector&lt;int&gt;:</tt> 中：</p>
+        <pre>
+     class Foo {
+     public:
+         int &amp;operator[] (const size_t);
+         const int &amp;operator[] (const size_t) const;
+         // <span class="docEmphasis">other interface members</span>
+     private:
+         vector&lt;int&gt; data;
+         // <span class="docEmphasis">other member data and private utility functions</span>
+      };
+</pre><br>
+
+        <p class="docText">The subscript operators themselves would look something like:</p>
+        <p class="docText">下标操作符本身可能看起来像这样：</p>
+        <pre>
+     int&amp; Foo::operator[] (const size_t index)
+     {
+         return data[index];  // <span class="docEmphasis">no range checking on index</span>
+     }
+     const int&amp; Foo::operator[] (const size_t index) const
+     {
+         return data[index];  // <span class="docEmphasis">no range checking on index</span>
+     }
+</pre><br>
+        <a name="ch14sb08"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 14.5</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch14qa7q1"></a><b>Exercise 14.17:</b></td>
+
+                    <td>
+                      <p class="docText"><a name="idd1e106902"></a><a name="idd1e106906"></a><a name="idd1e106912"></a>Define a subscript operator that returns a name from the waiting list for the <tt>CheckoutRecord</tt> class from the exercises to <a class="docLink" href="ch14lev1sec2.html#ch14sb04" >Section 14.2.1</a> (p. <a class="docLink" href="ch14lev1sec2.html#ch14sb04" >515</a>).</p>
+		      <p class="docText"><a class="docLink" href="ch14lev1sec2.html#ch14sb04" >第 14.2.1 节</a>习题中定义了一个 <tt>CheckoutRecord</tt> 类，为该类定义一个下标操作符，从等待列表中返回一个名字。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch14qa7q2"></a><b>Exercise 14.18:</b></td>
+
+                    <td>
+                      <p class="docText">Discuss the pros and cons of implementing this operation using the subscript operator.</p>
+                      <p class="docText">讨论用下标操作符实现这个操作的优缺点。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch14qa7q3"></a><b>Exercise 14.19:</b></td>
+
+                    <td>
+                      <p class="docText">Suggest alternative ways to define this operation.</p>
+                      <p class="docText">提出另一种方法定义这个操作。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a href="21001535.html" ><img src="images/pixel.gif"  alt="" width="1" height="1" border="0"></a>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch14lev1sec4.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch14lev1sec6.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

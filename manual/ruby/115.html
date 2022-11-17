@@ -1,0 +1,774 @@
+<html><HEAD><TITLE>Programming Ruby: The Pragmatic Programmer's Guide</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=gb2312"><LINK media=screen href="115_files/pr_style[1].css"  type=text/css rel=StyleSheet></head>
+<BODY bgColor=white>
+<TABLE cellSpacing=0 cellPadding=3 width="100%" bgColor=#c09090 border=0>
+<TBODY>
+<TR>
+<TD colSpan=3>
+<TABLE cellPadding=20 width="100%" bgColor=#701a1a>
+<TBODY>
+<TR>
+<TD width=6>
+<H1 class=header>Programming Ruby</H1>
+<H3 class=subheader>实用程序员指南</H3></TD></TR></TBODY></TABLE></TD></TR>
+<TR>
+<TD align=left width="33%"><A class=subheader href="114.html" >上一章 &lt;</A> </TD>
+<TD vAlign=center align=middle width="33%"><A class=subheader href="95.html" >目录 ^</A> <BR></TD>
+<TD align=right width="33%"><A class=subheader href="116.html" >下一章 &gt;</A> <BR></TD></TR></TBODY></TABLE><!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<H1>Ruby语言</H1>
+<HR>
+<BR>
+<P></P>这一章让我们来对Ruby语言做一个从头到脚地审视。和前面的章节不同，在这里我们集中精力阐述事实，而不是揭示语言设计的细节问题。然后我们也尽量避免对内建的类和模块的介绍，这些内容在第275页开始有详细地介绍。 
+<P></P>如果这章的内容看上去很眼熟，那是因为它们本来就应该是我们熟悉的；我们在前面介绍性的章节中对它们都有描述。应该把这一章看成自包含的对核心Ruby语法描述的语言参考。 
+<H2><A name=S1>代码编排（Source Layout）</A></H2>
+<P></P>Ruby程序是用7字节ACSII码（7-bit ASCII）来表示的。<EM>[Ruby也有完整的语言扩展来支持Kanji编码，就是使用EUC, SJIS或UTF-8编码系统。如果一段代码使用了7字节ACSII码以外的编码格式，那么<CODE>KCODE</CODE>选项就应该被适当地设置，如137页所示。]</EM> 
+<P></P>Ruby是一种面向行的（line-oriented）程序设计语言。Ruby的表达式和声明语句都是在一行的最后结束，除非一个语句很明显是没有结束的---比如一行的最后一个字符是一个操作符或者逗号。一个分号可以用来分割一行中的多个语句。你也可以在一行最后加一个反斜杠来使这一行延续到下一行。注释以'#'开始，到物理行结束为止。在编译（执行）的时候，注释将被忽略。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>a&nbsp;=&nbsp;1
+</PRE>
+<P></P>b&nbsp;=&nbsp;2;&nbsp;c&nbsp;=&nbsp;3 
+<P></P>d&nbsp;=&nbsp;4&nbsp;+&nbsp;5&nbsp;+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#不需要'\' &nbsp;&nbsp;&nbsp;&nbsp;6&nbsp;+&nbsp;7 
+<P></P>e&nbsp;=&nbsp;8&nbsp;+&nbsp;9&nbsp;&nbsp;&nbsp;\ &nbsp;&nbsp;&nbsp;&nbsp;+&nbsp;10&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#需要'\' </TD></TR></TBODY></TABLE>
+<P></P>在以=begin开始的一行和以=end结束的一行之间的语句会被编译器忽略，不过它们可以作为内嵌文档来使用（请参见第511页开始的附录A）。 
+<P></P>Ruby只读一遍源程序，所以你可以向Ruby编译器的<CODE>stdin</CODE>发送程序代码。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>echo&nbsp;'print&nbsp;"Hello\n"'&nbsp;|&nbsp;ruby
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>在任何地方，只要编译器遇到一行仅包含“<CODE>__END__</CODE>”的代码，没有前行和后随的空格，它就把这一行当成程序的结束---后面的所有代码都不会被编译了。然而，后面的代码可以用一个全局<CODE>IO</CODE>对象<CODE>DATA</CODE>读入正在执行的当前程序，这在217页有描述。 
+<H3><A name=UA>BEGIN和END模块</A></H3>
+<P></P>每个Ruby源文件都可以声明一些代码模块用来在文件被载入前（<CODE>BEGIN</CODE>模块）或者在程序执行结束后（<CODE>END</CODE>模块）运行。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD><PRE>BEGIN {
+  <I>begin code</I>
+}
+</PRE>
+<P></P>END { <I>end code</I> } </TD></TR></TBODY></TABLE>
+<P></P>一个程序可以有多个<CODE>BEGIN</CODE>和<CODE>END</CODE>模块。<CODE>BEGIN</CODE>模块以它们出现的顺序执行，<CODE>END</CODE>模块以相反的顺序执行。 
+<H3><A name=UB>常规定界输入（General Delimited Input）</A></H3>
+<P></P>还有另外一种用来表示字符串常量，数组，正则表达式和shell命令的格式，就是用常规定界语法。所有这些常量都是以一个百分号开始，后面跟一个用来指定常量类型的字符。对这些字符的描述请参见200页的表18.1；常用的几个字符在这章的后面会有描述。 
+<P></P>
+<TABLE width=500 bgColor=#ffe0e0 border=2>
+<TBODY>
+<TR>
+<TD><B>常规定界输入</B> 
+<CENTER>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<TBODY>
+<TR bgColor=#ff9999>
+<TD vAlign=top><B>类型</B> </TD>
+<TD vAlign=top><B>涵义</B> </TD>
+<TD vAlign=top><B>参见</B> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>%q</CODE> </TD>
+<TD vAlign=top>单引号字符串</TD>
+<TD vAlign=top>202</TD></TR>
+<TR>
+<TD vAlign=top><CODE>%Q</CODE>, <CODE>%</CODE> </TD>
+<TD vAlign=top>双引号字符串</TD>
+<TD vAlign=top>202</TD></TR>
+<TR>
+<TD vAlign=top><CODE>%w</CODE> </TD>
+<TD vAlign=top>常量数组</TD>
+<TD vAlign=top>204</TD></TR>
+<TR>
+<TD vAlign=top><CODE>%r</CODE> </TD>
+<TD vAlign=top>正则表达式</TD>
+<TD vAlign=top>205</TD></TR>
+<TR>
+<TD vAlign=top><CODE>%x</CODE> </TD>
+<TD vAlign=top>Shell命令</TD>
+<TD vAlign=top>218</TD></TR>
+<TR>
+<TD bgColor=#ff9999 colSpan=9 height=2><IMG height=1 src="120_files/dot[1].gif"  width=1></TD></TR></TBODY></TABLE>
+<P></P></CENTER></TD></TR></TBODY></TABLE>
+<P></P>在类型字符后面是一个分隔符，它可以是任何字符。如果分隔符是“<CODE>(</CODE>”，“<CODE>[</CODE>”，“<CODE>{</CODE>”，“<CODE>&lt;</CODE>”中的一个，那么常量由分隔符到相应的后随结束符（译者注：比如左括号'('对右括号')'）之间的字符组成，注意嵌套的分隔符。对于其他的分隔符，常量由两个分隔符之间的字符组成。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>%q/this&nbsp;is&nbsp;a&nbsp;string/
+%q-string-
+%q(a&nbsp;(nested)&nbsp;string)
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>定界字符串可以跨越多行文本。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>%q{def&nbsp;fred(a)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a.each&nbsp;{&nbsp;|i|&nbsp;puts&nbsp;i&nbsp;}
+&nbsp;&nbsp;&nbsp;end}
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>
+<H2><A name=S2>基本数据类型</A></H2>
+<P></P>Ruby的基本数据类型有数字，字符串，数组，哈希表（hashes），范围（ranges），符号（symbols）和正则表达式。 
+<P></P>
+<H3><A name=UC>整数和浮点数类型</A></H3>
+<P></P>Ruby的整数是类<CODE>Fixnum</CODE>或者<CODE>Bignum</CODE>的对象。<CODE>Fixnum</CODE>可以容纳物理机器一个字长少一位大小的整数。当一个<CODE>Fixnum</CODE>超过它的范围时，它会自动转换成<CODE>Bignum</CODE>类型，而<CODE>Bignum</CODE>类型的范围只能被物理内存所限制。如果一个<CODE>Bignum</CODE>上的操作使得它的最终值适合一个<CODE>Fixnum</CODE>保存，那么结果就会以一个<CODE>Fixnum</CODE>对象返回。 
+<P></P>整数前面可以带一个可选的符号标记，一个可选的进制指示符（<CODE>0</CODE>代表八进制，<CODE>0x</CODE>代表十六进制，<CODE>0b</CODE>代表二进制），然后跟一串相应进制的数字串。在数字串中的下划线将被忽略。 
+<P></P>你可以在一个ASCII字符前面加一个问号来取得它相应的整数值。Ctrl和Meta（译者注：Meta就是Alt键）的键组合可以由?\C-<EM>x</EM>, ?\M-<EM>x</EM>, 和?\M-\C-<EM>x</EM>来产生。一个字符<CODE>ch</CODE>的Ctrl版本是（就是Ctrl + ch组合）<CODE>ch&amp;0x9f</CODE>，然后它的Meta版本是<CODE>ch&nbsp;|&nbsp;0x80</CODE>。你可以用字符序列<CODE>?\\</CODE>来取得反斜杠的整数值。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>123456&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Fixnum
+123_456&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Fixnum&nbsp;(下划线被忽略)
+-543&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Negative&nbsp;Fixnum
+123_456_789_123_345_789&nbsp;&nbsp;&nbsp;#&nbsp;Bignum
+0xaabb&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;十六进制
+0377&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;八进制
+-0b1010&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;二进制&nbsp;(负的)
+0b001_001&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;二进制
+?a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;character&nbsp;code
+?A&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;upper&nbsp;case
+?\C-a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;control&nbsp;a&nbsp;=&nbsp;A&nbsp;-&nbsp;0x40
+?\C-A&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;case&nbsp;ignored&nbsp;for&nbsp;control&nbsp;chars
+?\M-a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;meta&nbsp;sets&nbsp;bit&nbsp;7
+?\M-\C-a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;meta&nbsp;and&nbsp;control&nbsp;a
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>一个带有小数点的数字串（也可以带指数）被认为是<CODE>Float</CODE>对象，大小和物理机器上<CODE>double</CODE>类型一样。你必须在小数点后面跟一个数字，因为像<CODE>1.e3</CODE>意味着去调用类<CODE>Fixnum</CODE>的方法<CODE>e3</CODE>。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>12.34</CODE> </TD>
+<TD vAlign=top td>
+<TD vAlign=top><CODE>12.34</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>-.1234e2</CODE> </TD>
+<TD vAlign=top td>
+<TD vAlign=top><CODE>-12.34</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>1234e-2</CODE> </TD>
+<TD vAlign=top td>
+<TD vAlign=top><CODE>12.34</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>
+<H3><A name=UD>字符串</A></H3>
+<P></P>Ruby提供了好几种方法来产生字符串常量。每中方法都产生<CODE>String</CODE>对象。每种方法在字符串是如何定界和要产生多少替换上是不一样的。 
+<P></P>单引号字符串（<CODE>'</CODE><EM>stuff</EM><CODE>'</CODE>和%q/<EM>stuff</EM>/）进行最少限度的替换。两种格式的表示方法都把“\\”转换成一个反斜杠，然后把“\'”转换成一个单引号。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>'hello'</CODE> </TD>
+<TD vAlign=top td>
+<TD vAlign=top><CODE>hello</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>'a&nbsp;backslash&nbsp;\'\\\''</CODE> </TD>
+<TD vAlign=top td>
+<TD vAlign=top><CODE>a&nbsp;backslash&nbsp;'\'</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>%q/simple&nbsp;string/</CODE> </TD>
+<TD vAlign=top td>
+<TD vAlign=top><CODE>simple&nbsp;string</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>%q(nesting&nbsp;(really)&nbsp;works)</CODE> </TD>
+<TD vAlign=top td>
+<TD vAlign=top><CODE>nesting&nbsp;(really)&nbsp;works</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>%q&nbsp;no_blanks_here&nbsp;;</CODE> </TD>
+<TD vAlign=top td>
+<TD vAlign=top><CODE>no_blanks_here</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>双引号字符串（"<EM>stuff</EM>"，%Q/<EM>stuff</EM>/，和%/<EM>stuff</EM>/）还会进行额外的替换，详见203页表18.2。 
+<P></P>
+<TABLE width=500 bgColor=#ffe0e0 border=2>
+<TBODY>
+<TR>
+<TD><B>双引号字符串中的替换</B> 
+<CENTER>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<P></P>
+<TBODY>
+<TR>
+<TD bgColor=#ff9999 colSpan=9 height=3><IMG height=1 src="120_files/dot[1].gif"  width=1></TD></TR>
+<TR>
+<TD vAlign=top>\a</TD>
+<TD vAlign=top>Bell/alert (0x07)</TD>
+<TD vAlign=top>\<EM>nnn</EM> </TD>
+<TD vAlign=top>Octal <EM>nnn</EM> </TD></TR>
+<TR>
+<TD vAlign=top>\b</TD>
+<TD vAlign=top>Backspace (0x08)</TD>
+<TD vAlign=top>\x<EM>nn</EM> </TD>
+<TD vAlign=top>Hex <EM>nn</EM> </TD></TR>
+<TR>
+<TD vAlign=top>\e</TD>
+<TD vAlign=top>Escape (0x1b)</TD>
+<TD vAlign=top>\c<EM>x</EM> </TD>
+<TD vAlign=top>Control-<EM>x</EM> </TD></TR>
+<TR>
+<TD vAlign=top>\f</TD>
+<TD vAlign=top>Formfeed (0x0c)</TD>
+<TD vAlign=top>\C-<EM>x</EM> </TD>
+<TD vAlign=top>Control-<EM>x</EM> </TD></TR>
+<TR>
+<TD vAlign=top>\n</TD>
+<TD vAlign=top>Newline (0x0a)</TD>
+<TD vAlign=top>\M-<EM>x</EM> </TD>
+<TD vAlign=top>Meta-<EM>x</EM> </TD></TR>
+<TR>
+<TD vAlign=top>\r</TD>
+<TD vAlign=top>Return (0x0d)</TD>
+<TD vAlign=top>\M-\C-<EM>x</EM> </TD>
+<TD vAlign=top>Meta-control-<EM>x</EM> </TD></TR>
+<TR>
+<TD vAlign=top>\s</TD>
+<TD vAlign=top>Space (0x20)</TD>
+<TD vAlign=top>\<EM>x</EM> </TD>
+<TD vAlign=top><EM>x</EM> </TD></TR>
+<TR>
+<TD vAlign=top>\t</TD>
+<TD vAlign=top>Tab (0x09)</TD>
+<TD vAlign=top>#{expr}</TD>
+<TD vAlign=top>Value of <EM>expr</EM> </TD></TR>
+<TR>
+<TD vAlign=top>\v</TD>
+<TD vAlign=top>Vertical tab (0x0b)</TD></TR>
+<TR>
+<TD bgColor=#ff9999 colSpan=9 height=2><IMG height=1 src="120_files/dot[1].gif"  width=1></TD></TR></TBODY></TABLE>
+<P></P></CENTER></TD></TR></TBODY></TABLE>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>a&nbsp;&nbsp;=&nbsp;123</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>"\123mile"</CODE> </TD>
+<TD vAlign=top td>
+<TD vAlign=top><CODE>Smile</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>"Say&nbsp;\"Hello\""</CODE> </TD>
+<TD vAlign=top td>
+<TD vAlign=top><CODE>Say&nbsp;"Hello"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>%Q!"I&nbsp;said&nbsp;'nuts',"&nbsp;I&nbsp;said!</CODE> </TD>
+<TD vAlign=top td>
+<TD vAlign=top><CODE>"I&nbsp;said&nbsp;'nuts',"&nbsp;I&nbsp;said</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>%Q{Try&nbsp;#{a&nbsp;+&nbsp;1},&nbsp;not&nbsp;#{a&nbsp;-&nbsp;1}}</CODE> </TD>
+<TD vAlign=top td>
+<TD vAlign=top><CODE>Try&nbsp;124,&nbsp;not&nbsp;122</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>%&lt;Try&nbsp;#{a&nbsp;+&nbsp;1},&nbsp;not&nbsp;#{a&nbsp;-&nbsp;1}&gt;</CODE> </TD>
+<TD vAlign=top td>
+<TD vAlign=top><CODE>Try&nbsp;124,&nbsp;not&nbsp;122</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>"Try&nbsp;#{a&nbsp;+&nbsp;1},&nbsp;not&nbsp;#{a&nbsp;-&nbsp;1}"</CODE> </TD>
+<TD vAlign=top td>
+<TD vAlign=top><CODE>Try&nbsp;124,&nbsp;not&nbsp;122</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>字符串可以跨越多个文本行，在这种情况下它们可以包含换行符。我们也可以使用<EM>here documents</EM>来表达很长的字符串常量。每当Ruby遇到字符序列&lt;&lt;<EM>标识符</EM> 或者 &lt;&lt;<EM>括号字符串</EM>的时候，它就把后随的所有输入行变成一个字符串常量。它一直接收字符到字符串中，直到它遇到一行以前面的标识符或者<EM>括号字符串</EM>开始的程序行。你可以在&lt;&lt; 后面跟一个负号，使得结束符可以向右边缩进。如果一个括号字符串被用来作为结束符，那么引号规则就会应用到here document中；另外，双引号规则也起作用。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>a&nbsp;=&nbsp;123
+print&nbsp;&lt;&lt;HERE
+Double&nbsp;quoted&nbsp;\
+here&nbsp;document.
+Sum&nbsp;=&nbsp;#{a&nbsp;+&nbsp;1}
+HERE
+</PRE>
+<P></P>print&nbsp;&lt;&lt;-'THERE' &nbsp;&nbsp;&nbsp;&nbsp;This&nbsp;is&nbsp;single&nbsp;quoted. &nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;above&nbsp;used&nbsp;#{a&nbsp;+&nbsp;1} &nbsp;&nbsp;&nbsp;&nbsp;THERE </TD></TR></TBODY></TABLE><EM>产生结果:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>Double&nbsp;quoted&nbsp;here&nbsp;document.
+Sum&nbsp;=&nbsp;124
+&nbsp;&nbsp;&nbsp;&nbsp;This&nbsp;is&nbsp;single&nbsp;quoted.
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;above&nbsp;used&nbsp;#{a&nbsp;+&nbsp;1}
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>相邻的单引号和双引号字符串会连接在一起成为一个 <CODE>String</CODE> 对象。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>'Con'&nbsp;"cat"&nbsp;'en'&nbsp;"ate"</CODE> </TD>
+<TD vAlign=top td>
+<TD vAlign=top><CODE>"Concatenate"</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>字符串保存在8比特字节长的序列中<EM>[为了在日本使用，<CODE>jcode</CODE>库支持一系列对EUC，SJIS，或者UTF-8编码字符串的操作。不过底层的字符串还是以字节形式被访问。]</EM>，然后每个字节都保存一个256以内的8比特值，包括空值null和换行。203页表18.2所示的替换规则允许不可打印字符可以便利并且可移植地嵌入到普通字符串中。 
+<P></P>每一次一个字符串被用在一个赋值或者用做一个参数的时候，一个新的<CODE>String</CODE>对象会被创建。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>for&nbsp;i&nbsp;in&nbsp;1..3
+&nbsp;&nbsp;print&nbsp;'hello'.id,&nbsp;"&nbsp;"
+end
+</PRE></TD></TR></TBODY></TABLE><EM>产生结果:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>537767360&nbsp;537767070&nbsp;537767040
+</PRE></TD></TR></TBODY></TABLE>
+<P></P><CODE>String</CODE>类的详细资料请参见第363页开始的文档。 
+<H3><A name=UE>范围（Ranges）</A></H3>
+<P></P>在一个条件表达式外面，表达式<EM>expr</EM><CODE>..</CODE><EM>expr</EM>和<EM>expr</EM><CODE>...</CODE><EM>expr</EM>会创建范围对象（<CODE>Range</CODE>）。中间两点的格式不包括两边的边界值；中间有三点的格式还包括最后那个边界值。要看<CODE>Range</CODE>类的详细信息，请参见第359页。第222页有在条件语句中使用范围的其他方法。 
+<H3><A name=UF>数组</A></H3>
+<P></P>类<CODE>Array</CODE>的对象由一系列在方括号中由逗号分隔的对象引用组成。最后一个逗号会被忽略。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>arr&nbsp;=&nbsp;[&nbsp;fred,&nbsp;10,&nbsp;3.14,&nbsp;"This&nbsp;is&nbsp;a&nbsp;string",&nbsp;barney("pebbles"),&nbsp;]
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>字符串数组可以由一个简捷符号组成，<CODE>%w</CODE>，它可以把由逗号分隔的一个连续字符串中的子字符提取出来组成一个字符串数组。空格可以由反斜杠转义。这是一种定界输入的格式，请参见200--201页。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>arr&nbsp;=&nbsp;%w(&nbsp;fred&nbsp;wilma&nbsp;barney&nbsp;betty&nbsp;great\&nbsp;gazoo&nbsp;)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>arr</CODE> </TD>
+<TD vAlign=top td>
+<TD vAlign=top><CODE>["fred",&nbsp;"wilma",&nbsp;"barney",&nbsp;"betty",&nbsp;"great&nbsp;gazoo"]</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<H3><A name=UG>哈希值（Hashes）</A></H3>
+<P></P>一个Ruby的<CODE>Hash</CODE>对象是由一系列在花括号里面的键/值匹配对组成的。由逗号分隔键/值对，键和值之间由<CODE>=&gt;</CODE>连接。最后一个逗号会被忽略。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>colors&nbsp;=&nbsp;{&nbsp;"red"&nbsp;&nbsp;&nbsp;=&gt;&nbsp;0xf00,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"green"&nbsp;=&gt;&nbsp;0x0f0,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"blue"&nbsp;&nbsp;=&gt;&nbsp;0x00f
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>在一个特定的哈希表中的键和值的类型不一定要一致。 
+<H3><A name=UH>哈希键值的要求</A></H3>
+<P></P>作为一个哈希键值的唯一要求是它必须响应消息<CODE>hash</CODE>，然后返回一个哈希值，这个哈希值不能改变。这意味着一些类（比如<CODE>Array</CODE> 和 <CODE>Hash</CODE>，像这种类型的）不能很好的适合哈希键值的要求，因为它们的值会随着它们的内容而变化。 
+<P></P>如果你保持了一个对象的外部引用，然后这个对象又被用来做为一个哈希键。那么你通过这个引用来改变这个对象然后改变哈希值，这个哈希键对应的哈希值将不会起作用。 
+<P></P>因为字符串经常被用来当作键值，然后字符串值又会经常改变，Ruby对字符串键值做了特殊处理。当你把一个<CODE>String</CODE>对象当做哈希键时，哈希表会复制一个字符串，然后把这个字符串当作键值。后随的所有对原来字符串的改变不会影响哈希表。 
+<P></P>如果你写了自己的类然后把它们的实例当作哈希键值，你必须确保哈希表的键值在创建以后不再改变或者在键值改变的时候记得调用<A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_hash.html#Hash.rehash" ><CODE>Hash#rehash</CODE></A>方法来重新索引哈希表。 
+<H3><A name=UI>符号对象（Symbols）</A></H3>
+<P></P>一个Ruby的符号对象是一个对象名的内部表示。你可以在对象名前面加一个冒号来产生相应的符号对象。一个特定的对象名总是产生相同的符号对象，不论对象名在程序中是如何被使用的。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>:Object
+:myVariable
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>其他编程语言称这个替换过程为“interning”，然后把符号对象叫做“atoms”。 
+<H3><A name=UJ>正则表达式</A></H3>
+<P></P>正则表达式是类型<CODE>Regexp</CODE>的对象。它们可以通过显式地调用<A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_regexp.html#Regexp.new" ><CODE>Regexp.new</CODE>来创建，或者使用文字常量方式，/<EM>pattern</EM>/和<CODE>%r{</CODE> <EM>pattern</EM><CODE>}</CODE>。<CODE>%r</CODE>创建方法是一种普通定界输入（详见200--201页）。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD><PRE>/pattern/
+/pattern/<I>选项</I>
+%r{pattern}
+%r{pattern}<I>选项</I>
+Regexp.new( 'pattern' <I>[</I>, <I>选项</I>
+            <I>]</I> )
+</PRE></TD></TR></TBODY></TABLE>
+<H3><A name=UK>正则式的选项</A></H3>
+<P></P>一个正则表达式可以包含一个或多个选项来修改默认的匹配规则。如果你使用文字常量来创建正则式，那么一个或多哥选项就紧跟在结束符后面。如果你使用<CODE>Regexp.new</CODE>方法，那么选项就是构造函数的第二个参数。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>i</CODE> </TD>
+<TD vAlign=top><EM>忽略大小写</EM>. 这个匹配将会忽略模式和字符串中的字符的大小写。如果全局变量<CODE>$=</CODE>被设置，那么匹配也会大小写不敏感。</TD></TR>
+<TR>
+<TD vAlign=top><CODE>o</CODE> </TD>
+<TD vAlign=top><EM>替换一次</EM>。任何在正则式中的<CODE>#{...}</CODE>替换都仅进行一次，就是第一次遇到它的时候。其他情况中，替换会在每次一个<CODE>Regexp</CODE>对象产生的时候进行。</TD></TR>
+<TR>
+<TD vAlign=top><CODE>m</CODE> </TD>
+<TD vAlign=top><EM>多行模式</EM>。通常的，'.'匹配除了换行以外的任何字符。有了<CODE>/m</CODE> 选项以后，'.'匹配任何字符了。</TD></TR>
+<TR>
+<TD vAlign=top><CODE>x</CODE> </TD>
+<TD vAlign=top><EM>扩展模式</EM>。复杂的正则表达式会很难阅读。'x'选项允许我们可以在模式中加入空格，换行和注释来使它更容易被阅读。</TD></TR></TBODY></TABLE>
+<P></P>
+<H3><A name=UL>正则式的模式</A></H3>
+<P></P>
+<DL>
+<DT><B><EM>规则字符</EM> </B>
+<DD>除了.，|， (， )， [， \， ^， {， +， $， *，和?，任何字符都匹配它自己。如果要匹配上面的字符，那么应该在它们前面加一个反斜杠。 
+<P></P>
+<DT><B><CODE>^</CODE> </B>
+<DD>匹配一行的开始 
+<P></P>
+<DT><B><CODE>$</CODE> </B>
+<DD>匹配一行的末尾 
+<P></P>
+<DT><B><CODE>\A</CODE> </B>
+<DD>匹配字符串的开始 
+<P></P>
+<DT><B><CODE>\z</CODE> </B>
+<DD>匹配字符串的末尾 
+<P></P>
+<DT><B><CODE>\Z</CODE> </B>
+<DD>匹配字符串的末尾，如果字符串以"\n"结束，那么它从"\n"前面开始匹配。 
+<P></P>
+<DT><B><CODE>\b</CODE>, <CODE>\B</CODE> </B>
+<DD>相应匹配单词边界和非单词的边界 
+<P></P>
+<DT><B><CODE>[</CODE> <EM>字符</EM> <CODE>]</CODE> </B>
+<DD>一个字符串类型匹配任何出现在方括号里面的单个字符。 字符<CODE>|, (, ), [, ^, $, *,</CODE>和<CODE>?</CODE>，在其他地方有特殊含义，但是在方括号里面就失去了它们的特殊含义。序列 <CODE>\</CODE> <EM>nnn</EM>, <CODE>\x</CODE> <EM>nn</EM>, <CODE>\c</CODE> <EM>x</EM>, <CODE>\C-</CODE> <EM>x</EM>, <CODE>\M-</CODE> <EM>x</EM>, and <CODE>\M-\C-</CODE> <EM>x</EM>有如203页表18.2所示的特殊含义。序列<CODE>\d</CODE>, <CODE>\D</CODE>, <CODE>\s</CODE>, <CODE>\S</CODE>, <CODE>\w</CODE>，和<CODE>\W</CODE>是一组字符串的缩写，如59页表5.1所示。序列c<SUB>1</SUB>-c<SUB>2</SUB>表示在c<SUB>1</SUB>和c<SUB>2</SUB>之间的所有字符（包括c<SUB>1</SUB>，c<UB>2</SUB>）。字符<CODE>]</CODE>或<CODE>-</CODE>必须仅跟在左括号后面。一个（^）紧跟在左括号后使匹配反义---模式匹配任何不在方括号中出现的字符。 
+<P></P>
+<DT><B><CODE>\d</CODE>, <CODE>\s</CODE>, <CODE>\w</CODE> </B>
+<DD>分别匹配数字，空格和单词字符（word character）。\D, \S, 和\W匹配不是数字，空格和单词字符的字符。这些缩写在59页表5.1有详细描述。 
+<P></P>
+<DT><B><CODE>.</CODE> (句点)</B> 
+<DD>出现在方括号外面，它代表除了换行以外的任何字符（如果<CODE>/m</CODE>选项被设置了，那么它也匹配换行符）。 
+<P></P>
+<DT><B><EM>re</EM> <CODE>*</CODE> </B>
+<DD>
+<P></P>匹配零次或者多次<EM>re</EM>的出现。 
+<P></P>
+<DT><B><EM>re</EM> <CODE>+</CODE> </B>
+<DD>匹配一次或者多次<EM>re</EM>的出现。 
+<P></P>
+<DT><B><EM>re</EM> <CODE>{m,n}</CODE> </B>
+<DD>匹配最少"m"次然后最多"n"次<EM>re</EM>的出现。 
+<P></P>
+<DT><B><EM>re</EM> <CODE>?</CODE> </B>
+<DD>匹配零次或一次<EM>re</EM>的出现。 <CODE>*</CODE>, <CODE>+</CODE>, 和<CODE>{m,n}</CODE>都是最大匹配的，加上一个问号使得它们进行最小匹配。 
+<P></P>
+<DT><B><EM>re1</EM> <CODE>|</CODE> <EM>re2</EM> </B>
+<DD>匹配<EM>re1</EM>或者<EM>re2</EM>，<CODE>|</CODE>的优先级很低。 
+<P></P>
+<DT><B><CODE>(...)</CODE> </B>
+<DD>圆括号用来集合正则表达式。比如，模式 <CODE>/abc+/</CODE>匹配一个含有一个'a', 一个'b'然后一个或多个'c'的字符串。<CODE>/(abc)+/</CODE>就匹配一次或多次"abc"的出现。圆括号还用来收集模式匹配的结果。Ruby为每一个左圆括号保存括号中的部分匹配结果，直到相应的右括号为止。在同一个匹配中，<CODE>\1</CODE>代表第一组匹配的结果，<CODE>\2</CODE>代表第二组结果，依次类推。在匹配外面，特殊变量<CODE>$1</CODE>, <CODE>$2</CODE>等起到相同的作用。 </DD></DL>
+<H3><A name=UM>替换作用</A></H3>
+<P></P>
+<DL>
+<DT><B><CODE>#{...}</CODE> </B>
+<DD>表示一个字符串中的表达式的替换。默认情况，替换会在每次匹配成功时发生。当<CODE>/o</CODE>选项被设置时，它仅仅匹配一次。 
+<P></P>
+<DT><B><CODE>\0, \1, \2, ... \9, \&amp;, \`, \', \+</CODE> </B>
+<DD>替换第<EM>n</EM>组匹配，或者整个，前面或后面，或者最高匹配的那一组。 </DD></DL>
+<H3><A name=UN>语法扩展</A></H3>
+<P></P>和Perl和Python类试，Ruby的正则表达式提供了一些对传统Unix正则表达式的扩展。这些扩展都写在<CODE>(?/code&gt;&nbsp;and&nbsp;<CODE>)</CODE>里面。这些圆括号括着的扩展是组，但是它们不会产生后引用（backreferences）：它们不会设置<CODE>\1</CODE>和<CODE>$1</CODE>等变量的值。 
+<P></P>
+<DL>
+<DT><B><CODE>(?# <EM>注释</EM>)</CODE> </B>
+<DD>在模式串中插入注释。注释在模式匹配的时候被忽略。 
+<P></P>
+<DT><B><CODE>(?:<EM>re</EM>)</CODE> </B>
+<DD>把<EM>re</EM>加入组，然而不产生后引用。这在当你希望创建一个组但是又不想让它设置<CODE>$1</CODE>等值的时候特别有用。在下面的例子中，两个模式都保存了一个包括月份，日子和年份的数据，用冒号或空格分隔。第一种格式的在<CODE>$2</CODE>和<CODE>$4</CODE>中保存了数据，但是第二种格式没有保存内部数据。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>date&nbsp;=&nbsp;"12/25/01"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>date&nbsp;=~&nbsp;%r{(\d+)(/|:)(\d+)(/|:)(\d+)}</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>[$1,$2,$3,$4,$5]</CODE> </TD>
+<TD vAlign=top td>
+<TD vAlign=top><CODE>["12",&nbsp;"/",&nbsp;"25",&nbsp;"/",&nbsp;"01"]</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>date&nbsp;=~&nbsp;%r{(\d+)(?:/|:)(\d+)(?:/|:)(\d+)}</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>[$1,$2,$3]</CODE> </TD>
+<TD vAlign=top td>
+<TD vAlign=top><CODE>["12",&nbsp;"25",&nbsp;"01"]</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>
+<DT><B><CODE>(?=<EM>re</EM>)</CODE> </B>
+<DD>在此处匹配<EM>re</EM>，但是不要销毁它（也可以惬意地叫做零距离回顾（``zero-width positive lookahead''））。它可以让我们方便地引用前面的内容而不会影响<CODE>$&amp;</CODE>。在这个例子中，<CODE>scan</CODE>方法匹配后面跟一个句点的单词，但是句点不包括在匹配结果里面。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>str&nbsp;=&nbsp;"red,&nbsp;white,&nbsp;and&nbsp;blue"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>str.scan(/[a-z]+(?=,)/)</CODE> </TD>
+<TD vAlign=top>?/td&gt; 
+<TD vAlign=top><CODE>["red",&nbsp;"white"]</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>
+<DT><B><CODE>(?!<EM>re</EM>)</CODE> </B>
+<DD>看看在此处是否不匹配<EM>re</EM>。不要销毁这个匹配（否定的零距离回顾）。比如，<CODE>/hot(?!dog)(\w+)/</CODE>匹配任何包含“hot”然后后面不跟“dog”的单词，返回<CODE>$1</CODE>中的最后一个单词。 
+<P></P>
+<DT><B><CODE>(?&gt;<EM>re</EM>)</CODE> </B>
+<DD>把一个独立的正则式嵌入到第一个正则式中。这个表达式在当前匹配点被确定。如果它销毁了一些字符，这些字符就不会被上级的正则式访问到。因此这个结构是有后回溯机制的（backtracking），这可以是一个执行效果的增强。比如，模式<CODE>/a.*b.*a/</CODE>的基本意思是匹配一个含有一个'a'，后面跟数个'b'，然后没有后随'a'的字符串。然而，这可以用嵌套的正则式<CODE>/a(?&gt;.*b).*a/</CODE>来避免。在这种格式中，内嵌的正则式消耗掉了所有字符串，直到有字符'b'的出现。当一个对后随'a'的查找失败以后，就没有回溯的必要了，这个模式匹配迅速结束。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>require&nbsp;"benchmark"
+include&nbsp;Benchmark
+str&nbsp;=&nbsp;"a"&nbsp;+&nbsp;("b"&nbsp;*&nbsp;5000)
+bm(8)&nbsp;do&nbsp;|test|
+&nbsp;&nbsp;test.report("Normal:")&nbsp;{&nbsp;str&nbsp;=~&nbsp;/a.*b.*a/&nbsp;}
+&nbsp;&nbsp;test.report("Nested:")&nbsp;{&nbsp;str&nbsp;=~&nbsp;/a(?&gt;.*b).*a/&nbsp;}
+end
+</PRE></TD></TR></TBODY></TABLE><EM>产生结果:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;user&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;system&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;total&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;real
+Normal:&nbsp;&nbsp;&nbsp;0.420000&nbsp;&nbsp;&nbsp;0.000000&nbsp;&nbsp;&nbsp;0.420000&nbsp;(&nbsp;&nbsp;0.414843)
+Nested:&nbsp;&nbsp;&nbsp;0.000000&nbsp;&nbsp;&nbsp;0.000000&nbsp;&nbsp;&nbsp;0.000000&nbsp;(&nbsp;&nbsp;0.001205)
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>
+<DT><B><CODE>(?imx)</CODE> </B>
+<DD>打开"i"，"m"或"x"选项。如果用在一个组里面，那么效果就限制在组里面。 
+<P></P>
+<DT><B><CODE>(?-imx)</CODE> </B>
+<DD>关闭"i"，"m"或"x"选项。 
+<P></P>
+<DT><B><CODE>(?imx:<EM>re</EM>)</CODE> </B>
+<DD>打开<EM>re</EM>的"i"，"m"或"x"选项。 
+<P></P>
+<DT><B><CODE>(?-imx:<EM>re</EM>)</CODE> </B>
+<DD>关闭<EM>re</EM>的"i"，"m"或"x"选项。 
+<P></P></DD></DL>
+<H2><A name=S3>标识名</A></H2>
+<P></P>Ruby的标识名用来指向常量，变量，方法，类和模块。标识名的首字符用来帮助我们确定标识所指向内容的类型。一些标识名，就是210页表18.3所示的都是保留字，不能用来当作变量，方法，类或模块的名字。 
+<P></P>
+<TABLE width=500 bgColor=#ffe0e0 border=2>
+<TBODY>
+<TR>
+<TD><B>保留字</B> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<P></P>
+<TBODY>
+<TR>
+<TD bgColor=#ff9999 colSpan=9 height=3><IMG height=1 src="120_files/dot[1].gif"  width=1></TD></TR>
+<TR>
+<TD vAlign=top>__FILE__</TD>
+<TD vAlign=top>and</TD>
+<TD vAlign=top>def</TD>
+<TD vAlign=top>end</TD>
+<TD vAlign=top>in</TD>
+<TD vAlign=top>or</TD>
+<TD vAlign=top>self</TD>
+<TD vAlign=top>unless</TD></TR>
+<TR>
+<TD vAlign=top>__LINE__</TD>
+<TD vAlign=top>begin</TD>
+<TD vAlign=top>defined?</TD>
+<TD vAlign=top>ensure</TD>
+<TD vAlign=top>module</TD>
+<TD vAlign=top>redo</TD>
+<TD vAlign=top>super</TD>
+<TD vAlign=top>until</TD></TR>
+<TR>
+<TD vAlign=top>BEGIN</TD>
+<TD vAlign=top>break</TD>
+<TD vAlign=top>do</TD>
+<TD vAlign=top>false</TD>
+<TD vAlign=top>next</TD>
+<TD vAlign=top>rescue</TD>
+<TD vAlign=top>then</TD>
+<TD vAlign=top>when</TD></TR>
+<TR>
+<TD vAlign=top>END</TD>
+<TD vAlign=top>case</TD>
+<TD vAlign=top>else</TD>
+<TD vAlign=top>for</TD>
+<TD vAlign=top>nil</TD>
+<TD vAlign=top>retry</TD>
+<TD vAlign=top>true</TD>
+<TD vAlign=top>while</TD></TR>
+<TR>
+<TD vAlign=top>alias</TD>
+<TD vAlign=top>class</TD>
+<TD vAlign=top>elsif</TD>
+<TD vAlign=top>if</TD>
+<TD vAlign=top>not</TD>
+<TD vAlign=top>return</TD>
+<TD vAlign=top>undef</TD>
+<TD vAlign=top>yield</TD></TR>
+<TR>
+<TD bgColor=#ff9999 colSpan=9 height=2><IMG height=1 src="120_files/dot[1].gif"  width=1></TD></TR></TBODY></TABLE>
+<P></P></TD></TR></TBODY></TABLE>
+<P></P>在下面的描述中，<EM>小写字母</EM>表示'a'到'z'的字母和'_'，下划线。<EM>大写字母</EM>表示'A'到'Z'的字母，还有<EM>数字</EM>表示'0'到'9'的数字字符。<EM>标识符字符</EM>表示大小写字母和数字的组合。 
+<P></P>一个局部变量由一个小写字母后面跟标识符组成。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>fred&nbsp;&nbsp;anObject&nbsp;&nbsp;_x&nbsp;&nbsp;three_two_one
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>类的实例变量由一个‘<CODE>@</CODE>’开始，后面跟一个大写或小写字母，然后后面还可以有一些标识符字符。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>@name&nbsp;&nbsp;@_&nbsp;&nbsp;@Size
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>一个类变量由两个‘<CODE>@@</CODE>’开始，后面跟一个大写或小写字母，然后后面还可以有一些标识符字符。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>@@name&nbsp;&nbsp;@@_&nbsp;&nbsp;@@Size
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>一个常量名由一个大写字母开始，后面跟标识符字符。类名和模块名是常量，所以也遵循常量的命名规则。常量名一般是由大写字母组成，然后可以带下划线。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>module&nbsp;Math
+&nbsp;&nbsp;PI&nbsp;=&nbsp;3.1415926
+end
+class&nbsp;BigBlob
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>全局变量，以及一些特殊的系统变量，由一个美圆符号'<CODE>$</CODE>'开始，然后后面跟标识符字符。另外，还有一些有两个字符组成的变量名，它们第二个字符是标点符号。这些预设的变量名在213页有描述。最后，全局变量名也可以用"<CODE>$-</CODE>"开头，后面跟任意一个字符。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>$params&nbsp;&nbsp;$PROGRAM&nbsp;&nbsp;$!&nbsp;&nbsp;$_&nbsp;&nbsp;$-a&nbsp;&nbsp;$-.
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>关于方法的命名规则，在从第225页的开始的章节有描述。 
+<H3><A name=UO>变量/方法的疑惑</A></H3>
+<P></P>每当Ruby在一个表达式中遇到一个比如像'a'这样的字符，他必须确定这个'a'到底是一个局部变量的引用还是一个无参数的函数方法调用。为了确定这个，ruby用了一种启发式（heuristic）的方法。当Ruby在读取源代码的时候，它记下了那些被赋值的标识符。它假定这些标识符是变量名。然后如果它在随后遇到一个标识符可能是变量，也可能是方法名的时候，它就查看这个标识服是否在以前被赋过值。如果被赋过值，它就把标识符当成变量名；否则它就把标识符当成一个方法调用。作为一个比较诡异的例子，请参见以下的代码片段，由Clemens Hintze递交。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>def&nbsp;a
+&nbsp;&nbsp;print&nbsp;"Function&nbsp;'a'&nbsp;called\n"
+&nbsp;&nbsp;99
+end
+</PRE>
+<P></P>for&nbsp;i&nbsp;in&nbsp;1..2 &nbsp;&nbsp;if&nbsp;i&nbsp;==&nbsp;2 &nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;"a=",&nbsp;a,&nbsp;"\n" &nbsp;&nbsp;else &nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;=&nbsp;1 &nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;"a=",&nbsp;a,&nbsp;"\n" &nbsp;&nbsp;end end </TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>a=1
+Function&nbsp;'a'&nbsp;called
+a=99
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>在语法解析的时候，Ruby遇到第一个'a'，因为此时'a'没有被赋值，就认为它是一个方法调用。然后到第二个打印语句的时候，Ruby已经遇到了一个赋值，所以此时它把'a'当成一个变量。 
+<P></P>注意赋值语句不一定要被执行---Ruby只要见到它就可以了。这个程序不会出现错误。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>a&nbsp;=&nbsp;1&nbsp;if&nbsp;false;&nbsp;a
+</PRE></TD></TR></TBODY></TABLE>
+<H2><A name=S4>变量和常量</A></H2>
+<P></P>Ruby变量和常量都是指向对象的引用。变量自身并没有内在的类型。一个变量的类型仅仅由它指向的对象的信息决定。 <EM>[我们说一个变量没有类型，我们的意思就是任何给定的变量可以在不同时间指向许多不同的类型。]</EM> 
+<P></P>一个Ruby的常量也是对一个对象的引用。常量在Ruby首次对它赋值时被创建（一般在一个类或模块的定义中）。和一些通融性差的语言不同，允许我们修改变量的值，尽管这样会得到一个警告信息。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>MY_CONST&nbsp;=&nbsp;1
+MY_CONST&nbsp;=&nbsp;2&nbsp;&nbsp;&nbsp;#&nbsp;generates&nbsp;a&nbsp;warning
+</PRE></TD></TR></TBODY></TABLE><EM>产生结果:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>prog.rb:2:&nbsp;warning:&nbsp;already&nbsp;initialized&nbsp;constant&nbsp;MY_CONST
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>注意虽然常量不应该被修改，但是我们可以修改它指向的对象的内部状态。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>MY_CONST&nbsp;=&nbsp;"Tim"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>MY_CONST[0]&nbsp;=&nbsp;"J"&nbsp;&nbsp;&nbsp;#修改常量的内部状态</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>MY_CONST</CODE> </TD>
+<TD vAlign=top td>
+<TD vAlign=top><CODE>"Jim"</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>赋值潜在地给一个对象别名，给同一个对象不同的名字。 
+<H3><A name=UP>常量和变量的作用域</A></H3>
+<P></P>在一个类或模块中定义的常量可以方便地在类或模块任何地方访问。在模块或类外面，它们可以使用域作用符“<CODE>::</CODE>”来访问，在一个表达式前加一个“<CODE>::</CODE>”可以返回类或模块相应的对象。在任何类外面定义的常量，可以通过在它前面加"<CODE>::</CODE>"访问到。我们不能在方法中定义常量。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>OUTER_CONST&nbsp;=&nbsp;99</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>class&nbsp;Const</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;def&nbsp;getConst</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;&nbsp;&nbsp;CONST</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;CONST&nbsp;=&nbsp;OUTER_CONST&nbsp;+&nbsp;1</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>Const.new.getConst</CODE> </TD>
+<TD vAlign=top td>
+<TD vAlign=top><CODE>100</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>Const::CONST</CODE> </TD>
+<TD vAlign=top td>
+<TD vAlign=top><CODE>100</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>::OUTER_CONST</CODE> </TD>
+<TD vAlign=top td>
+<TD vAlign=top><CODE>99</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>全局变量在整个程序中都可以使用。每个指向特定全局对象名的引用都返回相同的对象。引用一个未初始化的全局变量返回一个 
+<P></P>类变量在整个类或模块体中都可以被使用。类变量在使用之前必须被初始化。一个类变量被这个类的所有对象所共有，然后只在类内部使用。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>class&nbsp;Song
+&nbsp;&nbsp;@@count&nbsp;=&nbsp;0
+&nbsp;&nbsp;def&nbsp;initialize
+&nbsp;&nbsp;&nbsp;&nbsp;@@count&nbsp;+=&nbsp;1
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;Song.getCount
+&nbsp;&nbsp;&nbsp;&nbsp;@@count
+&nbsp;&nbsp;end
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>类变量属于最内层嵌套类或模块。最顶层的类变量是定义在<CODE>Object</CODE>中的，然后就像全局变量一样。如果接收者是一个类或者模块，那么定义在单例类里面的类变量属于接收者；否则，它们属于接收者的类。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>class&nbsp;Holder
+&nbsp;&nbsp;@@var&nbsp;=&nbsp;99
+&nbsp;&nbsp;def&nbsp;Holder.var=(val)
+&nbsp;&nbsp;&nbsp;&nbsp;@@var&nbsp;=&nbsp;val
+&nbsp;&nbsp;end
+end
+</PRE>
+<P></P>a&nbsp;=&nbsp;Holder.new def&nbsp;a.var &nbsp;&nbsp;@@var end </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>
+<HR>
+
+<TABLE cellSpacing=0 cellPadding=10 bgColor=#a03030 border=0>
+<TBODY>
+<TR>
+<TD align=left width="33%"><A class=subheader href="114.html" >上一章 &lt;</A> </TD>
+<TD vAlign=center align=middle width="33%"><A class=subheader href="95.html" >目录 ^</A> <BR></TD>
+<TD align=right width="33%"><A class=subheader href="116.html" >下一章 &gt;</A> <BR></TD></TR></TBODY></TABLE>
+<P></P><FONT size=-1>Extracted from the book "Programming Ruby - The Pragmatic Programmer's Guide"</FONT> <BR><FONT size=-3>Copyright &copy; 2001 by Addison Wesley Longman, Inc. This material may be distributed only subject to the terms and conditions set forth in the Open Publication License, v1.0 or later (the latest version is presently available at <A href="http://www.opencontent.org/openpub/" >http://www.opencontent.org/openpub/</A>)). 
+<P></P>Distribution of substantively modified versions of this document is prohibited without the explicit permission of the copyright holder. 
+<P></P>Distribution of the work or derivative of the work in any standard (paper) book form is prohibited unless prior permission is obtained from the copyright holder. <BR></FONT></CODE></BODY>

@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+    <!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+    <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+         <title>How to Connect to MemSQL</title> 
+        <link rel="shortcut icon" href="../../../static_star_theme/img/favicon.ico"/>
+        <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,700italic' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../static_star_theme/css/theme.css" type="text/css" /> 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+    </head>
+
+    <body class="wy-body-for-nav" role="document">
+
+    <div class="wy-grid-for-nav">
+
+        <div class="wy-full-navbar" data-swiftype-index="false">
+            <a href="http://www.memsql.com" class="logo">
+                <img src="../../../static_star_theme/img/memsql_logo_horizontal_white.svg" />
+            </a>
+            <div class="global nav">
+                <div class="pull-left left-links">
+                </div>
+                <div class="pull-right right-links">
+                    <a href="http://www.memsql.com/community/" style="word-spacing: 2px;">Community Edition</a>
+                    <a href="http://blog.memsql.com">Blog</a>
+                    <a href="http://www.memsql.com/memsql-partners">Partners</a>
+                    <a href="http://www.memsql.com/resources">Resources</a>
+                    <a href="../../../index.html">Documentation</a>
+                    <a href="http://www.memsql.com/contact">Contact</a>
+                </div>
+            </div>
+            <div class="nav-links">
+                <a href="http://www.memsql.com/product">Product</a>
+                <a href="http://www.memsql.com/solutions">Solutions</a>
+                <a href="http://www.memsql.com/case-studies">Case Studies</a>
+                <a href="http://www.memsql.com/company">Company</a>
+                <a class="download" href="http://www.memsql.com/download/">Download Now</a>
+            </div>
+        </div>
+
+        <nav data-toggle="wy-nav-shift" class="wy-nav-side" data-swiftype-index="false">
+            <div class="wy-side-nav-search">
+                <div role="search">
+  <form id="search-form" class="wy-form" method="get">
+    <input type="text" id="st-search-input" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+            </div>
+
+            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                
+                 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">MemSQL Docs Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro/index.html">How MemSQL Works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../setup/quick_start/index.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../setup/get_started/index.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">User Manual</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="index.html">How to Connect to MemSQL</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="index.html#mysql-command-line-client">MySQL command-line client</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#sqlalchemy">SQLAlchemy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#flask">Flask</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#sequel-pro">Sequel Pro</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#hibernate">Hibernate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#sql-workbench">SQL Workbench</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#phpmyadmin">PHPMyAdmin</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../how_to_run_queries/index.html">How to Run Queries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../multi_insert_examples/index.html">Concurrent Multi-Insert Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../data_loading/index.html">Loading Data Into MemSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../porting-apps/index.html">How to Port Your Applications to MemSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../memory_management/index.html">Memory Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../distributed_architecture/index.html">Distributed Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../codegen/index.html">Code Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/index.html">Database Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../distributed_sql/index.html">Distributed SQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../columnar/index.html">Columnstore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../geospatial/index.html">Geospatial Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../json/json/index.html">Javascript Object Notation (JSON)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Operations Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ref/commands_by_type/index.html">SQL Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/config/index.html">Configuration Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ops/index.html">MemSQL Ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../loader/index.html">MemSQL Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../archive/index.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../editions/index.html">MemSQL Editions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq/index.html">Frequently Asked Questions</a></li>
+</ul>
+ 
+            </div>
+            &nbsp;
+        </nav>
+
+        <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+            <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+                <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+                <a href="../../../index.html" class="logo">
+                    <img src="../../../static_star_theme/img/memsql_logo_horizontal_white.svg" />
+                    <span class="subtitle">Documentation</span>
+                </a>
+            </nav>
+
+            <div class="wy-nav-content">
+                <div class="rst-content">
+                    <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../index.html">MemSQL Documentation</a> &raquo;</li>
+      
+          <li><a href="../index.html">User Manual</a> &raquo;</li>
+      
+    <li>How to Connect to MemSQL</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+                    <div role="main" class="document">
+                        
+  <div class="section" id="how-to-connect-to-memsql">
+<h1>How to Connect to MemSQL<a class="headerlink" href="index.html#how-to-connect-to-memsql" title="Permalink to this headline">¶</a></h1>
+<p>This section outlines several ways to connect to MemSQL using popular MySQL-compatible clients and libraries.</p>
+<div class="section" id="mysql-command-line-client">
+<span id="command-line-client"></span><h2>MySQL command-line client<a class="headerlink" href="index.html#mysql-command-line-client" title="Permalink to this headline">¶</a></h2>
+<p>MemSQL is wire-compliant with MySQL meaning connecting to MemSQL is as easy as connecting to the MySQL database. You may need the <tt class="docutils literal"><span class="pre">-u</span> <span class="pre">user</span></tt>, <tt class="docutils literal"><span class="pre">-h</span> <span class="pre">host</span></tt>, and <tt class="docutils literal"><span class="pre">-P</span> <span class="pre">port</span></tt> flags to ensure you are connecting to MemSQL properly. For example:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>mysql -u root -h 127.0.0.1 -P 3306
+</pre></div>
+</div>
+<p>Here we have <tt class="docutils literal"><span class="pre">-u</span> <span class="pre">root</span></tt> to specify login as user root, <tt class="docutils literal"><span class="pre">-h</span> <span class="pre">127.0.0.1</span></tt> to connect to the MemSQL host at localhost, and <tt class="docutils literal"><span class="pre">-P</span> <span class="pre">3306</span></tt> to connect to MemSQL on port 3306.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you also have MySQL installed, the <tt class="docutils literal"><span class="pre">mysql</span></tt> client may connect to MySQL instead of MemSQL by default if you do not specify the appropriate host and port options.</p>
+</div>
+<p>You may also use the <tt class="docutils literal"><span class="pre">--prompt</span></tt> flag to change the prompt in the interactive session, simply to help distinguish MemSQL from MySQL:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>mysql -u root -h 127.0.0.1 -P 3306 --prompt<span class="o">=</span><span class="s2">&quot;memsql&gt; &quot;</span>
+</pre></div>
+</div>
+<p>The output when you connect should look similar to this:</p>
+<div class="highlight-bash"><div class="highlight"><pre>Welcome to the MySQL monitor. Commands end with ; or <span class="se">\g</span>.
+Your MySQL connection id is 6
+Server version: 5.5.8 MemSQL <span class="nb">source </span>distribution <span class="o">(</span>compatible; MySQL Enterprise &amp; MySQL Commercial<span class="o">)</span>
+Copyright <span class="o">(</span>c<span class="o">)</span> 2000, 2015, Oracle and/or its affiliates. All rights reserved.
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+Type <span class="s1">&#39;help;&#39;</span> or <span class="s1">&#39;\h&#39;</span> <span class="k">for </span>help. Type <span class="s1">&#39;\c&#39;</span> to clear the current input statement.
+memsql&gt;
+</pre></div>
+</div>
+<p>These commands show more information about the connection and the server:</p>
+<div class="highlight-bash"><div class="highlight"><pre>mysql&gt; status
+--------------
+mysql  Ver 14.14 Distrib 5.6.19, <span class="k">for </span>osx10.9 <span class="o">(</span>x86_64<span class="o">)</span> using  EditLine wrapper
+
+Connection id:        6
+Current database:
+Current user:         root@127.0.0.1
+SSL:                  Not in use
+Current pager:        stdout
+Using outfile:        <span class="s1">&#39;&#39;</span>
+Using delimiter:      ;
+Server version:       5.5.8 MemSQL <span class="nb">source </span>distribution <span class="o">(</span>compatible; MySQL Enterprise &amp; MySQL Commercial<span class="o">)</span>
+Protocol version:     10
+Connection:           127.0.0.1 via TCP/IP
+Server characterset:  utf8
+Db     characterset:  utf8
+Client characterset:  utf8
+Conn.  characterset:  utf8
+TCP port:             3306
+--------------
+
+mysql&gt; show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| memsql             |
+| sharding           |
++--------------------+
+3 rows in <span class="nb">set</span> <span class="o">(</span>0.00 sec<span class="o">)</span>
+
+mysql&gt; show variables like <span class="s1">&#39;%version%&#39;</span>;
++-------------------------+------------------------------------------------------------------------------+
+| Variable_name           | Value                                                                        |
++-------------------------+------------------------------------------------------------------------------+
+| memsql_version          | 4.0                                                                          |
+| memsql_version_date     | Wed May 6 09:07:03 2015 -0700                                                |
+| memsql_version_hash     | 0cba132fba0ba7650c1bc9aeec8c1fc381def395                                     |
+| protocol_version        | 10                                                                           |
+| version                 | 5.5.8                                                                        |
+| version_comment         | MemSQL <span class="nb">source </span>distribution <span class="o">(</span>compatible; MySQL Enterprise &amp; MySQL Commercial<span class="o">)</span> |
+| version_compile_machine | x86_64                                                                       |
+| version_compile_os      | Linux                                                                        |
++-------------------------+------------------------------------------------------------------------------+
+8 rows in <span class="nb">set</span> <span class="o">(</span>0.03 sec<span class="o">)</span>
+
+mysql&gt; show status like <span class="s1">&#39;%license%&#39;</span>;
++---------------+----------------------------------+
+| Variable_name | Value                            |
++---------------+----------------------------------+
+| License_key   | 5ca1ab1e000f40aaa6cb67b2ea3ee466 |
+| License_type  | enterprise                       |
++---------------+----------------------------------+
+2 rows in <span class="nb">set</span> <span class="o">(</span>0.00 sec<span class="o">)</span>
+
+mysql&gt; show status like <span class="s1">&#39;%cluster_capacity%&#39;</span>;
++--------------------------+-------------+
+| Variable_name            | Value       |
++--------------------------+-------------+
+| Maximum_cluster_capacity | 10000000 MB |
+| Used_cluster_capacity    | 107957 MB   |
++--------------------------+-------------+
+2 rows in <span class="nb">set</span> <span class="o">(</span>0.00 sec<span class="o">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <tt class="docutils literal"><span class="pre">&#64;&#64;version</span></tt> and <tt class="docutils literal"><span class="pre">&#64;&#64;version_comment</span></tt> global variables are for
+compatibility with MySQL clients, which expect certain minimum version numbers
+and strings to be present. To check the real version of MemSQL you are
+running, use the <tt class="docutils literal"><span class="pre">&#64;&#64;memsql_version</span></tt> variables instead. To check the license
+you are running, see the <tt class="docutils literal"><span class="pre">license_key</span></tt> and <tt class="docutils literal"><span class="pre">license_type</span></tt> status codes.</p>
+</div>
+<p>For more documentation on the MySQL client, visit the <a class="reference external" href="http://dev.mysql.com/doc/refman/5.6/en/mysql.html">MySQL documentation</a>.</p>
+</div>
+<div class="section" id="sqlalchemy">
+<h2>SQLAlchemy<a class="headerlink" href="index.html#sqlalchemy" title="Permalink to this headline">¶</a></h2>
+<p>Here is a simple example of how to use MemSQL with the <a class="reference external" href="http://docs.sqlalchemy.org/">SQLAlchemy</a> Python library:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">Column</span><span class="p">,</span> <span class="n">VARCHAR</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.ext.declarative</span> <span class="kn">import</span> <span class="n">declarative_base</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">create_engine</span>
+
+<span class="n">Base</span> <span class="o">=</span> <span class="n">declarative_base</span><span class="p">()</span>
+<span class="k">class</span> <span class="nc">User</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+  <span class="n">__tablename__</span> <span class="o">=</span> <span class="s">&#39;user&#39;</span>
+  <span class="n">first_name</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">VARCHAR</span><span class="p">(</span><span class="mi">200</span><span class="p">))</span>
+  <span class="n">last_name</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">VARCHAR</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+
+<span class="n">engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="s">&#39;mysql://root@127.0.0.1&#39;</span><span class="p">)</span>
+<span class="n">engine</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&#39;CREATE DATABASE db&#39;</span><span class="p">)</span>
+<span class="n">engine</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&#39;USE db&#39;</span><span class="p">)</span>
+<span class="n">Base</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">create_all</span><span class="p">(</span><span class="n">engine</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="flask">
+<h2>Flask<a class="headerlink" href="index.html#flask" title="Permalink to this headline">¶</a></h2>
+<p>Here is a simple example of how to use MemSQL with the <a class="reference external" href="http://flask.pocoo.org/">Flask</a> Python framework:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c">## init_db.py</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">g</span>
+<span class="kn">from</span> <span class="nn">memsql.common</span> <span class="kn">import</span> <span class="n">database</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">get_db</span><span class="p">():</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="s">&#39;_database&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">db</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="c">#Make sure that the arguments correspond to your current MemSQL instance.</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">_database</span> <span class="o">=</span> <span class="n">database</span><span class="o">.</span><span class="n">Connection</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">3306</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="s">&#39;root&#39;</span><span class="p">)</span>
+
+<span class="nd">@app.teardown_appcontext</span>
+<span class="k">def</span> <span class="nf">close_connection</span><span class="p">(</span><span class="n">exception</span><span class="p">):</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="s">&#39;_database&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">db</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Make sure that you have MemSQL Python installed and and instance of MemSQL is running.
+Using the python connector allows for a very simple way to query the database in a Flask app:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">databases</span><span class="p">():</span>
+    <span class="n">cur</span> <span class="o">=</span> <span class="n">get_db</span><span class="p">()</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">cur</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s">&#39;show databases&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>.sql files can be used to create populate the app with initial schemas:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">init_db</span><span class="p">():</span>
+    <span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">app_context</span><span class="p">():</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="n">get_db</span><span class="p">()</span>
+        <span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">open_resource</span><span class="p">(</span><span class="s">&#39;schema.sql&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="p">[</span><span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">q</span> <span class="o">!=</span> <span class="s">&#39;&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Execute this function in a python shell:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">flask_demo</span> <span class="kn">import</span> <span class="n">init_db</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">init_db</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="sequel-pro">
+<span id="id3"></span><h2>Sequel Pro<a class="headerlink" href="index.html#sequel-pro" title="Permalink to this headline">¶</a></h2>
+<div class="admonition important">
+<p class="first admonition-title">Important</p>
+<p class="last">This part of the guide assumes that MemSQL is already running with docker.</p>
+</div>
+<p>Open the latest version of <a class="reference external" href="http://www.sequelpro.com/">Sequel Pro</a>. You can
+connect to MemSQL using Quick Connect:</p>
+<img alt="../../_images/sequel_pro_1.png" src="../../_images/sequel_pro_1.png" />
+<p>Replace the host field with the IP address of your MemSQL instance. You can find
+this using the command <tt class="docutils literal"><span class="pre">boot2docker</span> <span class="pre">ip</span></tt>. Click <tt class="docutils literal"><span class="pre">Connect</span></tt>.</p>
+<p>Select a database by clicking on the <tt class="docutils literal"><span class="pre">Choose</span> <span class="pre">Database...</span></tt> field in the top
+left corner. To create your own new database:</p>
+<ol class="arabic simple">
+<li>Select the <tt class="docutils literal"><span class="pre">Query</span></tt> tab.</li>
+<li>Type the query into the field.</li>
+<li>Press <tt class="docutils literal"><span class="pre">Run</span> <span class="pre">Previous</span></tt> on the right.</li>
+</ol>
+<img alt="../../_images/sequel_pro_2.png" src="../../_images/sequel_pro_2.png" />
+<ol class="arabic simple" start="4">
+<li>If this query was executed correctly, the same message should appear on the
+bottom of the window.</li>
+</ol>
+<p>After running a CREATE TABLE query, the tables field on the left side updates:</p>
+<img alt="../../_images/sequel_pro_3.png" src="../../_images/sequel_pro_3.png" />
+</div>
+<div class="section" id="hibernate">
+<h2>Hibernate<a class="headerlink" href="index.html#hibernate" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You will need JDBC in your classpath to connect to MemSQL. Make sure you have Hibernate and Maven properly installed.</p>
+</div>
+<ol class="arabic simple">
+<li>Download <a class="reference external" href="http://javahash.com/hibernate-4-tutorial-using-maven-mysql/">HibernateTutorial.zip</a>.</li>
+<li>Unzip <tt class="docutils literal"><span class="pre">HibernateTutorial</span></tt>.</li>
+<li>Initialize your database.</li>
+</ol>
+<div class="highlight-mysql"><div class="highlight"><pre><span class="k">CREATE</span> <span class="k">DATABASE</span> <span class="n">test</span><span class="p">;</span>
+<span class="k">USE</span> <span class="n">test</span><span class="p">;</span>
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="nf">USER</span> <span class="p">(</span>
+    <span class="o">-&gt;</span>  <span class="n">USER_ID</span> <span class="kt">INT</span> <span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="k">NOT</span> <span class="no">NULL</span><span class="p">,</span>
+    <span class="o">-&gt;</span>  <span class="n">USERNAME</span> <span class="kt">VARCHAR</span> <span class="p">(</span><span class="mi">20</span><span class="p">)</span> <span class="k">NOT</span> <span class="no">NULL</span><span class="p">,</span>
+    <span class="o">-&gt;</span>  <span class="n">CREATED_BY</span> <span class="kt">VARCHAR</span> <span class="p">(</span><span class="mi">20</span><span class="p">)</span> <span class="k">NOT</span> <span class="no">NULL</span><span class="p">,</span>
+    <span class="o">-&gt;</span>  <span class="n">CREATED_DATE</span> <span class="kt">DATE</span> <span class="k">NOT</span> <span class="no">NULL</span><span class="p">,</span>
+    <span class="o">-&gt;</span>  <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span> <span class="n">USER_ID</span> <span class="p">)</span>
+    <span class="o">-&gt;</span> <span class="p">);</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li>Edit <tt class="docutils literal"><span class="pre">HibernateTutorial/src/main/java/resources/hibernate.cfg.xml</span></tt> to match
+your MemSQL configuration. For example our user is root with no password. Our
+database is on localhost on port 3306.</li>
+</ol>
+<div class="highlight-xml"><div class="highlight"><pre><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span>
+<span class="cp">&lt;!DOCTYPE hibernate-configuration PUBLIC</span>
+<span class="cp">&quot;-//Hibernate/Hibernate Configuration DTD 3.0//EN&quot;</span>
+<span class="cp">&quot;http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd&quot;&gt;</span>
+<span class="nt">&lt;hibernate-configuration&gt;</span>
+ <span class="nt">&lt;session-factory&gt;</span>
+  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;hibernate.dialect&quot;</span><span class="nt">&gt;</span>org.hibernate.dialect.MySQLDialect<span class="nt">&lt;/property&gt;</span>
+  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;hibernate.connection.driver_class&quot;</span><span class="nt">&gt;</span>com.mysql.jdbc.Driver<span class="nt">&lt;/property&gt;</span>
+  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;hibernate.connection.url&quot;</span><span class="nt">&gt;</span>jdbc:mysql://localhost:3306/test<span class="nt">&lt;/property&gt;</span>
+  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;hibernate.connection.username&quot;</span><span class="nt">&gt;</span>root<span class="nt">&lt;/property&gt;</span>
+  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;hibernate.connection.password&quot;</span><span class="nt">&gt;&lt;/property&gt;</span>
+  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;show_sql&quot;</span><span class="nt">&gt;</span>true<span class="nt">&lt;/property&gt;</span>
+  <span class="nt">&lt;mapping</span> <span class="na">resource=</span><span class="s">&quot;User.hbm.xml&quot;</span><span class="nt">&gt;&lt;/mapping&gt;</span>
+<span class="nt">&lt;/session-factory&gt;</span>
+<span class="nt">&lt;/hibernate-configuration&gt;</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="5">
+<li>In <tt class="docutils literal"><span class="pre">HibernateTutorial</span></tt>, run <tt class="docutils literal"><span class="pre">mvn</span> <span class="pre">compile</span></tt>.</li>
+<li>In <tt class="docutils literal"><span class="pre">HibernateTutorial/target/classes</span></tt>, run <tt class="docutils literal"><span class="pre">java</span> <span class="pre">com.javahash.hibernate.Run</span></tt>.</li>
+<li>Verify that in the MemSQL database test a row has been inserted into <tt class="docutils literal"><span class="pre">USER</span></tt>:</li>
+</ol>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>mysql -u root -h 127.1 -P 3306 -e <span class="s1">&#39;SELECT * FROM test.USER&#39;</span>
+
++---------+----------+-------------+--------------+
+| USER_ID | USERNAME | CREATED_BY  | CREATED_DATE |
++---------+----------+-------------+--------------+
+| 1       | James    | Application |   2015-05-19 |
++---------+----------+-------------+--------------+
+</pre></div>
+</div>
+</div>
+<div class="section" id="sql-workbench">
+<h2>SQL Workbench<a class="headerlink" href="index.html#sql-workbench" title="Permalink to this headline">¶</a></h2>
+<p>Once you have SQL Workbench installed open the <tt class="docutils literal"><span class="pre">Connectors</span></tt> window. In the
+<tt class="docutils literal"><span class="pre">Driver</span></tt> drop-down menu select MySQL (<tt class="docutils literal"><span class="pre">com.mysql.jdbc.Driver</span></tt>). This Driver
+requires the <a class="reference external" href="http://dev.mysql.com/downloads/connector/j/">MySQL Java connector</a>. Once you have <tt class="docutils literal"><span class="pre">Driver</span></tt>
+selected, enter the URL <tt class="docutils literal"><span class="pre">jdbc:mysql://&lt;host&gt;:&lt;port&gt;</span></tt>. By default MemSQL has
+one user root with no password, so set <tt class="docutils literal"><span class="pre">username</span></tt> to <tt class="docutils literal"><span class="pre">root</span></tt> and leave
+<tt class="docutils literal"><span class="pre">password</span></tt> empty. Complete the other fields as desired.</p>
+<img alt="../../_images/sql-workbench.png" src="../../_images/sql-workbench.png" />
+<p>Click <tt class="docutils literal"><span class="pre">OK</span></tt> and the SQL Workbench window will appear. Here you can issue
+queries in the top window and see results in the bottom window.</p>
+<img alt="../../_images/screenshot-sql-workbench-show-databases.png" src="../../_images/screenshot-sql-workbench-show-databases.png" />
+<img alt="../../_images/screenshot-sql-workbench-create-table.png" src="../../_images/screenshot-sql-workbench-create-table.png" />
+</div>
+<div class="section" id="phpmyadmin">
+<h2>PHPMyAdmin<a class="headerlink" href="index.html#phpmyadmin" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="install-apache2-and-php5">
+<h3>Install Apache2 and PHP5<a class="headerlink" href="index.html#install-apache2-and-php5" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>sudo apt-get update
+<span class="nv">$ </span>sudo apt-get install apache2
+<span class="nv">$ </span>sudo sh -c <span class="s1">&#39;grep -q &quot;^ServerName  *localhost$&quot; /etc/apache2/httpd.conf ||</span>
+<span class="s1">    echo &quot;ServerName localhost&quot; &gt;&gt; /etc/apache2/httpd.conf&#39;</span>
+<span class="nv">$ </span>sudo apt-get install php5 php5-mysql
+<span class="nv">$ </span>sudo /etc/init.d/apache2 restart
+</pre></div>
+</div>
+</div>
+<div class="section" id="install-phpmyadmin">
+<h3>Install PHPMyAdmin<a class="headerlink" href="index.html#install-phpmyadmin" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>sudo apt-get install phpmyadmin
+</pre></div>
+</div>
+<p>The installer will display two dialogs: one dialog asks which webserver you&#8217;re
+using, and the other dialog asks if you want <tt class="docutils literal"><span class="pre">dbconfig-common</span></tt> to
+automatically configure your database. These dialogs might appear in a different
+order than is shown here.</p>
+<p>For the dialog that asks which webserver you&#8217;re using, choose <tt class="docutils literal"><span class="pre">Apache2</span></tt> and
+press enter.</p>
+<img alt="../../_images/php1.png" src="../../_images/php1.png" />
+<p>For the dialog that asks if you want dbconfig-common to automatically configure
+your database, choose No and press enter.</p>
+<img alt="../../_images/php2.png" src="../../_images/php2.png" />
+<p>Edit /etc/apache2/apache2.conf and add the line &#8220;Include /etc/phpmyadmin/apache.conf&#8221;</p>
+<img alt="../../_images/php3.png" src="../../_images/php3.png" />
+<p>Edit /etc/phpmyadmin/config-db.php to have the following fields set.</p>
+<img alt="../../_images/php4.png" src="../../_images/php4.png" />
+<p><tt class="docutils literal"><span class="pre">$dbuser</span></tt> and <tt class="docutils literal"><span class="pre">$dbpass</span></tt> should be set to the user name and password for
+connecting to MemSQL. Do not set <tt class="docutils literal"><span class="pre">$dbname</span></tt> to &#8216;&#8217;. If MemSQL is running locally
+set <tt class="docutils literal"><span class="pre">$dbserver</span></tt> to <tt class="docutils literal"><span class="pre">'127.0.0.1'</span></tt> instead of <tt class="docutils literal"><span class="pre">'localhost'</span></tt>.</p>
+<p>If <tt class="docutils literal"><span class="pre">$dbpass</span></tt> is &#8216;&#8217; then you need enable the <tt class="docutils literal"><span class="pre">AllowNoPassword</span></tt> option. To do
+this, open <tt class="docutils literal"><span class="pre">/etc/phpmyadmin/config.inc.php</span></tt>, find the first occurrence of
+<tt class="docutils literal"><span class="pre">AllowNoPassword</span></tt>, and uncomment that line.</p>
+<a class="reference internal image-reference" href="../../_images/php5.png"><img alt="../../_images/php5.png" src="../../_images/php5.png" style="width: 500px;" /></a>
+<p>Finally, restart Apache2:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>sudo /etc/init.d/apache2 restart
+</pre></div>
+</div>
+</div>
+<div class="section" id="using-phpmyadmin">
+<h3>Using PHPMyAdmin<a class="headerlink" href="index.html#using-phpmyadmin" title="Permalink to this headline">¶</a></h3>
+<p>Congrats! You have now installed PHPMyAdmin backed by MemSQL. Connect to
+PHPMyAdmin by visiting <a class="reference external" href="http://hostname/phpmyadmin">http://hostname/phpmyadmin</a>. Enter the user name and
+password for connecting to MemSQL (same as <tt class="docutils literal"><span class="pre">$dbuser</span></tt> and <tt class="docutils literal"><span class="pre">$dbpass</span></tt> from
+<tt class="docutils literal"><span class="pre">/etc/phpmyadmin/config-db.php</span></tt>).</p>
+</div>
+<div class="section" id="ruby-on-rails">
+<h3>Ruby On Rails<a class="headerlink" href="index.html#ruby-on-rails" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="configuring-memsql">
+<h4>Configuring MemSQL<a class="headerlink" href="index.html#configuring-memsql" title="Permalink to this headline">¶</a></h4>
+<p>Open <tt class="docutils literal"><span class="pre">config/database.yml</span></tt> and edit the development adapter to use MySQL. You
+will need to have the MemSQL socket which can be found using the query <tt class="docutils literal"><span class="pre">show</span>
+<span class="pre">variables</span> <span class="pre">like</span> <span class="pre">'socket'</span></tt>.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>mysql -u root -h 127.1 -P 3306 -e <span class="s2">&quot;show variables like &#39;socket&#39;&quot;</span>
+
++---------------+---------------------------------------------------------------------------------------+
+| Variable_name | Value |
++---------------+---------------------------------------------------------------------------------------+
+| socket | /var/lib/memsql-ops/data/installs/MI85eaf8fca04849888be7f1a9a596210e/data/memsql.sock |
++---------------+---------------------------------------------------------------------------------------+
+</pre></div>
+</div>
+<div class="highlight-yaml"><div class="highlight"><pre><span class="l-Scalar-Plain">development</span><span class="p-Indicator">:</span>
+  <span class="l-Scalar-Plain">adapter</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">mysql2</span>
+  <span class="l-Scalar-Plain">encoding</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">utf8</span>
+  <span class="l-Scalar-Plain">database</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">blog_development</span>
+  <span class="l-Scalar-Plain">pool</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">5</span>
+  <span class="l-Scalar-Plain">username</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">root</span>
+  <span class="l-Scalar-Plain">password</span><span class="p-Indicator">:</span>
+  <span class="l-Scalar-Plain">socket</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/var/lib/memsql-ops/data/installs/MI85eaf8fca04849388be7f1a9a596210e/data/memsql.sock</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="querying-your-database">
+<h4>Querying Your Database<a class="headerlink" href="index.html#querying-your-database" title="Permalink to this headline">¶</a></h4>
+<p>MemSQL can be queries using the <tt class="docutils literal"><span class="pre">mysql2</span></tt> connector in controller code. Calling
+execute returns a <tt class="docutils literal"><span class="pre">mysql2</span></tt> result which can be converted to an array and
+easily displayed:</p>
+<div class="highlight-ruby"><div class="highlight"><pre><span class="k">class</span> <span class="nc">WelcomeController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">index</span>
+    <span class="n">render</span> <span class="ss">plain</span><span class="p">:</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;show databases&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">to_a</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+                    </div>
+                    <footer data-swiftype-index="false">
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../how_to_run_queries/index.html" class="btn btn-neutral float-right" title="How to Run Queries">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../index.html" class="btn btn-neutral" title="User Manual"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&copy; Copyright 2015, MemSQL</p>
+  </div>
+</footer>
+                </div>
+            </div>
+
+        </section>
+    </div>
+
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/underscore-min.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery.ba-hashchange.min.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery.swiftype.search.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/jquery.swiftype.autocomplete.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/theme.js"></script>
+    <script type="text/javascript" src="../../../static_star_theme/js/search.js"></script> 
+
+        <!-- Google Analytics -->
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-21693588-3', 'auto');
+            ga('send', 'pageview');
+        </script>
+        <!-- End Google Analytics -->
+
+        <script type="text/javascript">
+            $.ajax({
+                url: document.location.protocol + '//munchkin.marketo.net/munchkin.js',
+                dataType: 'script',
+                cache: true,
+                success: function() {
+                    Munchkin.init('759-YLI-316');
+                }
+            });
+        </script>
+    </body>
+</html>

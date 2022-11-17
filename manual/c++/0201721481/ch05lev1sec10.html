@@ -1,0 +1,1612 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 5.10.  Evaluating Compound Expressions</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch05lev1sec9.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch05lev1sec11.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch05lev1sec10"></a>
+
+        <h3 class="docSection1Title">5.10. Evaluating Compound Expressions</h3>
+        <h3 class="docSection1Title">5.10. 复合表达式的求值</h3>
+
+<a name="ch05term5"></a>
+        <p class="docText">An expression with two or more operators is a <b><a class="docLink" href="ch05lev1sec14.html#gloss05_05" >compound expression</a></b>. In a compound expression, the way in which the operands are grouped to the operators may determine the result of the overall expression. If the operands group in one way, the result differs from what it would be if they grouped another way.</p>
+        <p class="docText">含有两个或更多操作符的表达式称为<b><a class="docLink" href="ch05lev1sec14.html#gloss05_05" >复合表达式</a></b>。在复合表达式中，操作数和操作符的结合方式决定了整个表达式的值。表达式的结果会因为操作符和操作数的分组结合方式的不同而不同。</p>
+
+        <p class="docText">Precedence and associativity determine how the operands are grouped. That is, precedence and associativity determine which part of the expression is the operand for each of the operators in the expression. Programmers can override these rules by parenthesizing compound expressions to force a particular grouping.</p>
+        <p class="docText">操作数的分组结合方式取决于操作符的优先级和结合性。也就是说，优先级和结合性决定了表达式的哪个部分用作哪个操作符的操作数。如果程序员不想考虑这些规则，可以在复合表达式中使用圆括号强制实现某个特殊的分组。</p>
+
+	<a name="ch05note09"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Precedence specifies how the operands are grouped. It says nothing about the order in which the operands are evaluated. In most cases, operands may be evaluated in whatever order is convenient.</p>
+                <p class="docText">优先级规定的是操作数的结合方式，但并没有说明操作数的计算顺序。在大多数情况下，操作数一般以最方便的次序求解。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <a name="ch05lev2sec14"></a>
+        <h4 class="docSection2Title">5.10.1. Precedence</h4>
+        <h4 class="docSection2Title">5.10.1. 优先级</h4>
+
+        <p class="docText">The value of an expression depends on how the subexpressions are grouped. For example, in the following expression, a purely left-to-right evaluation yields 20:</p>
+        <p class="docText">表达式的值取决于其子表达式如何分组。例如，下面的表达式，如果纯粹从左向右计算，结果为 20：</p>
+        <pre>
+     6 + 3 * 4 / 2 + 2;
+</pre>
+	
+	<a name="idd1e35647"></a>
+        <p class="docText">Other imaginable results include 9, 14, and 36. In C++, the result is 14.</p>
+        <p class="docText">想像中其他可能的结果包括 9、14 和 36。在 C++ 中，该表达式的值应为 14。</p>
+
+	<p class="docText">Multiplication and division have higher precedence than addition. Their operands are bound to the operator in preference to the operands to addition. Multiplication and division have the same precedence as each other. Operators also have associativity, which determines how operators at the same precedence level are grouped. The arithmetic operators are left associative, which means they group left to right. We now can see that our expression is equivalent to</p>
+        <p class="docText">乘法和除法的优先级高于加法操作，于是它们的操作数先于加法操作的操作数计算。但乘法和除法的优先级相同。当操作符的优先级相同时，由其结合性决定求解次序。算术操作具有左结合性，这意味着它们从左向右结合。因此上面表达式等效于：</p>
+        <pre>
+     int temp = 3 * 4;           // <span class="docEmphItalicAlt">12</span>
+     int temp2 = temp / 2;       // <span class="docEmphItalicAlt">6</span>
+     int temp3 = temp2 + 6;      // <span class="docEmphItalicAlt">12</span>
+     int result = temp3 + 2;     // <span class="docEmphItalicAlt">14</span>
+</pre>
+
+        <a name="ch05lev3sec3"></a>
+        <h5 class="docSection3Title">Parentheses Override Precedence</h5>
+        <h5 class="docSection3Title">圆括号凌驾于优先级之上</h5>
+
+        <p class="docText">We can override precedence with parentheses. Parenthesized expressions are evaluated by treating each parenthesized subexpression as a unit and otherwise applying the normal precedence rules. For example, we can use parentheses on our initial expression to force the evaluation to result in any of the four possible values:</p>
+        <p class="docText">我们可使用圆括号推翻优先级的限制。使用圆括号的表达式将用圆括号括起来的子表达式视为独立单元先计算，其他部分则以普通的优先级规则处理。例如，下面的程序在前述表达式上添加圆括号，强行更改其操作次序，可能得到四种结果：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">parentheses on this expression match default precedence/associativity</span>
+     cout &lt;&lt; ((6 + ((3 * 4) / 2)) + 2) &lt;&lt; endl; // <span class="docEmphItalicAlt">prints 14</span>
+     // <span class="docEmphItalicAlt">parentheses result in alternative groupings</span>
+     cout &lt;&lt; (6 + 3) * (4 / 2 + 2) &lt;&lt; endl;     // <span class="docEmphItalicAlt">prints 36</span>
+     cout &lt;&lt; ((6 + 3) * 4) / 2 + 2 &lt;&lt; endl;     // <span class="docEmphItalicAlt">prints 20</span>
+     cout &lt;&lt; 6 + 3 * 4 / (2 + 2) &lt;&lt; endl;       // <span class="docEmphItalicAlt">prints 9</span>
+</pre>
+
+        <p class="docText">We have already seen examples where precedence rules affect the correctness of our programs. For example, consider the expression described in the "Advice" box on page <a class="docLink" href="ch05lev1sec5.html#ch05sb08" >164</a>:</p>
+	<p class="docText">我们已经通过前面的例子了解了优先级规则如何影响程序的正确性。例如，考虑<a class="docLink" href="ch05lev1sec5.html#ch05sb08" >第 5.5 节</a>第二个建议框中描述的表达式：</p>
+        <pre>
+     *iter++;
+</pre>
+
+        <p class="docText">Precedence says that <tt>++</tt> has higher precedence than <tt>*</tt>. That means that <tt>iter++</tt> is grouped first. The operand of <tt>*</tt>, therefore, is the result of applying the increment operator to <tt>iter</tt>. If we wanted to increment the value that <tt>iter</tt> denotes, we'd have to use parentheses to force our intention:</p>
+	<p class="docText">其中，<tt>++</tt> 的优先级高于*操作符，这就意味着 <tt>iter++</tt>  先结合。而操作符 <tt>*</tt>  的操作数是 <tt>iter</tt>  做了自增操作后的结果。如果我们希望对 <tt>iter</tt>  所指向的值做自增操作，则必须使用圆括号强制实现我们的目的：</p>
+        <pre>
+     (*iter)++; // <span class="docEmphItalicAlt">increment value to which</span> <span class="docEmphasis">iter</span> <span class="docEmphItalicAlt">refers and yield unincremented value</span>
+</pre>
+
+        <p class="docText">The parentheses specify that the operand of <tt>*</tt> is <tt>iter</tt>. The expression now uses <tt>*iter</tt> as the operand to <tt>++</tt>.</p>
+	<p class="docText">圆括号指明操作符 <tt>*</tt> 的操作数是 <tt>iter</tt>，然后表达式以 <tt>*iter</tt> 作为 <tt>++</tt>操作符的操作数。</p>
+
+        <p class="docText">As another example, recall the condition in the <tt>while</tt> on page <a class="docLink" href="ch05lev1sec4.html#ch05note07" >161</a>:</p>
+	<p class="docText">另一个例子，回顾一下<a class="docLink" href="ch05lev1sec4.html#ch05note07" >第 5.4.2 节</a>中的 <tt>while</tt> 循环条件：</p>
+        <pre>
+     while ((i = get_value()) != 42) {
+</pre>
+
+        <p class="docText">The parentheses around the assignment were necessary to implement the desired operation, which was to assign to <tt>i</tt> the value returned from <tt>get_value</tt> and then test that value to see whether it was 42. Had we failed to parenthesize the assignment, the effect would be to test the return value to see whether it was 42. The true or false value of that test would then be assigned to <tt>i</tt>, meaning that <tt>i</tt> would either be 1 or 0.</p>
+	<p class="docText">赋值操作上的圆括号是必需的，这样才能实现预期的操作：将 <tt>get_value</tt> 的返回值赋给 <tt>i</tt>，然后检查刚才赋值的结果是否为42。如果赋值操作上没有加圆括号，结果将是先判断 <tt>get_value</tt> 的返回值是否为 42，然后将判断结果 <tt>true</tt> 或 <tt>false</tt> 值赋给 <tt>i</tt>，这意味着 <tt>i</tt> 的值只能是 1 或 0。</p>
+
+	<a name="ch05lev2sec15"></a>
+        <h4 class="docSection2Title">5.10.2. Associativity</h4>
+        <h4 class="docSection2Title">5.10.2. 结合性</h4>
+
+	<a name="idd1e35806"></a><a name="idd1e35809"></a>
+        <p class="docText">Associativity specifies how to group operators at the same precedence level. We have also seen cases where associativity matters. As one example, the assignment operator is right associative. This fact allows concatenated assignments:</p>
+        <p class="docText">结合性规定了具有相同优先级的操作符如何分组。我们已经遇到过涉及结合性的例子。其中之一使用了赋值操作的右结合性，这个特性允许将多个赋值操作串接起来：</p>
+        <pre>
+     ival = jval = kval = lval       // <span class="docEmphItalicAlt">right associative</span>
+     (ival = (jval = (kval = lval))) // <span class="docEmphItalicAlt">equivalent, parenthesized version</span>
+</pre>
+
+        <p class="docText">This expression first assigns <tt>lval</tt> to <tt>kval</tt>, then the result of that to <tt>jval</tt>, and finally the result of that to <tt>ival</tt>.</p>
+	<p class="docText">该表达式首先将 <tt>lval</tt> 赋给 <tt>kval</tt> ，然后将 <tt>kval</tt> 的值赋给 <tt>jval</tt> ，最后将 <tt>jval</tt> 的值再赋给 <tt>ival</tt>。</p>
+
+        <p class="docText">The arithmetic operators, on the other hand, are left associative. The expression</p>
+        <p class="docText">另一方面，算术操作符为左结合。表达式</p>
+        <pre>
+     ival * jval / kval * lval       // <span class="docEmphItalicAlt">left associative</span>
+     (((ival * jval) / kval) * lval) // <span class="docEmphItalicAlt">equivalent, parenthesized version</span>
+</pre>
+
+        <p class="docText">multiplies <tt>ival</tt> and <tt>jval</tt>, then divides that result by <tt>kval</tt>, and finally multiplies the result of the division by <tt>lval</tt>.</p>
+	<p class="docText">先对 <tt>ival</tt> 和 <tt>jval</tt> 做乘法操作，然后乘积除以 <tt>kval</tt>，最后再将其商与 <tt>lval</tt> 相乘。</p>
+
+        <p class="docText"><a class="docLink" href="ch05lev1sec10.html#ch05table04">Table 5.4</a> presents the full set of operators ordered by precedence. The table is organized into segments separated by double lines. Operators in each segment have the same precedence, and have higher precedence than operators in sub-sequent segments. For example, the prefix increment and dereference operators share the same precedence and have higher precedence than the arithmetic or relational operators. We have seen most of these operators, although a few will not be defined until later chapters.</p><a name="ch05table04"></a>
+	<p class="docText"><a class="docLink" href="ch05lev1sec10.html#ch05table04">表 5.4</a> 按照优先级顺序列出了 C++ 的全部操作符。该表以双横线分割成不同的段，每段内各个操作符的优先级相同，且都高于后面各段中的操作符。例如，前自增操作符和解引用操作符的优先级相同，它们的优先级都比算术操作符或关系操作符高。此表中大部分操作符已经介绍过，而少数未介绍的操作符将在后续章节中学习。</p>
+
+        <h5 class="docTableTitle">Table 5.4. Operator Precedence</h5>
+        <h5 class="docTableTitle">表 5.4. 操作符的优先级</h5>
+
+        <table cellspacing="0" class="allBorders" border="1" rules="groups" cellpadding="5">
+          <colgroup>
+            <col width="50">
+            <col width="100">
+            <col width="350">
+            <col width="150">
+            <col width="50">
+          </colgroup>
+
+          <thead>
+            <tr>
+              <th class="bottomBorder thead" scope="col" align="center" valign="top" colspan="2">
+                <p class="docText">Associativity<br>
+                and Operator</p>
+		<p class="docText">操作符及其结合性</p>
+              </th>
+
+              <th class="bottomBorder thead" scope="col" align="center" valign="top">
+                <p class="docText">Function</p>
+                <p class="docText">功能</p>
+              </th>
+
+              <th class="bottomBorder thead" scope="col" align="center" valign="top">
+                <p class="docText">Use</p>
+                <p class="docText">用法</p>
+              </th>
+
+              <th class="bottomBorder thead" scope="col" align="center" valign="top">
+                <p class="docText">See<br>
+                Page</p>
+                <p class="docText">参见页码</p>
+              </th>
+            </tr>
+          </thead>
+
+          <tr>
+            <td class="rightBorder" align="center" valign="top">
+              <p class="docText">L</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>::</tt></p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">global scope（全局作用域）</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>::</tt> name</p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch12lev1sec3.html#ch12lev3sec18" >450</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder" align="center" valign="top">
+              <p class="docText">L</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>::</tt></p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">class scope（类作用域）</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">class <tt>::</tt> name</p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch03lev1sec2.html#ch03note05" >85</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder bottomBorder" align="center" valign="top">
+              <p class="docText">L</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText"><tt>::</tt></p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText">namespace scope（名字空间作用域）</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText">namespace <tt>::</tt> name</p>
+            </td>
+
+            <td class="bottomBorder" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch03lev1sec1.html#ch03lev1sec1" >78</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder" align="center" valign="top">
+              <p class="docText">L</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>.</tt></p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">member selectors（成员选择）</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">object <tt>.</tt> member</p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch01lev1sec5.html#ch01note07" >25</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder" align="center" valign="top">
+              <p class="docText">L</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>-&gt;</tt></p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">member selectors（成员选择）</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">pointer <tt>-&gt;</tt> member</p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec5.html#ch05sb08" >164</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder" align="center" valign="top">
+              <p class="docText">L</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>[]</tt></p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">subscript（下标）</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">variable <tt>[</tt> expr <tt>]</tt></p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch04lev1sec1.html#ch04sb01" >113</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder" align="center" valign="top">
+              <p class="docText">L</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>()</tt></p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">function call（函数调用）</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">name <tt>(</tt>expr_list<tt>)</tt></p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch01lev1sec5.html#ch01note07" >25</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder bottomBorder" align="center" valign="top">
+              <p class="docText">L</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText"><tt>()</tt></p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText">type construction（类型构造）</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText">type <tt>(</tt>expr_list<tt>)</tt></p>
+            </td>
+
+            <td class="bottomBorder" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch12lev1sec4.html#ch12note24" >460</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder" align="center" valign="top">
+              <p class="docText">R</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>++</tt></p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">postfix increment（后自增操作）</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">lvalue<tt>++</tt></p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec4.html#ch05sb06" >162</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder" align="center" valign="top">
+              <p class="docText">R</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>--</tt></p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">postfix decrement（后自减操作）</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">lvalue<tt>--</tt></p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec4.html#ch05sb06" >162</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder" align="center" valign="top">
+              <p class="docText">R</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>typeid</tt></p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">type ID（类型 ID）</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>typeid (</tt>type<tt>)</tt></p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch18lev1sec2.html#ch18sb07" >775</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder" align="center" valign="top">
+              <p class="docText">R</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>typeid</tt></p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">run-time type ID（运行时类型 ID）</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>typeid (</tt>expr<tt>)</tt></p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch18lev1sec2.html#ch18sb07" >775</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder bottomBorder" align="center" valign="top">
+              <p class="docText">R</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText">explicit cast（显式强制类型转换）</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText">type conversion（类型转换）</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText"><span class="docEmphasis">cast_name</span> &lt;type&gt;(expr)</p>
+            </td>
+
+            <td class="bottomBorder" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec12.html#ch05lev3sec11" >183</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder" align="center" valign="top">
+              <p class="docText">R</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>sizeof</tt></p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">size of object（对象的大小）</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>sizeof</tt> expr</p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec8.html#ch05lev1sec8" >167</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder" align="center" valign="top">
+              <p class="docText">R</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>sizeof</tt></p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">size of type（类型的大小）</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>sizeof</tt>(type)</p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec8.html#ch05lev1sec8" >167</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder" align="center" valign="top">
+              <p class="docText">R</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>++</tt></p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">prefix increment（前自增操作）</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>++</tt> lvalue</p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec4.html#ch05sb06" >162</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder" align="center" valign="top">
+              <p class="docText">R</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>--</tt></p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">prefix decrement（前自减操作）</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>--</tt> lvalue</p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec4.html#ch05sb06" >162</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder" align="center" valign="top">
+              <p class="docText">R</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>~</tt></p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">bitwise NOT（位求反）</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>~</tt>expr</p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec3.html#ch05lev1sec3" >154</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder" align="center" valign="top">
+              <p class="docText">R</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>!</tt></p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">logical NOT（逻辑非）</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>!</tt>expr</p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec2.html#ch05lev1sec2" >152</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder" align="center" valign="top">
+              <p class="docText">R</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>-</tt></p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">unary minus（一元负号）</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>-</tt>expr</p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec1.html#ch05sb01" >150</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder" align="center" valign="top">
+              <p class="docText">R</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>+</tt></p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">unary plus（一元正号）</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>+</tt>expr</p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec1.html#ch05sb01" >150</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder" align="center" valign="top">
+              <p class="docText">R</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>*</tt></p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">dereference（解引用）</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>*</tt>expr</p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch04lev1sec2.html#ch04note10" >119</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder" align="center" valign="top">
+              <p class="docText">R</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>&amp;</tt></p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">address-of（取地址）</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>&amp;</tt>expr</p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch04lev1sec2.html#ch04sb03" >115</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder" align="center" valign="top">
+              <p class="docText">R</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>()</tt></p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">type conversion（类型转换）</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">(type) expr</p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec12.html#ch05sb20" >186</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder" align="center" valign="top">
+              <p class="docText">R</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>new</tt></p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">allocate object（创建对象）</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>new</tt> type</p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec10.html#ch05sb16">174</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder" align="center" valign="top">
+              <p class="docText">R</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>delete</tt></p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">deallocate object（释放对象）</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>delete</tt> expr</p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec11.html#ch05lev2sec20" >176</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder bottomBorder" align="center" valign="top">
+              <p class="docText">R</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText"><tt>delete[]</tt></p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText">deallocate array（释放数组）</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText"><tt>delete[]</tt> expr</p>
+            </td>
+
+            <td class="bottomBorder" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch04lev1sec3.html#ch04lev3sec28" >137</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder" align="center" valign="top">
+              <p class="docText">L</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>-&gt;*</tt></p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">ptr to member select（指向成员操作的指针）</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">ptr <tt>-&gt;*</tt> ptr_to_member</p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch18lev1sec3.html#ch18lev3sec25" >783</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder bottomBorder" align="center" valign="top">
+              <p class="docText">L</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText"><tt>.*</tt></p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText">ptr to member select（指向成员操作的指针）</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText">obj <tt>.*</tt>ptr_to_member</p>
+            </td>
+
+            <td class="bottomBorder" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch18lev1sec3.html#ch18lev3sec25" >783</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder" align="center" valign="top">
+              <p class="docText">L</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>*</tt></p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">multiply（乘法）</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">expr <tt>*</tt> expr</p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec1.html#ch05lev1sec1" >149</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder" align="center" valign="top">
+              <p class="docText">L</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>/</tt></p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">divide（除法）</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">expr <tt>/</tt> expr</p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec1.html#ch05lev1sec1" >149</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder bottomBorder" align="center" valign="top">
+              <p class="docText">L</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText"><tt>%</tt></p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText">modulo (remainder)（求模（求余））</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText">expr <tt>%</tt> expr</p>
+            </td>
+
+            <td class="bottomBorder" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec1.html#ch05lev1sec1" >149</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder" align="center" valign="top">
+              <p class="docText">L</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>+</tt></p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">add（加法）</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">expr <tt>+</tt> expr</p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec1.html#ch05lev1sec1" >149</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder bottomBorder" align="center" valign="top">
+              <p class="docText">L</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText"><tt>-</tt></p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText">subtract（减法）</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText">expr <tt>-</tt> expr</p>
+            </td>
+
+            <td class="bottomBorder" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec1.html#ch05lev1sec1" >149</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder" align="center" valign="top">
+              <p class="docText">L</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>&lt;&lt;</tt></p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">bitwise shift left（位左移）</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">expr <tt>&lt;&lt;</tt> expr</p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec3.html#ch05lev1sec3" >154</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder bottomBorder" align="center" valign="top">
+              <p class="docText">L</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText"><tt>&gt;&gt;</tt></p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText">bitwise shift right（位右移）</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText">expr <tt>&gt;&gt;</tt> expr</p>
+            </td>
+
+            <td class="bottomBorder" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec3.html#ch05lev1sec3" >154</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder" align="center" valign="top">
+              <p class="docText">L</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>&lt;</tt></p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">less than（小于）</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">expr <tt>&lt;</tt> expr</p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec2.html#ch05lev1sec2" >152</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder" align="center" valign="top">
+              <p class="docText">L</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>&lt;=</tt></p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">less than or equal（小于或等于）</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">expr <tt>&lt;=</tt> expr</p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec2.html#ch05lev1sec2" >152</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder" align="center" valign="top">
+              <p class="docText">L</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>&gt;</tt></p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">greater than（大于）</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">expr <tt>&gt;</tt> expr</p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec2.html#ch05lev1sec2" >152</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder bottomBorder" align="center" valign="top">
+              <p class="docText">L</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText"><tt>&gt;=</tt></p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText">greater than or equal（大于或等于）</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText">expr <tt>&gt;=</tt> expr</p>
+            </td>
+
+            <td class="bottomBorder" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec2.html#ch05lev1sec2" >152</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder" align="center" valign="top">
+              <p class="docText">L</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>==</tt></p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">equality（相等）</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">expr <tt>==</tt> expr</p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec2.html#ch05lev1sec2" >152</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder bottomBorder" align="center" valign="top">
+              <p class="docText">L</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText"><tt>!=</tt></p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText">inequality（不等）</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText">expr <tt>!=</tt> expr</p>
+            </td>
+
+            <td class="bottomBorder" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec2.html#ch05lev1sec2" >152</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder bottomBorder" align="center" valign="top">
+              <p class="docText">L</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText"><tt>&amp;</tt></p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText">bitwise AND（位与）</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText">expr <tt>&amp;</tt> expr</p>
+            </td>
+
+            <td class="bottomBorder" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec3.html#ch05lev1sec3" >154</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder bottomBorder" align="center" valign="top">
+              <p class="docText">L</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText"><tt>^</tt></p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText">bitwise XOR（）</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText">expr <tt>^</tt> expr</p>
+            </td>
+
+            <td class="bottomBorder" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec3.html#ch05lev1sec3" >154</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder bottomBorder" align="center" valign="top">
+              <p class="docText">L</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText"><tt>|</tt></p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText">bitwise OR（位异或）</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText">expr <tt>|</tt> expr</p>
+            </td>
+
+            <td class="bottomBorder" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec3.html#ch05lev1sec3" >154</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder bottomBorder" align="center" valign="top">
+              <p class="docText">L</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText"><tt>&amp;&amp;</tt></p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText">logical AND（逻辑与）</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText">expr <tt>&amp;&amp;</tt> expr</p>
+            </td>
+
+            <td class="bottomBorder" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec2.html#ch05lev1sec2" >152</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder bottomBorder" align="center" valign="top">
+              <p class="docText">L</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText"><tt>||</tt></p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText">logical OR（逻辑或）</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText">expr <tt>||</tt> expr</p>
+            </td>
+
+            <td class="bottomBorder" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec2.html#ch05lev1sec2" >152</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder bottomBorder" align="center" valign="top">
+              <p class="docText">R</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText"><tt>?:</tt></p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText">conditional（条件操作）</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText">expr <tt>?</tt> expr <tt>:</tt> expr</p>
+            </td>
+
+            <td class="bottomBorder" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec6.html#ch05sb10" >165</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder" align="center" valign="top">
+              <p class="docText">R</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>=</tt></p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">assignment（赋值操作）</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">lvalue <tt>=</tt> expr</p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec4.html#ch05lev1sec4" >159</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder" align="center" valign="top">
+              <p class="docText">R</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>*=, /=, %=</tt>,</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">compound assign（复合赋值操作）</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText">lvalue <tt>+=</tt> expr, etc.</p>
+            </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec4.html#ch05lev1sec4" >159</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder" align="center" valign="top">
+              <p class="docText">R</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>+=, -=</tt>,</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top"> </td>
+
+            <td class="rightBorder" align="left" valign="top"> </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec4.html#ch05lev1sec4" >159</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder" align="center" valign="top">
+              <p class="docText">R</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top">
+              <p class="docText"><tt>&lt;&lt;=, &gt;&gt;=</tt>,</p>
+            </td>
+
+            <td class="rightBorder" align="left" valign="top"> </td>
+
+            <td class="rightBorder" align="left" valign="top"> </td>
+
+            <td class="docTableCell" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec4.html#ch05lev1sec4" >159</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder bottomBorder" align="center" valign="top">
+              <p class="docText">R</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText"><tt>&amp;=</tt>,|=<tt>, ^=</tt></p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top"> </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top"> </td>
+
+            <td class="bottomBorder" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec4.html#ch05lev1sec4" >159</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder bottomBorder" align="center" valign="top">
+              <p class="docText">R</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText"><tt>throw</tt></p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText">throw exception（抛出异常）</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText">throw expr</p>
+            </td>
+
+            <td class="bottomBorder" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch06lev1sec13.html#ch06lev2sec13" >216</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rightBorder bottomBorder" align="center" valign="top">
+              <p class="docText">L</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText"><tt>,</tt></p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText">comma（逗号）</p>
+            </td>
+
+            <td class="rightBorder bottomBorder" align="left" valign="top">
+              <p class="docText">expr <tt>,</tt> expr</p>
+            </td>
+
+            <td class="bottomBorder" align="right" valign="top">
+              <p class="docText">p. <a class="docLink" href="ch05lev1sec9.html#ch05lev1sec9" >168</a></p>
+            </td>
+          </tr>
+        </table><br>
+
+        <a name="ch05sb14"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 5.10.2</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+			  <td align="right" class="docText" width="50">
+				<a name="ch05qa11q1"></a>
+				<b>Exercise 5.25:</b></td>
+
+                    <td>
+			<a name="idd1e37509"></a><a name="idd1e37516"></a><a name="idd1e37523"></a><a name="idd1e37530"></a><a name="idd1e37537"></a><a name="idd1e37545"></a><a name="idd1e37553"></a><a name="idd1e37561"></a><a name="idd1e37569"></a><a name="idd1e37576"></a><a name="idd1e37583"></a><a name="idd1e37590"></a><a name="idd1e37600"></a><a name="idd1e37610"></a><a name="idd1e37618"></a><a name="idd1e37626"></a><a name="idd1e37631"></a><a name="idd1e37636"></a>
+			<p class="docText">Using <a class="docLink" href="ch05lev1sec10.html#ch05table04">Table 5.4</a> (p. <a class="docLink" href="ch05lev1sec10.html#ch05table04">170</a>), parenthesize the following expressions to indicate the order in which the operands are grouped:</p>
+			<p class="docText">根据<a class="docLink" href="ch05lev1sec10.html#ch05table04">表 5.4</a> 的内容，在下列表达式中添加圆括号说明其操作数分组的顺序（即计算顺序）：</p>
+                      <pre>
+     (a)  ! ptr == ptr-&gt;next
+     (b)  ch = buf[ bp++ ] != '\n'
+</pre><br>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch05qa11q2"></a><b>Exercise 5.26:</b></td>
+
+                    <td>
+                      <p class="docText">The expressions in the previous exercise evaluate in an order that is likely to be surprising. Parenthesize these expressions to evaluate in an order you imagine is intended.</p>
+                      <p class="docText">习题 5.25 中的表达式的计算次序与你的意图不同，给它们加上圆括号使其以你所希望的操作次序求解。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch05qa11q3"></a><b>Exercise 5.27:</b></td>
+
+                    <td>
+                      <p class="docText">The following expression fails to compile due to operator precedence. Using <a class="docLink" href="ch05lev1sec10.html#ch05table04">Table 5.4</a> (p. <a class="docLink" href="ch05lev1sec10.html#ch05table04">170</a>), explain why it fails. How would you fix it?</p>
+		      <p class="docText">由于操作符优先级的问题，下列表达式编译失败。请参照<a class="docLink" href="ch05lev1sec10.html#ch05table04">表 5.4</a> 解释原因，应该如何改正？</p>
+                      <pre>
+     string s = "word";
+     // <span class="docEmphItalicAlt">add an 's' to the end, if the word doesn't already end in 's'</span>
+     string pl = s + s[s.size() - 1] == 's' ? "" : "s" ;
+</pre>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table>
+
+        <a name="ch05lev2sec16"></a>
+        <h4 class="docSection2Title">5.10.3. Order of Evaluation</h4>
+        <h4 class="docSection2Title">5.10.3. 求值顺序</h4>
+
+        <p class="docText">In <a class="docLink" href="ch05lev1sec2.html#ch05lev1sec2" >Section 5.2</a> (p. <a class="docLink" href="ch05lev1sec2.html#ch05lev1sec2" >152</a>) we saw that the <tt>&amp;&amp;</tt> and <tt>||</tt> operators specify the order in which their operands are evaluated: In both cases the right-hand operand is evaluated if and only if doing so might affect the truth value of the overall expression. Because we can rely on this property, we can write code such as</p>
+	<p class="docText">在<a class="docLink" href="ch05lev1sec2.html#ch05lev1sec2" >第 5.2 节</a>中，我们讨论了 <tt>&amp;&amp;</tt> 和 <tt>||</tt> 操作符计算其操作数的次序：当且仅当其右操作数确实影响了整个表达式的值时，才计算这两个操作符的右操作数。根据这个原则，可编写如下代码：</p>
+        <pre>
+     // <span class="docEmphasis">iter</span> <span class="docEmphItalicAlt">only dereferenced if it isn't at</span> <span class="docEmphasis">end</span>
+     while (iter != vec.end() &amp;&amp; *iter != some_val)
+</pre>
+
+	<a name="ch05term26"></a>
+        <p class="docText">The only other operators that guarantee the order in which operands are evaluated are the conditional (<b><a class="docLink" href="ch05lev1sec14.html#gloss05_26" ><span class="docEmphStrong"><tt>?:</tt></span></a></b>) and comma operators. In all other cases, the order is unspecified.</p>
+	<p class="docText">C++中，规定了操作数计算顺序的操作符还有条件（<b><a class="docLink" href="ch05lev1sec14.html#gloss05_26" ><span class="docEmphStrong"><tt>?:</tt></span></a></b>）和逗号操作符。除此之外，其他操作符并未指定其操作数的求值顺序。</p>
+
+        <p class="docText">For example, in the expression</p>
+	<p class="docText">例如，表达式</p>
+        <pre>
+     f1() * f2();
+</pre>
+
+        <p class="docText">we know that both <tt>f1</tt> and <tt>f2</tt> must be called before the multiplication can be done. After all, their results are what is multiplied. However, we have no way to know whether <tt>f1</tt> will be called before <tt>f2</tt> or vice versa.</p>
+	<p class="docText">在做乘法操作之前，必须调用 <tt>f1</tt> 函数和 <tt>f2</tt> 函数，毕竟其调用结果要相乘。然而，我们却无法知道到底是先调用 <tt>f1</tt> 还是先调用 <tt>f2</tt>。</p>
+
+	<a name="ch05note10"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">The order of operand evaluation often, perhaps even usually, doesn't matter. It can matter greatly, though, if the operands refer to <span class="docEmphasis">and change</span> the same objects.</p>
+                <p class="docText">其实，以什么次序求解操作数通常没有多大关系。只有当操作符的两个操作数涉及到同一个对象，并改变其值时，操作数的计算次序才会影响结果。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <p class="docText">The order of operand evaluation matters if one subexpression changes the value of an operand used in another subexpression:</p>
+        <p class="docText">如果一个子表达式修改了另一个子表达式的操作数，则操作数的求解次序就变得相当重要：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">oops! language does not define order of evaluation</span>
+     if (ia[index++] &lt; ia[index])
+</pre>
+
+        <p class="docText">The behavior of this expression is undefined. The problem is that the left- and right-hand operands to the <tt>&lt;</tt> both use the variable <tt>index</tt>. However, the left-hand operand involves changing the value of that variable. Assuming <tt>index</tt> is zero, the compiler might evaluate this expression in one of the following two ways:</p>
+	<p class="docText">此表达式的行为没有明确定义。问题在于：<tt>&lt;</tt> 操作符的左右操作数都使用了 <tt>index</tt> 变量，但是，左操作数更改了该变量的值。假设 <tt>index</tt> 初值为 0，编译器可以用下面两种方式之一求该表达式的值：</p>
+        <pre>
+     if (ia[0] &lt; ia[0]) // <span class="docEmphItalicAlt">execution if rhs is evaluated first</span>
+     if (ia[0] &lt; ia[1]) // <span class="docEmphItalicAlt">execution if lhs is evaluated first</span>
+</pre>
+
+        <p class="docText">We can guess that the programmer intended that the left operand be evaluated, thereby incrementing <tt>index</tt>. If so, the comparison would be between <tt>ia[0]</tt> and <tt>ia[1]</tt>. The language, however, does not guarantee a left-to-right evaluation order. In fact, an expression like this is undefined. An implementation might evaluate the right-hand operand first, in which case <tt>ia[0]</tt> is compared to itself. Or the implementation might do something else entirely.</p>
+	<p class="docText">可以假设程序员希望先求左操作数的值，因此 <tt>index</tt> 的值加 1。如果是这样的话，比较 <tt>ia[0]</tt> 和 <tt>ia[1]</tt> 的值。然而，C++ 语言不能确保从左到右的计算次序。事实上，这类表达式的行为没有明确定义。一种实现可能是先计算右操作数，于是 <tt>ia[0]</tt> 与自己做比较，要不然就是做完全不同的操作。</p>
+
+	<a name="ch05sb15"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Advice: Managing Compound Expressions</h2>
+              <h2 class="docSidebarTitle">建议：复合表达式的处理  </h2>
+
+              <p class="docText"><span class="docEmphStrong">Beginning C and C++ programmers often have difficulties understanding order of evaluation and the rules of precedence and associativity. Misunderstanding how expressions and operands are evaluated is a rich source of bugs. Moreover, the resulting bugs are difficult to find because reading the program does not reveal the error unless the programmer already understands the rules.</span></p>
+	      <p class="docText"><span class="docEmphStrong">初学 C 和 C++ 的程序员一般很难理解求值顺序、优先级和结合性规则。误解表达式和操作数如何求解将导致大量的程序错误。此外，除非程序员已经完全理解了相关规则，否则这类错误很难发现，因为仅靠阅读程序是无法排除这些错误的。</span></p>
+
+              <p class="docText"><span class="docEmphStrong">Two rules of thumb can be helpful:</span></p>
+              <p class="docText"><span class="docEmphStrong">下面两个指导原则有助于处理复合表达式：</span></p>
+
+              <div style="font-weight:bold">
+                <ol class="docList" type="1">
+                  <li>
+                    <div style="font-weight:normal">
+                      <p class="docList"><span class="docEmphStrong">When in doubt, parenthesize expressions to force the grouping that the logic of your program requires.</span></p>
+                      <p class="docList"><span class="docEmphStrong">如果有怀疑，则在表达式上按程序逻辑要求使用圆括号强制操作数的组合。</span></p>
+                    </div>
+                  </li>
+
+                  <li>
+                    <div style="font-weight:normal">
+                      <p class="docList"><span class="docEmphStrong">If you change the value of an operand, don't use that operand elsewhere in the same statement. If you need to use the changed value, then break the expression up into separate statements in which the operand is changed in one statement and then used in a subsequent statement.</span></p>
+                      <p class="docList"><span class="docEmphStrong">如果要修改操作数的值，则不要在同一个语句的其他地方使用该操作数。如果必须使用改变的值，则把该表达式分割成两个独立语句：在一个语句中改变该操作数的值，再在下一个语句使用它。</span></p>
+                    </div>
+                  </li>
+                </ol>
+              </div>
+
+              <p class="docText"><span class="docEmphStrong">An important exception to the second rule is that subexpressions that use the result of the subexpression that changes the operand are safe. For example, in <tt>*++iter</tt> the increment changes the value of <tt>iter</tt></span><span class="docEmphStrong">, and the (changed) value of <tt>iter</tt> is then used as the operand to <tt>*</tt></span><span class="docEmphStrong">. In this, and similar, expressions, order of evaluation of the operand isn't an issue. To evaluate the larger expression, the subexpression that changes the operand must first be evaluated. Such usage poses no problems and is quite common.</span></p>
+	      <p class="docText"><span class="docEmphStrong">第二个规则有一个重要的例外：如果一个子表达式修改操作数的值，然后将该子表达式的结果用于另一个子表达式，这样则是安全的。例如，<tt>*++iter</tt> 表达式的自增操作修改了 <tt>iter</tt> 的值，然后将 <tt>iter</tt>（修改后）的值用作 <tt>*</tt> 操作符的操作数。对于这个表达式或其他类似的表达式，其操作数的计算次序无关紧要。而为了计算更复杂的表达式，改变操作数值的子表达式必须首先计算。这种方法很常用，不会产生什么问题。</span></p>
+            </td>
+          </tr>
+        </table>
+        <a name="ch05note11"></a>
+
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="57" height="96" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Do not use an increment or decrement operator on the same object in more than two subexpressions of the same expression.</p>
+                <p class="docText">一个表达式里，不要在两个或更多的子表达式中对同一对象做自增或自减操作。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <p class="docText">One safe and machine-independent way to rewrite the previous comparison of two array elements is</p>
+        <p class="docText">以一种安全而且独立于机器的方式重写上述比较两个数组元素的程序：</p>
+        <pre>
+     if (ia[index] &lt; ia[index + 1]) {
+         // <span class="docEmphItalicAlt">do whatever</span>
+     }
+     ++index;
+</pre>
+
+        <p class="docText">Now neither operand can affect the value of the other.</p>
+        <p class="docText">现在，两个操作数的值不会相互影响。</p>
+
+	<a name="ch05sb16"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 5.10.3</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+			  <td align="right" class="docText" width="50">
+				<a name="ch05qa12q1"></a>
+				  <b>Exercise 5.28:</b></td>
+
+                    <td>
+			<a name="idd1e37915"></a><a name="idd1e37920"></a><a name="idd1e37923"></a><a name="idd1e37928"></a><a name="idd1e37932"></a>
+                      <p class="docText">With the exception of the logical AND and OR, the order of evaluation of the binary operators is left undefined to permit the compiler freedom to provide an optimal implementation. The trade-off is between an efficient implementation and a potential pitfall in the use of the language by the programmer. Do you consider that an acceptable trade-off? Why or why not?</p>
+		      <p class="docText">除了逻辑与和逻辑或外，<tt>C++</tt> 没有明确定义二元操作符的求解次序，编译器可自由地提供最佳的实现方式。只能在“实现效率”和程序语言使用中“潜在的缺陷”之间寻求平衡。你认为这可以接受吗？说出你的理由。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch05qa12q2"></a><b>Exercise 5.29:</b></td>
+
+                    <td>
+                      <p class="docText">Given that <tt>ptr</tt> points to a class with an <tt>int</tt> member named <tt>ival, vec</tt> is a <tt>vector</tt> holding <tt>int</tt>s, and that <tt>ival, jval</tt>, and <tt>kval</tt> are also <tt>int</tt>s, explain the behavior of each of these expressions. Which, if any, are likely to be incorrect? Why? How might each be corrected?</p>
+		      <p class="docText">假设 <tt>ptr</tt> 指向类类型对象，该类拥有一个名为 <tt>ival</tt> 的 <tt>int</tt> 型数据成员， <tt>vec</tt> 是保存 <tt>int</tt> 型元素的 <tt>vector</tt> 对象，而 <tt>ival</tt>、 <tt>jval</tt> 和 <tt>kval</tt> 都是 <tt>int</tt> 型变量。请解释下列表达式的行为，并指出哪些（如果有的话）可能是不正确的，为什么？如何改正？</p>
+                      <pre>
+     (a) ptr-&gt;ival != 0            (b) ival != jval &lt; kval
+     (c) ptr != 0 &amp;&amp; *ptr++        (d) ival++ &amp;&amp; ival
+     (e) vec[ival++] &lt;= vec[ival]
+</pre>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch05lev1sec9.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch05lev1sec11.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

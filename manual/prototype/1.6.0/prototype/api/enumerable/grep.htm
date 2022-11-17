@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Enumerable.grep - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>grep</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">grep(filter[, iterator = Prototype.K[, context]]) -> Array</code></pre>
+			<p>
+				返回所有和指定的正则表达式匹配的元素。如果指定参数 <code>iterator</code>，则可以对匹配的元素进行相应处理。
+			</p>			
+		</div>
+		<div id="abody">
+			<p>
+				该方法能够根据指定的字符串、正则表达式或任意具有 <code>match</code> 方法的对象来获取匹配的 <code>Enumerable</code>
+				中的元素。如果指定的 <code>filter</code> 是一个字符串或正则表达式，则将 <code>Enumerable</code> 中元素的字符串描述形式与
+				<code>filter</code> 进行比较，若匹配，则将元素加入到结果数组。否则，假定 <code>filter</code> 是一个具有 <code>match</code>
+				方法的对象，然后将元素传递给 <code>filter.match</code> 作为第一个参数，那些使 <code>filter.match</code> 方法返回
+				<code>true</code> 的元素将被增加到结果数组中。
+			</p>
+			<p>
+				参数 <code>iterator</code> 是可选的，它可以对结果集进行相应的转换，这种转换类似于 <a href="map.htm" >map</a>。
+			</p>
+			<p>
+				可选的 <code>context</code> 参数是 <code>iterator</code> 要绑定的对象，若设定该参数，<code>iterator</code>
+				中的 <code>this</code> 关键字将指向 <code>context</code> 对象。
+			</p>
+			<h3>版本兼容性</h3>
+			<p>
+				在 Prototype 1.6 之前，<code>grep</code> 方法的 <code>filter</code> 参数 <em>仅</em> 接受一个字符串或正则表达式。
+			</p>
+			<h3>样例</h3>
+			<pre><code class="javascript">// 获取所有具有连续相同字符的字符串 
+['hello', 'world', 'this', 'is', 'cool'].grep(/(.)\1/) 
+// -> ['hello', 'cool'] 
+// 获取所有末尾为 0 或 5 的数字 
+$R(1,30).grep(/[05]$/) 
+// -> [5, 10, 15, 20, 25, 30]
+// 获取所有末尾为 0 或 5 的数字，并将相应的值减 1
+$R(1,30).grep(/[05]$/, function(n) { return n - 1; }) 
+// -> [4, 9, 14, 19, 24, 29] 
+// 获取某元素下与指定 CSS 选择器相匹配的所有子元素 
+// (Selector 实例有一个 "match" 方法) 
+$('foo').childElements().grep(new Selector("li.active"));</code></pre>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

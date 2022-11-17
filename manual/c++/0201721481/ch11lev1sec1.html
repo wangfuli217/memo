@@ -1,0 +1,312 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 11.1.  Overview</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch11.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch11lev1sec2.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch11lev1sec1"></a>
+
+        <h3 class="docSection1Title">11.1. Overview</h3>
+        <h3 class="docSection1Title">11.1. 概述</h3>
+
+        <p class="docText">Suppose we have a <tt>vector</tt> of <tt>int</tt>s, named <tt>vec</tt>, and we want to know if it holds a particular value. The easiest way to answer this question is to use the library <tt>find</tt> operation:</p>
+
+        <p class="docText">假设有一个 <tt>int</tt> 的 <tt>vector</tt> 对象，名为 <tt>vec</tt>，我们想知道其中包含某个特定值。解决这个问题最简单的方法是使用标准库提供的 <tt>find</tt> 运算：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">value we'll look for</span>
+     int search_value = 42;
+
+     // <span class="docEmphItalicAlt">call find to see if that value is present</span>
+     vector&lt;int&gt;::const_iterator result =
+             find(vec.begin(), vec.end(), search_value);
+
+     // <span class="docEmphItalicAlt">report the result</span>
+     cout &lt;&lt; "The value " &lt;&lt; search_value
+          &lt;&lt; (result == vec.end()
+                ? " is not present" : " is present")
+          &lt;&lt; endl;
+</pre><br>
+
+        <p class="docText">The call to <tt>find</tt> takes two iterators and a value. It tests each element in the range (<a class="docLink" href="ch09lev1sec2.html#ch09lev2sec4" >Section 9.2.1</a>, p. <a class="docLink" href="ch09lev1sec2.html#ch09lev2sec4" >314</a>) denoted by its iterator arguments. As soon as it sees an element that is equal to the given value, <tt>find</tt> returns an iterator referring to that element. If there is no match, then <tt>find</tt> returns its second iterator to indicate failure. We can test whether the return is equal to the second argument to determine whether the element was found. We do this test in the output statement, which uses the conditional operator (<a class="docLink" href="ch05lev1sec7.html#ch05lev1sec7" >Section 5.7</a>, p. <a class="docLink" href="ch05lev1sec6.html#ch05sb10" >165</a>) to report whether the value was found.</p>
+        <p class="docText">使用两个迭代器和一个值调用 <tt>find</tt> 函数，检查两个迭代器实参标记范围内的每一个元素。只要找到与给定值相等的元素，<tt>find</tt> 就会返回指向该元素的迭代器。如果没有匹配的元素，<tt>find</tt> 就返回它的第二个迭代器实参，表示查找失败。于是，只要检查该函数的返回值是否与它的第二个实参相等，就可得知元素是否找到了。我们在输出语句中使用条件操作符（<a class="docLink" href="ch05lev1sec7.html#ch05lev1sec7" >第 5.7 节</a>）实现这个检查并报告是否找到了给定值。</p>
+
+        <p class="docText">Because <tt>find</tt> operates in terms of iterators, we can use the same <tt>find</tt> function to look for values in any container. For example, we can use <tt>find</tt> to look for a value in a <tt>list</tt> of <tt>int</tt> named <tt>lst</tt>:</p>
+        <p class="docText">由于 <tt>find</tt> 运算是基于迭代器的，因此可在任意容器中使用相同的 <tt>find</tt> 函数查找值。例如，可在一个名为 <tt>lst</tt> 的 <tt>int</tt> 型 <tt>list</tt> 对象上，使用 <tt>find</tt> 函数查找一个值：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">call find to look through elements in a list</span>
+     list&lt;int&gt;::const_iterator result =
+              find(lst.begin(), lst.end(), search_value);
+     cout &lt;&lt; "The value " &lt;&lt; search_value
+           &lt;&lt; (result == lst.end()
+                 ? " is not present" : " is present")
+           &lt;&lt; endl;
+</pre><br>
+
+        <p class="docText"><a name="idd1e84169"></a><a name="idd1e84174"></a>Except for the type of <tt>result</tt> and the iterators passed to <tt>find</tt>, this code is identical to the program that used <tt>find</tt> to look at elements of a <tt>vector</tt>.</p>
+        <p class="docText">除了 <tt>result</tt> 的类型和传递给 <tt>find</tt> 的迭代器类型之外，这段代码与使用 <tt>find</tt> 在 <tt>vector</tt> 对象中查找元素的程序完全相同。</p>
+
+        <p class="docText">Similarly, because pointers act like iterators on built-in arrays, we can use <tt>find</tt> to look in an array:</p>
+        <p class="docText">类似地，由于指针的行为与作用在内置数组上的迭代器一样，因此也可以使用 <tt>find</tt> 来搜索数组：</p>
+        <pre>
+     int ia[6] = {27, 210, 12, 47, 109, 83};
+     int search_value = 83;
+
+     int *result = find(ia, ia + 6, search_value);
+
+     cout &lt;&lt; "The value " &lt;&lt; search_value
+          &lt;&lt; (result == ia + 6
+                ? " is not present" : " is present")
+          &lt;&lt; endl;
+</pre><br>
+
+        <p class="docText">Here we pass a pointer to the first element in <tt>ia</tt> and another pointer that is six elements past the start of <tt>ia</tt> (that is, one past the last element of <tt>ia</tt>). If the pointer returned is equal to <tt>ia + 6</tt> then the search is unsuccessful; otherwise, the pointer points to the value that was found.</p>
+        <p class="docText">这里给 <tt>find</tt> 函数传递了两个指针：指向 <tt>ia</tt> 数组中第一个元素的指针，以及指向 <tt>ia</tt> 数组起始位置之后第 6 个元素的指针（即 <tt>ia</tt> 的最后一个元素的下一位置）。如果返回的指针等于 <tt>ia + 6</tt>，那么搜索不成功；否则，返回的指针指向找到值。</p>
+
+        <p class="docText">If we wish to pass a subrange, we pass iterators (or pointers) to the first and one past the last element of that subrange. For example, in this invocation of <tt>find</tt>, only the elements <tt>ia [1]</tt> and <tt>ia [2]</tt> are searched:</p>
+        <p class="docText">如果需要传递一个子区间，则传递指向这个子区间的第一个元素以及最后一个元素的下一位置的迭代器（或指针）。例如，在下面对 <tt>find</tt> 函数的调用中，只搜索了 <tt>ia[1]</tt> 和 <tt>ia[2]</tt>：</p>
+        <pre>
+    // <span class="docEmphItalicAlt">only search elements ia[1] and ia[2]</span>
+    int *result = find(ia + 1, ia + 3, search_value);
+</pre><br>
+        <a name="ch11lev2sec1"></a>
+
+        <h4 class="docSection2Title">How the Algorithms Work</h4>
+        <h4 class="docSection2Title">算法如何工作</h4>
+
+        <p class="docText">Each generic algorithm is implemented independently of the individual container types. The algorithms are also largely, but not completely, independent of the types of the elements that the container holds. To see how the algorithms work, let's look a bit more closely at <tt>find</tt>. Its job is to find a particular element in an unsorted collection of elements. Conceptually the steps that <tt>find</tt> must take include:</p>
+        <p class="docText">每个泛型算法的实现都独立于单独的容器。这些算法还是大而不全的，并且不依赖于容器存储的元素类型。为了知道算法如何工作，让我们深入了解 <tt>find</tt> 操作。该操作的任务是在一个未排序的元素集合中查找特定的元素。从概念上看，<tt>find</tt> 必须包含以下步骤：</p><a name="ch11pro01"></a>
+
+        <table border="0" class="docText">
+          <tr>
+            <td width="25" valign="top">
+              <div class="docText">
+                <b>1.</b>
+              </div>
+            </td>
+
+            <td>
+              <div class="docText">
+                Examine each element in turn.<br>
+                <br>
+              </div>
+
+              <div class="docText">
+                顺序检查每个元素。<br>
+                <br>
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <td width="25" valign="top">
+              <div class="docText">
+                <b>2.</b>
+              </div>
+            </td>
+
+            <td>
+              <div class="docText">
+                If the element is equal to the value we want, then return an iterator that refers to that element.<br>
+                <br>
+              </div>
+
+              <div class="docText">
+                如果当前元素等于要查找的值，那么返回指向该元素的迭代器。<br>
+                <br>
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <td width="25" valign="top">
+              <div class="docText">
+                <b>3.</b>
+              </div>
+            </td>
+
+            <td>
+              <div class="docText">
+                Otherwise, examine the next element, repeating step 2 until either the value is found or all the elements have been examined.<br>
+                <br>
+              </div>
+
+              <div class="docText">
+                否则，检查下一个元素，重复步骤 2，直到找到这个值，或者检查完所有的元素为止。<br>
+                <br>
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <td width="25" valign="top">
+              <div class="docText">
+                <b>4.</b>
+              </div>
+            </td>
+
+            <td>
+              <div class="docText">
+                If we have reached the end of the collection and we have not found the value, return a value that indicates that the value was not found.<br>
+                <br>
+              </div>
+
+              <div class="docText">
+                如果已经到达集合末尾，而且还未找到该值，则返回某个值，指明要查找的值在这个集合中不存在。<br>
+                <br>
+              </div>
+            </td>
+          </tr>
+        </table><a name="ch11lev2sec2"></a>
+
+        <h4 class="docSection2Title">The Standard Algorithms Are Inherently Type-Independent</h4>
+        <h4 class="docSection2Title">标准算法固有地独立于类型</h4><a name="idd1e84285"></a><a name="idd1e84290"></a><a name="idd1e84295"></a><a name="idd1e84300"></a><a name="idd1e84305"></a><a name="idd1e84310"></a>
+
+        <p class="docText">The algorithm, as we've stated it, is independent of the type of the container: Nothing in our description depends on the container type. Implicitly, the algorithm does have one dependency on the element type: We must be able to compare elements. More specifically, the requirements of the algorithm are:</p>
+        <p class="docText">这种算法，正如我们所指出的，与容器的类型无关：在前面的描述中，没有任何内容依赖于容器类型。这种算法只在一点上隐式地依赖元素类型：必须能够对元素做比较运算。该算法的明确要求如下：</p>
+
+        <div style="font-weight:bold">
+          <ol class="docList" type="1">
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">We need a way to traverse the collection: We need to be able to advance from one element to the next.</p>
+                <p class="docList">需要某种遍历集合的方式：能够从一个元素向前移到下一个元素。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">We need to be able to know when we have reached the end of the collection.</p>
+                <p class="docList">必须能够知道是否到达了集合的末尾。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">We need to be able to compare each element to the value we want.</p>
+                <p class="docList">必须能够对容器中的每一个元素与被查找的元素进行比较。</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">We need a type that can refer to an element's position within the container or that can indicate that the element was not found.</p>
+                <p class="docList">需要一个类型指出元素在容器中的位置，或者表示找不到该元素。</p>
+              </div>
+            </li>
+          </ol>
+        </div><a name="ch11lev2sec3"></a>
+
+        <h4 class="docSection2Title">Iterators Bind Algorithms to Containers</h4>
+        <h4 class="docSection2Title">迭代器将算法和容器绑定起来</h4>
+
+        <p class="docText">The generic algorithms handle the first requirement, container traversal, by using iterators. All iterators support the increment operator to navigate from one element to the next, and the dereference operator to access the element value. With one exception that we'll cover in <a class="docLink" href="ch11lev1sec3.html#ch11lev2sec11" >Section 11.3.5</a> (p. <a class="docLink" href="ch11lev1sec3.html#ch11lev2sec11" >416</a>), the iterators also support the equality and inequality operators to determine whether two iterators are equal.</p>
+        <p class="docText">泛型算法用迭代器来解决第一个要求：遍历容器。所有迭代器都支持自增操作符，从一个元素定位下一个元素，并提供解引用操作符访问元素的值。除了 <a class="docLink" href="ch11lev1sec3.html#ch11lev2sec11" >第 11.3.5 节</a>将介绍的一个例外情况之外，迭代器还支持相等和不等操作符，用于判断两个迭代是否相等。</p>
+
+        <p class="docText">For the most part, the algorithms each take (at least) two iterators that denote the range of elements on which the algorithm is to operate. The first iterator refers to the first element, and the second iterator marks one past the last element. The element addressed by the second iterator, sometimes referred to as the <b><a name="ch11term11"></a><a class="docLink" href="ch11lev1sec7.html#gloss11_11" >off-the-end iterator</a></b>, is not itself examined; it serves as a sentinel to terminate the traversal.</p>
+        <p class="docText">大多数情况下，每个算法都需要使用（至少）两个迭代器指出该算法操纵的元素范围。第一个迭代器指向第一个元素，而第二个迭代器则指向最后一个元素的下一位置。第二个迭代器所指向的元素［有时被称为<a class="docLink" href="ch11lev1sec7.html#gloss11_11" >超出末端迭代器</a>］本身不是要操作的元素，而被用作终止遍历的哨兵（sentinel）。</p>
+
+        <p class="docText">The off-the-end iterator also handles requirement 4 by providing a convenient return value that indicates that the search element wasn't found. If the value isn't found, then the off-the-end iterator is returned; otherwise, the iterator that refers to the matching element is returned.</p>
+        <p class="docText">使用超出末端迭代器还可以很方便地处理第四个要求，只要以此迭代器为返回值，即可表示没有找到要查找的元素。如果要查找的值未找到，则返回超出末端迭代器；否则，返回的迭代器指向匹配的元素。</p>
+
+        <p class="docText">Requirement 3, value comparison, is handled in one of two ways. By default, the <tt>find</tt> operation requires that the element type define operator <tt>==</tt>. The algorithm uses that operator to compare elements. If our type does not support the <tt>==</tt> operator, or if we wish to compare elements using a different test, we can use a second version of <tt>find</tt>. That version takes an extra argument that is the name of a function to use to compare the elements.</p>
+        <p class="docText">第三个要求——元素值的比较，有两种解决方法。默认情况下，<tt>find</tt> 操作要元素类型定义了相等（<tt>==</tt>）操作符，算法使用这个操作符比较元素。如果元素类型不支持相等（<tt>==</tt>）操作符，或者打算用不同的测试方法来比较元素，则可使用第二个版本的 <tt>find</tt> 函数。这个版本需要一个额外的参数：实现元素比较的函数名字。</p>
+
+        <p class="docText">The algorithms achieve type independence by never using container operations; rather, all access to and traversal of the elements is done through the iterators. The actual container type (or even whether the elements are stored in a container) is unknown.</p>
+        <p class="docText">这些算法从不使用容器操作，因而其实现与类型无关，元素的所有访问和遍历都通过迭代器实现。实际的容器类型未知（甚至所处理的元素是否存储在容器中也是未知的）。</p>
+
+        <p class="docText">The library provides more than 100 algorithms. Like the containers, the algorithms have a consistent architecture. Understanding the design of the algorithms makes learning and using them easier than memorizing all 100+ algorithms. In this chapter we'll both illustrate the use of the algorithms and describe the unifying principles used by the library algorithms. <a class="docLink" href="app01.html#app01" >Appendix A</a> lists all the algorithms classified by how they operate.</p>
+        <p class="docText">标准库提供了超过 100 种算法。与容器一样，算法有着一致的结构。比起死记全部一百多种算法，了解算法的设计可使我们更容易学习和使用它们。本章除了举例说明这些算法的使用之外，还将描述标准库算法的统一原理。<a class="docLink" href="app01.html#app01" >附录 A</a>根据操作分类列出了所有的算法。</p><a name="ch11sb01"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 11.1</h2>
+
+              <blockquote>
+                <a name="idd1e84403"></a><a name="idd1e84408"></a><a name="idd1e84414"></a><a name="idd1e84420"></a>
+
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch11qa1q1"></a><b>Exercise 11.1:</b></td>
+
+                    <td>
+                      <p class="docText">The <tt>algorithm</tt> header defines a function named <tt>count</tt> that is similar to <tt>find</tt>. It takes a pair of iterators and a value and returns a count of how often that value appears. Read a sequence of <tt>int</tt>s into a <tt>vector</tt>. Count how many elements have a given value.</p>
+                      <p class="docText"><tt>algorithm</tt> 头文件定义了一个名为 <tt>count</tt> 的函数，其功能类似于 <tt>find</tt>。这个函数使用一对迭代器和一个值做参数，返回这个值出现次数的统计结果。编写程序读取一系列 <tt>int</tt> 型数据，并将它们存储到 <tt>vector</tt> 对象中，然后统计某个指定的值出现了多少次。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch11qa1q2"></a><b>Exercise 11.2:</b></td>
+
+                    <td>
+                      <p class="docText">Repeat the previous program, but read values into a <tt>list</tt> of <tt>string</tt>s.</p>
+                      <p class="docText">重复前面的程序，但是，将读入的值存储到一个 <tt>string</tt> 类型的 <tt>list</tt> 对象中。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a name="ch11sb02"></a>
+
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Key Concept: Algorithms <span class="docEmphasis">Never</span> Execute Container Operations</h2>
+              <h2 class="docSidebarTitle">关键概念：算法<span class="docEmphasis">永不</span>执行容器提供的操作</h2>
+
+              <p class="docText"><span class="docEmphStrong">The generic algorithms do not themselves execute container operations. They operate solely in terms of iterators and iterator operations. The fact that the algorithms operate in terms of iterators and not container operations has a perhaps surprising but essential implication: When used on "ordinary" iterators, algorithms never change the size of the underlying container. As we'll see, algorithms may change the values of the elements stored in the container, and they may move elements around within the container. They do not, however, ever add or remove elements directly.</span></p>
+              <p class="docText"><span class="docEmphStrong">泛型算法本身从不执行容器操作，只是单独依赖迭代器和迭代器操作实现。算法基于迭代器及其操作实现，而并非基于容器操作。这个事实也许比较意外，但本质上暗示了：使用“普通”的迭代器时，算法从不修改基础容器的大小。正如我们所看到的，算法也许会改变存储在容器中的元素的值，也许会在容器内移动元素，但是，算法从不直接添加或删除元素。</span></p>
+
+
+              <p class="docText"><span class="docEmphStrong"><a class="docLink" href="ch11lev1sec3.html#ch11lev2sec7" >第 11.3.1 节</a>将介绍标准库提供的另一种特殊的迭代器类：插入器（inserter），除了用于遍历其所绑定的序列之外，还可实现更多的功能。在给这类迭代器赋值时，在基础容器上将执行插入运算。如果算法操纵这类迭代器，迭代器将可能导致在容器中添加元素。但是，算法本身从不这么做。</span></p>
+            </td>
+          </tr>
+        </table><br>
+        <a href="21001535.html" ><img src="images/pixel.gif"  alt="" width="1" height="1" border="0"></a>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch11.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch11lev1sec2.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

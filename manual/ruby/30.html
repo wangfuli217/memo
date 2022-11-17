@@ -1,0 +1,104 @@
+<html><HEAD><TITLE>19、过程对象 - RUBY文档中心</TITLE>
+<STYLE type=text/css>
+<!--
+.code2 {font-size:14.7px;font-family:arial;color:#00009a;line-height:150%;background-color:#EFEFEF;height=25px;vertical-align=middle;margin-left: 20px;}
+.code {font-size:14.7px;font-family:arial;color:#00009a;background-color:#EFEFEF;line-height: 150%}
+.quote {font-size:14.7px;font-family:arial;color:#666666;line-height:150%;}
+-->
+</STYLE>
+
+<META http-equiv=Content-Type content="text/html; charset=gb2312"><LINK href="30_files/news[1].css"  rel=stylesheet></head>
+<BODY topMargin=0>
+<STYLE type=text/css>
+<!--
+body {
+	margin-top: 50px;
+}
+.style12 {font-size: 33px}
+.style15 {
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-weight: bold;
+}
+.style17 {font-family: "黑体", "楷体_GB2312", "新宋体"}
+.style18 {font-size: 12px}
+-->
+</STYLE>
+
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #929292 1px groove" cellSpacing=0 cellPadding=3 width=772 align=center bgColor=#ffffff border=0>
+<TBODY>
+<TR>
+<TD height=20></TD></TR>
+<TR>
+<TD bgColor=#8acd38 height=30>&nbsp;</TD></TR>
+<TR>
+<TD height=50></TD></TR></TBODY></TABLE>
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #ffffff 1px groove" borderColor=#ffffff cellSpacing=0 cellPadding=3 width=772 align=center bgColor=#ffffff border=0>
+<TBODY>
+<TR>
+<TD align=middle>
+<DIV class=moer-title><IMG src="51_files/logo_read[1].gif" > 19、过程对象</DIV>
+<P>转帖：oasis_me　　发表时间：2005-6-15 21:24:58　　点击次数：274 </P></TD></TR>
+<TR>
+<TD height=50></TD></TR></TBODY></TABLE>
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #ffffff 1px groove" borderColor=#ffffff cellSpacing=0 cellPadding=3 width=772 align=center bgColor=#ffffff border=0>
+<TBODY>
+<TR>
+<TD width="10%" bgColor=#ffffff>&nbsp;</TD>
+<TD class=moer-ask vAlign=top align=left width="5%" bgColor=#ffffff>&nbsp;</TD>
+<TD vAlign=top align=left width="75%">
+<TABLE cellSpacing=0 cellPadding=0>
+<TBODY>
+<TR>
+<TD class=moer-content vAlign=top align=left>我们总是希望对未知事件分类.当它发生时,向其它方法传递一块作为参数的代码是最容易地解决方法,也就是说我们希望像处理数据一样处理代码.<BR><BR>一个新的过程对象可以通过proc创建:<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;quux&nbsp;=&nbsp;proc&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;print&nbsp;"QUUXQUUXQUUX!!!\n"<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;}<BR>&nbsp;&nbsp;&nbsp;#&lt;Proc:0x4017357c&gt;&nbsp;</TD></TR></TBODY></TABLE><BR><BR>现在quux指向一个对象,像其它对象一样,它也有可以调用的行为.特别的,我们可以用call方法执行它:<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;quux.call<BR>QUUXQUUXQUUX!!!<BR>&nbsp;&nbsp;&nbsp;nil&nbsp;</TD></TR></TBODY></TABLE><BR><BR>那么quux可以用做一个方法的参数吗?当然.<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;def&nbsp;run(&nbsp;p&nbsp;)<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;print&nbsp;"About&nbsp;to&nbsp;call&nbsp;a&nbsp;procedure...\n"<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;p.call<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;print&nbsp;"There:&nbsp;finished.\n"<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;end<BR>&nbsp;&nbsp;&nbsp;nil<BR>ruby&gt;&nbsp;run&nbsp;quux<BR>About&nbsp;to&nbsp;call&nbsp;a&nbsp;procedure...<BR>QUUXQUUXQUUX!!!<BR>There:&nbsp;finished.<BR>&nbsp;&nbsp;&nbsp;nil&nbsp;</TD></TR></TBODY></TABLE><BR><BR>trap方法令到我们可以对任何系统信号做出我们自己的选择.<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;inthandler&nbsp;=&nbsp;proc{&nbsp;print&nbsp;"^C&nbsp;was&nbsp;pressed.\n"&nbsp;}<BR>&nbsp;&nbsp;&nbsp;#&lt;Proc:0x401730a4&gt;<BR>ruby&gt;&nbsp;trap&nbsp;"SIGINT",&nbsp;inthandler<BR>&nbsp;&nbsp;&nbsp;#&lt;Proc:0x401735e0&gt;&nbsp;</TD></TR></TBODY></TABLE><BR><BR>一般的,敲入^C将导致解释器退出.但现在一个信息被打印出来,解释器继续执行着,所以你不会丢失掉正在作业的工作.(你不会永远留在解释器里,你仍可以用&nbsp;exit&nbsp;或者按&nbsp;^D退出)<BR><BR>最后在我们开始下一节之前还应注意的一点是:在将一个过程对象捆绑到一个信号之前,不是必须给这个过程对象命名的.一个等效的匿名(anonymous)过程对象像这样<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;trap&nbsp;"SIGINT",&nbsp;proc{&nbsp;print&nbsp;"^C&nbsp;was&nbsp;pressed.\n"&nbsp;}<BR>&nbsp;&nbsp;&nbsp;nil&nbsp;</TD></TR></TBODY></TABLE><BR><BR>或着更简略,<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;trap&nbsp;"SIGINT",&nbsp;'print&nbsp;"^C&nbsp;was&nbsp;pressed.\n"'<BR>&nbsp;&nbsp;&nbsp;nil&nbsp;</TD></TR></TBODY></TABLE><BR><BR>这种简写为你提供了一种方便和可读性更强的写小匿名过程的路子.</TD></TR>
+<TR>
+<TD class=moer-content vAlign=top align=left height=30></TD></TR>
+<TR>
+<TD vAlign=top align=left><SPAN style="FONT-WEIGHT: bold; FONT-SIZE: 12px">版权声明：</SPAN>RUBY文档中心的所有文章标明[<B>原创</B>]的均为本站作品，版权属RUBY中文化计划，若转载请注明；标明[<B>翻译</B>]的其外文版权归原作者，译文版权属RUBY中文化计划；标明[<B>转贴</B>]的，若原作者感到侵犯了他的著作权，那么请及时跟主持人联系，我们会尽快更正。</TD></TR></TBODY></TABLE></TD>
+<TD width="10%" bgColor=#ffffff>&nbsp;</TD></TR></TBODY></TABLE>
+<STYLE type=text/css>
+<!--
+body {
+	margin-bottom: 20px;
+}
+-->
+</STYLE>
+
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #929292 1px groove; BORDER-BOTTOM: #929292 1px groove" cellSpacing=0 cellPadding=0 width=772 align=center>
+<TBODY>
+<TR>
+<TD bgColor=#ffffff>
+<DIV align=center>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P><IMG height=11 src="55_files/logo_small[1].gif"  width=8> 版权所有(C) <A href="http://www.moer.net/ruby/index.asp" >RUBY中文化计划</A></P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></DIV></TD></TR></TBODY></TABLE>
+<DIV align=center></DIV>
+<div style="display:none;">
+<script type="text/javascript" src="http://shouce.jb51.net/js/stat.js" ></script>
+</div>
+</BODY>

@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Enumerable.each - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>each</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">each(iterator[, context]) -> Enumerable</code></pre>
+			<p>
+				该方法是 <code>Enumerable</code> 的基础。它使我们能够用一种通用的方式来遍历处理所有的元素，并返回
+				<code>Enumerable</code> 以支持链式调用的编程方式。参数 <code>iterator</code> 是一个函数对象，用于处理
+				<code>Enumerable</code>	中的每一个元素。
+			</p>
+		</div>
+		<div id="abody">
+			<p>
+				基于 <code>each</code> 进行迭代是 <a href="../enumerable.htm" >Enumerable</a> 的核心。参数 <code>iterator</code>
+				指定的函数接受两个参数：
+			</p>
+			<ol>
+				<li>迭代中的当前元素</li>
+				<li>
+					起始值为 0 的数字索引，用于表示当前循环的次数。第二个参数不常用（因此在上面的声明中未列出），
+					但在某些特定的情形下，它是非常有用的。
+				</li>
+			</ol>
+			<p>
+				可选的 <code>context</code> 参数是 <code>iterator</code> 要绑定的对象，若设定该参数，<code>iterator</code>
+				中的 <code>this</code> 关键字将指向 <code>context</code> 对象。
+			</p>
+			<h3><code>$break</code> 和 <code>$continue</code></h3>
+			<p class="deprecated">
+				不再支持 <code>$continue</code> 的使用。该特性在 Prototype 1.5 及以后的版本中将不可用。因为只要在 <code>iterator</code>
+				指定的函数中简单的使用 <code>return</code> 语句，即可跳出本次循环，从而进入下一次迭代。
+			</p>
+			<p>
+				在 JavaScript 中，标准的循环可使用 <code>break</code> 和 <code>continue</code> 语句进行短路。然而，使用
+				<code>iterator</code> 函数时，<code>iterator</code> 的代码在循环的作用域之外：<code>iterator</code> 的代码未运行在当前上下文中。
+			</p>
+			<p>
+				为提供相同的功能（尽管未做到最佳），Prototype 提供了两个全局的异常对象：<code>$break</code> 和 <code>$continue</code>。
+				在循环中抛出它们相当于使用原生的 <code>break</code> 和 <code>continue</code> 语句。这两个异常对象在 <code>each</code>
+				函数内部能够被正常的捕获到。
+			</p>
+			<h3>样例</h3>
+			<pre><code class="javascript">['one', 'two', 'three'].each(function(s) { alert(s); });
+[ 'hello', 'world'].each(function(s, index) { alert(index + ': ' + s); }); 
+// 先弹出 '0: hello' 然后弹出 '1: world' 
+// 这比使用 inject 方法来累计值更好，并且更符合我的风格
+// 这里... 
+var result = []; 
+$R(1,10).each(function(n) { 
+	if(0 == n % 2) 
+		throw $continue; 
+	if (n > 6) 
+		throw $break; 
+	result.push(n); 
+}); 
+// result -> [1, 3, 5] 
+// <strong>译注：</strong>使用 inject 实现上述功能
+$R(1,10).inject([], function(result, n){
+	if(n < 6 && 0 != n % 2)
+		result.push(n);
+	return result;
+})</code></pre>
+			<h3><code>each</code> vs. <code>_each</code></h3>
+			<p>
+				如果你曾经读过 <a href="../enumerable.htm" >Enumerable</a> 的概要文档，可能还记得为了在一个类中混入
+				<code>Enumerable</code>，必须提供与类的内部数据结构相匹配的迭代函数。这个最基本的迭代函数必须命名为 <code>_each</code>，
+				并且它只接受一个参数：<code>iterator</code> 函数。更进一步的信息请查看概要文档。
+			</p>
+			<p>
+				事实上，<code>Enumerable.each</code> 封装了 <code>_each</code> 提供的用于实际循环的代码，并且：
+			</p>
+			<ol>
+				<li>支持上面所描述的 break/continue 结构。</li>
+				<li>维护和传递相应的 value/index 参数。</li>
+			</ol>
+			<h3>优化版本</h3>
+			<p>
+				对于下面所描述的，同时也是一种极为常见的情形，使用一个专门优化的版本可能会更好：
+			</p>
+			<p>
+				比如说需要在所有元素上调用一个相同的方法，可能会具有参数，无论是否需要获取结果集，使用
+				<a href="invoke.htm" >invoke</a> 方法会更方便一些。
+			</p>
+			<p>
+				通常 <code>invoke</code> 比 <code>each</code> 具有更好的执行效率，因为它避免了语法闭包的开销。
+				然而，它会将结果压入一个数组，这会造成一部分性能的开销，可能你并不希望这么做。但是不管怎样，
+				你最好在你的实际应用中就上述的情况做一下性能基准测试。
+			</p>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>ObjectRange.include - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>include</h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">include(value) -> Boolean</code></pre>
+			<p>判断排列中是否包含指定的值。</p>
+		</div>
+		<div id="abody">
+			<p>
+				这个方法的默认实现假定排列中的值具有严格有效的弱序化规则（即操作符 <code>&lt;</code>
+				在任意两个值之间都有明确的语义）。尽管 <code>ObjectRange</code> 混入了
+				<a href="../enumerable.htm" >Enumerable</a>，但是这里仍然重写了 <code>Enumerable</code>
+				中默认的 <a href="../enumerable/include.htm" >include</a> 方法，以使它具有更好的性能
+				（它简单的比较 <code>value</code> 是否在 <code>ObjectRange</code> 的上下限值之内）。
+			</p>
+			<p>
+				<strong>译注：</strong>正如上面的描述，这个方法只是简单的比较 <code>value</code> 是否在 <code>ObjectRange</code>
+				的上下限值之内。所以，如果要在自定义对象上实现自己的排列，很多时候都必须重写 <code>include</code> 方法，另外，
+				在对 <code>ObjectRange</code> 进行遍历时，也是调用 <code>include</code> 方法确定当前的值是否仍在排列中。<br />
+				下面给出一个简单的例子以说明这个问题：
+			</p>
+			<pre><code class="javascript">var Sequence = Class.create({
+	initialize: function(original){
+		this.original = original;
+	},
+	// 实现自定义对象的 succ 方法
+	succ: function(){
+		// 注意：必须返回自定义的对象类型
+		return new Sequence(this.original + 2);
+	},
+	// 如果 toString 返回一个常量，同时又未实现自己的 include 方法
+	// 那么 $R(new Sequence(1), new Sequence(10)) 将会成为一个死循环
+	toString: function(){
+		return this.original;
+	}
+});
+		
+var result = [];
+var range = $R(new Sequence(1), new Sequence(10));
+range.each(function(s){
+	result.push(s.toString());
+});
+result.join(' ');
+// -> '1 3 5 7 9'
+
+range.include(new Sequence(4));
+// -> true。明显是错误的。</code></pre>
+			<p>
+				显然，最后的结果不符合我们的意图，这是因为未实现自己的 <code>include</code> 方法，所以只是简单的根据
+				<code>toString</code> 方法返回的值来进行比较以确定元素是否在当前排列中。
+			</p>
+			<h3>样例</h3>
+			<pre><code class="javascript">$R(1, 10).include(5) // -> true 
+$R('a', 'h').include('x') // -> false 
+$R(1, 10).include(10) // -> true 
+$R(1, 10, true).include(10) // -> false</code></pre>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

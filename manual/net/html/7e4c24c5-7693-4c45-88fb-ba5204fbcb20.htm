@@ -1,0 +1,264 @@
+﻿<html xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+    <META NAME="save" CONTENT="history" />
+    <title>Equals() 和运算符 == 的重写准则（C# 编程指南）</title>
+    <link rel="stylesheet" type="text/css" href="../styles/presentation.css" />
+    <link rel="stylesheet" type="text/css" href="ms-help://Hx/HxRuntime/HxLink.css" />
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/EventUtilities.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/SplitScreen.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/Dropdown.js"> </script>
+    <script type="text/javascript" src="../scripts/script_manifold.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/script_feedBack.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CheckboxMenu.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CommonUtilities.js"> </script>
+    <xml>
+      <MSHelp:TOCTitle Title="Equals() 和运算符 == 的重写准则" />
+      <MSHelp:Keyword Index="A" Term="7e4c24c5-7693-4c45-88fb-ba5204fbcb20" />
+      <MSHelp:Keyword Index="K" Term="== 运算符（相等）[C#]" />
+      <MSHelp:Keyword Index="K" Term="相等运算符 (==) [C#]" />
+      <MSHelp:Keyword Index="K" Term="Equals 方法 [C#], 重载" />
+      <MSHelp:Keyword Index="K" Term="运算符 == [C#], 重载 [C#]" />
+      <MSHelp:Keyword Index="K" Term="运算符重载 [C#], 运算符 ==" />
+      <MSHelp:Keyword Index="K" Term="运算符 [C#]" />
+      <MSHelp:Attr Name="RevisionNumber" Value="12" />
+      <MSHelp:Attr Name="AssetID" Value="7e4c24c5-7693-4c45-88fb-ba5204fbcb20" />
+      <MSHelp:Attr Name="Abstract" Value="&#xD;&#xA;                    C# 中有两种不同的相等：引用相等和值相等。值相等是大家普遍理解的意义上的相等：它意味着两个对象包含相同的值。例如，两个值为 2 的整数具有值相等性。引用相等意味着要比较的不是两个对象，而是两个对象引用，且两者引用的是同一个对象。这可以通过简单的赋值来实现，如下面的示例所示：&#xD;&#xA;                " />
+      <MSHelp:Attr Name="codelang" Value="CSharp" />
+      <MSHelp:Attr Name="CommunityContent" Value="1" />
+      <MSHelp:Attr Name="DevLang" Value="CSharp" />
+      <MSHelp:Attr Name="DevLangVers" Value="CSharp" />
+      <MSHelp:Attr Name="DocSet" Value="C#" />
+      <MSHelp:Attr Name="DocSet" Value="C# Lang" />
+      <MSHelp:Attr Name="DocSet" Value="ExpressLibVS" />
+      <MSHelp:Attr Name="ProgModel" Value="managed" />
+      <MSHelp:Attr Name="ShippedIn" Value="vs.90" />
+      <MSHelp:Attr Name="Technology" Value="ManagedCode" />
+      <MSHelp:Attr Name="TopicVersion" Value="09.00.08178.10000" />
+      <MSHelp:Attr Name="Catalog Container" Value="System_Default_Catalog" />
+      <MSHelp:Attr Name="Content Set Container" Value="System_Default_Content_Set" />
+      <MSHelp:Attr Name="TopicType" Value="kbRef" />
+      <MSHelp:Attr Name="Locale" Value="zh-chs" />
+    </xml>
+  </head>
+  <body>
+    <input type="hidden" id="userDataCache" class="userDataStyle" />
+    <input type="hidden" id="hiddenScrollOffset" />
+    <img id="collapseImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" title="“折叠”图像" />
+    <img id="expandImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" title="“展开”图像" />
+    <img id="collapseAllImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" />
+    <img id="expandAllImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" />
+    <img id="dropDownImage" style="display:none; height:0; width:0;" src="../icons/dropdown.gif" />
+    <img id="dropDownHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/dropdownHover.gif" />
+    <img id="copyImage" style="display:none; height:0; width:0;" src="../icons/copycode.gif" title="“复制”图像" />
+    <img id="copyHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/copycodeHighlight.gif" title="“复制悬停”图像" />
+    <div id="header">
+      <table id="topTable" cellspacing="0" cellpadding="0">
+        <tr>
+          <td>
+            <span onclick="ExpandCollapseAll(toggleAllImage)" style="cursor:default;" onkeypress="ExpandCollapseAll_CheckKey(toggleAllImage, event)" tabindex="0">
+              <img ID="toggleAllImage" class="toggleAll" src="../icons/collapse_all.gif" /> <label id="collapseAllLabel" for="toggleAllImage" style="display: none;">全部折叠</label><label id="expandAllLabel" for="toggleAllImage" style="display: none;">全部展开</label> </span>
+            <span>    </span>
+            <span id="devlangsDropdown" class="filter" tabindex="0">
+              <img id="devlangsDropdownImage" src="../icons/dropdown.gif" /> <label id="devlangsMenuAllLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：全部 </nobr></label><label id="devlangsMenuMultipleLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：多个 </nobr></label><label id="devlangsMenuVisualBasicLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual Basic </nobr></label><label id="devlangsMenuCSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：C# </nobr></label><label id="devlangsMenuManagedCPlusPlusLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual C++ </nobr></label><label id="devlangsMenuJSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：J# </nobr></label><label id="devlangsMenuJScriptLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：JScript </nobr></label></span>
+          </td>
+        </tr>
+      </table>
+      <div id="devlangsMenu">
+        <input id="VisualBasicCheckbox" type="checkbox" data="VisualBasic,vb,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="VisualBasicCheckbox">Visual Basic</label>
+        <br />
+        <input id="CSharpCheckbox" type="checkbox" data="CSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="CSharpCheckbox">C#</label>
+        <br />
+        <input id="ManagedCPlusPlusCheckbox" type="checkbox" data="ManagedCPlusPlus,cpp,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="ManagedCPlusPlusCheckbox">Visual C++</label>
+        <br />
+        <input id="JSharpCheckbox" type="checkbox" data="JSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JSharpCheckbox">J#</label>
+        <br />
+        <input id="JScriptCheckbox" type="checkbox" data="JScript,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JScriptCheckbox">JScript</label>
+        <br />
+      </div>
+      <table id="bottomTable" cellpadding="0" cellspacing="0">
+        <tr id="headerTableRow1">
+          <td align="left">
+            <span id="runningHeaderText">C# 编程指南</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow2">
+          <td align="left">
+            <span id="nsrTitle">Equals() 和运算符 == 的重写准则（C# 编程指南）</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow3">
+          <td align="left">
+            <a href="7e4c24c5-7693-4c45-88fb-ba5204fbcb20.htm#seeAlsoToggle" onclick="OpenSection(seeAlsoToggle)">另请参见</a>  
+<script type="text/javascript">
+var fbBody = '%b8%d0%d0%bb%c4%fa%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%bf%aa%b7%a2%b0%e6%b1%e0%d0%b4%cd%c5%b6%d3%bd%ab%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%d3%c3%d3%da%b8%c4%bd%f8%ce%c4%b5%b5%a1%a3%ce%d2%c3%c7%d4%da%c9%f3%d4%c4%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%ca%b1%a3%ac%bf%c9%c4%dc%bb%e1%b8%f8%c4%fa%b7%a2%cb%cd%b5%e7%d7%d3%d3%ca%bc%fe%a3%ac%d2%d4%c7%eb%c4%fa%cc%e1%b9%a9%bd%f8%d2%bb%b2%bd%b5%c4%bd%e2%ca%cd%cb%b5%c3%f7%bb%f2%d5%df%be%cd%bd%e2%be%f6%b7%bd%b0%b8%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%ce%d2%c3%c7%b2%bb%bb%e1%bd%ab%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%d3%c3%d3%da%c8%ce%ba%ce%c6%e4%cb%fb%d3%c3%cd%be%a3%ac%b2%a2%c7%d2%d4%da%c9%f3%d4%c4%cd%ea%d6%ae%ba%f3%a3%ac%ce%d2%c3%c7%b2%bb%bb%e1%d4%d9%b1%a3%c1%f4%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%a1%a3%0d%0a%d3%d0%b9%d8%20Microsoft%20%d2%fe%cb%bd%d5%fe%b2%df%b5%c4%bd%f8%d2%bb%b2%bd%d0%c5%cf%a2%a3%ac%c7%eb%b2%ce%bc%fb%20http%3a%2f%2fprivacy.microsoft.com%2fzh-cn%2fdefault.aspx%a1%a3';
+var fbSubject = 'Customer%20Feedback';
+</script>
+  <span id="headfeedbackarea" class="feedbackhead"><a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);"> 发送反馈意见</a></span>
+</td>
+        </tr>
+      </table>
+      <table id="gradientTable">
+        <tr>
+          <td class="nsrBottom" background="../icons/gradient.gif" />
+        </tr>
+      </table>
+    </div>
+    <div id="mainSection">
+      <div id="mainBody">
+        <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
+        <font color="DarkGray"></font>
+        <p /> <p><font color="DarkGray">更新：2007 年 11 月</font></p><div class="introduction"><p>
+                    C# 中有两种不同的相等：引用相等和值相等。值相等是大家普遍理解的意义上的相等：它意味着两个对象包含相同的值。例如，两个值为 2 的整数具有值相等性。引用相等意味着要比较的不是两个对象，而是两个对象引用，且两者引用的是同一个对象。这可以通过简单的赋值来实现，如下面的示例所示：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>System.Object a = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> System.Object();
+System.Object b = a;
+System.Object.ReferenceEquals(a, b);  <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//returns true</span>
+
+</pre></td></tr></table></span></div></div><p>
+                    在上面的代码中，只存在一个对象，但存在对该对象的多个引用：<span class="code">a</span> 和 <span class="code">b</span>。由于它们引用的是同一个对象，因此具有引用相等性。如果两个对象具有引用相等性，则它们也具有值相等性，但是值相等性不能保证引用相等性。
+                </p><p>
+                    若要检查引用相等性，应使用 <span sdata="cer" target="M:System.Object.ReferenceEquals(System.Object,System.Object)"><mshelp:link keywords="M:System.Object.ReferenceEquals(System.Object,System.Object)" tabindex="0">ReferenceEquals</mshelp:link></span>。若要检查值相等性，请使用 <span sdata="cer" target="M:System.Object.Equals(System.Object)"><mshelp:link keywords="Overload:System.Object.Equals" tabindex="0">Equals</mshelp:link></span>。
+                </p></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle0)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle0, event)" tabindex="0"><img id="sectionToggle0" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />重写 Equals</span></h1><div id="sectionSection0" class="section" name="collapseableSection" style=""><p>
+                    由于 <span sdata="cer" target="M:System.Object.Equals(System.Object)"><mshelp:link keywords="Overload:System.Object.Equals" tabindex="0">Equals</mshelp:link></span> 是一个虚方法，因此任何类都可以重写其实现。表示某个值（本质上可以是任何值类型）或一组值（如复数类）的任何类都应该重写 <b>Equals</b>。如果类型要实现 <span sdata="cer" target="T:System.IComparable"><mshelp:link keywords="T:System.IComparable" tabindex="0">IComparable</mshelp:link></span>，则它应该重写 <b>Equals</b>。
+                </p><p>
+                    <b>Equals</b> 的新实现应该遵循 <span sdata="cer" target="Overload:System.Object.Equals"><mshelp:link keywords="Overload:System.Object.Equals" tabindex="0">Equals</mshelp:link></span> 的所有保证：
+                </p><ul><li><p>
+                    x.<b>Equals</b>(x) 返回 true。
+                </p></li><li><p>
+                    x.<b>Equals</b>(y) 与 y.<b>Equals</b>(x) 返回相同的值。
+                </p></li><li><p>
+                    如果 (x.<b>Equals</b>(y) &amp;&amp; y.<b>Equals</b>(z)) 返回 true，则 x.<b>Equals</b>(z) 返回 true。
+                </p></li><li><p>
+                    只要不修改 x 和 y 所引用的对象，x.<b>Equals</b>(y) 的后续调用就返回相同的值。
+                </p></li><li><p>
+                    x.<b>Equals</b> (null) 返回 false（仅非空值类型。有关更多信息，请参见<span sdata="link"><a href="e473cb01-28ca-42be-9cea-f717055d72c6.htm">可空类型（C# 编程指南）</a></span>。）
+                </p></li></ul><p>
+                    <b>Equals</b> 的新实现不应该引发异常。建议重写 <b>Equals</b> 的任何类同时也重写 <span sdata="cer" target="M:System.Object.GetHashCode"><mshelp:link keywords="M:System.Object.GetHashCode" tabindex="0">Object<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span></span>GetHashCode</mshelp:link></span>。除了实现 <b>Equals</b>（对象）外，还建议所有的类为自己的类型实现 <b>Equals</b>（类型）以增强性能。例如：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> TwoDPoint : System.Object
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">readonly</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> x, y;
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> TwoDPoint(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> x, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> y)  <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//constructor</span>
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span>.x = x;
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span>.y = y;
+    }
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">override</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">bool</span> Equals(System.Object obj)
+    {
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// If parameter is null return false.</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> (obj == <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">null</span>)
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">false</span>;
+        }
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// If parameter cannot be cast to Point return false.</span>
+        TwoDPoint p = obj <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">as</span> TwoDPoint;
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> ((System.Object)p == <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">null</span>)
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">false</span>;
+        }
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Return true if the fields match:</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> (x == p.x) &amp;&amp; (y == p.y);
+    }
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">bool</span> Equals(TwoDPoint p)
+    {
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// If parameter is null return false:</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> ((<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">object</span>)p == <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">null</span>)
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">false</span>;
+        }
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Return true if the fields match:</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> (x == p.x) &amp;&amp; (y == p.y);
+    }
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">override</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> GetHashCode()
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> x ^ y;
+    }
+}
+
+</pre></td></tr></table></span></div></div><p>
+                    可调用基类的 <b>Equals</b> 的任何派生类在完成其比较之前都应该这样做。在下面的示例中，<b>Equals</b> 调用基类 <b>Equals</b>，后者将检查空参数并将参数的类型与派生类的类型做比较。这样就把检查派生类中声明的新数据字段的任务留给了派生类中的 <b>Equals</b> 实现：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> ThreeDPoint : TwoDPoint
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">readonly</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> z;
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> ThreeDPoint(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> x, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> y, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> z)
+        : <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">base</span>(x, y)
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">this</span>.z = z;
+    }
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">override</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">bool</span> Equals(System.Object obj)
+    {
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// If parameter cannot be cast to ThreeDPoint return false:</span>
+        ThreeDPoint p = obj <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">as</span> ThreeDPoint;
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> ((<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">object</span>)p == <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">null</span>)
+        {
+            <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">false</span>;
+        }
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Return true if the fields match:</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">base</span>.Equals(obj) &amp;&amp; z == p.z;
+    }
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">bool</span> Equals(ThreeDPoint p)
+    {
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Return true if the fields match:</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">base</span>.Equals((TwoDPoint)p) &amp;&amp; z == p.z;
+    }
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">override</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> GetHashCode()
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">base</span>.GetHashCode() ^ z;
+    }
+}
+
+</pre></td></tr></table></span></div></div></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle1)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle1, event)" tabindex="0"><img id="sectionToggle1" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />重写运算符 ==</span></h1><div id="sectionSection1" class="section" name="collapseableSection" style=""><p>
+                    默认情况下，运算符 <span sdata="langKeyword" value="=="><span class="keyword">==</span></span> 通过判断两个引用是否指示同一对象来测试引用是否相等。因此引用类型不需要实现运算符 <span sdata="langKeyword" value="=="><span class="keyword">==</span></span> 就能获得此功能。当类型不可变（即实例中包含的数据不可更改）时，通过重载运算符 <span sdata="langKeyword" value="=="><span class="keyword">==</span></span> 来比较值是否相等而不是比较引用是否相等可能会很有用，因为作为不可变的对象，只要其值相同，就可以将其视为相同。建议不要在非不可变类型中重写运算符 <span sdata="langKeyword" value="=="><span class="keyword">==</span></span>。
+                </p><p>
+                    重载的运算符 <span sdata="langKeyword" value="=="><span class="keyword">==</span></span> 实现不应引发异常。重载运算符 <span sdata="langKeyword" value="=="><span class="keyword">==</span></span> 的任何类型还应重载运算符 <span sdata="langKeyword" value="!="><span class="keyword">!=</span></span>。例如：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//add this code to class ThreeDPoint as defined previously</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">bool</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">operator</span> ==(ThreeDPoint a, ThreeDPoint b)
+{
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// If both are null, or both are same instance, return true.</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> (System.Object.ReferenceEquals(a, b))
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">true</span>;
+    }
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// If one is null, but not both, return false.</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> (((<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">object</span>)a == <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">null</span>) || ((<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">object</span>)b == <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">null</span>))
+    {
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">false</span>;
+    }
+
+    <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Return true if the fields match:</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> a.x == b.x &amp;&amp; a.y == b.y &amp;&amp; a.z == b.z;
+}
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">bool</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">operator</span> !=(ThreeDPoint a, ThreeDPoint b)
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">return</span> !(a == b);
+}
+
+</pre></td></tr></table></span></div></div><div class="alert"><table width="100%" cellspacing="0" cellpadding="0"><tr><th align="left"><img class="note" title="说明" src="../icons/alert_note.gif" /><b>说明：</b></th></tr><tr><td><p>运算符 <span sdata="langKeyword" value="=="><span class="keyword">==</span></span> 的重载中的常见错误是使用 <span class="code">(a == b)</span>、<span class="code">(a == null)</span> 或 <span class="code">(b == null)</span> 来检查引用相等性。这会调用重载的运算符 <span sdata="langKeyword" value="=="><span class="keyword">==</span></span>，从而导致无限循环。应使用 <span sdata="cer" target="M:System.Object.ReferenceEquals(System.Object,System.Object)"><mshelp:link keywords="M:System.Object.ReferenceEquals(System.Object,System.Object)" tabindex="0">ReferenceEquals</mshelp:link></span> 或将类型强制转换为 <span sdata="cer" target="T:System.Object"><mshelp:link keywords="T:System.Object" tabindex="0">Object</mshelp:link></span> 来避免无限循环。</p></td></tr></table></div></div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />请参见</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><h4 class="subHeading">概念</h4><div class="seeAlsoStyle"><span sdata="link"><a href="ac0f23a2-6bf3-4077-be99-538ae5fd3bc5.htm">C# 编程指南</a></span></div><h4 class="subHeading">参考</h4><div class="seeAlsoStyle"><span sdata="link"><a href="20f8469d-5a6a-4084-ad90-0856b7e97e45.htm">语句、表达式和运算符（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="214e7b83-1a41-4f7c-9867-64e9c0bab39f.htm">运算符（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="390d9d01-79fc-40ab-9ed3-0bf448da1b6a.htm">可重载运算符（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="34c6b597-caa2-4855-a7cd-38ecdd11bd07.htm">== 运算符（C# 参考）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="846e1f94-8a8c-42fc-a42c-fbd38e70d8cc.htm">() 运算符（C# 参考）</a></span></div></div></div>
+      <div id="footer">
+        <div class="footerLine">
+          <img width="100%" height="3px" src="../icons/footer.gif" title="“页脚”图像" />
+        </div>
+<span id="feedbackarea">将有关本主题的<a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);">反馈意见</a>发送给 Microsoft。</span>
+</div>
+    </div>
+  </body>
+</html>

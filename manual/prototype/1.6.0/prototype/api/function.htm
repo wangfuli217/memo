@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Function - Prototype JavaScript 框架</title>
+	<link href="../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>
+			Function
+		</h2>
+		<div id="method-list">
+			<ul>
+				<li><a href="function.htm#method-argumentnames">argumentNames</a></li>
+				<li><a href="function.htm#method-bind">bind</a></li>
+				<li><a href="function.htm#method-bindaseventlistener">bindAsEventListener</a></li>
+				<li><a href="function.htm#method-curry">curry</a></li>
+				<li><a href="function.htm#method-defer">defer</a></li>
+				<li><a href="function.htm#method-delay">delay</a></li>
+				<li><a href="function.htm#method-methodize">methodize</a></li>
+				<li><a href="function.htm#method-wrap">wrap</a></li>
+			</ul>
+		</div>
+		<div id="abody">
+			<p>Prototype 对于函数的<strong>绑定（binding）</strong>提出了一些看法。</p>
+			<h3>什么是绑定？</h3>
+			<p>
+				“绑定”最基本的用途是保证函数运行时，<strong><code>this</code></strong> 关键字会指向正确的对象。
+				虽然通常会有一个恰当的默认绑定（默认情形下 <code>this</code> 指向该方法所属的对象），但有时
+				<code>this</code> 会丢失它所应指向的对象，例如将函数引用作为参数传递时。
+			</p>
+			<p>
+				如果你不清楚 JavaScript 中 <code>this</code> 关键字的含义，请跳到 <a href="function/bind.htm" >bind()</a>
+				方法的文档，这篇文档中的样例将这个关键字的含义阐释得非常清楚。
+			</p>
+			<h3>Prototype 的补救措施！</h3>
+			<p>
+				Prototype 解决了 <code>this</code> 的指向问题。在 Prototype 中，对于任意一个函数，均能够找到两个新的方法：
+				一个用来确保正确的绑定（它甚至可以提前将参数进行绑定！），另一个专用于事件处理函数的绑定。
+			</p>
+		</div>
+		<div id="method-excerpts">
+			<h3>方法</h3>
+			<p>
+				<strong>译注：</strong>因 Prototype 新增的 <code>Function</code> 的方法有许多是将当前函数对象封装为另一个函数，
+				为便于说明，本文中的 <em>原始函数</em> 特指当前的函数对象，如 <code>String.prototype.charAt.curry(0)</code>，
+				<em>原始函数</em> 指 <code>charAt</code>。
+			</p>
+			<div id="method-argumentnames" class="mexcerpt">
+				<h4><a href="function/argumentNames.htm" >argumentNames</a><div class="box">1.6</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">someFunction.argumentNames() -> Array</code></pre>
+					<p>
+						获取函数定义的<strong>形参</strong>名称列表，并作为一个字符串数组返回。如果函数未定义参数，则返回一个空数组。
+					</p>
+				</div>
+			</div>
+			<div id="method-bind" class="mexcerpt">
+				<h4><a href="function/bind.htm" >bind</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">bind(thisObj[, arg...]) -> Function</code></pre>
+					<p>
+						用另一个函数来封装原始的函数对象，将函数运行时的作用域限定为 <code>thisObj</code> 所指定的对象。<br />
+						<strong>译注：</strong>该方法返回一个新的函数对象，返回的函数是原函数将其 <code>this</code> 关键字指向 <code>thisObj</code>
+						后的版本，并且，如果指定了可选的 <code>arg</code> 参数，还会将原函数中的部分或全部参数固定为 <code>args</code>
+						指定的值。该方法不会修改原函数对象。
+					</p>
+				</div>
+			</div>
+			<div id="method-bindaseventlistener" class="mexcerpt">
+				<h4><a href="function/bindAsEventListener.htm" >bindAsEventListener</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">bindAsEventListener(thisObj[, arg...]) -> Function</code></pre>
+					<p>
+						一个专用于事件的 <a href="function/bind.htm" >bind</a> 方法的变体，
+						它确保事件触发后会将当前事件对象作为第一个参数传递给事件处理函数。
+					</p>
+				</div>
+			</div>
+			<div id="method-curry" class="mexcerpt">
+				<h4><a href="function/curry.htm" >curry</a><div class="box">1.6.0</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">curry(arg...) -> Function </code></pre>
+					<p>返回一个新的函数，该函数是原始函数对象用 <code>arg</code> 指定的值填充了部分参数的版本。</p>
+				</div>
+			</div>
+			<div id="method-defer" class="mexcerpt">
+				<h4><a href="function/defer.htm" >defer</a><div class="box">1.6.0</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">defer(arg...) -> Number</code></pre>
+					<p>当 JavaScript 解释器空闲后，再运行函数。</p>
+				</div>
+			</div>
+			<div id="method-delay" class="mexcerpt">
+				<h4><a href="function/delay.htm" >delay</a><div class="box">1.6.0</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">delay(seconds[, arg...]) -> Number</code></pre>
+					<p>延迟参数 <code>seconds</code> 指定的时间段再执行函数，<code>arg</code> 是调用这个函数所需的参数。</p>
+				</div>
+			</div>
+			<div id="method-methodize" class="mexcerpt">
+				<h4><a href="function/methodize.htm" >methodize</a></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">someFunction.methodize() -> Function</code></pre>
+					<p>
+						封装原始函数，返回一个新的函数，调用新函数时，实质是将原始函数的第一个参数设置为当前 <code>this</code>
+						所指向的对象，然后调用原始函数。
+					</p>
+				</div>
+			</div>
+			<div id="method-wrap" class="mexcerpt">
+				<h4><a href="function/wrap.htm" >wrap</a><div class="box">1.6.0</div></h4>
+				<div class="mexcerpt-cnt">
+					<pre><code class="ebnf">wrap(wrapperFunction[, arg...]) -> Function</code></pre>
+					<p>
+						将原始函数封装到参数 <code>wrapperFunction</code> 表示的函数中，返回一个新的函数。调用新函数时，
+						实质是将 <code>wrapperFunction</code> 函数的第一个参数设置为绑定了当前 <code>this</code>
+						对象的原始函数，然后再调用 <code>wrapperFunction</code> 函数。
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

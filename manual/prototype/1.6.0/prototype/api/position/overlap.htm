@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>Position.overlap - Prototype JavaScript 框架</title>
+	<link href="../../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<!-- main -->
+	<div id="main" class="clearfix">
+		<h2>overlap<div class="box">不推荐</div></h2>
+		<div id="excerpt">
+			<pre><code class="ebnf">overlap(mode, element) -> Number</code></pre>
+			<p>
+				返回一个界于 <code>0</code> 和 <code>1</code> 之间的数值，用于表示先前使用
+				<a href="within.htm" >Position.within</a> 方法指定的点基于 <code>element</code>
+				左上角的坐标值与 <code>element</code> 宽高的比例。<code>mode</code> 可以设置为 <code>vertical</code>
+				或 <code>horizontal</code>。
+			</p>
+		</div>
+		<div id="abody">
+			<p class="deprecated">已废弃！</p>
+			<p>
+				假设有一个块级别的 <code>element</code>（即元素具有宽和高）以及一个以页面左上角为原点的坐标为 <code>x, y</code>
+				的点，调用 <a href="within.htm" >Position.within</a> 将会指出这个点是否在 <code>element</code> 所占据的区域内。
+			</p>
+			<p>
+				现在假设有一个与 <code>element</code> 具有相同尺寸的元素，它的右下角（<strong>译注：</strong>原文为左上角）顶点坐标为
+				<code>x, y</code>。<code>Position.overlap</code> 指出这两个元素在水平和垂直方向上的重叠部分相对于 <code>element</code>
+				的长宽的比例。
+			</p>
+			<p><strong>注意：在调用这个方法之前，必须立即调用 <a href="within.htm" >Position.within</a>。</strong></p>
+			<h3>样例</h3>
+			<pre><code class="javascript">var element = $('some_positioned_element');
+Position.cumulativeOffset(element);
+// -> [100, 100]（元素距离页面的左方和顶部都是 100px） 
+element.getDimensions();
+// -> { width: 150, height: 150 } 
+
+Position.within(element, 175, 145); 
+// -> true
+Position.overlap('horizontal', element); 
+// -> 0.5（这个点跨越了元素一半的宽度） 
+Position.overlap('vertical', element); 
+// -> 0.3（这个点跨越了元素 3/10 的高度）</code></pre>
+		</div>
+	</div>
+	<!-- /main -->
+</body>
+</html>

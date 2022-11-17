@@ -1,0 +1,61 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml">
+<HEAD><TITLE>Nginx部分优化选项</TITLE>
+    <META http-equiv=Content-Type content="text/html; charset=GB2312">
+    <STYLE type=text/css>PRE {
+        BACKGROUND-COLOR: #cccccc
+    }
+
+    .STYLE1 {
+        COLOR: #ff0000
+    }
+    </STYLE>
+
+    <META content="MSHTML 6.00.6000.16809" name=GENERATOR>
+</HEAD>
+<BODY>
+<H2>Nginx部分优化选项</H2><BR>
+
+<H3>哈希表（hash tables）</H3>
+<H4>为了能使nginx更加快速的处理请求，nginx使用哈希表。<BR>
+    在nginx启动和加载配置期间，考虑到保存键（key）和值（包括失效的关键字）的哈希表存储单元不至于超出设定大小，nginx将为哈希表选择可能的最小值。<BR>
+    直到哈希表超过参数设置大小时才重新进行选择。大多数的哈希是指令，即可以修改它们的参数，例如，服务器名称的哈希通过指令<A href="StandardHTTPModules/HTTPCore.html">server_names_hash_max_size</A>和<A
+            href="StandardHTTPModules/HTTPCore.html">server_names_hash_bucket_size</A>来约束，参数哈希框大小总是等于哈希表的大小，即处理器高速缓存区大小的倍数，这将加速处理器中key的搜索速度，减少内存的存取数，如果哈希框大小等于一个处理器的高速缓存区大小，那么在搜索key时内存的转换数在最坏的情况下将等于2，首先决定框的地址，其次在框中搜索key。因此，如果nginx发布需要增加哈希最大值或者哈希框大小，那么首先需要增加第一个参数的大小。
+</H4>
+
+<H3>事件模型（Event Models）</H3>
+<H4>nginx支持使用下列的方式处理连接，这些方式可以通过use指令指定。<BR>
+    ·select - 标准方式，如果当前平台没有其他有效的方式，则会默认编译。你可以使用--with-select_module和--without-select_module编译参数来启用或禁止该模块。<BR>
+    ·poll - 标准方式，如果当前平台没有其他有效的方式，则会默认编译。你可以使用--with-poll_module和--without-poll_module编译参数来启用或禁止该模块。<BR>
+    ·kqueue - 高效方式，适用于FreeBSD 4.1+, OpenBSD 2.9+, NetBSD 2.0和MacOS X。运行于多处理器的MacOS X使用kqueue可能引起某些问题。<BR>·epoll -
+    高效方式，适用于Linux 2.6+。在某些平台，例如SuSE 8.2，它们有一些关联包使2.4版本内核就能够支持epoll。<BR>
+    ·rtsig - 可执行的实时信号，运行于Linux
+    2.2.19+。默认情况下系统整体无法有超过1024个POSIX实时（队列的）信号，显然这对于高负载服务器是不够用的，因此可以通过内核参数/proc/sys/kernel/rtsig-max增加这个队列大小，然而，Linux
+    2.6.6-mm2以后，这个参数不再可用，并且每个处理器都是一个单独的信号队列，其大小通过RLIMIT_SIGPENDING指定，当队列溢出时，nginx将丢弃它们并且使用poll方式处理连接直到他们恢复正常。<BR>
+    ·/dev/poll - 高效方式，适用于Solaris 7 11/99+, HP/UX 11.22+ (eventport), IRIX 6.5.15+和Tru64 UNIX 5.1A+。<BR>
+    ·eventport - 高效方式，适用于Solaris 10,为了不引起内核错误，需要安装<A
+            href="http://sunsolve.sun.com/search/document.do?assetkey=1-26-102485-1">这个</A>包</H4>
+
+<H3>·参考文档</H3>
+<H4><A href="http://wiki.nginx.org/NginxOptimizations/">NginxOptimizations</A><BR>
+    <A href="http://sysoev.ru/nginx/docs/hash.html">哈希表（俄文）</A><BR>
+    <A href="http://sysoev.ru/nginx/docs/events.html">事件模型（俄文）</A></H4>
+<!-- Piwik -->
+<script type="text/javascript">
+    var pkBaseURL = (("https:" == document.location.protocol) ? "https://179401.cn/analytics/" : "http://179401.cn/analytics/");
+    document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+        piwikTracker.trackPageView();
+        piwikTracker.enableLinkTracking();
+    } catch (err) {
+    }
+</script>
+<noscript><p><img src="http://shouce.jb51.net/179401.cn/analytics/piwik.php-idsite=1" style="border:0" alt=""/></p>
+</noscript>
+<!-- End Piwik Tag -->
+</BODY>
+</HTML>

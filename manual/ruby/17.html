@@ -1,0 +1,112 @@
+<html><HEAD><TITLE>6、正则表达式 - RUBY文档中心</TITLE>
+<STYLE type=text/css>
+<!--
+.code2 {font-size:14.7px;font-family:arial;color:#00009a;line-height:150%;background-color:#EFEFEF;height=25px;vertical-align=middle;margin-left: 20px;}
+.code {font-size:14.7px;font-family:arial;color:#00009a;background-color:#EFEFEF;line-height: 150%}
+.quote {font-size:14.7px;font-family:arial;color:#666666;line-height:150%;}
+-->
+</STYLE>
+
+<META http-equiv=Content-Type content="text/html; charset=gb2312"><LINK href="17_files/news[1].css"  rel=stylesheet></head>
+<BODY topMargin=0>
+<STYLE type=text/css>
+<!--
+body {
+	margin-top: 50px;
+}
+.style12 {font-size: 33px}
+.style15 {
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-weight: bold;
+}
+.style17 {font-family: "黑体", "楷体_GB2312", "新宋体"}
+.style18 {font-size: 12px}
+-->
+</STYLE>
+
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #929292 1px groove" cellSpacing=0 cellPadding=3 width=772 align=center bgColor=#ffffff border=0>
+<TBODY>
+<TR>
+<TD height=20></TD></TR>
+<TR>
+<TD bgColor=#8acd38 height=30>&nbsp;</TD></TR>
+<TR>
+<TD height=50></TD></TR></TBODY></TABLE>
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #ffffff 1px groove" borderColor=#ffffff cellSpacing=0 cellPadding=3 width=772 align=center bgColor=#ffffff border=0>
+<TBODY>
+<TR>
+<TD align=middle>
+<DIV class=moer-title><IMG src="51_files/logo_read[1].gif" > 6、正则表达式</DIV>
+<P>转帖：oasis_me　　发表时间：2005-6-15 4:10:37　　点击次数：392 </P></TD></TR>
+<TR>
+<TD height=50></TD></TR></TBODY></TABLE>
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #ffffff 1px groove" borderColor=#ffffff cellSpacing=0 cellPadding=3 width=772 align=center bgColor=#ffffff border=0>
+<TBODY>
+<TR>
+<TD width="10%" bgColor=#ffffff>&nbsp;</TD>
+<TD class=moer-ask vAlign=top align=left width="5%" bgColor=#ffffff>&nbsp;</TD>
+<TD vAlign=top align=left width="75%">
+<TABLE cellSpacing=0 cellPadding=0>
+<TBODY>
+<TR>
+<TD class=moer-content vAlign=top align=left>我们再看一个更有趣的程序.这次我们来测试一个字符串是否和一个由简明模式(concise&nbsp;pattern)编码产生的描述相匹配.<BR><BR>在这些模式(pattern)里,一些字符或字符组合都有独特的意义,包括:&nbsp;<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>[]&nbsp;&nbsp;范围描述符&nbsp;(比如,[a&nbsp;-&nbsp;z]&nbsp;表示在a&nbsp;到&nbsp;z&nbsp;范围内的一个字母)&nbsp;&nbsp;<BR><BR>\w&nbsp;&nbsp;字母或数字;相当于&nbsp;[0-9A-Za-z]&nbsp;<BR><BR>\W&nbsp;&nbsp;非字母,数字&nbsp;<BR><BR>\s&nbsp;&nbsp;[&nbsp;\t\n\r\f]空字符;相当于&nbsp;[&nbsp;\t\n\r\f]&nbsp;<BR><BR>\S&nbsp;&nbsp;非空字符&nbsp;<BR><BR>\d&nbsp;&nbsp;[0-9]数字;相当于&nbsp;[0-9]&nbsp;<BR><BR>\D&nbsp;&nbsp;非数字字符&nbsp;<BR><BR>\b&nbsp;&nbsp;退格符&nbsp;(0x08)&nbsp;(仅在范围描述符内部时)&nbsp;<BR><BR>\b&nbsp;&nbsp;字边界(word&nbsp;boundary)&nbsp;(在范围描述符外部时)&nbsp;<BR><BR>\B&nbsp;&nbsp;非字边界&nbsp;<BR><BR>*&nbsp;&nbsp;前面元素出现0或多次&nbsp;<BR><BR>+&nbsp;&nbsp;前面元素出现1或多次&nbsp;<BR><BR>{m,n}&nbsp;&nbsp;前面元素最少出现m次,最多出现n次&nbsp;<BR><BR>?&nbsp;&nbsp;前面元素最多出现1次;相当于&nbsp;{0,1}&nbsp;<BR><BR>|&nbsp;&nbsp;与前面或后面的表达式匹配&nbsp;<BR><BR>()&nbsp;&nbsp;群(&nbsp;grouping)&nbsp;</TD></TR></TBODY></TABLE><BR><BR>那些模式中共同使用的古怪词汇叫做正则表达式.就象Perl一样,Ruby也用前斜杠(而不是双引号)将它们括起来.如果你以前从未使用过正则表达式,也许它们看起来除了规则(regular)什么都不是,但花上一点儿时间了解它们是明智的.当你需要对字符串进行模式匹配,查找或其它操作时,它的高效的表达能力能治好你的头痛(并节约很多行代码).<BR><BR>举个例子,设想我们想要测试一个字符串是否符合这样的描述信息"由小写f开头,跟一个大写字母,并可能跟许多非小写字母在后面."如果你是一个老练的C程序员,大概你的头脑里已经装满几十行程序了,对不对?承认吧,你难以控制住自己.在Ruby里,你只需要将你的字符串用正则表达式/^f[A-Z](^[a-z])*$/检验一下就可以了.<BR><BR>那"一个由&lt;&gt;括起来的16位数呢"?没问题.<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;def&nbsp;chab(s)&nbsp;&nbsp;&nbsp;#&nbsp;"contains&nbsp;hex&nbsp;in&nbsp;angle&nbsp;brackets"<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;(s&nbsp;=~&nbsp;/&lt;0(x|X)(\d|[a-f]|[A-F])+&gt;/)&nbsp;!=&nbsp;nil<BR>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;end<BR>&nbsp;&nbsp;nil<BR>ruby&gt;&nbsp;chab&nbsp;"Not&nbsp;this&nbsp;one."<BR>&nbsp;&nbsp;false<BR>ruby&gt;&nbsp;chab&nbsp;"Maybe&nbsp;this?&nbsp;{0x35}"&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;wrong&nbsp;kind&nbsp;of&nbsp;brackets<BR>&nbsp;&nbsp;false<BR>ruby&gt;&nbsp;chab&nbsp;"Or&nbsp;this?&nbsp;&lt;0x38z7e&gt;"&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;bogus&nbsp;hex&nbsp;digit<BR>&nbsp;&nbsp;false<BR>ruby&gt;&nbsp;chab&nbsp;"Okay,&nbsp;this:&nbsp;&lt;0xfc0004&gt;."<BR>&nbsp;&nbsp;true&nbsp;</TD></TR></TBODY></TABLE><BR><BR>虽然,初看起来正则表达式挺让人头痛的,但你很快会因能够如此高效地表达出你心中的意思而感到满足.<BR><BR>下面是一个可以帮助你实验正则表达式的小程序,把它存为regx.rb,然后在命令行里输入'ruby&nbsp;regx.rb'运行.<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>#&nbsp;Requires&nbsp;an&nbsp;ANSI&nbsp;terminal!<BR>st&nbsp;=&nbsp;"\033[7m"<BR>en&nbsp;=&nbsp;"\033[m"<BR>while&nbsp;TRUE&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;"str&gt;&nbsp;"&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;STDOUT.flush&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;str&nbsp;=&nbsp;gets&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;break&nbsp;if&nbsp;not&nbsp;str&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;str.chop!&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;"pat&gt;&nbsp;"&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;STDOUT.flush&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;re&nbsp;=&nbsp;gets&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;break&nbsp;if&nbsp;not&nbsp;re&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;re.chop!&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;str.gsub!&nbsp;re,&nbsp;"#{st}\\&amp;#{en}"&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;str,&nbsp;"\n"<BR>end<BR>print&nbsp;"\n"&nbsp;</TD></TR></TBODY></TABLE><BR><BR>这个小程序要求输入两次,一次字符串,一次正则表达式.输入的字符串由正则表达式检验,然后用反视高亮度显示所有匹配部分.先别管细节,等会儿就有代码分析.<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>str&gt;&nbsp;foobar<BR>pat&gt;&nbsp;^fo+<BR><FONT color=red>foo</FONT>bar<BR>~~~&nbsp;</TD></TR></TBODY></TABLE><BR><BR>上面红色部分将在程序输入中以反视表示出.下面的"~~~"行是为了方便那些使用基于字符浏览器的人.<BR><BR>我们再试几个输入:<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>str&gt;&nbsp;abc012dbcd555<BR>pat&gt;&nbsp;\d<BR>abc<FONT color=red>012</FONT>dbcd<FONT color=red>555</FONT></TD></TR></TBODY></TABLE><BR><BR>如果让你感到惊讶,看看本页开头部分的那个表格:&nbsp;\d与字母d无关,而是对应于单个数字.<BR><BR>如果有不止一种方法能匹配模式会怎样呢?<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>str&gt;&nbsp;foozboozer<BR>pat&gt;&nbsp;f.*z<BR><FONT color=red>foozboo</FONT>zer<BR>~~~~~~~~&nbsp;</TD></TR></TBODY></TABLE><BR><BR>之所以foozbooz被匹配而不只是fooz,是因为一个正则表达符尽可能匹配最长的子串.<BR><BR>下面是一个将冒号分隔的数字时间段从字符串中隔离出来的模式匹配.<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>str&gt;&nbsp;Wed&nbsp;Feb&nbsp;&nbsp;7&nbsp;08:58:04&nbsp;JST&nbsp;1996<BR>pat&gt;&nbsp;[0-9]+:[0-9]+(:[0-9]+)?<BR>Wed&nbsp;Feb&nbsp;&nbsp;7&nbsp;<FONT color=red>08:58:04</FONT>&nbsp;JST&nbsp;1996</TD></TR></TBODY></TABLE><BR><BR>"=~"是一个用于匹配正则表达式的匹配(matching)运算符;它会返回在字符串里找到的匹配的位置,或者返回&nbsp;nil&nbsp;表示模式无法匹配.<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;"abcdef"&nbsp;=~&nbsp;/d/<BR>&nbsp;&nbsp;&nbsp;3<BR>ruby&gt;&nbsp;"aaaaaa"&nbsp;=~&nbsp;/d/<BR>&nbsp;&nbsp;&nbsp;nil&nbsp;</TD></TR></TBODY></TABLE></TD></TR>
+<TR>
+<TD class=moer-content vAlign=top align=left height=30></TD></TR>
+<TR>
+<TD vAlign=top align=left><SPAN style="FONT-WEIGHT: bold; FONT-SIZE: 12px">版权声明：</SPAN>RUBY文档中心的所有文章标明[<B>原创</B>]的均为本站作品，版权属RUBY中文化计划，若转载请注明；标明[<B>翻译</B>]的其外文版权归原作者，译文版权属RUBY中文化计划；标明[<B>转贴</B>]的，若原作者感到侵犯了他的著作权，那么请及时跟主持人联系，我们会尽快更正。</TD></TR></TBODY></TABLE></TD>
+<TD width="10%" bgColor=#ffffff>&nbsp;</TD></TR></TBODY></TABLE>
+<STYLE type=text/css>
+<!--
+body {
+	margin-bottom: 20px;
+}
+-->
+</STYLE>
+
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #929292 1px groove; BORDER-BOTTOM: #929292 1px groove" cellSpacing=0 cellPadding=0 width=772 align=center>
+<TBODY>
+<TR>
+<TD bgColor=#ffffff>
+<DIV align=center>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P><IMG height=11 src="55_files/logo_small[1].gif"  width=8> 版权所有(C) <A href="http://www.moer.net/ruby/index.asp" >RUBY中文化计划</A></P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></DIV></TD></TR></TBODY></TABLE>
+<DIV align=center></DIV>
+<div style="display:none;">
+<script type="text/javascript" src="http://shouce.jb51.net/js/stat.js" ></script>
+</div>
+</BODY>

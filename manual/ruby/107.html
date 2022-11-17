@@ -1,0 +1,255 @@
+<html><HEAD><TITLE>Programming Ruby: The Pragmatic Programmer's Guide</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=gb2312"><LINK media=screen href="107_files/pr_style[1].css"  type=text/css rel=StyleSheet></head>
+<BODY bgColor=white>
+<TABLE cellSpacing=0 cellPadding=3 width="100%" bgColor=#c09090 border=0>
+<TBODY>
+<TR>
+<TD colSpan=3>
+<TABLE cellPadding=20 width="100%" bgColor=#701a1a>
+<TBODY>
+<TR>
+<TD width="100%">
+<H1 class=header>Programming Ruby</H1>
+<H3 class=subheader>实用程序员指南</H3></TD></TR></TBODY></TABLE></TD></TR>
+<TR>
+<TD align=left width="33%"><A class=subheader href="106.html" >上一章 &lt;</A> </TD>
+<TD vAlign=center align=middle width="33%"><A class=subheader href="95.html" >目录 ^</A> <BR></TD>
+<TD align=right width="33%"><A class=subheader href="108.html" >下一章 &gt;</A> <BR></TD></TR></TBODY></TABLE><!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<H1>基本输入输出</H1>
+<HR>
+<BR>
+<P></P>Ruby提供了两种I/O例程，第一种是简单的接口，我们已经用了很多了。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>print&nbsp;"Enter&nbsp;your&nbsp;name:&nbsp;"
+name&nbsp;=&nbsp;gets
+</PRE></TD></TR></TBODY></TABLE>
+<P><CODE>Kernel</CODE>模块提供了一整套和I/O相关的方法：<CODE>gets</CODE>, <CODE>open</CODE>, <CODE>print</CODE>, <CODE>printf</CODE>, <CODE>putc</CODE>, <CODE>puts</CODE>, <CODE>readline</CODE>, <CODE>readlines</CODE>, <CODE>和test</CODE>等，这些方法能使你简单方便的进行Ruby编程。这些方法典型的对标准输入输出进行操作，很适合编写过滤器等。</P>
+<P></P>另一方面，ruby提供了IO对象，让我们可以对io进行更多的控制。 
+<H2><A name=S1>什么是IO对象?</A></H2>
+<P></P>Ruby defines a single base class, <CODE>IO</CODE>, to handle input and output. This base class is subclassed by classes <CODE>File</CODE> and <CODE>BasicSocket</CODE> to provide more specialized behavior, but the principles are the same throughout. An <CODE>IO</CODE> object is a bidirectional channel between a Ruby program and some external resource.<EM>[For those who just have to know the implementation details, this means that a single <CODE>IO</CODE> object can sometimes be managing more than one operating system file descriptor. For example, if you open a pair of pipes, a single <CODE>IO</CODE> object contains both a read pipe and a write pipe.]</EM> There may be more to an <CODE>IO</CODE> object than meets the eye, but in the end you still simply write to it and read from it. 
+<P></P>In this chapter, we'll be concentrating on class <CODE>IO</CODE> and its most commonly used subclass, class <CODE>File</CODE>. For more details on using the socket classes for networking, see the section beginning on page 469. 
+<H2><A name=S2>Opening and Closing Files</A></H2>
+<P></P>As you might expect, you can create a new file object using <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_file.html#File.new" ><CODE>File.new</CODE> </A>. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>aFile&nbsp;=&nbsp;File.new("testfile",&nbsp;"r")
+<P></P>
+#&nbsp;...&nbsp;process&nbsp;the&nbsp;file
+<P></P>
+aFile.close
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>You can create a <CODE>File</CODE> object that is open for reading, writing, or both, according to the mode string (here we opened ``<CODE>testfile</CODE>'' for reading with an ``<CODE>r</CODE>''). The full list of allowed modes appears on page 326. You can also optionally specify file permissions when creating a file; see the description of <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_file.html#File.new" ><CODE>File.new</CODE> </A>on page 303 for details. After opening the file, we can work with it, writing and/or reading data as needed. Finally, as responsible software citizens, we close the file, ensuring that all buffered data is written and that all related resources are freed. 
+<P></P>But here Ruby can make life a little bit easier for you. The method <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_file.html#File.open" ><CODE>File.open</CODE> </A>also opens a file. In regular use, it behaves just like <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_file.html#File.new" ><CODE>File.new</CODE> </A>. However, if there's a block associated with the call, <CODE>open</CODE> behaves differently. Instead of returning a new <CODE>File</CODE> object, it invokes the block, passing the newly opened <CODE>File</CODE> as a parameter. When the block exits, the file is automatically closed. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>File.open("testfile",&nbsp;"r")&nbsp;do&nbsp;|aFile|
+<P></P>
+#&nbsp;...&nbsp;process&nbsp;the&nbsp;file
+<P></P>
+end
+</PRE></TD></TR></TBODY></TABLE>
+<H2><A name=S3>Reading and Writing Files</A></H2>
+<P></P>The same methods that we've been using for ``simple'' I/O are available for all file objects. So, <CODE>gets</CODE> reads a line from standard input, and <CODE>aFile.gets</CODE> reads a line from the file object <CODE>aFile</CODE>. 
+<P></P>However, I/O objects enjoy an additional set of access methods, all intended to make our lives easier. 
+<H3><A name=UA>Iterators for Reading</A></H3>
+<P></P>As well as using the usual loops to read data from an <CODE>IO</CODE> stream, you can also use various Ruby iterators. <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_io.html#IO.each_byte" ><CODE>IO#each_byte</CODE> </A>invokes a block with the next 8-bit byte from the <CODE>IO</CODE> object (in this case, an object of type <CODE>File</CODE>). 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>aFile&nbsp;=&nbsp;File.new("testfile")
+aFile.each_byte&nbsp;{|ch|&nbsp;putc&nbsp;ch;&nbsp;putc&nbsp;?.&nbsp;}
+</PRE></TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>T.h.i.s.&nbsp;.i.s.&nbsp;.l.i.n.e.&nbsp;.o.n.e.
+.T.h.i.s.&nbsp;.i.s.&nbsp;.l.i.n.e.&nbsp;.t.w.o.
+.T.h.i.s.&nbsp;.i.s.&nbsp;.l.i.n.e.&nbsp;.t.h.r.e.e.
+.A.n.d.&nbsp;.s.o.&nbsp;.o.n.......
+.
+</PRE></TD></TR></TBODY></TABLE>
+<P></P><A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_io.html#IO.each_line" ><CODE>IO#each_line</CODE> </A>calls the block with the next line from the file. In the next example, we'll make the original newlines visible using <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_string.html#String.dump" ><CODE>String#dump</CODE> </A>, so you can see that we're not cheating. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>aFile.each_line&nbsp;{|line|&nbsp;puts&nbsp;"Got&nbsp;#{line.dump}"&nbsp;}
+</PRE></TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>Got&nbsp;"This&nbsp;is&nbsp;line&nbsp;one\n"
+Got&nbsp;"This&nbsp;is&nbsp;line&nbsp;two\n"
+Got&nbsp;"This&nbsp;is&nbsp;line&nbsp;three\n"
+Got&nbsp;"And&nbsp;so&nbsp;on...\n"
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>You can pass <CODE>each_line</CODE> any sequence of characters as a line separator, and it will break up the input accordingly, returning the line ending at the end of each line of data. That's why you see the ``<CODE>\n</CODE>'' characters in the output of the previous example. In the next example, we'll use ``<CODE>e</CODE>'' as the line separator. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>aFile.each_line("e")&nbsp;do&nbsp;|line|
+&nbsp;&nbsp;puts&nbsp;"Got&nbsp;#{&nbsp;line.dump&nbsp;}"
+end
+</PRE></TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>Got&nbsp;"This&nbsp;is&nbsp;line"
+Got&nbsp;"&nbsp;one"
+Got&nbsp;"\nThis&nbsp;is&nbsp;line"
+Got&nbsp;"&nbsp;two\nThis&nbsp;is&nbsp;line"
+Got&nbsp;"&nbsp;thre"
+Got&nbsp;"e"
+Got&nbsp;"\nAnd&nbsp;so&nbsp;on...\n"
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>If you combine the idea of an iterator with the auto-closing block feature, you get <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_io.html#IO.foreach" ><CODE>IO.foreach</CODE> </A>. This method takes the name of an I/O source, opens it for reading, calls the iterator once for every line in the file, and then closes the file automatically. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>IO.foreach("testfile")&nbsp;{&nbsp;|line|&nbsp;puts&nbsp;line&nbsp;}
+</PRE></TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>This&nbsp;is&nbsp;line&nbsp;one
+This&nbsp;is&nbsp;line&nbsp;two
+This&nbsp;is&nbsp;line&nbsp;three
+And&nbsp;so&nbsp;on...
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>Or, if you prefer, you can retrieve an entire file into an array of lines: 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>arr&nbsp;=&nbsp;IO.readlines("testfile")</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>arr.length</CODE> </TD>
+<TD vAlign=top>?/td&gt; 
+<TD vAlign=top><CODE>4</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>arr[0]</CODE> </TD>
+<TD vAlign=top>?/td&gt; 
+<TD vAlign=top><CODE>"This&nbsp;is&nbsp;line&nbsp;one\n"</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>Don't forget that I/O is never certain in an uncertain world---exceptions will be raised on most errors, and you should be ready to catch them and take appropriate action. 
+<H3><A name=UB>Writing to Files</A></H3>
+<P></P>So far, we've been merrily calling <CODE>puts</CODE> and <CODE>print</CODE>, passing in any old object and trusting that Ruby will do the right thing (which, of course, it does). But what exactly <EM>is</EM> it doing? 
+<P></P>The answer is pretty simple. With a couple of exceptions, every object you pass to <CODE>puts</CODE> and <CODE>print</CODE> is converted to a string by calling that object's <CODE>to_s</CODE> method. If for some reason the <CODE>to_s</CODE> method doesn't return a valid string, a string is created containing the object's class name and id, something like <CODE>&lt;ClassName:0x123456&gt;</CODE>. 
+<P></P>The exceptions are simple, too. The <CODE>nil</CODE> object will print as the string ``nil,'' and an array passed to <CODE>puts</CODE> will be written as if each of its elements in turn were passed separately to <CODE>puts</CODE>. 
+<P></P>What if you want to write binary data and don't want Ruby messing with it? Well, normally you can simply use <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_io.html#IO.print" ><CODE>IO#print</CODE> </A>and pass in a string containing the bytes to be written. However, you can get at the low-level input and output routines if you really want---have a look at the documentation for <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_io.html#IO.sysread" ><CODE>IO#sysread</CODE> </A>and <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_io.html#IO.syswrite" ><CODE>IO#syswrite</CODE> </A>on page 335. 
+<P></P>And how do you get the binary data into a string in the first place? The two common ways are to poke it in byte by byte or to use <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_array.html#Array.pack" ><CODE>Array#pack</CODE> </A>. 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>str&nbsp;=&nbsp;""</CODE> </TD>
+<TD vAlign=top>?/td&gt; 
+<TD vAlign=top><CODE>""</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>str&nbsp;&lt;&lt;&nbsp;1&nbsp;&lt;&lt;&nbsp;2&nbsp;&lt;&lt;&nbsp;3</CODE> </TD>
+<TD vAlign=top>?/td&gt; 
+<TD vAlign=top><CODE>"\001\002\003"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE></CODE></TD></TR>
+<TR>
+<TD vAlign=top><CODE>[&nbsp;4,&nbsp;5,&nbsp;6&nbsp;].pack("c*")</CODE> </TD>
+<TD vAlign=top>?/td&gt; 
+<TD vAlign=top><CODE>"\004\005\006"</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<H3><A name=UC>But I Miss My C++ Iostream</A></H3>
+<P></P>Sometimes there's just no accounting for taste...However, just as you can append an object to an <CODE>Array</CODE> using the <CODE>&lt;&lt;</CODE> operator, you can also append an object to an output <CODE>IO</CODE> stream: 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>endl&nbsp;=&nbsp;"\n"
+$stdout&nbsp;&lt;&lt;&nbsp;99&nbsp;&lt;&lt;&nbsp;"&nbsp;red&nbsp;balloons"&nbsp;&lt;&lt;&nbsp;endl
+</PRE></TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>99&nbsp;red&nbsp;balloons
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>Again, the <CODE>&lt;&lt;</CODE> method uses <CODE>to_s</CODE> to convert its arguments to strings before sending them on their merry way. 
+<H2><A name=S4>与网络交互</A></H2>
+<P></P>Ruby支持很多网络协议，不管是高层的还是底层的。 
+<P>ruby提供了一些基本类，让你可以使用TCP,UDP,SOCKS等很多协议交互，而不必拘泥在网络层。这些类也提供了辅助类，让你可以轻松的对服务器进行读写。这个例子利用finger协议查询用户oracle的信息：<BR></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>require&nbsp;'socket'
+client&nbsp;=&nbsp;TCPSocket.open('localhost',&nbsp;'finger')
+client.send("oracle\n",&nbsp;0)&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;0&nbsp;means&nbsp;standard&nbsp;packet
+puts&nbsp;client.readlines
+client.close
+</PRE></TD></TR></TBODY></TABLE><EM>结果:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>Login:&nbsp;oracle&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;			Name:&nbsp;Oracle&nbsp;installation
+Directory:&nbsp;/home/oracle&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	Shell:&nbsp;/bin/bash
+Never&nbsp;logged&nbsp;in.
+No&nbsp;Mail.
+No&nbsp;Plan.
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>对于高层，lib/net里面提供了一些与应用层协议（FTP,HTTP,POP,SMTP,TELNET）等交互的库模块。比如，下面的例子列出了Pragmatic Programmer主页里的图像。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>require&nbsp;'net/http'
+<P></P>
+h&nbsp;=&nbsp;Net::HTTP.new('www.pragmaticprogrammer.com',&nbsp;80)
+resp,&nbsp;data&nbsp;=&nbsp;h.get('/index.html',&nbsp;nil)
+if&nbsp;resp.message&nbsp;==&nbsp;"OK"
+&nbsp;&nbsp;data.scan(/&lt;img&nbsp;src="(.*?)"/)&nbsp;{&nbsp;|x|&nbsp;puts&nbsp;x&nbsp;}
+end
+</PRE></TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>images/title_main.gif
+images/dot.gif
+images/dot.gif
+images/dot.gif
+images/aafounders_70.jpg
+images/pp_cover_thumb.png
+images/ruby_cover_thumb.png
+images/dot.gif
+images/dot.gif
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>
+<HR>
+
+<TABLE cellSpacing=0 cellPadding=10 bgColor=#a03030 border=0>
+<TBODY>
+<TR>
+<TD align=left width="33%"><A class=subheader href="106.html" >Previous &lt;</A> </TD>
+<TD vAlign=center align=middle width="33%"><A class=subheader href="95.html" >Contents ^</A> <BR></TD>
+<TD align=right width="33%"><A class=subheader href="108.html" >Next &gt;</A> <BR></TD></TR></TBODY></TABLE>
+<P></P><FONT size=-1>Extracted from the book "Programming Ruby - The Pragmatic Programmer's Guide"</FONT> <BR><FONT size=-3>Copyright &copy; 2001 by Addison Wesley Longman, Inc. This material may be distributed only subject to the terms and conditions set forth in the Open Publication License, v1.0 or later (the latest version is presently available at <A href="http://www.opencontent.org/openpub/" >http://www.opencontent.org/openpub/</A>)). 
+<P></P>Distribution of substantively modified versions of this document is prohibited without the explicit permission of the copyright holder. 
+<P></P>Distribution of the work or derivative of the work in any standard (paper) book form is prohibited unless prior permission is obtained from the copyright holder. <BR></FONT></BODY>

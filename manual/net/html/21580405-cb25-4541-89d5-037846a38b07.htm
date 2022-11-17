@@ -1,0 +1,431 @@
+﻿<html xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+    <META NAME="save" CONTENT="history" />
+    <title>字符串基础（C# 编程指南）</title>
+    <link rel="stylesheet" type="text/css" href="../styles/presentation.css" />
+    <link rel="stylesheet" type="text/css" href="ms-help://Hx/HxRuntime/HxLink.css" />
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/EventUtilities.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/SplitScreen.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/Dropdown.js"> </script>
+    <script type="text/javascript" src="../scripts/script_manifold.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/script_feedBack.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CheckboxMenu.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CommonUtilities.js"> </script>
+    <xml>
+      <MSHelp:TOCTitle Title="字符串基础" />
+      <MSHelp:Keyword Index="A" Term="21580405-cb25-4541-89d5-037846a38b07" />
+      <MSHelp:Keyword Index="K" Term="字符串 [C#], 基本操作" />
+      <MSHelp:Attr Name="RevisionNumber" Value="27" />
+      <MSHelp:Attr Name="AssetID" Value="21580405-cb25-4541-89d5-037846a38b07" />
+      <MSHelp:Attr Name="Abstract" Value="&#xD;&#xA;                    字符串是 T:System.String 类型的对象，它的值是文本。在内部，这些文本存储为 T:System.Char 对象的只读集合，其中每个对象都表示一个以 UTF-16 编码的 Unicode 字符。C# 字符串末尾没有以 null 结尾的字符（这一点与 C 和 C++ 不同），因此 C# 字符串可以包含任意数目的嵌入式 null 字符（“\0”）。字符串长度表示字符数目，无论这些字符是否是由 Unicode 代理项对形成的。若要访问字符串中的各 ..." />
+      <MSHelp:Attr Name="codelang" Value="CSharp" />
+      <MSHelp:Attr Name="CommunityContent" Value="1" />
+      <MSHelp:Attr Name="DevLang" Value="CSharp" />
+      <MSHelp:Attr Name="DevLangVers" Value="CSharp" />
+      <MSHelp:Attr Name="DocSet" Value="C#" />
+      <MSHelp:Attr Name="DocSet" Value="C# Lang" />
+      <MSHelp:Attr Name="DocSet" Value="ExpressLibVS" />
+      <MSHelp:Attr Name="ProgModel" Value="managed" />
+      <MSHelp:Attr Name="ShippedIn" Value="vs.90" />
+      <MSHelp:Attr Name="Technology" Value="ManagedCode" />
+      <MSHelp:Attr Name="TopicVersion" Value="09.00.08178.10000" />
+      <MSHelp:Attr Name="Catalog Container" Value="System_Default_Catalog" />
+      <MSHelp:Attr Name="Content Set Container" Value="System_Default_Content_Set" />
+      <MSHelp:Attr Name="TopicType" Value="kbRef" />
+      <MSHelp:Attr Name="Locale" Value="zh-chs" />
+    </xml>
+  </head>
+  <body>
+    <input type="hidden" id="userDataCache" class="userDataStyle" />
+    <input type="hidden" id="hiddenScrollOffset" />
+    <img id="collapseImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" title="“折叠”图像" />
+    <img id="expandImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" title="“展开”图像" />
+    <img id="collapseAllImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" />
+    <img id="expandAllImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" />
+    <img id="dropDownImage" style="display:none; height:0; width:0;" src="../icons/dropdown.gif" />
+    <img id="dropDownHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/dropdownHover.gif" />
+    <img id="copyImage" style="display:none; height:0; width:0;" src="../icons/copycode.gif" title="“复制”图像" />
+    <img id="copyHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/copycodeHighlight.gif" title="“复制悬停”图像" />
+    <div id="header">
+      <table id="topTable" cellspacing="0" cellpadding="0">
+        <tr>
+          <td>
+            <span onclick="ExpandCollapseAll(toggleAllImage)" style="cursor:default;" onkeypress="ExpandCollapseAll_CheckKey(toggleAllImage, event)" tabindex="0">
+              <img ID="toggleAllImage" class="toggleAll" src="../icons/collapse_all.gif" /> <label id="collapseAllLabel" for="toggleAllImage" style="display: none;">全部折叠</label><label id="expandAllLabel" for="toggleAllImage" style="display: none;">全部展开</label> </span>
+            <span>    </span>
+            <span id="devlangsDropdown" class="filter" tabindex="0">
+              <img id="devlangsDropdownImage" src="../icons/dropdown.gif" /> <label id="devlangsMenuAllLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：全部 </nobr></label><label id="devlangsMenuMultipleLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：多个 </nobr></label><label id="devlangsMenuVisualBasicLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual Basic </nobr></label><label id="devlangsMenuCSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：C# </nobr></label><label id="devlangsMenuManagedCPlusPlusLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual C++ </nobr></label><label id="devlangsMenuJSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：J# </nobr></label><label id="devlangsMenuJScriptLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：JScript </nobr></label></span>
+          </td>
+        </tr>
+      </table>
+      <div id="devlangsMenu">
+        <input id="VisualBasicCheckbox" type="checkbox" data="VisualBasic,vb,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="VisualBasicCheckbox">Visual Basic</label>
+        <br />
+        <input id="CSharpCheckbox" type="checkbox" data="CSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="CSharpCheckbox">C#</label>
+        <br />
+        <input id="ManagedCPlusPlusCheckbox" type="checkbox" data="ManagedCPlusPlus,cpp,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="ManagedCPlusPlusCheckbox">Visual C++</label>
+        <br />
+        <input id="JSharpCheckbox" type="checkbox" data="JSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JSharpCheckbox">J#</label>
+        <br />
+        <input id="JScriptCheckbox" type="checkbox" data="JScript,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JScriptCheckbox">JScript</label>
+        <br />
+      </div>
+      <table id="bottomTable" cellpadding="0" cellspacing="0">
+        <tr id="headerTableRow1">
+          <td align="left">
+            <span id="runningHeaderText">C# 编程指南</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow2">
+          <td align="left">
+            <span id="nsrTitle">字符串基础（C# 编程指南）</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow3">
+          <td align="left">
+            <a href="21580405-cb25-4541-89d5-037846a38b07.htm#seeAlsoToggle" onclick="OpenSection(seeAlsoToggle)">另请参见</a>  
+<script type="text/javascript">
+var fbBody = '%b8%d0%d0%bb%c4%fa%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%bf%aa%b7%a2%b0%e6%b1%e0%d0%b4%cd%c5%b6%d3%bd%ab%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%d3%c3%d3%da%b8%c4%bd%f8%ce%c4%b5%b5%a1%a3%ce%d2%c3%c7%d4%da%c9%f3%d4%c4%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%ca%b1%a3%ac%bf%c9%c4%dc%bb%e1%b8%f8%c4%fa%b7%a2%cb%cd%b5%e7%d7%d3%d3%ca%bc%fe%a3%ac%d2%d4%c7%eb%c4%fa%cc%e1%b9%a9%bd%f8%d2%bb%b2%bd%b5%c4%bd%e2%ca%cd%cb%b5%c3%f7%bb%f2%d5%df%be%cd%bd%e2%be%f6%b7%bd%b0%b8%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%ce%d2%c3%c7%b2%bb%bb%e1%bd%ab%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%d3%c3%d3%da%c8%ce%ba%ce%c6%e4%cb%fb%d3%c3%cd%be%a3%ac%b2%a2%c7%d2%d4%da%c9%f3%d4%c4%cd%ea%d6%ae%ba%f3%a3%ac%ce%d2%c3%c7%b2%bb%bb%e1%d4%d9%b1%a3%c1%f4%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%a1%a3%0d%0a%d3%d0%b9%d8%20Microsoft%20%d2%fe%cb%bd%d5%fe%b2%df%b5%c4%bd%f8%d2%bb%b2%bd%d0%c5%cf%a2%a3%ac%c7%eb%b2%ce%bc%fb%20http%3a%2f%2fprivacy.microsoft.com%2fzh-cn%2fdefault.aspx%a1%a3';
+var fbSubject = 'Customer%20Feedback';
+</script>
+  <span id="headfeedbackarea" class="feedbackhead"><a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);"> 发送反馈意见</a></span>
+</td>
+        </tr>
+      </table>
+      <table id="gradientTable">
+        <tr>
+          <td class="nsrBottom" background="../icons/gradient.gif" />
+        </tr>
+      </table>
+    </div>
+    <div id="mainSection">
+      <div id="mainBody">
+        <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
+        <font color="DarkGray"></font>
+        <p /> <p><font color="DarkGray">更新：2007 年 11 月</font></p><div class="introduction"><p>
+                    字符串是 <span sdata="cer" target="T:System.String"><mshelp:link keywords="T:System.String" tabindex="0">String</mshelp:link></span> 类型的对象，它的值是文本。在内部，这些文本存储为 <span sdata="cer" target="T:System.Char"><mshelp:link keywords="T:System.Char" tabindex="0">Char</mshelp:link></span> 对象的只读集合，其中每个对象都表示一个以 UTF-16 编码的 Unicode 字符。C# 字符串末尾没有以 null 结尾的字符（这一点与 C 和 C++ 不同），因此 C# 字符串可以包含任意数目的嵌入式 null 字符（“\0”）。字符串长度表示字符数目，无论这些字符是否是由 Unicode 代理项对形成的。若要访问字符串中的各个 Unicode 码位，请使用 <span sdata="cer" target="T:System.Globalization.StringInfo"><mshelp:link keywords="T:System.Globalization.StringInfo" tabindex="0">StringInfo</mshelp:link></span> 对象。
+                </p></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle0)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle0, event)" tabindex="0"><img id="sectionToggle0" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />string 与 System.String 的对比</span></h1><div id="sectionSection0" class="section" name="collapseableSection" style=""><p>
+                    在 C# 中，<span sdata="langKeyword" value="string"><span class="keyword">string</span></span> 关键字是 <span sdata="cer" target="T:System.String"><mshelp:link keywords="T:System.String" tabindex="0">String</mshelp:link></span> 的别名。因此，<b>String</b> 与 <span sdata="langKeyword" value="string"><span class="keyword">string</span></span> 等效，您可以根据自己的喜好选择命名约定。<b>String</b> 类提供了很多用于安全地创建、操作和比较字符串的方法。此外，C# 语言还重载某些运算符来简化常见的字符串操作。有关关键字的更多信息，请参见<span sdata="link"><a href="3037e558-fb22-494d-bca1-a15ade11b11a.htm">string（C# 参考）</a></span>。有关类型及其方法的更多信息，请参见 <span sdata="cer" target="T:System.String"><mshelp:link keywords="T:System.String" tabindex="0">String</mshelp:link></span>。
+                </p></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle1)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle1, event)" tabindex="0"><img id="sectionToggle1" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />声明和初始化字符串</span></h1><div id="sectionSection1" class="section" name="collapseableSection" style=""><p>
+                    可以通过各种方式来声明和初始化字符串，如下面的示例所示：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Declare without initializing.</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> message1;
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Initialize to null.</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> message2 = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">null</span>;
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Initialize as an empty string.</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Use the Empty constant instead of the literal </span><span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">""</span>.
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> message3 = System.String.Empty;
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//Initialize with a regular string literal.</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> oldPath = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"c:\\Program Files\\Microsoft Visual Studio 8.0"</span>;
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Initialize with a verbatim string literal.</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> newPath = @<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"c:\Program Files\Microsoft Visual Studio 9.0"</span>;
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Use System.String if you prefer.</span>
+System.String greeting = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Hello World!"</span>;
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// In local variables (i.e. within a method body)</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// you can use implicit typing.</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">var</span> temp = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"I'm still a strongly-typed System.String!"</span>;
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Use a const string to prevent 'message4' from</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// being used to store another string value.</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">const</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> message4 = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"You can't get rid of me!"</span>;
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Use the String constructor only when creating</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// a string from a char*, char[], or sbyte*. See</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// System.String documentation for details.</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">char</span>[] letters = { 'A', 'B', 'C' };
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> alphabet = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span>(letters);
+
+
+</pre></td></tr></table></span></div></div><p>
+                    注意，除了在使用字符数组初始化字符串时以外，不要使用 <mshelp:link keywords="a212b697-a79b-4105-9923-1f7b108036e8" tabindex="0">new</mshelp:link> 运算符创建字符串对象。
+                </p><p>
+                    使用 <span sdata="cer" target="F:System.String.Empty"><mshelp:link keywords="F:System.String.Empty" tabindex="0">Empty</mshelp:link></span> 常量值初始化字符串可新建字符串长度为零的 <span sdata="cer" target="T:System.String"><mshelp:link keywords="T:System.String" tabindex="0">String</mshelp:link></span> 对象。零长度字符串的字符串表示形式为 ""。使用 <span sdata="cer" target="F:System.String.Empty"><mshelp:link keywords="F:System.String.Empty" tabindex="0">Empty</mshelp:link></span> 值（而不是 <mshelp:link keywords="fecb1c60-6232-4efe-87f7-9a86ba2e9119" tabindex="0">null</mshelp:link>）初始化字符串可以降低发生 <span sdata="cer" target="T:System.NullReferenceException"><mshelp:link keywords="T:System.NullReferenceException" tabindex="0">NullReferenceException</mshelp:link></span> 的可能性。请在尝试访问字符串之前使用静态 <span sdata="cer" target="M:System.String.IsNullOrEmpty(System.String)"><mshelp:link keywords="M:System.String.IsNullOrEmpty(System.String)" tabindex="0">IsNullOrEmpty(String)</mshelp:link></span> 方法验证字符串的值。
+                </p></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle2)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle2, event)" tabindex="0"><img id="sectionToggle2" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />字符串对象的不可变性</span></h1><div id="sectionSection2" class="section" name="collapseableSection" style=""><p>
+                    字符串对象是不可变的：即它们创建之后就无法更改。所有看似修改字符串的 <span sdata="cer" target="T:System.String"><mshelp:link keywords="T:System.String" tabindex="0">String</mshelp:link></span> 方法和 C# 运算符实际上都以新字符串对象的形式返回结果。在下面的示例中，当连接 <span class="code">s1</span> 和 <span class="code">s2</span> 的内容以形成一个字符串时，不会修改两个原始字符串。<span sdata="langKeyword" value="+="><span class="keyword">+=</span></span> 运算符会创建一个包含组合内容的新字符串。这个新对象赋给变量 <span class="code">s1</span>，而最初赋给 <span class="code">s1</span> 的对象由于没有其他任何变量包含对它的引用而释放，用于垃圾回收。
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> s1 = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"A string is more "</span>;
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> s2 = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"than the sum of its chars."</span>;
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Concatenate s1 and s2. This actually creates a new</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// string object and stores it in s1, releasing the</span>
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// reference to the original object.</span>
+s1 += s2;
+
+System.Console.WriteLine(s1);
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Output: A string is more than the sum of its chars.</span>
+
+
+</pre></td></tr></table></span></div></div><p>
+                    由于“修改”字符串实际上是创建新字符串，因此创建对字符串的引用时必须谨慎。如果创建了对字符串的引用，然后“修改”原始字符串，则该引用指向的仍是原始对象，而不是修改字符串时创建的新对象。下面的代码说明了这种行为：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> s1 = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Hello "</span>;
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> s2 = s1;
+s1 += <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"World"</span>;
+
+System.Console.WriteLine(s2);
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//Output: Hello</span>
+
+</pre></td></tr></table></span></div></div><p>
+                    有关如何创建基于修改（例如搜索和替换原始字符串的操作）的新字符串的更多信息，请参见<span sdata="link"><a href="b6c20bba-ce22-43d7-ad1b-5ce65f714055.htm">如何：修改字符串内容（C# 编程指南）</a></span>。
+                </p></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle3)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle3, event)" tabindex="0"><img id="sectionToggle3" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />正则字符串和原义字符串</span></h1><div id="sectionSection3" class="section" name="collapseableSection" style=""><p>
+                    如果必须嵌入 C# 提供的转义符，则应使用正则字符串，如下面的示例所示：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> columns = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Column 1\tColumn 2\tColumn 3"</span>;
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//Output: Column 1        Column 2        Column 3</span>
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> rows = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Row 1\r\nRow 2\r\nRow 3"</span>;
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">/* Output:
+  Row 1
+  Row 2
+  Row 3
+*/</span>
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> title = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"\"</span>The \u00C6olean Harp\<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">", by Samuel Taylor Coleridge"</span>;
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//Output: </span><span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"The Æolean Harp"</span>, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">by</span> Samuel Taylor Coleridge
+
+</pre></td></tr></table></span></div></div><p>
+                    如果字符串文本包含反斜杠字符（例如在文件路径中），为方便起见和提高可读性，应使用原义字符串。由于原义字符串保留换行符作为字符串文本的一部分，因此可用于初始化多行字符串。在原义字符串中嵌入引号时请使用双引号。下面的示例演示原义字符串的一些常见用途：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>         <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> filePath = @<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"C:\Users\scoleridge\Documents\"</span>;
+         <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//Output: C:\Users\scoleridge\Documents\</span>
+
+         <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> text = @"My pensive SARA ! thy soft cheek reclined
+Thus <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">on</span> mine arm, most soothing sweet it <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">is</span>
+To sit beside our Cot,...";
+         <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">/* Output:
+         My pensive SARA ! thy soft cheek reclined
+            Thus on mine arm, most soothing sweet it is
+            To sit beside our Cot,... 
+         */</span>
+
+         <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> quote = @<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Her name was "</span><span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Sara."</span><span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">""</span>;
+         <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//Output: Her name was </span><span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Sara."</span>
+
+</pre></td></tr></table></span></div></div></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle4)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle4, event)" tabindex="0"><img id="sectionToggle4" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />字符串转义序列</span></h1><div id="sectionSection4" class="section" name="collapseableSection" style=""><div class="caption"></div><div class="tableSection"><table width="50%" cellspacing="2" cellpadding="5" frame="lhs"><tr><th><p>
+                    转义序列
+                </p></th><th><p>
+                    字符名称
+                </p></th><th><p>
+                    Unicode 编码
+                </p></th></tr><tr><td><p>
+                    \'
+                </p></td><td><p>
+                    单引号
+                </p></td><td><p>
+                    0x0027
+                </p></td></tr><tr><td><p>
+                    \"
+                </p></td><td><p>
+                    双引号
+                </p></td><td><p>
+                    0x0022
+                </p></td></tr><tr><td><p>
+                    \\
+                </p></td><td><p>
+                    反斜杠
+                </p></td><td><p>
+                    0x005C
+                </p></td></tr><tr><td><p>
+                    \0
+                </p></td><td><p>
+                    Null
+                </p></td><td><p>
+                    0x0000
+                </p></td></tr><tr><td><p>
+                    \a
+                </p></td><td><p>
+                    警报
+                </p></td><td><p>
+                    0x0007
+                </p></td></tr><tr><td><p>
+                    \b
+                </p></td><td><p>
+                    回格
+                </p></td><td><p>
+                    0x0008
+                </p></td></tr><tr><td><p>
+                    \f
+                </p></td><td><p>
+                    换页
+                </p></td><td><p>
+                    0x000C
+                </p></td></tr><tr><td><p>
+                    \n
+                </p></td><td><p>
+                    换行
+                </p></td><td><p>
+                    0x000A
+                </p></td></tr><tr><td><p>
+                    \r
+                </p></td><td><p>
+                    回车
+                </p></td><td><p>
+                    0x000D
+                </p></td></tr><tr><td><p>
+                    \t
+                </p></td><td><p>
+                    水平制表符
+                </p></td><td><p>
+                    0x0009
+                </p></td></tr><tr><td><p>
+                    \U
+                </p></td><td><p>
+                    代理项对的 Unicode 转义序列。
+                </p></td><td><p>
+                    \Unnnnnnnn
+                </p></td></tr><tr><td><p>
+                    \u
+                </p></td><td><p>
+                    Unicode 转义序列
+                </p></td><td><p>
+                    \u0041 = "A"
+                </p></td></tr><tr><td><p>
+                    \v
+                </p></td><td><p>
+                    垂直制表符
+                </p></td><td><p>
+                    0x000B
+                </p></td></tr><tr><td><p>
+                    \x
+                </p></td><td><p>
+                    Unicode 转义序列类似于“\u”，只是长度可变。
+                </p></td><td><p>
+                    \x0041 = "A"
+                </p></td></tr></table></div><div class="alert"><table width="100%" cellspacing="0" cellpadding="0"><tr><th align="left"><img class="note" title="说明" src="../icons/alert_note.gif" /><b>说明：</b></th></tr><tr><td><p>编译时，原义字符串转换为所有转义序列均保持不变的普通字符串。因而，如果在调试器监视窗口中查看原义字符串，则看到的将是编译器添加的转义字符，而不是源代码中的原义版本。例如，原义字符串 @”C:\files.txt” 在监视窗口中将显示为 “C:\\files.txt”。</p></td></tr></table></div></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle5)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle5, event)" tabindex="0"><img id="sectionToggle5" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />格式字符串</span></h1><div id="sectionSection5" class="section" name="collapseableSection" style=""><p>
+                    格式字符串是内容可以在运行时动态确定的一种字符串。采用以下方式创建格式字符串：使用静态 <span sdata="cer" target="M:System.String.Format(System.IFormatProvider,System.String,System.Object[])"><mshelp:link keywords="Overload:System.String.Format" tabindex="0">Format</mshelp:link></span> 方法并在大括号中嵌入占位符，这些占位符将在运行时替换为其他值。下面的示例使用格式字符串输出循环中每个迭代的结果：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> FormatString
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Main()
+    {
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Get user input.</span>
+        System.Console.WriteLine(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Enter a number"</span>);
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> input = System.Console.ReadLine();
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Convert the input string to an int.</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> j;
+        System.Int32.TryParse(input, <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">out</span> j);
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Write a different string each iteration.</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> s;
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">for</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> i = 0; i &lt; 10; i++)
+        {
+            <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// A simple format string with no alignment formatting.</span>
+            s = System.String.Format(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"{0} times {1} = {2}"</span>, i, j, (i * j));
+            System.Console.WriteLine(s);
+        }
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//Keep the console window open in debug mode.</span>
+        System.Console.ReadKey();
+    }
+}
+
+</pre></td></tr></table></span></div></div><p>
+                    <span sdata="cer" target="M:System.Console.WriteLine"><mshelp:link keywords="Overload:System.Console.WriteLine" tabindex="0">WriteLine</mshelp:link></span> 方法的一个重载将格式字符串用作参数。因此，可以只嵌入格式字符串，而无需显式调用该方法。但若使用 <span sdata="cer" target="M:System.Diagnostics.Trace.WriteLine(System.Object)"><mshelp:link keywords="Overload:System.Diagnostics.Trace.WriteLine" tabindex="0">WriteLine</mshelp:link></span> 方法在 Visual Studio<span class="ui">“输出”</span>窗口中显示调试输出，则必须显式调用 <span sdata="cer" target="M:System.String.Format(System.IFormatProvider,System.String,System.Object[])"><mshelp:link keywords="Overload:System.String.Format" tabindex="0">Format</mshelp:link></span> 方法，因为 <span sdata="cer" target="M:System.Diagnostics.Trace.WriteLine(System.Object)"><mshelp:link keywords="Overload:System.Diagnostics.Trace.WriteLine" tabindex="0">WriteLine</mshelp:link></span> 只接受字符串，而不接受格式字符串。有关格式字符串的更多信息，请参见<span sdata="link"><mshelp:link keywords="a331f04a-7fa0-4dde-b190-078efd1a7227" tabindex="0">格式化类型</mshelp:link></span>。
+                </p></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle6)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle6, event)" tabindex="0"><img id="sectionToggle6" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />子字符串</span></h1><div id="sectionSection6" class="section" name="collapseableSection" style=""><p>
+                    子字符串是包含在字符串中的任意字符序列。使用 <span sdata="cer" target="M:System.String.Substring(System.Int32)"><mshelp:link keywords="Overload:System.String.Substring" tabindex="0">Substring</mshelp:link></span> 方法可以基于原始字符串的一部分创建新字符串。可以使用 <span sdata="cer" target="M:System.String.IndexOf(System.Char)"><mshelp:link keywords="Overload:System.String.IndexOf" tabindex="0">IndexOf</mshelp:link></span> 方法搜索子字符串的一个或多个匹配项。使用 <span sdata="cer" target="M:System.String.Replace(System.Char,System.Char)"><mshelp:link keywords="Overload:System.String.Replace" tabindex="0">Replace</mshelp:link></span> 方法可将指定子字符串的所有匹配项替换为一个新字符串。与 <span sdata="cer" target="M:System.String.Substring(System.Int32)"><mshelp:link keywords="Overload:System.String.Substring" tabindex="0">Substring</mshelp:link></span> 方法一样，<span sdata="cer" target="M:System.String.Replace(System.Char,System.Char)"><mshelp:link keywords="Overload:System.String.Replace" tabindex="0">Replace</mshelp:link></span> 实际上返回的也是新字符串，而不修改原始字符串。有关更多信息，请参见<span sdata="link"><a href="fb1d9a6d-598d-4a35-bd5f-b86012edcb2b.htm">如何：使用字符串方法搜索字符串（C# 编程指南）</a></span>和<span sdata="link"><a href="b6c20bba-ce22-43d7-ad1b-5ce65f714055.htm">如何：修改字符串内容（C# 编程指南）</a></span>。
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> s3 = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Visual C# Express"</span>;
+System.Console.WriteLine(s3.Substring(7, 2));
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Output: </span><span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"C#"</span>
+
+System.Console.WriteLine(s3.Replace(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"C#"</span>, <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Basic"</span>));
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Output: </span><span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Visual Basic Express"</span>
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Index values are zero-based</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> index = s3.IndexOf(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"C"</span>);
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// index = 7</span>
+
+</pre></td></tr></table></span></div></div></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle7)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle7, event)" tabindex="0"><img id="sectionToggle7" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />访问各个字符</span></h1><div id="sectionSection7" class="section" name="collapseableSection" style=""><p>
+                    可以使用带索引值的数组表示法获取对各个字符的只读访问，如下面的示例所示：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> s5 = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Printing backwards"</span>;
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">for</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> i = 0; i &lt; s5.Length; i++)
+{
+    System.Console.Write(s5[s5.Length - i - 1]);
+}
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Output: </span><span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"sdrawkcab gnitnirP"</span>
+
+</pre></td></tr></table></span></div></div><p>
+                    如果 <span sdata="cer" target="T:System.String"><mshelp:link keywords="T:System.String" tabindex="0">String</mshelp:link></span> 方法不提供修改字符串中的各个字符所必须具有的功能，则您可以使用 <span sdata="cer" target="T:System.Text.StringBuilder"><mshelp:link keywords="T:System.Text.StringBuilder" tabindex="0">StringBuilder</mshelp:link></span> 对象“就地”修改各个字符，然后使用 <span sdata="cer" target="T:System.Text.StringBuilder"><mshelp:link keywords="T:System.Text.StringBuilder" tabindex="0">StringBuilder</mshelp:link></span> 方法创建一个新字符串来存储结果。在下面的示例中，假设您必须以特定方式修改原始字符串，然后存储结果以备将来使用：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> question = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"hOW DOES mICROSOFT wORD DEAL WITH THE cAPS lOCK KEY?"</span>;
+System.Text.StringBuilder sb = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> System.Text.StringBuilder(question);
+
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">for</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> j = 0; j &lt; sb.Length; j++)
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> (System.Char.IsLower(sb[j]) == <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">true</span>)
+        sb[j] = System.Char.ToUpper(sb[j]);
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">else</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">if</span> (System.Char.IsUpper(sb[j]) == <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">true</span>)
+        sb[j] = System.Char.ToLower(sb[j]);
+}
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Store the new string.</span>
+<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> corrected = sb.ToString();
+System.Console.WriteLine(corrected);
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Output: How does Microsoft Word deal with the Caps Lock key?            </span>
+
+</pre></td></tr></table></span></div></div></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle8)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle8, event)" tabindex="0"><img id="sectionToggle8" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />Null 字符串和空字符串</span></h1><div id="sectionSection8" class="section" name="collapseableSection" style=""><p>
+                    空字符串是不包含字符的 <span sdata="cer" target="T:System.String"><mshelp:link keywords="T:System.String" tabindex="0">System<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span></span>String</mshelp:link></span> 对象的实例。在各种编程方案中经常会使用空字符串表示空白文本字段。可以对空字符串调用方法，因为它们是有效的 <span sdata="cer" target="T:System.String"><mshelp:link keywords="T:System.String" tabindex="0">System<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span></span>String</mshelp:link></span> 对象。空字符串可按如下方式初始化：
+                </p><div class="code"><span codeLanguage="other"><table width="100%" cellspacing="0" cellpadding="0"><tr><th> </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>string s = String.Empty;</pre></td></tr></table></span></div><p>
+                    相反，null 字符串并不引用 <span sdata="cer" target="T:System.String"><mshelp:link keywords="T:System.String" tabindex="0">System<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span></span>String</mshelp:link></span> 对象的实例，任何对 null 字符串调用方法的尝试都会生成 <span sdata="cer" target="T:System.NullReferenceException"><mshelp:link keywords="T:System.NullReferenceException" tabindex="0">NullReferenceException</mshelp:link></span>。但是，可以在串联和比较操作中将 null 字符串与其他字符串一起使用。下面的示例阐释了引用 null 字符串导致引发异常的情形以及并不导致引发异常的情形：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Main()
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> str = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"hello"</span>;
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> nullStr = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">null</span>;
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> emptyStr = <span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"a"</span>;
+
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> tempStr = str + nullStr; <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// tempStr = </span><span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"hello"</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">bool</span> b = (emptyStr == nullStr);<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// b = false;</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">string</span> newStr = emptyStr + nullStr; <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// creates a new empty string</span>
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> len = nullStr.Length; <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// throws NullReferenceException</span>
+
+}
+
+</pre></td></tr></table></span></div></div></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle9)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle9, event)" tabindex="0"><img id="sectionToggle9" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />使用 StringBuilder 快速创建字符串</span></h1><div id="sectionSection9" class="section" name="collapseableSection" style=""><p>
+                    .NET 中的字符串操作已高度优化，大多数情况下不会显著影响性能。但在某些应用场景中，例如在执行好几百甚至好几千次的紧凑循环中，字符串操作会影响性能。<span sdata="cer" target="T:System.Text.StringBuilder"><mshelp:link keywords="T:System.Text.StringBuilder" tabindex="0">StringBuilder</mshelp:link></span> 类创建了一个字符串缓冲区，用于在程序执行大量字符串操作时提供更好的性能。<span sdata="cer" target="T:System.Text.StringBuilder"><mshelp:link keywords="T:System.Text.StringBuilder" tabindex="0">StringBuilder</mshelp:link></span> 字符串还使您能够重新分配个别字符（内置字符串数据类型所不支持的字符）。例如，此代码在不创建新字符串的情况下更改了一个字符串的内容：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>System.Text.StringBuilder sb = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> System.Text.StringBuilder(<span class="literal" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">"Rat: the ideal pet"</span>);
+sb[0] = 'C';
+System.Console.WriteLine(sb.ToString());
+System.Console.ReadLine();
+
+<span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">//Outputs Cat: the ideal pet</span>
+
+</pre></td></tr></table></span></div></div><p>
+                    在本示例中，<span sdata="cer" target="T:System.Text.StringBuilder"><mshelp:link keywords="T:System.Text.StringBuilder" tabindex="0">StringBuilder</mshelp:link></span> 对象用于从一组数值类型中创建字符串：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> TestStringBuilder
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">static</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> Main()
+    {
+        System.Text.StringBuilder sb = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> System.Text.StringBuilder();
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Create a string composed of numbers 0 - 9</span>
+        <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">for</span> (<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> i = 0; i &lt; 10; i++)
+        {
+            sb.Append(i.ToString());
+        }
+        System.Console.WriteLine(sb);  <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// displays 0123456789</span>
+
+        <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Copy one character of the string (not possible with a System.String)</span>
+        sb[0] = sb[9];
+
+        System.Console.WriteLine(sb);  <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// displays 9123456789</span>
+    }
+}
+
+</pre></td></tr></table></span></div></div></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle10)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle10, event)" tabindex="0"><img id="sectionToggle10" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />字符串、扩展方法和 LINQ</span></h1><div id="sectionSection10" class="section" name="collapseableSection" style=""><p>
+                    由于 <span sdata="cer" target="T:System.String"><mshelp:link keywords="T:System.String" tabindex="0">String</mshelp:link></span> 类型实现 <span sdata="cer" target="T:System.Collections.Generic.IEnumerable`1"><mshelp:link keywords="T:System.Collections.Generic.IEnumerable`1" tabindex="0">IEnumerable<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span></span>T<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span></span></mshelp:link></span>，因此可以对字符串使用 <span sdata="cer" target="T:System.Linq.Enumerable"><mshelp:link keywords="T:System.Linq.Enumerable" tabindex="0">Enumerable</mshelp:link></span> 类中定义的扩展方法。对于 <span sdata="cer" target="T:System.String"><mshelp:link keywords="T:System.String" tabindex="0">String</mshelp:link></span> 类型，为了避免视觉上的混乱，从 IntelliSense 中排除了这些方法，但这些方法仍然可用。此外，还可以对字符串使用 LINQ 查询表达式。有关更多信息，请参见 <span sdata="link"><mshelp:link keywords="6c34169f-7a39-436a-98d8-9a7283043942" tabindex="0">LINQ 和字符串</mshelp:link></span>。
+                </p></div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />请参见</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><h4 class="subHeading">任务</h4><div class="seeAlsoStyle"><span sdata="link"><a href="dcab2150-a4a2-4fe4-87e3-83b83b58d84a.htm">如何：使用正则表达式搜索字符串（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="fb1d9a6d-598d-4a35-bd5f-b86012edcb2b.htm">如何：使用字符串方法搜索字符串（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="729c2923-4169-41c6-9c90-ef176c1e2953.htm">如何：拆分字符串（C# 编程指南）</a></span></div><h4 class="subHeading">概念</h4><div class="seeAlsoStyle"><span sdata="link"><a href="ac0f23a2-6bf3-4077-be99-538ae5fd3bc5.htm">C# 编程指南</a></span></div><h4 class="subHeading">其他资源</h4><div class="seeAlsoStyle"><span sdata="link"><mshelp:link keywords="5e758b41-db93-456b-8999-99b7304b090d" tabindex="0">分析字符串</mshelp:link></span></div></div></div>
+      <div id="footer">
+        <div class="footerLine">
+          <img width="100%" height="3px" src="../icons/footer.gif" title="“页脚”图像" />
+        </div>
+<span id="feedbackarea">将有关本主题的<a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);">反馈意见</a>发送给 Microsoft。</span>
+</div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,124 @@
+<html><HEAD><TITLE>5、字符串 - RUBY文档中心</TITLE>
+<STYLE type=text/css>
+<!--
+.code2 {font-size:14.7px;font-family:arial;color:#00009a;line-height:150%;background-color:#EFEFEF;height=25px;vertical-align=middle;margin-left: 20px;}
+.code {font-size:14.7px;font-family:arial;color:#00009a;background-color:#EFEFEF;line-height: 150%}
+.quote {font-size:14.7px;font-family:arial;color:#666666;line-height:150%;}
+-->
+</STYLE>
+
+<META http-equiv=Content-Type content="text/html; charset=gb2312"><LINK href="16_files/news[1].css"  rel=stylesheet></head>
+<BODY topMargin=0>
+<STYLE type=text/css>
+<!--
+body {
+	margin-top: 50px;
+}
+.style12 {font-size: 33px}
+.style15 {
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-weight: bold;
+}
+.style17 {font-family: "黑体", "楷体_GB2312", "新宋体"}
+.style18 {font-size: 12px}
+-->
+</STYLE>
+
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #929292 1px groove" cellSpacing=0 cellPadding=3 width=772 align=center bgColor=#ffffff border=0>
+<TBODY>
+<TR>
+<TD height=20></TD></TR>
+<TR>
+<TD bgColor=#8acd38 height=30>&nbsp;</TD></TR>
+<TR>
+<TD height=50></TD></TR></TBODY></TABLE>
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #ffffff 1px groove" borderColor=#ffffff cellSpacing=0 cellPadding=3 width=772 align=center bgColor=#ffffff border=0>
+<TBODY>
+<TR>
+<TD align=middle>
+<DIV class=moer-title><IMG src="51_files/logo_read[1].gif" > 5、字符串</DIV>
+<P>转帖：oasis_me　　发表时间：2005-6-15 4:03:57　　点击次数：530 </P></TD></TR>
+<TR>
+<TD height=50></TD></TR></TBODY></TABLE>
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #ffffff 1px groove" borderColor=#ffffff cellSpacing=0 cellPadding=3 width=772 align=center bgColor=#ffffff border=0>
+<TBODY>
+<TR>
+<TD width="10%" bgColor=#ffffff>&nbsp;</TD>
+<TD class=moer-ask vAlign=top align=left width="5%" bgColor=#ffffff>&nbsp;</TD>
+<TD vAlign=top align=left width="75%">
+<TABLE cellSpacing=0 cellPadding=0>
+<TBODY>
+<TR>
+<TD class=moer-content vAlign=top align=left>Ruby将字符串像数字一样处理.我们用单引号('...')或双引号("...")将它们括起来.<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;"abc"<BR>&nbsp;&nbsp;&nbsp;"abc"<BR>ruby&gt;&nbsp;'abc'<BR>&nbsp;&nbsp;&nbsp;"abc"</TD></TR></TBODY></TABLE><BR><BR>单引号和双引号在某些情况下有不同的作用.一个由双引号括起来的字符串允许字符由一个前置的斜杠引出,而且可以用#{}内嵌表达式.而<BR><BR>单引号括起来的字符串并不会对字符串作任何解释;你看到的是什么便是什么.几个例子:<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;print&nbsp;"a\nb\nc","\n"<BR>a<BR>b<BR>c<BR>&nbsp;&nbsp;&nbsp;nil<BR>ruby&gt;&nbsp;print&nbsp;'a\nb\n',"\n"<BR>a\nb\nc<BR>&nbsp;&nbsp;&nbsp;nil<BR>ruby&gt;&nbsp;"\n"<BR>&nbsp;&nbsp;&nbsp;"\n"<BR>ruby&gt;&nbsp;'\n'<BR>&nbsp;&nbsp;&nbsp;"\\n"<BR>ruby&gt;&nbsp;"\001"<BR>&nbsp;&nbsp;&nbsp;"\001"<BR>ruby&gt;&nbsp;'\001'<BR>&nbsp;&nbsp;&nbsp;"\\001"<BR>ruby&gt;&nbsp;"abcd&nbsp;#{5*3}&nbsp;efg"<BR>&nbsp;&nbsp;&nbsp;"abcd&nbsp;15&nbsp;efg"<BR>ruby&gt;&nbsp;var&nbsp;=&nbsp;"&nbsp;abc&nbsp;"<BR>&nbsp;&nbsp;&nbsp;"&nbsp;abc&nbsp;"<BR>ruby&gt;&nbsp;"1234#{var}5678"<BR>&nbsp;&nbsp;&nbsp;"1234&nbsp;abc&nbsp;5678"</TD></TR></TBODY></TABLE><BR><BR>Ruby的字符串操作比C更灵巧,更直观.比如说,你可以用+把几个串连起来,用*把一个串重复好几遍:<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;"foo"&nbsp;+&nbsp;"bar"<BR>&nbsp;&nbsp;&nbsp;"foobar"<BR>ruby&gt;&nbsp;"foo"&nbsp;*&nbsp;2<BR>&nbsp;&nbsp;&nbsp;"foofoo"</TD></TR></TBODY></TABLE><BR><BR>相比之下,在C里,因为需要精确的内存管理,串联字符串要笨拙的多:<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>char&nbsp;*s&nbsp;=&nbsp;malloc(strlen(s1)+strlen(s2)+1);<BR>strcpy(s,&nbsp;s1);<BR>strcat(s,&nbsp;s2);<BR>/*&nbsp;...&nbsp;*/<BR>free(s);</TD></TR></TBODY></TABLE><BR><BR>但对于Ruby,我们不需要考虑字符串的空间占用问题,这令到我们可以从烦琐的内存管理中解脱出来.<BR><BR>下面是一些字符串的处理,<BR><BR>串联:<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;word&nbsp;=&nbsp;"fo"&nbsp;+&nbsp;"o"<BR>&nbsp;&nbsp;&nbsp;"foo"</TD></TR></TBODY></TABLE><BR><BR>重复:<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;word&nbsp;=&nbsp;word&nbsp;*&nbsp;2<BR>&nbsp;&nbsp;&nbsp;"foofoo"&nbsp;</TD></TR></TBODY></TABLE><BR><BR>抽取字符(注意:在Ruby里,字符被视为整数):<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;word[0]<BR>&nbsp;&nbsp;&nbsp;102&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;102&nbsp;is&nbsp;ASCII&nbsp;code&nbsp;of&nbsp;`f'&nbsp;<BR>ruby&gt;&nbsp;word[-1]<BR>&nbsp;&nbsp;&nbsp;111&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;111&nbsp;is&nbsp;ASCII&nbsp;code&nbsp;of&nbsp;`o'&nbsp;</TD></TR></TBODY></TABLE><BR><BR>(负的索引指从字符串尾算起的偏移量,而不是从串头.)<BR><BR>提取子串:<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;herb&nbsp;=&nbsp;"parsley"<BR>&nbsp;&nbsp;&nbsp;"parsley"<BR>ruby&gt;&nbsp;herb[0,1]<BR>&nbsp;&nbsp;&nbsp;"p"<BR>ruby&gt;&nbsp;herb[-2,2]<BR>&nbsp;&nbsp;&nbsp;"ey"<BR>ruby&gt;&nbsp;herb[0..3]<BR>&nbsp;&nbsp;&nbsp;"pars"<BR>ruby&gt;&nbsp;herb[-5..-2]<BR>&nbsp;&nbsp;&nbsp;"rsle"&nbsp;</TD></TR></TBODY></TABLE><BR><BR>检查相等:<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>ruby&gt;&nbsp;"foo"&nbsp;==&nbsp;"foo"<BR>&nbsp;&nbsp;&nbsp;true<BR>ruby&gt;&nbsp;"foo"&nbsp;==&nbsp;"bar"<BR>&nbsp;&nbsp;&nbsp;false&nbsp;</TD></TR></TBODY></TABLE><BR><BR>注意:在Ruby&nbsp;1.0里,以上结果以大写字母出现.<BR><BR>好,让我们来试试这些特性.下面是一个猜词的谜题,可能"谜题"这个词用在下面的东西上太酷了一点;-)<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>#&nbsp;save&nbsp;this&nbsp;as&nbsp;guess.rb<BR>words&nbsp;=&nbsp;['foobar',&nbsp;'baz',&nbsp;'quux']<BR>secret&nbsp;=&nbsp;words[rand(3)]<BR>print&nbsp;"guess?&nbsp;"<BR>while&nbsp;guess&nbsp;=&nbsp;STDIN.gets&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;guess.chop!&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;guess&nbsp;==&nbsp;secret<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;"You&nbsp;win!\n"&nbsp;&nbsp;&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;else&nbsp;&nbsp;&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;"Sorry,&nbsp;you&nbsp;lose.\n"&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;end&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;"guess?&nbsp;"<BR>end<BR>print&nbsp;"The&nbsp;word&nbsp;was&nbsp;",&nbsp;secret,&nbsp;".\n"</TD></TR></TBODY></TABLE><BR><BR>现在,别太担心代码细节了.下面是谜题程序运行的一个对话.<BR><BR>
+<TABLE cellSpacing=0 cellPadding=5 width="100%">
+<TBODY>
+<TR>
+<TD class=code id=code>%&nbsp;ruby&nbsp;guess.rb<BR>guess?&nbsp;foobar<BR>Sorry,&nbsp;you&nbsp;lose.<BR>guess?&nbsp;quux<BR>Sorry,&nbsp;you&nbsp;lose.<BR>guess?&nbsp;^D<BR>The&nbsp;word&nbsp;was&nbsp;baz.&nbsp;</TD></TR></TBODY></TABLE><BR><BR>(考虑到1/3的成功率,也许我本该做得好一点.)</TD></TR>
+<TR>
+<TD class=moer-content vAlign=top align=left height=30></TD></TR>
+<TR>
+<TD vAlign=top align=left><SPAN style="FONT-WEIGHT: bold; FONT-SIZE: 12px">版权声明：</SPAN>RUBY文档中心的所有文章标明[<B>原创</B>]的均为本站作品，版权属RUBY中文化计划，若转载请注明；标明[<B>翻译</B>]的其外文版权归原作者，译文版权属RUBY中文化计划；标明[<B>转贴</B>]的，若原作者感到侵犯了他的著作权，那么请及时跟主持人联系，我们会尽快更正。</TD></TR></TBODY></TABLE></TD>
+<TD width="10%" bgColor=#ffffff>&nbsp;</TD></TR></TBODY></TABLE>
+<STYLE type=text/css>
+<!--
+body {
+	margin-bottom: 20px;
+}
+-->
+</STYLE>
+
+<TABLE style="BORDER-RIGHT: #929292 1px groove; BORDER-LEFT: #929292 1px groove; BORDER-BOTTOM: #929292 1px groove" cellSpacing=0 cellPadding=0 width=772 align=center>
+<TBODY>
+<TR>
+<TD bgColor=#ffffff>
+<DIV align=center>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P><IMG height=11 src="55_files/logo_small[1].gif"  width=8> 版权所有(C) <A href="http://www.moer.net/ruby/index.asp" >RUBY中文化计划</A></P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></DIV></TD></TR></TBODY></TABLE>
+<DIV align=center></DIV>
+<div style="display:none;">
+<script type="text/javascript" src="http://shouce.jb51.net/js/stat.js" ></script>
+</div>
+</BODY>

@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv=Content-Type content='text/html; charset=utf-8'>
+
+	<title>$super 关键字</title>
+	<link href="../CSS/main.css"  type='text/css' rel='Stylesheet' />
+</head>
+<body>
+	<div id="main" class="clearfix">
+		<h2>$super</h2>
+		<div id="excerpt">
+			<p>Prototype 定义的关键字，用于在子类中调用基类的方法。</p>
+		</div>
+		<div id="abody">
+			<p>
+				在子类重写基类的方法时，有时需要调用基类的方法，为实现这个目的，Prototype 提供了 $super 关键字，可以获取基类同名方法的引用。
+				$super 关键字的使用非常简单：在子类需要重写的方法中，将 $super 作为方法的第一个参数，Prototype 在检测到该关键字后，
+				会自动将该关键字指向基类的同名方法，然后使用 <code>$super(基类方法参数)</code> 就可以调用基类中被覆盖的方法了。
+			</p>
+			<pre><code class="javascript">var baseClass = Class.create({
+	initialize: function(name){
+		this.name = name;
+	},
+	show: function(msg){
+		alert(msg + ' ' + this.name);
+	}
+});
+
+var subClass = Class.create(baseClass, {
+	show: function($super, msg){
+		$super(msg + '\n我是子类。');
+	}
+});
+
+var subObj = new subClass('ORain');
+subObj.show('Hello, World！');</code></pre>
+			<strong>注意：</strong>在调用子类的 show 方法时，只需要传递一个参数，$super 由 Prototype 处理。
+		</div>
+	</div>
+</body>
+</html>

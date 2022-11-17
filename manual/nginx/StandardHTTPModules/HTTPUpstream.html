@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml">
+<HEAD><TITLE>HTTP负载均衡模块（HTTP Upstream）</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=GB2312">
+<STYLE type=text/css>PRE {
+	BACKGROUND-COLOR: #cccccc
+}
+.STYLE1 {
+	COLOR: #ff0000
+}
+</STYLE>
+
+<META content="MSHTML 6.00.6000.16809" name=GENERATOR></HEAD>
+<BODY>
+<H2>HTTP负载均衡模块（HTTP Upstream）</H2><BR>
+
+<H3>·摘要</H3>
+<H4>这个模块为后端的服务器提供简单的负载均衡（轮询（round-robin）和连接IP（client IP））<BR>
+如下例：<BR>
+<PRE>upstream backend  {
+  server backend1.example.com weight=5;
+  server backend2.example.com:8080;
+  server unix:/tmp/backend3;
+}
+ 
+server {
+  location / {
+    proxy_pass  http://backend;
+  }
+}</PRE></H4>
+<H3>·指令</H3>
+<H3> ip_hash </H3>
+<H4>语法：ip_hash <BR>
+默认值：none <BR>
+使用字段：upstream <BR>
+这个指令将基于客户端连接的IP地址来分发请求。<BR>
+哈希的关键字是客户端的C类网络地址，这个功能将保证这个客户端请求总是被转发到一台服务器上，但是如果这台服务器不可用，那么请求将转发到另外的服务器上，这将保证某个客户端有很大概率总是连接到一台服务器。<BR>
+无法将权重（weight）与ip_hash联合使用来分发连接。如果有某台服务器不可用，你必须标记其为“down”，如下例:<BR>
+<PRE>upstream backend {
+  ip_hash;
+  server   backend1.example.com;
+  server   backend2.example.com;
+  server   backend3.example.com  down;
+  server   backend4.example.com;
+}</PRE></H4>
+<H3> server </H3>
+<H4>语法：server name [parameters] <BR>
+默认值：none <BR>
+使用字段：upstream <BR>
+指定后端服务器的名称和一些参数，可以使用域名，IP，端口，或者unix socket。如果指定为域名，则首先将其解析为IP。<BR>
+·weight = NUMBER - 设置服务器权重，默认为1。<BR>
+·max_fails = NUMBER - 在一定时间内（这个时间在fail_timeout参数中设置）检查这个服务器是否可用时产生的最多失败请求数，默认为1，将其设置为0可以关闭检查，这些错误在proxy_next_upstream或fastcgi_next_upstream（404错误不会使max_fails增加）中定义。<BR>
+·fail_timeout = TIME - 在这个时间内产生了max_fails所设置大小的失败尝试连接请求后这个服务器可能不可用，同样它指定了服务器不可用的时间（在下一次尝试连接请求发起之前），默认为10秒，fail_timeout与前端响应时间没有直接关系，不过可以使用proxy_connect_timeout和proxy_read_timeout来控制。<BR>
+·down - 标记服务器处于离线状态，通常和ip_hash一起使用。<BR>
+·backup - (0.6.7或更高)如果所有的非备份服务器都宕机或繁忙，则使用本服务器（无法和ip_hash指令搭配使用）。<BR>
+示例配置<BR>
+<PRE>upstream  backend  {
+  server   backend1.example.com    weight=5;
+  server   127.0.0.1:8080          max_fails=3  fail_timeout=30s;
+  server   unix:/tmp/backend3;
+}</PRE>
+注意：如果你只使用一台上游服务器，nginx将设置一个内置变量为1，即max_fails和fail_timeout参数不会被处理。<BR>
+结果：如果nginx不能连接到上游，请求将丢失。<BR>
+解决：使用多台上游服务器。</H4>
+<H3> upstream </H3>
+<H4>语法：upstream name { ... } <BR>
+默认值：none <BR>
+使用字段：http <BR>
+这个字段设置一群服务器，可以将这个字段放在proxy_pass和fastcgi_pass指令中作为一个单独的实体，它们可以可以是监听不同端口的服务器，并且也可以是同时监听TCP和Unix socket的服务器。<BR>
+服务器可以指定不同的权重，默认为1。<BR>
+示例配置<BR>
+<PRE>upstream backend {
+  server backend1.example.com weight=5;
+  server 127.0.0.1:8080       max_fails=3  fail_timeout=30s;
+  server unix:/tmp/backend3;
+}</PRE>
+请求将按照轮询的方式分发到后端服务器，但同时也会考虑权重。<BR>
+在上面的例子中如果每次发生7个请求，5个请求将被发送到backend1.example.com，其他两台将分别得到一个请求，如果有一台服务器不可用，那么请求将被转发到下一台服务器，直到所有的服务器检查都通过。如果所有的服务器都无法通过检查，那么将返回给客户端最后一台工作的服务器产生的结果。<BR></H4>
+<H3>·变量</H3>
+<H4>版本0.5.18以后，可以通过log_module中的变量来记录日志：<BR>
+<PRE>log_format timing '$remote_addr - $remote_user [$time_local]  $request '
+  'upstream_response_time $upstream_response_time '
+  'msec $msec request_time $request_time';
+ 
+log_format up_head '$remote_addr - $remote_user [$time_local]  $request '
+  'upstream_http_content_type $upstream_http_content_type';</PRE></H4>
+<H3> $upstream_addr </H3>
+<H4>前端服务器处理请求的服务器地址</H4>
+<H3> $upstream_cache_status </H3>
+<H4>0.8.3版本中其值可能为：<BR>
+·MISS <BR>
+·EXPIRED - expired。请求被传送到后端。<BR>
+·UPDATING - expired。由于proxy/fastcgi_cache_use_stale正在更新，将使用旧的应答。<BR>
+·STALE - expired。由于proxy/fastcgi_cache_use_stale，后端将得到过期的应答。<BR>
+·HIT</H4>
+<H3> $upstream_status </H3>
+<H4>前端服务器的响应状态。</H4>
+<H3> $upstream_response_time </H3>
+<H4>前端服务器的应答时间，精确到毫秒，不同的应答以逗号和冒号分开。</H4>
+<H3> $upstream_http_$HEADER </H3>
+<H4>随意的HTTP协议头，如：<BR>
+<PRE>$upstream_http_host</PRE></H4>
+<H3>·参考文档</H3>
+<H4><A href="http://sysoev.ru/nginx/docs/http/ngx_http_core_module.html" >Original Documentation</A><BR>
+<A href="http://wiki.nginx.org/NginxHttpUpstreamModule/" >Nginx Http Upstream Module</A></H4>
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://179401.cn/analytics/" : "http://179401.cn/analytics/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://shouce.jb51.net/179401.cn/analytics/piwik.php-idsite=1"  style="border:0" alt=""/></p></noscript>
+<!-- End Piwik Tag -->
+</BODY>
+</HTML>
+<H3><A href="HTTPAccess.html" >前进->HTTP访问控制模块（HTTP Access）</A></H3>

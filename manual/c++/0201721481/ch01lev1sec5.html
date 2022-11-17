@@ -1,0 +1,413 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 1.5.  Introducing Classes</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch01lev1sec4.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch01lev1sec6.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch01lev1sec5"></a>
+
+        <h3 class="docSection1Title" id="432172-979">1.5. Introducing Classes</h3>
+        <h3 class="docSection1Title" id="432172-979">1.5. 类的简介</h3>
+
+	<a name="ch01term14"></a><a name="ch01term7"></a><a name="ch01term8"></a>
+        <p class="docText">The only remaining feature we need to understand before solving our bookstore problem is how to write a <span class="docEmphBoldItalic"><a class="docLink" href="ch01lev1sec8.html#gloss01_14" >data structure</a></span> to represent our transaction data. In C++ we define our own data structure by defining a <b><a class="docLink" href="ch01lev1sec8.html#gloss01_07" >class</a></b>. The class mechanism is one of the most important features in C++. In fact, a primary focus of the design of C++ is to make it possible to define <b><a class="docLink" href="ch01lev1sec8.html#gloss01_08" >class types</a></b> that behave as naturally as the built-in types themselves. The library types that we've seen already, such as <tt>istream</tt> and <tt>ostream</tt>, are all defined as classesthat is, they are not strictly speaking part of the language.</p>
+	<p class="docText">解决书店问题之前，还需要弄明白如何编写<span class="docEmphBoldItalic"><a class="docLink" href="ch01lev1sec8.html#gloss01_14" >数据结构</a></span>来表示交易数据。C++ 中我们通过定义类来定义自己的数据结构。<b><a class="docLink" href="ch01lev1sec8.html#gloss01_07" >类</a></b>机制是 C++ 中最重要的特征之一。事实上，C++ 设计的主要焦点就是使所定义的<b><a class="docLink" href="ch01lev1sec8.html#gloss01_08" >类类型</a></b>的行为可以像内置类型一样自然。我们前面已看到的像 <tt>istream</tt> 和 <tt>ostream</tt> 这样的库类型，都是定义为类的，也就是说，它们严格说来不是语言的一部分。</p>
+
+	<a name="idd1e3819"></a><a name="idd1e3824"></a><a name="idd1e3830"></a><a name="idd1e3834"></a><a name="idd1e3840"></a>
+        <p class="docText">Complete understanding of the class mechanism requires mastering a lot of information. Fortunately, it is possible to use a class that someone else has written without knowing how to define a class ourselves. In this section, we'll describe a simple class that we can use in solving our bookstore problem. We'll implement this class in the subsequent chapters as we learn more about types, expressions, statements, and functionsall of which are used in defining classes.</p>
+        <p class="docText">完全理解类机制需要掌握很多内容。所幸我们可以使用他人写的类而无需掌握如何定义自己的类。在这一节，我们将描述一个用于解决书店问题的简单类。当我们学习了更多关于类型、表达式、语句和函数的知识（所有这些在类定义中都将用到）后，将会在后面的章节实现这个类。</p>
+
+        <p class="docText">To use a class we need to know three things:</p>
+        <p class="docText">使用类时我们需要回答三个问题：</p>
+
+        <div style="font-weight:bold">
+          <ol class="docList" type="1">
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">What is its name?</p>
+                <p class="docList">类的名字是什么？</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">Where is it defined?</p>
+                <p class="docList">它在哪里定义？</p>
+              </div>
+            </li>
+
+            <li>
+              <div style="font-weight:normal">
+                <p class="docList">What operations does it support?</p>
+                <p class="docList">它支持什么操作？</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+
+        <p class="docText">For our bookstore problem, we'll assume that the class is named <tt>Sales_item</tt> and that it is defined in a header named <tt>Sales_item.h</tt>.</p>
+	<p class="docText">对于书店问题，我们假定类命名为 <tt>Sales_item</tt> 且类定义在命名为 <tt>Sales_item.h</tt> 的头文件中。</p>
+
+	<a name="ch01lev2sec9"></a>
+        <h4 class="docSection2Title">1.5.1. The <tt>Sales_item</tt> Class</h4>
+	<h4 class="docSection2Title">1.5.1. <tt>Sales_item</tt> 类</h4>
+
+        <p class="docText">The purpose of the <tt>Sales_item</tt> class is to store an ISBN and keep track of the number of copies sold, the revenue, and average sales price for that book. How these data are stored or computed is not our concern. To use a class, we need not know anything about how it is implemented. Instead, what we need to know is what operations the class provides.</p>
+	<p class="docText"><tt>Sales_item</tt> 类的目的是存储 ISBN 并保存该书的销售册数、销售收入和平均售价。我们不关心如何存储或计算这些数据。使用类时我们不需要知道这个类是怎样实现的，相反，我们需要知道的是该类提供什么操作。</p>
+
+        <p class="docText">As we've seen, when we use library facilities such as IO, we must include the associated headers. Similarly, for our own classes, we must make the definitions associated with the class available to the compiler. We do so in much the same way. Typically, we put the class definition into a file. Any program that wants to use our class must include that file.</p>
+        <p class="docText">正如我们所看到的，使用像 IO 一样的库工具，必须包含相关的头文件。类似地，对于自定义的类，必须使得编译器可以访问和类相关的定义。这几乎可以采用同样的方式。一般来说，我们将类定义放入一个文件中，要使用该类的任何程序都必须包含这个文件。</p>
+
+        <p class="docText">Conventionally, class types are stored in a file with a name that, like the name of a program source file, has two parts: a file name and a file suffix. Usually the file name is the same as the class defined in the header. The suffix usually is <tt>.h</tt>, but some programmers use <tt>.H, .hpp</tt>, or <tt>.hxx</tt>. Compilers usually aren't picky about header file names, but IDEs sometimes are. We'll assume that our class is defined in a file named <tt>Sales_item.h</tt>.</p>
+	<p class="docText">依据惯例，类类型存储在一个文件中，其文件名如同程序的源文件名一样，由文件名和文件后缀两部分组成。通常文件名和定义在头文件中的类名是一样的。通常后缀是 <tt>.h</tt>，但也有一些程序员用 <tt>.H</tt>、<tt>.hpp</tt> 或 <tt>.hxx</tt>。编译器通常并不挑剔头文件名，但 IDE 有时会。假设我们的类定义在名为 <tt>Sale_item.h</tt> 的文件中。</p>
+
+	<a name="ch01lev3sec7"></a>
+        <h5 class="docSection3Title">Operations on <tt>Sales_item</tt> Objects</h5>
+	<h5 class="docSection3Title"><tt>Sales_item</tt> 对象上的操作</h5>
+
+        <p class="docText">Every class defines a type. The type name is the same as the name of the class. Hence, our <tt>Sales_item</tt> class defines a type named <tt>Sales_item</tt>. As with the built-in types, we can define a variable of a class type. When we write</p>
+	<p class="docText">每个类定义一种类型，类型名与类名相同。因此，我们的 <tt>Sales_item</tt> 类定义了一种命名为 <tt>Sales_item</tt> 的类型。像使用内置类型一样，可以定义类类型的变量。当写下</p>
+        <pre>
+    Sales_item item;
+</pre><br>
+
+        <p class="docText">we are saying that <tt>item</tt> is an object of type <tt>Sales_item</tt>. We often contract the phrase "an object of type <tt>Sales_item"</tt> to"aSales_ <tt>item</tt> object" or even more simply to "a <tt>Sales_item."</tt></p>
+	<p class="docText">就表示 <tt>item</tt> 是类型 <tt>Sales_item</tt> 的一个对象。通常将“类型 <tt>Sales_item</tt> 的一个对象”简称为“一个 <tt>Sales_item</tt> 对象”，或者更简单地简称为“一个 <tt>Sales_item</tt>”。</p>
+
+        <p class="docText">In addition to being able to define variables of type <tt>Sales_item</tt>, we can perform the following operations on <tt>Sales_item</tt> objects:</p>
+	<p class="docText">除了可以定义 <tt>Sales_item</tt> 类型的变量，我们还可以执行 <tt>Sales_item</tt> 对象的以下操作：</p>
+
+        <ul>
+          <li>
+            <p class="docList">Use the addition operator, <tt>+</tt>, to add two <tt>Sales_item</tt>s</p>
+	    <p class="docList">使用加法操作符，<tt>+</tt>，将两个 <tt>Sales_item</tt> 相加。</p>
+          </li>
+
+          <li>
+            <p class="docList">Use the input operator, <tt>&lt;&lt;</tt> to read a <tt>Sales_item</tt> object,</p>
+	    <p class="docList">使用输入操作符，<tt>&lt;&lt;</tt>，来读取一个 <tt>Sales_item</tt> 对象。</p>
+          </li>
+
+          <li>
+            <p class="docList">Use the output operator, <tt>&gt;&gt;</tt> to write a <tt>Sales_item</tt> object</p>
+	    <p class="docList">使用输出操作符，<tt>&gt;&gt;</tt>，来输出一个 <tt>Sales_item</tt> 对象。</p>
+          </li>
+
+          <li>
+            <p class="docList">Use the assignment operator, <tt>=</tt>, to assign one <tt>Sales_item</tt> object to another</p>
+	    <p class="docList">使用赋值操作符，<tt>=</tt>，将一个 <tt>Sales_item</tt> 对象赋值给另一个 <tt>Sales_item</tt> 对象。</p>
+          </li>
+
+          <li>
+            <p class="docList">Call the <tt>same_isbn</tt> function to determine if two <tt>Sales_item</tt>s refer to the same book</p>
+	    <p class="docList">调用 <tt>same_isbn</tt> 函数确定两个 <tt>Sales_item</tt> 是否指同一本书。</p>
+          </li>
+        </ul><a name="ch01lev3sec8"></a>
+
+        <h5 class="docSection3Title">Reading and Writing <tt>Sales_item</tt>s</h5>
+	<h5 class="docSection3Title">读入和写出 <tt>Sales_item</tt> 对象</h5>
+
+        <p class="docText">Now that we know the operations that the class provides, we can write some simple programs to use this class. For example, the following program reads data from the standard input, uses that data to build a <tt>Sales_item</tt> object, and writes that <tt>Sales_item</tt> object back onto the standard output:</p>
+	<p class="docText">知道了类提供的操作，就可以编写一些简单的程序使用这个类。例如，下面的程序从标准输入读取数据，使用该数据建立一个 <tt>Sales_item</tt> 对象，并将该 <tt>Sales_item</tt> 对象写到标准输出：</p>
+        <pre>
+    #include &lt;iostream&gt;
+    #include "Sales_item.h"
+    int main()
+    {
+        Sales_item book;
+        // <span class="docEmphItalicAlt">read ISBN, number of copies sold, and sales price</span>
+        std::cin &gt;&gt; book;
+        // <span class="docEmphItalicAlt">write ISBN, number of copies sold, total revenue, and average price</span>
+        std::cout &lt;&lt; book &lt;&lt; std::endl;
+        return 0;
+    }
+</pre>
+
+        <p class="docText">If the input to this program is</p>
+        <p class="docText">如果输入到程序的是</p>
+        <pre>
+    <span class="docEmphStrong">0-201-70353-X 4 24.99</span>
+</pre><br>
+
+        <p class="docText">then the output will be</p>
+        <p class="docText">则输出将是</p>
+        <pre>
+    <span class="docEmphStrong">0-201-70353-X 4 99.96 24.99</span>
+</pre><br>
+
+        <p class="docText">Our input said that we sold four copies of the book at $24.99 each, and the output indicates that the total sold was four, the total revenue was $99.96, and the average price per book was $24.99.</p>
+        <p class="docText">输入表明销售了 4 本书，每本价格是 24.99 美元。输出表明卖出书的总数是 4 本，总收入是 99.96 美元，每本书的平均价格是 24.99 美元。</p>
+
+        <p class="docText">This program starts with two <tt>#include</tt> directives, one of which uses a new form. The <tt>iostream</tt> header is defined by the standard library; the <tt>Sales_item</tt> header is not. <tt>Sales_item</tt> is a type that we ourselves have defined. When we use our own headers, we use quotation marks (<tt>" "</tt>) to surround the header name.</p>
+	<p class="docText">这个程序以两个 <tt>#include</tt> 指示开始，其中之一使用了一种新格式。<tt>iostream</tt> 头文件由标准库定义，而 <tt>Sales_item</tt> 头文件则不是。<tt>Sales_item</tt> 是一种自定义类型。当使用自定义头文件时，我们采用双引号（" "）把头文件名括起来。</p>
+
+	<a name="ch01note06"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Headers for the standard library are enclosed in angle brackets (<tt>&lt; &gt;</tt>). Nonstandard headers are enclosed in double quotes (<tt>" "</tt>).</p>
+		<p class="docText">标准库的头文件用尖括号 <tt>&lt; &gt;</tt> 括起来，非标准库的头文件用双引号 <tt>" "</tt> 括起来。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <p class="docText">Inside <tt>main</tt> we start by defining an object, named <tt>book</tt>, which we'll use to hold the data that we read from the standard input. The next statement reads into that object, and the third statement prints it to the standard output followed as usual by printing <tt>endl</tt> to flush the buffer.</p>
+	<p class="docText">在 <tt>main</tt> 函数中，首先定义一个对象，命名为 <tt>book</tt>，用它保存从标准输入读取的数据。下一条语句读入数据到此对象，第三条语句将它打印到标准输出，像平常一样紧接着打印 <tt>endl</tt> 来刷新缓冲区。</p>
+
+<a name="ch01sb12"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Key Concept: Classes Define Behavior</h2>
+              <h2 class="docSidebarTitle">关键概念：类定义行为</h2>
+
+	<a name="idd1e4123"></a>
+              <p class="docText"><span class="docEmphStrong">As we go through these programs that use <tt>Sales_item</tt>s, the important thing to keep in mind is that the author of the <tt>Sales_item</tt> class defined <span class="docEmphasis">all</span> the actions that can be performed by objects of this class. That is, the author of the <tt>Sales_item</tt> data structure defines what happens when a <tt>Sales_item</tt> object is created and what happens when the addition or the input and output operators are applied to <tt>Sales_item</tt> objects, and so on.</span></p>
+	      <p class="docText"><span class="docEmphStrong">在编写使用 <tt>Sales_item</tt> 的程序时，重要的是记住类 <tt>Sales_item</tt> 的创建者定义该类对象可以执行的所有操作。也就是说， <tt>Sales_item</tt> 数据结构的创建者定义创建 <tt>Sales_item</tt> 对象时会发生什么，以及加操作符或输入输出操作符应用到 <tt>Sales_item</tt> 对象时又会发生什么，等等。</span></p>
+
+              <p class="docText"><span class="docEmphStrong">In general, only the operations defined by a class can be used on objects of the class type. For now, the only operations we know we can peeform on <tt>Sales_item</tt> objects are the ones listed on page <a class="docLink" href="ch01lev1sec5.html#ch01lev2sec9">21</a>.</span></p>
+	      <p class="docText"><span class="docEmphStrong">通常，只有由类定义的操作可被用于该类类型的对象。此时，我们知道的可以在 <tt>Sales_item</tt> 对象上执行的操作只是前面列出的那些。</span></p>
+
+              <p class="docText"><span class="docEmphStrong">We'll see how these operations are defined in <a class="docLink" href="ch07lev1sec7.html#ch07lev2sec24" >Sections 7.7.3</a> and <a class="docLink" href="ch14lev1sec2.html#ch14lev1sec2" >14.2</a>.</span></p>
+              <p class="docText"><span class="docEmphStrong">我们将在<a class="docLink" href="ch07lev1sec7.html#ch07lev2sec24" >第 7.7.3 节</a>和<a class="docLink" href="ch14lev1sec2.html#ch14lev1sec2" >第 14.2 节</a>看到如何定义这些操作。</span></p>
+            </td>
+          </tr>
+        </table><br>
+        <a name="ch01lev3sec9"></a>
+
+        <h5 class="docSection3Title">Adding <tt>Sales_item</tt>s</h5>
+	<h5 class="docSection3Title">将 <tt>Sales_item</tt> 对象相加</h5>
+
+        <p class="docText">A slightly more interesting example adds two <tt>Sales_item</tt> objects:</p>
+	<p class="docText">更有趣的例子是将两个 <tt>Sales_item</tt> 对象相加：</p>
+        <pre>
+     #include &lt;iostream&gt;
+     #include "Sales_item.h"
+     int main()
+     {
+        Sales_item item1, item2;
+        std::cin &gt;&gt; item1 &gt;&gt; item2;   // <span class="docEmphItalicAlt">read a pair of transactions</span>
+        std::cout &lt;&lt; item1 + item2 &lt;&lt; std::endl; // <span class="docEmphItalicAlt">print their sum</span>
+        return 0;
+     }
+</pre>
+
+        <p class="docText">If we give this program the following input</p>
+        <p class="docText">如果我们给这个程序下面的输入：</p>
+        <pre>
+     <span class="docEmphStrong">0-201-78345-X 3 20.00</span>
+     <span class="docEmphStrong">0-201-78345-X 2 25.00</span>
+</pre>
+
+        <p class="docText">our output is</p>
+        <p class="docText">则输出为</p>
+        <pre>
+     <span class="docEmphStrong">0-201-78345-X 5 110 22</span>
+</pre>
+
+        <p class="docText">This program starts by including the <tt>Sales_item</tt> and <tt>iostream</tt> headers. Next we define two <tt>Sales_item</tt> objects to hold the two transactions that we wish to sum. The output expression does the addition and prints the result. We know from the list of operations on page <a class="docLink" href="ch01lev1sec5.html#ch01lev2sec9">21</a> that adding two <tt>Sales_item</tt>s together creates a new object whose ISBN is that of its operands and whose number sold and revenue reflect the sum of the corresponding values in its operands. We also know that the items we add must represent the same ISBN.</p>
+	<p class="docText">程序首先包含两个头文件 <tt>Sales_item</tt> 和 <tt>iostream</tt>。接下来定义两个 <tt>Sales_item</tt> 对象来存放要求和的两笔交易。输出表达式做加法运算并输出结果。从前面列出的操作，可以得知将两个 <tt>Sales_item</tt> 相加将创建一个新对象，新对象的 ISBN 是其操作数的 ISBN，销售的数量和收入反映其操作数中相应值的和。我们也知道相加的项必须具有同样的 ISBN。</p>
+
+        <p class="docText">It's worth noting how similar this program looks to the one on page <a class="docLink" href="ch01lev1sec2.html#ch01lev2sec3" >6</a>: We read two inputs and write their sum. What makes it interesting is that instead of reading and printing the sum of two integers, we're reading and printing the sum of two <tt>Sales_item</tt> objects. Moreover, the whole idea of "sum" is different. In the case of <tt>int</tt>s we are generating a conventional sumthe result of adding two numeric values. In the case of <tt>Sales_item</tt> objects we use a conceptually new meaning for sumthe result of adding the components of two <tt>Sales_item</tt> objects.</p>
+	<p class="docText">值得注意的是这个程序是如何类似于<a class="docLink" href="ch01lev1sec2.html#ch01lev2sec3" >第 1.2.2 节</a>中的程序：读入两个输入并输出它们的和。令人感兴趣的是，本例并不是读入两个整数并输出两个整数的和，而是读入两个 <tt>Sales_item</tt> 对象并输出两个 <tt>Sales_item</tt> 对象的和。此外，“和”的意义也不同。在整数的实例中我们产生的是传统求和——两个数值相加后的结果。在 <tt>Sales_item</tt> 对象的实例上我们使用了在概念上有新意义的求和——两个 <tt>Sales_item</tt> 对象的成分相加后的结果。</p>
+
+	<a name="ch01sb13"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 1.5.1</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch01qa7q1"></a><b>Exercise 1.21:</b></td>
+
+                    <td>
+			<a name="idd1e4280"></a>
+                      <p class="docText">The Web site (<a class="docLink" target="_blank" href="http://www.awprofessional.com/cpp_primer" >http://www.awprofessional.com/cpp_primer</a>) contains a copy of <tt>Sales_item.h</tt> in the <a class="docLink" href="ch01.html#ch01" >Chapter 1</a> code directory. Copy that file to your working directory. Write a program that loops through a set of book sales transactions, reading each transaction and writing that transaction to the standard output.</p>
+		      <p class="docText">本书<a class="docLink" target="_blank" href="http://www.awprofessional.com/cpp_primer" >配套网站</a>的<a class="docLink" href="ch01.html#ch01" >第一章</a>的代码目录下有 <tt>Sales_item.h</tt> 源文件。复制该文件到你的工作目录。编写程序，循环遍历一组书的销售交易，读入每笔交易并将交易写至标准输出。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch01qa7q2"></a><b>Exercise 1.22:</b></td>
+
+                    <td>
+                      <p class="docText">Write a program that reads two <tt>Sales_item</tt> objects that have the same ISBN and produces their sum.</p>
+		      <p class="docText">编写程序，读入两个具有相同 ISBN 的 <tt>Sales_item</tt> 对象并产生它们的和。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch01qa7q3"></a><b>Exercise 1.23:</b></td>
+
+                    <td>
+                      <p class="docText">Write a program that reads several transactions for the same ISBN. Write the sum of all the transactions that were read.</p>
+                      <p class="docText">编写程序，读入几个具有相同 ISBN 的交易，输出所有读入交易的和。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a name="ch01lev2sec10"></a>
+
+        <h4 class="docSection2Title">1.5.2. A First Look at Member Functions</h4>
+        <h4 class="docSection2Title">1.5.2. 初窥成员函数</h4>
+
+        <p class="docText">Unfortunately, there is a problem with the program that adds <tt>Sales_item</tt>s. What should happen if the input referred to two different ISBNs? It doesn't make sense to add the data for two different ISBNs together. To solve this problem, we'll first check whether the <tt>Sales_item</tt> operands refer to the same ISBNs:</p>
+	<p class="docText">不幸的是，将 <tt>Sales_item</tt> 相加的程序有一个问题。如果输入指向了两个不同的 ISBN 将发生什么？将两个不同 ISBN 的数据相加没有意义。为解决这个问题，首先检查 <tt>Sales_item</tt> 操作数是否都具有相同的 ISBN。</p>
+        <pre>
+    #include &lt;iostream&gt;
+    #include "Sales_item.h"
+    int main()
+    {
+        Sales_item item1, item2;
+        std::cin &gt;&gt; item1 &gt;&gt; item2;
+        // <span class="docEmphItalicAlt">first check that</span> <span class="docEmphasis">item1</span> <span class="docEmphItalicAlt">and</span> <span class="docEmphasis">item2</span> <span class="docEmphItalicAlt">represent the same book</span>
+        if (item1.same_isbn(item2)) {
+            std::cout &lt;&lt; item1 + item2 &lt;&lt; std::endl;
+            return 0;    // <span class="docEmphItalicAlt">indicate success</span>
+        } else {
+            std::cerr &lt;&lt; "Data must refer to same ISBN"
+                      &lt;&lt; std::endl;
+            return -1; // <span class="docEmphItalicAlt">indicate failure</span>
+        }
+    }
+</pre>
+
+        <p class="docText">The difference between this program and the previous one is the <tt>if</tt> test and its associated <tt>else</tt> branch. Before explaining the <tt>if</tt> condition, we know that what this program does depends on the condition in the <tt>if</tt>. If the test succeeds, then we write the same output as the previous program and return <tt>0</tt> indicating success. If the test fails, we execute the block following the <tt>else</tt>, which prints a message and returns an error indicator.</p>
+	<p class="docText">这个程序和前一个程序不同之处在于 <tt>if</tt> 测试语句以及与它相关联的 <tt>else</tt> 分支。在解释 <tt>if</tt> 语句的条件之前，我们明白程序的行为取决于 <tt>if</tt> 语句中的条件。如果测试成功，那么产生与前一程序相同的输出，并返回 <tt>0</tt> 表示程序成功运行完毕。如果测试失败，执行 <tt>else</tt> 后面的语句块，输出信息并返回错误提示。</p>
+
+	<a name="ch01lev3sec10"></a>
+        <h5 class="docSection3Title">What Is a Member Function?</h5>
+        <h5 class="docSection3Title">什么是成员函数</h5>
+
+        <p class="docText">The <tt>if</tt> condition</p>
+	<p class="docText">上述 <tt>if</tt> 语句的条件</p>
+        <pre>
+    // <span class="docEmphItalicAlt">first check that</span> <span class="docEmphasis">item1</span> <span class="docEmphItalicAlt">and</span> <span class="docEmphasis">item2</span> <span class="docEmphItalicAlt">represent the same book</span>
+    if (item1.same_isbn(item2)) {
+</pre><br>
+
+	<a name="idd1e4412"></a><a name="idd1e4417"></a><a name="idd1e4420"></a><a name="idd1e4426"></a><a name="idd1e4433"></a><a name="idd1e4439"></a><a name="idd1e4446"></a><a name="idd1e4449"></a>
+	<a name="ch01term29"></a>
+	<a name="ch01term30"></a>
+        <p class="docText">calls a <b><a class="docLink" href="ch01lev1sec8.html#gloss01_29" >member function</a></b> of the <tt>Sales_item</tt> object named <tt>item1</tt>. A member function is a function that is defined by a class. Member functions are sometimes referred to as the <b><a class="docLink" href="ch01lev1sec8.html#gloss01_30" >methods</a></b> of the class.</p>
+	<p class="docText">调用命名为 <tt>item1</tt> 的 <tt>Sales_item</tt> 对象的<b><a class="docLink" href="ch01lev1sec8.html#gloss01_29" >成员函数</a></b>。成员函数是由类定义的函数，有时称为类<b><a class="docLink" href="ch01lev1sec8.html#gloss01_30" >方法</a></b>。</p>
+
+        <p class="docText">Member functions are defined once for the class but are treated as members of each object. We refer to these operations as member functions because they (usually) operate on a specific object. In this sense, they are members of the object, even though a single definition is shared by all objects of the same type.</p>
+        <p class="docText">成员函数只定义一次，但被视为每个对象的成员。我们将这些操作称为成员函数，是因为它们（通常）在特定对象上操作。在这个意义上，它们是对象的成员，即使同一类型的所有对象共享同一个定义也是如此。</p>
+
+	<a name="ch01term50"></a>
+        <p class="docText">When we call a member function, we (usually) specify the object on which the function will operate. This syntax uses the <b><a class="docLink" href="ch01lev1sec8.html#gloss01_50" >dot operator</a></b> (the "." operator):</p>
+        <p class="docText">当调用成员函数时，（通常）指定函数要操作的对象。语法是使用<b><a class="docLink" href="ch01lev1sec8.html#gloss01_50" >点操作符</a></b>（.）：</p>
+        <pre>
+    item1.same_isbn
+</pre><br>
+
+        <p class="docText">means "the <tt>same_isbn</tt> member of the object named <tt>item1</tt>." The dot operator fetches its right-hand operand from its left. The dot operator applies only to objects of class type: The left-hand operand must be an object of class type; the right-hand operand must name a member of that type.</p>
+	<p class="docText">意思是“命名为 <tt>item1</tt> 的对象的 <tt>same_isbn</tt> 成员”。点操作符通过它的左操作数取得右操作数。点操作符仅应用于类类型的对象：左操作数必须是类类型的对象，右操作数必须指定该类型的成员。</p>
+
+	<a name="ch01note07"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" id="195131139046" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">Unlike most other operators, the right operand of the dot ("<tt>.</tt>") operator is not an object or value; it is the name of a member.</p>
+		<p class="docText">与大多数其他操作符不同，点操作符（“<tt>.</tt>”）的右操作数不是对象或值，而是成员的名字。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+	<a name="ch01term47"></a><a name="ch01term1"></a>
+        <p class="docText">When we use a member function as the right-hand operand of the dot operator, we usually do so to call that function. We execute a member function in much the same way as we do any function: To call a function, we follow the function name by the <b><a class="docLink" href="ch01lev1sec8.html#gloss01_47" >call operator</a></b> (the "<tt>()</tt>" operator). The call operator is a pair of parentheses that encloses a (possibly empty) list of <span class="docEmphBoldItalic"><a class="docLink" href="ch01lev1sec8.html#gloss01_01" >arguments</a></span> that we pass to the function.</p>
+        <p class="docText">通常使用成员函数作为点操作符的右操作数来调用成员函数。执行成员函数和执行其他函数相似：要调用函数，可将<b><a class="docLink" href="ch01lev1sec8.html#gloss01_47" >调用操作符</a></b>（()）放在函数名之后。调用操作符是一对圆括号，括住传递给函数的<span class="docEmphBoldItalic"><a class="docLink" href="ch01lev1sec8.html#gloss01_01" >实参列表</a></span>（可能为空）。</p>
+
+        <p class="docText">The <tt>same_isbn</tt> function takes a single argument, and that argument is another <tt>Sales_item</tt> object. The call</p>
+        <p class="docText"><tt>same_isbn</tt> 函数接受单个参数，且该参数是另一个 <tt>Sales_item</tt> 对象。函数调用</p>
+        <pre>
+    item1.same_isbn(item2)
+</pre><br>
+
+        <p class="docText">passes <tt>item2</tt> as an argument to the function named <tt>same_isbn</tt> that is a member of the object named <tt>item1</tt>. This function compares the ISBN part of its argument, <tt>item2</tt>, to the ISBN in <tt>item1</tt>, the object on which <tt>same_isbn</tt> is called. Thus, the effect is to test whether the two objects refer to the same ISBN.</p>
+	<p class="docText">将 <tt>item2</tt> 作为参数传递给名为 <tt>same_isbn</tt> 的函数，该函数是名为 <tt>item1</tt> 的对象的成员。它将比较参数 <tt>item2</tt> 的 ISBN 与函数 <tt>same_isbn</tt> 要操作的对象 <tt>item1</tt> 的 ISBN。效果是测试两个对象是否具有相同的 ISBN。</p>
+
+        <p class="docText">If the objects refer to the same ISBN, we execute the statement following the <tt>if</tt>, which prints the result of adding the two <tt>Sales_item</tt> objects together. Otherwise, if they refer to different ISBNs, we execute the <tt>else</tt> branch, which is a block of statements. The block prints an appropriate error message and exits the program, returning <tt>-1</tt>. Recall that the return from <tt>main</tt> is treated as a status indicator. In this case, we return a nonzero value to indicate that the program failed to produce the expected result.</p>
+	<p class="docText">如果对象具有相同的 ISBN，执行 <tt>if</tt> 后面的语句，输出两个 <tt>Sales_item</tt> 对象的和；否则，如果对象具有不同的 ISBN，则执行 <tt>else</tt> 分支的语句块。该块输出适当的错误信息并退出程序，返回 -1。回想 <tt>main</tt> 函数的返回值被视为状态指示器；本例中，返回一个非零值表示程序未能产生期望的结果。</p>
+      </td>
+    </tr>
+  </table>
+
+	<a name="ch01sb14"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 1.5.2</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch01qa8q1"></a><b>Exercise 1.24:</b></td>
+
+                    <td>
+			<a name="idd1e4597"></a><a name="idd1e4600"></a>
+                      <p class="docText">Write a program that reads several transactions. For each new transaction that you read, determine if it is the same ISBN as the previous transaction, keeping a count of how many transactions there are for each ISBN. Test the program by giving multiple transactions. These transactions should represent multiple ISBNs but the records for each ISBN should be grouped together.</p>
+                      <p class="docText">编写程序，读入几笔不同的交易。对于每笔新读入的交易，要确定它的 ISBN 是否和以前的交易的 ISBN 一样，并且记下每一个 ISBN 的交易的总数。通过给定多笔不同的交易来测试程序。这些交易必须代表多个不同的 ISBN，但是每个 ISBN 的记录应分在同一组。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch01lev1sec4.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch01lev1sec6.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

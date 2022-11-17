@@ -1,0 +1,557 @@
+<html><HEAD><TITLE>Ruby参考手册 - 类／方法的定义</TITLE>
+<META http-equiv=Content-type content="text/html; charset=gb2312">
+<META http-equiv=Content-Style-Type content=text/css><LINK href="79_files/style[1].css"  type=text/css rel=stylesheet></head>
+<BODY>
+<DIV class=navi><A id=header-navi name=head-navi></A><SPAN class=navi>[<A href="61.html" >Ruby首页</A>]</SPAN>  </DIV>
+<DIV class=body>
+<H1><A id=a.a5.af.a5.e9.a5.b9.a1.bf.a5.e1.a5.bd.a5.c3.a5.c9.a4.ce.c4.ea.b5.c1 name=a.a5.af.a5.e9.a5.b9.a1.bf.a5.e1.a5.bd.a5.c3.a5.c9.a4.ce.c4.ea.b5.c1>类／方法的定义</A><!-- RDLabel: "类／方法的定义" --></H1>
+<UL>
+<LI><A class=modified-year title="类／方法的定义 (292d)" href="79.html#a.a5.af.a5.e9.a5.b9.c4.ea.b5.c1">类定义</A> 
+<LI><A class=modified-year title="类／方法的定义 (292d)" href="79.html#a.c6.c3.b0.db.a5.af.a5.e9.a5.b9.c4.ea.b5.c1">特殊类定义</A> 
+<LI><A class=modified-year title="类／方法的定义 (292d)" href="79.html#a.a5.e2.a5.b8.a5.e5.a1.bc.a5.eb.c4.ea.b5.c1">模块定义</A> 
+<LI><A class=modified-year title="类／方法的定义 (292d)" href="79.html#a.a5.e1.a5.bd.a5.c3.a5.c9.c4.ea.b5.c1">方法定义</A> 
+<UL>
+<LI><A class=modified-year title="类／方法的定义 (292d)" href="79.html#a.a5.e1.a5.bd.a5.c3.a5.c9.c4.ea.b5.c1.a4.ce.a5.cd.a5.b9.a5.c8">方法定义的嵌套</A> 
+<LI><A class=modified-year title="类／方法的定义 (292d)" href="79.html#a.a5.e1.a5.bd.a5.c3.a5.c9.a4.ce.c9.be.b2.c1">方法的计算</A> </LI></UL>
+<LI><A class=modified-year title="类／方法的定义 (292d)" href="79.html#a.c6.c3.b0.db.a5.e1.a5.bd.a5.c3.a5.c9.c4.ea.b5.c1">特殊方法定义</A> 
+<LI><A class=modified-year title="类／方法的定义 (292d)" href="79.html#a.a5.af.a5.e9.a5.b9.a5.e1.a5.bd.a5.c3.a5.c9.a4.ce.c4.ea.b5.c1">类方法的定义</A> 
+<LI><A class=modified-year title="类／方法的定义 (292d)" href="79.html#a.b8.c6.a4.d3.bd.d0.a4.b7.c0.a9.b8.c2">调用限制</A> 
+<LI><A class=modified-year title="类／方法的定义 (292d)" href="79.html#a.c4.ea.b5.c1.a4.cb.b4.d8.a4.b9.a4.eb.c1.e0.ba.ee">与定义有关的操作</A> 
+<UL>
+<LI><A class=modified-year title="类／方法的定义 (292d)" href="79.html#alias">alias</A> 
+<LI><A class=modified-year title="类／方法的定义 (292d)" href="79.html#undef">undef</A> 
+<LI><A class=modified-year title="类／方法的定义 (292d)" href="79.html#defined.3f">defined?</A> </LI></UL></LI></UL>
+<H2><A id=a.a5.af.a5.e9.a5.b9.c4.ea.b5.c1 name=a.a5.af.a5.e9.a5.b9.c4.ea.b5.c1>类定义</A><!-- RDLabel: "类定义" --></H2>
+<P>例:</P><PRE>class Foo &lt; Super
+  def test
+     :
+  end
+     :
+end
+</PRE>
+<P>语法:</P><PRE>class 标识符 [`&lt;' superclass ]
+  表达式..
+end
+</PRE>
+<P>语法:<FONT color=blue>ruby 1.7 特性</FONT></P><PRE>class 标识符 [`&lt;' superclass ]
+  表达式..
+[rescue [error_type,..] [=&gt; evar] [then]
+  表达式..]..
+[else
+  表达式..]
+[ensure
+  表达式..]
+end
+</PRE>
+<P>用来定义类的内容。类名(标识符)由大写字母开头。<FONT color=blue>ruby 1.7 特性</FONT>：在version 1.7中，可以添加rescue/ensure部分。</P>
+<P>类定义实际上就是把类赋值给由类名指定的常数(在Ruby中，类也是一个对象，它是<FONT color=blue>Class</FONT>类的实例)。</P>
+<P>若某个类已经被定义过，此时又用相同的类名进行类定义的话，就意味着对原有的类的定义进行追加。但是若显式地标出新类的超类与原有类的超类不同时，就表示将使用原有的类名定义一个新的类(这将覆盖与类同名的常数，因此会出现警告)。</P><PRE>class Foo &lt; Array
+  def foo
+  end
+end
+
+# 追加定义(即使显式地标明超类是Array，其结果也是一样)
+class Foo
+  def bar
+  end
+end
+
+# 定义新的类(因为超类不同)
+class Foo &lt; String
+end
+# =&gt; warning: already initialized constant Foo
+</PRE>
+<P>在类定义表达式中，self指的是该类本身，这与顶层没有什么不同，只是默认的<A class=modified-year title="类／方法的定义 (292d)" href="79.html#a.b8.c6.a4.d3.bd.d0.a4.b7.c0.a9.b8.c2">调用限制</A>有些许差异。可以在类定义表达式中写入任何表达式，在定义类时这些表达式将被执行。</P>
+<P>类定义中可以出现嵌套。下例中，嵌套外侧的Foo类和内侧的Bar类之间根本没有什么继承关系之类的功能上的联系(除了常数Bar是Foo中的常数Foo:Bar之外)。</P><PRE>class Foo
+  class Bar
+  end
+end
+</PRE>
+<P><FONT color=blue>ruby 1.8 特性</FONT>:如果Foo类已经定义过了的话，还可以这么写。</P><PRE>class Foo
+end
+
+class Foo::Bar
+end
+</PRE>
+<P>类的嵌套就是指，把与类有关的类和模块放在该类的外侧，使它们构成一个整体，借以表达某种包含关系。</P><PRE># 把与NET有关的类置入NET内部
+# 常使用模块来作为嵌套的外侧部分
+# (Net没有实例。这主要是为了能够包含(include)Net)
+module Net
+  class HTTP
+  end
+  class FTP
+  end
+end
+
+obj = Net::HTTP.new
+
+# 或者
+
+include Net
+obj = HTTP.new
+
+# 下列用法在内部类中也可使用
+# 使用者只要包含(include)了File::Constants
+# 就可以直接使用RDONLY，而不必写File::RDONLY等。
+class File
+  module Constants
+     RDONLY = 0
+     WRONLY = 1
+  end
+  include Constants
+end
+
+File.open("foo", File::RDONLY)
+
+# 或者
+
+include File::Constants
+File.open("foo", RDONLY)
+
+# 上面的只是例子。实际上，使用File.open时可以写得更简单
+# 可以这么写，File.open("foo", "r") 
+</PRE>
+<P>类定义表达式没有返回值。<FONT color=blue>ruby 1.7 特性</FONT>:类定义表达式将返回最后被计算的式子的值。若最后的式子不返回值，就返回nil。</P>
+<H2><A id=a.c6.c3.b0.db.a5.af.a5.e9.a5.b9.c4.ea.b5.c1 name=a.c6.c3.b0.db.a5.af.a5.e9.a5.b9.c4.ea.b5.c1>特殊类定义</A><!-- RDLabel: "特殊类定义" --></H2>
+<P>例:</P><PRE>class &lt;&lt; obj
+  def test
+     :
+  end
+     :
+end
+</PRE>
+<P>语法:</P><PRE>class `&lt;&lt;' expr
+  表达式..
+end
+</PRE>
+<P>语法:<FONT color=blue>ruby 1.7 特性</FONT></P><PRE>class `&lt;&lt;' expr
+  表达式..
+[rescue [error_type,..] [=&gt; evar] [then]
+  表达式..]..
+[else
+  表达式..]
+[ensure
+  表达式..]
+end
+</PRE>
+<P>与类定义的语法结构相同，它定义特定对象的功能。在其内部定义的方法和常数只对该特定对象有效。<FONT color=blue>ruby 1.7 特性</FONT>：在version 1.7中，还可以使用rescue/ensure部分。</P>
+<P>特殊类定义表达式将返回最后被计算的式子的值。若最后的式子不返回值，就返回nil。</P>
+<H2><A id=a.a5.e2.a5.b8.a5.e5.a1.bc.a5.eb.c4.ea.b5.c1 name=a.a5.e2.a5.b8.a5.e5.a1.bc.a5.eb.c4.ea.b5.c1>模块定义</A><!-- RDLabel: "模块定义" --></H2>
+<P>例:</P><PRE>module Foo
+  def test
+     :
+  end
+     :
+end
+</PRE>
+<P>语法:</P><PRE>module 标识符
+  表达式..
+end
+</PRE>
+<P>语法:<FONT color=blue>ruby 1.7 特性</FONT></P><PRE>module 标识符
+  表达式..
+[rescue [error_type,..] [=&gt; evar] [then]
+  表达式..]..
+[else
+  表达式..]
+[ensure
+  表达式..]
+end
+</PRE>
+<P>用来定义模块的内容。模块名(标识符)由大写字母开头。<FONT color=blue>ruby 1.7 特性</FONT>：在version 1.7中，还可以使用rescue/ensure。</P>
+<P>模块定义实际上就是把模块赋值给由模块名指定的常数(在Ruby中，模块也是一个对象，它是<FO\NT color="blue">Module</FONT>类的实例)。</P>
+<P>若某个模块已经被定义过，此时又用相同的模块名来定义模块的话，就意味着对原有的模块定义进行追加。</P>
+<P>模块定义表达式没有返回值.<FONT color=blue>ruby 1.7 特性</FONT>：模块定义表达式将返回最后被计算的式子的值.若该式子不返回值,则返回nil.</P>
+<H2><A id=a.a5.e1.a5.bd.a5.c3.a5.c9.c4.ea.b5.c1 name=a.a5.e1.a5.bd.a5.c3.a5.c9.c4.ea.b5.c1>方法定义</A><!-- RDLabel: "方法定义" --></H2>
+<P>例:</P><PRE>def fact(n)
+  if n == 1 then
+     1
+  else
+    n * fact(n-1)
+  end
+end
+</PRE>
+<P>语法:</P><PRE>def 方法名 [`(' [arg ['=' default]] ... [`,' `*' arg] [',' '&amp;' arg]`)']
+  表达式..
+[rescue [error_type,..] [=&gt; evar] [then]
+  表达式..]..
+[else
+  表达式..]
+[ensure
+  表达式..]
+end
+</PRE>
+<P>在定义语句所在的区域内定义一个方法.也就是说,若在类/模块的定义部分内定义一个方法的话,该方法就属于这个类/模块.若在顶层定义了一个方法的话,您就可以在任何地方调用它.这种方法其实就是其他语言中所说的"函数".</P>
+<P>方法名中,除了可以使用通常的标识符以外,还可以使用可重载的操作符(例:==,+,-等等.请参考<A href="76.html" >操作符表达式</A>).</P>
+<P>若给形参指定了默认表达式的话,在方法调用过程中如果实参被省略时,该默认表达式的值就会变成默认值(方法调用时,在方法定义内计算默认表达式的值).</P>
+<P>若最后一个形参的前面带"*"的话,所有剩下的实参将被转为数组后传递给该参数.</P>
+<P>例:</P><PRE># 没有参数的方法。以下省略 end
+def foo
+end
+
+# 有参数的方法
+def foo(arg, arg2)
+
+# 有默认参数的方法
+def foo(arg = nil)
+
+# 带块
+def foo(arg, &amp;block)
+
+# 参数一应俱全
+def foo(arg, arg2, arg3 = nil, *rest, &amp;block)
+
+# 操作符表达式
+def ==(other)
+def +(other)
+def *(other)
+</PRE>
+<P>若最后一个形参前面带"&amp;"的话,表示传递给该参数的块是一个过程对象(<FONT color=blue>Proc</FONT>).这是定义<FONT color=blue>迭代器</FONT>的一种方法.(定义迭代器的典型方法是调用<FONT color=blue>yield</FONT>.还可以使用<FONT color=blue>Proc.new</FONT>/<FONT color=blue>proc</FONT>等方法.)当没有给出块时,块参数的值为nil.</P>
+<P>在方法定义中,只能以下列顺序指定形参.其中任何一项都是可选的.</P>
+<UL>
+<LI>没有默认表达式的参数(可多选) 
+<LI>有默认表达式的参数(可多选) 
+<LI>带*的参数(只能有一个) 
+<LI>带&amp;的参数(只能有一个) </LI></UL>
+<P>例: 定义迭代器</P><PRE># 使用 yield
+def foo
+  # block_given? 是内部函数
+  # 用来判断方法有没有块
+  if block_given?
+    yield(1,2)
+  end
+end
+
+# 使用 Proc.new
+def bar
+  if block_given?
+    Proc.new.call(1,2)    # proc.call(1,2)也是一样(proc是内部函数)
+  end
+end
+
+    # 应用:定义一个既能接受Proc对象
+    # 又能接受块的迭代器
+    def foo(block = Proc.new)
+      block.call(1,2)
+    end
+    foo(proc {|a,b| p [a,b]})
+    foo {|a,b| p [a,b]}
+
+# 使用块参数
+def baz(&amp;block)
+  if block
+    block.call(1,2)
+  end
+end
+</PRE>
+<P>我们再举几个特殊的例子.</P><PRE># 单相+/-
+def +@
+def -@
+
+# 给要素赋值
+def foo=(value)             # obj.foo = value
+
+# [] と []=
+def [](key)                 # obj[key]
+def []=(key, value)         # obj[key] = value
+def []=(key, key2, value)   # obj[key, key2] = value
+
+# 后引号表示法
+def `(arg)                  # `arg` 或  %x(arg)
+</PRE>
+<P>因为后引号表示法与方法密切相关,所以可以进行再定义.通常情况下,不应该对该方法进行再定义.偶尔OS(SHELL)命令的运作不太正常时,可以使用这种方法.</P>
+<P>为了捕捉在方法运行时发生的异常,可以使用同<FONT color=blue>begin</FONT>一样的rescue,else或ensure语句.</P>
+<P>方法定义表达式不会返回值.<FONT color=blue>ruby 1.7 特性</FONT>:方法定义表达式返回nil.</P>
+<H3><A id=a.a5.e1.a5.bd.a5.c3.a5.c9.c4.ea.b5.c1.a4.ce.a5.cd.a5.b9.a5.c8 name=a.a5.e1.a5.bd.a5.c3.a5.c9.c4.ea.b5.c1.a4.ce.a5.cd.a5.b9.a5.c8>方法定义的嵌套</A><!-- RDLabel: "方法定义的嵌套" --></H3>
+<P>除了<A class=modified-year title="类／方法的定义 (292d)" href="79.html#a.c6.c3.b0.db.a5.e1.a5.bd.a5.c3.a5.c9.c4.ea.b5.c1">特殊方法定义</A>以外,方法定义表达式不能进行嵌套.</P>
+<P><FONT color=blue>ruby 1.7 特性</FONT>: 在1.7 以后的版本中,就可以进行嵌套了.只有嵌套外侧的方法被执行时,嵌套方法才会被定义.除此以外,它和普通的方法定义表达式没有区别.请参考下例.</P><PRE>class Foo
+  def foo
+    def bar
+      p :bar
+    end
+  end
+
+  def Foo.method_added(name)
+    puts "method \"#{name}\" was added"
+  end
+end
+obj = Foo.new
+obj.bar rescue nil # =&gt; undefined method `bar' for #&lt;Foo:0x4019eda4&gt;
+obj.foo            # =&gt; method "foo" was added
+obj.foo            # =&gt; warning: method redefined; discarding old bar
+Foo.new.bar        # =&gt; :bar  (在其他实例中,嵌套方法也已完成定义)
+</PRE>
+<P>在version 1.6之前的版本中,若想达到相同的目的就必需使用<FONT color=blue>instance_eval</FONT>(此时特殊方法已被定义,因此稍有不同).</P><PRE>class Foo
+  def foo
+    instance_eval &lt;&lt;-END
+      def bar
+        p :bar
+      end
+    END
+  end
+end
+
+obj = Foo.new
+def obj.singleton_method_added(name)
+    puts "singleton method \"#{name}\" was added"
+end                # =&gt; singleton method "singleton_method_added" was added
+
+obj.bar rescue nil # =&gt; undefined method `bar' for #&lt;Foo:0x4019eda4&gt;
+obj.foo            # =&gt; singleton method "bar" was added
+
+obj.foo            # =&gt; warning: method redefined; discarding old bar
+                   # =&gt; singleton method "bar" was added
+Foo.new.bar        # =&gt; undefined method `bar' for #&lt;Foo:0x4019eda4&gt;
+</PRE>
+<P>还可以这么写.</P><PRE>class Foo
+   def foo
+     instance_eval {
+       def bar
+         p :bar
+       end
+     }
+   end
+ end
+</PRE>
+<H3><A id=a.a5.e1.a5.bd.a5.c3.a5.c9.a4.ce.c9.be.b2.c1 name=a.a5.e1.a5.bd.a5.c3.a5.c9.a4.ce.c9.be.b2.c1>方法的计算</A><!-- RDLabel: "方法的计算" --></H3>
+<P>调用方法时,将按照下列顺序依此计算各个表达式.</P>
+<UL>
+<LI>参数的默认表达式(若有的话) 
+<LI>方法的内容 
+<LI>根据发生异常的实际状况,处理方法定义表达式的rescue部分或else部分(若有的话) 
+<LI>ensure部分(若有的话) </LI></UL>
+<P>在方法内,根据实际情况来计算这些部分,包括参数的默认表达式在内.</P>
+<P>方法的返回值就是传给<FONT color=blue>return</FONT>的值.若没有调用return时,将返回在ensure部分之前最后计算的式子的值.</P>
+<P>若最后的式子(例如<FONT color=blue>while</FONT>等)没有返回值,则返回nil.</P>
+<P>在定义某方法之前,是不能使用该方法的.例如</P><PRE>foo
+def foo
+  print "foo\n"
+end
+</PRE>
+<P>调用未定义的方法会引发<FONT color=blue>NameError</FONT>异常.</P>
+<H2><A id=a.c6.c3.b0.db.a5.e1.a5.bd.a5.c3.a5.c9.c4.ea.b5.c1 name=a.c6.c3.b0.db.a5.e1.a5.bd.a5.c3.a5.c9.c4.ea.b5.c1>特殊方法定义</A><!-- RDLabel: "特殊方法定义" --></H2>
+<P>例:</P><PRE>def foo.test
+  print "this is foo\n"
+end
+</PRE>
+<P>语法:</P><PRE>def 表达式 `.' 标识符 [`(' [参数 [`=' default]] ... [`,' `*' 参数 ]`)']
+  表达式..
+[rescue [error_type,..] [=&gt; evar] [then]
+  表达式..]..
+[else
+  表达式..]
+[ensure
+  表达式..]
+end
+</PRE>
+<P>特殊方法就是专属于某个对象的方法.特殊方法的定义可以嵌套.</P>
+<P>类的特殊方法将被该类的子类所继承.换言之,类的特殊方法所起到的作用,与其他面向对象系统中的类方法的作用是相同的.</P>
+<P>特殊方法定义表达式不会返回值.<FONT color=blue>ruby 1.7 特性</FONT>:特殊方法定义表达式返回nil.</P>
+<H2><A id=a.a5.af.a5.e9.a5.b9.a5.e1.a5.bd.a5.c3.a5.c9.a4.ce.c4.ea.b5.c1 name=a.a5.af.a5.e9.a5.b9.a5.e1.a5.bd.a5.c3.a5.c9.a4.ce.c4.ea.b5.c1>类方法的定义</A><!-- RDLabel: "类方法的定义" --></H2>
+<P>Ruby中的类方法是指类的特殊方法.在Ruby中,类也是对象.因此它就可以像普通对象一样来定义特殊方法.</P>
+<P>因此,若能在类对象中定义方法的话,该方法就会成为类方法.具体的定义方法如下(模块也一样).</P><PRE># 特殊方法方式.
+class Hoge
+  def Hoge.foo
+  end
+end
+
+# 在类定义的外侧也行
+def Hoge.bar
+end
+
+# 若使用下面的方法的话,即使类名改变了,也不必更改方法定义
+class Hoge
+  def self.baz
+    'To infinity and beyond!'
+  end
+end
+
+# 特殊类方式.适合于大批量地定义方法
+class &lt;&lt; Hoge
+  def bar
+    'bar'
+  end
+end
+
+# 若把模块extend到类的话,模块的实例方法
+# 就会变成类方法
+module Foo
+  def foo
+  end
+end
+class Hoge
+  extend Foo
+end
+</PRE>
+<P>请参考<FONT color=blue>Object#extend</FONT>来了解extend.</P>
+<H2><A id=a.b8.c6.a4.d3.bd.d0.a4.b7.c0.a9.b8.c2 name=a.b8.c6.a4.d3.bd.d0.a4.b7.c0.a9.b8.c2>调用限制</A><!-- RDLabel: "调用限制" --></H2>
+<P>调用方法时,会受到以下三种限制,即<CODE>public</CODE>、<CODE>private</CODE>、<CODE>protected</CODE>.</P>
+<UL>
+<LI>若方法属于<CODE>public</CODE>类型,则没有任何限制. 
+<LI>若方法属于<CODE>private</CODE>类型,则只能在函数中调用. 
+<LI>若方法属于<CODE>protected</CODE>类型,则只能在该方法所属对象的方法定义表达式内使用. </LI></UL>
+<P>例: protected的可用性</P><PRE>class Foo
+  def foo
+   p caller.last
+  end
+  protected :foo
+end
+
+obj = Foo.new
+
+# 不可直接调用
+obj.foo rescue nil    # =&gt; -:11 - private method `foo' called for #&lt;Foo:0x401a1860&gt; (NameError)
+
+# 也不能在类定义中调用
+class Foo
+  Foo.new.foo rescue nil # =&gt; -:15 - protected method `foo' called for #&lt;Foo:0x4019eea8&gt;
+  # 可以在方法定义表达式中调用
+  def bar
+    self.foo
+  end
+end
+Foo.new.bar             # =&gt; ["-:21"]
+
+# 还可以在特殊方法定义表达式中调用
+def obj.bar
+  self.foo rescue nil
+end
+obj.bar                 # =&gt; ["-:27"]
+</PRE>
+<P>默认情况下,若def表达式位于类定义以外(顶层),则该方法属于private类型.若在类定义之中,则该方法属于public类型.可以使用<FONT color=blue>Module#public</FONT>,<FONT color=blue>Module#private</FONT>或<FONT color=blue>Module#protected</FONT>来改变它们的类型.但是,<FONT color=blue>initialize</FONT>方法和<FONT color=blue>initialize_copy(ruby 1.8 特性)</FONT>方法总是private类型,这与它们的位置无关.</P>
+<P>例:</P><PRE>def foo           # 默认为 private
+end
+
+class C
+  def bar         # 默认为 public
+  end
+
+  def ok          # 默认为 public
+  end
+  private :ok     # 变为 privat
+
+  def initialize  # initialize 是 private
+  end
+end
+</PRE>
+<P>使用<CODE>private</CODE> 和 <CODE>protected</CODE>的目的是相同的(将对象隐藏起来,从外部不能调用).但是在下例中,不能使用private,而必须使用protected.</P><PRE>class Foo
+  def _val
+    @val
+  end
+  protected :_val
+
+  def op(other)
+
+    # other 也假定 Foo 的实例
+    # 如果_val 是 private的话,就只能以函数的形式来调用
+    # 所以不能这么用
+
+    self._val + other._val
+  end
+end
+</PRE>
+<H2><A id=a.c4.ea.b5.c1.a4.cb.b4.d8.a4.b9.a4.eb.c1.e0.ba.ee name=a.c4.ea.b5.c1.a4.cb.b4.d8.a4.b9.a4.eb.c1.e0.ba.ee>与定义有关的操作</A><!-- RDLabel: "与定义有关的操作" --></H2>
+<H3><A id=alias name=alias>alias</A><!-- RDLabel: "alias" --></H3>
+<P>例:</P><PRE>alias foo bar
+alias :foo :bar
+alias $MATCH $&amp;
+</PRE>
+<P>语法:</P><PRE>alias 新方法名 旧方法名
+alias 新全局变量名 旧全局变量名
+</PRE>
+<P>给方法或全局变量添加别名.可以给方法名指定一个标识符或<FONT color=blue>Symbol</FONT>(不能写obj.method这样的表达式).alias的参数不会被计算.</P>
+<P>若想在方法定义内部添加别名时,请使用<FONT color=blue>Module</FONT>类的<FONT color=blue>Module#alias_method</FONT>方法.</P>
+<P>给方法添加别名时,别名方法将继承此刻的原始方法.此后,即使原始方法被重新定义,别名方法仍然保持着重定义前的老方法的特性.若您改变了某方法的内容后,又想使用修改前的方法时,别名会非常有用.</P><PRE># 定义 foo 方法
+def foo
+  "foo"
+end
+
+# 设定别名(避开方法定义)
+alias :_orig_foo :foo
+
+# 再定义 foo (利用以前的定义)
+def foo
+  _orig_foo * 2
+end
+
+p foo  # =&gt; "foofoo"
+</PRE>
+<P>给全局变量设定alias就意味着定义一个完全相同的变量.当你向一个赋值时,另一个也会有所反映.附加库的<FONT color=blue>importenv.rb</FONT>正是利用了这个特性,给<FONT color=blue>内部变量</FONT>添加了英文名.<FONT color=blue>ruby 1.7 特性</FONT>:在1.6版本中,只能给特定的内部全局变量添加别名.到了1.7版本时,这项限制被取消了.</P><PRE># 在给特殊变量添加别名之后,当其中一个发生变化时,另一个也会有所反应
+$_ = 1
+alias $foo $_
+$_ = 2
+p [$foo, $_]   # =&gt; [2, 2]
+
+# 这是通常的变量的别名,它并非真正意义上的别名.
+# 这是1.6版本以前
+# 的限制
+$bar = 3
+alias $foo $bar
+$bar = 4
+p [$foo, $bar] # =&gt; [3, 4]
+</PRE>
+<P>但是,您不能给正则表达式中的变量$1,$2,...等添加别名.另外,有些全局变量(请参考<FONT color=blue>内部变量</FONT>)对于解释器来说是举足轻重的,若重新定义它们的话,有时会影响解释器的工作.</P>
+<P><CODE>alias</CODE> 表达式返回 nil.</P>
+<H3><A id=undef name=undef>undef</A><!-- RDLabel: "undef" --></H3>
+<P>例:</P><PRE>undef bar
+</PRE>
+<P>语法:</P><PRE>undef 方法名[, 方法名[, ...]]
+</PRE>
+<P>取消方法定义.可以向方法名指定一个标识符或<FONT color=blue>Symbol</FONT>(不能写obj.method这样的表达式).undef的参数不会被计算.</P>
+<P>若想在方法定义的内部取消定义时,请使用<FONT color=blue>Module</FONT>类的<FONT color=blue>Module#undef_method</FONT>方法.</P>
+<P>undef会取消方法名和方法定义之间的关系,然后把该方法名关联到一个特殊的定义上.若在此时进行方法调用的话,即使超类中有同名方法,也会引发<FONT color=blue>NameError</FONT>异常.(另外,<FONT color=blue>Module#remove_method</FONT>方法只负责取消关系,这点差别非常重要.)</P>
+<P>用alias添加别名或用undef取消定义时,会修改类的接口,而不受超类的限制.但有时方法会向self发出消息,若不小心处理的话可能会导致原有方法失效.</P>
+<P><CODE>undef</CODE> 表达式返回 nil.</P>
+<H3><A id=defined.3f name=defined.3f>defined?</A><!-- RDLabel: "defined?" --></H3>
+<P>例:</P><PRE>defined? print
+defined? File.print
+defined?(foobar)
+defined?($foobar)
+defined?(@foobar)
+defined?(Foobar)
+</PRE>
+<P>语法:</P><PRE>defined? 表达式
+</PRE>
+<P>若表达式尚未定义,则返回伪.若已经定义,则返回一个字符串,字符串的内容是该表达式的种类.</P>
+<P>不论是未定义的方法,被undef的方法,还是被<FONT color=blue>Module#remove_method</FONT>删除的方法,defined?都将返回伪.</P>
+<P>还可以使用下列特殊用法.</P><PRE>defined? yield
+</PRE>
+<P>若yield调用可用,则返回真(字符串"yield").它的作用同<FONT color=blue>block_given?</FONT>一样,可以判断能否以带块方式来调用某方法.</P><PRE>defined? super
+</PRE>
+<P>若<FONT color=blue>super</FONT>可行,则返回真(字符串"super").</P><PRE>defined? a = 1
+p a # =&gt; nil
+</PRE>
+<P>返回"assignment".虽然没有赋值,但已经定义了局部变量.</P><PRE>/(.)/ =~ "foo"
+p defined? $&amp;  # =&gt; "$&amp;"
+p defined? $1  # =&gt; "$1"
+p defined? $2  # =&gt; nil
+</PRE>
+<P>只有设定了前面的匹配值以后,测试$&amp;, $1, $2才会返回真.</P><PRE>def Foo(a,b)
+end
+p defined? Foo       # =&gt; nil
+p defined? Foo()     # =&gt; "method"
+Foo = 1
+p defined? Foo       # =&gt; "constant"
+</PRE>
+<P>若没在以大写字母开头的方法名后添加"()"时,该方法名会被当做常数处理.</P>
+<P>下列就是defined?的所有的返回值.</P>
+<UL>
+<LI>"super" 
+<LI>"method" 
+<LI>"yield" 
+<LI>"self" 
+<LI>"nil" 
+<LI>"true" 
+<LI>"false" 
+<LI>"assignment" 
+<LI>"local-variable" 
+<LI>"local-variable(in-block)" 
+<LI>"global-variable" 
+<LI>"instance-variable" 
+<LI>"constant" 
+<LI>"class variable" 
+<LI>"$&amp;", "$`", "$1", "$2", ... 
+<LI>"expression" </LI></UL>
+<HR>
+</DIV>
+<DIV class=footer>Originally Written by webmaster@ruby-lang.org<BR>Translated by <A href="http://cn.ce-lab.net/" >Community Engine China</A> (<A href="mailto:rubycn@ce-lab.net">Mail</A>)<BR>Last update on 2004-12-22 </DIV></BODY>

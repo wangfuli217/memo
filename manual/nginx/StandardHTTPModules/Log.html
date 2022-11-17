@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml">
+<HEAD><TITLE>日志模块（Log）</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=GB2312">
+<STYLE type=text/css>PRE {
+	BACKGROUND-COLOR: #cccccc
+}
+.STYLE1 {
+	COLOR: #ff0000
+}
+</STYLE>
+
+<META content="MSHTML 6.00.6000.16809" name=GENERATOR></HEAD>
+<BODY>
+<H2>日志模块（Log）</H2><BR>
+
+<H3>·摘要</H3>
+<H4>控制nginx如何记录请求日志。<BR>
+例：<BR>
+<PRE>log_format gzip '$remote_addr - $remote_user [$time_local]  '
+                '"$request" $status $bytes_sent '
+                '"$http_referer" "$http_user_agent" "$gzip_ratio"';
+ 
+access_log  /spool/logs/nginx-access.log  gzip  buffer=32k;</PRE>
+关于记录nginx错误日志请参考<A href="HTTPCore.html" >HTTP核心模块</A>。</H4>
+<H3>·指令</H3>
+<H3>access_log </H3>
+<H4>语法：access_log path [format [buffer=size | off]] <BR>
+默认值：access_log log/access.log combined <BR>
+使用字段：http, server, location <BR>
+参数为连接日志指定了路径，格式和缓冲区大小。使用“off”将在当前的字段中清除access_log的所有参数，如果没有指定日志格式，默认为“combined”。缓冲区大小不能超过写入磁盘文件的最小大小。<BR>
+日志文件路径可以包含变量（0.7.4以上版本），但是有一些限制：<BR>
+<H5>·nginx指定的用户必须有创建日志文件的权限。<BR>
+·缓冲区不会工作<BR>
+·每个到来的连接，日志文件将被打开并且在记录日志后迅速关闭，然而，频繁使用的文件描述符将被保存到open_log_file_cache中，关于日志的轮询记录，必须记住随着时间的过去（使用open_log_file_cache的valid参数设置），日志仍然在旧的文件中记录。</H5>
+nginx支持为每个location指定强大的日志记录。同样的连接可以在同一时间输出到不止一个的日志中，更多信息请查看<A href="http://thread.gmane.org/gmane.comp.web.nginx.english/9277/" >Multiple access_log directives in different contexts</A></H4>
+<H3>log_format </H3>
+<H4>语法：log_format name format [format ...] <BR>
+默认值：log_format combined "..." <BR>
+使用字段：http server <BR>
+描述记录日志的格式，格式中可以使用大多数变量，也包括一些在写入日志文件过程中定义的变量：<BR>
+<H5>·$body_bytes_sent，减去应答头后传送给客户端的字节数，这个变量兼容apache模块mod_log_config的%B参数（在0.3.10前这个变量为$apache_bytes_sent）。<BR>
+·$bytes_sent，传送给客户端的字节数。<BR>
+·$connection，连接数。<BR>
+·$msec，正在写入日志条目的当前时间（精确到百万分之一秒）<BR>
+·$pipe，如果请求为<A href="http://en.wikipedia.org/wiki/HTTP_pipelining/" >管道的</A>。<BR>
+·$request_length，请求主体的长度。<BR>
+·$request_time，从一个请求发出到而使nginx工作的时间，单位为毫秒（0.5.19版本后可以使用秒为单位）。<BR>
+·$status，应答的状态（代码）。<BR>
+·$time_local，写入普通日志格式的当地时间（服务器时间）。<BR></H5>
+传送到客户端的头中的变量以"sent_http_"标记开头，如：$sent_http_content_range。<BR>
+注意其他模块产生的变量同样可以写入日志，例如你可以记录前端负载均衡应答头使用“upstream_http_”开头的变量，具体请查看<A href="HTTPUpstream.html" >负载均衡模块</A>。<BR>
+nginx有一个预定的日志格式称为combined：<BR>
+<PRE>log_format combined '$remote_addr - $remote_user [$time_local]  '
+                    '"$request" $status $body_bytes_sent '
+                    '"$http_referer" "$http_user_agent"';</PRE></H4>
+<H3>open_log_file_cache </H3>
+<H4>语法：open_log_file_cache max=N [inactive=time] [min_uses=N] [valid=time] | off <BR>
+默认值：open_log_file_cache off <BR>
+使用字段：http server location <BR>
+这个指令为频繁使用的日志文件描述符所在的路径变量设置缓存。<BR>
+指令选项：<BR>
+<H5>·max - 缓存中存储的最大文件描述符数。<BR>
+·inactive - 设置缓存中在某个时间段内没有使用的文件描述符将被移除，默认为10秒。<BR>
+·min_uses - 在一定时间内（inactive指定），一个文件描述符最少使用多少次后被放入缓存，默认为1。<BR>
+·valid - 设置检查同名文件存在的时间，默认是60秒。<BR>
+·off - 关闭缓存。<BR></H5></H4>
+<H3>·参考文档</H3>
+<H4><A href="http://sysoev.ru/nginx/docs/http/ngx_http_log_module.html" >Original Documentation</A><BR>
+<A href="http://wiki.nginx.org/NginxHttpLogModule/" >Nginx Http Log Module</A></H4>
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://179401.cn/analytics/" : "http://179401.cn/analytics/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://shouce.jb51.net/179401.cn/analytics/piwik.php-idsite=1"  style="border:0" alt=""/></p></noscript>
+<!-- End Piwik Tag -->
+</BODY>
+</HTML>
+<H3><A href="Map.html" >前进->Map模块（Map）</A></H3>

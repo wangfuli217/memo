@@ -1,0 +1,196 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 13.2.  The Assignment Operator</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch13lev1sec1.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch13lev1sec3.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch13lev1sec2"></a>
+
+        <h3 class="docSection1Title">13.2. The Assignment Operator</h3>
+        <h3 class="docSection1Title">13.2. 赋值操作符</h3>
+
+        <p class="docText">Just as classes control how objects are initialized, they also define what happens when objects of their type are assigned:</p>
+        <p class="docText">与类要控制初始化对象的方式一样，类也定义了该类型对象赋值时会发生什么：</p>
+        <pre>
+     Sales_item trans, accum;
+     trans = accum;
+</pre><br>
+
+        <p class="docText">As with the copy constructor, the compiler synthesizes an assignment operator if the class does not define its own.</p>
+        <p class="docText">与复制构造函数一样，如果类没有定义自己的赋值操作符，则编译器会合成一个。</p>
+
+	<a name="ch13lev2sec8"></a>
+        <h4 class="docSection2Title">Introducing Overloaded Assignment</h4>
+        <h4 class="docSection2Title">介绍重载赋值</h4>
+
+        <p class="docText">Before we look at the synthesized assignment operator, we need to know a bit about <b><a name="ch13term7"></a><a class="docLink" href="ch13lev1sec7.html#gloss13_07" >overloaded operators</a></b>, which we cover in detail in <a class="docLink" href="ch14.html#ch14" >Chapter 14</a>.</p>
+        <p class="docText">在介绍合成赋值操作符之前，需要简单了解一下<b><a class="docLink" href="ch13lev1sec7.html#gloss13_07" >重载操作符</a></b>，我们将在<a class="docLink" href="ch14.html#ch14" >第十四章</a>详细介绍。</p>
+
+	<a name="idd1e99861"></a><a name="idd1e99868"></a><a name="idd1e99877"></a><a name="idd1e99882"></a><a name="idd1e99890"></a><a name="idd1e99900"></a><a name="idd1e99908"></a><a name="idd1e99916"></a><a name="idd1e99921"></a><a name="idd1e99924"></a><a name="idd1e99931"></a><a name="idd1e99940"></a><a name="idd1e99948"></a><a name="idd1e99954"></a>
+        <p class="docText">Overloaded operators are functions that have the name <tt>operator</tt> followed by the symbol for the operator being defined. Hence, we define assignment by defining a function named <tt>operator=</tt>. Like any other function, an operator function has a return type and a parameter list. The parameter list must have the same number of parameters (including the implicit <tt>this</tt> parameter if the operator is a member) as the operator has operands. Assignment is binary, so the operator function has two parameters: The first parameter corresponds to the left-hand operand, and the second to the right-hand operand.</p>
+        <p class="docText">重载操作符是一些函数，其名字为 <tt>operator</tt> 后跟着所定义的操作符的符号。因此，通过定义名为 <tt>operator=</tt> 的函数，我们可以对赋值进行定义。像任何其他函数一样，操作符函数有一个返回值和一个形参表。形参表必须具有与该操作符数目相同的形参（如果操作符是一个类成员，则包括隐式 <tt>this</tt> 形参）。赋值是二元运算，所以该操作符函数有两个形参：第一个形参对应着左操作数，第二个形参对应右操作数。</p>
+
+        <p class="docText">Most operators may be defined as member or nonmember functions. When an operator is a member function, its first operand is implicitly bound to the <tt>this</tt> pointer. Some operators, assignment among them, must be members of the class for which the operator is defined. Because assignment must be a member of its class, <tt>this</tt> is bound to a pointer to the left-hand operand. The assignment operator, therefore, takes a single parameter that is an object of the same class type. Usually, the right-hand operand is passed as a <tt>const</tt> reference.</p>
+        <p class="docText">大多数操作符可以定义为成员函数或非成员函数。当操作符为成员函数时，它的第一个操作数隐式绑定到 <tt>this</tt> 指针。有些操作符（包括赋值操作符）必须是定义自己的类的成员。因为赋值必须是类的成员，所以 <tt>this</tt> 绑定到指向左操作数的指针。因此，赋值操作符接受单个形参，且该形参是同一类类型的对象。右操作数一般作为 <tt>const</tt> 引用传递。</p>
+
+        <p class="docText">The return type from the assignment operator should be the same as the return from assignment for the built-in types (<a class="docLink" href="ch05lev1sec4.html#ch05lev2sec7" >Section 5.4.1</a>, p. <a class="docLink" href="ch05lev1sec4.html#ch05lev2sec7" >160</a>). Assignment to a built-in type returns a reference to its left-hand operand. Therefore, the assignment operator also returns a reference to the same type as its class.</p>
+        <p class="docText">赋值操作符的返回类型应该与内置类型赋值运算返回的类型相同（<a class="docLink" href="ch05lev1sec4.html#ch05lev2sec7" >第 5.4.1 节</a>）。内置类型的赋值运算返回对右操作数的引用，因此，赋值操作符也返回对同一类类型的引用。</p>
+
+        <p class="docText">For example, the assignment operator for <tt>Sales_item</tt> might be declared as</p>
+        <p class="docText">例如，<tt>Sales_item</tt> 的赋值操作符可以声明为：</p>
+        <pre>
+     class Sales_item {
+     public:
+         // <span class="docEmphItalicAlt">other members as before</span>
+         // <span class="docEmphItalicAlt">equivalent to the synthesized assignment operator</span>
+         Sales_item&amp; operator=(const Sales_item &amp;);
+     };
+</pre><br>
+	
+        <a name="ch13lev2sec9"></a>
+        <h4 class="docSection2Title">The Synthesized Assignment Operator</h4>
+        <h4 class="docSection2Title">合成赋值操作符</h4>
+
+	<a name="ch13term11"></a><a name="ch13term5"></a>
+        <p class="docText">The <b><a class="docLink" href="ch13lev1sec7.html#gloss13_11" >synthesized assignment operator</a></b> operates similarly to the synthesized copy constructor. It performs <b><a class="docLink" href="ch13lev1sec7.html#gloss13_05" >memberwise assignment</a></b>: Each member of the right-hand object is assigned to the corresponding member of the left-hand object. Except for arrays, each member is assigned in the usual way for its type. For arrays, each array element is assigned.</p>
+        <p class="docText"><b><a class="docLink" href="ch13lev1sec7.html#gloss13_11" >合成赋值操作符</a></b>与合成复制构造函数的操作类似。它会执行<b><a class="docLink" href="ch13lev1sec7.html#gloss13_05" >逐个成员赋值</a></b>：右操作数对象的每个成员赋值给左操作数对象的对应成员。除数组之外，每个成员用所属类型的常规方式进行赋值。对于数组，给每个数组元素赋值。</p>
+
+        <p class="docText">As an example, the synthesized <tt>Sales_item</tt> assignment operator would look something like:</p>
+        <p class="docText">例如，<tt>Sales_item</tt> 的合成赋值操作符可能如下所示：</p>
+        <pre>
+     // <span class="docEmphItalicAlt">equivalent to the synthesized assignment operator</span>
+     Sales_item&amp;
+     Sales_item::operator=(const Sales_item &amp;rhs)
+     {
+         isbn = rhs.isbn;              // <span class="docEmphItalicAlt">calls string::operator=</span>
+         units_sold = rhs.units_sold;  // <span class="docEmphItalicAlt">uses built-in int assignment</span>
+         revenue = rhs.revenue;        // <span class="docEmphItalicAlt">uses built-in double assignment</span>
+         return *this;
+     }
+</pre><br>
+
+        <p class="docText">The synthesized assignment operator assigns each member in turn, using the built-in or class-defined assignment operator as appropriate to the type of the member. The operator returns <tt>*this</tt>, which is a reference to the left-hand object.</p>
+        <p class="docText">合成赋值操作符根据成员类型使用适合的内置或类定义的赋值操作符，依次给每个成员赋值，该操作符返回 <tt>*this</tt>，它是对左操作数对象的引用。</p>
+
+	<a name="ch13lev2sec10"></a>
+        <h4 class="docSection2Title">Copy and Assign Usually Go Together</h4>
+        <h4 class="docSection2Title">复制和赋值常一起使用</h4>
+
+	<a name="idd1e100059"></a><a name="idd1e100068"></a><a name="idd1e100076"></a><a name="idd1e100081"></a><a name="idd1e100084"></a><a name="idd1e100089"></a>
+        <p class="docText">Classes that can use the synthesized copy constructor usually can use the synthesized assignment operator as well. Our <tt>Sales_item</tt> class has no need to define either the copy constructor or the assignment operator: The synthesized versions of these operators work fine.</p>
+        <p class="docText">可以使用合成复制构造函数的类通常也可以使用合成赋值操作符。我们的 <tt>Sales_item</tt> 类无须定义复制构造函数或赋值操作符，这些操作符的合成版本工作得很好。</p>
+
+        <p class="docText">However, a class may define its own assignment operator. In general, if a class needs a copy constructor, it will also need an assignment operator.</p>
+        <p class="docText">然而，类也可以定义自己的赋值操作符。一般而言，如果类需要复制构造函数，它也会需要赋值操作符。</p>
+
+	<a name="ch13note05"></a>
+        <div class="docNote">
+          <table width="90%" border="0" cellspacing="0" cellpadding="1">
+            <tr>
+              <td width="60" valign="top"><img border="0" alt="" align="LEFT" width="50" height="54" src="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" ></td>
+
+              <td valign="top">
+                <p class="docText">In fact, these operations should be thought of as a unit. If we require one, we almost surely require the other.</p>
+                <p class="docText">实际上，就将这两个操作符看作一个单元。如果需要其中一个，我们几乎也肯定需要另一个。</p>
+              </td>
+            </tr>
+          </table><br>
+        </div><br>
+
+        <p class="docText">We'll see examples of classes that need to define their own assignment operators in <a class="docLink" href="ch13lev1sec4.html#ch13lev1sec4" >Section 13.4</a> (p. <a class="docLink" href="ch13lev1sec4.html#ch13lev1sec4" >486</a>) and <a class="docLink" href="ch13lev1sec5.html#ch13lev1sec5" >Section 13.5</a> (p. <a class="docLink" href="ch13lev1sec5.html#ch13lev1sec5" >492</a>).</p>
+        <p class="docText">我们将在<a class="docLink" href="ch13lev1sec4.html#ch13lev1sec4" >第 13.4 节</a>和<a class="docLink" href="ch13lev1sec5.html#ch13lev1sec5" >第 13.5 节</a>介绍类需要自定义赋值操作符的例子。</p>
+
+	<a name="ch13sb03"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 13.2</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch13qa3q1"></a><b>Exercise 13.7:</b></td>
+
+                    <td>
+                      <p class="docText">When does a class need to define an assignment operator?</p>
+                      <p class="docText">类何时需要定义赋值操作符？</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch13qa3q2"></a><b>Exercise 13.8:</b></td>
+
+                    <td>
+                      <p class="docText">For each type listed in the first exercise in <a class="docLink" href="ch13lev1sec1.html#ch13lev2sec6" >Section 13.1.2</a> (p. <a class="docLink" href="ch13lev1sec1.html#ch13lev2sec6" >481</a>) indicate whether the class would need an assignment operator.</p>
+                      <p class="docText">对于<a class="docLink" href="ch13lev1sec1.html#ch13lev2sec6" >第 13.1.2 节</a>习题 13.5 中列出的每个类型，指出类是否需要赋值操作符。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch13qa3q3"></a><b>Exercise 13.9:</b></td>
+
+                    <td>
+                      <p class="docText">The first exercise in <a class="docLink" href="ch13lev1sec1.html#ch13lev2sec6" >Section 13.1.2</a> (p. <a class="docLink" href="ch13lev1sec1.html#ch13lev2sec6" >481</a>) included a skeletal definition for class <tt>NoName</tt>. Determine whether that class needs an assignment operator. If so, implement it.</p>
+                      <p class="docText"><a class="docLink" href="ch13lev1sec1.html#ch13lev2sec6" >第 13.1.2 节</a>习题 13.5 中包括 <tt>NoName</tt> 类的简单定义。确定这个类是否需要赋值操作符。如果需要，实现它。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch13qa3q4"></a><b>Exercise 13.10:</b></td>
+
+                    <td>
+                      <p class="docText">Define an <tt>Employee</tt> class that contains the employee's name and a unique employee identifier. Give the class a default constructor and a constructor that takes a <tt>string</tt> representing the employee's name. If the class needs a copy constructor or assignment operator, implement those functions as well.</p>
+                      <p class="docText">定义一个 <tt>Employee</tt> 类，包含雇员名字和一个唯一的雇员标识。为该类定义默认构造函数和参数为表示雇员名字的 <tt>string</tt> 的构造函数。如果该类需要复制构造函数或赋值操作符，实现这些函数。</p>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+        <a href="21001535.html" ><img src="images/pixel.gif"  alt="" width="1" height="1" border="0"></a>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch13lev1sec1.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch13lev1sec3.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

@@ -1,0 +1,209 @@
+﻿<html xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+    <META NAME="save" CONTENT="history" />
+    <title>使用 Override 和 New 关键字进行版本控制（C# 编程指南）</title>
+    <link rel="stylesheet" type="text/css" href="../styles/presentation.css" />
+    <link rel="stylesheet" type="text/css" href="ms-help://Hx/HxRuntime/HxLink.css" />
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/EventUtilities.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/SplitScreen.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/Dropdown.js"> </script>
+    <script type="text/javascript" src="../scripts/script_manifold.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/script_feedBack.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CheckboxMenu.js"> </script>
+    <script type="text/javascript" src="http://manual.51yip.com/net/scripts/CommonUtilities.js"> </script>
+    <xml>
+      <MSHelp:TOCTitle Title="使用 Override 和 New 关键字进行版本控制" />
+      <MSHelp:Keyword Index="A" Term="88247d07-bd0d-49e9-a619-45ccbbfdf0c5" />
+      <MSHelp:Keyword Index="K" Term="C# 语言, override 和 new" />
+      <MSHelp:Keyword Index="K" Term="C# 语言, 版本" />
+      <MSHelp:Attr Name="RevisionNumber" Value="19" />
+      <MSHelp:Attr Name="AssetID" Value="88247d07-bd0d-49e9-a619-45ccbbfdf0c5" />
+      <MSHelp:Attr Name="Abstract" Value="&#xD;&#xA;                    C# 语言经过专门设计，以便不同库中的基类与派生类之间的版本控制可以不断向前发展，同时保持向后兼容。这具有多方面的意义。例如，这意味着在基类中引入与派生类中的某个成员具有相同名称的新成员在 C# 中是完全支持的，不会导致意外行为。它还意味着类必须显式声明某方法是要重写一个继承方法，还是一个隐藏具有类似名称的继承方法的新方法。&#xD;&#xA;                " />
+      <MSHelp:Attr Name="codelang" Value="CSharp" />
+      <MSHelp:Attr Name="CommunityContent" Value="1" />
+      <MSHelp:Attr Name="DevLang" Value="CSharp" />
+      <MSHelp:Attr Name="DevLangVers" Value="CSharp" />
+      <MSHelp:Attr Name="DocSet" Value="C#" />
+      <MSHelp:Attr Name="DocSet" Value="C# Lang" />
+      <MSHelp:Attr Name="DocSet" Value="ExpressLibVS" />
+      <MSHelp:Attr Name="ProgModel" Value="managed" />
+      <MSHelp:Attr Name="ShippedIn" Value="vs.90" />
+      <MSHelp:Attr Name="Technology" Value="ManagedCode" />
+      <MSHelp:Attr Name="TopicVersion" Value="09.00.08178.10000" />
+      <MSHelp:Attr Name="Catalog Container" Value="System_Default_Catalog" />
+      <MSHelp:Attr Name="Content Set Container" Value="System_Default_Content_Set" />
+      <MSHelp:Attr Name="TopicType" Value="kbRef" />
+      <MSHelp:Attr Name="Locale" Value="zh-chs" />
+    </xml>
+  </head>
+  <body>
+    <input type="hidden" id="userDataCache" class="userDataStyle" />
+    <input type="hidden" id="hiddenScrollOffset" />
+    <img id="collapseImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" title="“折叠”图像" />
+    <img id="expandImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" title="“展开”图像" />
+    <img id="collapseAllImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" />
+    <img id="expandAllImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" />
+    <img id="dropDownImage" style="display:none; height:0; width:0;" src="../icons/dropdown.gif" />
+    <img id="dropDownHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/dropdownHover.gif" />
+    <img id="copyImage" style="display:none; height:0; width:0;" src="../icons/copycode.gif" title="“复制”图像" />
+    <img id="copyHoverImage" style="display:none; height:0; width:0;" src="http://manual.51yip.com/net/icons/copycodeHighlight.gif" title="“复制悬停”图像" />
+    <div id="header">
+      <table id="topTable" cellspacing="0" cellpadding="0">
+        <tr>
+          <td>
+            <span onclick="ExpandCollapseAll(toggleAllImage)" style="cursor:default;" onkeypress="ExpandCollapseAll_CheckKey(toggleAllImage, event)" tabindex="0">
+              <img ID="toggleAllImage" class="toggleAll" src="../icons/collapse_all.gif" /> <label id="collapseAllLabel" for="toggleAllImage" style="display: none;">全部折叠</label><label id="expandAllLabel" for="toggleAllImage" style="display: none;">全部展开</label> </span>
+            <span>    </span>
+            <span id="devlangsDropdown" class="filter" tabindex="0">
+              <img id="devlangsDropdownImage" src="../icons/dropdown.gif" /> <label id="devlangsMenuAllLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：全部 </nobr></label><label id="devlangsMenuMultipleLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：多个 </nobr></label><label id="devlangsMenuVisualBasicLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual Basic </nobr></label><label id="devlangsMenuCSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：C# </nobr></label><label id="devlangsMenuManagedCPlusPlusLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：Visual C++ </nobr></label><label id="devlangsMenuJSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：J# </nobr></label><label id="devlangsMenuJScriptLabel" for="devlangsDropdownImage" style="display: none;"><nobr>代码：JScript </nobr></label></span>
+          </td>
+        </tr>
+      </table>
+      <div id="devlangsMenu">
+        <input id="VisualBasicCheckbox" type="checkbox" data="VisualBasic,vb,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="VisualBasicCheckbox">Visual Basic</label>
+        <br />
+        <input id="CSharpCheckbox" type="checkbox" data="CSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="CSharpCheckbox">C#</label>
+        <br />
+        <input id="ManagedCPlusPlusCheckbox" type="checkbox" data="ManagedCPlusPlus,cpp,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="ManagedCPlusPlusCheckbox">Visual C++</label>
+        <br />
+        <input id="JSharpCheckbox" type="checkbox" data="JSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JSharpCheckbox">J#</label>
+        <br />
+        <input id="JScriptCheckbox" type="checkbox" data="JScript,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+        <label class="checkboxLabel" for="JScriptCheckbox">JScript</label>
+        <br />
+      </div>
+      <table id="bottomTable" cellpadding="0" cellspacing="0">
+        <tr id="headerTableRow1">
+          <td align="left">
+            <span id="runningHeaderText">C# 编程指南</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow2">
+          <td align="left">
+            <span id="nsrTitle">使用 Override 和 New 关键字进行版本控制（C# 编程指南）</span>
+          </td>
+        </tr>
+        <tr id="headerTableRow3">
+          <td align="left">
+            <a href="88247d07-bd0d-49e9-a619-45ccbbfdf0c5.htm#seeAlsoToggle" onclick="OpenSection(seeAlsoToggle)">另请参见</a>  
+<script type="text/javascript">
+var fbBody = '%b8%d0%d0%bb%c4%fa%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%bf%aa%b7%a2%b0%e6%b1%e0%d0%b4%cd%c5%b6%d3%bd%ab%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%d3%c3%d3%da%b8%c4%bd%f8%ce%c4%b5%b5%a1%a3%ce%d2%c3%c7%d4%da%c9%f3%d4%c4%c4%fa%b5%c4%b7%b4%c0%a1%d2%e2%bc%fb%ca%b1%a3%ac%bf%c9%c4%dc%bb%e1%b8%f8%c4%fa%b7%a2%cb%cd%b5%e7%d7%d3%d3%ca%bc%fe%a3%ac%d2%d4%c7%eb%c4%fa%cc%e1%b9%a9%bd%f8%d2%bb%b2%bd%b5%c4%bd%e2%ca%cd%cb%b5%c3%f7%bb%f2%d5%df%be%cd%bd%e2%be%f6%b7%bd%b0%b8%cc%e1%b9%a9%b7%b4%c0%a1%d2%e2%bc%fb%a1%a3%ce%d2%c3%c7%b2%bb%bb%e1%bd%ab%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%d3%c3%d3%da%c8%ce%ba%ce%c6%e4%cb%fb%d3%c3%cd%be%a3%ac%b2%a2%c7%d2%d4%da%c9%f3%d4%c4%cd%ea%d6%ae%ba%f3%a3%ac%ce%d2%c3%c7%b2%bb%bb%e1%d4%d9%b1%a3%c1%f4%c4%fa%b5%c4%b5%e7%d7%d3%d3%ca%bc%fe%b5%d8%d6%b7%a1%a3%0d%0a%d3%d0%b9%d8%20Microsoft%20%d2%fe%cb%bd%d5%fe%b2%df%b5%c4%bd%f8%d2%bb%b2%bd%d0%c5%cf%a2%a3%ac%c7%eb%b2%ce%bc%fb%20http%3a%2f%2fprivacy.microsoft.com%2fzh-cn%2fdefault.aspx%a1%a3';
+var fbSubject = 'Customer%20Feedback';
+</script>
+  <span id="headfeedbackarea" class="feedbackhead"><a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);"> 发送反馈意见</a></span>
+</td>
+        </tr>
+      </table>
+      <table id="gradientTable">
+        <tr>
+          <td class="nsrBottom" background="../icons/gradient.gif" />
+        </tr>
+      </table>
+    </div>
+    <div id="mainSection">
+      <div id="mainBody">
+        <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
+        <font color="DarkGray"></font>
+        <p /> <p><font color="DarkGray">更新：2007 年 11 月</font></p><div class="introduction"><p>
+                    C# 语言经过专门设计，以便不同库中的<mshelp:link keywords="8b645dbe-1a33-49b8-8716-1c401f9a5ea5" tabindex="0">基类</mshelp:link>与派生类之间的版本控制可以不断向前发展，同时保持向后兼容。这具有多方面的意义。例如，这意味着在基<mshelp:link keywords="b95d8815-de18-4c3f-a8cc-a0a53bdf8690" tabindex="0">类</mshelp:link>中引入与派生类中的某个成员具有相同名称的新成员在 C# 中是完全支持的，不会导致意外行为。它还意味着类必须显式声明某方法是要重写一个继承方法，还是一个隐藏具有类似名称的继承方法的新方法。
+                </p><p>
+                    在 C# 中，派生类可以包含与基类方法同名的方法。
+                </p><ul><li><p>
+                    基类方法必须定义为 <mshelp:link keywords="5da9abae-bc1e-434f-8bea-3601b8dcb3b2" tabindex="0">virtual</mshelp:link>。
+                </p></li><li><p>
+                    如果派生类中的方法前面没有 <mshelp:link keywords="e4136516-f058-45a8-84e5-da00a5cf9b6a" tabindex="0">new</mshelp:link> 或 <mshelp:link keywords="dd1907a8-acf8-46d3-80b9-c2ca4febada8" tabindex="0">override</mshelp:link> 关键字，则编译器将发出警告，该方法将有如存在 <span sdata="langKeyword" value="new"><span class="keyword">new</span></span> 关键字一样执行操作。
+                </p></li><li><p>
+                    如果派生类中的方法前面带有 <span sdata="langKeyword" value="new"><span class="keyword">new</span></span> 关键字，则该方法被定义为独立于基类中的方法。
+                </p></li><li><p>
+                    如果派生类中的方法前面带有 <span sdata="langKeyword" value="override"><span class="keyword">override</span></span> 关键字，则派生类的对象将调用该方法，而不是调用基类方法。
+                </p></li><li><p>
+                    可以从派生类中使用 <span sdata="langKeyword" value="base"><span class="keyword">base</span></span> 关键字调用基类方法。
+                </p></li><li><p>
+                    <span sdata="langKeyword" value="override"><span class="keyword">override</span></span>、<span sdata="langKeyword" value="virtual"><span class="keyword">virtual</span></span> 和 <span sdata="langKeyword" value="new"><span class="keyword">new</span></span> 关键字还可以用于属性、索引器和事件中。
+                </p></li></ul><p>
+                    默认情况下，C# 方法为非虚方法。如果某个方法被声明为虚方法，则继承该方法的任何类都可以实现它自己的版本。若要使方法成为虚方法，必须在基类的方法声明中使用 <span sdata="langKeyword" value="virtual"><span class="keyword">virtual</span></span> 修饰符。然后，派生类可以使用 <span sdata="langKeyword" value="override"><span class="keyword">override</span></span> 关键字重写基虚方法，或使用 <span sdata="langKeyword" value="new"><span class="keyword">new</span></span> 关键字隐藏基类中的虚方法。如果 <span sdata="langKeyword" value="override"><span class="keyword">override</span></span> 关键字和 <span sdata="langKeyword" value="new"><span class="keyword">new</span></span> 关键字均未指定，编译器将发出警告，并且派生类中的方法将隐藏基类中的方法。有关更多信息，请参见<span sdata="link"><mshelp:link keywords="04330ed2-80d5-4bf2-b0c1-a0c2bec03074" tabindex="0">编译器警告（等级 2）CS0108</mshelp:link></span>。
+                </p><p>
+                    为了在实践中演示上述情况，我们暂时假定公司 A 创建了一个名为 <span class="code">GraphicsClass</span> 的类，您的程序将使用此类。<span class="code">GraphicsClass</span> 如下所示：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> GraphicsClass
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">virtual</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> DrawLine() { }
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">virtual</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> DrawPoint() { }
+}
+
+</pre></td></tr></table></span></div></div><p>
+                    您的公司使用此类，并且您在添加新方法时将其用来派生自己的类：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> YourDerivedGraphicsClass : GraphicsClass
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> DrawRectangle() { }
+}
+
+</pre></td></tr></table></span></div></div><p>
+                    您的应用程序运行正常，直到公司 A 发布了 <span class="code">GraphicsClass</span> 的新版本，类似于下面的代码：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> GraphicsClass
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">virtual</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> DrawLine() { }
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">virtual</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> DrawPoint() { }
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">virtual</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> DrawRectangle() { }
+}
+
+</pre></td></tr></table></span></div></div><p>
+                    现在，<span class="code">GraphicsClass</span> 的新版本中包含一个名为 <span class="code">DrawRectangle</span> 的方法。开始时，没有出现任何问题。新版本仍然与旧版本保持二进制兼容。已经部署的任何软件都将继续正常工作，即使新类已安装到这些软件所在的计算机系统上。在您的派生类中，对方法 <span class="code">DrawRectangle</span> 的任何现有调用将继续引用您的版本。
+                </p><p>
+                    但是，一旦您使用 <span class="code">GraphicsClass</span> 的新版本重新编译应用程序，就会收到来自编译器的警告。有关更多信息，请参见<span sdata="link"><mshelp:link keywords="04330ed2-80d5-4bf2-b0c1-a0c2bec03074" tabindex="0">编译器警告（等级 2）CS0108</mshelp:link></span>。
+                </p><p>
+                    此警告提示您必须考虑希望 <span class="code">DrawRectangle</span> 方法在应用程序中的工作方式。
+                </p><p>
+                    如果您希望自己的方法重写新的基类方法，请使用 <span sdata="langKeyword" value="override"><span class="keyword">override</span></span> 关键字：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> YourDerivedGraphicsClass : GraphicsClass
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">override</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> DrawRectangle() { }
+}
+
+</pre></td></tr></table></span></div></div><p>
+                    <span sdata="langKeyword" value="override"><span class="keyword">override</span></span> 关键字可确保派生自 <span class="code">YourDerivedGraphicsClass</span> 的任何对象都将使用 <span class="code">DrawRectangle</span> 的派生类版本。派生自 <span class="code">YourDerivedGraphicsClass</span> 的对象仍可以使用基关键字访问 <span class="code">DrawRectangle</span> 的基类版本：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">base</span>.DrawRectangle();
+
+</pre></td></tr></table></span></div></div><p>
+                    如果您不希望自己的方法重写新的基类方法，则需要注意以下事项。为了避免这两个方法之间发生混淆，可以重命名您的方法。这可能很耗费时间且容易出错，而且在某些情况下并不可行。但是，如果您的项目相对较小，则可以使用 Visual Studio 的重构选项来重命名方法。有关更多信息，请参见<span sdata="link"><mshelp:link keywords="dcf07bb4-fa3b-4224-9dec-566fd924a8ce" tabindex="0">重构类和类型</mshelp:link></span>。
+                </p><p>
+                    或者，也可以通过在派生类定义中使用关键字 <span sdata="langKeyword" value="new"><span class="keyword">new</span></span> 来防止出现该警告：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> YourDerivedGraphicsClass : GraphicsClass
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> DrawRectangle() { }
+}
+
+</pre></td></tr></table></span></div></div><p>
+                    使用 <span sdata="langKeyword" value="new"><span class="keyword">new</span></span> 关键字可告诉编译器您的定义将隐藏基类中包含的定义。这是默认行为。
+                </p></div><h1 class="heading"><span onclick="ExpandCollapse(sectionToggle0)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(sectionToggle0, event)" tabindex="0"><img id="sectionToggle0" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />重写和方法选择</span></h1><div id="sectionSection0" class="section" name="collapseableSection" style=""><p>
+                    当在类中指定方法时，如果有多个方法与调用兼容（例如，存在两种同名的方法，并且其参数与传递的参数兼容），则 C# 编译器将选择最佳方法进行调用。下面的方法将是兼容的：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">class</span> Derived : Base
+{
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">override</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> DoWork(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> param) { }
+    <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">public</span> <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">void</span> DoWork(<span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">double</span> param) { }
+}
+
+</pre></td></tr></table></span></div></div><p>
+                    在 <span class="code">Derived</span> 的一个实例中调用 <span class="code">DoWork</span> 时，C# 编译器将首先尝试使该调用与最初在 <span class="code">Derived</span> 上声明的 <span class="code">DoWork</span> 版本兼容。重写方法不被视为是在类上进行声明的，而是在基类上声明的方法的新实现。仅当 C# 编译器无法将方法调用与 <span class="code">Derived</span> 上的原始方法匹配时，它才尝试将该调用与具有相同名称和兼容参数的重写方法匹配。例如：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre><span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">int</span> val = 5;
+Derived d = <span class="keyword" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">new</span> Derived();
+d.DoWork(val);  <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Calls DoWork(double).</span>
+
+</pre></td></tr></table></span></div></div><p>
+                    由于变量 <span class="code">val</span> 可以隐式转换为 double 类型，因此 C# 编译器将调用 <span class="code">DoWork(double)</span>，而不是 <span class="code">DoWork(int)</span>。有两种方法可以避免此情况。首先，避免将新方法声明为与虚方法同名。其次，可以通过将 <span class="code">Derived</span> 的实例强制转换为 <span class="code">Base</span> 来使 C# 编译器搜索基类方法列表，从而使其调用虚方法。由于是虚方法，因此将调用 <span class="code">Derived</span> 上的 <span class="code">DoWork(int)</span> 的实现。例如：
+                </p><div name="snippetGroup"><div class="code"><span codeLanguage="CSharp"><table width="100%" cellspacing="0" cellpadding="0"><tr><th>C# </th><th><span class="copyCode" onclick="CopyCode(this)" onkeypress="CopyCode_CheckKey(this, event)" onmouseover="ChangeCopyCodeIcon(this)" onmouseout="ChangeCopyCodeIcon(this)" tabindex="0"><img class="copyCodeImage" name="ccImage" align="absmiddle" title="“复制”图像" src="../icons/copycode.gif" />复制代码</span></th></tr><tr><td colspan="2"><pre>((Base)d).DoWork(val);  <span class="comment" xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">// Calls DoWork(int) on Derived.</span>
+
+</pre></td></tr></table></span></div></div></div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />请参见</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><h4 class="subHeading">概念</h4><div class="seeAlsoStyle"><span sdata="link"><a href="ac0f23a2-6bf3-4077-be99-538ae5fd3bc5.htm">C# 编程指南</a></span></div><h4 class="subHeading">参考</h4><div class="seeAlsoStyle"><span sdata="link"><a href="cc39dbda-8754-423e-b5b1-16a1db0734c0.htm">类和结构（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="cc738f07-e8cd-4683-9585-9f40c0667c37.htm">方法（C# 编程指南）</a></span></div><div class="seeAlsoStyle"><span sdata="link"><a href="81d64ee4-50f9-4d6c-a8dc-257c348d2eea.htm">继承（C# 编程指南）</a></span></div></div></div>
+      <div id="footer">
+        <div class="footerLine">
+          <img width="100%" height="3px" src="../icons/footer.gif" title="“页脚”图像" />
+        </div>
+<span id="feedbackarea">将有关本主题的<a href="javascript:SubmitFeedback('DevDocs@Microsoft.com','','','09.00','09.00.08178.10000',fbBody,fbSubject);">反馈意见</a>发送给 Microsoft。</span>
+</div>
+    </div>
+  </body>
+</html>

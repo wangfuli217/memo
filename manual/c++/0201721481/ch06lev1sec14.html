@@ -1,0 +1,194 @@
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Windows (vers 12 April 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <title>Section 6.14.  Using the Preprocessor for Debugging</title>
+  <link rel="STYLESHEET" type="text/css" href="images/style.css" >
+  <link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+
+<body>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch06lev1sec13.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch06lev1sec15.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table><br>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td valign="top">
+        <a name="ch06lev1sec14"></a>
+
+        <h3 class="docSection1Title">6.14. Using the Preprocessor for Debugging</h3>
+        <h3 class="docSection1Title">6.14. 使用预处理器进行调试</h3>
+
+        <p class="docText">In <a class="docLink" href="ch02lev1sec9.html#ch02lev2sec31" >Section 2.9.2</a> (p. <a class="docLink" href="ch02lev1sec9.html#ch02lev2sec31" >71</a>) we learned how to use preprocessor variables to prevent header files being included more than once. C++ programmers sometimes use a technique similar to header guards to conditionally execute debugging code. The idea is that the program will contain debugging code that is executed only while the program is being developed. When the application is completed and ready to ship, the debugging code is turned off. We can write conditional debugging code using the <tt>NDEBUG</tt> preprocessor variable:</p>
+        <p class="docText"><a class="docLink" href="ch02lev1sec9.html#ch02lev2sec31" >第 2.9.2 节</a>介绍了如何使用预处理变量来避免重复包含头文件。C++ 程序员有时也会使用类似的技术有条件地执行用于调试的代码。这种想法是：程序所包含的调试代码仅在开发过程中执行。当应用程序已经完成，并且准备提交时，就会将调试代码关闭。可使用 <tt>NDEBUG</tt> 预处理变量实现有条件的调试代码：</p>
+        <pre>
+     int main()
+     {
+     #ifndef NDEBUG
+     cerr &lt;&lt; "starting main" &lt;&lt; endl;
+     #endif
+     // ...
+</pre><br>
+
+<a name="idd1e46619"></a><a name="idd1e46623"></a><a name="idd1e46627"></a><a name="idd1e46631"></a><a name="idd1e46635"></a><a name="idd1e46640"></a><a name="idd1e46645"></a><a name="idd1e46652"></a><a name="idd1e46658"></a>
+        <p class="docText">If <tt>NDEBUG</tt> is not defined, then the program writes the message to <tt>cerr</tt>. If <tt>NDEBUG</tt> is defined, then the program executes without ever passing through the code between the <tt>#ifndef</tt> and the <tt>#endif</tt>.</p>
+        <p class="docText">如果 <tt>NDEBUG</tt> 未定义，那么程序就会将信息写到 <tt>cerr</tt> 中。如果 <tt>NDEBUG</tt> 已经定义了，那么程序执行时将会跳过 <tt>#ifndef</tt> 和 <tt>#endif</tt> 之间的代码。</p>
+
+        <p class="docText">By default, <tt>NDEBUG</tt> is not defined, meaning that by default, the code inside the <tt>#ifndef</tt> and <tt>#endif</tt> is processed. When the program is being developed, we leave <tt>NDEBUG</tt> undefined so that the debugging statements are executed. When the program is built for delivery to customers, these debugging statements can be (effectively) removed by defining the <tt>NDEBUG</tt> preprocessor variable. Most compilers provide a command line option that defines <tt>NDEBUG</tt>:</p>
+        <p class="docText">默认情况下，<tt>NDEBUG</tt> 未定义，这也就意味着必须执行 <tt>#ifndef</tt> 和 <tt>#endif</tt> 之间的代码。在开发程序的过程中，只要保持 <tt>NDEBUG</tt> 未定义就会执行其中的调试语句。开发完成后，要将程序交付给客户时，可通过定义 <tt>NDEBUG</tt> 预处理变量，（有效地）删除这些调试语句。大多数的编译器都提供定义 <tt>NDEBUG</tt> 命令行选项：</p>
+        <pre>
+     $ CC -DNDEBUG main.C
+</pre><br>
+
+        <p class="docText">has the same effect as writing <tt>#define NDEBUG</tt> at the beginning of <tt>main.C</tt>.</p>
+        <p class="docText">这样的命令行行将于在 <tt>main.c</tt> 的开头提供 <tt>#define NDEBUG</tt> 预处理命令。</p>
+
+        <p class="docText">The preprocessor defines four other constants that can be useful in debugging:</p>
+        <p class="docText">预处理器还定义了其余四种在调试时非常有用的常量：</p>
+
+        <blockquote>
+          <p class="docText"><tt>__FILE__</tt> name of the file.</p>
+          <p class="docText"><tt>__FILE__</tt> 文件名</p>
+
+          <p class="docText"><tt>__LINE__</tt> current line number.</p>
+          <p class="docText"><tt>__LINE__</tt> 当前行号</p>
+
+          <p class="docText"><tt>__TIME__</tt> time the file was compiled.</p>
+          <p class="docText"><tt>__TIME__</tt> 文件被编译的时间</p>
+
+          <p class="docText"><tt>__DATE__</tt> date the file was compiled.</p>
+          <p class="docText"><tt>__DATE__</tt> 文件被编译的日期</p>
+        </blockquote>
+
+        <p class="docText">We might use these constants to report additional information in error messages:</p>
+        <p class="docText">可使用这些常量在错误消息中提供更多的信息：</p>
+        <pre>
+     if (word.size() &lt; threshold)
+         cerr &lt;&lt; "Error: " &lt;&lt; _ _FILE_ _
+              &lt;&lt; " : line " &lt;&lt; _ _LINE_ _ &lt;&lt; endl
+              &lt;&lt; "       Compiled on " &lt;&lt; _ _DATE_ _
+              &lt;&lt; " at " &lt;&lt; _ _TIME_ _ &lt;&lt; endl
+              &lt;&lt; "      Word read was " &lt;&lt; word
+              &lt;&lt; ": Length too short" &lt;&lt; endl;
+</pre><br>
+
+        <p class="docText">If we give this program a <tt>string</tt> that is shorter than the <tt>threshold</tt>, then the following error message will be generated:</p>
+        <p class="docText">如果给这个程序提供一个比 <tt>threshold</tt> 短的 <tt>string</tt> 对象，则会产生下面的错误信息：</p>
+        <pre>
+     <span class="docEmphStrong">Error: wdebug.cc : line 21</span>
+               <span class="docEmphStrong">Compiled on Jan 12 2005 at 19:44:40</span>
+               <span class="docEmphStrong">Word read was "foo": Length too short</span>
+</pre><br>
+
+<a name="ch06term1"></a><a name="ch06term21"></a>
+        <p class="docText">Another common debugging technique uses the <tt>NDEBUG</tt> preprocessor variable and the <span class="docEmphRoman"><a class="docLink" href="ch06lev1sec16.html#gloss06_01" ><span class="docEmphRoman"><tt>assert</tt></span></a></span> <b><a class="docLink" href="ch06lev1sec16.html#gloss06_21" >preprocessor macro</a></b>. The <tt>assert</tt> macro is defined in the <tt>cassert</tt> header, which we must include in any file that uses <tt>assert</tt>.</p>
+        <p class="docText">另一个常见的调试技术是使用 <tt>NDEBUG</tt> 预处理变量以及 <span class="docEmphRoman"><a class="docLink" href="ch06lev1sec16.html#gloss06_01" ><span class="docEmphRoman"><tt>assert</tt></span></a></span> <b><a class="docLink" href="ch06lev1sec16.html#gloss06_21" >预处理宏</a></b>。<tt>assert</tt> 宏是在 <tt>cassert</tt> 头文件中定义的，所有使用 <tt>assert</tt> 的文件都必须包含这个头文件。</p>
+
+        <p class="docText">A preprocessor macro acts something like a function call. The <tt>assert</tt> macro takes a single expression, which it uses as a condition:</p>
+        <p class="docText">预处理宏有点像函数调用。<tt>assert</tt> 宏需要一个表达式作为它的条件：</p>
+        <pre>
+     assert(<span class="docEmphasis">expr</span>)
+</pre><br>
+
+        <p class="docText">As long as <tt>NDEBUG</tt> is not defined, the <tt>assert</tt> macro evaluates the condtion and if the result is false, then <tt>assert</tt> writes a message and terminates the program. If the expression has a nonzero (e.g., true) value, then <tt>assert</tt> does nothing.</p>
+	<p class="docText">只要 <tt>NDEBUG</tt> 未定义，<tt>assert</tt> 宏就求解条件表达式 <tt>expr</tt>，如果结果为 <tt>false</tt>，<tt>assert</tt> 输出信息并且终止程序的执行。如果该表达式有一个非零（例如，<tt>true</tt>）值，则 <tt>assert</tt> 不做任何操作。</p>
+
+        <p class="docText">Unlike exceptions, which deal with errors that a program expects might happen in production, programmers use <tt>assert</tt> to test conditions that "cannot happen." For example, a program that does some manipulation of input text might know that all words it is given are always longer than a threshold. That program might contain a statement such as:</p>
+        <p class="docText">与异常不同（异常用于处理程序执行时预期要发生的错误），程序员使用 <tt>assert</tt> 来测试“不可能发生”的条件。例如，对于处理输入文本的程序，可以预测全部给出的单词都比指定的阈值长。那么程序可以包含这样一个语句：</p>
+        <pre>
+     assert(word.size() &gt; threshold);
+</pre><br>
+
+        <p class="docText">During testing the <tt>assert</tt> has the effect of verifying that the data are always of the expected size. Once development and test are complete, the program is built and <tt>NDEBUG</tt> is defined. In production code, <tt>assert</tt> does nothing, so there is no run-time cost. Of course, there is also no run-time check. <tt>assert</tt> should be used only to verify things that truly should not be possible. It can be useful as an aid in getting a program debugged but should not be used to substitute for run-time logic checks or error checking that the program should be doing.</p>
+        <p class="docText">在测试过程中，<tt>assert</tt> 等效于检验数据是否总是具有预期的大小。一旦开发和测试工作完成，程序就已经建立好，并且定义了 <tt>NDEBUG</tt>。在成品代码中，<tt>assert</tt> 语句不做任何工作，因此也没有任何运行时代价。当然，也不会引起任何运行时检查。<tt>assert</tt> 仅用于检查确实不可能的条件，这只对程序的调试有帮助，但不能用来代替运行时的逻辑检查，也不能代替对程序可能产生的错误的检测。</p>
+
+<a name="ch06sb12"></a>
+        <table cellspacing="0" width="90%" border="1" cellpadding="5">
+          <tr>
+            <td>
+              <h2 class="docSidebarTitle">Exercises Section 6.14</h2>
+
+              <blockquote>
+                <table border="0" cellspacing="16" cellpadding="0">
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch06qa11q1"></a><b>Exercise 6.25:</b></td>
+
+                    <td>
+                      <p class="docText">Revise the program you wrote for the exercise in <a class="docLink" href="ch06lev1sec11.html#ch06lev1sec11" >Section 6.11</a> (p. <a class="docLink" href="ch06lev1sec11.html#ch06lev1sec11" >214</a>) to conditionally print information about its execution. For example, you might print each word as it is read to let you determine whether the loop correctly finds the first duplicated word that begins with an uppercase letter. Compile and run the program with debugging turned on and again with it turned off.</p>
+                      <p class="docText">修改<a class="docLink" href="ch06lev1sec11.html#ch06lev1sec11" >第 6.11 节</a>习题所编写的程序，使其可以有条件地输出运行时的信息。例如，可以输出每一个读入的单词，用来判断循环是否正确地找到第一个连续出现的以大写字母开头的单词。分别在打开和关闭调试器的情况下编译和运行这个程序。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch06qa11q2"></a><b>Exercise 6.26:</b></td>
+
+                    <td>
+                      <p class="docText">What happens in the following loop:</p>
+                      <p class="docText">下面循环会导致什么现象的发生：</p>
+                      <pre>
+     string s;
+     while (cin &gt;&gt; s) {
+        assert(cin);
+        // <span class="docEmphItalicAlt">process</span> <span class="docEmphasis">s</span>
+     }
+</pre><br>
+
+                      <p class="docText">Explain whether this usage seems like a good application of the <tt>assert</tt> macro.</p>
+                      <p class="docText">解释这种用法是否是 <tt>assert</tt> 宏的一种恰当应用。</p>
+                    </td>
+                  </tr>
+
+                  <tr valign="top">
+                    <td align="right" class="docText" width="50"><a name="ch06qa11q3"></a><b>Exercise 6.27:</b></td>
+
+                    <td>
+                      <p class="docText">Explain this loop:</p>
+                      <p class="docText">解释下面的循环：</p>
+                      <pre>
+     string s;
+     while (cin &gt;&gt; s &amp;&amp; s != sought) { } // <span class="docEmphItalicAlt">empty body</span>
+     assert(cin);
+     // <span class="docEmphItalicAlt">process</span> <span class="docEmphasis">s</span>
+</pre><br>
+                    </td>
+                  </tr>
+                </table>
+              </blockquote>
+            </td>
+          </tr>
+        </table><br>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle" alt="Team LiB"></a>
+        </div>
+      </td>
+
+      <td align="right">
+        <div style="MARGIN-LEFT: 0.15in;">
+          <a href="ch06lev1sec13.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a> <a href="ch06lev1sec15.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

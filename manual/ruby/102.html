@@ -1,0 +1,1195 @@
+<html><HEAD><TITLE>Programming Ruby: The Pragmatic Programmer's Guide</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=gb2312"><LINK media=screen href="102_files/pr_style[1].css"  type=text/css rel=StyleSheet></head>
+<BODY bgColor=white>
+<TABLE cellSpacing=0 cellPadding=3 width="100%" bgColor=#c09090 border=0>
+<TBODY>
+<TR>
+<TD colSpan=3>
+<TABLE cellPadding=20 width="100%" bgColor=#701a1a>
+<TBODY>
+<TR>
+<TD width="100%">
+<H1 class=header>Programming Ruby</H1>
+<H3 class=subheader>实用程序员指南</H3></TD></TR></TBODY></TABLE></TD></TR>
+<TR>
+<TD align=left width="33%"><A class=subheader href="101.html" >上一章 &lt;</A> </TD>
+<TD vAlign=center align=middle width="33%"><A class=subheader href="95.html" >目录 ^</A> <BR></TD>
+<TD align=right width="33%"><A class=subheader href="103.html" >下一章 &gt;</A> <BR></TD></TR></TBODY></TABLE><!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<H1>标准类型</H1>
+<HR>
+<BR>
+<P></P>到现在我们已经实现了我们那点唱机的一部分代码，我们看到了数组，哈希，方法，但我们还没有涉及到Ruby中其他的数据类型：数字，字符串，范围（ranges），正则表达式。下面我们就要花些时间来看看这些类型。<BR>
+<H2><A name=S1>数字型</A></H2>
+<P></P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Ruby 支持整型和浮点型两种数字类型。整型可以是任意长度（最大值由你机器的内存大小决定）。在一定范围内（通常是-2<SUP>30</SUP> to 2<SUP>30</SUP>-1 or -2<SUP>62</SUP> to 2<SUP>62</SUP>-1）在内部由二进制方式表示，内部类为Fixnum。大小超过这个范围的整数由Bignum表示，如果Fixnum计算之后结果超出范围，自动转换为Bignum。Ruby在两者之间自动转换，对用户来说是透明的。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>num&nbsp;=&nbsp;8
+7.times&nbsp;do
+&nbsp;&nbsp;print&nbsp;num.type,&nbsp;"&nbsp;",&nbsp;num,&nbsp;"\n"
+&nbsp;&nbsp;num&nbsp;*=&nbsp;num
+end
+</PRE></TD></TR></TBODY></TABLE><EM>produces:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>Fixnum&nbsp;8
+Fixnum&nbsp;64
+Fixnum&nbsp;4096
+Fixnum&nbsp;16777216
+Bignum&nbsp;281474976710656
+Bignum&nbsp;79228162514264337593543950336
+Bignum&nbsp;6277101735386680763835789423207666416102355444464034512896
+</PRE></TD></TR></TBODY></TABLE>
+<P>　</P>
+<P>你也可以在使用整型的时候在前面使用进制标示符，比如0表示八进制，0x表示十六进制，0b表示二进制等。而且，如果一个整型数字中有一个下划线，这个下划线将被忽略。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>123456&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Fixnum
+123_456&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Fixnum&nbsp;(underscore&nbsp;ignored)
+-543&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Negative&nbsp;Fixnum
+123_456_789_123_345_789&nbsp;&nbsp;&nbsp;#&nbsp;Bignum
+0xaabb&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Hexadecimal
+0377&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Octal
+-0b101_010&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Binary&nbsp;(negated)
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>你也可以得到一个ASCII字符或者一个转意字符的数字值通过在它前面加一个问号。Control和Meta键的组合也可以用?\C-<EM>x</EM>, ?\M-<EM>x</EM> 和 ?\M-\C-<EM>x</EM>表达。字符value的加Control键的版本和"value &amp; 0x9f"的值是一样的；字符value的加Meta键的版本和"value &amp; 0x80"的值是一样的。最后，序列 ?\C-? 产生一个ASCII码的删除，0177。
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>?a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;字符的数字值
+?\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;换行符的值&nbsp;(0x0a)
+?\C-a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;control&nbsp;a&nbsp;=&nbsp;?A&nbsp;&amp;&nbsp;0x9f&nbsp;=&nbsp;0x01
+?\M-a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;meta&nbsp;sets&nbsp;bit&nbsp;7
+?\M-\C-a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;meta&nbsp;和&nbsp;control&nbsp;a
+?\C-?&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;删除字符
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>一个带小数点或者带指数的数字字符串会转换成一个Float对象，对应于本机操作系统构架的double数据类型。你必须在小数点后面加一个数字，因为像 1.e3会认为是调用了Fixnum类的e3这个方法。
+<P></P>所有数字都是对象，会响应一些消息（在290, 313, 315, 323和349页会完整的描述）。所以不像（比如说） C++，你会发现求一个数字的绝对值是这样写的 aNumber.abs，而不是abs(aNumber)。
+<P>整数也支持一些有用的迭代器（iterators）。我们已经看到过一个了--- 7.times在47页的代码例子中。还有其他的比如 upto 和 downto，用来在两个整数之间向上和向下迭代，还有 step，用于传统的 for 循环语句。 </P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>3.times&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;print&nbsp;"X&nbsp;"&nbsp;}
+1.upto(5)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;|i|&nbsp;print&nbsp;i,&nbsp;"&nbsp;"&nbsp;}
+99.downto(95)&nbsp;&nbsp;{&nbsp;|i|&nbsp;print&nbsp;i,&nbsp;"&nbsp;"&nbsp;}
+50.step(80,&nbsp;5)&nbsp;{&nbsp;|i|&nbsp;print&nbsp;i,&nbsp;"&nbsp;"&nbsp;}
+</PRE></TD></TR></TBODY></TABLE><EM>会产生:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>X&nbsp;X&nbsp;X&nbsp;1&nbsp;2&nbsp;3&nbsp;4&nbsp;5&nbsp;99&nbsp;98&nbsp;97&nbsp;96&nbsp;95&nbsp;50&nbsp;55&nbsp;60&nbsp;65&nbsp;70&nbsp;75&nbsp;80
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>最后，给Perl使用者提供一个警告。含有数字字符的字符串在表达式中使用时不会自动转换成数字。这最有可能在从文件里读取数字时引发错误。下面的代码没有做我们 想要的。
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>DATA.each&nbsp;do&nbsp;|line|
+&nbsp;&nbsp;vals&nbsp;=&nbsp;line.split&nbsp;&nbsp;&nbsp;&nbsp;#分割一行，把值存在vals里面
+&nbsp;&nbsp;print&nbsp;vals[0]&nbsp;+&nbsp;vals[1],&nbsp;"&nbsp;"
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>给它一个文件，内容是：
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>3&nbsp;4
+5&nbsp;6
+7&nbsp;8
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>你会得到结果： ``34 56 78.'' 到底发生了什么呢？ 
+<P></P>问题就出在程序把输入当成字符串，而不是数字的。加号运算符把两个字符串连接，这就是我们看到这个结果的原因。要解决这个问题，我们可以使用String#to_i这个方法来把字符串转换成整数。
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>DATA.each&nbsp;do&nbsp;|line|
+&nbsp;&nbsp;vals&nbsp;=&nbsp;line.split
+&nbsp;&nbsp;print&nbsp;vals[0].to_i&nbsp;+&nbsp;vals[1].to_i,&nbsp;"&nbsp;"
+end
+</PRE></TD></TR></TBODY></TABLE><EM>得到结果:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>7&nbsp;11&nbsp;15
+</PRE></TD></TR></TBODY></TABLE>
+<H2><A name=S2>字符串 Strings</A></H2>
+<P></P>Ruby的字符串是简单的8位字节（8-bit bytes）序列。它们通常保存可打印字符序列，但是这不是必须的；一个字符串也可以保存二进制数据。字符串是String类的对象。 
+<P></P>字符串通常用字符常量建立---包括在分隔符里面的字符序列。因为二进制数据很难在程序代码里面表达，你可以在一个字符串常量里面使用各种转义字符。每个转义字符都会在程序编译的时候转换成相应的二进制数值。分隔符的种类表明了取代作用的程度。用单引号刮住的字符串里，两个连续的反斜杠会被一个反斜杠取代，一个反斜杠后面跟一个单引号变成一个单引号。
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>'escape&nbsp;using&nbsp;"\\"'</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>escape&nbsp;using&nbsp;"\"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>'That\'s&nbsp;right'</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>That's&nbsp;right</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>用双引号刮住的字符串支持更多的转义字符。最常见的转义字符可能是"\n"了，代表一个换行符。第203页的表18.2列出了完整的转义字符。另外，你可以用 #{ expr } 来把任何的Ruby表达式的值插入到字符串中。如果那个表达式是全局变量，类变量或者实例变量，你可以省略大括号。
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>"Seconds/day:&nbsp;#{24*60*60}"</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>Seconds/day:&nbsp;86400</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>"#{'Ho!&nbsp;'*3}Merry&nbsp;Christmas"</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>Ho!&nbsp;Ho!&nbsp;Ho!&nbsp;Merry&nbsp;Christmas</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>"This&nbsp;is&nbsp;line&nbsp;#$."</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>This&nbsp;is&nbsp;line&nbsp;3</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>还有三种方法来构建字符串常量：%q, %Q和“here documents.”
+<P></P><CODE>%q 和 %Q用来界定单引号和双引号的范围。</CODE>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>%q/general&nbsp;single-quoted&nbsp;string/</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>general&nbsp;single-quoted&nbsp;string</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>%Q!general&nbsp;double-quoted&nbsp;string!</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>general&nbsp;double-quoted&nbsp;string</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>%Q{Seconds/day:&nbsp;#{24*60*60}}</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>Seconds/day:&nbsp;86400</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>跟在'q'或者'Q'后面的字符是分隔符，如果那个字符是括号，大括号，圆括号或者小于等于符号，那么程序会一直向下读直到遇见最近的停止符号，或者到匹配到相应的符号才停止，然后把读入的字符作为一个字符串整体。
+<P></P>最后，你可以用"here document"构建字符串。
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>aString&nbsp;=&nbsp;&lt;&lt;END_OF_STRING
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;body&nbsp;of&nbsp;the&nbsp;string
+&nbsp;&nbsp;&nbsp;&nbsp;is&nbsp;the&nbsp;input&nbsp;lines&nbsp;up&nbsp;to
+&nbsp;&nbsp;&nbsp;&nbsp;one&nbsp;ending&nbsp;with&nbsp;the&nbsp;same
+&nbsp;&nbsp;&nbsp;&nbsp;text&nbsp;that&nbsp;followed&nbsp;the&nbsp;'&lt;&lt;'
+END_OF_STRING
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>一个 here document 由包含在开始到一个由你在'&lt;&lt;'后面指定的结束符之间的（但是不包括结束符）多行字符串组成。一般的，这个结束符必须在第一列开始，但是如果你在'&lt;&lt;'后面加一个减号，你就可以缩进结束符了。
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>print&nbsp;&lt;&lt;-STRING1,&nbsp;&lt;&lt;-STRING2
+&nbsp;&nbsp;&nbsp;Concat
+&nbsp;&nbsp;&nbsp;STRING1
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;enate
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;STRING2
+</PRE></TD></TR></TBODY></TABLE><EM>产生结果:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Concat
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;enate
+</PRE>
+<P></P></TD></TR></TBODY></TABLE>
+<H3><A name=UA>运用字符串</A></H3>
+<P></P>String可能是Ruby最大的内建类了，它有超过75个标准方法。我们不会在这里挨个介绍它们；函数库参考有它们完整的介绍。让我们先来看看几个常用的字符串用法---在日常编程中我们经常会用到的。
+<P></P>
+<P>让我们回头看看我们的点唱机。尽管它是被设计成联接到互联网上的，但是也保存了一些很流行的歌曲在本地硬盘上。这样，即使我们的网络连接出问题了，我们仍然能够服务我们的顾客。</P>
+<P></P>由于历史的原因（还有其他原因吗？），歌曲列表是成行的保存在一个文件里面的。文件中的每一行内容包含了歌曲，歌曲长度，演唱者和曲名。所有的字段都是用小竖线分隔开的。一个典型的文件如下： 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>/jazz/j00132.mp3&nbsp;&nbsp;|&nbsp;3:45&nbsp;|&nbsp;Fats&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Waller&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Ain't&nbsp;Misbehavin'
+/jazz/j00319.mp3&nbsp;&nbsp;|&nbsp;2:58&nbsp;|&nbsp;Louis&nbsp;&nbsp;&nbsp;&nbsp;Armstrong&nbsp;&nbsp;|&nbsp;Wonderful&nbsp;World
+/bgrass/bg0732.mp3|&nbsp;4:09&nbsp;|&nbsp;Strength&nbsp;in&nbsp;Numbers&nbsp;|&nbsp;Texas&nbsp;Red
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>观察一下数据，很明显在我们建立一些基于这个文件的Song对象之前，我们需要用String类的一些方法来展开和清理这些字段。至少，我们需要：
+<P></P>
+<UL>
+<LI>把一行分成一个字段, 
+<LI>把MM:SS格式的时间转换成秒, 然后 
+<LI>把演唱者名字中额外的空格去掉. </LI></UL>
+<P></P>我们的第一个任务是要把每行分成各个字段，&nbsp;<A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_string.html#String.split" ><CODE>String#split</CODE> </A>方法最适合最这个。在这里，我们给 split 传递一个正则表达式，/\s*|\s*/，它会用小竖线和空格来分隔一行文本，把文本分成各个字段。还有，因为因为用文件里读取的这行文本后面跟了一个换行符，在我们用split函数之前，我们可以使用<A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_string.html#String.chomp" ><CODE>String#chomp</CODE> </A>来把换行符去掉。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>songs&nbsp;=&nbsp;SongList.new
+
+
+songFile.each&nbsp;do&nbsp;|line|  
+&nbsp;&nbsp;file,&nbsp;length,&nbsp;name,&nbsp;title&nbsp;=&nbsp;line.chomp.split(/\s*\|\s*/)  
+&nbsp;&nbsp;songs.append&nbsp;Song.new(title,&nbsp;name,&nbsp;length)  
+end  
+puts&nbsp;songs[1]
+</PRE></TD></TR></TBODY></TABLE><EM>产生结果:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>Song:&nbsp;Wonderful&nbsp;World--Louis&nbsp;&nbsp;&nbsp;&nbsp;Armstrong&nbsp;(2:58)
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>不幸的是，那个创建原始文件的人在敲演唱者名字的时候是按列敲的，有些名字里面可能包含额外的空格。这样那些名字在我们极好的，高科技的，24小时运行的显示板上显示会很难看。我们必须去掉那些额外的空格才能继续我们的工作。有很多方法来做这个工作，但是最简单的可能是用<A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_string.html#String.squeeze" ><CODE>String#squeeze</CODE> </A>,它会修饰重复的字符。我们在这里使用这个方法的 squeeze! 格式，它会改变适当位置的字符串。
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>songs&nbsp;=&nbsp;SongList.new
+
+songFile.each&nbsp;do&nbsp;|line|   
+&nbsp;&nbsp;file,&nbsp;length,&nbsp;name,&nbsp;title&nbsp;=&nbsp;line.chomp.split(/\s*\|\s*/)   
+&nbsp;&nbsp;name.squeeze!("&nbsp;")   
+&nbsp;&nbsp;songs.append&nbsp;Song.new(title,&nbsp;name,&nbsp;length)   
+end   
+puts&nbsp;songs[1]
+</PRE></TD></TR></TBODY></TABLE><EM>产生结果:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>Song:&nbsp;Wonderful&nbsp;World--Louis&nbsp;Armstrong&nbsp;(2:58)
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>最后，还有一个小问题---时间的格式问题：文件说 2:58，我们想要用秒数来表示，178秒。我们可以再次使用 split 函数，把用冒号分隔的两个字段分开。
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>mins,&nbsp;secs&nbsp;=&nbsp;length.split(/:/)
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>不过，我们这里使用另一个相关的函数。<A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_string.html#String.scan" ><CODE>String#scan</CODE> </A>和 split有点相象，都可以通过一个模式匹配把一个字符串变成几部分。 但是和split不同的是，scan允许你指定用来匹配字段的模式串。在咱们这个例子中，我们想为分字段和秒字段匹配一个或多个数字。一个或多个数字的正则式是 /\d+/。
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>songs&nbsp;=&nbsp;SongList.new
+songFile.each&nbsp;do&nbsp;|line|
+&nbsp;&nbsp;file,&nbsp;length,&nbsp;name,&nbsp;title&nbsp;=&nbsp;line.chomp.split(/\s*\|\s*/)
+&nbsp;&nbsp;name.squeeze!("&nbsp;")
+&nbsp;&nbsp;mins,&nbsp;secs&nbsp;=&nbsp;length.scan(/\d+/)
+&nbsp;&nbsp;songs.append&nbsp;Song.new(title,&nbsp;name,&nbsp;mins.to_i*60+secs.to_i)
+end
+puts&nbsp;songs[1]
+</PRE></TD></TR></TBODY></TABLE><EM>产生结果:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>Song:&nbsp;Wonderful&nbsp;World--Louis&nbsp;Armstrong&nbsp;(178)
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>我们的点唱机有关键字搜索的能力。给一个歌曲名或者演唱者姓名中的单词，它能够列出所有匹配的歌曲。比如，敲进"fats"，它可能列出 Fats Domino, Fats Navarro, 和Fats Waller的歌曲。我们通过建立一个索引类来实现这个功能。给它一个对象和一些字符串，它会索引出那个对象里所有包含在字符串里的单词（有两个或者多个字符的）。这会用到String类里面另一些其他方法。
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>class&nbsp;WordIndex
+&nbsp;&nbsp;def&nbsp;initialize
+&nbsp;&nbsp;&nbsp;&nbsp;@index&nbsp;=&nbsp;Hash.new(nil)
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;index(anObject,&nbsp;*phrases)
+&nbsp;&nbsp;&nbsp;&nbsp;phrases.each&nbsp;do&nbsp;|aPhrase|
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;aPhrase.scan&nbsp;/\w[-\w']+/&nbsp;do&nbsp;|aWord|&nbsp;&nbsp;&nbsp;#&nbsp;extract&nbsp;each&nbsp;word
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;aWord.downcase!
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@index[aWord]&nbsp;=&nbsp;[]&nbsp;if&nbsp;@index[aWord].nil?
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@index[aWord].push(anObject)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;lookup(aWord)
+&nbsp;&nbsp;&nbsp;&nbsp;@index[aWord.downcase]
+&nbsp;&nbsp;end
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P><A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_string.html#String.scan" >String#scan</A> 方法能从一个字符串里面提取出符合一个正则表达式 的元素。在这个例子里面模式串“\w[-\w']+”匹配任何能出现在单词里的字符，后面跟一个或多个在方括号里指定的东东（一个小横线，另一个单词符号或者一个单引号）。我们会在56页开始部分更详细地介绍正则表达式。要让我们的搜索大小写不敏感，我们把刚才我们提取出来的字段和传进来的关键字转化成小写。注意在第一个 downcase! 方法后面的感叹号。就像以前我们使用的 squeeze! 方法一样，"!"是一个标识来表明方法会在某个地方改变接受者，在这里表示把字符串变成小写。[这段代码里面有一个Bug, 歌曲"Gone, Gone, Gone"会被索引三次。你能想一个方法修正它吗？]
+<P></P>我们来扩展一下我们的 SongList 类，让它能够在歌曲加进来的时候索引它们，然后加一个用一个字符串查找歌曲的方法。
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>class&nbsp;SongList
+&nbsp;&nbsp;def&nbsp;initialize
+&nbsp;&nbsp;&nbsp;&nbsp;@songs&nbsp;=&nbsp;Array.new
+&nbsp;&nbsp;&nbsp;&nbsp;@index&nbsp;=&nbsp;WordIndex.new
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;append(aSong)
+&nbsp;&nbsp;&nbsp;&nbsp;@songs.push(aSong)
+&nbsp;&nbsp;&nbsp;&nbsp;@index.index(aSong,&nbsp;aSong.name,&nbsp;aSong.artist)
+&nbsp;&nbsp;&nbsp;&nbsp;self
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;lookup(aWord)
+&nbsp;&nbsp;&nbsp;&nbsp;@index.lookup(aWord)
+&nbsp;&nbsp;end
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>最后，我们来测试一下： 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>songs&nbsp;=&nbsp;SongList.new
+songFile.each&nbsp;do&nbsp;|line|
+&nbsp;&nbsp;file,&nbsp;length,&nbsp;name,&nbsp;title&nbsp;=&nbsp;line.chomp.split(/\s*\|\s*/)
+&nbsp;&nbsp;name.squeeze!("&nbsp;")
+&nbsp;&nbsp;mins,&nbsp;secs&nbsp;=&nbsp;length.scan(/\d+/)
+&nbsp;&nbsp;songs.append&nbsp;Song.new(title,&nbsp;name,&nbsp;mins.to_i*60+secs.to_i)
+end
+puts&nbsp;songs.lookup("Fats")
+puts&nbsp;songs.lookup("ain't")
+puts&nbsp;songs.lookup("RED")
+puts&nbsp;songs.lookup("WoRlD")
+</PRE></TD></TR></TBODY></TABLE><EM>产生结果:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>Song:&nbsp;Ain't&nbsp;Misbehavin'--Fats&nbsp;Waller&nbsp;(225)
+Song:&nbsp;Ain't&nbsp;Misbehavin'--Fats&nbsp;Waller&nbsp;(225)
+Song:&nbsp;Texas&nbsp;Red--Strength&nbsp;in&nbsp;Numbers&nbsp;(249)
+Song:&nbsp;Wonderful&nbsp;World--Louis&nbsp;Armstrong&nbsp;(178)
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>我们可以再花50页的篇幅来介绍 String 类里面的所有方法。但是，现在还是让我们继续来学习一个简单的数据类型：范围（ranges）。
+<P>　</P>
+<H2><A name=S3>（范围）Ranges</A></H2>
+<P></P>范围无处不在：从一月到十二月，0到9，半熟到完全煮熟，从第50行到第67行等等。如果ruby想要帮助我们很好的根据现实世界来建模，那么它也应该支持这些范围。实际上正是如此，ruby支持的ranges有三种用途：序列，条件，和间隔（sequences, conditions, and intervals）。<BR>
+<H3><A name=UB></A>作为序列</H3>
+<P></P>ruby的range最常用的用处是表示一个顺序的序列，序列有一个开始点，和一个结束点，和产生序列中下一个值的方法。ruby中，定义学列使用".."和"..."操作符。".."创建的序列包括两边的边界值，而"..."创建的序列将不包括最大的那个边界值。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>1..10
+'a'..'z'
+0...anArray.length
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>ruby不像其他一些地早期perl那样，把序列保存在一个内部列表中，比如，1..100000在ruby中只是一个Range对象，包括两个指向Fixnum对象的引用。如果需要，你可以把一个Range用to_a转换成一个数组。<BR>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>(1..10).to_a</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>[1,&nbsp;2,&nbsp;3,&nbsp;4,&nbsp;5,&nbsp;6,&nbsp;7,&nbsp;8,&nbsp;9,&nbsp;10]</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>('bar'..'bat').to_a</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>["bar",&nbsp;"bas",&nbsp;"bat"]</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>Ranges实现了一些可以让你对其进行迭代，测试是否包含某个值的方法。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>digits&nbsp;=&nbsp;0..9</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>digits.include?(5)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>true</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>digits.min</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>0</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>digits.max</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>9</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>digits.reject&nbsp;{|i|&nbsp;i&nbsp;&lt;&nbsp;5&nbsp;}</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>[5,&nbsp;6,&nbsp;7,&nbsp;8,&nbsp;9]</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>digits.each&nbsp;do&nbsp;|digit|</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;dial(digit)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>end</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P>到现在我们的ranges表示的都是数字和字符串型，作为一个面向对象的语言，ranges也可以用于我们自己创建的对象，但是这个对象必须实现一个succ方法，以返回下一个值，而且这个对象也必须支持&lt;=&gt;来对其进行比较。调用&lt;=&gt;时，它们比较前后两个对象的大小关系，根据两个对象是小于，等于，还是大于而返回-1, 0, 或者 +1</P>下面看一个简单的例子，这个类表示由若干个"#"符号组成的一行，我们可以用它来对我们点唱机音量做基于文本的测试。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>class&nbsp;VU
+
+ 
+&nbsp;&nbsp;include&nbsp;Comparable
+ 
+&nbsp;&nbsp;attr&nbsp;:volume
+ 
+&nbsp;&nbsp;def&nbsp;initialize(volume)&nbsp;&nbsp;#&nbsp;0..9      
+&nbsp;&nbsp;&nbsp;&nbsp;@volume&nbsp;=&nbsp;volume      
+&nbsp;&nbsp;end
+ 
+&nbsp;&nbsp;def&nbsp;inspect      
+&nbsp;&nbsp;&nbsp;&nbsp;'#'&nbsp;*&nbsp;@volume      
+&nbsp;&nbsp;end
+ 
+&nbsp;&nbsp;#&nbsp;Support&nbsp;for&nbsp;ranges
+ 
+&nbsp;&nbsp;def&nbsp;&lt;=&gt;(other)      
+&nbsp;&nbsp;&nbsp;&nbsp;self.volume&nbsp;&lt;=&gt;&nbsp;other.volume      
+&nbsp;&nbsp;end
+ 
+&nbsp;&nbsp;def&nbsp;succ      
+&nbsp;&nbsp;&nbsp;&nbsp;raise(IndexError,&nbsp;"Volume&nbsp;too&nbsp;big")&nbsp;if&nbsp;@volume&nbsp;&gt;=&nbsp;9      
+&nbsp;&nbsp;&nbsp;&nbsp;VU.new(@volume.succ)      
+&nbsp;&nbsp;end      
+end
+</PRE></TD></TR></TBODY></TABLE>
+<P>我们可以创建一个VU的range来测试一下：</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>medium&nbsp;=&nbsp;VU.new(4)..VU.new(7)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>medium.to_a</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>[####,&nbsp;#####,&nbsp;######,&nbsp;#######]</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>medium.include?(VU.new(3))</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>false</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<H3><A name=UC>条件范围（ Ranges as Conditions ）</A></H3>
+<P>除了表示一系列连续值之外，range还能作为条件表达式。比如，下面代码将接收标准输入，打印出来那些以start开头和以end结尾的代码行。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>while&nbsp;gets
+&nbsp;&nbsp;print&nbsp;if&nbsp;/start/../end/
+end
+</PRE></TD></TR></TBODY></TABLE>
+<H3><A name=UD>Ranges表示间隔</A></H3>
+<P></P>rang最后一个用处是测试一些值是否在这个间隔之内，这要用到操作符===<BR>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>(1..10)&nbsp;&nbsp;&nbsp;&nbsp;===&nbsp;5</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>true</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>(1..10)&nbsp;&nbsp;&nbsp;&nbsp;===&nbsp;15</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>false</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>(1..10)&nbsp;&nbsp;&nbsp;&nbsp;===&nbsp;3.14159</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>true</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>('a'..'j')&nbsp;===&nbsp;'c'</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>true</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>('a'..'j')&nbsp;===&nbsp;'z'</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>false</CODE> </TD></TR></TBODY></TABLE>
+<H2><A name=S4>正则表达式</A></H2>
+<P></P>回到第50页当我们从一个文件里创建歌曲列表的时候，我们用了一个正则表达式去匹配文件里的字段。我们声明了正则表达式 line.split(/\s*|\s*)来匹配一个小竖线被（不是必须的）空格环绕的情况。让我们来仔细研究一下正则表达式来证明为什么我们的声明是正确的。
+<P>正则表达式用来匹配字符串的模式。Ruby提供了对模式匹配和替换内建的支持，使我们使用时很方便简练。在这部分，我们会介绍大部分主要的正则表达式特征。有些细节我们不会涉及：你可以参考第205页取得更多信息。</P>
+<P></P>正则表达式是类型Regexp的对象。它们可以用显式的构造函数建立或者直接用 /pattern/ 和 %r/pattern/这种格式的字符常量构造。
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>a&nbsp;=&nbsp;Regexp.new('^\s*[a-z]')</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>/^\s*[a-z]/</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>b&nbsp;=&nbsp;/^\s*[a-z]/</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>/^\s*[a-z]/</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>c&nbsp;=&nbsp;%r{^\s*[a-z]}</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>/^\s*[a-z]/</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>一当你有了一个正则表达式对象，你可以用它和一个字符串比较，通过使用 Regexp#match(aString) 或者用匹配操作符 =~（确定匹配）和 !~（否定匹配）。字符串和Regexp对象都可以使用匹配操作符。如果匹配操作符的两个操作数都是字符串的话，右边那个会转化成正则表达式。
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>a&nbsp;=&nbsp;"Fats&nbsp;Waller"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>a&nbsp;=~&nbsp;/a/</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>1</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>a&nbsp;=~&nbsp;/z/</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>nil</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>a&nbsp;=~&nbsp;"ll"</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>7</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>匹配操作符返回模式匹配成功的字符位置。 它们还有一个设置所有Ruby变量的额外作用。$&amp;接受模式匹配成功的那部分字符，$`(键盘1左边那个键）接受模式匹配成功前面那一部分字符，$'接受模式匹配成功后面那部分字符。我们可以用这个来编写一个函数，showRE，它阐明了一个特殊的模式匹配例子：
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>def&nbsp;showRE(a,re)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;if&nbsp;a&nbsp;=~&nbsp;re</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;&nbsp;&nbsp;"#{$`}&lt;&lt;#{$&amp;}&gt;&gt;#{$'}"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;else</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;&nbsp;&nbsp;"no&nbsp;match"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE></CODE></TD></TR>
+<TR>
+<TD vAlign=top><CODE>showRE('very&nbsp;interesting',&nbsp;/t/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>very&nbsp;in&lt;&lt;t&gt;&gt;eresting</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>showRE('Fats&nbsp;Waller',&nbsp;/ll/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>Fats&nbsp;Wa&lt;&lt;ll&gt;&gt;er</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>这个匹配也设置了Ruby的全局线程(thread-global)变量 $~ 和 $1 到 $9。变量 $~ 是一个MatchData对象（在336页开始部分有描述），它保存了所有关于这个匹配的信息。$1和其他$*保存了这个匹配的部分，我们呆会儿还会讨论它们。如果有人看见这些像Perl语言的变量名感到害怕，不要着急，这章后面还有好消息。 
+<H3><A name=UE>模式</A>（Patterns）</H3>
+<P></P>每个正则表达式都有一个模式，用来和字符串做匹配。
+<P>在一个模式中，除了., |, (, ), [, {, +, \, ^, $, *和 ? 之外的字符都是和它本身匹配。 </P>
+<P></P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>showRE('kangaroo',&nbsp;/angar/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>k&lt;&lt;angar&gt;&gt;oo</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>showRE('!@%&amp;-_=+',&nbsp;/%&amp;/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>!@&lt;&lt;%&amp;&gt;&gt;-_=+</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>如果你想在字面上匹配一个上面的特殊字符，在它前面加一个'\'。这解释了我们用在分离那个歌曲列表文件时用的一个正则表达式的一部分，/\s*|\s*/。'\|'表示匹配一个'|'，没有那个反斜杠，'|'代表交换（我们会在后面描述）。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>showRE('yes&nbsp;|&nbsp;no',&nbsp;/\|/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>yes&nbsp;&lt;&lt;|&gt;&gt;&nbsp;no</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>showRE('yes&nbsp;(no)',&nbsp;/\(no\)/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>yes&nbsp;&lt;&lt;(no)&gt;&gt;</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>showRE('are&nbsp;you&nbsp;sure?',&nbsp;/e\?/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>are&nbsp;you&nbsp;sur&lt;&lt;e?&gt;&gt;</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>反斜杠后跟一个数字字符用来引进一个特殊的匹配构造，我们会在后面介绍它。另外，一个正则表达式可以包含#{...}表达式取代。
+<H3><A name=UF>Anchors</A></H3>
+<P></P>一个正则表达式默认会找到字符串中第一个匹配的情况。要在字符串"Mississippi"中匹配 /iss/ ，它会找到那个靠近开始位置的哪个子串"iss"。但是当你想自己指定从头部或者末尾开始匹配时要怎么设置呢？
+<P></P>
+<P></P>
+<P></P>模式 ^ 和 $ 分别匹配一行字符的开始和结束。它们经常用来指定一个模式匹配的方向：比如，/^option/和在一行文本开始处出现的字符串'option'匹配。字符序列 \A 和一个字符串的开始匹配，\z 和 \Z 和一个字符串的结束匹配。（事实上，\Z 和一个以"\n"结尾的字符串的结束匹配，这种情况下，它从'\n'前面开始匹配）。
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>showRE("this&nbsp;is\nthe&nbsp;time",&nbsp;/^the/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>this&nbsp;is\n&lt;&lt;the&gt;&gt;&nbsp;time</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>showRE("this&nbsp;is\nthe&nbsp;time",&nbsp;/is$/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>this&nbsp;&lt;&lt;is&gt;&gt;\nthe&nbsp;time</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>showRE("this&nbsp;is\nthe&nbsp;time",&nbsp;/\Athis/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>&lt;&lt;this&gt;&gt;&nbsp;is\nthe&nbsp;time</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>showRE("this&nbsp;is\nthe&nbsp;time",&nbsp;/\Athe/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>no&nbsp;match</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>相似的，模式 \b 和 \B 分别和单词界限(word boundaries)和非单词界限(nonword boundaries)匹配。构成单词的字符有字母，数字和下划线。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>showRE("this&nbsp;is\nthe&nbsp;time",&nbsp;/\bis/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>this&nbsp;&lt;&lt;is&gt;&gt;\nthe&nbsp;time</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>showRE("this&nbsp;is\nthe&nbsp;time",&nbsp;/\Bis/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>th&lt;&lt;is&gt;&gt;&nbsp;is\nthe&nbsp;time</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<H3><A name=UG>字符类</A>（character class）</H3>
+<P></P>一个字符类是一系列在方括号("[...]")之间的字符，用来匹配方括号里面的单个字符。比如，[aeiou]会和元音字符匹配，[,.:;!?]和标点符号匹配，等等。那些重要的特殊字符（.|()[{+^$*?）在方括号里面会失去匹配作用。但是普通的转义字符仍然起作用，所以，\b代表退格键，\n是换行符（见203页表18.2）。另外，你可以用59页的表5.1的缩写，所以 \s 表示空白符，不仅仅是一个字面上的空格。
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>showRE('It&nbsp;costs&nbsp;$12.',&nbsp;/[aeiou]/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>It&nbsp;c&lt;&lt;o&gt;&gt;sts&nbsp;$12.</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>showRE('It&nbsp;costs&nbsp;$12.',&nbsp;/[\s]/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>It&lt;&lt;&nbsp;&gt;&gt;costs&nbsp;$12.</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>在方括号里面，序列 c1-c2 表示包括在c1到c2之间的字符。
+<P>如果你想在字符类（方括号）里面包含 ] 和 - 的话，它们必须出现在开始。&nbsp; </P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>a&nbsp;=&nbsp;'Gamma&nbsp;[Design&nbsp;Patterns-page&nbsp;123]'</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>showRE(a,&nbsp;/[]]/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>Gamma&nbsp;[Design&nbsp;Patterns-page&nbsp;123&lt;&lt;]&gt;&gt;</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>showRE(a,&nbsp;/[B-F]/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>Gamma&nbsp;[&lt;&lt;D&gt;&gt;esign&nbsp;Patterns-page&nbsp;123]</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>showRE(a,&nbsp;/[-]/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>Gamma&nbsp;[Design&nbsp;Patterns&lt;&lt;-&gt;&gt;page&nbsp;123]</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>showRE(a,&nbsp;/[0-9]/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>Gamma&nbsp;[Design&nbsp;Patterns-page&nbsp;&lt;&lt;1&gt;&gt;23]</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>在'['后面紧跟一个 ^ 代表字符类相反的含义: [^a-z]和不是小写字母的字符匹配。
+<P></P>一些字符类特别常用，所以Ruby提供了它们的缩写形式。这些缩写列在59页的表5.1上，它们可以用在方括号和模式串里面。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>showRE('It&nbsp;costs&nbsp;$12.',&nbsp;/\s/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>It&lt;&lt;&nbsp;&gt;&gt;costs&nbsp;$12.</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>showRE('It&nbsp;costs&nbsp;$12.',&nbsp;/\d/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>It&nbsp;costs&nbsp;$&lt;&lt;1&gt;&gt;2.</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>
+<TABLE width=500 bgColor=#ffe0e0 border=2>
+<TBODY>
+<TR>
+<TD><B>字符类缩写</B> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<TBODY>
+<TR bgColor=#ff9999>
+<TD vAlign=top><B>字符序列</B> </TD>
+<TD vAlign=top><B>&nbsp;[ ... ]</B> </TD>
+<TD vAlign=top><B>意思</B> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>\d</CODE> </TD>
+<TD vAlign=top>[0-9]</TD>
+<TD vAlign=top>数字字符</TD></TR>
+<TR>
+<TD vAlign=top><CODE>\D</CODE> </TD>
+<TD vAlign=top>[^0-9]</TD>
+<TD vAlign=top>非数字</TD></TR>
+<TR>
+<TD vAlign=top><CODE>\s</CODE> </TD>
+<TD vAlign=top>[\s\t\r\n\f]</TD>
+<TD vAlign=top>空格字符</TD></TR>
+<TR>
+<TD vAlign=top><CODE>\S</CODE> </TD>
+<TD vAlign=top>[^\s\t\r\n\f]</TD>
+<TD vAlign=top>非空格字符</TD></TR>
+<TR>
+<TD vAlign=top><CODE>\w</CODE> </TD>
+<TD vAlign=top>[A-Za-z0-9_]</TD>
+<TD vAlign=top>单词符号</TD></TR>
+<TR>
+<TD vAlign=top><CODE>\W</CODE> </TD>
+<TD vAlign=top>[^A-Za-z0-9_]</TD>
+<TD vAlign=top>非单词符号</TD></TR>
+<TR>
+<TD bgColor=#ff9999 colSpan=9 height=2><IMG height=1 src="120_files/dot[1].gif"  width=1></TD></TR></TBODY></TABLE>
+<P></P></TD></TR></TBODY></TABLE>
+<P></P>最后，一个在放括号外面出现的句点"."表示除了换行符以外的任何字符（在多行模式下它也表示一个换行符）。
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>a&nbsp;=&nbsp;'It&nbsp;costs&nbsp;$12.'</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>showRE(a,&nbsp;/c.s/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>It&nbsp;&lt;&lt;cos&gt;&gt;ts&nbsp;$12.</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>showRE(a,&nbsp;/./)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>&lt;&lt;I&gt;&gt;t&nbsp;costs&nbsp;$12.</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>showRE(a,&nbsp;/\./)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>It&nbsp;costs&nbsp;$12&lt;&lt;.&gt;&gt;</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<H3>重复（<A name=UH>Repetition</A>）</H3>
+<P></P>在我们讲述那个分隔歌曲文件的正则模式（/\s*\|\s*/）的时候, 我们说想匹配在一个'|'两边环绕任意的空格的情况。现在我们知道了 \s 匹配一个空白符，所以看来星号'*'代表任意数的大小。事实上，星号是允许你匹配模式多次出现的修饰符中的一个。
+<P></P>如果 r 代表一个模式里面的前置字符，那么：
+<TABLE class=codebox cellSpacing=0 cellPadding=3 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><EM>r</EM> <CODE>*</CODE> </TD>
+<TD vAlign=top>匹配0个或多个 r.</TD></TR>
+<TR>
+<TD vAlign=top><EM>r</EM> <CODE>+</CODE> </TD>
+<TD vAlign=top>匹配1个或多个 r.</TD></TR>
+<TR>
+<TD vAlign=top><EM>r</EM> <CODE>?</CODE> </TD>
+<TD vAlign=top>匹配0个或1个 r.</TD></TR>
+<TR>
+<TD vAlign=top><EM>r</EM> <CODE>{m,n}</CODE> </TD>
+<TD vAlign=top>匹配最少m个，最多n个 r.</TD></TR>
+<TR>
+<TD vAlign=top><EM>r</EM> <CODE>{m,}</CODE> </TD>
+<TD vAlign=top>匹配最少m个 <EM>r</EM>.</TD></TR></TBODY></TABLE>
+<P></P>这些重复修饰符有很高的优先权---在正则模式串里它们仅仅和它们的紧密前缀绑定。/ab+/匹配一个"a"后面跟一个或多个"b"而不是一个"ab"组成的序列。你也必须小心使用'*'修饰符---正则模式串/a*/会匹配任何字符串；任何有0个或者多个"a"的字符串。
+<P></P>这些模式串被称为“贪婪地”，因为它们默认会匹配尽量多的字符。你可以改变这种行为，让它们匹配最少的，只要加一个问号后缀就可以了。
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>a&nbsp;=&nbsp;"The&nbsp;moon&nbsp;is&nbsp;made&nbsp;of&nbsp;cheese"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>showRE(a,&nbsp;/\w+/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>&lt;&lt;The&gt;&gt;&nbsp;moon&nbsp;is&nbsp;made&nbsp;of&nbsp;cheese</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>showRE(a,&nbsp;/\s.*\s/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>The&lt;&lt;&nbsp;moon&nbsp;is&nbsp;made&nbsp;of&nbsp;&gt;&gt;cheese</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>showRE(a,&nbsp;/\s.*?\s/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>The&lt;&lt;&nbsp;moon&nbsp;&gt;&gt;is&nbsp;made&nbsp;of&nbsp;cheese</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>showRE(a,&nbsp;/[aeiou]{2,99}/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>The&nbsp;m&lt;&lt;oo&gt;&gt;n&nbsp;is&nbsp;made&nbsp;of&nbsp;cheese</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>showRE(a,&nbsp;/mo?o/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>The&nbsp;&lt;&lt;moo&gt;&gt;n&nbsp;is&nbsp;made&nbsp;of&nbsp;cheese</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<H3>间隔（<A name=UI>Alternation</A>）</H3>
+<P></P>我们知道‘|’是特殊的，因为我们的在行分隔模式中必须用一个反斜杠使之转义。因为一个没有反斜杠的‘|’匹配正则表达式中它左右两边模式中的一个。
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>a&nbsp;=&nbsp;"red&nbsp;ball&nbsp;blue&nbsp;sky"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>showRE(a,&nbsp;/d|e/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>r&lt;&lt;e&gt;&gt;d&nbsp;ball&nbsp;blue&nbsp;sky</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>showRE(a,&nbsp;/al|lu/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>red&nbsp;b&lt;&lt;al&gt;&gt;l&nbsp;blue&nbsp;sky</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>showRE(a,&nbsp;/red&nbsp;ball|angry&nbsp;sky/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>&lt;&lt;red&nbsp;ball&gt;&gt;&nbsp;blue&nbsp;sky</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>要是我们一粗心，这里会有一个陷阱，因为‘|’的优先级很低。在上面最后一个例子中，我们的正则式匹配“red ball”或者“angry sky”，而不是“red ball sky”或“red angry sky”。为了匹配“red ball sky”或“red angry sky”，我们用grouping重载默认的优先级。
+<H3><A name=UJ>成组技术（Grouping)</A></H3>
+<P></P>你可以在正则式中用圆括号来成组字符集。在这个组里面的所有字符会被认为是一个正则表达式。
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>showRE('banana',&nbsp;/an*/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>b&lt;&lt;an&gt;&gt;ana</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>showRE('banana',&nbsp;/(an)*/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>&lt;&lt;&gt;&gt;banana</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>showRE('banana',&nbsp;/(an)+/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>b&lt;&lt;anan&gt;&gt;a</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>a&nbsp;=&nbsp;'red&nbsp;ball&nbsp;blue&nbsp;sky'</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>showRE(a,&nbsp;/blue|red/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>&lt;&lt;red&gt;&gt;&nbsp;ball&nbsp;blue&nbsp;sky</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>showRE(a,&nbsp;/(blue|red)&nbsp;\w+/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>&lt;&lt;red&nbsp;ball&gt;&gt;&nbsp;blue&nbsp;sky</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>showRE(a,&nbsp;/(red|blue)&nbsp;\w+/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>&lt;&lt;red&nbsp;ball&gt;&gt;&nbsp;blue&nbsp;sky</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>showRE(a,&nbsp;/red|blue&nbsp;\w+/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>&lt;&lt;red&gt;&gt;&nbsp;ball&nbsp;blue&nbsp;sky</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>showRE(a,&nbsp;/red&nbsp;(ball|angry)&nbsp;sky/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>no&nbsp;match</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>a&nbsp;=&nbsp;'the&nbsp;red&nbsp;angry&nbsp;sky'</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>showRE(a,&nbsp;/red&nbsp;(ball|angry)&nbsp;sky/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>the&nbsp;&lt;&lt;red&nbsp;angry&nbsp;sky&gt;&gt;</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>圆括号也用来收集模式匹配的结果。Ruby对左括号记数，对每个左括号，它保存了已经匹配的部分结果和相应的右括号。你可以在剩下的模式串中或者你的Ruby程序里使用这个匹配。在模式匹配中，\1代表第1个组，\2代表第2个组，其他依次类推。在模式串外面，特殊变量 $1, $2和其他$*和这个作用一样。
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>"12:50am"&nbsp;=~&nbsp;/(\d\d):(\d\d)(..)/</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>0</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>"Hour&nbsp;is&nbsp;#$1,&nbsp;minute&nbsp;#$2"</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"Hour&nbsp;is&nbsp;12,&nbsp;minute&nbsp;50"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>"12:50am"&nbsp;=~&nbsp;/((\d\d):(\d\d))(..)/</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>0</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>"Time&nbsp;is&nbsp;#$1"</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"Time&nbsp;is&nbsp;12:50"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>"Hour&nbsp;is&nbsp;#$2,&nbsp;minute&nbsp;#$3"</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"Hour&nbsp;is&nbsp;12,&nbsp;minute&nbsp;50"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>"AM/PM&nbsp;is&nbsp;#$4"</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"AM/PM&nbsp;is&nbsp;am"</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>能够利用目前的部分匹配允许你寻找各种形式的循环。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>#&nbsp;匹配重复的字母</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>showRE('He&nbsp;said&nbsp;"Hello"',&nbsp;/(\w)\1/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>He&nbsp;said&nbsp;"He&lt;&lt;ll&gt;&gt;o"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>#&nbsp;匹配重复的子串</CODE></TD></TR>
+<TR>
+<TD vAlign=top><CODE>showRE('Mississippi',&nbsp;/(\w+)\1/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>M&lt;&lt;ississ&gt;&gt;ippi</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>你也可以使用后置引用来匹配分隔符。
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>showRE('He&nbsp;said&nbsp;"Hello"',&nbsp;/(["']).*?\1/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>He&nbsp;said&nbsp;&lt;&lt;"Hello"&gt;&gt;</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>showRE("He&nbsp;said&nbsp;'Hello'",&nbsp;/(["']).*?\1/)</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>He&nbsp;said&nbsp;&lt;&lt;'Hello'&gt;&gt;</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<H3><A name=UK>基于模式的子串技术</A></H3>
+<P></P>有时候在一个字符串里面寻找一个模式已经满足要求了。如果一个朋友刁难你，要你找出一个顺序包含a, b, c, d 和 e 的单词，你可以用模式串 /a.*b.*c.*d.*e/来寻找然后可以找到"absconded"和"ambuscade" 。这毫无疑问是挺有用的。
+<P>然后，有时候我们需要改变一个模式匹配的内容。让我们回到我们的歌曲列表文件。创建文件的人用小写字母敲进了演唱者的名字。当我们把名字显示在点唱机上时，我们想让它大小写混写。那么我们怎么样才能把每个单词的首字母变成大写呢？</P>
+<P></P><CODE><A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_string.html#String.sub" >String#sub</A> 和 <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_string.html#String.gsub" >String#gsub</A> </CODE>方法 寻找字符串中匹配它们第一个参数的那部分，然后把那部分用它们的第二个参数代替。String#sub 只替换一次，String#gsub 则替换所有在字符串里出现的匹配。两个方法都返回一个已经替换过的新字符串的拷贝。另外一个版本的方法<CODE><A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_string.html#String.sub_oh" >String#sub!</A></CODE> 和<A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_string.html#String.gsub_oh" > <CODE>String#gsub!</CODE> </A>会修改原始字符串。
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>a&nbsp;=&nbsp;"the&nbsp;quick&nbsp;brown&nbsp;fox"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>a.sub(/[aeiou]/,&nbsp;&nbsp;'*')</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"th*&nbsp;quick&nbsp;brown&nbsp;fox"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>a.gsub(/[aeiou]/,&nbsp;'*')</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"th*&nbsp;q**ck&nbsp;br*wn&nbsp;f*x"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>a.sub(/\s\S+/,&nbsp;&nbsp;'')</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"the&nbsp;brown&nbsp;fox"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>a.gsub(/\s\S+/,&nbsp;'')</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"the"</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>第二个参数可以是一个字符串或者一个程序块（block）。如果用了程序块，那个程序块的值被替换进了字符串。
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>a&nbsp;=&nbsp;"the&nbsp;quick&nbsp;brown&nbsp;fox"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>a.sub(/^./)&nbsp;{&nbsp;$&amp;.upcase&nbsp;}</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"The&nbsp;quick&nbsp;brown&nbsp;fox"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>a.gsub(/[aeiou]/)&nbsp;{&nbsp;$&amp;.upcase&nbsp;}</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"thE&nbsp;qUIck&nbsp;brOwn&nbsp;fOx"</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>所以，这看起来是我们转变演唱者名字的正确方法。匹配一个单词的首字母的模式串是 \b\w---寻找一个单词边界然后跟一个字母。结合 gsub 使用，我们可以来修改演唱者的名字了。&nbsp; 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>def&nbsp;mixedCase(aName)</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>&nbsp;&nbsp;aName.gsub(/\b\w/)&nbsp;{&nbsp;$&amp;.upcase&nbsp;}</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>end</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE></CODE></TD></TR>
+<TR>
+<TD vAlign=top><CODE>mixedCase("fats&nbsp;waller")</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"Fats&nbsp;Waller"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>mixedCase("louis&nbsp;armstrong")</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"Louis&nbsp;Armstrong"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>mixedCase("strength&nbsp;in&nbsp;numbers")</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"Strength&nbsp;In&nbsp;Numbers"</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<H3>子串函数中的转义字符</H3>
+<P></P>
+<P>前面我们讲过\1, \2和类似的字符序列可以在模式串中使用，代表到现在为止已经匹配的第n组数据。相同的字符序列也可以在 sub 和 gsub函数的第二个参数中使用。</P>
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>"fred:smith".sub(/(\w+):(\w+)/,&nbsp;'\2,&nbsp;\1')</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"smith,&nbsp;fred"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>"nercpyitno".gsub(/(.)(.)/,&nbsp;'\2\1')</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"encryption"</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>还有一些外加的转义字符用在字符串替换中：\&amp;（最后那个匹配），\+（最后匹配的组），\`（匹配串前面的字符串），\'（匹配后面的字符串），\\（反斜杠）。如果你在替换中使用反斜杠那么会引起混乱。最明显的例子是：
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>str.gsub(/\\/,&nbsp;'\\\\')
+</PRE></TD></TR></TBODY></TABLE>
+<P></P>很清楚，这句代码想把 str 里面的一个反斜杠变成两个。程序员用了两个反斜杠在替换文本里面，希望它们在语法分析时变成两个反斜杠。但是当替换发生时，正则表达式引擎又读了一遍字符串，把"\\"变成了"\"，所以上面代码的作用是用一个反斜杠替换另外一个反斜杠。你需要这样写 gsub(/\\/, '\\\\\\\\')! 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>str&nbsp;=&nbsp;'a\b\c'</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"a\b\c"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>str.gsub(/\\/,&nbsp;'\\\\\\\\')</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"a\\b\\c"</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>因为 \&amp; 会被匹配的字符串替换，所以你也可以这样写：
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>str&nbsp;=&nbsp;'a\b\c'</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"a\b\c"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>str.gsub(/\\/,&nbsp;'\&amp;\&amp;')</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"a\\b\\c"</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>如果你使用 gsub 的程序块形式，用来替换的字符串仅仅被分析一次（在语法分析阶段），所以结果是你想要的：
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><CODE>str&nbsp;=&nbsp;'a\b\c'</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"a\b\c"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>str.gsub(/\\/)&nbsp;{&nbsp;'\\\\'&nbsp;}</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>"a\\b\\c"</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>最后，作为正则表达式和程序块结合起来的强大表现力的例子，我们来看看这段CGI函数库模块里的代码，是Wakou Aoyama编写的。代码接受一段包含HTML文本的字符串然后把它转化成普通的ASCII文本。因为这是为日本的用户编写的，它在正则式用了"n"修饰符来使宽字符失效。代码也演示了Ruby的 case 语句，我们在81页讨论它。
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>def&nbsp;unescapeHTML(string)
+&nbsp;&nbsp;str&nbsp;=&nbsp;string.dup
+&nbsp;&nbsp;str.gsub!(/&amp;(.*?);/n)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;match&nbsp;=&nbsp;$1.dup
+&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;match
+&nbsp;&nbsp;&nbsp;&nbsp;when&nbsp;/\Aamp\z/ni&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;then&nbsp;'&amp;'
+&nbsp;&nbsp;&nbsp;&nbsp;when&nbsp;/\Aquot\z/ni&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;then&nbsp;'"'
+&nbsp;&nbsp;&nbsp;&nbsp;when&nbsp;/\Agt\z/ni&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;then&nbsp;'&gt;'
+&nbsp;&nbsp;&nbsp;&nbsp;when&nbsp;/\Alt\z/ni&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;then&nbsp;'&lt;'
+&nbsp;&nbsp;&nbsp;&nbsp;when&nbsp;/\A#(\d+)\z/n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;then&nbsp;Integer($1).chr
+&nbsp;&nbsp;&nbsp;&nbsp;when&nbsp;/\A#x([0-9a-f]+)\z/ni&nbsp;then&nbsp;$1.hex.chr
+&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;}
+&nbsp;&nbsp;str
+end
+
+ 
+puts&nbsp;unescapeHTML("1&amp;lt;2&nbsp;&amp;amp;&amp;amp;&nbsp;4&amp;gt;3")       
+puts&nbsp;unescapeHTML("&amp;quot;A&amp;quot;&nbsp;=&nbsp;&amp;#65;&nbsp;=&nbsp;&amp;#x41;")
+</PRE></TD></TR></TBODY></TABLE><EM>产生结果:</EM> 
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=400 border=0>
+<TBODY>
+<TR>
+<TD><PRE>1&lt;2&nbsp;&amp;&amp;&nbsp;4&gt;3
+"A"&nbsp;=&nbsp;A&nbsp;=&nbsp;A
+</PRE></TD></TR></TBODY></TABLE>
+<H3><A name=UM>面向对象的正则表达式</A></H3>
+<P></P>我们必须承认虽然这些关怪的表达式很好用，但是它们不是面向对象的，而且相当晦涩难懂。你们不是说过Ruby里面任何东西都是对象吗？为什么这里是这样的呢？
+<P></P>这无关紧要，真的。因为Matz在设计Ruby的时候，他构建了一个完全面向对的正则表达式处理系统。但是为了让Perl程序员感到熟悉一些，他把这些 $* 包装在这系统之上。这些对象和类还在那里，在外观里面，现在让我们花点时间把它们挖出来。
+<P></P>我们已经遇到过这样一个类了：字面正则表达式的产生类 Regexp（在361页有具体描述）。
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>re&nbsp;=&nbsp;/cat/</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>re.type</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>Regexp</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>方法 <A href="http://www.ruby-cn.org/book/ProgrammingRuby/ref_c_regexp.html#Regexp.match" ><CODE>Regexp#match</CODE> </A>把一个正则表达式和一个字符串进行匹配。如果不成功，方法返回 nil。在成功的情况下，它返回类 Matchdata 的一个实例，在336页有详细描述。然后那个 MatchData 对象给你访问这个匹配的各种信息的方法。所有能从 $-*变量里得到的好东东都可以在咱们手边这个小对象里得到。
+<P></P>
+<TABLE class=codebox height=204 cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3 height=18><CODE>re&nbsp;=&nbsp;/(\d+):(\d+)/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;匹配一个时间&nbsp;hh:mm</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3 height=18><CODE>md&nbsp;=&nbsp;re.match("Time:&nbsp;12:34am")</CODE> </TD></TR>
+<TR>
+<TD vAlign=top height=20><CODE>md.type</CODE> </TD>
+<TD vAlign=top height=20>}}</TD>
+<TD vAlign=top height=20><CODE>MatchData</CODE> </TD></TR>
+<TR>
+<TD vAlign=top height=20><CODE>md[0]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;==&nbsp;$&amp;</CODE> </TD>
+<TD vAlign=top height=20>}}</TD>
+<TD vAlign=top height=20><CODE>"12:34"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top height=20><CODE>md[1]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;==&nbsp;$1</CODE> </TD>
+<TD vAlign=top height=20>}}</TD>
+<TD vAlign=top height=20><CODE>"12"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top height=20><CODE>md[2]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;==&nbsp;$2</CODE> </TD>
+<TD vAlign=top height=20>}}</TD>
+<TD vAlign=top height=20><CODE>"34"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top height=20><CODE>md.pre_match&nbsp;&nbsp;#&nbsp;==&nbsp;$`</CODE> </TD>
+<TD vAlign=top height=20>}}</TD>
+<TD vAlign=top height=20><CODE>"Time:&nbsp;"</CODE> </TD></TR>
+<TR>
+<TD vAlign=top height=20><CODE>md.post_match&nbsp;#&nbsp;==&nbsp;$'</CODE> </TD>
+<TD vAlign=top height=20>}}</TD>
+<TD vAlign=top height=20><CODE>"am"</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>因为匹配信息是保存在它自己对象里的，你可以在同一时间保存两个或者多个匹配的结果，这用$-*你可能不能实现。在下面一个例子里，我们用同一个 Regexp 对象去匹配两个不同的字符串。每个匹配都返回一个唯一的 MatchData 对象，我们通过它们的两个子模式字段来区别它们。 
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>re&nbsp;=&nbsp;/(\d+):(\d+)/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;匹配一个时间&nbsp;hh:mm</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>md1&nbsp;=&nbsp;re.match("Time:&nbsp;12:34am")</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>md2&nbsp;=&nbsp;re.match("Time:&nbsp;10:30pm")</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>md1[1,&nbsp;2]</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>["12",&nbsp;"34"]</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>md2[1,&nbsp;2]</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>["10",&nbsp;"30"]</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>但是那些 $-*是怎么包装起来的呢？每个模式匹配结束以后，Ruby在一个局部线程（thread-local）变量中保存了一个指向结果的引用（nil 或者 是一个 MatchData 对象）。所有其他的正则表达式变量都是从这个对象中继承而来的。虽然我们不能真正这样使用以下代码，但是它证明了所有其他的和MatchData有关的 $-*变量都是 $~里面的值。
+<P></P>
+<TABLE class=codebox cellSpacing=0 cellPadding=3 width=500 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top colSpan=3><CODE>re&nbsp;=&nbsp;/(\d+):(\d+)/</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>md1&nbsp;=&nbsp;re.match("Time:&nbsp;12:34am")</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>md2&nbsp;=&nbsp;re.match("Time:&nbsp;10:30pm")</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>[&nbsp;$1,&nbsp;$2&nbsp;]&nbsp;&nbsp;&nbsp;#&nbsp;最后匹配成功的情况</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>["10",&nbsp;"30"]</CODE> </TD></TR>
+<TR>
+<TD vAlign=top colSpan=3><CODE>$~&nbsp;=&nbsp;md1</CODE> </TD></TR>
+<TR>
+<TD vAlign=top><CODE>[&nbsp;$1,&nbsp;$2&nbsp;]&nbsp;&nbsp;&nbsp;#&nbsp;上一个匹配成功情况</CODE> </TD>
+<TD vAlign=top>}}</TD>
+<TD vAlign=top><CODE>["12",&nbsp;"34"]</CODE> </TD></TR></TBODY></TABLE>
+<P></P>
+<P></P>说完了所有这些，我们必须说点实话：） Andy和Dave平常都只是使用$-*变量而不去担心 MatchData对象。在日常应用中，我们只要用起来舒服就行。有时候我们情不自禁地使自己变得更务实。
+<P></P>
+<HR>
+
+<TABLE cellSpacing=0 cellPadding=10 bgColor=#a03030 border=0>
+<TBODY>
+<TR>
+<TD align=left width="33%"><A href="101.html" >上一章</A><A class=subheader href="101.html" > &lt;</A> </TD>
+<TD vAlign=center align=middle width="33%"><A href="95.html" >目录</A><A class=subheader href="95.html" > ^</A> <BR></TD>
+<TD align=right width="33%"><A href="103.html" >下一章</A><A class=subheader href="103.html" > &gt;</A> <BR></TD></TR></TBODY></TABLE>
+<P></P><FONT size=-1>Extracted from the book "Programming Ruby - The Pragmatic Programmer's Guide"</FONT> <BR><FONT size=-3>Copyright &copy; 2001 by Addison Wesley Longman, Inc. This material may be distributed only subject to the terms and conditions set forth in the Open Publication License, v1.0 or later (the latest version is presently available at <A href="http://www.opencontent.org/openpub/" >http://www.opencontent.org/openpub/</A>)). 
+<P></P>Distribution of substantively modified versions of this document is prohibited without the explicit permission of the copyright holder. 
+<P></P>Distribution of the work or derivative of the work in any standard (paper) book form is prohibited unless prior permission is obtained from the copyright holder. <BR></FONT></BODY>

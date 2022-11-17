@@ -1,0 +1,345 @@
+<html>
+<META http-equiv="Content-Type" content="text/html; charset=utf-8">
+<head>
+<title>Section 3.4.&nbsp; Introducing Iterators</title>
+<link rel="STYLESHEET" type="text/css" href="images/style.css" >
+<link rel="STYLESHEET" type="text/css" href="images/docsafari.css" >
+</head>
+<body>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr><td><div STYLE="MARGIN-LEFT: 0.15in;"><a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle"  alt="Team LiB"></a></div></td>
+<td align="right"><div STYLE="MARGIN-LEFT: 0.15in;">
+<a href="ch03lev1sec3.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a>
+<a href="ch03lev1sec5.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+</div></td></tr></table>
+<br><table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td valign="top"><a name="ch03lev1sec4"></a>
+<h3 class="docSection1Title">3.4. Introducing Iterators</h3>
+<h3 class="docSection1Title">3.4. 迭代器简介</h3>
+<p class="docText">While we can use subscripts to access the elements in a <tt>vector</tt>, the library also gives us another way to examine elements: We can use an <B><a name="ch03term11"></a><a class="docLink" href="ch03lev1sec7.html#gloss03_11" >iterator</a></b>. An iterator is a type that lets us examine the elements in a container and navigate from one element to another.</P>
+<p class="docText">除了使用下标来访问&nbsp;<tt>vector</tt>&nbsp;对象的元素外，标准库还提供了另一种访问元素的方法：使用<b><a class="docLink" href="ch03lev1sec7.html#gloss03_11" >迭代器（iterator）</a></b>。迭代器是一种检查容器内元素并遍历元素的数据类型。</p>
+
+<p class="docText">The library defines an iterator type for each of the standard containers, including <tt>vector</tt>. Iterators are more general than subscripts: All of the library containers define iterator types, but only a few of them support subscripting. Because iterators are common to all containers, modern C++ programs tend to use iterators <a name="idd1e19842"></a><a name="idd1e19849"></a><a name="idd1e19856"></a><a name="idd1e19861"></a><a name="idd1e19864"></a><a name="idd1e19867"></a><a name="idd1e19874"></a><a name="idd1e19881"></a>rather than subscripts to access container elements, even on types such as <tt>vector</tt> that support subscripting.</p>
+<p class="docText">标准库为每一种标准容器（包括&nbsp;<tt>vector</tt>）定义了一种迭代器类型。迭代器类型提供了比下标操作更通用化的方法：所有的标准库容器都定义了相应的迭代器类型，而只有少数的容器支持下标操作。因为迭代器对所有的容器都适用，现代&nbsp;C++&nbsp;程序更倾向于使用迭代器而不是下标操作访问容器元素，即使对支持下标操作的&nbsp;<tt>vector</tt>&nbsp;类型也是这样。</p>
+
+
+<p class="docText">The details of how iterators work are discussed in <a class="docLink" href="ch11.html#ch11" >Chapter 11</a>, but we can use them without understanding them in their full complexity.</p>
+<p class="docText"><a class="docLink" href="ch11.html#ch11" >第十一章</a>将详细讨论迭代器的工作原理，但使用迭代器并不需要完全了解它复杂的实现细节。</p>
+
+<a name="ch03lev2sec8"></a>
+<H4 class="docSection2Title">Container <tt>iterator</tt> Type</H4>
+<H4 class="docSection2Title">容器的&nbsp;<tt>iterator</tt>&nbsp;类型</H4>
+<p class="docText">Each of the container types, such as <tt>vector</tt>, defines its own iterator type:</p>
+<p class="docText">每种容器类型都定义了自己的迭代器类型，如&nbsp;<tt>vector</tt>：</p>
+<pre>
+     vector&lt;int&gt;::iterator iter;
+</pre><br>
+<p class="docText">This statement defines a variable named <tt>iter</tt>, whose type is the type named <tt>iterator</tt> defined by <tt>vector&lt;int&gt;</tt>. Each of the library container types defines a member named <tt>iterator</tt> that is a synonym for the actual type of its iterator.</p>
+<p class="docText">这符语句定义了一个名为&nbsp;<tt>iter</tt>&nbsp;的变量，它的数据类型是&nbsp;<tt>vector&lt;int&gt;</tt>&nbsp;定义的&nbsp;<tt>iterator</tt>&nbsp;类型。每个标准库容器类型都定义了一个名为&nbsp;<tt>iterator</tt>&nbsp;的成员，这里的&nbsp;<tt>iterator</tt>&nbsp;与迭代器实际类型的含义相同。</p>
+
+<a name="ch03sb12"></a>
+<p><table cellspacing="0" width="90%" border="1" cellpadding="5">
+	<tr><td><h2 class="docSidebarTitle">Terminology: Iterators and Iterator Types</h2>
+			<h2 class="docSidebarTitle">术语：迭代器和迭代器类型</h2>
+			<p class="docText"><span class="docEmphStrong">When first encountered, the nomenclature around iterators can be confusing. In part the confusion arises because the same term, <span class="docEmphasis">iterator</span></span><span class="docEmphStrong">, is used to refer to two things. We speak generally of the concept of an iterator, and we speak specifically of a concrete <tt>iterator</tt> type defined by a container, such as <tt>vector&lt;int&gt;</tt>.</span></p>
+			<p class="docText"><span class="docEmphStrong">程序员首次遇到有关迭代器的术语时可能会困惑不解，原因之一是由于同一个术语&nbsp;<span class="docEmphasis">iterator</span>&nbsp;往往表示两个不同的事物。一般意义上指的是迭代器的概念；而具体而言时指的则是由容器定义的具体的</span>&nbsp;<span class="docEmphStrong"><tt>iterator</tt>&nbsp;类型，如&nbsp;<tt>vector&lt;int&gt;</tt>。</span></p>
+			
+<p class="docText"><span class="docEmphStrong">What's important to understand is that there is a collection of types that serve as iterators. These types are related conceptually. We refer to a type as an iterator if it supports a certain set of actions. Those actions let us navigate among the elements of a container and let us access the value of those elements.</span></P>
+<p class="docText"><span class="docEmphStrong">重点要理解的是，有许多用作迭代器的类型，这些类型在概念上是相关的。若一种类型支持一组确定的操作（这些操作可用来遍历容器内的元素，并访问这些元素的值），我们就称这种类型为迭代器。</span></p>
+
+<p class="docText"><span class="docEmphStrong">Each container class defines its own <tt>iterator</tt> type that can be used to access the elements in the container. That is, each container defines a type named <tt>iterator</tt></span><span class="docEmphStrong">, and that type supports the actions of an (conceptual) iterator.</span></p>
+<p class="docText"><span class="docEmphStrong">各容器类都定义了自己的&nbsp;<tt>iterator</tt>&nbsp;类型，用于访问容器内的元素。换句话说，每个容器都定义了一个名为&nbsp;<tt>iterator</tt>&nbsp;的类型，而这种类型支持（概念上的）迭代器的各种操作。</p>
+</td></tr></table></p><br>
+
+<a name="ch03lev2sec9"></a>
+<H4 class="docSection2Title">The <tt>begin</tt> and <tt>end</tt> Operations</h4>
+<H4 class="docSection2Title"><tt>begin</tt>&nbsp;和&nbsp;<tt>end</tt>&nbsp;操作</h4>
+<p class="docText">Each container defines a pair of functions named <tt>begin</tt> and <tt>end</tt> that return iterators. The iterator returned by <tt>begin</tt> refers to the first element, if any, in the container:</P>
+<p class="docText">每种容器都定义了一对命名为&nbsp;<tt>begin</tt>&nbsp;和&nbsp;<tt>end</tt>&nbsp;的函数，用于返回迭代器。如果容器中有元素的话，由&nbsp;<tt>begin</tt>&nbsp;返回的迭代器指向第一个元素：</p>
+<pre>
+     vector&lt;int&gt;::iterator iter = ivec.begin();
+</pre><br>
+<p class="docText">This statement initializes <tt>iter</tt> to the value returned by the <tt>vector</tt> operation named <tt>begin</tt>. Assuming the <tt>vector</tt> is not empty, after this initialization, <tt>iter</tt> refers to the same element as <tt>ivec[0]</tt>.</p>
+<p class="docText">上述语句把&nbsp;<tt>iter</tt>&nbsp;初始化为由名为&nbsp;<tt>vector</tt>&nbsp;操作返回的值。假设&nbsp;<tt>vector</tt>&nbsp;不空，初始化后，<tt>iter</tt>&nbsp;即指该元素为&nbsp;<tt>ivec[0]</tt>。</p>
+
+<p class="docText">The iterator returned by the <tt>end</tt> operation is an iterator positioned &quot;one past the end&quot; of the <tt>vector</tt>. It is often referred to as the <b><a name="ch03term14"></a><a class="docLink" href="ch03lev1sec7.html#gloss03_14" >off-the-end iterator</a></b> indicating that it refers to a nonexistent element &quot;off the end&quot; of the <tt>vector</tt>. If the <tt>vector</tt> is empty, the iterator returned by <tt>begin</tt> is the same as the iterator returned by <tt>end</tt>.</p>
+<p class="docText">由&nbsp;<tt>end</tt>&nbsp;操作返回的迭代器指向&nbsp;<tt>vector</tt>&nbsp;的“末端元素的下一个”。<b><a class="docLink" href="ch03lev1sec7.html#gloss03_14" >“超出末端迭代器”（off-the-end iterator）</a></b>。表明它指向了一个不存在的元素。如果&nbsp;<tt>vector</tt>&nbsp;为空，<tt>begin</tt>&nbsp;返回的迭代器与&nbsp;<tt>end</tt>&nbsp;返回的迭代器相同。</p>
+
+<a name="ch03note15"></a>
+<div class="docNote"><p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" align="LEFT" width="50" height="54" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" >
+	</td>
+	<td valign="top">
+		<p class="docText"> The iterator returned by the <tt>end</tt> operation does not denote an actual element in the <tt>vector</tt>. Instead, it is used as a <b><a name="ch03term16"></a><a class="docLink" href="ch03lev1sec7.html#gloss03_16" >sentinel</a></b> indicating when we have processed all the elements in the <tt>vector</tt>.</p>
+		<p class="docText">由&nbsp;<tt>end</tt>&nbsp;操作返回的迭代器并不指向&nbsp;<tt>vector</tt>&nbsp;中任何实际的元素，相反，它只是起一个<b><a name="ch03term16"></a><a class="docLink" href="ch03lev1sec7.html#gloss03_16" >哨兵（sentinel）</a></b>的作用，表示我们已处理完&nbsp;<tt>vector</tt>&nbsp;中所有元素。</p>
+</td>
+</tr></table><BR>
+</P></div><br>
+
+<a name="ch03lev2sec10"></a>
+<H4 class="docSection2Title">Dereference and Increment on <tt>vector</tt> Iterators</h4>
+<H4 class="docSection2Title"><tt>vector</tt>&nbsp;迭代器的自增和解引用运算</h4>
+<p class="docText"><a name="idd1e20204"></a><a name="idd1e20211"></a><a name="idd1e20216"></a><a name="idd1e20223"></a><a name="idd1e20230"></a><a name="idd1e20237"></a><a name="idd1e20243"></a><a name="idd1e20251"></a><a name="idd1e20259"></a><a name="idd1e20267"></a><a name="idd1e20275"></a><a name="idd1e20280"></a><a name="idd1e20285"></a><a name="idd1e20293"></a><a name="idd1e20303"></a><a name="idd1e20311"></a><a name="idd1e20319"></a>The operations on iterator types let us retrieve the element to which an iterator refers and let us move an iterator from one element to another.</p>
+<p class="docText">迭代器类型定义了一些操作来获取迭代器所指向的元素，并允许程序员将迭代器从一个元素移动到另一个元素。</p>
+
+<p class="docText">Iterator types use the <span class="docEmphStrong">dereference operator</span> (the <tt>*</tt> operator) to access the element to which the iterator refers:</p>
+<p class="docText">迭代器类型可使用<span class="docEmphStrong">解引用操作符（dereference operator）</span>（<tt>*</tt>）来访问迭代器所指向的元素：</p>
+<pre>
+     *iter = 0;
+</pre><br>
+<p class="docText">The dereference operator returns the element that the iterator currently denotes. Assuming <tt>iter</tt> refers to the first element of the <tt>vector</tt>, then <tt>*iter</tt> is the same element as <tt>ivec[0]</tt>. The effect of this statement is to assign 0 to that element.</p>
+<p class="docText">解引用操作符返回迭代器当前所指向的元素。假设&nbsp;<tt>iter</tt>&nbsp;指向&nbsp;<tt>vector</tt>&nbsp;对象&nbsp;<tt>ivec</tt>&nbsp;的第一元素，那么&nbsp;<tt>*iter</tt>&nbsp;和&nbsp;<tt>ivec[0]</tt>&nbsp;就是指向同一个元素。上面这个语句的效果就是把这个元素的值赋为&nbsp;0。</p>
+
+<p class="docText">Iterators use the increment operator (<tt>++</tt>) (<a class="docLink" href="ch01lev1sec4.html#ch01lev2sec5" >Section 1.4.1</a>, p. <a class="docLink" href="ch01lev1sec4.html#ch01lev2sec5" >13</a>) to advance an iterator to the next element in the container. Incrementing an iterator is a logically similar operation to the increment operator when applied to <tt>int</tt> objects. In the case of <tt>int</tt>s, the effect is to &quot;add one&quot; to the <tt>int</tt>'s value. In the case of iterators, the effect is to &quot;advance the iterator by one position&quot; in the container. So, if <tt>iter</tt> refers to the first element, then <tt>++iter</tt> denotes the second element.</p>
+<p class="docText">迭代器使用自增操作符（<a class="docLink" href="ch01lev1sec4.html#ch01lev2sec5" >1.4.1&nbsp;节</a>）向前移动迭代器指向容器中下一个元素。从逻辑上说，迭代器的自增操作和&nbsp;<tt>int</tt>&nbsp;型对象的自增操作类似。对&nbsp;<tt>int</tt>&nbsp;对象来说，操作结果就是把&nbsp;<tt>int</tt>&nbsp;型值“加&nbsp;1”，而对迭代器对象则是把容器中的迭代器“向前移动一个位置”。因此，如果&nbsp;<tt>iter</tt>&nbsp;指向第一个元素，则&nbsp;<tt>++iter</tt>&nbsp;指向第二个元素。</p>
+
+<a name="ch03note16"></a>
+<div class="docNote"><p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" align="LEFT" width="50" height="54" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" >
+	</td>
+	<td valign="top">
+		<p class="docText"> Because the iterator returned from <tt>end</tt> does not denote an element, it may not be incremented or dereferenced.</p>
+		<p class="docText">由于&nbsp;<tt>end</tt>&nbsp;操作返回的迭代器不指向任何元素，因此不能对它进行解引用或自增操作。</p>
+</td>
+</tr></table><br>
+</p></div><br>
+
+<a name="ch03lev2sec11"></a>
+<H4 class="docSection2Title">Other Iterator Operations</h4>
+<H4 class="docSection2Title">迭代器的其他操作</h4>
+<p class="docText">Another pair of useful operations that we can perform on iterators is comparison: Two iterators can be compared using either <tt>==</tt> or <tt>!=</tt>. Iterators are equal if they refer to the same element; they are unequal otherwise.</p>
+<p class="docText">另一对可执行于迭代器的操作就是比较：用&nbsp;<tt>==</tt>&nbsp;或&nbsp;<tt>!=</tt>&nbsp;操作符来比较两个迭代器，如果两个迭代器对象指向同一个元素，则它们相等，否则就不相等。</p>
+
+<a name="ch03lev2sec12"></a>
+<h4 class="docSection2Title">A Program that Uses Iterators</h4>
+<h4 class="docSection2Title">迭代器应用的程序示例</h4>
+<p class="docText">Assume we had a <tt>vector&lt;int&gt;</tt> named <tt>ivec</tt> and we wanted to reset each of its elements to zero. We might do so by using a subscript:</P>
+<p class="docText">假设已声明了一个&nbsp;<tt>vector&lt;int&gt;</tt>&nbsp;型的&nbsp;<tt>ivec</tt>&nbsp;变量，要把它所有元素值重置为&nbsp;0，可以用下标操作来完成：</p>
+<pre>
+     // <span class="docEmphItalicAlt">reset all the elements in</span> <span class="docEmphasis">ivec</span> <span class="docEmphItalicAlt">to 0</span>
+     for (vector&lt;int&gt;::size_type ix = 0; ix != ivec.size(); ++ix)
+             ivec[ix] = 0;
+</pre><br>
+<p class="docText">This program uses a <tt>for</tt> loop to iterate through the elements in <tt>ivec</tt>. The <tt>for</tt> defines an index, which it increments on each iteration. The body of the <tt>for</tt> sets each element in <tt>ivec</tt> to zero.</p>
+<p class="docText">上述程序用&nbsp;<tt>for</tt>&nbsp;循环遍历&nbsp;<tt>ivec</tt>&nbsp;的元素，<tt>for</tt>&nbsp;循环定义了一个索引&nbsp;ix&nbsp;，每循环迭代一次&nbsp;ix&nbsp;就自增&nbsp;1。<tt>for</tt>&nbsp;循环体将&nbsp;<tt>ivec</tt>&nbsp;的每个元素赋值为&nbsp;0。</p>
+
+<p class="docText">A more typical way to write this loop would use iterators:</P>
+<p class="docText">更典型的做法是用迭代器来编写循环：</p>
+<pre>
+     // <span class="docEmphItalicAlt">equivalent loop using iterators to reset all the elements in</span> <span class="docEmphasis">ivec</span> <span class="docEmphItalicAlt">to 0</span>
+     for (vector&lt;int&gt;::iterator iter = ivec.begin();
+                                iter != ivec.end(); ++iter)
+         *iter = 0;  // <span class="docEmphItalicAlt">set element to which</span> <span class="docEmphasis">iter</span> <span class="docEmphItalicAlt">refers to 0</span>
+</pre><br>
+<p class="docText">The <tt>for</tt> loop starts by defining <tt>iter</tt> and initializing it to refer to the first element in <tt>ivec</tt>. The condition in the <tt>for</tt> tests whether <tt>iter</tt> is unequal to the iterator returned by the <tt>end</tt> operation. Each iteration increments <tt>iter</tt>. The effect <a name="idd1e20512"></a><a name="idd1e20519"></a><a name="idd1e20523"></a><a name="idd1e20531"></a><a name="idd1e20536"></a><a name="idd1e20541"></a>of this <tt>for</tt> is to start with the first element in <tt>ivec</tt> and process in sequence each element in the <tt>vector</tt>. Eventually, <tt>iter</tt> will refer to the last element in <tt>ivec</tt>. After we process the last element and increment <tt>iter</tt>, it will become equal to the value returned by <tt>end</tt>. At that point, the loop stops.</p>
+<p class="docText"><tt>for</tt>&nbsp;循环首先定义了&nbsp;<tt>iter</tt>，并将它初始化为指向&nbsp;<tt>ivec</tt>&nbsp;的第一个元素。<tt>for</tt>&nbsp;循环的条件测试&nbsp;<tt>iter</tt>&nbsp;是否与&nbsp;<tt>end</tt>&nbsp;操作返回的迭代器不等。每次迭代&nbsp;<tt>iter</tt>&nbsp;都自增&nbsp;1，这个&nbsp;<tt>for</tt>&nbsp;循环的效果是从&nbsp;<tt>ivec</tt>&nbsp;第一个元素开始，顺序处理&nbsp;<tt>vector</tt>&nbsp;中的每一元素。最后，&nbsp;<tt>iter</tt>&nbsp;将指向&nbsp;<tt>ivec</tt>&nbsp;中的最后一个元素，处理完最后一个元素后，<tt>iter</tt>&nbsp;再增加&nbsp;1，就会与&nbsp;<tt>end</tt>&nbsp;操作的返回值相等，在这种情况下，循环终止。</p>
+
+<p class="docText">The statement in the <tt>for</tt> body uses the dereference operator to access the value of the current element. As with the subscript operator, the value returned by the dereference operator is an lvalue. We can assign to this element to change its value. The effect of this loop is to assign the value zero to each element in <tt>ivec</tt>.</P>
+<p class="docText"><tt>for</tt>&nbsp;循环体内的语句用解引用操作符来访问当前元素的值。和下标操作符一样，解引用操作符的返回值是一个左值，因此可以对它进行赋值来改变它的值。上述循环的效果就是把&nbsp;<tt>ivec</tt>&nbsp;中所有元素都赋值为&nbsp;0。</p>
+
+<p class="docText">Having walked through the code in detail, we can see that this program has exactly the same effect as the version that used subscripts: We start at the first element in the <tt>vector</tt> and set each element in the <tt>vector</tt> to zero.</p>
+<p class="docText">通过上述对代码的详细分析，可以看出这段程序与用下标操作符的版本达到相同的操作效果：从&nbsp;<tt>vector</tt>&nbsp;的第一个元素开始，把&nbsp;<tt>vector</tt>&nbsp;中每个元素都置为&nbsp;0。</p>
+
+<a name="ch03note17"></a>
+<div class="docNote"><p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" align="LEFT" width="50" height="54" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" >
+	</td>
+	<td valign="top">
+		<p class="docText"> This program, like the one on page <a class="docLink" href="ch03lev1sec3.html#ch03lev3sec16" >94</a>, is safe if the <tt>vector</tt> is empty. If <tt>ivec</tt> is empty, then the iterator returned from <tt>begin</tt> does not denote any element; it can't, because there are no elements. In this case, the iterator returned from <tt>begin</tt> is the same as the one returned from <tt>end</tt>, so the test in the <tt>for</tt> fails immediately.</p>
+		<p class="docText">本节给出的例子程序和&nbsp;<a class="docLink" href="ch03lev1sec3.html#ch03lev3sec16" >3.3.2&nbsp;节</a>&nbsp;<tt>vector</tt>&nbsp;的下标操作的程序一样，如果&nbsp;<tt>vector</tt>&nbsp;为空，程序是安全的。如果&nbsp;<tt>ivec</tt>&nbsp;为空，则&nbsp;<tt>begin</tt>&nbsp;返回的迭代器不指向任何元素——由于没有元素，所以它不能指向任何元素。在这种情况下，从&nbsp;<tt>begin</tt>&nbsp;操作返回的迭代器与从&nbsp;<tt>end</tt>&nbsp;操作返回的迭代器的值相同，因此&nbsp;<tt>for</tt>&nbsp;语句中的测试条件立即失败。</p>
+</td>
+</tr></table><br>
+</p></div><br>
+
+<a name="ch03lev2sec13"></a>
+<h4 class="docSection2Title"><tt>const_iterator</tt></h4>
+<p class="docText">The previous program used a <tt>vector::iterator</tt> to change the values in the <tt>vector</tt>. Each container type also defines a type named <tt>const_iterator</tt>, which should be used when reading, but not writing to, the container elements.</p>
+<p class="docText">前面的程序用&nbsp;<tt>vector::iterator</tt>&nbsp;改变&nbsp;<tt>vector</tt>&nbsp;中的元素值。每种容器类型还定义了一种名为&nbsp;<tt>const_iterator</tt>&nbsp;的类型，该类型只能用于读取容器内元素，但不能改变其值。</p>
+
+<p class="docText">When we dereference a plain <tt>iterator</tt>, we get a non<tt>const</tt> reference (<a class="docLink" href="ch02lev1sec5.html#ch02lev1sec5" >Section 2.5</a>, p. <a class="docLink" href="ch02lev1sec5.html#ch02lev1sec5" >59</a>) to the element. When we dereference a <tt>const_iterator</tt>, the value returned is a reference to a <tt>const</tt> (<a class="docLink" href="ch02lev1sec4.html#ch02lev1sec4" >Section 2.4</a>, p. <a class="docLink" href="ch02lev1sec4.html#ch02lev1sec4" >56</a>) object. Just as with any <tt>const</tt> variable, we may not write to the value of this element.</P>
+<p class="docText">当我们对普通&nbsp;<tt>iterator</tt>&nbsp;类型解引用时，得到对某个元素的非&nbsp;<tt>const</tt>（<a class="docLink" href="ch02lev1sec5.html#ch02lev1sec5" >2.5&nbsp;节</a>）。而如果我们对&nbsp;<tt>const_iterator</tt>&nbsp;类型解引用时，则可以得到一个指向&nbsp;<tt>const</tt>&nbsp;对象的引用（<a class="docLink" href="ch02lev1sec4.html#ch02lev1sec4" >2.4&nbsp;节</a>），如同任何常量一样，该对象不能进行重写。</p>
+
+<p class="docText">For example, if <tt>text</tt> is a <tt>vector&lt;string&gt;</tt>, we might want to traverse it, printing each element. We could do so as follows:</P>
+<p class="docText">例如，如果&nbsp;<tt>text</tt>&nbsp;是&nbsp;<tt>vector&lt;string&gt;</tt>&nbsp;类型，程序员想要遍历它，输出每个元素，可以这样编写程序：</p>
+<pre>
+     // <span class="docEmphItalicAlt">use</span> <span class="docEmphasis">const_iterator</span> <span class="docEmphItalicAlt">because we won't change the elements</span>
+     for (vector&lt;string&gt;::const_iterator iter = text.begin();
+                                   iter != text.end(); ++iter)
+         cout &lt;&lt; *iter &lt;&lt; endl; // <span class="docEmphItalicAlt">print each element in</span> <span class="docEmphasis">text</span>
+</pre><br>
+<p class="docText">This loop is similar to the previous one, except that we are reading the value from the iterator, not assigning to it. Because we read, but do not write, through the iterator, we define <tt>iter</tt> to be a <tt>const_iterator</tt>. When we dereference a <tt>const_iterator</tt>, the value returned is <tt>const</tt>. We may not assign to an element using a <tt>const_iterator:</tt></P>
+<p class="docText">除了是从迭代器读取元素值而不是对它进行赋值之外，这个循环与前一个相似。由于这里只需要借助迭代器进行读，不需要写，这里把&nbsp;<tt>iter</tt>&nbsp;定义为&nbsp;<tt>const_iterator</tt>&nbsp;类型。当对&nbsp;<tt>const_iterator</tt>&nbsp;类型解引用时，返回的是一个&nbsp;<tt>const</tt>&nbsp;值。不允许用&nbsp;<tt>const_iterator:</tt>&nbsp;进行赋值</P>
+<pre>
+     for (vector&lt;string&gt;::const_iterator iter = text.begin();
+                                  iter != text.end(); ++ iter)
+         *iter = " ";     // <span class="docEmphItalicAlt">error:</span> <span class="docEmphasis">*iter</span> <span class="docEmphItalicAlt">is</span> <span class="docEmphasis">const</span>
+</pre><br>
+<p class="docText">When we use the <tt>const_iterator</tt> type, we get an iterator whose own value can be changed but that cannot be used to change the underlying element value. We can increment the iterator and use the dereference operator to read a value but not to assign to that value.</p>
+<p class="docText">使用&nbsp;<tt>const_iterator</tt>&nbsp;类型时，我们可以得到一个迭代器，它自身的值可以改变，但不能用来改变其所指向的元素的值。可以对迭代器进行自增以及使用解引用操作符来读取值，但不能对该元素赋值。</p>
+
+<p class="docText"><a name="idd1e20742"></a><a name="idd1e20747"></a><a name="idd1e20755"></a><a name="idd1e20764"></a>A <tt>const_iterator</tt> should not be confused with an <tt>iterator</tt> that is <tt>const</tt>. When we declare an iterator as <tt>const</tt> we must initialize the iterator. Once it is initialized, we may not change its value:</P>
+<p class="docText">不要把&nbsp;<tt>const_iterator</tt>&nbsp;对象与&nbsp;<tt>const</tt>&nbsp;的&nbsp;<tt>iterator</tt>&nbsp;对象混淆起来。声明一个&nbsp;<tt>const</tt>&nbsp;迭代器时，必须初始化迭代器。一旦被初始化后，就不能改变它的值：</p>
+
+<pre>
+     vector&lt;int&gt; nums(10);  // <span class="docEmphasis">nums</span> <span class="docEmphItalicAlt">is non</span><span class="docEmphasis">const</span>
+     const vector&lt;int&gt;::iterator cit = nums.begin();
+     *cit = 1;               // <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">cit</span> <span class="docEmphItalicAlt">can change its underlying element</span>
+     ++cit;                  // <span class="docEmphItalicAlt">error: can't change the value of</span> <span class="docEmphasis">cit</span>
+</pre><BR>
+<p class="docText">A <tt>const_iterator</tt> may be used with either a <tt>const</tt> or non<tt>const vector</tt>, because it cannot write an element. An iterator that is <tt>const</tt> is largely useless: Once it is initialized, we can use it to write the element it refers to, but cannot make it refer to any other element.</p>
+<p class="docText"><tt>const_iterator</tt>&nbsp;对象可以用于&nbsp;<tt>const vector</tt>&nbsp;或非&nbsp;<tt>const vector</tt>，因为不能改写元素值。<tt>const</tt>&nbsp;迭代器这种类型几乎没什么用处：一旦它被初始化后，只能用它来改写其指向的元素，但不能使它指向任何其他元素。</p>
+<pre>
+     const vector&lt;int&gt; nines(10, 9);  // <span class="docEmphItalicAlt">cannot change elements in</span> <span class="docEmphasis">nines</span>
+     // <span class="docEmphItalicAlt">error:</span> <span class="docEmphasis">cit2</span> <span class="docEmphItalicAlt">could change the element it refers to and</span> <span class="docEmphasis">nines</span> <span class="docEmphItalicAlt">is</span> <span class="docEmphasis">const</span>
+     const vector&lt;int&gt;::iterator cit2 = nines.begin();
+     // <span class="docEmphasis">ok:</span> <span class="docEmphasis">it</span> <span class="docEmphItalicAlt">can't change an element value, so</span> <span class="docEmphasis">it</span> <span class="docEmphItalicAlt">can be used with a</span> <span class="docEmphasis">const vector&lt;int&gt;</span>
+     vector&lt;int&gt;::const_iterator it = nines.begin();
+     *it = 10; // <span class="docEmphItalicAlt">error:</span> <span class="docEmphasis">*it</span> <span class="docEmphItalicAlt">is</span> <span class="docEmphasis">const</span>
+     ++it;     // <span class="docEmphItalicAlt">ok:</span> <span class="docEmphasis">it</span> <span class="docEmphItalicAlt">isn't</span> <span class="docEmphasis">const</span> <span class="docEmphItalicAlt">so we can change its value</span>
+</pre><br>
+<a name="ch03note18"></a>
+<div class="docNote"><p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" align="LEFT" width="50" height="54" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/note.jpg;400478" >
+	</td>
+	<td valign="top">
+		<p class="docText"></p>
+</td>
+</tr></table><br>
+<pre>
+     // <span class="docEmphItalicAlt">an iterator that cannot write elements</span>
+     vector&lt;int&gt;::const_iterator
+     // <span class="docEmphItalicAlt">an iterator whose value cannot change</span>
+     const vector&lt;int&gt;::iterator
+</pre><br>
+</p></div><br>
+
+<a name="ch03sb13"></a>
+<p><table cellspacing="0" width="90%" border="1" cellpadding="5"><tr><td>
+<h2 class="docSidebarTitle">Exercises Section 3.4</H2>
+<blockquote>
+	<p><table border="0" cellspacing="16" cellpadding="0">
+		<tr valign="top">
+			<td align="right" class="docText" width="50"><a name="ch03qa7q1"></a>
+				<b>Exercise 3.17:</b></td>
+			<td>
+				<p class="docText">Redo the exercises from <a class="docLink" href="ch03lev1sec3.html#ch03lev2sec7" >Section 3.3.2</a> (p. <a class="docLink" href="ch03lev1sec3.html#ch03lev2sec7" >96</a>), using iterators rather than subscripts to access the elements in the <tt>vector</tt>.</p>
+				<p class="docText">重做&nbsp;<a class="docLink" href="ch03lev1sec3.html#ch03lev2sec7" >3.3.2&nbsp;节</a>&nbsp;的习题，用迭代器而不是下标操作来访问&nbsp;<tt>vector</tt>&nbsp;中的元素。</p>
+			</td>
+		</tr>
+		<tr valign="top">
+			<td align="right" class="docText" width="50"><a name="ch03qa7q2"></a><b>Exercise 3.18:</b></td>
+			<td>
+				<p class="docText">Write a program to create a <tt>vector</tt> with 10 elements. Using an iterator, assign each element a value that is twice its current value.</p>
+				<p class="docText">编写程序来创建有&nbsp;10&nbsp;个元素的&nbsp;<tt>vector</tt>&nbsp;对象。用迭代器把每个元素值改为当前值的&nbsp;2&nbsp;倍。</p>
+			</td>
+		</tr>
+		<tr valign="top">
+			<td align="right" class="docText" width="50"><a name="ch03qa7q3"></a>
+				<b>Exercise 3.19:</b></td>
+			<td>
+				<p class="docText">Test your previous program by printing the <tt>vector</tt>.</p>
+				<p class="docText">验证习题&nbsp;3.18&nbsp;的程序，输出&nbsp;<tt>vector</tt>&nbsp;的所有元素。</p>
+			</td>
+		</tr>
+		<tr valign="top">
+			<td align="right" class="docText" width="50"><a name="ch03qa7q4"></a>
+				<b>Exercise 3.20:</b>
+			</td>
+			<td>
+				<p class="docText">Explain which iterator you used in the previous programs, and why.</p>
+				<p class="docText">解释一下在上几个习题的程序实现中你用了哪种迭代器，并说明原因。</p>
+			</td>
+		</tr>
+		<tr valign="top">
+			<td align="right" class="docText" width="50"><a name="ch03qa7q5"></a>
+				<b>Exercise 3.21:</b></td>
+			<td>
+				<p class="docText">When would you use an iterator that is <tt>const</tt>? When would you use a <tt>const_iterator</tt>. Explain the difference between them.</p>
+				<p class="docText">何时使用&nbsp;<tt>const</tt>&nbsp;迭代器的？又在何时使用&nbsp;<tt>const_iterator</tt>？解释两者的区别。</p>
+	</td>
+</tr>
+</table></p>
+</blockquote>
+</TD></tr></table></p><br>
+
+<a name="ch03lev2sec14"></a>
+<h4 class="docSection2Title">3.4.1. Iterator Arithmetic</H4>
+<h4 class="docSection2Title">3.4.1. 迭代器的算术操作</H4>
+<p class="docText">In addition to the increment operator, which moves an iterator one element at a time, <tt>vector</tt> iterators (but few of the other library container iterators) also support other arithmetic operations. These operations are referred to as <b><a name="ch03term12"></a><a class="docLink" href="ch03lev1sec7.html#gloss03_12" >iterator arithmetic</a></b>, and include:</p>
+<p class="docText">除了一次移动迭代器的一个元素的增量操作符外，<tt>vector</tt>&nbsp;迭代器（其他标准库容器迭代器很少）也支持其他的算术操作。这些操作称为<b><a class="docLink" href="ch03lev1sec7.html#gloss03_12" >迭代器算术操作（iterator arithmetic）</a></b>，包括：</p>
+
+<ul>
+	<li>
+	<a name="idd1e21023"></a><a name="idd1e21030"></a><a name="idd1e21037"></a><a name="idd1e21045"></a><a name="idd1e21049"></a><a name="idd1e21053"></a><a name="idd1e21059"></a><a name="idd1e21065"></a><a name="idd1e21069"></a><a name="idd1e21075"></a><a name="idd1e21085"></a><a name="idd1e21098"></a>
+	<p class="docList"><tt>iter + n</tt></p>
+	<p class="docList"><tt>iter - n</tt></p>
+	<p class="docList">We can add or subtract an integral value to an iterator. Doing so yields a new iterator positioned <tt>n</tt> elements ahead of (addition) or behind (subtraction) the element to which <tt>iter</tt> refers. The result of the addition or subtraction must refer to an element in the <tt>vector</tt> to which <tt>iter</tt> refers or to one past the end of that <tt>vector</tt>. The type of the value added or subtracted ought ordinarily to be the <tt>vector</tt>'s <tt>size_type</tt> or <tt>difference_type</tt> (see below).</p>
+	<p class="docList">可以对迭代器对象加上或减去一个整形值。这样做将产生一个新的迭代器，其位置在&nbsp;<tt>iter</tt>&nbsp;所指元素之前（加）或之后（减）&nbsp;<tt>n</tt>&nbsp;个元素的位置。加或减之后的结果必须指向&nbsp;<tt>iter</tt>&nbsp;所指&nbsp;<tt>vector</tt>&nbsp;中的某个元素，或者是&nbsp;<tt>vector</tt>&nbsp;末端的后一个元素。加上或减去的值的类型应该是&nbsp;<tt>vector</tt>&nbsp;的&nbsp;<tt>size_type</tt>&nbsp;或&nbsp;<tt>difference_type</tt>&nbsp;类型（参考下面的解释）。</p>
+	</li>
+	<li>
+	<p class="docList"><tt>iter1 - iter2</tt></p>
+	<p class="docList">Computes the difference between two iterators as a value of a <tt>signed</tt> integral type named <b><a name="ch03term6"></a><a class="docLink" href="ch03lev1sec7.html#gloss03_06" ><span class="docEmphStrong"><tt>difference_type</tt></span></a></b>, which, like <tt>size_type</tt>, is defined by <tt>vector</tt>. The type is <tt>signed</tt> because subtraction might have a negative result. This type is guaranteed to be large enough to hold the distance between any two iterators. Both <tt>iter1</tt> and <tt>iter2</tt> must refer to elements in the same <tt>vector</tt> or the element one past the end of that <tt>vector</tt>.</p>
+	<p class="docList">该表达式用来计算两个迭代器对象的距离，该距离是名为&nbsp;<b><a class="docLink" href="ch03lev1sec7.html#gloss03_06" ><span class="docEmphStrong"><tt>difference_type</tt></span></a></b>&nbsp;的&nbsp;<tt>signed</tt>&nbsp;类型&nbsp;<tt>size_type</tt>&nbsp;的值，这里的&nbsp;<tt>difference_type</tt>&nbsp;是&nbsp;<tt>signed</tt>&nbsp;类型，因为减法运算可能产生负数的结果。该类型可以保证足够大以存储任何两个迭代器对象间的距离。<tt>iter1</tt>&nbsp;与&nbsp;<tt>iter2</tt>&nbsp;两者必须都指向同一&nbsp;<tt>vector</tt>&nbsp;中的元素，或者指向&nbsp;<tt>vector</tt>&nbsp;末端之后的下一个元素。</p>
+	</li>
+</ul>
+
+<p class="docText">We can use iterator arithmetic to move an iterator to an element directly. For example, we could locate the middle of a <tt>vector</tt> as follows:</p>
+<p class="docText">可以用迭代器算术操作来移动迭代器直接指向某个元素，例如，下面语句直接定位于&nbsp;<tt>vector</tt>&nbsp;中间元素：</p>
+<pre>
+     vector&lt;int&gt;::iterator mid = vi.begin() + vi.size() / 2;
+</pre><br>
+<p class="docText">This code initializes <tt>mid</tt> to refer to the element nearest to the middle of <tt>ivec</tt>. It is more efficient to calculate this iterator directly than to write an equivalent program that increments the iterator one by one until it reaches the middle element.</p>
+<p class="docText">上述代码用来初始化&nbsp;<tt>mid</tt>&nbsp;使其指向&nbsp;<tt>vi</tt>&nbsp;中最靠近正中间的元素。这种直接计算迭代器的方法，与用迭代器逐个元素自增操作到达中间元素的方法是等价的，但前者的效率要高得多。</p>
+
+<a name="ch03note19"></a>
+<div class="docNote"><p>
+	<table width="90%" border="0" cellspacing="0" cellpadding="1">
+		<tr>
+			<td width="60" valign="top">
+				<img border="0" alt="" align="LEFT" width="57" height="96" SRC="http://shouce.jb51.net/c++/0201721481/images/0201721481/graphics/beware.jpg;400478" ></td>
+			<td valign="top">
+				<p class="docText"> Any operation that changes the size of a <tt>vector</tt> makes existing iterators invalid. For example, after calling <tt>push_back</tt>, you should not rely on the value of an iterator into the <tt>vector</tt>.</p>
+				<p class="docText">任何改变&nbsp;<tt>vector</tt>&nbsp;长度的操作都会使已存在的迭代器失效。例如，在调用&nbsp;<tt>push_back</tt>&nbsp;之后，就不能再信赖指向&nbsp;<tt>vector</tt>&nbsp;的迭代器的值了。</p>
+	</td>
+</tr></table><br>
+</p></div><br>
+
+<a name="ch03sb14"></a>
+<p><table cellspacing="0" width="90%" border="1" cellpadding="5"><tr><td>
+			<h2 class="docSidebarTitle">Exercises Section 3.4.1</h2>
+<blockquote>
+	<p>
+	<table border="0" cellspacing="16" cellpadding="0">
+		<tr valign="top">
+			<td align="right" class="docText" width="50"><a name="ch03qa8q1"></a>
+				<B>Exercise 3.22:</b></td>
+			<td>
+				<p class="docText">What happens if we compute <tt>mid</tt> as follows:</p>
+				<p class="docText">如果采用下面的方法来计算&nbsp;<tt>mid</tt>&nbsp;会产生什么结果？</p>
+<pre>
+     vector&lt;int&gt;::iterator mid = (vi.begin() + vi.end()) / 2;
+</pre><br>
+</td></tr></table></p>
+</blockquote>
+</td></tr></table></p><BR>
+
+
+<a href="21001535.html" ><img src="images/pixel.gif"  alt="" width="1" height="1" border="0"></a><ul></ul></TD></tr></table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr><td><div STYLE="MARGIN-LEFT: 0.15in;"><a href="toc.html" ><img src="images/teamlib.gif"  width="62" height="15" border="0" align="absmiddle"  alt="Team LiB"></a></div></td>
+<td align="right"><div STYLE="MARGIN-LEFT: 0.15in;">
+<a href="ch03lev1sec3.html" ><img src="images/previous.gif"  width="62" height="15" border="0" align="absmiddle" alt="Previous Section"></a>
+<a href="ch03lev1sec5.html" ><img src="images/next.gif"  width="41" height="15" border="0" align="absmiddle" alt="Next Section"></a>
+</div></td></tr></table>
+</body></html>
